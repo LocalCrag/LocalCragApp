@@ -122,6 +122,9 @@
                       [fetchingObservable]="
                         sectorsService.getSectorGrades(sector.slug)
                       "
+                      [linesListUrl]="
+                        '/topo/' + cragSlug + '/' + sector.slug + '/lines'
+                      "
                     ></lc-leveled-grade-distribution>
                     <lc-ascent-count
                       [ascentCount]="sector.ascentCount"

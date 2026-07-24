@@ -122,6 +122,15 @@
                       [fetchingObservable]="
                         areasService.getAreaGrades(area.slug)
                       "
+                      [linesListUrl]="
+                        '/topo/' +
+                        cragSlug +
+                        '/' +
+                        sectorSlug +
+                        '/' +
+                        area.slug +
+                        '/lines'
+                      "
                     ></lc-leveled-grade-distribution>
                     <lc-ascent-count
                       [ascentCount]="area.ascentCount"
