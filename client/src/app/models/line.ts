@@ -52,6 +52,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   faUsers: LineFaUser[] = [];
   routesetter: string;
   setDate: Date;
+  bolter: string;
+  boltDate: Date;
   startingPosition: StartingPosition;
   drying: Drying | null;
   secret: boolean;
@@ -155,6 +157,10 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.setDate = payload.setDate
       ? parseLocalCalendarDate(payload.setDate)
       : null;
+    line.bolter = payload.bolter;
+    line.boltDate = payload.boltDate
+      ? parseLocalCalendarDate(payload.boltDate)
+      : null;
     line.startingPosition = payload.startingPosition;
     line.drying = payload.drying ?? null;
     line.secret = payload.secret;
@@ -250,6 +256,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         faName: line.faName ? line.faName : null,
         routesetter: line.routesetter ? line.routesetter : null,
         setDate: line.setDate ? formatLocalCalendarDate(line.setDate) : null,
+        bolter: line.bolter ? line.bolter : null,
+        boltDate: line.boltDate ? formatLocalCalendarDate(line.boltDate) : null,
         startingPosition: line.startingPosition,
         drying: line.drying ?? null,
         secret: line.secret,

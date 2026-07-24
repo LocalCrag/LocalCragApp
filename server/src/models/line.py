@@ -42,6 +42,8 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     fa_name = db.Column(db.String(120), nullable=True)
     routesetter = db.Column(db.String(120), nullable=True)
     set_date = db.Column(db.Date, nullable=True)
+    bolter = db.Column(db.String(120), nullable=True)
+    bolt_date = db.Column(db.Date, nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
     drying = db.Column(db.Enum(DryingEnum), nullable=True)
     archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")

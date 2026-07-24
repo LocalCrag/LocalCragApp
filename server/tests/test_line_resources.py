@@ -163,6 +163,8 @@ def test_successful_create_line(client, moderator_token):
     assert res["faDate"] is None
     assert res["faName"] == "Dave Graham"
     assert res["faUsers"] == []
+    assert res["bolter"] is None
+    assert res["boltDate"] is None
     assert res["startingPosition"] == "FRENCH"
     assert res["drying"] is None
     assert res["eliminate"] is True
@@ -197,6 +199,74 @@ def test_successful_create_line(client, moderator_token):
     assert len(res["linePaths"]) == 0
     assert res["closed"] is False
     assert res["closedReasons"] == []
+
+
+def test_successful_create_and_edit_sport_line_with_bolter(client, moderator_token):
+    line_data = {
+        "name": "Bolted Beauty",
+        "description": "Sport route",
+        "videos": None,
+        "color": None,
+        "authorGradeValue": 17,
+        "gradeScale": "UIAA",
+        "type": "SPORT",
+        "authorRating": 4,
+        "faYear": 2018,
+        "faDate": None,
+        "faName": "First Climber",
+        "bolter": "Kurt Albert",
+        "boltDate": "2017-05-20",
+        "startingPosition": "STAND",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": True,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["type"] == "SPORT"
+    assert res["bolter"] == "Kurt Albert"
+    assert res["boltDate"] == "2017-05-20"
+
+    line_data["bolter"] = "Kurt Albert & friends"
+    line_data["boltDate"] = "2017-06-01"
+    line_data["type"] = "BOULDER"
+    line_data["gradeScale"] = "FB"
+    line_data["authorGradeValue"] = 19
+
+    rv = client.put(f"/api/lines/{res['slug']}", token=moderator_token, json=line_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["type"] == "BOULDER"
+    assert res["bolter"] is None
+    assert res["boltDate"] is None
 
 
 def test_successful_create_line_with_project_status(client, moderator_token):

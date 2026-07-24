@@ -17,6 +17,7 @@ from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
@@ -281,6 +282,13 @@ class CreateLine(MethodView):
         new_line.routesetter = line_data["routesetter"]
         new_line.set_date = line_data["setDate"]
 
+        if new_line.type == LineTypeEnum.SPORT:
+            new_line.bolter = line_data["bolter"]
+            new_line.bolt_date = line_data["boltDate"]
+        else:
+            new_line.bolter = None
+            new_line.bolt_date = None
+
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
         new_line.highball = line_data["highball"]
@@ -377,6 +385,13 @@ class UpdateLine(MethodView):
 
         line.routesetter = line_data["routesetter"]
         line.set_date = line_data["setDate"]
+
+        if line.type == LineTypeEnum.SPORT:
+            line.bolter = line_data["bolter"]
+            line.bolt_date = line_data["boltDate"]
+        else:
+            line.bolter = None
+            line.bolt_date = None
 
         line.eliminate = line_data["eliminate"]
         line.traverse = line_data["traverse"]

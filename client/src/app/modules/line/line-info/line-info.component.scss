@@ -1,7 +1,8 @@
 @use "../../../styles/media-queries" as m;
 
 .fa,
-.routesetter {
+.routesetter,
+.bolter {
   font-size: 11px;
 
   > span:nth-of-type(n + 2)::before {

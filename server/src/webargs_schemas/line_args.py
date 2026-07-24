@@ -27,6 +27,11 @@ def validate_set_date(set_date: datetime.date):
         raise ValidationError("Set date cannot be in the future.")
 
 
+def validate_bolt_date(bolt_date: datetime.date):
+    if bolt_date > datetime.date.today():
+        raise ValidationError("Bolt date cannot be in the future.")
+
+
 def validate_video_url(url: str):
     if not validators.url(url):
         raise ValidationError(f"Invalid URL: {url}")
@@ -61,6 +66,8 @@ class LineArgsSchema(BatchLineArgsSchema):
     faDate = fields.Date(required=True, allow_none=True, validate=validate_fa_date)
     routesetter = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
     setDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_set_date)
+    bolter = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
+    boltDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_bolt_date)
     drying = fields.Enum(DryingEnum, required=False, allow_none=True, load_default=None)
     secret = fields.Boolean(required=True, allow_none=False)
     eliminate = fields.Boolean(required=True, allow_none=False)
