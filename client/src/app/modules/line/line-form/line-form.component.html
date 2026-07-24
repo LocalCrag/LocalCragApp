@@ -366,6 +366,46 @@
             />
           </div>
         </ng-container>
+        <ng-container *isOutdoorMode="true">
+          @if (lineForm.get("type").value === LineType.SPORT) {
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="bolter">{{
+                t("lineBolterLabel")
+              }}</label>
+              <input
+                id="bolter"
+                type="text"
+                pInputText
+                formControlName="bolter"
+                placeholder="{{ t('lineBolterPlaceholder') }}"
+                lcFormControl
+                data-cy="line-form-bolter"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                "validation.maxLength" | transloco: { max: 120 }
+              }}</small>
+            </div>
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="bolt-date">{{
+                t("lineBoltDateLabel")
+              }}</label>
+              <p-date-picker
+                id="bolt-date"
+                formControlName="boltDate"
+                view="date"
+                dateFormat="dd.mm.yy"
+                inputId="boltDate"
+                lcFormControl
+                [maxDate]="today"
+                [readonlyInput]="true"
+                data-cy="line-form-boltDate"
+              ></p-date-picker>
+              <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                t("dateInFutureValidationError")
+              }}</small>
+            </div>
+          }
+        </ng-container>
         <ng-container *isGymMode="true">
           <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label" for="routesetter">{{
