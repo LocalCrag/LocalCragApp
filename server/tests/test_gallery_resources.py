@@ -2,6 +2,7 @@ from extensions import db
 from models.area import Area
 from models.file import File
 from models.gallery_image import GalleryImage
+from models.line import Line
 from models.secret_topo_entity import SecretTopoEntity
 from models.user import User
 
@@ -255,3 +256,194 @@ def test_update_users_gallery_image_with_moderator(client, moderator_token):
     res = rv.json
     assert res["tags"][0]["objectType"] == "User"
     assert len(res["tags"]) == 1
+
+
+# --- Rock explorer gallery access-control tests ------------------------------------------------
+
+
+def _create_rock_explorer_entities():
+    from extensions import db
+    from models.rock_explorer_cluster import RockExplorerCluster
+    from models.rock_explorer_feature import RockExplorerFeature
+
+    cluster = RockExplorerCluster()
+    cluster.title = "Gallery cluster"
+    feature = RockExplorerFeature()
+    feature.title = "Gallery feature"
+    feature.geometry = {"type": "Point", "coordinates": [8.1, 50.2]}
+    db.session.add_all([cluster, feature])
+    db.session.commit()
+    return feature, cluster
+
+
+def _file_id():
+    return File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+
+
+def test_rock_explorer_member_can_create_gallery_image_for_feature_and_cluster(client, member_token):
+    feature, cluster = _create_rock_explorer_entities()
+
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 201
+    assert rv.json["tags"][0]["objectType"] == "RockExplorerFeature"
+    assert rv.json["tags"][0]["object"]["id"] == str(feature.id)
+    assert rv.json["tags"][0]["object"]["title"] == feature.title
+
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerCluster", "objectId": str(cluster.id)}]},
+    )
+    assert rv.status_code == 201
+    assert rv.json["tags"][0]["objectType"] == "RockExplorerCluster"
+    assert rv.json["tags"][0]["object"]["id"] == str(cluster.id)
+    assert rv.json["tags"][0]["object"]["title"] == cluster.title
+
+
+def test_rock_explorer_non_member_cannot_create_gallery_image(client, user_token):
+    feature, cluster = _create_rock_explorer_entities()
+    count_before = GalleryImage.query.count()
+
+    rv = client.post(
+        "/api/gallery",
+        token=user_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 401
+
+    rv = client.post(
+        "/api/gallery",
+        token=user_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerCluster", "objectId": str(cluster.id)}]},
+    )
+    assert rv.status_code == 401
+
+    assert GalleryImage.query.count() == count_before
+
+
+def test_rock_explorer_mixed_tag_payload_requires_member(client, user_token, member_token):
+    feature, _cluster = _create_rock_explorer_entities()
+    line_id = Line.get_id_by_slug("super-spreader")
+    payload = {
+        "fileId": _file_id(),
+        "tags": [
+            {"objectType": "Line", "objectId": str(line_id)},
+            {"objectType": "RockExplorerFeature", "objectId": str(feature.id)},
+        ],
+    }
+
+    rv = client.post("/api/gallery", token=user_token, json=payload)
+    assert rv.status_code == 401
+
+    rv = client.post("/api/gallery", token=member_token, json=payload)
+    assert rv.status_code == 201
+
+
+def test_rock_explorer_gating_does_not_block_regular_uploads(client, user_token):
+    user = User.query.filter_by(email="user@localcrag.invalid.org").first()
+
+    rv = client.post(
+        "/api/gallery",
+        token=user_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "User", "objectId": str(user.id)}]},
+    )
+    assert rv.status_code == 201
+
+
+def test_rock_explorer_member_can_list_images_by_tag_object_id(client, member_token):
+    feature, _cluster = _create_rock_explorer_entities()
+
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 201
+    image_id = rv.json["id"]
+
+    rv = client.get(
+        f"/api/gallery?page=1&tag-object-type=RockExplorerFeature&tag-object-id={feature.id}",
+        token=member_token,
+    )
+    assert rv.status_code == 200
+    assert [item["id"] for item in rv.json["items"]] == [image_id]
+
+
+def test_rock_explorer_anonymous_and_non_member_cannot_list_images_by_tag(client, user_token):
+    feature, cluster = _create_rock_explorer_entities()
+
+    url_feature = f"/api/gallery?page=1&tag-object-type=RockExplorerFeature&tag-object-id={feature.id}"
+    rv = client.get(url_feature)
+    assert rv.status_code == 401
+    rv = client.get(url_feature, token=user_token)
+    assert rv.status_code == 401
+
+    url_cluster = f"/api/gallery?page=1&tag-object-type=RockExplorerCluster&tag-object-id={cluster.id}"
+    rv = client.get(url_cluster)
+    assert rv.status_code == 401
+    rv = client.get(url_cluster, token=user_token)
+    assert rv.status_code == 401
+
+
+def test_rock_explorer_tag_listing_requires_tag_object_id(client, member_token):
+    rv = client.get("/api/gallery?page=1&tag-object-type=RockExplorerFeature", token=member_token)
+    assert rv.status_code == 400
+
+
+def test_rock_explorer_images_excluded_from_unfiltered_gallery_for_non_members(client, member_token, user_token):
+    feature, _cluster = _create_rock_explorer_entities()
+
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    baseline_count = len(rv.json["items"])
+
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 201
+    new_image_id = rv.json["id"]
+
+    rv = client.get("/api/gallery")
+    assert rv.status_code == 200
+    assert len(rv.json["items"]) == baseline_count
+    assert new_image_id not in {item["id"] for item in rv.json["items"]}
+
+    rv = client.get("/api/gallery", token=user_token)
+    assert rv.status_code == 200
+    assert len(rv.json["items"]) == baseline_count
+    assert new_image_id not in {item["id"] for item in rv.json["items"]}
+
+    rv = client.get("/api/gallery", token=member_token)
+    assert rv.status_code == 200
+    assert new_image_id in {item["id"] for item in rv.json["items"]}
+
+
+def test_rock_explorer_non_member_cannot_retag_image_to_rock_explorer(client, user_token):
+    feature, _cluster = _create_rock_explorer_entities()
+    user = User.query.filter_by(email="user@localcrag.invalid.org").first()
+
+    rv = client.post(
+        "/api/gallery",
+        token=user_token,
+        json={"fileId": _file_id(), "tags": [{"objectType": "User", "objectId": str(user.id)}]},
+    )
+    assert rv.status_code == 201
+    image_id = rv.json["id"]
+
+    rv = client.put(
+        f"/api/gallery/{image_id}",
+        token=user_token,
+        json={"tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 401
+
+    image = GalleryImage.query.filter_by(id=image_id).first()
+    assert len(image.tags) == 1
+    assert image.tags[0].object_type == "User"
+    assert image.tags[0].object_id == user.id
