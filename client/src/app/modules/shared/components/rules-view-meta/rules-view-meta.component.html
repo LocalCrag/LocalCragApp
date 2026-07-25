@@ -3,12 +3,12 @@
     <div class="rules-view-meta">
       @if (updatedSinceLastView) {
         <p class="rules-view-meta__updated" data-cy="rules-updated-notice">
-          {{ t('updatedSinceLastView') }}
+          {{ t("updatedSinceLastView") }}
         </p>
       }
       @if (rulesUpdatedAt) {
         <p class="rules-view-meta__date">
-          {{ t('lastUpdated', { date: rulesUpdatedAt | date: 'datetime' }) }}
+          {{ t("lastUpdated", { date: rulesUpdatedAt | date: "datetime" }) }}
         </p>
       }
     </div>

@@ -11,7 +11,7 @@
                 class="rules-alert__updated"
                 data-cy="rules-alert-updated-notice"
               >
-                {{ t('updatedSinceLastView') }}
+                {{ t("updatedSinceLastView") }}
               </span>
             }
           </div>
@@ -55,13 +55,13 @@
               class="rules-alert-dialog__updated"
               data-cy="rules-dialog-updated-notice"
             >
-              {{ t('updatedSinceLastView') }}
+              {{ t("updatedSinceLastView") }}
             </p>
           }
           @if (section.updatedAt) {
             <p class="rules-alert-dialog__date">
               {{
-                t('lastUpdated', { date: section.updatedAt | date: 'datetime' })
+                t("lastUpdated", { date: section.updatedAt | date: "datetime" })
               }}
             </p>
           }
