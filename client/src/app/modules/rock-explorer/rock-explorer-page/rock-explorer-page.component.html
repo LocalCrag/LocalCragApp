@@ -1,0 +1,336 @@
+<div class="rock-explorer" *transloco="let t">
+  <p-toast />
+  <p-confirmDialog />
+
+  @if (loading) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
+  } @else if (noApiKey) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.noApiKey") }}</div>
+  } @else {
+    <div class="rock-explorer__toolbar">
+      <p-button
+        [outlined]="drawMode !== 'select'"
+        [severity]="drawMode === 'select' ? 'primary' : undefined"
+        icon="pi pi-pointer"
+        [label]="t('rockExplorer.modeSelect')"
+        (onClick)="setDrawMode('select')"
+        size="small"
+      />
+      <p-button
+        [outlined]="drawMode !== 'point'"
+        [severity]="drawMode === 'point' ? 'primary' : undefined"
+        icon="pi pi-map-marker"
+        [label]="t('rockExplorer.modePoint')"
+        (onClick)="setDrawMode('point')"
+        size="small"
+      />
+      <p-button
+        [outlined]="drawMode !== 'polygon'"
+        [severity]="drawMode === 'polygon' ? 'primary' : undefined"
+        icon="pi pi-stop"
+        [label]="t('rockExplorer.modePolygon')"
+        (onClick)="setDrawMode('polygon')"
+        size="small"
+      />
+      @if (drawMode === "polygon") {
+        <p-button
+          icon="pi pi-check"
+          [label]="t('rockExplorer.finishPolygon')"
+          (onClick)="finishPolygon()"
+          size="small"
+          severity="success"
+        />
+      }
+      <p-button
+        icon="pi pi-filter"
+        [label]="t('rockExplorer.filters')"
+        (onClick)="toggleFilters()"
+        [outlined]="!showFilters"
+        size="small"
+      />
+      <div class="rock-explorer__layer-toggle">
+        <p-button
+          [outlined]="mapStyle !== MapStyles.TOPO"
+          [severity]="mapStyle === MapStyles.TOPO ? 'primary' : undefined"
+          [label]="t('rockExplorer.mapStyle.topo')"
+          (onClick)="switchMapStyle(MapStyles.TOPO)"
+          size="small"
+        />
+        <p-button
+          [outlined]="mapStyle !== MapStyles.SATELLITE"
+          [severity]="mapStyle === MapStyles.SATELLITE ? 'primary' : undefined"
+          [label]="t('rockExplorer.mapStyle.satellite')"
+          (onClick)="switchMapStyle(MapStyles.SATELLITE)"
+          size="small"
+        />
+      </div>
+    </div>
+
+    @if (showFilters) {
+      <div class="rock-explorer__filters" [formGroup]="filterForm">
+        <p-select
+          formControlName="potential"
+          [options]="potentialOptions"
+          [placeholder]="t('rockExplorer.fields.potential')"
+          [showClear]="true"
+        />
+        <p-select
+          formControlName="rockQuality"
+          [options]="rockQualityOptions"
+          [placeholder]="t('rockExplorer.fields.rockQuality')"
+          [showClear]="true"
+        />
+        <p-select
+          formControlName="rockType"
+          [options]="rockTypeOptions"
+          [placeholder]="t('rockExplorer.fields.rockType')"
+          [showClear]="true"
+        />
+        <p-button
+          [label]="t('rockExplorer.applyFilters')"
+          (onClick)="applyFilters()"
+          size="small"
+        />
+        <p-button
+          [label]="t('rockExplorer.clearFilters')"
+          (onClick)="clearFilters()"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+        />
+      </div>
+    }
+
+    <div #map class="rock-explorer__map"></div>
+
+    @if (panelOpen) {
+      <aside class="rock-explorer__panel">
+        @if (panelMode === "feature") {
+          <div [formGroup]="featureForm">
+            <header class="rock-explorer__panel-header">
+              <h2>
+                {{
+                  editingFeature?.id
+                    ? t("rockExplorer.editFeature")
+                    : t("rockExplorer.newFeature")
+                }}
+              </h2>
+              <p-button
+                icon="pi pi-times"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="closePanel()"
+              />
+            </header>
+
+            <label>
+              {{ t("rockExplorer.fields.title") }}
+              <input pInputText formControlName="title" />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.description") }}
+              <textarea
+                pTextarea
+                formControlName="description"
+                rows="3"
+              ></textarea>
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.potential") }}
+              <p-select
+                formControlName="potential"
+                [options]="potentialOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.rockQuality") }}
+              <p-select
+                formControlName="rockQuality"
+                [options]="rockQualityOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.rockType") }}
+              <p-select
+                formControlName="rockType"
+                [options]="rockTypeOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.gradeLineType") }}
+              <p-select
+                formControlName="gradeLineType"
+                [options]="lineTypeOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.gradeScale") }}
+              <input pInputText formControlName="gradeScale" />
+            </label>
+            <div class="rock-explorer__grade-row">
+              <label>
+                {{ t("rockExplorer.fields.gradeValueMin") }}
+                <input
+                  pInputText
+                  type="number"
+                  formControlName="gradeValueMin"
+                />
+              </label>
+              <label>
+                {{ t("rockExplorer.fields.gradeValueMax") }}
+                <input
+                  pInputText
+                  type="number"
+                  formControlName="gradeValueMax"
+                />
+              </label>
+            </div>
+            <label>
+              {{ t("rockExplorer.fields.accessIssues") }}
+              <p-multiSelect
+                formControlName="accessIssues"
+                [options]="accessIssueOptions"
+              />
+            </label>
+
+            <div class="rock-explorer__panel-actions">
+              <p-button
+                [label]="t('rockExplorer.save')"
+                (onClick)="saveFeature()"
+                [loading]="saving"
+              />
+              @if (editingFeature?.id) {
+                <p-button
+                  [label]="t('rockExplorer.delete')"
+                  severity="danger"
+                  [outlined]="true"
+                  (onClick)="confirmDelete()"
+                />
+              }
+            </div>
+          </div>
+        } @else {
+          <div [formGroup]="clusterForm">
+            <header class="rock-explorer__panel-header">
+              <h2>{{ t("rockExplorer.editCluster") }}</h2>
+              <p-button
+                icon="pi pi-times"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="closePanel()"
+              />
+            </header>
+
+            <label>
+              {{ t("rockExplorer.fields.title") }}
+              <input pInputText formControlName="title" />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.description") }}
+              <textarea
+                pTextarea
+                formControlName="description"
+                rows="3"
+              ></textarea>
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.potential") }}
+              <p-select
+                formControlName="potential"
+                [options]="potentialOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.rockQuality") }}
+              <p-select
+                formControlName="rockQuality"
+                [options]="rockQualityOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.rockType") }}
+              <p-select
+                formControlName="rockType"
+                [options]="rockTypeOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.gradeLineType") }}
+              <p-select
+                formControlName="gradeLineType"
+                [options]="lineTypeOptions"
+                [showClear]="true"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.gradeScale") }}
+              <input pInputText formControlName="gradeScale" />
+            </label>
+            <div class="rock-explorer__grade-row">
+              <label>
+                {{ t("rockExplorer.fields.gradeValueMin") }}
+                <input
+                  pInputText
+                  type="number"
+                  formControlName="gradeValueMin"
+                />
+              </label>
+              <label>
+                {{ t("rockExplorer.fields.gradeValueMax") }}
+                <input
+                  pInputText
+                  type="number"
+                  formControlName="gradeValueMax"
+                />
+              </label>
+            </div>
+            <label>
+              {{ t("rockExplorer.fields.accessIssues") }}
+              <p-multiSelect
+                formControlName="accessIssues"
+                [options]="accessIssueOptions"
+              />
+            </label>
+
+            <section class="rock-explorer__cluster-members">
+              <h3>{{ t("rockExplorer.clusterMembers") }}</h3>
+              @for (member of clusterMemberFeatures(); track member.id) {
+                <p-button
+                  [text]="true"
+                  [label]="member.title || t('rockExplorer.untitledFeature')"
+                  (onClick)="openEditPanel(member.id)"
+                  size="small"
+                />
+              } @empty {
+                <p class="rock-explorer__empty">
+                  {{ t("rockExplorer.noClusterMembers") }}
+                </p>
+              }
+            </section>
+
+            <div class="rock-explorer__panel-actions">
+              <p-button
+                [label]="t('rockExplorer.save')"
+                (onClick)="saveCluster()"
+                [loading]="saving"
+              />
+              <p-button
+                [label]="t('rockExplorer.deleteCluster')"
+                severity="danger"
+                [outlined]="true"
+                (onClick)="confirmDeleteCluster()"
+              />
+            </div>
+          </div>
+        }
+      </aside>
+    }
+  }
+</div>
