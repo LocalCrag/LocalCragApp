@@ -1,0 +1,27 @@
+.rock-explorer-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rock-explorer-gallery h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.rock-explorer-gallery__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rock-explorer-gallery__thumb {
+  position: relative;
+  width: 5rem;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--p-content-border-radius);
+  }
+}

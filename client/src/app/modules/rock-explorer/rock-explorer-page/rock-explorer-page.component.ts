@@ -53,6 +53,8 @@ import {
   computeClusterHulls,
   geometryToPositions,
 } from '../../../utility/rock-explorer-hull';
+import { RockExplorerCommentsComponent } from '../rock-explorer-comments/rock-explorer-comments.component';
+import { RockExplorerGalleryComponent } from '../rock-explorer-gallery/rock-explorer-gallery.component';
 
 type DrawMode = 'select' | 'multi-select' | 'point' | 'polygon';
 
@@ -68,6 +70,8 @@ type DrawMode = 'select' | 'multi-select' | 'point' | 'polygon';
     Toast,
     ConfirmDialog,
     TranslocoDirective,
+    RockExplorerCommentsComponent,
+    RockExplorerGalleryComponent,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './rock-explorer-page.component.html',
@@ -543,6 +547,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.openCreatePanel({ type: 'Polygon', coordinates: [ring] });
     this.polygonVertices = [];
     this.clearDraftLayer();
+  }
+
+  public onPanelImagesChanged(): void {
+    this.reloadFeatures(this.currentFilters());
   }
 
   private deleteFeature() {

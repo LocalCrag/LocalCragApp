@@ -59,5 +59,17 @@
   "rockExplorer.createClusterError": "Cluster kon niet worden aangemaakt",
   "rockExplorer.fields.cluster": "Cluster",
   "rockExplorer.noCluster": "Geen",
-  "rockExplorer.untitledCluster": "Naamloze cluster"
+  "rockExplorer.untitledCluster": "Naamloze cluster",
+  "rockExplorer.comments": "Reacties",
+  "rockExplorer.noComments": "Nog geen reacties",
+  "rockExplorer.images": "Afbeeldingen",
+  "rockExplorer.noImages": "Nog geen afbeeldingen",
+  "rockExplorer.addImage": "Afbeelding toevoegen",
+  "rockExplorer.loadMore": "Meer laden",
+  "rockExplorer.imageDeleteConfirm": "Deze afbeelding verwijderen?",
+  "rockExplorer.imageDeleteYes": "Ja, verwijderen",
+  "rockExplorer.imageDeleteNo": "Nee, behouden",
+  "rockExplorer.imageUploadSuccess": "Afbeelding toegevoegd",
+  "rockExplorer.imageUploadError": "Afbeelding kon niet worden toegevoegd",
+  "rockExplorer.imageDeleteError": "Afbeelding kon niet worden verwijderd"
 }

@@ -1,0 +1,57 @@
+<ng-container *transloco="let t">
+  <section class="rock-explorer-gallery">
+    <h3>{{ t("rockExplorer.images") }}</h3>
+    <div *isMember="true" [formGroup]="uploadForm" class="rock-explorer-gallery__upload">
+      <lc-single-image-upload formControlName="image"></lc-single-image-upload>
+      <p-button
+        [label]="t('rockExplorer.addImage')"
+        size="small"
+        [loading]="uploading"
+        [disabled]="!uploadForm.get('image')?.value"
+        (onClick)="uploadImage()"
+      />
+    </div>
+    <div class="rock-explorer-gallery__strip">
+      @for (image of images; track image.id) {
+        <div class="rock-explorer-gallery__thumb">
+          <p-image
+            [src]="image.image.thumbnailS"
+            [preview]="true"
+            [previewImageSrcSet]="image.image.srcSet"
+          >
+            <ng-template #indicator><i class="pi pi-eye"></i></ng-template>
+          </p-image>
+          @if (
+            image.createdBy?.id === loggedInUser?.id || loggedInUser?.moderator
+          ) {
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              size="small"
+              (onClick)="confirmDeleteImage($event, image)"
+            />
+          }
+        </div>
+      }
+      @if (loading === loadingStates.LOADING) {
+        <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+      }
+    </div>
+    @if (hasNextPage && loading !== loadingStates.LOADING && images.length > 0) {
+      <p-button
+        [label]="t('rockExplorer.loadMore')"
+        size="small"
+        [text]="true"
+        (onClick)="loadNextPage()"
+      />
+    }
+    @if (loading !== loadingStates.LOADING && images.length === 0) {
+      <p-message severity="info" icon="pi pi-info-circle">{{
+        t("rockExplorer.noImages")
+      }}</p-message>
+    }
+    <p-confirmpopup></p-confirmpopup>
+  </section>
+</ng-container>

@@ -1,0 +1,16 @@
+.rock-explorer-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rock-explorer-comments h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.rock-explorer-comments__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

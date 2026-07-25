@@ -252,6 +252,15 @@
               }
             </div>
           </div>
+          @if (editingFeature?.id) {
+            <lc-rock-explorer-gallery
+              [object]="editingFeature!"
+              (imagesChanged)="onPanelImagesChanged()"
+            ></lc-rock-explorer-gallery>
+            <lc-rock-explorer-comments
+              [object]="editingFeature!"
+            ></lc-rock-explorer-comments>
+          }
         } @else {
           <div [formGroup]="clusterForm">
             <header class="rock-explorer__panel-header">
@@ -368,6 +377,15 @@
               />
             </div>
           </div>
+          @if (editingCluster?.id) {
+            <lc-rock-explorer-gallery
+              [object]="editingCluster!"
+              (imagesChanged)="onPanelImagesChanged()"
+            ></lc-rock-explorer-gallery>
+            <lc-rock-explorer-comments
+              [object]="editingCluster!"
+            ></lc-rock-explorer-comments>
+          }
         }
       </aside>
     }

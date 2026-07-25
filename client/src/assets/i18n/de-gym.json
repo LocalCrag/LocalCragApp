@@ -59,5 +59,17 @@
   "rockExplorer.createClusterError": "Cluster konnte nicht erstellt werden",
   "rockExplorer.fields.cluster": "Cluster",
   "rockExplorer.noCluster": "Keiner",
-  "rockExplorer.untitledCluster": "Unbenannter Cluster"
+  "rockExplorer.untitledCluster": "Unbenannter Cluster",
+  "rockExplorer.comments": "Kommentare",
+  "rockExplorer.noComments": "Noch keine Kommentare",
+  "rockExplorer.images": "Bilder",
+  "rockExplorer.noImages": "Noch keine Bilder",
+  "rockExplorer.addImage": "Bild hinzufügen",
+  "rockExplorer.loadMore": "Mehr laden",
+  "rockExplorer.imageDeleteConfirm": "Dieses Bild löschen?",
+  "rockExplorer.imageDeleteYes": "Ja, löschen",
+  "rockExplorer.imageDeleteNo": "Nein, behalten",
+  "rockExplorer.imageUploadSuccess": "Bild hinzugefügt",
+  "rockExplorer.imageUploadError": "Bild konnte nicht hinzugefügt werden",
+  "rockExplorer.imageDeleteError": "Bild konnte nicht gelöscht werden"
 }
