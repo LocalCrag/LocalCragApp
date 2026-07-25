@@ -204,6 +204,7 @@ export class CragFormComponent implements OnInit {
       description: [null],
       shortDescription: [null],
       rules: [null],
+      rulesTitle: [null, [Validators.maxLength(255)]],
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
@@ -228,6 +229,7 @@ export class CragFormComponent implements OnInit {
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
       rules: this.crag.rules,
+      rulesTitle: this.crag.rulesTitle,
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
@@ -261,6 +263,7 @@ export class CragFormComponent implements OnInit {
       crag.description = this.cragForm.get('description').value;
       crag.shortDescription = this.cragForm.get('shortDescription').value;
       crag.rules = this.cragForm.get('rules').value;
+      crag.rulesTitle = this.cragForm.get('rulesTitle').value || null;
       crag.portraitImage = this.cragForm.get('portraitImage').value;
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;

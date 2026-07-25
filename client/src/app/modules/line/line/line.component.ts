@@ -38,6 +38,11 @@ import {
   PageTitleService,
   resolveTopoPageTitleImage,
 } from '../../../services/core/page-title.service';
+import {
+  RulesAlertService,
+  toRulesEntity,
+} from '../../../services/core/rules-alert.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-line',
@@ -68,6 +73,8 @@ export class LineComponent implements OnInit {
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
+  private rulesAlertService = inject(RulesAlertService);
+  private regionService = inject(RegionService);
 
   protected scalesService = inject(ScalesService);
 
@@ -118,12 +125,26 @@ export class LineComponent implements OnInit {
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),
+          this.regionService.getRegionCached(),
         ]).subscribe(
-          ([crag, sector, area, line, isModerator, instanceSettings]) => {
+          ([
+            crag,
+            sector,
+            area,
+            line,
+            isModerator,
+            instanceSettings,
+            region,
+          ]) => {
             this.crag = crag;
             this.sector = sector;
             this.area = area;
             this.line = line;
+            this.rulesAlertService.setContext([
+              toRulesEntity('Sector', sector),
+              toRulesEntity('Crag', crag),
+              toRulesEntity('Region', region),
+            ]);
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
               instanceSettings.bgImage,

@@ -14,6 +14,8 @@
   "sectorForm.sectorDescriptionPlaceholder": "General information about the sector",
   "sectorForm.sectorRulesLabel": "Rules",
   "sectorForm.sectorRulesPlaceholder": "Rules of the sector",
+  "sectorForm.sectorRulesTitleLabel": "Rules alert title",
+  "sectorForm.sectorRulesTitlePlaceholder": "Leave empty to not show an alert, e.g. \"Please read our rules\"",
   "sectorForm.sectorPortraitImageLabel": "Image",
   "sectorForm.blocweatherUrlLabel": "Blocweather URL",
   "sectorForm.blocweatherTooltip": "To display weather information for this sector on the details page, you can enter the URL for the relevant section on blocweather.com here.",

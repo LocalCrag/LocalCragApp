@@ -181,6 +181,24 @@
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="rulesTitle">{{
+          t("cragRulesTitleLabel")
+        }}</label>
+        <input
+          id="rulesTitle"
+          type="text"
+          pInputText
+          formControlName="rulesTitle"
+          placeholder="{{ t('cragRulesTitlePlaceholder') }}"
+          lcFormControl
+          data-cy="crag-form-rulesTitle"
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 255 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="portrait-image">{{
           t("cragPortraitImageLabel")
         }}</label>

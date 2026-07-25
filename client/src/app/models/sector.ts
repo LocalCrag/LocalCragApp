@@ -24,6 +24,8 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   shortDescription: string;
   portraitImage: File;
   rules: string;
+  rulesTitle: string | null;
+  rulesUpdatedAt: string | null;
   areas: Area[];
   crag: Crag | null;
   lineCount: number;
@@ -57,6 +59,8 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     sector.secret = payload.secret;
     sector.shortDescription = payload.shortDescription;
     sector.rules = payload.rules;
+    sector.rulesTitle = payload.rulesTitle ?? null;
+    sector.rulesUpdatedAt = payload.rulesUpdatedAt ?? null;
     sector.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
       : null;
@@ -95,6 +99,7 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         secret: sector.secret,
         portraitImage: sector.portraitImage ? sector.portraitImage.id : null,
         rules: sector.rules,
+        rulesTitle: sector.rulesTitle,
         mapMarkers: sector.mapMarkers
           ? sector.mapMarkers.map(MapMarker.serialize)
           : null,

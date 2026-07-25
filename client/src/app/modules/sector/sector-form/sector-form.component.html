@@ -186,6 +186,23 @@
           </p-editor>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="rulesTitle">{{
+            t("sectorRulesTitleLabel")
+          }}</label>
+          <input
+            id="rulesTitle"
+            type="text"
+            pInputText
+            formControlName="rulesTitle"
+            placeholder="{{ t('sectorRulesTitlePlaceholder') }}"
+            lcFormControl
+            data-cy="sector-form-rulesTitle"
+          />
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            "validation.maxLength" | transloco: { max: 255 }
+          }}</small>
+        </div>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="portrait-image">{{
             t("sectorPortraitImageLabel")
           }}</label>

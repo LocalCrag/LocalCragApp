@@ -235,6 +235,7 @@ export class SectorFormComponent implements OnInit {
       shortDescription: [null],
       portraitImage: [null],
       rules: [null],
+      rulesTitle: [null, [Validators.maxLength(255)]],
       secret: [false],
       mapMarkers: [[]],
       defaultBoulderScale: [null],
@@ -259,6 +260,7 @@ export class SectorFormComponent implements OnInit {
       shortDescription: this.sector.shortDescription,
       portraitImage: this.sector.portraitImage,
       rules: this.sector.rules,
+      rulesTitle: this.sector.rulesTitle,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
       defaultBoulderScale: this.sector.defaultBoulderScale,
@@ -291,6 +293,7 @@ export class SectorFormComponent implements OnInit {
       sector.description = this.sectorForm.get('description').value;
       sector.shortDescription = this.sectorForm.get('shortDescription').value;
       sector.rules = this.sectorForm.get('rules').value;
+      sector.rulesTitle = this.sectorForm.get('rulesTitle').value || null;
       sector.portraitImage = this.sectorForm.get('portraitImage').value;
       sector.secret = this.sectorForm.get('secret').value;
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;

@@ -5,6 +5,7 @@ import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 
 /**
  * Component that displays sector rules.
@@ -21,6 +22,7 @@ export class SectorRulesComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private sectorsService = inject(SectorsService);
+  private rulesAlertService = inject(RulesAlertService);
 
   ngOnInit() {
     const sectorSlug =
@@ -29,7 +31,9 @@ export class SectorRulesComponent implements OnInit {
       this.sector = sector;
       if (!this.sector.rules) {
         this.router.navigate(['../'], { relativeTo: this.route });
+        return;
       }
+      this.rulesAlertService.markEntityRead('Sector', this.sector.id);
     });
   }
 }

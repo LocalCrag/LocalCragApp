@@ -26,6 +26,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import {
+  RulesAlertService,
+  toRulesEntity,
+} from '../../../services/core/rules-alert.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-sector',
@@ -52,6 +57,8 @@ export class SectorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
+  private rulesAlertService = inject(RulesAlertService);
+  private regionService = inject(RegionService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -83,6 +90,7 @@ export class SectorComponent implements OnInit {
           this.store.pipe(select(selectIsModerator), take(1)),
           this.store.pipe(select(selectGymMode), take(1)),
           this.store.pipe(select(selectBgImage), take(1)),
+          this.regionService.getRegionCached(),
         ]).subscribe(
           ([
             crag,
@@ -91,6 +99,7 @@ export class SectorComponent implements OnInit {
             isModerator,
             isGymMode,
             bgImage,
+            region,
           ]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
@@ -100,6 +109,11 @@ export class SectorComponent implements OnInit {
               sector.portraitImage,
               bgImage,
             );
+            this.rulesAlertService.setContext([
+              toRulesEntity('Sector', sector),
+              toRulesEntity('Crag', crag),
+              toRulesEntity('Region', region),
+            ]);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

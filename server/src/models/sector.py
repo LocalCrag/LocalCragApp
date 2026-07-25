@@ -37,6 +37,8 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEnt
         "Area", cascade="all,delete", backref="sector", lazy="select", order_by="Area.order_index.asc()"
     )
     rules = db.Column(db.Text, nullable=True)
+    rules_title = db.Column(db.String(255), nullable=True)
+    rules_updated_at = db.Column(db.DateTime(), nullable=True)
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     crag_slug = association_proxy("crag", "slug")
     map_markers = db.relationship("MapMarker", back_populates="sector")

@@ -15,6 +15,8 @@
   "cragForm.cragDescriptionPlaceholder": "Allgemeine Infos zum Gebiet...",
   "cragForm.cragRulesLabel": "Regeln",
   "cragForm.cragRulesPlaceholder": "Verhaltensregeln und Ähnliches...",
+  "cragForm.cragRulesTitleLabel": "Titel des Regel-Hinweises",
+  "cragForm.cragRulesTitlePlaceholder": "Leer lassen, um keinen Hinweis anzuzeigen, z.B. \"Bitte unsere Regeln beachten\"",
   "cragForm.cragPortraitImageLabel": "Bild",
   "cragForm.blocweatherUrlLabel": "BlocWeather URL",
   "cragForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Gebiet auf der Detailseite, kannst Du hier die URL zum entsprechenden Gebiet auf blocweather.com hinterlegen.",

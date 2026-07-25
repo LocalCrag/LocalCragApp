@@ -7,6 +7,7 @@ import { CragsService } from '../../../services/crud/crags.service';
 
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 
 /**
  * Component that shows the rules of a crag.
@@ -24,6 +25,7 @@ export class CragRulesComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cragsService = inject(CragsService);
+  private rulesAlertService = inject(RulesAlertService);
 
   ngOnInit() {
     this.route.parent.parent.paramMap
@@ -35,7 +37,9 @@ export class CragRulesComponent implements OnInit {
           this.crag = crag;
           if (!this.crag.rules) {
             this.router.navigate(['../'], { relativeTo: this.route });
+            return;
           }
+          this.rulesAlertService.markEntityRead('Crag', this.crag.id);
         });
       });
   }

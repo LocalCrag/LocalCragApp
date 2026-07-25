@@ -1,4 +1,7 @@
-from flask import jsonify
+import datetime
+
+import pytz
+from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
@@ -11,8 +14,10 @@ from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
 )
+from models.rules_read_status import RulesReadStatus
 from models.user import User
 from webargs_schemas.account_settings_args import account_settings_args
+from webargs_schemas.rules_read_status_args import mark_rules_read_args
 
 
 class DeleteOwnUser(MethodView):
@@ -56,3 +61,59 @@ class UpdateAccountSettings(MethodView):
         db.session.add(settings)
         db.session.commit()
         return account_settings_schema.dump(settings), 200
+
+
+class GetRulesReadStatus(MethodView):
+
+    @jwt_required()
+    def get(self):
+        """
+        Returns the caller's rules read-status rows.
+        """
+        user = User.find_by_email(get_jwt_identity())
+        rows = RulesReadStatus.query.filter_by(user_id=user.id).all()
+        return (
+            jsonify(
+                [
+                    {
+                        "entityType": row.entity_type,
+                        "entityId": str(row.entity_id),
+                        "readAt": row.read_at.isoformat(),
+                    }
+                    for row in rows
+                ]
+            ),
+            200,
+        )
+
+
+class MarkRulesRead(MethodView):
+
+    @jwt_required()
+    def post(self):
+        """
+        Marks a topo entity's rules as read for the current user (upsert).
+        """
+        user = User.find_by_email(get_jwt_identity())
+        data = parser.parse(mark_rules_read_args, request)
+        entity_type = data["entityType"]
+        entity_id = data["entityId"]
+
+        existing = RulesReadStatus.query.filter_by(
+            user_id=user.id,
+            entity_type=entity_type,
+            entity_id=entity_id,
+        ).first()
+        now = datetime.datetime.now(pytz.utc)
+        if existing:
+            existing.read_at = now
+            db.session.add(existing)
+        else:
+            row = RulesReadStatus()
+            row.user_id = user.id
+            row.entity_type = entity_type
+            row.entity_id = entity_id
+            row.read_at = now
+            db.session.add(row)
+        db.session.commit()
+        return jsonify(None), 204

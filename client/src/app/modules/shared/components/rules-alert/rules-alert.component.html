@@ -1,0 +1,58 @@
+<ng-container *transloco="let t; read: 'rulesAlert'">
+  @if (rulesAlertService.state$ | async; as state) {
+    @if (showAlert(state)) {
+      <div class="rules-alert" data-cy="rules-alert">
+        <div class="rules-alert__text">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ state.title }}</span>
+        </div>
+        <div class="rules-alert__actions">
+          <p-button
+            [label]="t('readMoreButton')"
+            styleClass="p-button-text"
+            (onClick)="readMore(state)"
+            data-cy="rules-alert-read-more"
+          ></p-button>
+          <p-button
+            [label]="t('readButton')"
+            styleClass="p-button-text"
+            (onClick)="read()"
+            data-cy="rules-alert-read"
+          ></p-button>
+        </div>
+      </div>
+    }
+
+    <!-- Keep the dialog outside showAlert so marking read (which hides the
+         alert) does not destroy the dialog mid-open. -->
+    <p-dialog
+      [header]="t('dialogTitle')"
+      [modal]="true"
+      [(visible)]="dialogOpen"
+      [dismissableMask]="true"
+      styleClass="rules-alert-dialog"
+    >
+      @for (section of dialogSections; track $index) {
+        <div class="rules-alert-dialog__section">
+          <h3>
+            {{ t(section.level + "Rules") }}
+            @if (section.title) {
+              &mdash; {{ section.title }}
+            }
+          </h3>
+          <div
+            [innerHTML]="section.rules | sanitizeHtml"
+            class="quill-content"
+          ></div>
+        </div>
+      }
+      <ng-template #footer>
+        <p-button
+          [label]="t('confirmReadButton')"
+          (onClick)="confirmRead()"
+          data-cy="rules-alert-confirm-read"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+  }
+</ng-container>

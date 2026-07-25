@@ -87,6 +87,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
+        "rulesTitle": None,
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -134,6 +135,7 @@ def test_remove_closure_schedule_from_crag(client, moderator_token, any_file):
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
+        "rulesTitle": None,
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -177,6 +179,7 @@ def test_secret_property_doesnt_change(client, moderator_token, any_file):
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
+        "rulesTitle": None,
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -394,6 +397,7 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
+        "rulesTitle": None,
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {

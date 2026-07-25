@@ -5,6 +5,7 @@ import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 
 /**
  * Component that displays region rules.
@@ -21,6 +22,7 @@ export class RegionRulesComponent implements OnInit {
   private regionsService = inject(RegionService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private rulesAlertService = inject(RulesAlertService);
 
   ngOnInit() {
     this.region = null;
@@ -28,7 +30,9 @@ export class RegionRulesComponent implements OnInit {
       this.region = region;
       if (!this.region.rules) {
         this.router.navigate(['../'], { relativeTo: this.route });
+        return;
       }
+      this.rulesAlertService.markEntityRead('Region', this.region.id);
     });
   }
 }

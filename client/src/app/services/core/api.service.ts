@@ -41,6 +41,9 @@ export class ApiService {
       `${this.apiHost}account/notifications/dismiss-all`,
     releaseNoteBundle: (bundleId: string): string =>
       `${this.apiHost}account/release-notes/${bundleId}`,
+    getRulesReadStatus: (): string =>
+      `${this.apiHost}account/rules-read-status`,
+    markRulesRead: (): string => `${this.apiHost}account/rules-read-status`,
   };
 
   public statistics = {
