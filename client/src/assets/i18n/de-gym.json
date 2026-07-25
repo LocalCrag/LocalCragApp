@@ -50,5 +50,14 @@
   "rockExplorer.clusterSaveError": "Cluster konnte nicht gespeichert werden",
   "rockExplorer.clusterDeleteSuccess": "Cluster gelöscht",
   "rockExplorer.clusterDeleteError": "Cluster konnte nicht gelöscht werden",
-  "rockExplorer.clusterLoadError": "Cluster konnte nicht geladen werden"
+  "rockExplorer.clusterLoadError": "Cluster konnte nicht geladen werden",
+  "rockExplorer.modeMultiSelect": "Mehrfachauswahl",
+  "rockExplorer.selectedCount": "{{count}} ausgewählt",
+  "rockExplorer.createCluster": "Cluster erstellen",
+  "rockExplorer.clearSelection": "Auswahl löschen",
+  "rockExplorer.createClusterSuccess": "Cluster erstellt",
+  "rockExplorer.createClusterError": "Cluster konnte nicht erstellt werden",
+  "rockExplorer.fields.cluster": "Cluster",
+  "rockExplorer.noCluster": "Keiner",
+  "rockExplorer.untitledCluster": "Unbenannter Cluster"
 }

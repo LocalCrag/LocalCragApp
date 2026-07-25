@@ -32,6 +32,35 @@
         (onClick)="setDrawMode('polygon')"
         size="small"
       />
+      <p-button
+        icon="pi pi-check-square"
+        [label]="t('rockExplorer.modeMultiSelect')"
+        (onClick)="setDrawMode('multi-select')"
+        [outlined]="drawMode !== 'multi-select'"
+        size="small"
+      />
+      @if (drawMode === "multi-select") {
+        <span class="rock-explorer__selection-count">{{
+          t("rockExplorer.selectedCount", { count: selectedFeatureIds.size })
+        }}</span>
+        <p-button
+          icon="pi pi-objects-column"
+          [label]="t('rockExplorer.createCluster')"
+          size="small"
+          severity="success"
+          [disabled]="selectedFeatureIds.size === 0"
+          [loading]="creatingCluster"
+          (onClick)="createClusterFromSelection()"
+        />
+        <p-button
+          [label]="t('rockExplorer.clearSelection')"
+          size="small"
+          severity="secondary"
+          [outlined]="true"
+          [disabled]="selectedFeatureIds.size === 0"
+          (onClick)="clearSelection()"
+        />
+      }
       @if (drawMode === "polygon") {
         <p-button
           icon="pi pi-check"
@@ -194,6 +223,16 @@
               <p-multiSelect
                 formControlName="accessIssues"
                 [options]="accessIssueOptions"
+              />
+            </label>
+            <label>
+              {{ t("rockExplorer.fields.cluster") }}
+              <p-select
+                formControlName="clusterId"
+                [options]="clusterSelectOptions()"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="t('rockExplorer.noCluster')"
               />
             </label>
 

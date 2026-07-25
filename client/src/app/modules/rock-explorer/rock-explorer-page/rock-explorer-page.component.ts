@@ -22,6 +22,7 @@ import {
   Feature,
   FeatureCollection,
   Geometry,
+  Point,
   Polygon,
   Position,
 } from 'geojson';
@@ -37,7 +38,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
 import { forkJoin } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
@@ -48,9 +49,12 @@ import { RockExplorerRockQuality } from '../../../enums/rock-explorer-rock-quali
 import { RockExplorerRockType } from '../../../enums/rock-explorer-rock-type';
 import { RockExplorerAccessIssue } from '../../../enums/rock-explorer-access-issue';
 import { LineType } from '../../../enums/line-type';
-import { computeClusterHulls } from '../../../utility/rock-explorer-hull';
+import {
+  computeClusterHulls,
+  geometryToPositions,
+} from '../../../utility/rock-explorer-hull';
 
-type DrawMode = 'select' | 'point' | 'polygon';
+type DrawMode = 'select' | 'multi-select' | 'point' | 'polygon';
 
 @Component({
   selector: 'lc-rock-explorer-page',
@@ -82,6 +86,8 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   public loading = true;
   public noApiKey = false;
   public clusters: RockExplorerCluster[] = [];
+  public selectedFeatureIds = new Set<string>();
+  public creatingCluster = false;
 
   public potentialOptions = Object.values(RockExplorerPotential);
   public rockQualityOptions = Object.values(RockExplorerRockQuality);
@@ -113,6 +119,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     gradeValueMin: [null as number | null],
     gradeValueMax: [null as number | null],
     accessIssues: [[] as string[]],
+    clusterId: [null as string | null],
   });
 
   public clusterForm = inject(FormBuilder).group({
@@ -138,6 +145,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     features: [],
   };
   private clusterHulls: FeatureCollection<Polygon> = {
+    type: 'FeatureCollection',
+    features: [],
+  };
+  private imageBadges: FeatureCollection<Point> = {
     type: 'FeatureCollection',
     features: [],
   };
@@ -188,12 +199,104 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   public setDrawMode(mode: DrawMode) {
+    if (this.drawMode === 'multi-select' && mode !== 'multi-select') {
+      this.clearSelection();
+    }
     this.drawMode = mode;
     this.polygonVertices = [];
     this.clearDraftLayer();
     if (mode !== 'select') {
       this.closePanel();
     }
+  }
+
+  public clearSelection() {
+    this.selectedFeatureIds.clear();
+    this.applySelectionFilters();
+  }
+
+  public toggleSelection(id: string) {
+    if (this.selectedFeatureIds.has(id)) {
+      this.selectedFeatureIds.delete(id);
+    } else {
+      this.selectedFeatureIds.add(id);
+    }
+    this.applySelectionFilters();
+    this.cdr.detectChanges();
+  }
+
+  public createClusterFromSelection() {
+    const ids = [...this.selectedFeatureIds];
+    if (ids.length === 0) {
+      return;
+    }
+    this.creatingCluster = true;
+    this.rockExplorerService
+      .createCluster(new RockExplorerCluster())
+      .pipe(
+        switchMap((created) =>
+          forkJoin(
+            ids.map((id) => this.rockExplorerService.getFeature(id)),
+          ).pipe(
+            switchMap((features) =>
+              forkJoin(
+                features.map((feature) => {
+                  feature.clusterId = created.id;
+                  return this.rockExplorerService.updateFeature(feature);
+                }),
+              ),
+            ),
+            map(() => created),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (created) => {
+          this.creatingCluster = false;
+          this.clearSelection();
+          this.setDrawMode('select');
+          this.reloadFeatures(this.currentFilters());
+          this.rockExplorerService
+            .getClusters()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((clusters) => {
+              this.clusters = clusters;
+              this.cdr.detectChanges();
+            });
+          this.openClusterPanel(created.id);
+          this.messageService.add({
+            severity: 'success',
+            summary: this.transloco.translate(
+              marker('rockExplorer.createClusterSuccess'),
+            ),
+          });
+        },
+        error: () => {
+          this.creatingCluster = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: this.transloco.translate(
+              marker('rockExplorer.createClusterError'),
+            ),
+          });
+        },
+      });
+  }
+
+  public clusterSelectOptions(): { label: string; value: string | null }[] {
+    return [
+      {
+        label: this.transloco.translate(marker('rockExplorer.noCluster')),
+        value: null,
+      },
+      ...this.clusters.map((cluster) => ({
+        label:
+          cluster.title ||
+          this.transloco.translate(marker('rockExplorer.untitledCluster')),
+        value: cluster.id,
+      })),
+    ];
   }
 
   public toggleFilters() {
@@ -252,7 +355,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       []) as RockExplorerAccessIssue[];
     feature.geometry = (this.draftGeometry ||
       this.editingFeature!.geometry) as Geometry;
-    feature.clusterId = feature.clusterId ?? null;
+    feature.clusterId = raw.clusterId ?? null;
     feature.cragId = feature.cragId ?? null;
     feature.sectorId = feature.sectorId ?? null;
     feature.areaId = feature.areaId ?? null;
@@ -416,6 +519,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       gradeValueMin: null,
       gradeValueMax: null,
       accessIssues: [],
+      clusterId: null,
     });
     this.clusterForm.reset({
       title: '',
@@ -537,14 +641,28 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       this.map!.on('click', 'rock-explorer-points', (event) => {
         event.originalEvent.stopPropagation();
         const id = event.features?.[0]?.properties?.['id'];
-        if (id && this.drawMode === 'select') {
+        if (!id) {
+          return;
+        }
+        if (this.drawMode === 'multi-select') {
+          this.toggleSelection(String(id));
+          return;
+        }
+        if (this.drawMode === 'select') {
           this.openEditPanel(String(id));
         }
       });
       this.map!.on('click', 'rock-explorer-polygons-fill', (event) => {
         event.originalEvent.stopPropagation();
         const id = event.features?.[0]?.properties?.['id'];
-        if (id && this.drawMode === 'select') {
+        if (!id) {
+          return;
+        }
+        if (this.drawMode === 'multi-select') {
+          this.toggleSelection(String(id));
+          return;
+        }
+        if (this.drawMode === 'select') {
           this.openEditPanel(String(id));
         }
       });
@@ -602,6 +720,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       gradeValueMin: null,
       gradeValueMax: null,
       accessIssues: [],
+      clusterId: null,
     });
     this.panelOpen = true;
     this.cdr.detectChanges();
@@ -627,6 +746,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
           gradeValueMin: feature.gradeValueMin,
           gradeValueMax: feature.gradeValueMax,
           accessIssues: feature.accessIssues ?? [],
+          clusterId: feature.clusterId,
         });
         this.panelOpen = true;
         this.cdr.detectChanges();
@@ -760,6 +880,107 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         },
       });
     }
+    if (!this.map.getLayer('rock-explorer-selected-points')) {
+      this.map.addLayer({
+        id: 'rock-explorer-selected-points',
+        type: 'circle',
+        source: 'rock-explorer-features',
+        filter: [
+          'all',
+          ['==', ['geometry-type'], 'Point'],
+          ['in', ['get', 'id'], ['literal', []]],
+        ],
+        paint: {
+          'circle-radius': 11,
+          'circle-color': 'rgba(0,0,0,0)',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#2563eb',
+        },
+      });
+      this.map.addLayer({
+        id: 'rock-explorer-selected-polygons',
+        type: 'line',
+        source: 'rock-explorer-features',
+        filter: [
+          'all',
+          ['==', ['geometry-type'], 'Polygon'],
+          ['in', ['get', 'id'], ['literal', []]],
+        ],
+        paint: { 'line-color': '#2563eb', 'line-width': 4 },
+      });
+    }
+    if (!this.map.getSource('rock-explorer-image-badges')) {
+      this.map.addSource('rock-explorer-image-badges', {
+        type: 'geojson',
+        data: this.imageBadges,
+      });
+    }
+    if (!this.map.getLayer('rock-explorer-image-badges')) {
+      this.map.addLayer({
+        id: 'rock-explorer-image-badges',
+        type: 'circle',
+        source: 'rock-explorer-image-badges',
+        paint: {
+          'circle-radius': 4,
+          'circle-color': '#ffffff',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#2563eb',
+          'circle-translate': [9, -9],
+        },
+      });
+    }
+    this.applySelectionFilters();
+  }
+
+  private applySelectionFilters() {
+    const idLiteral: ['literal', string[]] = [
+      'literal',
+      [...this.selectedFeatureIds],
+    ];
+    for (const layerId of [
+      'rock-explorer-selected-points',
+      'rock-explorer-selected-polygons',
+    ]) {
+      if (this.map?.getLayer(layerId)) {
+        this.map.setFilter(layerId, [
+          'all',
+          [
+            '==',
+            ['geometry-type'],
+            layerId === 'rock-explorer-selected-points' ? 'Point' : 'Polygon',
+          ],
+          ['in', ['get', 'id'], idLiteral],
+        ]);
+      }
+    }
+  }
+
+  private computeImageBadgeAnchors(
+    collection: FeatureCollection<Geometry>,
+  ): FeatureCollection<Point> {
+    const features: Feature<Point>[] = [];
+    for (const feature of collection.features) {
+      if (feature.properties?.['hasImages'] !== true) {
+        continue;
+      }
+      const positions = geometryToPositions(feature.geometry);
+      if (positions.length === 0) {
+        continue;
+      }
+      const anchor: Position =
+        feature.geometry.type === 'Point'
+          ? positions[0]
+          : [
+              positions.reduce((sum, p) => sum + p[0], 0) / positions.length,
+              positions.reduce((sum, p) => sum + p[1], 0) / positions.length,
+            ];
+      features.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: anchor },
+        properties: { id: feature.properties['id'] },
+      });
+    }
+    return { type: 'FeatureCollection', features };
   }
 
   private setFeatureData(collection: FeatureCollection<Geometry>) {
@@ -773,6 +994,12 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         | GeoJSONSource
         | undefined
     )?.setData(this.clusterHulls);
+    this.imageBadges = this.computeImageBadgeAnchors(collection);
+    (
+      this.map?.getSource('rock-explorer-image-badges') as
+        | GeoJSONSource
+        | undefined
+    )?.setData(this.imageBadges);
   }
 
   private fitToFeatures() {

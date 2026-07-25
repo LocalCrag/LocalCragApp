@@ -1075,5 +1075,14 @@
   "rockExplorer.clusterSaveError": "Salvataggio del cluster non riuscito",
   "rockExplorer.clusterDeleteSuccess": "Cluster eliminato",
   "rockExplorer.clusterDeleteError": "Eliminazione del cluster non riuscita",
-  "rockExplorer.clusterLoadError": "Caricamento del cluster non riuscito"
+  "rockExplorer.clusterLoadError": "Caricamento del cluster non riuscito",
+  "rockExplorer.modeMultiSelect": "Selezione multipla",
+  "rockExplorer.selectedCount": "{{count}} selezionati",
+  "rockExplorer.createCluster": "Crea cluster",
+  "rockExplorer.clearSelection": "Cancella selezione",
+  "rockExplorer.createClusterSuccess": "Cluster creato",
+  "rockExplorer.createClusterError": "Impossibile creare il cluster",
+  "rockExplorer.fields.cluster": "Cluster",
+  "rockExplorer.noCluster": "Nessuno",
+  "rockExplorer.untitledCluster": "Cluster senza titolo"
 }

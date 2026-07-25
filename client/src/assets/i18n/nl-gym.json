@@ -50,5 +50,14 @@
   "rockExplorer.clusterSaveError": "Cluster kon niet worden opgeslagen",
   "rockExplorer.clusterDeleteSuccess": "Cluster verwijderd",
   "rockExplorer.clusterDeleteError": "Cluster kon niet worden verwijderd",
-  "rockExplorer.clusterLoadError": "Cluster kon niet worden geladen"
+  "rockExplorer.clusterLoadError": "Cluster kon niet worden geladen",
+  "rockExplorer.modeMultiSelect": "Meervoudige selectie",
+  "rockExplorer.selectedCount": "{{count}} geselecteerd",
+  "rockExplorer.createCluster": "Cluster aanmaken",
+  "rockExplorer.clearSelection": "Selectie wissen",
+  "rockExplorer.createClusterSuccess": "Cluster aangemaakt",
+  "rockExplorer.createClusterError": "Cluster kon niet worden aangemaakt",
+  "rockExplorer.fields.cluster": "Cluster",
+  "rockExplorer.noCluster": "Geen",
+  "rockExplorer.untitledCluster": "Naamloze cluster"
 }

@@ -42,6 +42,12 @@
   margin-left: auto;
 }
 
+.rock-explorer__selection-count {
+  font-size: 0.875rem;
+  padding: 0 0.25rem;
+  color: var(--p-text-color);
+}
+
 .rock-explorer__filters {
   position: absolute;
   z-index: 2;
