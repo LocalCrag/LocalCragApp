@@ -4,6 +4,7 @@ import uuid
 import pytz
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy_utils import generic_relationship
 
 from extensions import db
 
@@ -22,6 +23,7 @@ class RulesReadStatus(db.Model):
 
     entity_type = db.Column(db.String(50), nullable=False)
     entity_id = db.Column(UUID(), nullable=False)
+    object = generic_relationship(entity_type, entity_id)
 
     read_at = db.Column(db.DateTime(), default=lambda: datetime.datetime.now(pytz.utc), nullable=False)
     acknowledged_rules_updated_at = db.Column(db.DateTime(), nullable=True)

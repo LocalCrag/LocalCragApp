@@ -40,6 +40,9 @@ export const topoSectorRoutes: Routes = [
             (m) => m.SectorRulesComponent,
           ),
         'sectorContent',
+        {
+          data: { rulesAlertLevel: 'sector' },
+        },
       ),
       outletRoute('lines', LineListComponent, 'sectorContent'),
       lazyOutletRoute('gallery', loadGalleryComponent, 'sectorContent', {

@@ -186,9 +186,14 @@
           </p-editor>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="rulesTitle">{{
-            t("sectorRulesTitleLabel")
-          }}</label>
+          <div class="form-label flex items-center">
+            <label for="rulesTitle">{{ t("sectorRulesTitleLabel") }}</label>
+            <span
+              class="pi pi-question-circle ml-2"
+              [pTooltip]="t('sectorRulesTitleTooltip')"
+              tooltipPosition="right"
+            ></span>
+          </div>
           <input
             id="rulesTitle"
             type="text"

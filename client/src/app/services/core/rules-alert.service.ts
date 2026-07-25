@@ -6,8 +6,8 @@ import {
   Router,
   RoutesRecognized,
 } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   RulesEntityType,
@@ -30,32 +30,36 @@ export interface RulesEntity {
 
 export type RulesAlertLevel = 'sector' | 'crag' | 'region';
 
-export interface RulesAlertSection {
+/** One dismissible rules alert for a single emphasized entity. */
+export interface RulesAlertItem {
+  entityType: RulesEntityType;
+  entityId: string;
   level: RulesAlertLevel;
-  title: string;
+  alertTitle: string;
+  entityName: string;
   rules: string;
   updatedAt: string | null;
   updatedSinceLastView: boolean;
 }
 
 export interface RulesAlertState {
-  visible: boolean;
-  title: string | null;
-  updatedSinceLastView: boolean;
-  rulesSections: RulesAlertSection[];
+  alerts: RulesAlertItem[];
 }
 
 const initialState: RulesAlertState = {
-  visible: false,
-  title: null,
-  updatedSinceLastView: false,
-  rulesSections: [],
+  alerts: [],
 };
 
 const LEVEL_BY_ENTITY_TYPE: Record<RulesEntityType, RulesAlertLevel> = {
   Sector: 'sector',
   Crag: 'crag',
   Region: 'region',
+};
+
+const LEVEL_ORDER: Record<RulesAlertLevel, number> = {
+  sector: 0,
+  crag: 1,
+  region: 2,
 };
 
 /** Minimal shape shared by the Region/Crag/Sector models for `toRulesEntity`. */
@@ -84,9 +88,9 @@ export function toRulesEntity(
 
 /**
  * Computes rules-alert visibility/content from an ancestor chain of topo
- * entities (region/crag/sector). Mirrors `PageTitleService`'s
- * BehaviorSubject + clear-on-page-host-change pattern so stale context never
- * leaks between unrelated pages.
+ * entities (region/crag/sector). Each emphasized unread ancestor gets its own
+ * alert. Mirrors `PageTitleService`'s BehaviorSubject + clear-on-page-host-
+ * change pattern so stale context never leaks between unrelated pages.
  */
 @Injectable({
   providedIn: 'root',
@@ -140,11 +144,8 @@ export class RulesAlertService {
 
   /**
    * Sets the ancestor chain for the current page, nearest entity first (e.g.
-   * a line passes `[sector, crag, region]`). Uses the nearest ancestor with a
-   * non-empty `rulesTitle` for the alert title, dialog body, and read-status.
-   * No-ops if the same ancestor chain (ids + titles + timestamps) was already
-   * set, so re-showing on every navigation within the same entity set is
-   * avoided.
+   * a line passes `[sector, crag, region]`). Builds one alert per emphasized
+   * (non-empty `rulesTitle`) unread ancestor.
    */
   setContext(entities: RulesEntity[]): void {
     const withRules = entities.filter((entity) => !!entity.rules);
@@ -160,71 +161,76 @@ export class RulesAlertService {
     }
     this.lastContextKey = contextKey;
 
-    // Nearest-first order is preserved by the caller; first with a title wins.
-    const nearest = withRules.find((entity) => !!entity.rulesTitle) ?? null;
-    this.emphasizedEntities = nearest ? [nearest] : [];
+    const emphasized = withRules.filter((entity) => !!entity.rulesTitle);
+    this.emphasizedEntities = emphasized;
 
-    if (!nearest) {
-      this.stateSubject.next({
-        visible: false,
-        title: null,
-        updatedSinceLastView: false,
-        rulesSections: [],
-      });
+    if (!emphasized.length) {
+      this.stateSubject.next({ alerts: [] });
       return;
     }
 
-    const title = nearest.rulesTitle;
+    forkJoin(
+      emphasized.map((entity) =>
+        this.rulesReadStatusService
+          .getStatus(entity.entityType, entity.id)
+          .pipe(map((status) => ({ entity, status }))),
+      ),
+    ).subscribe((results) => {
+      if (contextKey !== this.lastContextKey) {
+        return;
+      }
+      const alerts: RulesAlertItem[] = results
+        .filter(({ entity, status }) =>
+          isRulesUnread(status?.acknowledgedUpdatedAt, entity.rulesUpdatedAt),
+        )
+        .map(({ entity, status }) => ({
+          entityType: entity.entityType,
+          entityId: entity.id,
+          level: LEVEL_BY_ENTITY_TYPE[entity.entityType],
+          alertTitle: entity.rulesTitle as string,
+          entityName: entity.name,
+          rules: entity.rules as string,
+          updatedAt: entity.rulesUpdatedAt,
+          updatedSinceLastView: isRulesUpdatedSinceLastView(
+            status?.acknowledgedUpdatedAt,
+            entity.rulesUpdatedAt,
+          ),
+        }))
+        .sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
 
-    this.rulesReadStatusService
-      .getStatus(nearest.entityType, nearest.id)
-      .subscribe((status) => {
-        // Guard against a stale response landing after the context moved on.
-        if (contextKey !== this.lastContextKey) {
-          return;
-        }
-        const acknowledgedUpdatedAt = status?.acknowledgedUpdatedAt ?? null;
-        const updatedSinceLastView = isRulesUpdatedSinceLastView(
-          acknowledgedUpdatedAt,
-          nearest.rulesUpdatedAt,
-        );
-        this.stateSubject.next({
-          visible: isRulesUnread(acknowledgedUpdatedAt, nearest.rulesUpdatedAt),
-          title,
-          updatedSinceLastView,
-          rulesSections: [
-            {
-              level: LEVEL_BY_ENTITY_TYPE[nearest.entityType],
-              title: nearest.name,
-              rules: nearest.rules as string,
-              updatedAt: nearest.rulesUpdatedAt,
-              updatedSinceLastView,
-            },
-          ],
-        });
-      });
+      this.stateSubject.next({ alerts });
+    });
   }
 
-  /** Marks the nearest emphasized ancestor as read and hides the alert. */
-  markRead(): void {
-    if (!this.emphasizedEntities.length) {
+  /** Marks one emphasized entity as read and removes its alert. */
+  markRead(entityType: RulesEntityType, entityId: string): void {
+    const entity = this.emphasizedEntities.find(
+      (item) => item.entityType === entityType && item.id === entityId,
+    );
+    if (!entity) {
       return;
     }
-    const refs = this.emphasizedEntities.map((entity) => ({
-      entityType: entity.entityType,
-      entityId: entity.id,
-      acknowledgedUpdatedAt: entity.rulesUpdatedAt,
-    }));
-    // Allow a later setContext with the same ancestor chain to re-read status
-    // from the updated cache/localStorage instead of no-op'ing.
     this.lastContextKey = null;
-    this.rulesReadStatusService.markRead(refs).subscribe();
-    this.patch({ visible: false, updatedSinceLastView: false });
+    this.rulesReadStatusService
+      .markRead([
+        {
+          entityType,
+          entityId,
+          acknowledgedUpdatedAt: entity.rulesUpdatedAt,
+        },
+      ])
+      .subscribe();
+    this.stateSubject.next({
+      alerts: this.stateSubject.value.alerts.filter(
+        (alert) =>
+          !(alert.entityType === entityType && alert.entityId === entityId),
+      ),
+    });
   }
 
   /**
    * Marks a specific entity's rules as read (e.g. when its rules tab is
-   * opened). Hides the alert when that entity is the one currently driving it.
+   * opened). Removes that entity's alert if present.
    */
   markEntityRead(
     entityType: RulesEntityType,
@@ -234,26 +240,18 @@ export class RulesAlertService {
     this.rulesReadStatusService
       .markRead([{ entityType, entityId, acknowledgedUpdatedAt }])
       .subscribe();
-    if (
-      this.emphasizedEntities.some(
-        (entity) => entity.entityType === entityType && entity.id === entityId,
-      )
-    ) {
-      this.patch({ visible: false, updatedSinceLastView: false });
-    }
+    this.stateSubject.next({
+      alerts: this.stateSubject.value.alerts.filter(
+        (alert) =>
+          !(alert.entityType === entityType && alert.entityId === entityId),
+      ),
+    });
   }
 
   private clear(): void {
     this.lastContextKey = null;
     this.emphasizedEntities = [];
     this.stateSubject.next({ ...initialState });
-  }
-
-  private patch(partial: Partial<RulesAlertState>): void {
-    this.stateSubject.next({
-      ...this.stateSubject.value,
-      ...partial,
-    });
   }
 
   /** Copied from `PageTitleService` to detect real page (component) changes. */

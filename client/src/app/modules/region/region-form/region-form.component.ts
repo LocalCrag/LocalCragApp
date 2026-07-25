@@ -39,6 +39,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { InstanceSettings } from '../../../models/instance-settings';
+import { Tooltip } from 'primeng/tooltip';
 
 /**
  * A component for editing regions.
@@ -57,6 +58,7 @@ import { InstanceSettings } from '../../../models/instance-settings';
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
+    Tooltip,
   ],
   templateUrl: './region-form.component.html',
   styleUrl: './region-form.component.scss',

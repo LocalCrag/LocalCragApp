@@ -151,9 +151,14 @@
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="rulesTitle">{{
-          t("regionRulesTitleLabel")
-        }}</label>
+        <div class="form-label flex items-center">
+          <label for="rulesTitle">{{ t("regionRulesTitleLabel") }}</label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('regionRulesTitleTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </div>
         <input
           id="rulesTitle"
           type="text"

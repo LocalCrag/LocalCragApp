@@ -7,7 +7,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
@@ -15,8 +15,8 @@ import { DialogModule } from 'primeng/dialog';
 import { filter } from 'rxjs/operators';
 import { toastNotification } from '../../../../ngrx/actions/notifications.actions';
 import {
+  RulesAlertItem,
   RulesAlertLevel,
-  RulesAlertSection,
   RulesAlertService,
   RulesAlertState,
 } from '../../../../services/core/rules-alert.service';
@@ -30,11 +30,16 @@ const THANKS_TOAST_BY_LEVEL: Record<RulesAlertLevel, NotificationKey> = {
   region: 'RULES_READ_THANKS_REGION',
 };
 
+const SECTION_HEADER_KEY: Record<RulesAlertLevel, string> = {
+  sector: 'sectorRules',
+  crag: 'cragRules',
+  region: 'regionRules',
+};
+
 /**
- * Warning alert shown below the page title whenever a moderator-configured
- * `rulesTitle` on the nearest emphasized ancestor (sector/crag/region) is
- * unread. Hidden entirely on `/rules` tabs, where the rules are already the
- * page content.
+ * Warning alerts shown below the page title — one per emphasized unread
+ * ancestor (sector / crag / region). On a `/rules` tab, only the alert for
+ * that same entity level is hidden; parent/sibling levels still show.
  */
 @Component({
   selector: 'lc-rules-alert',
@@ -57,54 +62,85 @@ export class RulesAlertComponent implements OnInit {
   private store = inject(Store);
 
   public dialogOpen = false;
-  public dialogSections: RulesAlertSection[] = [];
-  public isRulesRoute = false;
+  public dialogAlert: RulesAlertItem | null = null;
+  /** Level of the rules tab currently open, if any. */
+  public activeRulesTabLevel: RulesAlertLevel | null = null;
+
+  readonly sectionHeaderKey = SECTION_HEADER_KEY;
 
   ngOnInit(): void {
-    this.isRulesRoute = this.computeIsRulesRoute(this.router.url);
+    this.activeRulesTabLevel = this.computeActiveRulesTabLevel(
+      this.router.routerState.snapshot.root,
+    );
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        this.isRulesRoute = this.computeIsRulesRoute(this.router.url);
-        if (this.isRulesRoute) {
+        this.activeRulesTabLevel = this.computeActiveRulesTabLevel(
+          this.router.routerState.snapshot.root,
+        );
+        if (this.activeRulesTabLevel) {
           this.dialogOpen = false;
         }
       });
   }
 
-  protected showAlert(state: RulesAlertState): boolean {
-    return state.visible && !this.isRulesRoute;
+  protected visibleAlerts(state: RulesAlertState): RulesAlertItem[] {
+    if (!this.activeRulesTabLevel) {
+      return state.alerts;
+    }
+    return state.alerts.filter(
+      (alert) => alert.level !== this.activeRulesTabLevel,
+    );
   }
 
-  protected read(state: RulesAlertState): void {
-    this.toastThanks(state.rulesSections[0]?.level);
-    this.rulesAlertService.markRead();
+  protected read(alert: RulesAlertItem): void {
+    this.toastThanks(alert.level);
+    this.rulesAlertService.markRead(alert.entityType, alert.entityId);
   }
 
-  protected readMore(state: RulesAlertState): void {
-    this.dialogSections = state.rulesSections;
+  protected readMore(alert: RulesAlertItem): void {
+    this.dialogAlert = alert;
     this.dialogOpen = true;
   }
 
   protected confirmRead(): void {
-    const level = this.dialogSections[0]?.level;
+    const alert = this.dialogAlert;
     this.dialogOpen = false;
-    this.rulesAlertService.markRead();
-    this.toastThanks(level);
-  }
-
-  private toastThanks(level: RulesAlertLevel | undefined): void {
-    if (level) {
-      this.store.dispatch(toastNotification(THANKS_TOAST_BY_LEVEL[level]));
+    this.dialogAlert = null;
+    if (!alert) {
+      return;
     }
+    this.rulesAlertService.markRead(alert.entityType, alert.entityId);
+    this.toastThanks(alert.level);
   }
 
-  private computeIsRulesRoute(url: string): boolean {
-    const path = url.split(/[?#]/)[0];
-    const segments = path.split('/').filter(Boolean);
-    return segments[segments.length - 1] === 'rules';
+  private toastThanks(level: RulesAlertLevel): void {
+    this.store.dispatch(toastNotification(THANKS_TOAST_BY_LEVEL[level]));
+  }
+
+  /**
+   * Reads `data.rulesAlertLevel` from the active route tree (including named
+   * content outlets). Set on the region/crag/sector rules routes.
+   */
+  private computeActiveRulesTabLevel(
+    root: ActivatedRouteSnapshot,
+  ): RulesAlertLevel | null {
+    let found: RulesAlertLevel | null = null;
+
+    const visit = (route: ActivatedRouteSnapshot) => {
+      const level = route.data?.['rulesAlertLevel'];
+      if (level === 'region' || level === 'crag' || level === 'sector') {
+        found = level;
+      }
+      for (const child of route.children) {
+        visit(child);
+      }
+    };
+
+    visit(root);
+    return found;
   }
 }

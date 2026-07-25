@@ -16,18 +16,18 @@ def normalize_rules_title(raw_title: Optional[str]) -> Optional[str]:
 
 def apply_rules_emphasis(entity, sanitized_rules: Optional[str], raw_rules_title: Optional[str], is_create: bool):
     """
-    Assigns `rules` + `rules_title` on `entity` and advances `rules_updated_at` whenever either
-    value changed (or, on create, whenever either is non-empty). Must be called with the
-    already-sanitized `rules` HTML (see `sanitize_wysiwyg_html`).
+    Assigns `rules` + `rules_title` on `entity` and advances `rules_updated_at` only when
+    the sanitized rules HTML changed (or, on create, when rules are non-empty). Title-only
+    changes do not reset read status.
     """
     normalized_title = normalize_rules_title(raw_rules_title)
 
     if is_create:
-        changed = bool(sanitized_rules) or bool(normalized_title)
+        rules_changed = bool(sanitized_rules)
     else:
-        changed = sanitized_rules != entity.rules or normalized_title != entity.rules_title
+        rules_changed = sanitized_rules != entity.rules
 
     entity.rules = sanitized_rules
     entity.rules_title = normalized_title
-    if changed:
+    if rules_changed:
         entity.rules_updated_at = datetime.datetime.now(pytz.utc)

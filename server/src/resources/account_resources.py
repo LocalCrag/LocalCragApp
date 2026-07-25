@@ -9,6 +9,7 @@ from webargs.flaskparser import parser
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.account_settings_schema import account_settings_schema
+from marshmallow_schemas.rules_read_status_schema import rules_read_status_list_schema
 from messages.messages import ResponseMessage
 from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
@@ -72,22 +73,7 @@ class GetRulesReadStatus(MethodView):
         """
         user = User.find_by_email(get_jwt_identity())
         rows = RulesReadStatus.query.filter_by(user_id=user.id).all()
-        return (
-            jsonify(
-                [
-                    {
-                        "entityType": row.entity_type,
-                        "entityId": str(row.entity_id),
-                        "readAt": row.read_at.isoformat(),
-                        "acknowledgedRulesUpdatedAt": (
-                            row.acknowledged_rules_updated_at.isoformat() if row.acknowledged_rules_updated_at else None
-                        ),
-                    }
-                    for row in rows
-                ]
-            ),
-            200,
-        )
+        return jsonify(rules_read_status_list_schema.dump(rows)), 200
 
 
 class MarkRulesRead(MethodView):
