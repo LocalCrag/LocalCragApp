@@ -1,14 +1,12 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  NavigationEnd,
-  PRIMARY_OUTLET,
-  Router,
-  RoutesRecognized,
-} from '@angular/router';
+import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Crag } from '../../models/crag';
+import { Region } from '../../models/region';
+import { Sector } from '../../models/sector';
+import { getPrimaryPageHostKey } from '../../utility/router/primary-page-host-key';
 import {
   RulesEntityType,
   RulesReadStatusService,
@@ -18,14 +16,11 @@ import {
   isRulesUpdatedSinceLastView,
 } from '../crud/rules-read-status.util';
 
-/** An ancestor (region/crag/sector) considered for the rules alert on a topo page. */
-export interface RulesEntity {
-  entityType: RulesEntityType;
-  id: string;
-  name: string;
-  rules: string | null;
-  rulesTitle: string | null;
-  rulesUpdatedAt: string | null;
+/** Ancestor models for the rules alert on a topo page. */
+export interface RulesAlertContext {
+  sector?: Sector;
+  crag?: Crag;
+  region?: Region;
 }
 
 export type RulesAlertLevel = 'sector' | 'crag' | 'region';
@@ -38,7 +33,7 @@ export interface RulesAlertItem {
   alertTitle: string;
   entityName: string;
   rules: string;
-  updatedAt: string | null;
+  updatedAt: Date | null;
   updatedSinceLastView: boolean;
 }
 
@@ -62,35 +57,17 @@ const LEVEL_ORDER: Record<RulesAlertLevel, number> = {
   region: 2,
 };
 
-/** Minimal shape shared by the Region/Crag/Sector models for `toRulesEntity`. */
-interface RulesCapableModel {
-  id: string;
-  name: string;
-  rules: string | null;
-  rulesTitle: string | null;
-  rulesUpdatedAt: string | null;
-}
-
-/** Maps a Region/Crag/Sector model instance into a `RulesEntity` for `setContext(...)`. */
-export function toRulesEntity(
-  entityType: RulesEntityType,
-  entity: RulesCapableModel,
-): RulesEntity {
-  return {
-    entityType,
-    id: entity.id,
-    name: entity.name,
-    rules: entity.rules,
-    rulesTitle: entity.rulesTitle,
-    rulesUpdatedAt: entity.rulesUpdatedAt,
-  };
+/** Internal pairing of a topo model with its API entity type. */
+interface EmphasizedEntity {
+  entityType: RulesEntityType;
+  entity: Sector | Crag | Region;
 }
 
 /**
- * Computes rules-alert visibility/content from an ancestor chain of topo
- * entities (region/crag/sector). Each emphasized unread ancestor gets its own
- * alert. Mirrors `PageTitleService`'s BehaviorSubject + clear-on-page-host-
- * change pattern so stale context never leaks between unrelated pages.
+ * Computes rules-alert visibility/content from ancestor topo models
+ * (region/crag/sector). Each emphasized unread ancestor gets its own alert.
+ * Mirrors `PageTitleService`'s BehaviorSubject + clear-on-page-host-change
+ * pattern so stale context never leaks between unrelated pages.
  */
 @Injectable({
   providedIn: 'root',
@@ -108,10 +85,10 @@ export class RulesAlertService {
 
   private currentPageHostKey = '';
   private lastContextKey: string | null = null;
-  private emphasizedEntities: RulesEntity[] = [];
+  private emphasizedEntities: EmphasizedEntity[] = [];
 
   constructor() {
-    this.currentPageHostKey = this.getPrimaryPageHostKey(
+    this.currentPageHostKey = getPrimaryPageHostKey(
       this.router.routerState.snapshot.root,
     );
 
@@ -122,9 +99,7 @@ export class RulesAlertService {
       )
       .subscribe((event) => {
         const recognized = event as RoutesRecognized;
-        const nextPageHostKey = this.getPrimaryPageHostKey(
-          recognized.state.root,
-        );
+        const nextPageHostKey = getPrimaryPageHostKey(recognized.state.root);
         if (nextPageHostKey !== this.currentPageHostKey) {
           this.clear();
         }
@@ -136,24 +111,24 @@ export class RulesAlertService {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        this.currentPageHostKey = this.getPrimaryPageHostKey(
+        this.currentPageHostKey = getPrimaryPageHostKey(
           this.router.routerState.snapshot.root,
         );
       });
   }
 
   /**
-   * Sets the ancestor chain for the current page, nearest entity first (e.g.
-   * a line passes `[sector, crag, region]`). Builds one alert per emphasized
-   * (non-empty `rulesTitle`) unread ancestor.
+   * Sets the ancestor models for the current page. Builds one alert per
+   * emphasized (non-empty `rulesTitle`) unread ancestor.
    */
-  setContext(entities: RulesEntity[]): void {
-    const withRules = entities.filter((entity) => !!entity.rules);
+  setContext(context: RulesAlertContext): void {
+    const entries = this.contextToEntries(context);
+    const withRules = entries.filter(({ entity }) => !!entity.rules);
 
     const contextKey = withRules
       .map(
-        (entity) =>
-          `${entity.entityType}:${entity.id}:${entity.rulesTitle ?? ''}:${entity.rulesUpdatedAt ?? ''}`,
+        ({ entityType, entity }) =>
+          `${entityType}:${entity.id}:${entity.rulesTitle ?? ''}:${entity.rulesUpdatedAt?.getTime() ?? ''}`,
       )
       .join('|');
     if (contextKey === this.lastContextKey) {
@@ -161,7 +136,7 @@ export class RulesAlertService {
     }
     this.lastContextKey = contextKey;
 
-    const emphasized = withRules.filter((entity) => !!entity.rulesTitle);
+    const emphasized = withRules.filter(({ entity }) => !!entity.rulesTitle);
     this.emphasizedEntities = emphasized;
 
     if (!emphasized.length) {
@@ -170,30 +145,33 @@ export class RulesAlertService {
     }
 
     forkJoin(
-      emphasized.map((entity) =>
+      emphasized.map((item) =>
         this.rulesReadStatusService
-          .getStatus(entity.entityType, entity.id)
-          .pipe(map((status) => ({ entity, status }))),
+          .getStatus(item.entityType, item.entity.id)
+          .pipe(map((status) => ({ item, status }))),
       ),
     ).subscribe((results) => {
       if (contextKey !== this.lastContextKey) {
         return;
       }
       const alerts: RulesAlertItem[] = results
-        .filter(({ entity, status }) =>
-          isRulesUnread(status?.acknowledgedUpdatedAt, entity.rulesUpdatedAt),
+        .filter(({ item, status }) =>
+          isRulesUnread(
+            status?.acknowledgedUpdatedAt,
+            item.entity.rulesUpdatedAt,
+          ),
         )
-        .map(({ entity, status }) => ({
-          entityType: entity.entityType,
-          entityId: entity.id,
-          level: LEVEL_BY_ENTITY_TYPE[entity.entityType],
-          alertTitle: entity.rulesTitle as string,
-          entityName: entity.name,
-          rules: entity.rules as string,
-          updatedAt: entity.rulesUpdatedAt,
+        .map(({ item, status }) => ({
+          entityType: item.entityType,
+          entityId: item.entity.id,
+          level: LEVEL_BY_ENTITY_TYPE[item.entityType],
+          alertTitle: item.entity.rulesTitle as string,
+          entityName: item.entity.name,
+          rules: item.entity.rules as string,
+          updatedAt: item.entity.rulesUpdatedAt,
           updatedSinceLastView: isRulesUpdatedSinceLastView(
             status?.acknowledgedUpdatedAt,
-            entity.rulesUpdatedAt,
+            item.entity.rulesUpdatedAt,
           ),
         }))
         .sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
@@ -204,10 +182,11 @@ export class RulesAlertService {
 
   /** Marks one emphasized entity as read and removes its alert. */
   markRead(entityType: RulesEntityType, entityId: string): void {
-    const entity = this.emphasizedEntities.find(
-      (item) => item.entityType === entityType && item.id === entityId,
+    const item = this.emphasizedEntities.find(
+      (entry) =>
+        entry.entityType === entityType && entry.entity.id === entityId,
     );
-    if (!entity) {
+    if (!item) {
       return;
     }
     this.lastContextKey = null;
@@ -216,7 +195,7 @@ export class RulesAlertService {
         {
           entityType,
           entityId,
-          acknowledgedUpdatedAt: entity.rulesUpdatedAt,
+          acknowledgedUpdatedAt: item.entity.rulesUpdatedAt,
         },
       ])
       .subscribe();
@@ -235,7 +214,7 @@ export class RulesAlertService {
   markEntityRead(
     entityType: RulesEntityType,
     entityId: string,
-    acknowledgedUpdatedAt: string | null,
+    acknowledgedUpdatedAt: Date | null,
   ): void {
     this.rulesReadStatusService
       .markRead([{ entityType, entityId, acknowledgedUpdatedAt }])
@@ -248,41 +227,23 @@ export class RulesAlertService {
     });
   }
 
+  private contextToEntries(context: RulesAlertContext): EmphasizedEntity[] {
+    const entries: EmphasizedEntity[] = [];
+    if (context.sector) {
+      entries.push({ entityType: 'Sector', entity: context.sector });
+    }
+    if (context.crag) {
+      entries.push({ entityType: 'Crag', entity: context.crag });
+    }
+    if (context.region) {
+      entries.push({ entityType: 'Region', entity: context.region });
+    }
+    return entries;
+  }
+
   private clear(): void {
     this.lastContextKey = null;
     this.emphasizedEntities = [];
     this.stateSubject.next({ ...initialState });
-  }
-
-  /** Copied from `PageTitleService` to detect real page (component) changes. */
-  private getPrimaryPageHostKey(root: ActivatedRouteSnapshot): string {
-    let hostRoute: ActivatedRouteSnapshot | null = null;
-
-    const visit = (route: ActivatedRouteSnapshot) => {
-      if (this.routeDefinesPageHost(route)) {
-        hostRoute = route;
-      }
-
-      for (const child of route.children) {
-        if (child.outlet === PRIMARY_OUTLET) {
-          visit(child);
-        }
-      }
-    };
-
-    visit(root);
-
-    if (!hostRoute) {
-      return '';
-    }
-
-    return (hostRoute as ActivatedRouteSnapshot).pathFromRoot
-      .map((segment) => segment.routeConfig?.path ?? '')
-      .join('/');
-  }
-
-  private routeDefinesPageHost(route: ActivatedRouteSnapshot): boolean {
-    const config = route.routeConfig;
-    return !!(config?.component || config?.loadComponent);
   }
 }

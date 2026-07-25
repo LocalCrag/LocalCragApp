@@ -1,11 +1,5 @@
 import { DestroyRef, Injectable, TemplateRef, inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  NavigationEnd,
-  PRIMARY_OUTLET,
-  Router,
-  RoutesRecognized,
-} from '@angular/router';
+import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -13,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { File } from '../../models/file';
 import { TopoImage } from '../../models/topo-image';
 import { imageFocusBackgroundStyles } from '../../utility/image-focus';
+import { getPrimaryPageHostKey } from '../../utility/router/primary-page-host-key';
 
 /**
  * State for the shared page header ("page title") chrome rendered by
@@ -24,7 +19,7 @@ import { imageFocusBackgroundStyles } from '../../utility/image-focus';
  * - **Hero focus**: vertical focus is derived from `image.focusY` and mapped to
  *   inline `background-position` styles via `imageFocusBackgroundStyles(...)`.
  * - **Reset on navigation**: the service clears state when the primary routed
- *   component changes (see `getPrimaryPageHostKey(...)`).
+ *   component changes (see {@link getPrimaryPageHostKey}).
  */
 export interface PageTitleState {
   /** Page heading string; ignored when `template` is set. */
@@ -95,7 +90,7 @@ export class PageTitleService {
     // Track the current "page host" route so we can clear header state when the
     // primary routed component changes (avoids leaking breadcrumbs/tabs/title
     // between unrelated pages).
-    this.currentPageHostKey = this.getPrimaryPageHostKey(
+    this.currentPageHostKey = getPrimaryPageHostKey(
       this.router.routerState.snapshot.root,
     );
 
@@ -106,9 +101,7 @@ export class PageTitleService {
       )
       .subscribe((event) => {
         const recognized = event as RoutesRecognized;
-        const nextPageHostKey = this.getPrimaryPageHostKey(
-          recognized.state.root,
-        );
+        const nextPageHostKey = getPrimaryPageHostKey(recognized.state.root);
         if (nextPageHostKey !== this.currentPageHostKey) {
           this.clear();
         }
@@ -120,7 +113,7 @@ export class PageTitleService {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        this.currentPageHostKey = this.getPrimaryPageHostKey(
+        this.currentPageHostKey = getPrimaryPageHostKey(
           this.router.routerState.snapshot.root,
         );
       });
@@ -180,44 +173,6 @@ export class PageTitleService {
 
   private clear(): void {
     this.stateSubject.next({ ...initialState });
-  }
-
-  /**
-   * Builds a "page host" key from the route tree.
-   *
-   * We treat the deepest primary-outlet route that defines a component (or
-   * loadComponent) as the page host. When this key changes, we clear the header
-   * state so it doesn't leak across pages.
-   */
-  private getPrimaryPageHostKey(root: ActivatedRouteSnapshot): string {
-    let hostRoute: ActivatedRouteSnapshot | null = null;
-
-    const visit = (route: ActivatedRouteSnapshot) => {
-      if (this.routeDefinesPageHost(route)) {
-        hostRoute = route;
-      }
-
-      for (const child of route.children) {
-        if (child.outlet === PRIMARY_OUTLET) {
-          visit(child);
-        }
-      }
-    };
-
-    visit(root);
-
-    if (!hostRoute) {
-      return '';
-    }
-
-    return hostRoute.pathFromRoot
-      .map((segment) => segment.routeConfig?.path ?? '')
-      .join('/');
-  }
-
-  private routeDefinesPageHost(route: ActivatedRouteSnapshot): boolean {
-    const config = route.routeConfig;
-    return !!(config?.component || config?.loadComponent);
   }
 
   private patch(partial: Partial<PageTitleState>): void {

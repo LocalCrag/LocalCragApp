@@ -1,7 +1,8 @@
-import { Component, Input, OnChanges, OnDestroy, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnChanges, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { RulesAlertService } from '../../../../services/core/rules-alert.service';
 import {
   RulesEntityType,
@@ -21,18 +22,18 @@ import { DatePipe } from '../../pipes/date.pipe';
   styleUrl: './rules-view-meta.component.scss',
   imports: [TranslocoDirective, DatePipe],
 })
-export class RulesViewMetaComponent implements OnChanges, OnDestroy {
+export class RulesViewMetaComponent implements OnChanges {
   @Input({ required: true }) entityType: RulesEntityType;
   @Input({ required: true }) entityId: string;
-  @Input() rulesUpdatedAt: string | null = null;
+  @Input() rulesUpdatedAt: Date | null = null;
 
   public updatedSinceLastView = false;
   public ready = false;
 
   private rulesReadStatusService = inject(RulesReadStatusService);
   private rulesAlertService = inject(RulesAlertService);
+  private destroyRef = inject(DestroyRef);
   private readonly load$ = new Subject<void>();
-  private readonly destroy$ = new Subject<void>();
 
   constructor() {
     this.load$
@@ -40,7 +41,7 @@ export class RulesViewMetaComponent implements OnChanges, OnDestroy {
         switchMap(() =>
           this.rulesReadStatusService.getStatus(this.entityType, this.entityId),
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((status) => {
         this.updatedSinceLastView = isRulesUpdatedSinceLastView(
@@ -62,10 +63,5 @@ export class RulesViewMetaComponent implements OnChanges, OnDestroy {
     }
     this.ready = false;
     this.load$.next();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -5,7 +5,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
-import { parseServerDateUtc } from './rules-read-status.util';
 
 /**
  * The PascalCase entity types that can carry a `rules` field and therefore a
@@ -19,13 +18,13 @@ export interface RulesReadStatusRef {
   entityType: RulesEntityType;
   entityId: string;
   /** The `rulesUpdatedAt` value being acknowledged by this mark-read. */
-  acknowledgedUpdatedAt: string | null;
+  acknowledgedUpdatedAt: Date | null;
 }
 
 export interface RulesReadStatusEntry {
   readAt: Date;
   /** Rules version that was current when the user last acknowledged them. */
-  acknowledgedUpdatedAt: string | null;
+  acknowledgedUpdatedAt: Date | null;
 }
 
 interface RulesReadStatusRow {
@@ -37,6 +36,9 @@ interface RulesReadStatusRow {
 
 /** localStorage key for anonymous visitors and as a client-side backup when logged in. */
 const STORAGE_KEY = 'rulesReadStatusV2';
+
+/** Sentinel so a mark-read without a server timestamp still counts as acknowledged. */
+const EPOCH = new Date(0);
 
 /**
  * Persists "rules read" status per topo entity (region/crag/sector).
@@ -107,7 +109,7 @@ export class RulesReadStatusService {
                 entityId: entity.entityId,
                 acknowledgedRulesUpdatedAt: this.normalizeAcknowledgedUpdatedAt(
                   entity.acknowledgedUpdatedAt,
-                ),
+                ).toISOString(),
               })
               .pipe(catchError(() => of(void 0))),
           ),
@@ -116,6 +118,14 @@ export class RulesReadStatusService {
     );
   }
 
+  /**
+   * Lazily hydrates the in-memory cache once per service lifetime.
+   *
+   * Always seeds from localStorage first; when the user is logged in, merges
+   * account API rows on top and writes the merged cache back to localStorage.
+   * The resulting observable is memoized via `shareReplay(1)` so concurrent
+   * `getStatus` / `markRead` callers share a single load.
+   */
   private ensureLoaded(): Observable<void> {
     if (!this.loaded$) {
       this.loaded$ = this.store.pipe(select(selectIsLoggedIn), take(1)).pipe(
@@ -156,16 +166,22 @@ export class RulesReadStatusService {
     return `${entityType}:${entityId}`;
   }
 
+  /**
+   * Parses acknowledged timestamps the same way models parse API dates
+   * (`new Date(...)`). Missing/invalid values become the epoch sentinel so a
+   * mark-read without a server timestamp still counts as acknowledged.
+   */
   private normalizeAcknowledgedUpdatedAt(
-    value: string | null | undefined,
-  ): string | null {
+    value: Date | string | null | undefined,
+  ): Date {
     if (value == null || value === '') {
-      // Sentinel so a mark-read without a server timestamp still counts as
-      // acknowledged (alert must not reappear until rules are updated).
-      return '1970-01-01T00:00:00.000Z';
+      return EPOCH;
     }
-    const parsed = parseServerDateUtc(value);
-    return parsed ? parsed.toISOString() : '1970-01-01T00:00:00.000Z';
+    if (value instanceof Date) {
+      return Number.isNaN(value.getTime()) ? EPOCH : value;
+    }
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? EPOCH : date;
   }
 
   private hydrateFromLocalStorage(): void {
@@ -203,7 +219,8 @@ export class RulesReadStatusService {
       this.cache.forEach((value, key) => {
         payload[key] = {
           readAt: value.readAt.toISOString(),
-          acknowledgedUpdatedAt: value.acknowledgedUpdatedAt,
+          acknowledgedUpdatedAt:
+            value.acknowledgedUpdatedAt?.toISOString() ?? null,
         };
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));

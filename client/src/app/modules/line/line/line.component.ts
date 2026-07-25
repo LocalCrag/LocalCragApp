@@ -38,10 +38,7 @@ import {
   PageTitleService,
   resolveTopoPageTitleImage,
 } from '../../../services/core/page-title.service';
-import {
-  RulesAlertService,
-  toRulesEntity,
-} from '../../../services/core/rules-alert.service';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
@@ -140,11 +137,7 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
-            this.rulesAlertService.setContext([
-              toRulesEntity('Sector', sector),
-              toRulesEntity('Crag', crag),
-              toRulesEntity('Region', region),
-            ]);
+            this.rulesAlertService.setContext({ sector, crag, region });
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
               instanceSettings.bgImage,

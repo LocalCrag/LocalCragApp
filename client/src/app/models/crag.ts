@@ -23,7 +23,7 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   shortDescription: string;
   rules: string;
   rulesTitle: string | null;
-  rulesUpdatedAt: string | null;
+  rulesUpdatedAt: Date | null;
   portraitImage: File;
   sectors: Sector[];
   lineCount: number;
@@ -57,7 +57,9 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.rulesTitle = payload.rulesTitle ?? null;
-    crag.rulesUpdatedAt = payload.rulesUpdatedAt ?? null;
+    crag.rulesUpdatedAt = payload.rulesUpdatedAt
+      ? new Date(payload.rulesUpdatedAt)
+      : null;
     crag.secret = payload.secret;
     crag.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)

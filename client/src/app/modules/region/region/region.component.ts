@@ -10,10 +10,7 @@ import { catchError, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
-import {
-  RulesAlertService,
-  toRulesEntity,
-} from '../../../services/core/rules-alert.service';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
@@ -64,7 +61,7 @@ export class RegionComponent implements OnInit {
         region.image,
         bgImage,
       );
-      this.rulesAlertService.setContext([toRulesEntity('Region', region)]);
+      this.rulesAlertService.setContext({ region });
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(`${region.name} - ${instanceName}`);
       });

@@ -24,10 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
-import {
-  RulesAlertService,
-  toRulesEntity,
-} from '../../../services/core/rules-alert.service';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
 import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
@@ -95,10 +92,7 @@ export class CragComponent implements OnInit {
               crag.portraitImage,
               bgImage,
             );
-            this.rulesAlertService.setContext([
-              toRulesEntity('Crag', crag),
-              toRulesEntity('Region', region),
-            ]);
+            this.rulesAlertService.setContext({ crag, region });
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {
