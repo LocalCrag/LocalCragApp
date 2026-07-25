@@ -5,6 +5,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
+import { parseServerDateUtc } from './rules-read-status.util';
 
 /**
  * The PascalCase entity types that can carry a `rules` field and therefore a
@@ -17,23 +18,35 @@ export type RulesEntityType = 'Region' | 'Crag' | 'Sector';
 export interface RulesReadStatusRef {
   entityType: RulesEntityType;
   entityId: string;
+  /** The `rulesUpdatedAt` value being acknowledged by this mark-read. */
+  acknowledgedUpdatedAt: string | null;
+}
+
+export interface RulesReadStatusEntry {
+  readAt: Date;
+  /** Rules version that was current when the user last acknowledged them. */
+  acknowledgedUpdatedAt: string | null;
 }
 
 interface RulesReadStatusRow {
   entityType: string;
   entityId: string;
   readAt: string;
+  acknowledgedRulesUpdatedAt: string | null;
 }
 
-/** localStorage key for anonymous visitors. `V1` allows a future schema bump. */
-const STORAGE_KEY = 'rulesReadStatusV1';
+/** localStorage key for anonymous visitors and as a client-side backup when logged in. */
+const STORAGE_KEY = 'rulesReadStatusV2';
 
 /**
  * Persists "rules read" status per topo entity (region/crag/sector).
  *
- * Logged-in users are backed by the `/account/rules-read-status` endpoints;
- * anonymous visitors are backed by a localStorage map. Both paths share an
- * in-memory cache so repeated lookups within a session don't re-fetch/re-read.
+ * Always writes localStorage so dismissals survive reloads even if the account
+ * API call fails. Logged-in users also sync to `/account/rules-read-status`.
+ *
+ * "Updated since last view" is derived by comparing the entity's current
+ * `rulesUpdatedAt` to the acknowledged version stored here — not by comparing
+ * wall-clock read timestamps.
  */
 @Injectable({
   providedIn: 'root',
@@ -43,25 +56,25 @@ export class RulesReadStatusService {
   private http = inject(HttpClient);
   private store = inject(Store);
 
-  private cache = new Map<string, Date>();
+  private cache = new Map<string, RulesReadStatusEntry>();
   private loaded$: Observable<void> | null = null;
 
   /**
-   * Returns the read timestamp for a given entity, loading the backing store
-   * (account API or localStorage) once per session.
+   * Returns the stored read entry for a given entity, loading the backing store
+   * (localStorage and, when logged in, the account API) once per session.
    */
-  public getReadAt(
+  public getStatus(
     entityType: RulesEntityType,
     entityId: string,
-  ): Observable<Date | null> {
+  ): Observable<RulesReadStatusEntry | null> {
     return this.ensureLoaded().pipe(
       map(() => this.cache.get(this.key(entityType, entityId)) ?? null),
     );
   }
 
   /**
-   * Marks the given entities as read now, persisting to the account API (when
-   * logged in) or localStorage (when anonymous).
+   * Marks the given entities as read now, persisting the acknowledged rules
+   * version so later updates can be detected independently of clock skew.
    */
   public markRead(entities: RulesReadStatusRef[]): Observable<void> {
     if (!entities.length) {
@@ -71,21 +84,34 @@ export class RulesReadStatusService {
     return this.ensureLoaded().pipe(
       switchMap(() => this.store.pipe(select(selectIsLoggedIn), take(1))),
       switchMap((isLoggedIn) => {
-        entities.forEach((entity) =>
-          this.cache.set(this.key(entity.entityType, entity.entityId), now),
-        );
-        if (isLoggedIn) {
-          return forkJoin(
-            entities.map((entity) =>
-              this.http.post<void>(this.api.account.markRulesRead(), {
+        entities.forEach((entity) => {
+          this.cache.set(this.key(entity.entityType, entity.entityId), {
+            readAt: now,
+            acknowledgedUpdatedAt: this.normalizeAcknowledgedUpdatedAt(
+              entity.acknowledgedUpdatedAt,
+            ),
+          });
+        });
+        // Always persist locally so "Already read" survives reload even when
+        // the account API is unavailable or the user is anonymous.
+        this.persistLocalStorage();
+
+        if (!isLoggedIn) {
+          return of(void 0);
+        }
+        return forkJoin(
+          entities.map((entity) =>
+            this.http
+              .post<void>(this.api.account.markRulesRead(), {
                 entityType: entity.entityType,
                 entityId: entity.entityId,
-              }),
-            ),
-          ).pipe(map(() => void 0));
-        }
-        this.persistLocalStorage();
-        return of(void 0);
+                acknowledgedRulesUpdatedAt: this.normalizeAcknowledgedUpdatedAt(
+                  entity.acknowledgedUpdatedAt,
+                ),
+              })
+              .pipe(catchError(() => of(void 0))),
+          ),
+        ).pipe(map(() => void 0));
       }),
     );
   }
@@ -94,8 +120,8 @@ export class RulesReadStatusService {
     if (!this.loaded$) {
       this.loaded$ = this.store.pipe(select(selectIsLoggedIn), take(1)).pipe(
         switchMap((isLoggedIn) => {
+          this.hydrateFromLocalStorage();
           if (!isLoggedIn) {
-            this.hydrateFromLocalStorage();
             return of(void 0);
           }
           return this.http
@@ -105,9 +131,17 @@ export class RulesReadStatusService {
                 rows.forEach((row) => {
                   this.cache.set(
                     this.key(row.entityType as RulesEntityType, row.entityId),
-                    new Date(row.readAt),
+                    {
+                      readAt: new Date(row.readAt),
+                      acknowledgedUpdatedAt:
+                        this.normalizeAcknowledgedUpdatedAt(
+                          row.acknowledgedRulesUpdatedAt,
+                        ),
+                    },
                   );
                 });
+                // Keep localStorage in sync with the merged cache.
+                this.persistLocalStorage();
               }),
               catchError(() => of(void 0)),
             );
@@ -122,16 +156,36 @@ export class RulesReadStatusService {
     return `${entityType}:${entityId}`;
   }
 
+  private normalizeAcknowledgedUpdatedAt(
+    value: string | null | undefined,
+  ): string | null {
+    if (value == null || value === '') {
+      // Sentinel so a mark-read without a server timestamp still counts as
+      // acknowledged (alert must not reappear until rules are updated).
+      return '1970-01-01T00:00:00.000Z';
+    }
+    const parsed = parseServerDateUtc(value);
+    return parsed ? parsed.toISOString() : '1970-01-01T00:00:00.000Z';
+  }
+
   private hydrateFromLocalStorage(): void {
     if (typeof localStorage === 'undefined') return;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
-      const parsed = JSON.parse(raw) as Record<string, string>;
+      const parsed = JSON.parse(raw) as Record<
+        string,
+        { readAt: string; acknowledgedUpdatedAt: string | null }
+      >;
       Object.entries(parsed).forEach(([key, value]) => {
-        const date = new Date(value);
+        const date = new Date(value.readAt);
         if (!isNaN(date.getTime())) {
-          this.cache.set(key, date);
+          this.cache.set(key, {
+            readAt: date,
+            acknowledgedUpdatedAt: this.normalizeAcknowledgedUpdatedAt(
+              value.acknowledgedUpdatedAt,
+            ),
+          });
         }
       });
     } catch {
@@ -142,9 +196,15 @@ export class RulesReadStatusService {
   private persistLocalStorage(): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      const payload: Record<string, string> = {};
+      const payload: Record<
+        string,
+        { readAt: string; acknowledgedUpdatedAt: string | null }
+      > = {};
       this.cache.forEach((value, key) => {
-        payload[key] = value.toISOString();
+        payload[key] = {
+          readAt: value.readAt.toISOString(),
+          acknowledgedUpdatedAt: value.acknowledgedUpdatedAt,
+        };
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {

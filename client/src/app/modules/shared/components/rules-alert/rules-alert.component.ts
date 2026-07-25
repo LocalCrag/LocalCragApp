@@ -9,15 +9,26 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { filter } from 'rxjs/operators';
+import { toastNotification } from '../../../../ngrx/actions/notifications.actions';
 import {
+  RulesAlertLevel,
   RulesAlertSection,
   RulesAlertService,
   RulesAlertState,
 } from '../../../../services/core/rules-alert.service';
+import { NotificationKey } from '../../../../utility/notifications';
+import { DatePipe } from '../../pipes/date.pipe';
 import { SanitizeHtmlPipe } from '../../pipes/sanitize-html.pipe';
+
+const THANKS_TOAST_BY_LEVEL: Record<RulesAlertLevel, NotificationKey> = {
+  crag: 'RULES_READ_THANKS_CRAG',
+  sector: 'RULES_READ_THANKS_SECTOR',
+  region: 'RULES_READ_THANKS_REGION',
+};
 
 /**
  * Warning alert shown below the page title whenever a moderator-configured
@@ -36,12 +47,14 @@ import { SanitizeHtmlPipe } from '../../pipes/sanitize-html.pipe';
     ButtonModule,
     DialogModule,
     SanitizeHtmlPipe,
+    DatePipe,
   ],
 })
 export class RulesAlertComponent implements OnInit {
   protected rulesAlertService = inject(RulesAlertService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private store = inject(Store);
 
   public dialogOpen = false;
   public dialogSections: RulesAlertSection[] = [];
@@ -66,7 +79,8 @@ export class RulesAlertComponent implements OnInit {
     return state.visible && !this.isRulesRoute;
   }
 
-  protected read(): void {
+  protected read(state: RulesAlertState): void {
+    this.toastThanks(state.rulesSections[0]?.level);
     this.rulesAlertService.markRead();
   }
 
@@ -76,8 +90,16 @@ export class RulesAlertComponent implements OnInit {
   }
 
   protected confirmRead(): void {
+    const level = this.dialogSections[0]?.level;
     this.dialogOpen = false;
     this.rulesAlertService.markRead();
+    this.toastThanks(level);
+  }
+
+  private toastThanks(level: RulesAlertLevel | undefined): void {
+    if (level) {
+      this.store.dispatch(toastNotification(THANKS_TOAST_BY_LEVEL[level]));
+    }
   }
 
   private computeIsRulesRoute(url: string): boolean {

@@ -26,6 +26,18 @@ lc-rules-alert {
       }
     }
 
+    &__copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    &__updated {
+      font-weight: 500;
+      font-size: 0.875rem;
+      opacity: 0.95;
+    }
+
     &__actions {
       display: flex;
       gap: 0.25rem;
@@ -52,5 +64,17 @@ lc-rules-alert {
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  &__updated {
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+    color: var(--p-orange-600);
+  }
+
+  &__date {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
   }
 }

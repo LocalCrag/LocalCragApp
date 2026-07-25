@@ -7,4 +7,5 @@ mark_rules_read_args = {
         validate=validate.OneOf(["Region", "Crag", "Sector"]),
     ),
     "entityId": fields.Str(required=True),
+    "acknowledgedRulesUpdatedAt": fields.DateTime(required=True, allow_none=True),
 }

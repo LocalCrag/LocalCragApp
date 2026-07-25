@@ -5,14 +5,14 @@ import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
-import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
 
 /**
  * Component that displays sector rules.
  */
 @Component({
   selector: 'lc-sector-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './sector-rules.component.html',
   styleUrl: './sector-rules.component.scss',
 })
@@ -22,7 +22,6 @@ export class SectorRulesComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private sectorsService = inject(SectorsService);
-  private rulesAlertService = inject(RulesAlertService);
 
   ngOnInit() {
     const sectorSlug =
@@ -31,9 +30,7 @@ export class SectorRulesComponent implements OnInit {
       this.sector = sector;
       if (!this.sector.rules) {
         this.router.navigate(['../'], { relativeTo: this.route });
-        return;
       }
-      this.rulesAlertService.markEntityRead('Sector', this.sector.id);
     });
   }
 }

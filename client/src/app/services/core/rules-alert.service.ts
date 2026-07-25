@@ -13,6 +13,10 @@ import {
   RulesEntityType,
   RulesReadStatusService,
 } from '../crud/rules-read-status.service';
+import {
+  isRulesUnread,
+  isRulesUpdatedSinceLastView,
+} from '../crud/rules-read-status.util';
 
 /** An ancestor (region/crag/sector) considered for the rules alert on a topo page. */
 export interface RulesEntity {
@@ -30,17 +34,21 @@ export interface RulesAlertSection {
   level: RulesAlertLevel;
   title: string;
   rules: string;
+  updatedAt: string | null;
+  updatedSinceLastView: boolean;
 }
 
 export interface RulesAlertState {
   visible: boolean;
   title: string | null;
+  updatedSinceLastView: boolean;
   rulesSections: RulesAlertSection[];
 }
 
 const initialState: RulesAlertState = {
   visible: false,
   title: null,
+  updatedSinceLastView: false,
   rulesSections: [],
 };
 
@@ -160,31 +168,39 @@ export class RulesAlertService {
       this.stateSubject.next({
         visible: false,
         title: null,
+        updatedSinceLastView: false,
         rulesSections: [],
       });
       return;
     }
 
-    const rulesSections: RulesAlertSection[] = [
-      {
-        level: LEVEL_BY_ENTITY_TYPE[nearest.entityType],
-        title: nearest.name,
-        rules: nearest.rules as string,
-      },
-    ];
     const title = nearest.rulesTitle;
 
     this.rulesReadStatusService
-      .getReadAt(nearest.entityType, nearest.id)
-      .subscribe((readAt) => {
+      .getStatus(nearest.entityType, nearest.id)
+      .subscribe((status) => {
         // Guard against a stale response landing after the context moved on.
         if (contextKey !== this.lastContextKey) {
           return;
         }
+        const acknowledgedUpdatedAt = status?.acknowledgedUpdatedAt ?? null;
+        const updatedSinceLastView = isRulesUpdatedSinceLastView(
+          acknowledgedUpdatedAt,
+          nearest.rulesUpdatedAt,
+        );
         this.stateSubject.next({
-          visible: this.isUnread(nearest, readAt),
+          visible: isRulesUnread(acknowledgedUpdatedAt, nearest.rulesUpdatedAt),
           title,
-          rulesSections,
+          updatedSinceLastView,
+          rulesSections: [
+            {
+              level: LEVEL_BY_ENTITY_TYPE[nearest.entityType],
+              title: nearest.name,
+              rules: nearest.rules as string,
+              updatedAt: nearest.rulesUpdatedAt,
+              updatedSinceLastView,
+            },
+          ],
         });
       });
   }
@@ -197,32 +213,34 @@ export class RulesAlertService {
     const refs = this.emphasizedEntities.map((entity) => ({
       entityType: entity.entityType,
       entityId: entity.id,
+      acknowledgedUpdatedAt: entity.rulesUpdatedAt,
     }));
+    // Allow a later setContext with the same ancestor chain to re-read status
+    // from the updated cache/localStorage instead of no-op'ing.
+    this.lastContextKey = null;
     this.rulesReadStatusService.markRead(refs).subscribe();
-    this.patch({ visible: false });
+    this.patch({ visible: false, updatedSinceLastView: false });
   }
 
   /**
    * Marks a specific entity's rules as read (e.g. when its rules tab is
    * opened). Hides the alert when that entity is the one currently driving it.
    */
-  markEntityRead(entityType: RulesEntityType, entityId: string): void {
+  markEntityRead(
+    entityType: RulesEntityType,
+    entityId: string,
+    acknowledgedUpdatedAt: string | null,
+  ): void {
     this.rulesReadStatusService
-      .markRead([{ entityType, entityId }])
+      .markRead([{ entityType, entityId, acknowledgedUpdatedAt }])
       .subscribe();
     if (
       this.emphasizedEntities.some(
         (entity) => entity.entityType === entityType && entity.id === entityId,
       )
     ) {
-      this.patch({ visible: false });
+      this.patch({ visible: false, updatedSinceLastView: false });
     }
-  }
-
-  private isUnread(entity: RulesEntity, readAt: Date | null): boolean {
-    if (!readAt) return true;
-    if (!entity.rulesUpdatedAt) return false;
-    return readAt.getTime() < new Date(entity.rulesUpdatedAt).getTime();
   }
 
   private clear(): void {

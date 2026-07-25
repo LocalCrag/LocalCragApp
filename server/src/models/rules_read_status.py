@@ -24,3 +24,4 @@ class RulesReadStatus(db.Model):
     entity_id = db.Column(UUID(), nullable=False)
 
     read_at = db.Column(db.DateTime(), default=lambda: datetime.datetime.now(pytz.utc), nullable=False)
+    acknowledged_rules_updated_at = db.Column(db.DateTime(), nullable=True)

@@ -444,6 +444,21 @@ export const NOTIFICATIONS = {
     title: marker('notifications.OBJECT_MOVE_ERROR_TITLE'),
     message: marker('notifications.OBJECT_MOVE_ERROR_MESSAGE'),
   },
+  RULES_READ_THANKS_CRAG: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.RULES_READ_THANKS_TITLE'),
+    message: marker('notifications.RULES_READ_THANKS_CRAG_MESSAGE'),
+  },
+  RULES_READ_THANKS_SECTOR: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.RULES_READ_THANKS_TITLE'),
+    message: marker('notifications.RULES_READ_THANKS_SECTOR_MESSAGE'),
+  },
+  RULES_READ_THANKS_REGION: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.RULES_READ_THANKS_TITLE'),
+    message: marker('notifications.RULES_READ_THANKS_REGION_MESSAGE'),
+  },
 } satisfies { [key: string]: NotificationDefinition };
 
 export type NotificationKey = keyof typeof NOTIFICATIONS;

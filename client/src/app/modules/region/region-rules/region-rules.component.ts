@@ -5,14 +5,14 @@ import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
-import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
 
 /**
  * Component that displays region rules.
  */
 @Component({
   selector: 'lc-region-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './region-rules.component.html',
   styleUrl: './region-rules.component.scss',
 })
@@ -22,7 +22,6 @@ export class RegionRulesComponent implements OnInit {
   private regionsService = inject(RegionService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private rulesAlertService = inject(RulesAlertService);
 
   ngOnInit() {
     this.region = null;
@@ -30,9 +29,7 @@ export class RegionRulesComponent implements OnInit {
       this.region = region;
       if (!this.region.rules) {
         this.router.navigate(['../'], { relativeTo: this.route });
-        return;
       }
-      this.rulesAlertService.markEntityRead('Region', this.region.id);
     });
   }
 }

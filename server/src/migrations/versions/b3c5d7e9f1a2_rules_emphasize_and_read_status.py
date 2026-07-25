@@ -23,6 +23,20 @@ def upgrade():
             batch_op.add_column(sa.Column("rules_title", sa.String(length=255), nullable=True))
             batch_op.add_column(sa.Column("rules_updated_at", sa.DateTime(), nullable=True))
 
+        # Seed rules_updated_at for existing entities that already have rules so
+        # read-status / "updated since last view" comparisons work after upgrade.
+        # Prefer time_updated; fall back to time_created when never updated.
+        op.execute(
+            sa.text(
+                f"""
+                UPDATE {table_name}
+                SET rules_updated_at = COALESCE(time_updated, time_created)
+                WHERE rules IS NOT NULL
+                  AND rules_updated_at IS NULL
+                """
+            )
+        )
+
     op.create_table(
         "rules_read_status",
         sa.Column("id", UUID(), nullable=False),
@@ -30,6 +44,7 @@ def upgrade():
         sa.Column("entity_type", sa.String(length=50), nullable=False),
         sa.Column("entity_id", UUID(), nullable=False),
         sa.Column("read_at", sa.DateTime(), nullable=False),
+        sa.Column("acknowledged_rules_updated_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ["user_id"], ["users.id"], name=op.f("fk_rules_read_status_user_id"), ondelete="CASCADE"
         ),

@@ -4,7 +4,17 @@
       <div class="rules-alert" data-cy="rules-alert">
         <div class="rules-alert__text">
           <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ state.title }}</span>
+          <div class="rules-alert__copy">
+            <span>{{ state.title }}</span>
+            @if (state.updatedSinceLastView) {
+              <span
+                class="rules-alert__updated"
+                data-cy="rules-alert-updated-notice"
+              >
+                {{ t('updatedSinceLastView') }}
+              </span>
+            }
+          </div>
         </div>
         <div class="rules-alert__actions">
           <p-button
@@ -16,7 +26,7 @@
           <p-button
             [label]="t('readButton')"
             styleClass="p-button-text"
-            (onClick)="read()"
+            (onClick)="read(state)"
             data-cy="rules-alert-read"
           ></p-button>
         </div>
@@ -40,6 +50,21 @@
               &mdash; {{ section.title }}
             }
           </h3>
+          @if (section.updatedSinceLastView) {
+            <p
+              class="rules-alert-dialog__updated"
+              data-cy="rules-dialog-updated-notice"
+            >
+              {{ t('updatedSinceLastView') }}
+            </p>
+          }
+          @if (section.updatedAt) {
+            <p class="rules-alert-dialog__date">
+              {{
+                t('lastUpdated', { date: section.updatedAt | date: 'datetime' })
+              }}
+            </p>
+          }
           <div
             [innerHTML]="section.rules | sanitizeHtml"
             class="quill-content"

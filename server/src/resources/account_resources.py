@@ -79,6 +79,9 @@ class GetRulesReadStatus(MethodView):
                         "entityType": row.entity_type,
                         "entityId": str(row.entity_id),
                         "readAt": row.read_at.isoformat(),
+                        "acknowledgedRulesUpdatedAt": (
+                            row.acknowledged_rules_updated_at.isoformat() if row.acknowledged_rules_updated_at else None
+                        ),
                     }
                     for row in rows
                 ]
@@ -98,6 +101,7 @@ class MarkRulesRead(MethodView):
         data = parser.parse(mark_rules_read_args, request)
         entity_type = data["entityType"]
         entity_id = data["entityId"]
+        acknowledged_rules_updated_at = data["acknowledgedRulesUpdatedAt"]
 
         existing = RulesReadStatus.query.filter_by(
             user_id=user.id,
@@ -107,6 +111,7 @@ class MarkRulesRead(MethodView):
         now = datetime.datetime.now(pytz.utc)
         if existing:
             existing.read_at = now
+            existing.acknowledged_rules_updated_at = acknowledged_rules_updated_at
             db.session.add(existing)
         else:
             row = RulesReadStatus()
@@ -114,6 +119,7 @@ class MarkRulesRead(MethodView):
             row.entity_type = entity_type
             row.entity_id = entity_id
             row.read_at = now
+            row.acknowledged_rules_updated_at = acknowledged_rules_updated_at
             db.session.add(row)
         db.session.commit()
         return jsonify(None), 204
