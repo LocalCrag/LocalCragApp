@@ -24,6 +24,7 @@ from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
+from util.rules_emphasis import apply_rules_emphasis
 from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
@@ -95,7 +96,9 @@ class CreateCrag(MethodView):
         new_crag.name = crag_data["name"].strip()
         new_crag.description = sanitize_wysiwyg_html(crag_data["description"])
         new_crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
-        new_crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
+        apply_rules_emphasis(
+            new_crag, sanitize_wysiwyg_html(crag_data["rules"]), crag_data["rulesTitle"], is_create=True
+        )
         new_crag.portrait_image_id = crag_data["portraitImage"]
         new_crag.secret = crag_data["secret"]
         new_crag.created_by_id = created_by.id
@@ -133,7 +136,7 @@ class UpdateCrag(MethodView):
         crag.name = crag_data["name"].strip()
         crag.description = sanitize_wysiwyg_html(crag_data["description"])
         crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
-        crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
+        apply_rules_emphasis(crag, sanitize_wysiwyg_html(crag_data["rules"]), crag_data["rulesTitle"], is_create=False)
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")

@@ -10,6 +10,8 @@ def test_successful_get_region(client):
     assert res["name"] == "Ticino"
     assert res["description"] == "Great region"
     assert res["rules"] is None
+    assert res["rulesTitle"] is None
+    assert res["rulesUpdatedAt"] is None
     assert res["image"] is None
     assert res["ascentCount"] == 1
     assert res["imageCount"] == 2
@@ -22,6 +24,7 @@ def test_successful_edit_region(client, admin_token, any_file):
     crag_data = {
         "description": "Fodere et scandere. 2",
         "rules": "test rules",
+        "rulesTitle": "Important rules",
         "name": "Nahe Valley",
         "image": str(any_file.id),
     }
@@ -33,6 +36,8 @@ def test_successful_edit_region(client, admin_token, any_file):
     assert res["name"] == "Nahe Valley"
     assert res["description"] == "Fodere et scandere. 2"
     assert res["rules"] == "test rules"
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["image"]["id"] == str(any_file.id)
     assert res["ascentCount"] == 1
 

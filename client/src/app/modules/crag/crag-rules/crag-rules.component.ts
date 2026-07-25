@@ -7,13 +7,14 @@ import { CragsService } from '../../../services/crud/crags.service';
 
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
 
 /**
  * Component that shows the rules of a crag.
  */
 @Component({
   selector: 'lc-crag-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './crag-rules.component.html',
   styleUrl: './crag-rules.component.scss',
 })

@@ -35,6 +35,8 @@ class SectorSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 class SectorDetailSchema(SectorSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     description = fields.String()
     rules = fields.String()
+    rulesTitle = fields.String(attribute="rules_title")
+    rulesUpdatedAt = fields.DateTime(attribute="rules_updated_at")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")
     defaultSportScale = fields.String(attribute="default_sport_scale")

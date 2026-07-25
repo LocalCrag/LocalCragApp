@@ -31,6 +31,8 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     short_description = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
     rules = db.Column(db.Text, nullable=True)
+    rules_title = db.Column(db.String(255), nullable=True)
+    rules_updated_at = db.Column(db.DateTime(), nullable=True)
     portrait_image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     portrait_image = db.relationship("File", lazy="joined")
     sectors = db.relationship(

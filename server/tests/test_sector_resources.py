@@ -47,6 +47,7 @@ def test_successful_create_sector(client, moderator_token, any_file):
             }
         ],
         "rules": "test rules",
+        "rulesTitle": "Important rules",
         "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
@@ -69,6 +70,8 @@ def test_successful_create_sector(client, moderator_token, any_file):
     assert res["ascentCount"] == 0
     assert res["secret"] is False
     assert res["rules"] == "test rules"
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
@@ -85,6 +88,7 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "portraitImage": None,
         "mapMarkers": [],
         "rules": None,
+        "rulesTitle": None,
         "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
@@ -132,6 +136,8 @@ def test_successful_get_sector(client):
     assert res["shortDescription"] == "Short description of Pampelmousse"
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
+    assert res["rulesTitle"] is None
+    assert res["rulesUpdatedAt"] is None
     assert res["secret"] is False
     assert res["closed"] is False
     assert res["closedReasons"] == []
@@ -169,6 +175,7 @@ def test_successful_edit_sector(client, moderator_token, any_file):
             }
         ],
         "rules": "test rules",
+        "rulesTitle": "Important rules",
         "secret": False,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
@@ -191,6 +198,8 @@ def test_successful_edit_sector(client, moderator_token, any_file):
     assert res["ascentCount"] == 1
     assert res["secret"] is False
     assert res["rules"] == "test rules"
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"

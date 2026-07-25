@@ -34,6 +34,8 @@ class CragSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 
 class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     rules = fields.String()
+    rulesTitle = fields.String(attribute="rules_title")
+    rulesUpdatedAt = fields.DateTime(attribute="rules_updated_at")
     description = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
     defaultBoulderScale = fields.String(attribute="default_boulder_scale")

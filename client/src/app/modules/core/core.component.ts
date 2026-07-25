@@ -22,6 +22,7 @@ import {
 import { take } from 'rxjs/operators';
 import { NavigationService } from '../../services/core/navigation.service';
 import { PageTitleComponent } from './page-title/page-title.component';
+import { RulesAlertComponent } from '../shared/components/rules-alert/rules-alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { OfflineAlertComponent } from './offline-alert/offline-alert.component';
@@ -44,6 +45,7 @@ import { Toast } from 'primeng/toast';
   styleUrls: ['./core.component.scss'],
   imports: [
     PageTitleComponent,
+    RulesAlertComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
     OfflineAlertComponent,

@@ -15,6 +15,7 @@ from models.line import Line
 from models.region import Region
 from models.sector import Sector
 from util.html_inline_styles import sanitize_wysiwyg_html
+from util.rules_emphasis import apply_rules_emphasis
 from util.secret_service import SecretService
 from util.security_util import check_auth_claims
 from webargs_schemas.region_args import region_args
@@ -41,7 +42,9 @@ class UpdateRegion(MethodView):
 
         region.name = region_data["name"].strip()
         region.description = sanitize_wysiwyg_html(region_data["description"])
-        region.rules = sanitize_wysiwyg_html(region_data["rules"])
+        apply_rules_emphasis(
+            region, sanitize_wysiwyg_html(region_data["rules"]), region_data["rulesTitle"], is_create=False
+        )
         region.image_id = region_data["image"]
         db.session.add(region)
         db.session.commit()

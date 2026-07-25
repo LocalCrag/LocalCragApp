@@ -3,6 +3,8 @@ from flask import Blueprint
 from resources.account_resources import (
     DeleteOwnUser,
     GetAccountSettings,
+    GetRulesReadStatus,
+    MarkRulesRead,
     UpdateAccountSettings,
 )
 from resources.archive_resources import SetArchived
@@ -309,6 +311,8 @@ def configure_api(app):
     account_bp.add_url_rule("/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
     account_bp.add_url_rule("/recent-searches", view_func=GetRecentSearches.as_view("get_recent_searches"))
     account_bp.add_url_rule("/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
+    account_bp.add_url_rule("/rules-read-status", view_func=GetRulesReadStatus.as_view("get_rules_read_status"))
+    account_bp.add_url_rule("/rules-read-status", view_func=MarkRulesRead.as_view("mark_rules_read"))
     account_bp.add_url_rule(
         "/release-notes/<string:bundle_id>",
         view_func=GetReleaseNoteBundle.as_view("get_release_note_bundle"),

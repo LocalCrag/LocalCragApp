@@ -3,7 +3,7 @@ import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Region } from '../../models/region';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { deserializeGradeList, GradeDistribution } from '../../models/scale';
 import { httpGetOptions } from '../../utility/http/query-params';
 
@@ -17,6 +17,8 @@ export class RegionService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
+  private regionCache$: Observable<Region> | null = null;
+
   /**
    * Returns a Region.
    *
@@ -29,6 +31,22 @@ export class RegionService {
   }
 
   /**
+   * Returns the singleton Region, fetching it over HTTP only once per
+   * session (`shareReplay(1)`). Intended for call sites (e.g. topo page
+   * ancestor chains for the rules alert) that need the region on every
+   * navigation without re-requesting it each time. The cache is invalidated
+   * on `updateRegion(...)` so moderator edits are reflected immediately.
+   *
+   * @return Observable of the cached Region.
+   */
+  public getRegionCached(): Observable<Region> {
+    if (!this.regionCache$) {
+      this.regionCache$ = this.getRegion().pipe(shareReplay(1));
+    }
+    return this.regionCache$;
+  }
+
+  /**
    * Updates a Region.
    *
    * @param region Region to persist.
@@ -37,7 +55,12 @@ export class RegionService {
   public updateRegion(region: Region): Observable<Region> {
     return this.http
       .put(this.api.region.update(), Region.serialize(region))
-      .pipe(map(Region.deserialize));
+      .pipe(
+        map(Region.deserialize),
+        tap(() => {
+          this.regionCache$ = null;
+        }),
+      );
   }
 
   /**

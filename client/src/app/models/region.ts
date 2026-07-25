@@ -8,6 +8,8 @@ export class Region extends AbstractModel {
   name: string;
   description: string;
   rules: string;
+  rulesTitle: string | null;
+  rulesUpdatedAt: Date | null;
   image: File;
   ascentCount: number;
   imageCount: number;
@@ -28,6 +30,10 @@ export class Region extends AbstractModel {
     region.name = payload.name;
     region.description = payload.description;
     region.rules = payload.rules;
+    region.rulesTitle = payload.rulesTitle ?? null;
+    region.rulesUpdatedAt = payload.rulesUpdatedAt
+      ? new Date(payload.rulesUpdatedAt)
+      : null;
     region.image = payload.image ? File.deserialize(payload.image) : null;
     region.ascentCount = payload.ascentCount;
     region.imageCount = payload.imageCount;
@@ -49,6 +55,7 @@ export class Region extends AbstractModel {
       name: region.name,
       description: region.description,
       rules: region.rules,
+      rulesTitle: region.rulesTitle,
       image: region.image ? region.image.id : null,
     };
   }

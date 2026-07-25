@@ -12,6 +12,7 @@ class SectorArgsSchema(Schema):
     shortDescription = fields.Str(required=True, allow_none=True)
     portraitImage = fields.String(required=True, allow_none=True)
     rules = fields.Str(required=True, allow_none=True)
+    rulesTitle = fields.Str(required=True, allow_none=True, validate=validate.Length(max=255))
     secret = fields.Boolean(required=True, allow_none=False)
     mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)
     defaultBoulderScale = fields.Str(required=True, allow_none=True, validate=validate.Length(max=32))

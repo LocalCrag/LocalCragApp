@@ -5,13 +5,14 @@ import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
 
 /**
  * Component that displays sector rules.
  */
 @Component({
   selector: 'lc-sector-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe],
+  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './sector-rules.component.html',
   styleUrl: './sector-rules.component.scss',
 })

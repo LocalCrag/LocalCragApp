@@ -62,6 +62,7 @@ export const topoRegionRoute: Routes = [
         'regionContent',
         {
           canActivate: [skipHierarchy(1, ['/topo'], ['rules'])],
+          data: { rulesAlertLevel: 'region' },
         },
       ),
       lazyOutletRoute('gallery', loadGalleryComponent, 'regionContent'),
