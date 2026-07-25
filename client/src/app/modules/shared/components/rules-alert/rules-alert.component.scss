@@ -14,7 +14,8 @@ lc-rules-alert {
     padding: 0.75rem calc(2 * var(--lc-card-padding-inline));
     background-color: var(--p-yellow-700);
     color: var(--p-primary-contrast-color);
-    border-bottom: 1px solid color-mix(in srgb, var(--p-primary-contrast-color) 35%, transparent);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--p-primary-contrast-color) 35%, transparent);
 
     &:last-of-type {
       border-bottom: none;
