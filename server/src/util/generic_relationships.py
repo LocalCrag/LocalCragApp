@@ -2,8 +2,12 @@ from extensions import db
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
+from models.rock_explorer_cluster import RockExplorerCluster
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
+
+ROCK_EXPLORER_OBJECT_TYPES = ("RockExplorerFeature", "RockExplorerCluster")
 
 
 def check_object_exists(object_type, object_id):
@@ -20,4 +24,8 @@ def check_object_exists(object_type, object_id):
         return db.session.get(Sector, object_id) is not None
     if object_type == "Crag":
         return db.session.get(Crag, object_id) is not None
+    if object_type == "RockExplorerFeature":
+        return db.session.get(RockExplorerFeature, object_id) is not None
+    if object_type == "RockExplorerCluster":
+        return db.session.get(RockExplorerCluster, object_id) is not None
     return False
