@@ -5,6 +5,7 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { GradeDistribution } from '../../../../models/scale';
 import { LineType } from '../../../../enums/line-type';
@@ -20,6 +21,19 @@ import { textColor } from '../../../../utility/misc/color';
 import { Tag } from 'primeng/tag';
 import { MeterGroup } from 'primeng/metergroup';
 import { Skeleton } from 'primeng/skeleton';
+import {
+  defaultLineListAdvancedFilters,
+  LineListFiltersPersisted,
+} from '../../../line/line-list-filters/line-list-filter.logic';
+import { saveLineListFilters } from '../../../line/line-list-filters/line-list-filters.storage';
+
+type MeterValue = {
+  color: string;
+  value: number;
+  label: string;
+  minGrade: number;
+  maxGrade: number;
+};
 
 type StackChartData = {
   lineType: LineType;
@@ -27,7 +41,7 @@ type StackChartData = {
   projects: number;
   ungraded: number;
   total: number;
-  meterValues: { color: string; value: number; label: string }[];
+  meterValues: MeterValue[];
 };
 
 /**
@@ -42,14 +56,17 @@ type StackChartData = {
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
+  /** When set, tags navigate here after persisting matching line-list grade filters. */
+  @Input() linesListUrl: string;
 
-  public stackChartData: any = null;
+  public stackChartData: StackChartData[] = null;
   public gradeDistribution: GradeDistribution;
   public gradeDistributionEmpty = true;
   public value = [];
 
   private scalesService = inject(ScalesService);
   private translocoService = inject(TranslocoService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.fetchingObservable.subscribe((gradeDistributions) => {
@@ -78,16 +95,30 @@ export class LeveledGradeDistributionComponent implements OnInit {
             map(([scale, gradeNameByValueMap]) => {
               const stackedBrackets = scale.gradeBrackets.stackedChartBrackets;
               const labels = Array(stackedBrackets.length).fill('');
-
-              const nextGradeName = Object.fromEntries(
-                scale.grades
-                  .sort((a, b) => a.value - b.value)
-                  .map((g, i, a) => {
-                    return i != a.length - 1
-                      ? [g.value, a[i + 1].name]
-                      : [g.value, ''];
-                  }),
+              const sortedGrades = [...scale.grades].sort(
+                (a, b) => a.value - b.value,
               );
+              const nextGradeValue = Object.fromEntries(
+                sortedGrades.map((g, i, a) =>
+                  i != a.length - 1
+                    ? [g.value, a[i + 1].value]
+                    : [g.value, null],
+                ),
+              );
+              const nextGradeName = Object.fromEntries(
+                sortedGrades.map((g, i, a) => {
+                  return i != a.length - 1
+                    ? [g.value, a[i + 1].name]
+                    : [g.value, ''];
+                }),
+              );
+              const positiveGrades = sortedGrades.filter((g) => g.value > 0);
+              const firstPositiveGrade =
+                positiveGrades.length > 0 ? positiveGrades[0].value : 1;
+              const maxGradeValue =
+                positiveGrades.length > 0
+                  ? positiveGrades[positiveGrades.length - 1].value
+                  : firstPositiveGrade;
 
               for (let i = 0; i < stackedBrackets.length; i++) {
                 const bracketValue = getStackedChartBracketValue(
@@ -120,11 +151,34 @@ export class LeveledGradeDistributionComponent implements OnInit {
                 total: 0,
                 meterValues: Array.from(
                   { length: stackedBrackets.length },
-                  (_, i) => ({
-                    color: getStackedChartBracketColor(stackedBrackets[i], i),
-                    value: 0,
-                    label: null,
-                  }),
+                  (_, i) => {
+                    const bracketValue = getStackedChartBracketValue(
+                      stackedBrackets[i],
+                    );
+                    let minGrade: number;
+                    let maxGrade: number;
+                    if (i === 0) {
+                      minGrade = firstPositiveGrade;
+                      maxGrade = bracketValue;
+                    } else if (i === stackedBrackets.length - 1) {
+                      minGrade = bracketValue;
+                      maxGrade = maxGradeValue;
+                    } else {
+                      const previousBracket = getStackedChartBracketValue(
+                        stackedBrackets[i - 1],
+                      );
+                      minGrade =
+                        nextGradeValue[previousBracket] ?? previousBracket + 1;
+                      maxGrade = bracketValue;
+                    }
+                    return {
+                      color: getStackedChartBracketColor(stackedBrackets[i], i),
+                      value: 0,
+                      label: null,
+                      minGrade,
+                      maxGrade,
+                    };
+                  },
                 ),
               };
               for (const gradeValue of Object.keys(
@@ -174,6 +228,31 @@ export class LeveledGradeDistributionComponent implements OnInit {
         this.gradeDistributionEmpty = false;
       });
     }
+  }
+
+  onGradeRangeClick(
+    event: Event,
+    data: StackChartData,
+    minGrade: number,
+    maxGrade: number,
+  ): void {
+    if (!this.linesListUrl) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const payload: LineListFiltersPersisted = {
+      advanced: defaultLineListAdvancedFilters(),
+      grade: {
+        scale: {
+          lineType: data.lineType,
+          gradeScale: data.gradeScale,
+        },
+        range: [minGrade, maxGrade],
+      },
+    };
+    saveLineListFilters(payload);
+    void this.router.navigateByUrl(this.linesListUrl);
   }
 
   protected readonly textColor = textColor;
