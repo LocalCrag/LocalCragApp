@@ -1,6 +1,11 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+    verify_jwt_in_request,
+)
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -14,6 +19,7 @@ from marshmallow_schemas.comment_schema import (
     paginated_comments_schema,
     paginated_comments_with_replies_schema,
 )
+from messages.messages import ResponseMessage
 from models.area import Area
 from models.comment import Comment
 from models.crag import Crag
@@ -21,13 +27,22 @@ from models.enums.notification_type_enum import NotificationTypeEnum
 from models.line import Line
 from models.post import Post
 from models.region import Region
+from models.rock_explorer_cluster import RockExplorerCluster
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
 from util.email import send_comment_created_email
+from util.generic_relationships import ROCK_EXPLORER_OBJECT_TYPES
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from util.secret_service import SecretService
 from webargs_schemas.comment_args import comment_args, comment_update_args
+
+
+def require_rock_explorer_membership(object_type: str) -> None:
+    """Rock explorer content is member-only; there is no public tier for these object types."""
+    if object_type in ROCK_EXPLORER_OBJECT_TYPES and not get_jwt().get("member"):
+        raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
 
 class CreateComment(MethodView):
@@ -52,8 +67,14 @@ class CreateComment(MethodView):
             target = Region.find_by_id(obj_id)
         elif obj_type == "Post":
             target = Post.find_by_id(obj_id)
+        elif obj_type == "RockExplorerFeature":
+            target = RockExplorerFeature.find_by_id(obj_id)
+        elif obj_type == "RockExplorerCluster":
+            target = RockExplorerCluster.find_by_id(obj_id)
         else:
             raise BadRequest("Unsupported object type")
+
+        require_rock_explorer_membership(obj_type)
 
         # Enforce secret spot visibility
         if hasattr(target, "secret") and target.secret and not SecretService.can_view_secrets():
@@ -166,6 +187,8 @@ class GetComments(MethodView):
             Returns only root comments with replyCount.
           - Thread replies flat: provide root-id.
         """
+        verify_jwt_in_request(optional=True)
+
         obj_type = request.args.get("object-type")
         obj_id = request.args.get("object-id")
         root_id = request.args.get("root-id")
@@ -208,13 +231,18 @@ class GetComments(MethodView):
             # Replies mode: fetch the whole thread (excluding root)
             root = Comment.find_by_id(root_id)
             current_type_for_secret = root.object_type
+            require_rock_explorer_membership(root.object_type)
             filters.extend([Comment.root_id == root_id])
             order_by_cols = [Comment.time_created.asc(), Comment.id]
         else:
             # Top-level listing requires object info
-            if obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post"] or not obj_id:
+            if (
+                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", *ROCK_EXPLORER_OBJECT_TYPES]
+                or not obj_id
+            ):
                 raise BadRequest("object-type and object-id are required and must be valid.")
             current_type_for_secret = obj_type
+            require_rock_explorer_membership(obj_type)
             filters.extend(
                 [
                     Comment.object_type == obj_type,
