@@ -14,6 +14,8 @@
   "sectorForm.sectorDescriptionPlaceholder": "Informazioni generali sul settore",
   "sectorForm.sectorRulesLabel": "Regolamento",
   "sectorForm.sectorRulesPlaceholder": "Regole del settore",
+  "sectorForm.sectorRulesTitleLabel": "Titolo dell'avviso regolamento",
+  "sectorForm.sectorRulesTitlePlaceholder": "Lascia vuoto per non mostrare un avviso, ad es. \"Si prega di leggere il regolamento\"",
   "sectorForm.sectorPortraitImageLabel": "Immagine",
   "sectorForm.blocweatherUrlLabel": "Blocweather URL",
   "sectorForm.blocweatherTooltip": "Per visualizzare le informazioni meteorologiche relative a quest'area nella pagina dei dettagli, puoi inserire qui l'URL della pagina corrispondente su blocweather.com.",
