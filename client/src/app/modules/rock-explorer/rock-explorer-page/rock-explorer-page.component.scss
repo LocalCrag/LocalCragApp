@@ -142,6 +142,61 @@
   opacity: 0.7;
 }
 
+.rock-explorer__topo-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rock-explorer__topo-link-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.rock-explorer__topo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.25rem 0.15rem 0.5rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 999px;
+  max-width: 100%;
+}
+
+.rock-explorer__topo-chip-type {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+.rock-explorer__topo-chip-name {
+  font-size: 0.875rem;
+  color: var(--p-primary-color);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rock-explorer__overflow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 16rem;
+  padding: 0.25rem;
+}
+
+.rock-explorer__overflow-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rock-explorer__layer-toggle--overflow {
+  margin-left: 0;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 640px) {
   .rock-explorer__panel {
     top: auto;

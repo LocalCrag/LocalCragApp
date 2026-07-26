@@ -34,16 +34,25 @@ import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+} from 'primeng/autocomplete';
+import { BadgeModule } from 'primeng/badge';
+import { Popover } from 'primeng/popover';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
+import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
+import { SearchService } from '../../../services/crud/search.service';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { RockExplorerCluster } from '../../../models/rock-explorer-cluster';
+import { Searchable } from '../../../models/searchable';
 import { RockExplorerPotential } from '../../../enums/rock-explorer-potential';
 import { RockExplorerRockQuality } from '../../../enums/rock-explorer-rock-quality';
 import { RockExplorerRockType } from '../../../enums/rock-explorer-rock-type';
@@ -55,6 +64,7 @@ import {
 } from '../../../utility/rock-explorer-hull';
 import { RockExplorerCommentsComponent } from '../rock-explorer-comments/rock-explorer-comments.component';
 import { RockExplorerGalleryComponent } from '../rock-explorer-gallery/rock-explorer-gallery.component';
+import { SearchableComponent } from '../../core/searchable/searchable.component';
 
 type DrawMode = 'select' | 'multi-select' | 'point' | 'polygon';
 
@@ -69,9 +79,14 @@ type DrawMode = 'select' | 'multi-select' | 'point' | 'polygon';
     Textarea,
     Toast,
     ConfirmDialog,
+    AutoCompleteModule,
+    BadgeModule,
+    Popover,
+    RouterLink,
     TranslocoDirective,
     RockExplorerCommentsComponent,
     RockExplorerGalleryComponent,
+    SearchableComponent,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './rock-explorer-page.component.html',
@@ -92,6 +107,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   public clusters: RockExplorerCluster[] = [];
   public selectedFeatureIds = new Set<string>();
   public creatingCluster = false;
+  public selectedTopoLink: Searchable | null = null;
+  public topoLinkSuggestions: Searchable[] = [];
+  public isMobileViewport = false;
+  public overflowMenuOpen = false;
 
   public potentialOptions = Object.values(RockExplorerPotential);
   public rockQualityOptions = Object.values(RockExplorerRockQuality);
@@ -161,12 +180,65 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private store = inject(Store);
   private rockExplorerService = inject(RockExplorerService);
+  private searchService = inject(SearchService);
   private cdr = inject(ChangeDetectorRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private transloco = inject(TranslocoService);
+  private mobileMediaQuery?: MediaQueryList;
+  private mobileMediaListener?: (event: MediaQueryListEvent) => void;
+
+  public get activeFilterCount(): number {
+    const value = this.filterForm.getRawValue();
+    return [value.potential, value.rockQuality, value.rockType].filter(
+      (v) => v != null && v !== '',
+    ).length;
+  }
+
+  public get hasActiveFilters(): boolean {
+    return this.activeFilterCount > 0;
+  }
+
+  public get polygonVertexCount(): number {
+    return this.polygonVertices.length;
+  }
+
+  public get topoLinkRouterLink(): string | null {
+    const link = this.selectedTopoLink;
+    if (!link) {
+      return null;
+    }
+    return (
+      link.line?.routerLink ||
+      link.area?.routerLink ||
+      link.sector?.routerLink ||
+      link.crag?.routerLink ||
+      null
+    );
+  }
+
+  public get topoLinkTypeLabel(): string {
+    const link = this.selectedTopoLink;
+    if (!link) {
+      return '';
+    }
+    if (link.line) {
+      return 'LINE';
+    }
+    if (link.area) {
+      return 'AREA';
+    }
+    if (link.sector) {
+      return 'SECTOR';
+    }
+    if (link.crag) {
+      return 'CRAG';
+    }
+    return '';
+  }
 
   ngAfterViewInit() {
+    this.bindMobileViewport();
     forkJoin([
       this.store.select(selectInstanceSettingsState).pipe(take(1)),
       this.rockExplorerService.getFeaturesGeoJSON(),
@@ -199,6 +271,12 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.mobileMediaQuery && this.mobileMediaListener) {
+      this.mobileMediaQuery.removeEventListener(
+        'change',
+        this.mobileMediaListener,
+      );
+    }
     this.map?.remove();
   }
 
@@ -209,9 +287,82 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.drawMode = mode;
     this.polygonVertices = [];
     this.clearDraftLayer();
-    if (mode !== 'select') {
+    if (mode === 'point' || mode === 'polygon' || mode === 'multi-select') {
       this.closePanel();
     }
+  }
+
+  public searchTopoLinks(event: AutoCompleteCompleteEvent) {
+    this.searchService
+      .search(event.query)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((results) => {
+        this.topoLinkSuggestions = results.filter(
+          (item) => item.line || item.area || item.sector || item.crag,
+        );
+        this.cdr.detectChanges();
+      });
+  }
+
+  public onTopoLinkSelect(searchable: Searchable) {
+    this.selectedTopoLink = searchable;
+    this.topoLinkSuggestions = [];
+  }
+
+  public clearTopoLink() {
+    this.selectedTopoLink = null;
+  }
+
+  public undoPolygonVertex() {
+    if (this.drawMode !== 'polygon' || this.polygonVertices.length === 0) {
+      return;
+    }
+    this.polygonVertices.pop();
+    this.renderPolygonDraft();
+  }
+
+  public cancelPolygonDraw() {
+    this.polygonVertices = [];
+    this.clearDraftLayer();
+    this.setDrawMode('select');
+  }
+
+  private applyTopoIdsToEntity(
+    entity: RockExplorerFeature | RockExplorerCluster,
+  ) {
+    entity.cragId = null;
+    entity.sectorId = null;
+    entity.areaId = null;
+    entity.lineId = null;
+    const link = this.selectedTopoLink;
+    if (!link) {
+      return;
+    }
+    if (link.line) {
+      entity.lineId = link.line.id;
+    } else if (link.area) {
+      entity.areaId = link.area.id;
+    } else if (link.sector) {
+      entity.sectorId = link.sector.id;
+    } else if (link.crag) {
+      entity.cragId = link.crag.id;
+    }
+  }
+
+  private bindMobileViewport() {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return;
+    }
+    this.mobileMediaQuery = window.matchMedia('(max-width: 640px)');
+    this.isMobileViewport = this.mobileMediaQuery.matches;
+    this.mobileMediaListener = (event: MediaQueryListEvent) => {
+      this.isMobileViewport = event.matches;
+      if (!event.matches) {
+        this.overflowMenuOpen = false;
+      }
+      this.cdr.detectChanges();
+    };
+    this.mobileMediaQuery.addEventListener('change', this.mobileMediaListener);
   }
 
   public clearSelection() {
@@ -360,10 +511,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     feature.geometry = (this.draftGeometry ||
       this.editingFeature!.geometry) as Geometry;
     feature.clusterId = raw.clusterId ?? null;
-    feature.cragId = feature.cragId ?? null;
-    feature.sectorId = feature.sectorId ?? null;
-    feature.areaId = feature.areaId ?? null;
-    feature.lineId = feature.lineId ?? null;
+    this.applyTopoIdsToEntity(feature);
 
     this.saving = true;
     const request$ = feature.id
@@ -421,6 +569,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
             gradeValueMax: cluster.gradeValueMax,
             accessIssues: cluster.accessIssues ?? [],
           });
+          this.selectedTopoLink = cluster.topoLink ?? null;
           this.panelOpen = true;
           this.cdr.detectChanges();
         },
@@ -452,6 +601,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     cluster.gradeValueMax = raw.gradeValueMax;
     cluster.accessIssues = (raw.accessIssues ||
       []) as RockExplorerAccessIssue[];
+    this.applyTopoIdsToEntity(cluster);
 
     this.saving = true;
     this.rockExplorerService
@@ -512,6 +662,8 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.editingFeature = null;
     this.editingCluster = null;
     this.draftGeometry = null;
+    this.selectedTopoLink = null;
+    this.topoLinkSuggestions = [];
     this.featureForm.reset({
       title: '',
       description: '',
@@ -717,6 +869,8 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.editingFeature = null;
     this.editingCluster = null;
     this.draftGeometry = geometry;
+    this.selectedTopoLink = null;
+    this.topoLinkSuggestions = [];
     this.featureForm.reset({
       title: '',
       description: '',
@@ -743,6 +897,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         this.editingFeature = feature;
         this.editingCluster = null;
         this.draftGeometry = feature.geometry;
+        this.selectedTopoLink = feature.topoLink ?? null;
         this.featureForm.patchValue({
           title: feature.title ?? '',
           description: feature.description ?? '',

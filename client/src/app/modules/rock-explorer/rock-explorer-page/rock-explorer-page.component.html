@@ -63,39 +63,127 @@
       }
       @if (drawMode === "polygon") {
         <p-button
+          icon="pi pi-undo"
+          [label]="t('rockExplorer.undoVertex')"
+          (onClick)="undoPolygonVertex()"
+          [disabled]="polygonVertexCount === 0"
+          size="small"
+          severity="secondary"
+          [outlined]="true"
+        />
+        <p-button
           icon="pi pi-check"
           [label]="t('rockExplorer.finishPolygon')"
           (onClick)="finishPolygon()"
+          [disabled]="polygonVertexCount < 3"
           size="small"
           severity="success"
         />
+        <p-button
+          icon="pi pi-times"
+          [label]="t('rockExplorer.cancelDraw')"
+          (onClick)="cancelPolygonDraw()"
+          size="small"
+          severity="secondary"
+          [outlined]="true"
+        />
       }
-      <p-button
-        icon="pi pi-filter"
-        [label]="t('rockExplorer.filters')"
-        (onClick)="toggleFilters()"
-        [outlined]="!showFilters"
-        size="small"
-      />
-      <div class="rock-explorer__layer-toggle">
+      @if (!isMobileViewport) {
         <p-button
-          [outlined]="mapStyle !== MapStyles.TOPO"
-          [severity]="mapStyle === MapStyles.TOPO ? 'primary' : undefined"
-          [label]="t('rockExplorer.mapStyle.topo')"
-          (onClick)="switchMapStyle(MapStyles.TOPO)"
+          icon="pi pi-filter"
+          [label]="t('rockExplorer.filters')"
+          (onClick)="toggleFilters()"
+          [outlined]="!showFilters"
           size="small"
         />
+        <div class="rock-explorer__layer-toggle">
+          <p-button
+            [outlined]="mapStyle !== MapStyles.TOPO"
+            [severity]="mapStyle === MapStyles.TOPO ? 'primary' : undefined"
+            [label]="t('rockExplorer.mapStyle.topo')"
+            (onClick)="switchMapStyle(MapStyles.TOPO)"
+            size="small"
+          />
+          <p-button
+            [outlined]="mapStyle !== MapStyles.SATELLITE"
+            [severity]="mapStyle === MapStyles.SATELLITE ? 'primary' : undefined"
+            [label]="t('rockExplorer.mapStyle.satellite')"
+            (onClick)="switchMapStyle(MapStyles.SATELLITE)"
+            size="small"
+          />
+        </div>
+      } @else {
         <p-button
-          [outlined]="mapStyle !== MapStyles.SATELLITE"
-          [severity]="mapStyle === MapStyles.SATELLITE ? 'primary' : undefined"
-          [label]="t('rockExplorer.mapStyle.satellite')"
-          (onClick)="switchMapStyle(MapStyles.SATELLITE)"
+          #overflowBtn
+          icon="pi pi-ellipsis-v"
+          [label]="t('rockExplorer.moreTools')"
+          (onClick)="overflowPopover.toggle($event)"
           size="small"
+          [outlined]="true"
+          [badge]="hasActiveFilters ? '' + activeFilterCount : undefined"
+          badgeSeverity="info"
         />
-      </div>
+        <p-popover #overflowPopover>
+          <div class="rock-explorer__overflow" [formGroup]="filterForm">
+            <p-select
+              formControlName="potential"
+              [options]="potentialOptions"
+              [placeholder]="t('rockExplorer.fields.potential')"
+              [showClear]="true"
+              appendTo="body"
+            />
+            <p-select
+              formControlName="rockQuality"
+              [options]="rockQualityOptions"
+              [placeholder]="t('rockExplorer.fields.rockQuality')"
+              [showClear]="true"
+              appendTo="body"
+            />
+            <p-select
+              formControlName="rockType"
+              [options]="rockTypeOptions"
+              [placeholder]="t('rockExplorer.fields.rockType')"
+              [showClear]="true"
+              appendTo="body"
+            />
+            <div class="rock-explorer__overflow-actions">
+              <p-button
+                [label]="t('rockExplorer.applyFilters')"
+                (onClick)="applyFilters(); overflowPopover.hide()"
+                size="small"
+              />
+              <p-button
+                [label]="t('rockExplorer.clearFilters')"
+                (onClick)="clearFilters(); overflowPopover.hide()"
+                severity="secondary"
+                [outlined]="true"
+                size="small"
+              />
+            </div>
+            <div class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow">
+              <p-button
+                [outlined]="mapStyle !== MapStyles.TOPO"
+                [severity]="mapStyle === MapStyles.TOPO ? 'primary' : undefined"
+                [label]="t('rockExplorer.mapStyle.topo')"
+                (onClick)="switchMapStyle(MapStyles.TOPO)"
+                size="small"
+              />
+              <p-button
+                [outlined]="mapStyle !== MapStyles.SATELLITE"
+                [severity]="
+                  mapStyle === MapStyles.SATELLITE ? 'primary' : undefined
+                "
+                [label]="t('rockExplorer.mapStyle.satellite')"
+                (onClick)="switchMapStyle(MapStyles.SATELLITE)"
+                size="small"
+              />
+            </div>
+          </div>
+        </p-popover>
+      }
     </div>
 
-    @if (showFilters) {
+    @if (showFilters && !isMobileViewport) {
       <div class="rock-explorer__filters" [formGroup]="filterForm">
         <p-select
           formControlName="potential"
@@ -235,6 +323,55 @@
                 [placeholder]="t('rockExplorer.noCluster')"
               />
             </label>
+            <div class="rock-explorer__topo-link">
+              <span class="rock-explorer__topo-link-label">{{
+                t("rockExplorer.fields.topoLink")
+              }}</span>
+              @if (selectedTopoLink) {
+                <div class="rock-explorer__topo-chip">
+                  <span class="rock-explorer__topo-chip-type">{{
+                    topoLinkTypeLabel
+                  }}</span>
+                  @if (topoLinkRouterLink) {
+                    <a
+                      class="rock-explorer__topo-chip-name"
+                      [routerLink]="topoLinkRouterLink"
+                      >{{ selectedTopoLink.name }}</a
+                    >
+                  } @else {
+                    <span class="rock-explorer__topo-chip-name">{{
+                      selectedTopoLink.name
+                    }}</span>
+                  }
+                  <p-button
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    [attr.aria-label]="t('rockExplorer.topoLinkClear')"
+                    (onClick)="clearTopoLink()"
+                  />
+                </div>
+              } @else {
+                <p-autoComplete
+                  [suggestions]="topoLinkSuggestions"
+                  (completeMethod)="searchTopoLinks($event)"
+                  (onSelect)="onTopoLinkSelect($event.value)"
+                  optionLabel="name"
+                  [forceSelection]="true"
+                  [placeholder]="t('rockExplorer.topoLinkPlaceholder')"
+                  appendTo="body"
+                  fluid
+                >
+                  <ng-template let-searchable #item>
+                    <lc-searchable
+                      [searchable]="searchable"
+                      [disableNavigation]="true"
+                    ></lc-searchable>
+                  </ng-template>
+                </p-autoComplete>
+              }
+            </div>
 
             <div class="rock-explorer__panel-actions">
               <p-button
@@ -346,6 +483,55 @@
                 [options]="accessIssueOptions"
               />
             </label>
+            <div class="rock-explorer__topo-link">
+              <span class="rock-explorer__topo-link-label">{{
+                t("rockExplorer.fields.topoLink")
+              }}</span>
+              @if (selectedTopoLink) {
+                <div class="rock-explorer__topo-chip">
+                  <span class="rock-explorer__topo-chip-type">{{
+                    topoLinkTypeLabel
+                  }}</span>
+                  @if (topoLinkRouterLink) {
+                    <a
+                      class="rock-explorer__topo-chip-name"
+                      [routerLink]="topoLinkRouterLink"
+                      >{{ selectedTopoLink.name }}</a
+                    >
+                  } @else {
+                    <span class="rock-explorer__topo-chip-name">{{
+                      selectedTopoLink.name
+                    }}</span>
+                  }
+                  <p-button
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    [attr.aria-label]="t('rockExplorer.topoLinkClear')"
+                    (onClick)="clearTopoLink()"
+                  />
+                </div>
+              } @else {
+                <p-autoComplete
+                  [suggestions]="topoLinkSuggestions"
+                  (completeMethod)="searchTopoLinks($event)"
+                  (onSelect)="onTopoLinkSelect($event.value)"
+                  optionLabel="name"
+                  [forceSelection]="true"
+                  [placeholder]="t('rockExplorer.topoLinkPlaceholder')"
+                  appendTo="body"
+                  fluid
+                >
+                  <ng-template let-searchable #item>
+                    <lc-searchable
+                      [searchable]="searchable"
+                      [disableNavigation]="true"
+                    ></lc-searchable>
+                  </ng-template>
+                </p-autoComplete>
+              }
+            </div>
 
             <section class="rock-explorer__cluster-members">
               <h3>{{ t("rockExplorer.clusterMembers") }}</h3>
