@@ -28,14 +28,44 @@ def apply_rock_explorer_metadata(entity, data: dict) -> None:
         entity.grade_value_max = data["gradeValueMax"]
     if "accessIssues" in data:
         entity.access_issues = list(data["accessIssues"] or [])
-    if "cragId" in data:
-        entity.crag_id = data["cragId"]
-    if "sectorId" in data:
-        entity.sector_id = data["sectorId"]
-    if "areaId" in data:
-        entity.area_id = data["areaId"]
-    if "lineId" in data:
-        entity.line_id = data["lineId"]
+
+    # Single-leaf topo link invariant: at most one of crag/sector/area/line is non-null.
+    topo_keys = ("cragId", "sectorId", "areaId", "lineId")
+    if any(k in data for k in topo_keys):
+        if "lineId" in data:
+            entity.line_id = data["lineId"] or None
+        if "areaId" in data:
+            entity.area_id = data["areaId"] or None
+        if "sectorId" in data:
+            entity.sector_id = data["sectorId"] or None
+        if "cragId" in data:
+            entity.crag_id = data["cragId"] or None
+        _enforce_single_leaf_topo(entity)
+
+
+def _enforce_single_leaf_topo(entity) -> None:
+    """Keep at most one topo FK (priority: line > area > sector > crag)."""
+    if entity.line_id:
+        entity.area_id = None
+        entity.sector_id = None
+        entity.crag_id = None
+    elif entity.area_id:
+        entity.line_id = None
+        entity.sector_id = None
+        entity.crag_id = None
+    elif entity.sector_id:
+        entity.line_id = None
+        entity.area_id = None
+        entity.crag_id = None
+    elif entity.crag_id:
+        entity.line_id = None
+        entity.area_id = None
+        entity.sector_id = None
+    else:
+        entity.line_id = None
+        entity.area_id = None
+        entity.sector_id = None
+        entity.crag_id = None
 
 
 def rock_explorer_gallery_image_ids_subquery():

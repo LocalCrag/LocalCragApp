@@ -180,3 +180,74 @@ def test_features_geojson_reports_has_images(client, member_token):
     props = {f["id"]: f["properties"] for f in geo.json["features"]}
     assert props[tagged_id]["hasImages"] is True
     assert props[untagged_id]["hasImages"] is False
+
+
+def test_feature_topo_link_single_leaf_and_dump(client, member_token):
+    from models.line import Line
+
+    line = Line.query.filter(Line.archived.is_(False)).first()
+    assert line is not None
+
+    created = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(
+            lineId=str(line.id),
+            cragId=None,
+            sectorId=None,
+            areaId=None,
+        ),
+    )
+    assert created.status_code == 201
+    body = created.json
+    assert body["lineId"] == str(line.id)
+    assert body["cragId"] is None
+    assert body["sectorId"] is None
+    assert body["areaId"] is None
+    assert body["topoLink"] is not None
+    assert body["topoLink"]["type"] == "LINE"
+    assert body["topoLink"]["item"]["name"] == line.name
+
+    cleared = client.put(
+        f"/api/rock-explorer/features/{body['id']}",
+        token=member_token,
+        json=_point_payload(
+            title=body["title"],
+            lineId=None,
+            cragId=None,
+            sectorId=None,
+            areaId=None,
+            geometry=body["geometry"],
+        ),
+    )
+    assert cleared.status_code == 200
+    assert cleared.json["lineId"] is None
+    assert cleared.json["topoLink"] is None
+
+
+def test_cluster_topo_link_crag_leaf(client, member_token):
+    from models.crag import Crag
+
+    crag = Crag.query.first()
+    assert crag is not None
+
+    cluster_rv = client.post(
+        "/api/rock-explorer/clusters",
+        token=member_token,
+        json={
+            "title": "Linked cluster",
+            "description": None,
+            "accessIssues": [],
+            "cragId": str(crag.id),
+            "sectorId": None,
+            "areaId": None,
+            "lineId": None,
+        },
+    )
+    assert cluster_rv.status_code == 201
+    body = cluster_rv.json
+    assert body["cragId"] == str(crag.id)
+    assert body["lineId"] is None
+    assert body["topoLink"] is not None
+    assert body["topoLink"]["type"] == "CRAG"
+    assert body["topoLink"]["item"]["name"] == crag.name

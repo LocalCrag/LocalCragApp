@@ -5,6 +5,7 @@ import { RockExplorerRockQuality } from '../enums/rock-explorer-rock-quality';
 import { RockExplorerRockType } from '../enums/rock-explorer-rock-type';
 import { RockExplorerAccessIssue } from '../enums/rock-explorer-access-issue';
 import { LineType } from '../enums/line-type';
+import { Searchable } from './searchable';
 
 /**
  * Rock Explorer cluster grouping a set of features. Has no geometry of its own;
@@ -25,6 +26,7 @@ export class RockExplorerCluster extends AbstractModel {
   sectorId: string | null;
   areaId: string | null;
   lineId: string | null;
+  topoLink: Searchable | null;
   featureIds: string[];
   createdBy: User | null;
 
@@ -45,6 +47,9 @@ export class RockExplorerCluster extends AbstractModel {
     cluster.sectorId = payload.sectorId ?? null;
     cluster.areaId = payload.areaId ?? null;
     cluster.lineId = payload.lineId ?? null;
+    cluster.topoLink = payload.topoLink
+      ? Searchable.deserialize(payload.topoLink)
+      : null;
     cluster.featureIds = payload.featureIds ?? [];
     cluster.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
