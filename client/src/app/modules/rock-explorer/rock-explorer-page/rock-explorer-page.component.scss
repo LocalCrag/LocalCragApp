@@ -68,13 +68,19 @@
   }
 }
 
-:host ::ng-deep p-button.rock-explorer__filter-btn .rock-explorer__filter-label-group {
+:host
+  ::ng-deep
+  p-button.rock-explorer__filter-btn
+  .rock-explorer__filter-label-group {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-:host ::ng-deep p-button.rock-explorer__filter-btn .rock-explorer__filter-active-dot {
+:host
+  ::ng-deep
+  p-button.rock-explorer__filter-btn
+  .rock-explorer__filter-active-dot {
   flex-shrink: 0;
   width: 0.5rem;
   height: 0.5rem;
@@ -201,7 +207,9 @@
   background: var(--p-content-background);
   border-left: 1px solid var(--p-content-border-color);
   box-shadow: var(--p-card-shadow);
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 
   &--map-pick-hidden {
     pointer-events: none;

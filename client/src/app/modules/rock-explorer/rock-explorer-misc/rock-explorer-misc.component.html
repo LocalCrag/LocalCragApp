@@ -1,6 +1,11 @@
 <ng-container *transloco="let t">
   <section class="rock-explorer-misc">
-    <p-menu #parkingMenu [model]="parkingMenuItems" [popup]="true" appendTo="body" />
+    <p-menu
+      #parkingMenu
+      [model]="parkingMenuItems"
+      [popup]="true"
+      appendTo="body"
+    />
 
     <div class="rock-explorer-misc__section">
       <div class="rock-explorer-misc__section-header">
@@ -88,9 +93,7 @@
               } @else {
                 <div class="rock-explorer-misc__view">
                   <div class="rock-explorer-misc__view-title">
-                    {{
-                      site.title || t("rockExplorer.untitledParking")
-                    }}
+                    {{ site.title || t("rockExplorer.untitledParking") }}
                   </div>
                   @if (site.description) {
                     <div class="rock-explorer-misc__view-description">
@@ -161,9 +164,7 @@
                     [ngModel]="path.description"
                     (ngModelChange)="path.description = $event"
                     [ngModelOptions]="{ standalone: true }"
-                    [placeholder]="
-                      t('rockExplorer.pathDescriptionPlaceholder')
-                    "
+                    [placeholder]="t('rockExplorer.pathDescriptionPlaceholder')"
                     [disabled]="saving"
                   ></textarea>
                   @if (drawingPathId === path.id) {

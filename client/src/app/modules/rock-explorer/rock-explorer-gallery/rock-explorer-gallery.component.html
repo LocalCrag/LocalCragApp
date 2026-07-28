@@ -13,9 +13,9 @@
       >
         <lc-multi-image-upload formControlName="images"></lc-multi-image-upload>
         @if (uploading) {
-          <small class="rock-explorer-gallery__uploading">{{
-            t("rockExplorer.addImage")
-          }}…</small>
+          <small class="rock-explorer-gallery__uploading"
+            >{{ t("rockExplorer.addImage") }}…</small
+          >
         }
       </div>
     }
@@ -54,9 +54,7 @@
           <img
             class="rock-explorer-gallery__galleria-img"
             [src]="
-              item.image.thumbnailXL ||
-              item.image.thumbnailL ||
-              item.image.path
+              item.image.thumbnailXL || item.image.thumbnailL || item.image.path
             "
             [srcset]="item.image.srcSet"
             [alt]="item.description || ''"
@@ -78,12 +76,7 @@
         </ng-template>
       </p-galleria>
     } @else {
-      <p-menu
-        #gpsMenu
-        [model]="gpsMenuItems"
-        [popup]="true"
-        appendTo="body"
-      />
+      <p-menu #gpsMenu [model]="gpsMenuItems" [popup]="true" appendTo="body" />
       <div class="rock-explorer-gallery__edit-list">
         @for (image of images; track image.id) {
           <div
@@ -185,6 +178,5 @@
         />
       </div>
     </p-dialog>
-
   </section>
 </ng-container>

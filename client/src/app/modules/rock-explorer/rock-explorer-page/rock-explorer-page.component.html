@@ -190,7 +190,9 @@
               class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
             >
               <p-button
-                [severity]="mapStyle === MapStyles.TOPO ? 'primary' : 'secondary'"
+                [severity]="
+                  mapStyle === MapStyles.TOPO ? 'primary' : 'secondary'
+                "
                 [label]="t('rockExplorer.mapStyle.topo')"
                 (onClick)="switchMapStyle(MapStyles.TOPO)"
                 size="small"
@@ -340,9 +342,7 @@
           <div class="rock-explorer__view">
             <header class="rock-explorer__panel-header">
               <h2>
-                {{
-                  editingFeature!.title || t("rockExplorer.untitledFeature")
-                }}
+                {{ editingFeature!.title || t("rockExplorer.untitledFeature") }}
               </h2>
               <div class="rock-explorer__panel-header-actions">
                 <p-button
