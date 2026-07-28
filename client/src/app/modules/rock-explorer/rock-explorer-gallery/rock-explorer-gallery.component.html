@@ -1,45 +1,146 @@
 <ng-container *transloco="let t">
+  <p-toast />
   <section class="rock-explorer-gallery">
-    <h3>{{ t("rockExplorer.images") }}</h3>
-    <div *isMember="true" [formGroup]="uploadForm" class="rock-explorer-gallery__upload">
-      <lc-single-image-upload formControlName="image"></lc-single-image-upload>
-      <p-button
-        [label]="t('rockExplorer.addImage')"
-        size="small"
-        [loading]="uploading"
-        [disabled]="!uploadForm.get('image')?.value"
-        (onClick)="uploadImage()"
-      />
-    </div>
-    <div class="rock-explorer-gallery__strip">
-      @for (image of images; track image.id) {
-        <div class="rock-explorer-gallery__thumb">
-          <p-image
-            [src]="image.image.thumbnailS"
-            [preview]="true"
-            [previewImageSrcSet]="image.image.srcSet"
+    @if (showHeading) {
+      <h3>{{ t("rockExplorer.images") }}</h3>
+    }
+
+    @if (editMode) {
+      <div
+        *isMember="true"
+        [formGroup]="uploadForm"
+        class="rock-explorer-gallery__upload"
+      >
+        <lc-multi-image-upload formControlName="images"></lc-multi-image-upload>
+        @if (uploading) {
+          <small class="rock-explorer-gallery__uploading">{{
+            t("rockExplorer.addImage")
+          }}…</small>
+        }
+      </div>
+    }
+
+    @if (!editMode) {
+      <div class="rock-explorer-gallery__strip">
+        @for (image of images; track image.id; let i = $index) {
+          <button
+            type="button"
+            class="rock-explorer-gallery__thumb rock-explorer-gallery__thumb--button"
+            (click)="openGallery(i)"
           >
-            <ng-template #indicator><i class="pi pi-eye"></i></ng-template>
-          </p-image>
-          @if (
-            image.createdBy?.id === loggedInUser?.id || loggedInUser?.moderator
-          ) {
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              [text]="true"
-              [rounded]="true"
-              size="small"
-              (onClick)="confirmDeleteImage($event, image)"
+            <img
+              [src]="image.image.thumbnailS"
+              [alt]="image.description || ''"
             />
+          </button>
+        }
+        @if (loading === loadingStates.LOADING) {
+          <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+        }
+      </div>
+
+      <p-galleria
+        [value]="images"
+        [(visible)]="galleryVisible"
+        [(activeIndex)]="activeIndex"
+        [fullScreen]="true"
+        [showItemNavigators]="true"
+        [showThumbnails]="false"
+        [circular]="true"
+        [baseZIndex]="1200"
+        [containerStyle]="{ 'max-width': '90vw' }"
+      >
+        <ng-template #item let-item>
+          <img
+            class="rock-explorer-gallery__galleria-img"
+            [src]="
+              item.image.thumbnailXL ||
+              item.image.thumbnailL ||
+              item.image.path
+            "
+            [srcset]="item.image.srcSet"
+            [alt]="item.description || ''"
+          />
+        </ng-template>
+        <ng-template #caption let-item>
+          @if (item.description || getImageCoordinates(item)) {
+            <div class="rock-explorer-gallery__caption">
+              @if (item.description) {
+                <div>{{ item.description }}</div>
+              }
+              @if (getImageCoordinates(item); as coordinates) {
+                <lc-coordinates-button
+                  [coordinates]="coordinates"
+                ></lc-coordinates-button>
+              }
+            </div>
           }
-        </div>
-      }
-      @if (loading === loadingStates.LOADING) {
-        <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
-      }
-    </div>
-    @if (hasNextPage && loading !== loadingStates.LOADING && images.length > 0) {
+        </ng-template>
+      </p-galleria>
+    } @else {
+      <p-menu
+        #gpsMenu
+        [model]="gpsMenuItems"
+        [popup]="true"
+        appendTo="body"
+      />
+      <div class="rock-explorer-gallery__edit-list">
+        @for (image of images; track image.id) {
+          <div
+            class="rock-explorer-gallery__edit-item"
+            [class.rock-explorer-gallery__edit-item--picking]="
+              pickingImageId === image.id
+            "
+          >
+            <img
+              class="rock-explorer-gallery__edit-thumb"
+              [src]="image.image.thumbnailS"
+              [alt]="image.description || ''"
+            />
+            <textarea
+              class="rock-explorer-gallery__edit-description"
+              pTextarea
+              rows="2"
+              [ngModel]="image.description"
+              (ngModelChange)="image.description = $event"
+              [ngModelOptions]="{ standalone: true }"
+              [placeholder]="t('rockExplorer.imageDescriptionPlaceholder')"
+            ></textarea>
+            <div class="rock-explorer-gallery__edit-actions">
+              <p-button
+                icon="pi pi-map-marker"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                [severity]="gpsButtonSeverity(image)"
+                [disabled]="saving"
+                [attr.aria-label]="t('rockExplorer.imageCoordinatesLabel')"
+                (onClick)="openGpsMenu($event, image, gpsMenu)"
+              />
+              @if (canDeleteImage(image)) {
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  size="small"
+                  (click)="confirmDeleteImage($event, image)"
+                />
+              } @else {
+                <span class="rock-explorer-gallery__edit-delete-spacer"></span>
+              }
+            </div>
+          </div>
+        }
+        @if (loading === loadingStates.LOADING) {
+          <lc-gallery-image-skeleton></lc-gallery-image-skeleton>
+        }
+      </div>
+    }
+
+    @if (
+      hasNextPage && loading !== loadingStates.LOADING && images.length > 0
+    ) {
       <p-button
         [label]="t('rockExplorer.loadMore')"
         size="small"
@@ -52,6 +153,38 @@
         t("rockExplorer.noImages")
       }}</p-message>
     }
-    <p-confirmpopup></p-confirmpopup>
+
+    <p-dialog
+      [header]="t('rockExplorer.imageGpsDialogTitle')"
+      [modal]="true"
+      [(visible)]="coordinatesDialogVisible"
+      [style]="{ width: 'min(28rem, 95vw)' }"
+      appendTo="body"
+      [draggable]="false"
+      (onHide)="closeCoordinatesDialog()"
+    >
+      <div class="rock-explorer-gallery__gps-dialog">
+        <lc-coordinates
+          idPrefix="gallery-gps-dialog-"
+          [ngModel]="coordinatesDialogValue"
+          (ngModelChange)="coordinatesDialogValue = $event"
+          [ngModelOptions]="{ standalone: true }"
+        ></lc-coordinates>
+      </div>
+      <div class="rock-explorer-gallery__gps-dialog-actions">
+        <p-button
+          [label]="t('rockExplorer.imageGpsDialogCancel')"
+          severity="secondary"
+          [text]="true"
+          (onClick)="closeCoordinatesDialog()"
+        />
+        <p-button
+          [label]="t('rockExplorer.imageGpsDialogApply')"
+          icon="pi pi-check"
+          (onClick)="applyCoordinatesDialog()"
+        />
+      </div>
+    </p-dialog>
+
   </section>
 </ng-container>

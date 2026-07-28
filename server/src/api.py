@@ -133,6 +133,14 @@ from resources.ranking_resources import GetRanking
 from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateReaction
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.release_note_resources import GetReleaseNoteBundle
+from resources.rock_explorer_resources import (
+    CreateRockExplorerFeature,
+    DeleteRockExplorerFeature,
+    GetRockExplorerFeature,
+    GetRockExplorerFeatures,
+    GetRockExplorerFeaturesGeoJSON,
+    UpdateRockExplorerFeature,
+)
 from resources.scale_resources import (
     CreateScale,
     DeleteScale,
@@ -554,5 +562,25 @@ def configure_api(app):
         "/<string:target_type>/<string:target_id>", view_func=DeleteReaction.as_view("delete_reaction")
     )
     app.register_blueprint(reactions_bp, url_prefix="/api/reactions")
+
+    # Rock Explorer API (members only)
+    rock_explorer_bp = Blueprint("rock-explorer", __name__)
+    rock_explorer_bp.add_url_rule(
+        "/features.geojson", view_func=GetRockExplorerFeaturesGeoJSON.as_view("get_rock_explorer_features_geojson")
+    )
+    rock_explorer_bp.add_url_rule("/features", view_func=GetRockExplorerFeatures.as_view("get_rock_explorer_features"))
+    rock_explorer_bp.add_url_rule(
+        "/features", view_func=CreateRockExplorerFeature.as_view("create_rock_explorer_feature")
+    )
+    rock_explorer_bp.add_url_rule(
+        "/features/<uuid:feature_id>", view_func=GetRockExplorerFeature.as_view("get_rock_explorer_feature")
+    )
+    rock_explorer_bp.add_url_rule(
+        "/features/<uuid:feature_id>", view_func=UpdateRockExplorerFeature.as_view("update_rock_explorer_feature")
+    )
+    rock_explorer_bp.add_url_rule(
+        "/features/<uuid:feature_id>", view_func=DeleteRockExplorerFeature.as_view("delete_rock_explorer_feature")
+    )
+    app.register_blueprint(rock_explorer_bp, url_prefix="/api/rock-explorer")
 
     _register_dev_routes(app)

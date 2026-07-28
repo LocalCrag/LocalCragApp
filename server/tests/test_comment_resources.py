@@ -643,23 +643,20 @@ def test_cannot_react_to_own_comment(client, member_token):
 # for listing. See 08-02-PLAN.md.
 
 
-def _create_rock_explorer_entities():
+def _create_rock_explorer_feature():
     from extensions import db
-    from models.rock_explorer_cluster import RockExplorerCluster
     from models.rock_explorer_feature import RockExplorerFeature
 
-    cluster = RockExplorerCluster()
-    cluster.title = "Comment cluster"
     feature = RockExplorerFeature()
     feature.title = "Comment feature"
     feature.geometry = {"type": "Point", "coordinates": [8.1, 50.2]}
-    db.session.add_all([cluster, feature])
+    db.session.add(feature)
     db.session.commit()
-    return feature, cluster
+    return feature
 
 
-def test_rock_explorer_member_can_create_comment_on_feature_and_cluster(client, member_token):
-    feature, cluster = _create_rock_explorer_entities()
+def test_rock_explorer_member_can_create_comment_on_feature(client, member_token):
+    feature = _create_rock_explorer_feature()
 
     rv = client.post(
         "/api/comments",
@@ -674,55 +671,40 @@ def test_rock_explorer_member_can_create_comment_on_feature_and_cluster(client, 
     assert rv.status_code == 201
     assert rv.json["message"] == "Feature comment"
 
+
+def test_rock_explorer_non_member_cannot_create_comment(client, user_token):
+    feature = _create_rock_explorer_feature()
+
     rv = client.post(
         "/api/comments",
-        token=member_token,
+        token=user_token,
         json={
-            "message": "Cluster comment",
-            "objectType": "RockExplorerCluster",
-            "objectId": str(cluster.id),
+            "message": "Nope",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
             "parentId": None,
         },
     )
-    assert rv.status_code == 201
-    assert rv.json["message"] == "Cluster comment"
-
-
-def test_rock_explorer_non_member_cannot_create_comment(client, user_token):
-    feature, cluster = _create_rock_explorer_entities()
-
-    for obj_type, obj_id in (("RockExplorerFeature", feature.id), ("RockExplorerCluster", cluster.id)):
-        rv = client.post(
-            "/api/comments",
-            token=user_token,
-            json={
-                "message": "Nope",
-                "objectType": obj_type,
-                "objectId": str(obj_id),
-                "parentId": None,
-            },
-        )
-        assert rv.status_code == 401
+    assert rv.status_code == 401
 
 
 def test_rock_explorer_anonymous_cannot_create_comment(client):
-    feature, cluster = _create_rock_explorer_entities()
+    feature = _create_rock_explorer_feature()
 
-    for obj_type, obj_id in (("RockExplorerFeature", feature.id), ("RockExplorerCluster", cluster.id)):
-        rv = client.post(
-            "/api/comments",
-            json={
-                "message": "Nope",
-                "objectType": obj_type,
-                "objectId": str(obj_id),
-                "parentId": None,
-            },
-        )
-        assert rv.status_code == 401
+    rv = client.post(
+        "/api/comments",
+        json={
+            "message": "Nope",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 401
 
 
 def test_rock_explorer_member_can_list_comments(client, member_token):
-    feature, _ = _create_rock_explorer_entities()
+    feature = _create_rock_explorer_feature()
 
     rv = client.post(
         "/api/comments",
@@ -746,7 +728,7 @@ def test_rock_explorer_member_can_list_comments(client, member_token):
 
 
 def test_rock_explorer_non_member_cannot_list_comments(client, member_token, user_token):
-    feature, _ = _create_rock_explorer_entities()
+    feature = _create_rock_explorer_feature()
 
     rv = client.post(
         "/api/comments",
@@ -768,15 +750,14 @@ def test_rock_explorer_non_member_cannot_list_comments(client, member_token, use
 
 
 def test_rock_explorer_anonymous_cannot_list_comments(client):
-    feature, cluster = _create_rock_explorer_entities()
+    feature = _create_rock_explorer_feature()
 
-    for obj_type, obj_id in (("RockExplorerFeature", feature.id), ("RockExplorerCluster", cluster.id)):
-        rv = client.get(f"/api/comments?object-type={obj_type}&object-id={obj_id}&per-page=20")
-        assert rv.status_code == 401
+    rv = client.get(f"/api/comments?object-type=RockExplorerFeature&object-id={feature.id}&per-page=20")
+    assert rv.status_code == 401
 
 
 def test_rock_explorer_replies_mode_is_member_gated(client, member_token, user_token):
-    feature, _ = _create_rock_explorer_entities()
+    feature = _create_rock_explorer_feature()
 
     rv = client.post(
         "/api/comments",

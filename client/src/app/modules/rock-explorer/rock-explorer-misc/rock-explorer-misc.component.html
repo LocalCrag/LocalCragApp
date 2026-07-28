@@ -1,0 +1,302 @@
+<ng-container *transloco="let t">
+  <section class="rock-explorer-misc">
+    <p-menu #parkingMenu [model]="parkingMenuItems" [popup]="true" appendTo="body" />
+
+    <div class="rock-explorer-misc__section">
+      <div class="rock-explorer-misc__section-header">
+        <h3>{{ t("rockExplorer.parkingSites") }}</h3>
+        @if (editMode) {
+          <p-button
+            [label]="t('rockExplorer.addParking')"
+            icon="pi pi-plus"
+            size="small"
+            [text]="true"
+            [disabled]="saving"
+            (onClick)="addParkingSite()"
+          />
+        }
+      </div>
+
+      @if (parkingSites.length === 0) {
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t("rockExplorer.noParking")
+        }}</p-message>
+      } @else {
+        <div class="rock-explorer-misc__list">
+          @for (site of parkingSites; track site.id) {
+            <div
+              class="rock-explorer-misc__item"
+              [class.rock-explorer-misc__item--view]="!editMode"
+              [class.rock-explorer-misc__item--picking]="
+                pickingParkingId === site.id
+              "
+            >
+              @if (editMode) {
+                <div class="rock-explorer-misc__fields">
+                  <input
+                    pInputText
+                    class="rock-explorer-misc__title"
+                    [ngModel]="site.title"
+                    (ngModelChange)="
+                      site.title = $event; onParkingFieldChange()
+                    "
+                    [ngModelOptions]="{ standalone: true }"
+                    [placeholder]="t('rockExplorer.parkingTitlePlaceholder')"
+                    [disabled]="saving"
+                  />
+                  <textarea
+                    pTextarea
+                    rows="2"
+                    class="rock-explorer-misc__description"
+                    [ngModel]="site.description"
+                    (ngModelChange)="
+                      site.description = $event; onParkingFieldChange()
+                    "
+                    [ngModelOptions]="{ standalone: true }"
+                    [placeholder]="
+                      t('rockExplorer.parkingDescriptionPlaceholder')
+                    "
+                    [disabled]="saving"
+                  ></textarea>
+                  @if (!parkingHasCoordinates(site)) {
+                    <small class="rock-explorer-misc__hint">{{
+                      t("rockExplorer.parkingNeedsCoordinates")
+                    }}</small>
+                  }
+                </div>
+                <div class="rock-explorer-misc__actions">
+                  <p-button
+                    icon="pi pi-map-marker"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    [severity]="parkingButtonSeverity(site)"
+                    [disabled]="saving"
+                    [attr.aria-label]="t('rockExplorer.parkingPickOnMap')"
+                    (onClick)="openParkingMenu($event, site, parkingMenu)"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    size="small"
+                    [disabled]="saving"
+                    (click)="confirmDeleteParking($event, site)"
+                  />
+                </div>
+              } @else {
+                <div class="rock-explorer-misc__view">
+                  <div class="rock-explorer-misc__view-title">
+                    {{
+                      site.title || t("rockExplorer.untitledParking")
+                    }}
+                  </div>
+                  @if (site.description) {
+                    <div class="rock-explorer-misc__view-description">
+                      {{ site.description }}
+                    </div>
+                  }
+                </div>
+                @if (parkingHasCoordinates(site)) {
+                  <p-button
+                    icon="pi pi-eye"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    (onClick)="focusParking(site)"
+                  />
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="rock-explorer-misc__section">
+      <div class="rock-explorer-misc__section-header">
+        <h3>{{ t("rockExplorer.paths") }}</h3>
+        @if (editMode) {
+          <p-button
+            [label]="t('rockExplorer.addPath')"
+            icon="pi pi-plus"
+            size="small"
+            [text]="true"
+            [disabled]="saving || !!drawingPathId"
+            (onClick)="addPath()"
+          />
+        }
+      </div>
+
+      @if (paths.length === 0) {
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t("rockExplorer.noPaths")
+        }}</p-message>
+      } @else {
+        <div class="rock-explorer-misc__list">
+          @for (path of paths; track path.id) {
+            <div
+              class="rock-explorer-misc__item"
+              [class.rock-explorer-misc__item--view]="!editMode"
+              [class.rock-explorer-misc__item--drawing]="
+                drawingPathId === path.id
+              "
+            >
+              @if (editMode) {
+                <div class="rock-explorer-misc__fields">
+                  <input
+                    pInputText
+                    class="rock-explorer-misc__title"
+                    [ngModel]="path.title"
+                    (ngModelChange)="path.title = $event"
+                    [ngModelOptions]="{ standalone: true }"
+                    [placeholder]="t('rockExplorer.pathTitlePlaceholder')"
+                    [disabled]="saving"
+                  />
+                  <textarea
+                    pTextarea
+                    rows="2"
+                    class="rock-explorer-misc__description"
+                    [ngModel]="path.description"
+                    (ngModelChange)="path.description = $event"
+                    [ngModelOptions]="{ standalone: true }"
+                    [placeholder]="
+                      t('rockExplorer.pathDescriptionPlaceholder')
+                    "
+                    [disabled]="saving"
+                  ></textarea>
+                  @if (drawingPathId === path.id) {
+                    <div class="rock-explorer-misc__draw-bar">
+                      <div class="rock-explorer-misc__draw-actions">
+                        <p-button
+                          [label]="t('rockExplorer.undoVertex')"
+                          icon="pi pi-undo"
+                          size="small"
+                          [text]="true"
+                          [disabled]="pathDraftVertices.length === 0"
+                          (onClick)="undoPathVertex()"
+                        />
+                        <p-button
+                          [label]="t('rockExplorer.deletePathVertex')"
+                          icon="pi pi-trash"
+                          size="small"
+                          [text]="true"
+                          severity="danger"
+                          [disabled]="selectedPathVertexIndex == null"
+                          (onClick)="deletePathVertex()"
+                        />
+                        <p-button
+                          [label]="t('rockExplorer.finishPath')"
+                          icon="pi pi-check"
+                          size="small"
+                          [disabled]="pathDraftVertices.length < 2"
+                          (onClick)="finishPathDraw()"
+                        />
+                        <p-button
+                          [label]="t('rockExplorer.cancelDraw')"
+                          severity="secondary"
+                          size="small"
+                          [text]="true"
+                          (onClick)="cancelPathDraw()"
+                        />
+                      </div>
+                    </div>
+                  } @else if (!pathHasGeometry(path)) {
+                    <small class="rock-explorer-misc__hint">{{
+                      t("rockExplorer.pathNeedsVertices")
+                    }}</small>
+                  }
+                </div>
+                <div class="rock-explorer-misc__actions">
+                  @if (drawingPathId !== path.id) {
+                    <p-button
+                      icon="pi pi-pencil"
+                      [rounded]="true"
+                      [text]="true"
+                      size="small"
+                      [disabled]="saving || !!drawingPathId"
+                      [attr.aria-label]="t('rockExplorer.drawPath')"
+                      (onClick)="startPathDraw(path)"
+                    />
+                    @if (pathHasGeometry(path)) {
+                      <p-button
+                        icon="pi pi-eye"
+                        [rounded]="true"
+                        [text]="true"
+                        size="small"
+                        [disabled]="saving"
+                        (onClick)="focusPath(path)"
+                      />
+                    }
+                  }
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    size="small"
+                    [disabled]="saving"
+                    (click)="confirmDeletePath($event, path)"
+                  />
+                </div>
+              } @else {
+                <div class="rock-explorer-misc__view">
+                  <div class="rock-explorer-misc__view-title">
+                    {{ path.title || t("rockExplorer.untitledPath") }}
+                  </div>
+                  @if (path.description) {
+                    <div class="rock-explorer-misc__view-description">
+                      {{ path.description }}
+                    </div>
+                  }
+                </div>
+                @if (pathHasGeometry(path)) {
+                  <p-button
+                    icon="pi pi-eye"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    (onClick)="focusPath(path)"
+                  />
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <p-dialog
+      [header]="t('rockExplorer.parkingGpsDialogTitle')"
+      [modal]="true"
+      [(visible)]="coordinatesDialogVisible"
+      [style]="{ width: 'min(28rem, 95vw)' }"
+      appendTo="body"
+      [draggable]="false"
+      (onHide)="closeCoordinatesDialog()"
+    >
+      <div class="rock-explorer-misc__gps-dialog">
+        <lc-coordinates
+          idPrefix="misc-parking-gps-"
+          [ngModel]="coordinatesDialogValue"
+          (ngModelChange)="coordinatesDialogValue = $event"
+          [ngModelOptions]="{ standalone: true }"
+        ></lc-coordinates>
+      </div>
+      <div class="rock-explorer-misc__gps-dialog-actions">
+        <p-button
+          [label]="t('rockExplorer.imageGpsDialogCancel')"
+          severity="secondary"
+          [text]="true"
+          (onClick)="closeCoordinatesDialog()"
+        />
+        <p-button
+          [label]="t('rockExplorer.imageGpsDialogApply')"
+          icon="pi pi-check"
+          (onClick)="applyCoordinatesDialog()"
+        />
+      </div>
+    </p-dialog>
+  </section>
+</ng-container>

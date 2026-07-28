@@ -1,6 +1,8 @@
 <ng-container *transloco="let t">
   <section class="rock-explorer-comments">
-    <h3>{{ t("rockExplorer.comments") }}</h3>
+    @if (showHeading) {
+      <h3>{{ t("rockExplorer.comments") }}</h3>
+    }
     <lc-comment-editor
       *isMember="true"
       (created)="onCommentCreated($event)"

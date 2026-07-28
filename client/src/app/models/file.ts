@@ -20,6 +20,8 @@ export class File extends AbstractModel {
   focusY: number | null;
   /** Client-only snapshot used to detect focus edits before save. */
   focusYAtLoad: number | null;
+  lat: number | null;
+  lng: number | null;
 
   /**
    * Parses a file object.
@@ -51,6 +53,8 @@ export class File extends AbstractModel {
       ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1')
       : null;
     media.focusY = payload.focusY ?? null;
+    media.lat = payload.lat ?? null;
+    media.lng = payload.lng ?? null;
     media.snapshotFocusYAtLoad();
 
     // Build srcSet

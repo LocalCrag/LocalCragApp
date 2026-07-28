@@ -27,7 +27,6 @@ from models.enums.notification_type_enum import NotificationTypeEnum
 from models.line import Line
 from models.post import Post
 from models.region import Region
-from models.rock_explorer_cluster import RockExplorerCluster
 from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
@@ -69,8 +68,6 @@ class CreateComment(MethodView):
             target = Post.find_by_id(obj_id)
         elif obj_type == "RockExplorerFeature":
             target = RockExplorerFeature.find_by_id(obj_id)
-        elif obj_type == "RockExplorerCluster":
-            target = RockExplorerCluster.find_by_id(obj_id)
         else:
             raise BadRequest("Unsupported object type")
 

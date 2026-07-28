@@ -11,7 +11,6 @@ from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
-from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.gallery_image_schema import (
@@ -26,10 +25,11 @@ from models.line import Line
 from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
-from util.generic_relationships import ROCK_EXPLORER_OBJECT_TYPES, check_object_exists
+from util.generic_relationships import ROCK_EXPLORER_OBJECT_TYPES
 from util.rock_explorer import rock_explorer_gallery_image_ids_subquery
 from util.secret_service import SecretService
 from util.tag_object_prefetch import prefetch_tag_objects
+from util.tags import set_tags
 from webargs_schemas.gallery_image_args import (
     gallery_image_post_args,
     gallery_image_put_args,
@@ -45,6 +45,10 @@ def _require_member_for_rock_explorer_tags(tag_data) -> None:
     targets_rock_explorer = any(tag.get("objectType") in ROCK_EXPLORER_OBJECT_TYPES for tag in tag_data or [])
     if targets_rock_explorer and not _current_request_is_member():
         raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
+
+def set_image_tags(image, tag_data):
+    set_tags(image, tag_data, attribute="tags")
 
 
 class GetGalleryImages(MethodView):
@@ -118,19 +122,6 @@ class GetGalleryImages(MethodView):
         return jsonify(paginated_gallery_images_schema.dump(paginated_images)), 200
 
 
-def set_image_tags(image, tag_data):
-    image.tags = []
-    for tag_data in tag_data:
-        tag = Tag.query.filter_by(object_type=tag_data["objectType"], object_id=tag_data["objectId"]).first()
-        if not tag:
-            tag = Tag()
-            tag.object_type = tag_data["objectType"]
-            tag.object_id = tag_data["objectId"]
-            if not check_object_exists(tag.object_type, tag.object_id):
-                raise NotFound(f"{tag.object_type} with id {tag.object_id} does not exist.")
-        image.tags.append(tag)
-
-
 class CreateGalleryImage(MethodView):
 
     @jwt_required()
@@ -141,6 +132,7 @@ class CreateGalleryImage(MethodView):
         image = GalleryImage()
         image.created_by = created_by
         image.file_id = gallery_image_data["fileId"]
+        image.description = gallery_image_data.get("description") or None
         set_image_tags(image, gallery_image_data["tags"])
 
         db.session.add(image)
@@ -162,13 +154,28 @@ class UpdateGalleryImage(MethodView):
         if not is_owner and not is_moderator:
             raise Unauthorized("You are not allowed to update this image.")
 
-        _require_member_for_rock_explorer_tags(image_data["tags"])
-        _require_member_for_rock_explorer_tags([{"objectType": tag.object_type} for tag in image.tags])
+        if "tags" in image_data and image_data["tags"] is not None:
+            _require_member_for_rock_explorer_tags(image_data["tags"])
+            _require_member_for_rock_explorer_tags([{"objectType": tag.object_type} for tag in image.tags])
+            set_image_tags(image, image_data["tags"])
 
-        set_image_tags(image, image_data["tags"])
+        if "description" in image_data:
+            image.description = image_data["description"] or None
+
+        if "lat" in image_data or "lng" in image_data:
+            lat = image_data.get("lat")
+            lng = image_data.get("lng")
+            if (lat is None) != (lng is None):
+                raise BadRequest("lat and lng must both be set or both be null.")
+            image.file.lat = lat
+            image.file.lng = lng
+            db.session.add(image.file)
 
         db.session.add(image)
         db.session.commit()
+        db.session.refresh(image)
+        if image.file is not None:
+            db.session.refresh(image.file)
 
         return jsonify(gallery_image_schema.dump(image)), 200
 

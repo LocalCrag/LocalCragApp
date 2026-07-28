@@ -1,0 +1,124 @@
+.rock-explorer-misc {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rock-explorer-misc__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  h3 {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+.rock-explorer-misc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rock-explorer-misc__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--p-content-border-color, var(--p-surface-200));
+  border-radius: var(--p-content-border-radius);
+  background: var(--p-content-background, transparent);
+
+  &--view {
+    align-items: center;
+  }
+
+  &--picking,
+  &--drawing {
+    border-color: var(--p-primary-color);
+    box-shadow: 0 0 0 1px var(--p-primary-color);
+  }
+}
+
+.rock-explorer-misc__fields,
+.rock-explorer-misc__view {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rock-explorer-misc__title {
+  width: 100%;
+}
+
+.rock-explorer-misc__description {
+  width: 100%;
+}
+
+.rock-explorer-misc__view-title {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.rock-explorer-misc__view-description {
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--p-text-muted-color, var(--p-surface-500));
+  white-space: pre-line;
+}
+
+.rock-explorer-misc__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.rock-explorer-misc__hint {
+  color: var(--p-orange-500, #f59e0b);
+}
+
+.rock-explorer-misc__draw-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rock-explorer-misc__draw-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  overflow-x: auto;
+
+  ::ng-deep .p-button {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  ::ng-deep .p-button-label {
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-button-sm {
+    font-size: 0.75rem;
+    padding-block: 0.2rem;
+    padding-inline: 0.45rem;
+  }
+}
+
+.rock-explorer-misc__gps-dialog {
+  margin-bottom: 0.75rem;
+}
+
+.rock-explorer-misc__gps-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

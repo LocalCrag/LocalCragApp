@@ -5,13 +5,11 @@ import { map } from 'rxjs/operators';
 import { FeatureCollection, Geometry } from 'geojson';
 import { ApiService } from '../core/api.service';
 import { RockExplorerFeature } from '../../models/rock-explorer-feature';
-import { RockExplorerCluster } from '../../models/rock-explorer-cluster';
 
 export interface RockExplorerFeatureFilters {
   potential?: string;
   rockQuality?: string;
   rockType?: string;
-  clusterId?: string;
 }
 
 @Injectable({
@@ -75,50 +73,6 @@ export class RockExplorerService {
   public deleteFeature(feature: RockExplorerFeature): Observable<null> {
     return this.http
       .delete(this.api.rockExplorer.deleteFeature(feature.id))
-      .pipe(map(() => null));
-  }
-
-  public getClusters(): Observable<RockExplorerCluster[]> {
-    return this.http
-      .get(this.api.rockExplorer.getClusters())
-      .pipe(
-        map((list: any) =>
-          (list as any[]).map(RockExplorerCluster.deserialize),
-        ),
-      );
-  }
-
-  public getCluster(id: string): Observable<RockExplorerCluster> {
-    return this.http
-      .get(this.api.rockExplorer.getCluster(id))
-      .pipe(map(RockExplorerCluster.deserialize));
-  }
-
-  public createCluster(
-    cluster: RockExplorerCluster,
-  ): Observable<RockExplorerCluster> {
-    return this.http
-      .post(
-        this.api.rockExplorer.createCluster(),
-        RockExplorerCluster.serialize(cluster),
-      )
-      .pipe(map(RockExplorerCluster.deserialize));
-  }
-
-  public updateCluster(
-    cluster: RockExplorerCluster,
-  ): Observable<RockExplorerCluster> {
-    return this.http
-      .put(
-        this.api.rockExplorer.updateCluster(cluster.id),
-        RockExplorerCluster.serialize(cluster),
-      )
-      .pipe(map(RockExplorerCluster.deserialize));
-  }
-
-  public deleteCluster(cluster: RockExplorerCluster): Observable<null> {
-    return this.http
-      .delete(this.api.rockExplorer.deleteCluster(cluster.id))
       .pipe(map(() => null));
   }
 

@@ -5,8 +5,14 @@ import { RockExplorerRockQuality } from '../enums/rock-explorer-rock-quality';
 import { RockExplorerRockType } from '../enums/rock-explorer-rock-type';
 import { RockExplorerAccessIssue } from '../enums/rock-explorer-access-issue';
 import { LineType } from '../enums/line-type';
-import { Geometry } from 'geojson';
-import { Searchable } from './searchable';
+import { Geometry, LineString } from 'geojson';
+import { Tag } from './tag';
+import {
+  RockExplorerParkingSite,
+  RockExplorerPath,
+  cloneParkingSites,
+  clonePaths,
+} from './rock-explorer-misc';
 
 /**
  * Rock Explorer mapped feature (Point or Polygon).
@@ -23,12 +29,10 @@ export class RockExplorerFeature extends AbstractModel {
   gradeValueMax: number | null;
   accessIssues: RockExplorerAccessIssue[];
   geometry: Geometry;
-  clusterId: string | null;
-  cragId: string | null;
-  sectorId: string | null;
-  areaId: string | null;
-  lineId: string | null;
-  topoLink: Searchable | null;
+  parkingSites: RockExplorerParkingSite[];
+  paths: RockExplorerPath[];
+  /** Topo targets stored as Tag associations (same shape as gallery tags). */
+  topoLinks: Tag[];
   createdBy: User | null;
 
   public static deserialize(payload: any): RockExplorerFeature {
@@ -45,14 +49,14 @@ export class RockExplorerFeature extends AbstractModel {
     feature.gradeValueMax = payload.gradeValueMax ?? null;
     feature.accessIssues = payload.accessIssues ?? [];
     feature.geometry = payload.geometry;
-    feature.clusterId = payload.clusterId ?? null;
-    feature.cragId = payload.cragId ?? null;
-    feature.sectorId = payload.sectorId ?? null;
-    feature.areaId = payload.areaId ?? null;
-    feature.lineId = payload.lineId ?? null;
-    feature.topoLink = payload.topoLink
-      ? Searchable.deserialize(payload.topoLink)
-      : null;
+    feature.parkingSites = cloneParkingSites(payload.parkingSites);
+    feature.paths = (payload.paths ?? []).map((path: any) => ({
+      id: path.id,
+      title: path.title ?? null,
+      description: path.description ?? null,
+      geometry: path.geometry as LineString,
+    }));
+    feature.topoLinks = (payload.topoLinks ?? []).map(Tag.deserialize);
     feature.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;
@@ -72,11 +76,17 @@ export class RockExplorerFeature extends AbstractModel {
       gradeValueMax: feature.gradeValueMax,
       accessIssues: feature.accessIssues ?? [],
       geometry: feature.geometry,
-      clusterId: feature.clusterId,
-      cragId: feature.cragId,
-      sectorId: feature.sectorId,
-      areaId: feature.areaId,
-      lineId: feature.lineId,
+      parkingSites: cloneParkingSites(feature.parkingSites)
+        .filter((site) => site.lat != null && site.lng != null)
+        .map((site) => ({
+          ...site,
+          lat: site.lat as number,
+          lng: site.lng as number,
+        })),
+      paths: clonePaths(feature.paths).filter(
+        (path) => (path.geometry?.coordinates?.length ?? 0) >= 2,
+      ),
+      topoLinks: (feature.topoLinks ?? []).map(Tag.serialize),
     };
   }
 }

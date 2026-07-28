@@ -19,23 +19,18 @@ import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
-import {
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from 'primeng/autocomplete';
-import { Searchable, SearchableObject } from '../../../models/searchable';
-import { SearchService } from '../../../services/crud/search.service';
+import { Searchable } from '../../../models/searchable';
 import { Tag } from '../../../models/tag';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
-import { SearchableComponent } from '../../core/searchable/searchable.component';
 import { Message } from 'primeng/message';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
+import { TagInputComponent } from '../../shared/forms/controls/tag-input/tag-input.component';
 import { ObjectUtilsService } from '../../../services/utils/object-utils.service';
 
 @Component({
@@ -46,14 +41,13 @@ import { ObjectUtilsService } from '../../../services/utils/object-utils.service
     ReactiveFormsModule,
     ButtonModule,
     MultiSelectModule,
-    AutoCompleteModule,
-    SearchableComponent,
     Message,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
+    TagInputComponent,
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',
@@ -67,11 +61,9 @@ export class GalleryFormComponent implements OnInit {
   public galleryImage: GalleryImage;
   public loadingState = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
-  public searchablesSuggestions: Searchable[] = [];
   public config = inject(DynamicDialogConfig);
 
   private fb = inject(FormBuilder);
-  private searchService = inject(SearchService);
   private store = inject(Store);
   private ref = inject(DynamicDialogRef);
   private galleryService = inject(GalleryService);
@@ -116,9 +108,7 @@ export class GalleryFormComponent implements OnInit {
     this.galleryImageForm.enable();
     this.galleryImageForm.patchValue({
       image: this.galleryImage.image,
-      searchables: this.galleryImage.tags.map((tag) => {
-        return Searchable.fromObject(tag.object as SearchableObject);
-      }),
+      searchables: this.galleryImage.tags.map(Tag.toSearchable),
     });
     this.galleryImageForm.get('image').disable(); // Images cannot be changed, only tags
   }
@@ -128,18 +118,9 @@ export class GalleryFormComponent implements OnInit {
       this.loadingState = LoadingState.LOADING;
       const galleryImage = new GalleryImage();
       galleryImage.image = this.galleryImageForm.get('image').value;
-      galleryImage.tags = this.galleryImageForm
-        .get('searchables')
-        .value.map((searchable: Searchable) => {
-          const tag = new Tag();
-          tag.object =
-            searchable.line ||
-            searchable.area ||
-            searchable.sector ||
-            searchable.crag ||
-            searchable.user;
-          return tag;
-        });
+      galleryImage.tags = (
+        this.galleryImageForm.get('searchables').value as Searchable[]
+      ).map(Tag.fromSearchable);
       if (this.editMode) {
         galleryImage.id = this.galleryImage.id;
         this.galleryService
@@ -161,11 +142,5 @@ export class GalleryFormComponent implements OnInit {
     } else {
       this.formDirective.markAsTouched();
     }
-  }
-
-  public loadTagSuggestions(event: AutoCompleteCompleteEvent) {
-    this.searchService.search(event.query).subscribe((searchables) => {
-      this.searchablesSuggestions = searchables;
-    });
   }
 }

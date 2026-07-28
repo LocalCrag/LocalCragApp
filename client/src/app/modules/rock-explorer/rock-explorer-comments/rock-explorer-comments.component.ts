@@ -2,9 +2,11 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  EventEmitter,
   inject,
   Input,
   OnChanges,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +14,6 @@ import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Comment } from '../../../models/comment';
-import { RockExplorerCluster } from '../../../models/rock-explorer-cluster';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { getObjectType } from '../../../models/object';
 import { LoadingState } from '../../../enums/loading-state';
@@ -49,7 +50,10 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 export class RockExplorerCommentsComponent
   implements OnChanges, PaginatedListView
 {
-  @Input({ required: true }) object!: RockExplorerFeature | RockExplorerCluster;
+  @Input({ required: true }) object!: RockExplorerFeature;
+  /** When false, omit the section heading (e.g. inside a tab). */
+  @Input() showHeading = true;
+  @Output() countChange = new EventEmitter<number>();
 
   public comments: Comment[] = [];
   public hasNextPage = true;
@@ -67,6 +71,7 @@ export class RockExplorerCommentsComponent
       return;
     }
     this.commentsContextService.object = this.object;
+    this.countChange.emit(0);
     this.loadFirstPage();
   }
 
@@ -95,6 +100,7 @@ export class RockExplorerCommentsComponent
           this.comments.push(...pageResult.items);
           this.commentsContextService.addComments(pageResult.items);
           completePaginatedPageLoad(this, pageResult.hasNext);
+          this.emitCount();
           this.cdr.detectChanges();
         },
         error: () => {
@@ -107,5 +113,12 @@ export class RockExplorerCommentsComponent
   onCommentCreated(comment: Comment): void {
     this.comments.unshift(comment);
     this.commentsContextService.addComments([comment]);
+    this.emitCount();
+  }
+
+  private emitCount(): void {
+    this.countChange.emit(
+      this.comments.filter((comment) => !comment.isDeleted).length,
+    );
   }
 }

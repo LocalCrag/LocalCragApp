@@ -27,7 +27,6 @@ from sqlalchemy.orm.attributes import set_committed_value
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
-from models.rock_explorer_cluster import RockExplorerCluster
 from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.tag import Tag
@@ -40,7 +39,6 @@ _OBJECT_TYPE_MODEL = {
     "Crag": Crag,
     "User": User,
     "RockExplorerFeature": RockExplorerFeature,
-    "RockExplorerCluster": RockExplorerCluster,
 }
 
 

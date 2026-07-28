@@ -297,5 +297,18 @@ export class ApiService {
       `${this.apiHost}reactions/${targetType}/${targetId}`,
   };
 
+  public rockExplorer = {
+    getFeatures: (): string => `${this.apiHost}rock-explorer/features`,
+    getFeaturesGeoJSON: (): string =>
+      `${this.apiHost}rock-explorer/features.geojson`,
+    getFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
+    createFeature: (): string => `${this.apiHost}rock-explorer/features`,
+    updateFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
+    deleteFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
+  };
+
   private apiHost = `${environment.apiHost}/api/`;
 }

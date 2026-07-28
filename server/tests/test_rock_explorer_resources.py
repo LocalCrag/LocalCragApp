@@ -11,11 +11,7 @@ def _point_payload(**overrides):
         "gradeValueMax": 16,
         "accessIssues": ["NSG"],
         "geometry": {"type": "Point", "coordinates": [8.1, 50.2]},
-        "clusterId": None,
-        "cragId": None,
-        "sectorId": None,
-        "areaId": None,
-        "lineId": None,
+        "topoLinks": [],
     }
     data.update(overrides)
     return data
@@ -36,6 +32,15 @@ def test_member_can_create_and_get_feature(client, member_token):
     rv = client.get(f"/api/rock-explorer/features/{created['id']}", token=member_token)
     assert rv.status_code == 200
     assert rv.json["id"] == created["id"]
+
+
+def test_potential_required(client, member_token):
+    rv = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(potential=None),
+    )
+    assert rv.status_code == 422
 
 
 def test_non_member_cannot_access_features(client, user_token):
@@ -72,41 +77,6 @@ def test_polygon_feature_accepted(client, member_token):
     )
     assert rv.status_code == 201
     assert rv.json["geometry"]["type"] == "Polygon"
-
-
-def test_cluster_crud_and_feature_assignment(client, member_token):
-    cluster_rv = client.post(
-        "/api/rock-explorer/clusters",
-        token=member_token,
-        json={"title": "North ridge", "description": "Cluster A", "accessIssues": []},
-    )
-    assert cluster_rv.status_code == 201
-    cluster_id = cluster_rv.json["id"]
-
-    feature_rv = client.post(
-        "/api/rock-explorer/features",
-        token=member_token,
-        json=_point_payload(clusterId=cluster_id),
-    )
-    assert feature_rv.status_code == 201
-    feature_id = feature_rv.json["id"]
-    assert feature_rv.json["clusterId"] == cluster_id
-
-    get_cluster = client.get(f"/api/rock-explorer/clusters/{cluster_id}", token=member_token)
-    assert get_cluster.status_code == 200
-    assert feature_id in get_cluster.json["featureIds"]
-
-    # Clear cluster assignment
-    update = client.put(
-        f"/api/rock-explorer/features/{feature_id}",
-        token=member_token,
-        json=_point_payload(clusterId=None, title="Unclustered"),
-    )
-    assert update.status_code == 200
-    assert update.json["clusterId"] is None
-
-    delete_cluster = client.delete(f"/api/rock-explorer/clusters/{cluster_id}", token=member_token)
-    assert delete_cluster.status_code == 204
 
 
 def test_features_geojson_and_filter(client, member_token):
@@ -182,72 +152,118 @@ def test_features_geojson_reports_has_images(client, member_token):
     assert props[untagged_id]["hasImages"] is False
 
 
-def test_feature_topo_link_single_leaf_and_dump(client, member_token):
+def test_feature_topo_links_multi_and_dump(client, member_token):
+    from models.crag import Crag
     from models.line import Line
 
     line = Line.query.filter(Line.archived.is_(False)).first()
+    crag = Crag.query.first()
     assert line is not None
+    assert crag is not None
 
     created = client.post(
         "/api/rock-explorer/features",
         token=member_token,
         json=_point_payload(
-            lineId=str(line.id),
-            cragId=None,
-            sectorId=None,
-            areaId=None,
+            topoLinks=[
+                {"objectType": "Line", "objectId": str(line.id)},
+                {"objectType": "Crag", "objectId": str(crag.id)},
+            ],
         ),
     )
     assert created.status_code == 201
     body = created.json
-    assert body["lineId"] == str(line.id)
-    assert body["cragId"] is None
-    assert body["sectorId"] is None
-    assert body["areaId"] is None
-    assert body["topoLink"] is not None
-    assert body["topoLink"]["type"] == "LINE"
-    assert body["topoLink"]["item"]["name"] == line.name
+    assert len(body["topoLinks"]) == 2
+    types = {link["objectType"] for link in body["topoLinks"]}
+    assert types == {"Line", "Crag"}
+    names = {link["object"]["name"] for link in body["topoLinks"]}
+    assert line.name in names
+    assert crag.name in names
 
     cleared = client.put(
         f"/api/rock-explorer/features/{body['id']}",
         token=member_token,
         json=_point_payload(
             title=body["title"],
-            lineId=None,
-            cragId=None,
-            sectorId=None,
-            areaId=None,
+            topoLinks=[],
             geometry=body["geometry"],
         ),
     )
     assert cleared.status_code == 200
-    assert cleared.json["lineId"] is None
-    assert cleared.json["topoLink"] is None
+    assert cleared.json["topoLinks"] == []
 
 
-def test_cluster_topo_link_crag_leaf(client, member_token):
-    from models.crag import Crag
-
-    crag = Crag.query.first()
-    assert crag is not None
-
-    cluster_rv = client.post(
-        "/api/rock-explorer/clusters",
+def test_feature_parking_and_paths_roundtrip(client, member_token):
+    parking = [
+        {
+            "id": "park-1",
+            "lat": 50.1,
+            "lng": 8.2,
+            "title": "Lot A",
+            "description": "Near the trail",
+        }
+    ]
+    paths = [
+        {
+            "id": "path-1",
+            "title": "Approach",
+            "description": "Follow the ridge",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [[8.2, 50.1], [8.21, 50.11], [8.22, 50.12]],
+            },
+        }
+    ]
+    created = client.post(
+        "/api/rock-explorer/features",
         token=member_token,
-        json={
-            "title": "Linked cluster",
-            "description": None,
-            "accessIssues": [],
-            "cragId": str(crag.id),
-            "sectorId": None,
-            "areaId": None,
-            "lineId": None,
-        },
+        json=_point_payload(parkingSites=parking, paths=paths),
     )
-    assert cluster_rv.status_code == 201
-    body = cluster_rv.json
-    assert body["cragId"] == str(crag.id)
-    assert body["lineId"] is None
-    assert body["topoLink"] is not None
-    assert body["topoLink"]["type"] == "CRAG"
-    assert body["topoLink"]["item"]["name"] == crag.name
+    assert created.status_code == 201
+    body = created.json
+    assert body["parkingSites"] == parking
+    assert body["paths"][0]["id"] == "path-1"
+    assert body["paths"][0]["geometry"]["type"] == "LineString"
+    assert len(body["paths"][0]["geometry"]["coordinates"]) == 3
+
+    fetched = client.get(f"/api/rock-explorer/features/{body['id']}", token=member_token)
+    assert fetched.status_code == 200
+    assert fetched.json["parkingSites"][0]["title"] == "Lot A"
+    assert fetched.json["paths"][0]["title"] == "Approach"
+
+
+def test_feature_invalid_path_geometry_rejected(client, member_token):
+    rv = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(
+            paths=[
+                {
+                    "id": "path-bad",
+                    "title": "Nope",
+                    "description": None,
+                    "geometry": {"type": "LineString", "coordinates": [[8.0, 50.0]]},
+                }
+            ]
+        ),
+    )
+    assert rv.status_code == 400
+
+
+def test_feature_invalid_parking_coords_rejected(client, member_token):
+    rv = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(
+            parkingSites=[
+                {
+                    "id": "park-bad",
+                    "lat": 120,
+                    "lng": 8.0,
+                    "title": None,
+                    "description": None,
+                }
+            ]
+        ),
+    )
+    assert rv.status_code == 400

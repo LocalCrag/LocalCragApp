@@ -19,14 +19,19 @@
           <span class="opacity-80">{{ comment.timeCreated | timeAgo }}</span>
         </div>
         @if (
-          ellipsisMenuItems &&
+          ellipsisMenuItems?.length &&
             !comment.isDeleted &&
             !editModeActive &&
             !replyActive &&
             isLoggedIn$ | async
         ) {
           <div>
-            <p-menu #menu [model]="ellipsisMenuItems" [popup]="true" />
+            <p-menu
+              #menu
+              [model]="ellipsisMenuItems"
+              [popup]="true"
+              appendTo="body"
+            />
             <p-button
               (click)="menu.toggle($event)"
               variant="text"

@@ -52,30 +52,8 @@ lc-gallery-image {
     gap: 0.25rem;
 
     p-tag {
-      color: var(--p-primary-contrast-color);
       border-radius: calc(2 * var(--p-tag-rounded-border-radius));
       padding: 0.125rem 0.25rem;
-    }
-
-    :where(html.lc-dark) & lc-tag .p-tag {
-      color: color-mix(
-        in srgb,
-        var(--p-text-color) 82%,
-        var(--p-content-hover-background)
-      );
-      background-color: color-mix(
-        in srgb,
-        var(--p-text-color) 12%,
-        var(--p-content-hover-background)
-      );
-
-      &:hover {
-        background-color: color-mix(
-          in srgb,
-          var(--p-text-color) 22%,
-          var(--p-content-hover-background)
-        );
-      }
     }
   }
 

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { isLoggedIn } from '../../../guards/is-logged-in';
+import { isMember } from '../../../guards/is-member';
 
 export const rootRedirectRoutes: Routes = [
   {
@@ -25,6 +26,15 @@ export const miscRoutes: Routes = [
         (m) => m.TodoListComponent,
       ),
     canActivate: [isLoggedIn],
+  },
+  {
+    path: 'rock-explorer',
+    loadComponent: () =>
+      import('../../rock-explorer/rock-explorer-page/rock-explorer-page.component').then(
+        (m) => m.RockExplorerPageComponent,
+      ),
+    canActivate: [isMember],
+    data: { fullscreenMap: true },
   },
 ];
 
