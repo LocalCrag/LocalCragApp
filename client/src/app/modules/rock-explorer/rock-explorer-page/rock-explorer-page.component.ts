@@ -77,28 +77,37 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { gradeRangeValidator } from '../../../utility/validators/grade-range.validator';
+import {
+  dedupePositions,
+  geometryFromOverlayPoints,
+} from '../../../utility/geo/convex-hull';
 import { RouterLink } from '@angular/router';
 
 type DrawMode = 'select' | 'point' | 'polygon' | 'editPolygon';
 type SelectOption = { label: string; value: string };
 type PanelTab = 'info' | 'images' | 'comments' | 'misc';
+/** When set with point/polygon draw mode, finishing saves onto this feature instead of creating. */
+type GeometryRedrawMode = 'point' | 'polygon' | null;
 
 const POTENTIAL_FILL_COLORS: Record<string, string> = {
-  // Warm amber/yellow scale — greens disappear into satellite foliage.
-  HIGH: '#ea580c',
-  MEDIUM: '#f59e0b',
-  LOW: '#fde047',
-  NONE: '#9ca3af',
-  UNEXPLORED: '#3b82f6',
+  // Blues for known potential; yellow = unexplored; red = none.
+  HIGH: '#1d4ed8',
+  MEDIUM: '#3b82f6',
+  LOW: '#93c5fd',
+  NONE: '#dc2626',
+  UNEXPLORED: '#eab308',
 };
 
 const POTENTIAL_OUTLINE_COLORS: Record<string, string> = {
-  HIGH: '#9a3412',
-  MEDIUM: '#b45309',
-  LOW: '#ca8a04',
-  NONE: '#6b7280',
-  UNEXPLORED: '#1d4ed8',
+  HIGH: '#1e3a8a',
+  MEDIUM: '#1d4ed8',
+  LOW: '#2563eb',
+  NONE: '#b91c1c',
+  UNEXPLORED: '#a16207',
 };
+
+/** Shared accent for gallery GPS dots and path overlays. */
+const MAP_MEDIA_ACCENT = '#ec4899';
 
 @Component({
   selector: 'lc-rock-explorer-page',
@@ -159,6 +168,9 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   public pickingImageCoordinates = false;
   public pickingParkingCoordinates = false;
   public drawingPath = false;
+  /** Mirrored from misc for toolbar bindings (avoids heavy child reads). */
+  public pathDraftVertexCount = 0;
+  public selectedPathVertexIndex: number | null = null;
   /** Mobile: hide the panel while picking so the map can be clicked. */
   public mapPickHidesPanel = false;
   /**
@@ -219,17 +231,17 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   };
   private draftGeometry: Geometry | null = null;
   private polygonVertices: Position[] = [];
-  /** Feature being reshaped in `editPolygon` mode (panel may be closed). */
+  /** Feature being reshaped in `editPolygon` / redraw modes (panel may be closed). */
   private geometryEditFeature: RockExplorerFeature | null = null;
+  private geometryRedrawMode: GeometryRedrawMode = null;
   private draggingVertexIndex: number | null = null;
   /** True once the pointer moved while dragging a draft vertex. */
   private vertexDragMoved = false;
   private draggingParkingId: string | null = null;
-  /** Coalesce map source updates to one per animation frame while dragging. */
-  private dragFrameId: number | null = null;
-  private pendingDragLngLat: { lat: number; lng: number } | null = null;
   /** Reused FeatureCollection during drag (mutate coords in place, avoid alloc). */
   private dragOverlayCollection: FeatureCollection<Geometry> | null = null;
+  private dragMoveUnlisten: (() => void) | null = null;
+  private dragUpUnlisten: (() => void) | null = null;
   private suppressNextMapClick = false;
   private destroyRef = inject(DestroyRef);
   private ngZone = inject(NgZone);
@@ -275,6 +287,17 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
 
   public get isPolygonToolActive(): boolean {
     return this.drawMode === 'polygon' || this.drawMode === 'editPolygon';
+  }
+
+  /** True while redrawing an existing feature as point/polygon or editing polygon vertices. */
+  public get isGeometryEditActive(): boolean {
+    return this.geometryEditFeature != null;
+  }
+
+  public get canAutoRedrawGeometry(): boolean {
+    // Need ≥3 distinct anchors for a meaningful polygon (e.g. a path with
+    // 3+ vertices, or three image/parking points, or any mix).
+    return dedupePositions(this.collectFeatureOverlayPoints()).length >= 3;
   }
 
   /** Point or polygon drawing — hides the default toolbar chrome. */
@@ -344,7 +367,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         this.mobileMediaListener,
       );
     }
-    this.cancelDragFrame();
+    this.cancelDragListeners();
     this.hideImageHoverPopup();
     this.map?.remove();
   }
@@ -355,6 +378,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.drawMode = mode;
     this.polygonVertices = [];
     this.geometryEditFeature = null;
+    this.geometryRedrawMode = null;
     this.clearDraftLayer();
     if (mode === 'point' || mode === 'polygon') {
       this.showFilters = false;
@@ -377,6 +401,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.polygonVertices = [];
     this.clearDraftLayer();
     this.geometryEditFeature = null;
+    this.geometryRedrawMode = null;
     this.drawMode = 'select';
     if (resumeFeatureId) {
       this.openEditPanel(resumeFeatureId);
@@ -385,7 +410,16 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   public cancelPointDraw() {
-    this.setDrawMode('select');
+    const resumeFeatureId = this.geometryEditFeature?.id ?? null;
+    this.geometryEditFeature = null;
+    this.geometryRedrawMode = null;
+    this.drawMode = 'select';
+    this.clearDraftLayer();
+    if (resumeFeatureId) {
+      this.openEditPanel(resumeFeatureId);
+    } else {
+      this.cdr.detectChanges();
+    }
   }
 
   public startPolygonEdit() {
@@ -403,6 +437,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       .slice(0, -1)
       .map((coord) => [coord[0], coord[1]]);
     this.geometryEditFeature = feature;
+    this.geometryRedrawMode = null;
     this.drawMode = 'editPolygon';
     this.showFilters = false;
     this.panelOpen = false;
@@ -410,6 +445,94 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.renderPolygonDraft();
     this.focusActiveFeature();
     this.cdr.detectChanges();
+  }
+
+  public startRedrawAsPoint() {
+    if (!this.beginGeometryRedraw()) {
+      return;
+    }
+    this.geometryRedrawMode = 'point';
+    this.drawMode = 'point';
+    this.polygonVertices = [];
+    this.clearDraftLayer();
+    if (this.map) {
+      this.map.getCanvas().style.cursor = 'crosshair';
+    }
+    this.cdr.detectChanges();
+  }
+
+  public startRedrawAsPolygon() {
+    if (!this.beginGeometryRedraw()) {
+      return;
+    }
+    this.geometryRedrawMode = 'polygon';
+    this.drawMode = 'polygon';
+    this.polygonVertices = [];
+    this.clearDraftLayer();
+    if (this.map) {
+      this.map.getCanvas().style.cursor = 'crosshair';
+    }
+    this.cdr.detectChanges();
+  }
+
+  public redrawGeometryFromOverlays() {
+    const feature = this.editingFeature;
+    if (!feature?.id || this.saving) {
+      return;
+    }
+    const geometry = geometryFromOverlayPoints(
+      this.collectFeatureOverlayPoints(),
+    );
+    if (!geometry) {
+      return;
+    }
+    this.geometryEditFeature = feature;
+    this.saveFeatureGeometry(geometry);
+  }
+
+  private beginGeometryRedraw(): boolean {
+    const feature = this.editingFeature;
+    if (!feature?.id) {
+      return false;
+    }
+    this.endVertexDrag();
+    this.cancelImageCoordinatePick();
+    this.cancelParkingCoordinatePick();
+    this.cancelPathDraw();
+    this.geometryEditFeature = feature;
+    this.showFilters = false;
+    this.panelOpen = false;
+    this.featureFormActive = false;
+    return true;
+  }
+
+  /** Image GPS + parking + path vertices for the open feature. */
+  private collectFeatureOverlayPoints(): Position[] {
+    const points: Position[] = [];
+    for (const feature of this.imageLocationsData.features) {
+      if (feature.geometry?.type === 'Point') {
+        points.push([
+          feature.geometry.coordinates[0],
+          feature.geometry.coordinates[1],
+        ]);
+      }
+    }
+    const parkings =
+      this.panelMisc?.parkingSites ?? this.editingFeature?.parkingSites ?? [];
+    for (const site of parkings) {
+      if (site.lat != null && site.lng != null) {
+        points.push([site.lng, site.lat]);
+      }
+    }
+    const paths = this.panelMisc?.paths ?? this.editingFeature?.paths ?? [];
+    for (const path of paths) {
+      for (const coord of path.geometry?.coordinates ?? []) {
+        if (coord.length >= 2) {
+          points.push([coord[0], coord[1]]);
+        }
+      }
+    }
+    return points;
   }
 
   private applyTopoLinksToEntity(entity: RockExplorerFeature) {
@@ -611,7 +734,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       this.map?.doubleClickZoom.enable();
     }
     this.drawingPath = active;
-    this.mapPickHidesPanel = active && this.isMobileViewport;
+    this.updateMapPickPanelVisibility();
     if (
       this.map &&
       this.draggingVertexIndex == null &&
@@ -619,8 +742,17 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     ) {
       this.map.getCanvas().style.cursor = active ? 'crosshair' : '';
     }
+    this.syncPathDraftStateFromMisc();
     this.refreshMiscOverlays();
+    if (active) {
+      this.fitMapToPositions(this.panelMisc?.pathDraftVertices ?? []);
+    }
     this.cdr.detectChanges();
+  }
+
+  /** Lightweight: only the draft layer (same cost profile as polygon drawing). */
+  public onPathDraftChange(): void {
+    this.syncPathDraftLayer();
   }
 
   public onMiscPreviewChange(): void {
@@ -644,9 +776,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   public cancelPathDraw(): void {
     this.panelMisc?.cancelPathDraw();
     this.drawingPath = false;
+    this.pathDraftVertexCount = 0;
+    this.selectedPathVertexIndex = null;
     this.map?.doubleClickZoom.enable();
-    this.mapPickHidesPanel =
-      this.isCoordinatePickActive && this.isMobileViewport;
+    this.updateMapPickPanelVisibility();
     if (
       this.map &&
       this.draggingVertexIndex == null &&
@@ -734,8 +867,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   private updateMapPickPanelVisibility(): void {
+    // Path draw always hides the panel (matches polygon draw). GPS pick only on mobile.
     this.mapPickHidesPanel =
-      this.isMapOverlayInteractionActive && this.isMobileViewport;
+      this.drawingPath ||
+      (this.isCoordinatePickActive && this.isMobileViewport);
   }
 
   private applyImageCoordinatePick(lat: number, lng: number): boolean {
@@ -805,6 +940,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       for (const coord of geometry.coordinates[0] ?? []) {
         bounds.extend(coord as [number, number]);
       }
+    } else if (geometry.type === 'LineString') {
+      for (const coord of geometry.coordinates) {
+        bounds.extend(coord as [number, number]);
+      }
     } else {
       return;
     }
@@ -817,6 +956,29 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.map.fitBounds(bounds, {
       padding,
       maxZoom: geometry.type === 'Point' ? 17 : 18,
+      duration: 700,
+    });
+  }
+
+  /** Fit the map to path/polygon draft vertices (used when starting path edit). */
+  public fitMapToPositions(positions: Position[]): void {
+    if (!this.map || positions.length === 0) {
+      return;
+    }
+    const bounds = new LngLatBounds();
+    for (const coord of positions) {
+      bounds.extend(coord as [number, number]);
+    }
+    if (bounds.isEmpty()) {
+      return;
+    }
+    // Panel is hidden during path edit — keep padding balanced.
+    const padding = this.isMobileViewport
+      ? { top: 64, bottom: 120, left: 48, right: 48 }
+      : { top: 64, bottom: 64, left: 48, right: 48 };
+    this.map.fitBounds(bounds, {
+      padding,
+      maxZoom: positions.length === 1 ? 17 : 18,
       duration: 700,
     });
   }
@@ -944,7 +1106,10 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   public finishPolygon() {
-    if (this.drawMode === 'editPolygon') {
+    if (
+      this.drawMode === 'editPolygon' ||
+      this.geometryRedrawMode === 'polygon'
+    ) {
       this.finishPolygonEdit();
       return;
     }
@@ -958,12 +1123,19 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   private finishPolygonEdit() {
-    const feature = this.geometryEditFeature;
-    if (!feature?.id || this.polygonVertices.length < 3 || this.saving) {
+    if (this.polygonVertices.length < 3) {
       return;
     }
     const ring = [...this.polygonVertices, this.polygonVertices[0]];
-    feature.geometry = { type: 'Polygon', coordinates: [ring] };
+    this.saveFeatureGeometry({ type: 'Polygon', coordinates: [ring] });
+  }
+
+  private saveFeatureGeometry(geometry: Geometry) {
+    const feature = this.geometryEditFeature ?? this.editingFeature;
+    if (!feature?.id || this.saving) {
+      return;
+    }
+    feature.geometry = geometry;
     this.saving = true;
     this.cdr.detectChanges();
     this.rockExplorerService
@@ -976,7 +1148,11 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
           this.polygonVertices = [];
           this.clearDraftLayer();
           this.geometryEditFeature = null;
+          this.geometryRedrawMode = null;
           this.drawMode = 'select';
+          if (this.map) {
+            this.map.getCanvas().style.cursor = '';
+          }
           this.reloadFeatures(this.currentFilters());
           this.messageService.add({
             severity: 'success',
@@ -1044,43 +1220,41 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     if (!el) {
       return;
     }
-    this.map = new MaplibreMap({
-      container: el,
-      style: this.styleUrl(this.mapStyle),
-      center: [10, 50],
-      zoom: 5,
-    });
-    this.map.addControl(new NavigationControl({}), 'top-right');
-    this.map.addControl(
-      new GeolocateControl({
-        positionOptions: { enableHighAccuracy: true },
-        trackUserLocation: true,
-      }),
-      'top-right',
-    );
-    this.map.on('load', () => {
-      this.loadParkingIcon()
-        .then(() => {
-          this.addFeatureLayers();
-          this.setFeatureData(this.features);
-          this.fitToFeatures();
-        })
-        .catch(() => {
-          this.addFeatureLayers();
-          this.setFeatureData(this.features);
-          this.fitToFeatures();
-        });
-      // High-frequency handlers stay outside Angular so drag doesn't thrash CD.
-      this.ngZone.runOutsideAngular(() => {
-        this.map!.on('mousemove', (event) => this.onMapMouseMove(event));
+    // Create the map outside Angular — otherwise every pointer event (including
+    // MapLibre internals) re-enters the zone and thrash-detects the open panel.
+    this.ngZone.runOutsideAngular(() => {
+      this.map = new MaplibreMap({
+        container: el,
+        style: this.styleUrl(this.mapStyle),
+        center: [10, 50],
+        zoom: 5,
+      });
+      this.map.addControl(new NavigationControl({}), 'top-right');
+      this.map.addControl(
+        new GeolocateControl({
+          positionOptions: { enableHighAccuracy: true },
+          trackUserLocation: true,
+        }),
+        'top-right',
+      );
+      this.map.on('load', () => {
+        this.loadParkingIcon()
+          .then(() => {
+            this.addFeatureLayers();
+            this.setFeatureData(this.features);
+            this.fitToFeatures();
+          })
+          .catch(() => {
+            this.addFeatureLayers();
+            this.setFeatureData(this.features);
+            this.fitToFeatures();
+          });
         this.map!.on('mousedown', 'rock-explorer-draft-points', (event) =>
           this.onDraftVertexMouseDown(event),
         );
         this.map!.on('mousedown', 'rock-explorer-parking', (event) =>
           this.onParkingMarkerMouseDown(event),
         );
-        this.map!.on('mouseup', () => this.endMapDrag());
-        this.map!.on('mouseleave', () => this.endMapDrag());
         this.map!.on('mouseenter', 'rock-explorer-draft-points', () => {
           if ((this.isPolygonToolActive || this.drawingPath) && this.map) {
             this.map.getCanvas().style.cursor = 'grab';
@@ -1114,16 +1288,26 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         this.map!.on('mouseleave', 'rock-explorer-image-locations', () =>
           this.onImageLocationMouseLeave(),
         );
+        this.map!.on('click', (event) => {
+          // Geometry drafting updates the map directly; only re-enter Angular for UI chrome.
+          if (
+            this.drawingPath ||
+            this.isPolygonToolActive ||
+            this.geometryRedrawMode === 'point'
+          ) {
+            this.onMapClick(event);
+            this.ngZone.run(() => this.cdr.detectChanges());
+            return;
+          }
+          this.ngZone.run(() => this.onMapClick(event));
+        });
+        this.map!.on('click', 'rock-explorer-points', (event) =>
+          this.ngZone.run(() => this.onFeatureSelectClick(event)),
+        );
+        this.map!.on('click', 'rock-explorer-polygons-fill', (event) =>
+          this.ngZone.run(() => this.onFeatureSelectClick(event)),
+        );
       });
-      this.map!.on('click', (event) =>
-        this.ngZone.run(() => this.onMapClick(event)),
-      );
-      this.map!.on('click', 'rock-explorer-points', (event) =>
-        this.ngZone.run(() => this.onFeatureSelectClick(event)),
-      );
-      this.map!.on('click', 'rock-explorer-polygons-fill', (event) =>
-        this.ngZone.run(() => this.onFeatureSelectClick(event)),
-      );
     });
   }
 
@@ -1139,6 +1323,15 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       return;
     }
     if (this.drawMode === 'point') {
+      if (this.geometryRedrawMode === 'point' && this.geometryEditFeature) {
+        this.ngZone.run(() =>
+          this.saveFeatureGeometry({
+            type: 'Point',
+            coordinates: [event.lngLat.lng, event.lngLat.lat],
+          }),
+        );
+        return;
+      }
       this.drawMode = 'select';
       this.openCreatePanel({
         type: 'Point',
@@ -1178,6 +1371,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     };
     this.map.dragPan.disable();
     this.map.getCanvas().style.cursor = 'grabbing';
+    this.startDocumentDragListeners();
   }
 
   private onDraftVertexMouseDown(event: MapLayerMouseEvent) {
@@ -1201,36 +1395,47 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       : this.buildPolygonDraftCollection();
     this.map.dragPan.disable();
     this.map.getCanvas().style.cursor = 'grabbing';
+    this.startDocumentDragListeners();
   }
 
-  private onMapMouseMove(event: MapMouseEvent) {
-    if (this.draggingParkingId == null && this.draggingVertexIndex == null) {
-      return;
-    }
-    this.pendingDragLngLat = {
-      lat: event.lngLat.lat,
-      lng: event.lngLat.lng,
-    };
-    if (this.dragFrameId != null) {
-      return;
-    }
-    this.dragFrameId = requestAnimationFrame(() => this.flushDragFrame());
+  /**
+   * Document-level listeners registered outside NgZone — MapLibre canvas
+   * listeners alone are not enough if the map was ever touched by Zone.js.
+   */
+  private startDocumentDragListeners() {
+    this.cancelDragListeners();
+    this.ngZone.runOutsideAngular(() => {
+      const onMove = (event: MouseEvent) => this.onDocumentDragMove(event);
+      const onUp = () => {
+        this.cancelDragListeners();
+        this.endMapDrag();
+      };
+      window.addEventListener('mousemove', onMove, { passive: true });
+      window.addEventListener('mouseup', onUp);
+      this.dragMoveUnlisten = () =>
+        window.removeEventListener('mousemove', onMove);
+      this.dragUpUnlisten = () => window.removeEventListener('mouseup', onUp);
+    });
   }
 
-  private flushDragFrame() {
-    this.dragFrameId = null;
-    const ll = this.pendingDragLngLat;
-    this.pendingDragLngLat = null;
-    if (!ll) {
+  private onDocumentDragMove(event: MouseEvent) {
+    if (
+      !this.map ||
+      (this.draggingParkingId == null && this.draggingVertexIndex == null)
+    ) {
       return;
     }
+    const rect = this.map.getCanvas().getBoundingClientRect();
+    const lngLat = this.map.unproject([
+      event.clientX - rect.left,
+      event.clientY - rect.top,
+    ]);
+    this.applyDragLngLat(lngLat.lng, lngLat.lat);
+  }
+
+  private applyDragLngLat(lng: number, lat: number) {
     if (this.draggingParkingId) {
-      this.panelMisc?.moveParkingSite(
-        this.draggingParkingId,
-        ll.lat,
-        ll.lng,
-        true,
-      );
+      this.panelMisc?.moveParkingSite(this.draggingParkingId, lat, lng, true);
       if (this.dragOverlayCollection) {
         this.syncParkingDragCollectionCoords();
         this.setParkingOverlayData(this.dragOverlayCollection);
@@ -1242,19 +1447,22 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     }
     this.vertexDragMoved = true;
     if (this.drawingPath) {
-      this.panelMisc?.movePathVertex(
-        this.draggingVertexIndex,
-        ll.lng,
-        ll.lat,
-        true,
-      );
+      const verts = this.panelMisc?.pathDraftVertices;
+      if (
+        verts &&
+        this.draggingVertexIndex >= 0 &&
+        this.draggingVertexIndex < verts.length
+      ) {
+        verts[this.draggingVertexIndex][0] = lng;
+        verts[this.draggingVertexIndex][1] = lat;
+      }
       if (this.dragOverlayCollection) {
         this.setDraftData(this.dragOverlayCollection);
       }
       return;
     }
-    this.polygonVertices[this.draggingVertexIndex][0] = ll.lng;
-    this.polygonVertices[this.draggingVertexIndex][1] = ll.lat;
+    this.polygonVertices[this.draggingVertexIndex][0] = lng;
+    this.polygonVertices[this.draggingVertexIndex][1] = lat;
     if (this.dragOverlayCollection) {
       this.setDraftData(this.dragOverlayCollection);
     }
@@ -1279,11 +1487,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   private endMapDrag() {
-    // Apply any pending frame before clearing drag state.
-    if (this.dragFrameId != null || this.pendingDragLngLat != null) {
-      this.cancelDragFrame();
-      this.flushDragFrame();
-    }
+    this.cancelDragListeners();
     this.dragOverlayCollection = null;
 
     if (this.draggingParkingId) {
@@ -1310,29 +1514,32 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
     this.draggingVertexIndex = null;
     this.vertexDragMoved = false;
     this.dragOverlayCollection = null;
+    this.cancelDragListeners();
     this.map?.dragPan.enable();
     if (this.map) {
       this.map.getCanvas().style.cursor =
         this.isPolygonToolActive || this.drawingPath ? 'grab' : '';
     }
-    if (!this.drawingPath) {
+    if (!this.drawingPath || !this.panelMisc) {
       return;
     }
-    // Click selects; drag clears selection and refreshes draft (avoids stale red).
-    this.ngZone.run(() => {
-      if (wasClick) {
-        this.panelMisc?.selectPathVertex(index);
-      } else {
-        this.panelMisc?.selectPathVertex(null);
-      }
-    });
+    // Click selects; drag clears selection. Update draft layer only (no full overlay refresh).
+    const nextSelected = wasClick ? index : null;
+    const selectionChanged =
+      this.panelMisc.selectedPathVertexIndex !== nextSelected;
+    this.panelMisc.selectedPathVertexIndex = nextSelected;
+    this.selectedPathVertexIndex = nextSelected;
+    if (selectionChanged) {
+      this.syncPathDraftLayer();
+      this.ngZone.run(() => this.cdr.detectChanges());
+    }
   }
 
-  private cancelDragFrame() {
-    if (this.dragFrameId != null) {
-      cancelAnimationFrame(this.dragFrameId);
-      this.dragFrameId = null;
-    }
+  private cancelDragListeners() {
+    this.dragMoveUnlisten?.();
+    this.dragUpUnlisten?.();
+    this.dragMoveUnlisten = null;
+    this.dragUpUnlisten = null;
   }
 
   private openCreatePanel(geometry: Geometry) {
@@ -1363,6 +1570,9 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
   }
 
   public openEditPanel(id: string) {
+    if (this.panelOpen && this.editingFeature?.id === id) {
+      return;
+    }
     this.rockExplorerService
       .getFeature(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -1714,7 +1924,6 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         paint: {
           'line-color': '#2563eb',
           'line-width': 2,
-          'line-dasharray': [2, 1],
         },
       });
       this.map.addLayer({
@@ -1771,10 +1980,13 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
           ['in', ['get', 'id'], ['literal', []]],
         ],
         paint: {
+          // Same potential color as unselected, just larger.
           'circle-radius': 11,
-          'circle-color': 'rgba(0,0,0,0)',
-          'circle-stroke-width': 3,
-          'circle-stroke-color': '#2563eb',
+          'circle-color': this.potentialPaintMatch(
+            POTENTIAL_FILL_COLORS,
+          ) as any,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
         },
       });
       this.map.addLayer({
@@ -1786,7 +1998,13 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
           ['==', ['geometry-type'], 'Polygon'],
           ['in', ['get', 'id'], ['literal', []]],
         ],
-        paint: { 'line-color': '#2563eb', 'line-width': 4 },
+        paint: {
+          // Same outline color as unselected, just wider.
+          'line-color': this.potentialPaintMatch(
+            POTENTIAL_OUTLINE_COLORS,
+          ) as any,
+          'line-width': 5,
+        },
       });
     }
     if (!this.map.getLayer('rock-explorer-labels')) {
@@ -1829,7 +2047,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         source: 'rock-explorer-image-locations',
         paint: {
           'circle-radius': 7,
-          'circle-color': '#ec4899',
+          'circle-color': MAP_MEDIA_ACCENT,
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
         },
@@ -1838,7 +2056,7 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
       this.map.setPaintProperty(
         'rock-explorer-image-locations',
         'circle-color',
-        '#ec4899',
+        MAP_MEDIA_ACCENT,
       );
     }
     // Keep labels above features; image dots above labels for hover.
@@ -2149,14 +2367,34 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         features: this.panelMisc.getPathMapFeatures(),
       });
       if (this.drawingPath) {
-        this.setDraftData(this.panelMisc.getPathDraftCollection());
+        this.syncPathDraftLayer();
       } else if (!this.isPolygonToolActive) {
         // Path edit finished/cancelled — don't leave draft vertices (e.g. red selected).
+        this.pathDraftVertexCount = 0;
+        this.selectedPathVertexIndex = null;
         this.clearDraftLayer();
       }
     } else {
       this.refreshMiscOverlaysFromFeature(this.editingFeature);
     }
+  }
+
+  private syncPathDraftStateFromMisc(): void {
+    this.pathDraftVertexCount = this.panelMisc?.pathDraftVertices.length ?? 0;
+    this.selectedPathVertexIndex =
+      this.panelMisc?.selectedPathVertexIndex ?? null;
+  }
+
+  /** Update draft map layer only — mirrors polygon `renderPolygonDraft`. */
+  private syncPathDraftLayer(): void {
+    this.syncPathDraftStateFromMisc();
+    if (!this.drawingPath || !this.panelMisc) {
+      if (!this.isPolygonToolActive) {
+        this.clearDraftLayer();
+      }
+      return;
+    }
+    this.setDraftData(this.panelMisc.getPathDraftCollection());
   }
 
   private ensureMiscOverlayLayers(): void {
@@ -2182,13 +2420,18 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
         type: 'line',
         source: 'rock-explorer-paths',
         paint: {
-          'line-color': '#0f766e',
+          'line-color': MAP_MEDIA_ACCENT,
           'line-width': 3,
           'line-opacity': 0.9,
           'line-dasharray': [2, 1.5],
         },
       });
     } else {
+      this.map.setPaintProperty(
+        'rock-explorer-paths',
+        'line-color',
+        MAP_MEDIA_ACCENT,
+      );
       this.map.setPaintProperty(
         'rock-explorer-paths',
         'line-dasharray',
@@ -2210,11 +2453,17 @@ export class RockExplorerPageComponent implements AfterViewInit, OnDestroy {
           'text-ignore-placement': true,
         },
         paint: {
-          'text-color': '#0f766e',
+          'text-color': MAP_MEDIA_ACCENT,
           'text-halo-color': 'rgba(255,255,255,0.92)',
           'text-halo-width': 1.75,
         },
       });
+    } else {
+      this.map.setPaintProperty(
+        'rock-explorer-path-labels',
+        'text-color',
+        MAP_MEDIA_ACCENT,
+      );
     }
     if (!this.map.getLayer('rock-explorer-parking')) {
       this.map.addLayer({

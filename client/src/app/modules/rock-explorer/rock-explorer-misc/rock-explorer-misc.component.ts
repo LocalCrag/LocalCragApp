@@ -56,9 +56,12 @@ export class RockExplorerMiscComponent implements OnChanges {
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() mapPickChange = new EventEmitter<boolean>();
   @Output() pathDrawChange = new EventEmitter<boolean>();
+  /** Draft geometry only — parent should update the draft map layer, not all overlays. */
+  @Output() pathDraftChange = new EventEmitter<void>();
   @Output() previewChange = new EventEmitter<void>();
   @Output() saved = new EventEmitter<RockExplorerFeature>();
   @Output() focusCoordinates = new EventEmitter<Coordinates>();
+  @Output() focusPathGeometry = new EventEmitter<Position[]>();
 
   public editMode = false;
   public saving = false;
@@ -436,8 +439,7 @@ export class RockExplorerMiscComponent implements OnChanges {
     ) {
       this.selectedPathVertexIndex = null;
     }
-    this.previewChange.emit();
-    this.cdr.detectChanges();
+    this.pathDraftChange.emit();
   }
 
   applyPathVertex(lng: number, lat: number): void {
@@ -445,9 +447,9 @@ export class RockExplorerMiscComponent implements OnChanges {
       return;
     }
     this.selectedPathVertexIndex = null;
-    this.pathDraftVertices = [...this.pathDraftVertices, [lng, lat]];
-    this.previewChange.emit();
-    this.cdr.detectChanges();
+    // Push in place so any shared draft FeatureCollection keeps working.
+    this.pathDraftVertices.push([lng, lat]);
+    this.pathDraftChange.emit();
   }
 
   movePathVertex(
@@ -467,8 +469,7 @@ export class RockExplorerMiscComponent implements OnChanges {
     this.pathDraftVertices[index][0] = lng;
     this.pathDraftVertices[index][1] = lat;
     if (!silent) {
-      this.previewChange.emit();
-      this.cdr.detectChanges();
+      this.pathDraftChange.emit();
     }
   }
 
@@ -479,9 +480,11 @@ export class RockExplorerMiscComponent implements OnChanges {
     ) {
       return;
     }
+    if (this.selectedPathVertexIndex === index) {
+      return;
+    }
     this.selectedPathVertexIndex = index;
-    this.previewChange.emit();
-    this.cdr.detectChanges();
+    this.pathDraftChange.emit();
   }
 
   deletePathVertex(index?: number): void {
@@ -497,8 +500,7 @@ export class RockExplorerMiscComponent implements OnChanges {
       (_, i) => i !== target,
     );
     this.selectedPathVertexIndex = null;
-    this.previewChange.emit();
-    this.cdr.detectChanges();
+    this.pathDraftChange.emit();
   }
 
   clearPathGeometry(path: RockExplorerPath): void {
@@ -542,8 +544,9 @@ export class RockExplorerMiscComponent implements OnChanges {
     if (!coords?.length) {
       return;
     }
-    const mid = coords[Math.floor(coords.length / 2)];
-    this.focusCoordinates.emit({ lat: mid[1], lng: mid[0] });
+    this.focusPathGeometry.emit(
+      coords.map((c) => [c[0], c[1]] as [number, number]),
+    );
   }
 
   getParkingMapFeatures(): Feature<Geometry>[] {

@@ -47,7 +47,7 @@
         <p-button
           icon="pi pi-check"
           [label]="
-            drawMode === 'editPolygon'
+            isGeometryEditActive
               ? t('rockExplorer.saveGeometry')
               : t('rockExplorer.finishPolygon')
           "
@@ -306,7 +306,7 @@
         role="toolbar"
         [attr.aria-label]="t('rockExplorer.drawPath')"
       >
-        @if (panelMisc?.selectedPathVertexIndex != null) {
+        @if (selectedPathVertexIndex != null) {
           <p-button
             [label]="t('rockExplorer.deletePathVertex')"
             icon="pi pi-trash"
@@ -319,7 +319,7 @@
           [label]="t('rockExplorer.finishPath')"
           icon="pi pi-check"
           size="small"
-          [disabled]="(panelMisc?.pathDraftVertices?.length ?? 0) < 2"
+          [disabled]="pathDraftVertexCount < 2"
           (onClick)="panelMisc?.finishPathDraw()"
         />
         <p-button
@@ -374,6 +374,35 @@
                         "
                       />
                     }
+                    <p-button
+                      [label]="t('rockExplorer.redrawAsPoint')"
+                      icon="pi pi-map-marker"
+                      [text]="true"
+                      styleClass="w-full justify-start"
+                      (onClick)="
+                        startRedrawAsPoint(); featureActionsPopover.hide()
+                      "
+                    />
+                    <p-button
+                      [label]="t('rockExplorer.redrawAsPolygon')"
+                      icon="pi pi-stop"
+                      [text]="true"
+                      styleClass="w-full justify-start"
+                      (onClick)="
+                        startRedrawAsPolygon(); featureActionsPopover.hide()
+                      "
+                    />
+                    <p-button
+                      [label]="t('rockExplorer.redrawFromContent')"
+                      icon="pi pi-sitemap"
+                      [text]="true"
+                      styleClass="w-full justify-start"
+                      [disabled]="!canAutoRedrawGeometry"
+                      (onClick)="
+                        redrawGeometryFromOverlays();
+                        featureActionsPopover.hide()
+                      "
+                    />
                     <p-button
                       [label]="t('rockExplorer.delete')"
                       icon="pi pi-trash"
@@ -571,9 +600,11 @@
                       (editModeChange)="onMiscEditModeChange($event)"
                       (mapPickChange)="onParkingMapPickChange($event)"
                       (pathDrawChange)="onPathDrawChange($event)"
+                      (pathDraftChange)="onPathDraftChange()"
                       (previewChange)="onMiscPreviewChange()"
                       (saved)="onMiscSaved($event)"
                       (focusCoordinates)="focusImageCoordinates($event)"
+                      (focusPathGeometry)="fitMapToPositions($event)"
                     ></lc-rock-explorer-misc>
                   </p-tabpanel>
                 </p-tabpanels>
