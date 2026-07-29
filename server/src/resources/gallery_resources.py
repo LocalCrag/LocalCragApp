@@ -116,7 +116,7 @@ class GetGalleryImages(MethodView):
             selectinload(GalleryImage.tags),
         )
 
-        paginated_images = db.paginate(images_query, page=int(page), per_page=per_page)
+        paginated_images = db.paginate(images_query, page=int(page), per_page=int(per_page))
         all_tags = [tag for image in paginated_images.items for tag in image.tags]
         prefetch_tag_objects(all_tags)
         return jsonify(paginated_gallery_images_schema.dump(paginated_images)), 200

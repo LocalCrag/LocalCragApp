@@ -29,9 +29,17 @@
             (click)="openGallery(i)"
           >
             <img
-              [src]="image.image.thumbnailS"
+              [src]="image.image.thumbnailM || image.image.thumbnailS"
               [alt]="image.description || ''"
             />
+            @if (image.description) {
+              <span
+                class="rock-explorer-gallery__thumb-desc-icon"
+                aria-hidden="true"
+              >
+                <i class="pi pi-comment"></i>
+              </span>
+            }
           </button>
         }
         @if (loading === loadingStates.LOADING) {
@@ -51,28 +59,23 @@
         [containerStyle]="{ 'max-width': '90vw' }"
       >
         <ng-template #item let-item>
-          <img
-            class="rock-explorer-gallery__galleria-img"
-            [src]="
-              item.image.thumbnailXL || item.image.thumbnailL || item.image.path
-            "
-            [srcset]="item.image.srcSet"
-            [alt]="item.description || ''"
-          />
-        </ng-template>
-        <ng-template #caption let-item>
-          @if (item.description || getImageCoordinates(item)) {
-            <div class="rock-explorer-gallery__caption">
-              @if (item.description) {
-                <div>{{ item.description }}</div>
-              }
-              @if (getImageCoordinates(item); as coordinates) {
-                <lc-coordinates-button
-                  [coordinates]="coordinates"
-                ></lc-coordinates-button>
-              }
-            </div>
-          }
+          <div class="rock-explorer-gallery__galleria-item">
+            <img
+              class="rock-explorer-gallery__galleria-img"
+              [src]="
+                item.image.thumbnailXL ||
+                item.image.thumbnailL ||
+                item.image.path
+              "
+              [srcset]="item.image.srcSet"
+              [alt]="item.description || ''"
+            />
+            @if (item.description) {
+              <div class="rock-explorer-gallery__caption">
+                {{ item.description }}
+              </div>
+            }
+          </div>
         </ng-template>
       </p-galleria>
     } @else {

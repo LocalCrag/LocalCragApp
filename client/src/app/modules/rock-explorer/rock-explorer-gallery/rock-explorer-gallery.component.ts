@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   EventEmitter,
+  HostListener,
   inject,
   Input,
   OnChanges,
@@ -46,7 +47,6 @@ import {
   PaginatedListView,
 } from '../../../utility/paginated-list';
 import { GalleryImageSkeletonComponent } from '../../gallery/gallery-image-skeleton/gallery-image-skeleton.component';
-import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { MultiImageUploadComponent } from '../../shared/forms/controls/multi-image-upload/multi-image-upload.component';
@@ -60,7 +60,6 @@ import { MultiImageUploadComponent } from '../../shared/forms/controls/multi-ima
     MultiImageUploadComponent,
     GalleryImageSkeletonComponent,
     CoordinatesComponent,
-    CoordinatesButtonComponent,
     Button,
     DialogModule,
     Menu,
@@ -274,6 +273,34 @@ export class RockExplorerGalleryComponent
     }
     this.activeIndex = index;
     this.galleryVisible = true;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onGalleryKeydown(event: KeyboardEvent): void {
+    if (!this.galleryVisible || this.editMode) {
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.galleryVisible = false;
+      this.cdr.detectChanges();
+      return;
+    }
+    if (this.images.length === 0) {
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.activeIndex = (this.activeIndex + 1) % this.images.length;
+      this.cdr.detectChanges();
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.activeIndex =
+        (this.activeIndex - 1 + this.images.length) % this.images.length;
+      this.cdr.detectChanges();
+    }
   }
 
   getImageCoordinates(image: GalleryImage): Coordinates | null {
