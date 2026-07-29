@@ -325,17 +325,6 @@ export class MenuComponent implements OnInit, AfterViewInit {
               label: this.translocoService.translate(marker('menu.todos')),
               routerLink: `/todos`,
             },
-          ];
-          if (authState.user.member) {
-            accountItems.push({
-              icon: 'pi pi-fw pi-map',
-              label: this.translocoService.translate(
-                marker('menu.rockExplorer'),
-              ),
-              routerLink: '/rock-explorer',
-            });
-          }
-          accountItems.push(
             {
               icon: 'pi pi-fw pi-user-edit',
               label: this.translocoService.translate(marker('menu.account')),
@@ -353,13 +342,30 @@ export class MenuComponent implements OnInit, AfterViewInit {
               icon: 'pi pi-fw pi-sign-out',
               command: this.logout.bind(this),
             },
-          );
+          ];
           items.push({
             label: this.translocoService.translate(
               marker('menu.accountCategory'),
             ),
             items: accountItems,
           });
+
+          if (authState.user.member) {
+            items.push({
+              label: this.translocoService.translate(
+                marker('menu.toolsCategory'),
+              ),
+              items: [
+                {
+                  icon: 'pi pi-fw pi-map',
+                  label: this.translocoService.translate(
+                    marker('menu.rockExplorer'),
+                  ),
+                  routerLink: '/rock-explorer',
+                },
+              ],
+            });
+          }
 
           // If the only group present is the account category, unwrap it so
           // the p-menu receives a flat list of MenuItem entries instead of
