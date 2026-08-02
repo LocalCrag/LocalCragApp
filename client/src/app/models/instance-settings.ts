@@ -2,6 +2,7 @@ import { File } from './file';
 import { FaDefaultFormat } from '../enums/fa-default-format';
 import { StartingPosition } from '../enums/starting-position';
 import { LanguageCode } from '../utility/types/language';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -39,7 +40,7 @@ export class InstanceSettings {
 
   public static deserialize(payload: any): InstanceSettings {
     const instanceSettings = new InstanceSettings();
-    instanceSettings.timeUpdated = new Date(payload.timeUpdated + 'Z');
+    instanceSettings.timeUpdated = parseServerUtcDate(payload.timeUpdated);
     instanceSettings.instanceName = payload.instanceName;
     instanceSettings.copyrightOwner = payload.copyrightOwner;
     instanceSettings.mailGreeting = payload.mailGreeting;

@@ -1,6 +1,7 @@
 import { AbstractModel } from './abstract-model';
 import { User } from './user';
 import { deserializeLCObject, LCObject, ObjectType } from './object';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 export class ModeratorTask extends AbstractModel {
   title: string;
@@ -20,9 +21,7 @@ export class ModeratorTask extends AbstractModel {
     task.title = payload.title;
     task.description = payload.description;
     task.completed = payload.completed;
-    task.timeFinished = payload.timeFinished
-      ? new Date(payload.timeFinished)
-      : null;
+    task.timeFinished = parseServerUtcDate(payload.timeFinished);
     task.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;

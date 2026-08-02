@@ -14,6 +14,7 @@ import {
 } from './mixins/has-order-index';
 import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 import { topoSectorRouterLink } from './topo-router-link';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 /**
  * Model of a climbing crag's sector.
@@ -60,9 +61,7 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     sector.shortDescription = payload.shortDescription;
     sector.rules = payload.rules;
     sector.rulesTitle = payload.rulesTitle ?? null;
-    sector.rulesUpdatedAt = payload.rulesUpdatedAt
-      ? new Date(payload.rulesUpdatedAt)
-      : null;
+    sector.rulesUpdatedAt = parseServerUtcDate(payload.rulesUpdatedAt);
     sector.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
       : null;

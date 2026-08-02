@@ -3,6 +3,7 @@ import { File } from './file';
 import { LanguageCode } from '../utility/types/language';
 import { ColorScheme } from '../services/core/theme.service';
 import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 /**
  * Model of a user.
@@ -46,7 +47,7 @@ export class User extends HasSlug(AbstractModel) {
     user.admin = payload.admin;
     user.moderator = payload.moderator;
     user.member = payload.member;
-    user.activatedAt = new Date(payload.activatedAt + 'Z');
+    user.activatedAt = parseServerUtcDate(payload.activatedAt);
     user.fullname = `${user.firstname} ${user.lastname}`;
     user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;
     user.routerLink = `/users/${user.slug}`;

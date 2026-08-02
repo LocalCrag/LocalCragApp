@@ -1,10 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { forkJoin, merge, Observable, of, timer } from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
+import { autoLoginFailed } from '../../ngrx/actions/auth.actions';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
+import { parseServerUtcDate } from '../../utility/parse-server-utc-date';
 
 /**
  * The PascalCase entity types that can carry a `rules` field and therefore a
@@ -40,6 +50,9 @@ const STORAGE_KEY = 'rulesReadStatusV2';
 /** Sentinel so a mark-read without a server timestamp still counts as acknowledged. */
 const EPOCH = new Date(0);
 
+/** Auth credentials key — presence means auto-login may still be in flight. */
+const AUTH_STORAGE_KEY = 'LocalCragAuth';
+
 /**
  * Persists "rules read" status per topo entity (region/crag/sector).
  *
@@ -57,6 +70,7 @@ export class RulesReadStatusService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
   private store = inject(Store);
+  private actions$ = inject(Actions);
 
   private cache = new Map<string, RulesReadStatusEntry>();
   private loaded$: Observable<void> | null = null;
@@ -121,14 +135,14 @@ export class RulesReadStatusService {
   /**
    * Lazily hydrates the in-memory cache once per service lifetime.
    *
-   * Always seeds from localStorage first; when the user is logged in, merges
-   * account API rows on top and writes the merged cache back to localStorage.
-   * The resulting observable is memoized via `shareReplay(1)` so concurrent
-   * `getStatus` / `markRead` callers share a single load.
+   * Waits for auto-login to resolve so a cold start does not permanently skip
+   * the account API (see #1230). Always seeds from localStorage first; when
+   * the user is logged in, merges account API rows on top and writes the merged
+   * cache back to localStorage. Memoized via `shareReplay(1)`.
    */
   private ensureLoaded(): Observable<void> {
     if (!this.loaded$) {
-      this.loaded$ = this.store.pipe(select(selectIsLoggedIn), take(1)).pipe(
+      this.loaded$ = this.waitForAuthResolved().pipe(
         switchMap((isLoggedIn) => {
           this.hydrateFromLocalStorage();
           if (!isLoggedIn) {
@@ -142,7 +156,7 @@ export class RulesReadStatusService {
                   this.cache.set(
                     this.key(row.entityType as RulesEntityType, row.entityId),
                     {
-                      readAt: new Date(row.readAt),
+                      readAt: this.normalizeAcknowledgedUpdatedAt(row.readAt),
                       acknowledgedUpdatedAt:
                         this.normalizeAcknowledgedUpdatedAt(
                           row.acknowledgedRulesUpdatedAt,
@@ -162,26 +176,55 @@ export class RulesReadStatusService {
     return this.loaded$;
   }
 
+  /**
+   * Resolves whether the user is logged in after auto-login has had a chance
+   * to run. If `LocalCragAuth` is present but `isLoggedIn` is still false,
+   * waits for login success, `autoLoginFailed`, or a short timeout.
+   */
+  private waitForAuthResolved(): Observable<boolean> {
+    return this.store.pipe(select(selectIsLoggedIn), take(1)).pipe(
+      switchMap((isLoggedIn) => {
+        if (isLoggedIn) {
+          return of(true);
+        }
+        const authPending =
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem(AUTH_STORAGE_KEY) !== null;
+        if (!authPending) {
+          return of(false);
+        }
+        return merge(
+          this.store.pipe(
+            select(selectIsLoggedIn),
+            filter((loggedIn) => loggedIn),
+            map(() => true),
+          ),
+          this.actions$.pipe(
+            ofType(autoLoginFailed),
+            map(() => false),
+          ),
+          // Safety net if tryAutoLogin never runs (non-core hosts / tests).
+          timer(3000).pipe(
+            switchMap(() => this.store.pipe(select(selectIsLoggedIn), take(1))),
+          ),
+        ).pipe(take(1));
+      }),
+    );
+  }
+
   private key(entityType: RulesEntityType, entityId: string): string {
     return `${entityType}:${entityId}`;
   }
 
   /**
-   * Parses acknowledged timestamps the same way models parse API dates
-   * (`new Date(...)`). Missing/invalid values become the epoch sentinel so a
-   * mark-read without a server timestamp still counts as acknowledged.
+   * Parses acknowledged timestamps as server UTC (naive ISO → UTC). Missing /
+   * invalid values become the epoch sentinel so a mark-read without a server
+   * timestamp still counts as acknowledged.
    */
   private normalizeAcknowledgedUpdatedAt(
     value: Date | string | null | undefined,
   ): Date {
-    if (value == null || value === '') {
-      return EPOCH;
-    }
-    if (value instanceof Date) {
-      return Number.isNaN(value.getTime()) ? EPOCH : value;
-    }
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? EPOCH : date;
+    return parseServerUtcDate(value) ?? EPOCH;
   }
 
   private hydrateFromLocalStorage(): void {
@@ -194,8 +237,8 @@ export class RulesReadStatusService {
         { readAt: string; acknowledgedUpdatedAt: string | null }
       >;
       Object.entries(parsed).forEach(([key, value]) => {
-        const date = new Date(value.readAt);
-        if (!isNaN(date.getTime())) {
+        const date = parseServerUtcDate(value.readAt);
+        if (date) {
           this.cache.set(key, {
             readAt: date,
             acknowledgedUpdatedAt: this.normalizeAcknowledgedUpdatedAt(
