@@ -9,7 +9,7 @@ describe('Auth test', () => {
     cy.login();
     cy.get('[data-cy="navbar-login"]').should('not.exist');
     cy.get('[data-cy="auth-menu-button"]').click();
-    cy.get('[data-cy="auth-menu"] a').last().click();
+    cy.get('[data-cy="auth-menu"] #auth-menu-logout').click();
     cy.url().should('include', '/login');
   });
 });

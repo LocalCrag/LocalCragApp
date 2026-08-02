@@ -338,6 +338,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
               routerLink: '/change-password',
             },
             {
+              id: 'auth-menu-logout',
               label: this.translocoService.translate(marker('menu.logout')),
               icon: 'pi pi-fw pi-sign-out',
               command: this.logout.bind(this),
