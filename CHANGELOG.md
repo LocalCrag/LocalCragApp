@@ -1,3 +1,17 @@
+# [1.48.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.47.0...v1.48.0) (2026-08-02)
+
+
+### Features
+
+* **ascents:** add logbook filters ([#1210](https://github.com/LocalCrag/LocalCragApp/issues/1210)) ([df6049f](https://github.com/LocalCrag/LocalCragApp/commit/df6049f6dced6c2500eea0e261e8f52e96db9316)), closes [#430](https://github.com/LocalCrag/LocalCragApp/issues/430)
+* rock explorer ([#1221](https://github.com/LocalCrag/LocalCragApp/issues/1221)) ([b84da3f](https://github.com/LocalCrag/LocalCragApp/commit/b84da3fb214f3f6e23f47434671e71efb37e8d94))
+* **topo:** add bolter field for lines ([#1213](https://github.com/LocalCrag/LocalCragApp/issues/1213)) ([03049a3](https://github.com/LocalCrag/LocalCragApp/commit/03049a3caa2badac3a80b34a7e85424e161a2855)), closes [#1135](https://github.com/LocalCrag/LocalCragApp/issues/1135)
+* **topo:** add drying behaviour after rain as new line property ([#1211](https://github.com/LocalCrag/LocalCragApp/issues/1211)) ([b57e4e8](https://github.com/LocalCrag/LocalCragApp/commit/b57e4e8c598046f1bbda740c6de9b188e3e24884)), closes [#564](https://github.com/LocalCrag/LocalCragApp/issues/564)
+* **topo:** add warning alerts if a topo entity with an already existing name is created ([#1209](https://github.com/LocalCrag/LocalCragApp/issues/1209)) ([f25862d](https://github.com/LocalCrag/LocalCragApp/commit/f25862d6404e7b76ad6b4a3aafd2205f66609057)), closes [#29](https://github.com/LocalCrag/LocalCragApp/issues/29)
+* **topo:** if FA ascent exists, it is used for displaying fa info in line detail ([#1208](https://github.com/LocalCrag/LocalCragApp/issues/1208)) ([5ac1df7](https://github.com/LocalCrag/LocalCragApp/commit/5ac1df75f1ed3793192842f5deccd543400f53aa)), closes [#58](https://github.com/LocalCrag/LocalCragApp/issues/58)
+* **topo:** leveled grade distribution chips are now clickable and pre-filter the line list ([#1214](https://github.com/LocalCrag/LocalCragApp/issues/1214)) ([dc04684](https://github.com/LocalCrag/LocalCragApp/commit/dc04684dd7c891a11be8e2d2386ec57aba0d4183)), closes [#876](https://github.com/LocalCrag/LocalCragApp/issues/876)
+* **topo:** spots with rules can display an additional alert to get users to read those rules ([#1216](https://github.com/LocalCrag/LocalCragApp/issues/1216)) ([5afd8a9](https://github.com/LocalCrag/LocalCragApp/commit/5afd8a9b646bf5000c530596b87a1041c4624e55)), closes [#256](https://github.com/LocalCrag/LocalCragApp/issues/256)
+
 # [1.47.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.46.0...v1.47.0) (2026-07-21)
 
 
