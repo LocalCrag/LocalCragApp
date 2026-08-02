@@ -156,8 +156,8 @@ spec:
                   DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
 
                   echo "Configuring mc aliases..."
-                  mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}"
-                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}"
+                  mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" --api S3v4
+                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" --api S3v4
 
                   echo "--- Bundled backup snapshot: ${TS} ---"
 
