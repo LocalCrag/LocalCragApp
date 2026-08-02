@@ -19,7 +19,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { NavigationService } from '../../services/core/navigation.service';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { RulesAlertComponent } from '../shared/components/rules-alert/rules-alert.component';
@@ -27,10 +27,16 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { OfflineAlertComponent } from './offline-alert/offline-alert.component';
 import { MenuComponent } from './menu/menu.component';
-import { RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { FooterComponent } from './footer/footer.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { Toast } from 'primeng/toast';
+import { Subscription } from 'rxjs';
 
 /**
  * Application shell: fixed site header, main layout, and global chrome.
@@ -68,9 +74,15 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Measured header height in px; used for scroll hide/show threshold only. */
   headerHeight = 0;
 
+  /** Full-bleed map pages (e.g. Rock Explorer): header only, no chrome. */
+  fullscreenMap = false;
+
   private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private resizeObserver?: ResizeObserver;
+  private routerSub?: Subscription;
   private lastScrollY = 0;
   /** Ignore tiny scroll jitter before toggling header visibility. */
   private readonly scrollDeltaMin = 4;
@@ -151,6 +163,10 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     this.store.dispatch(tryAutoLogin());
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());
+    this.syncFullscreenMapFromRoute();
+    this.routerSub = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => this.syncFullscreenMapFromRoute());
   }
 
   ngAfterViewInit() {
@@ -166,6 +182,19 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.resizeObserver?.disconnect();
+    this.routerSub?.unsubscribe();
+  }
+
+  private syncFullscreenMapFromRoute() {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    this.fullscreenMap = !!route.snapshot.data?.['fullscreenMap'];
+    this.hostEl.nativeElement.classList.toggle(
+      'lc-fullscreen-map',
+      this.fullscreenMap,
+    );
   }
 
   /**

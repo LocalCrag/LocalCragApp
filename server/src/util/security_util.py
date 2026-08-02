@@ -18,6 +18,16 @@ def current_user_is_moderator() -> bool:
     return bool(get_jwt().get("moderator"))
 
 
+def current_user_is_member() -> bool:
+    """Return whether the current request is authenticated as a member."""
+    if not has_request_context():
+        return False
+    has_jwt = bool(verify_jwt_in_request(optional=True))
+    if not has_jwt:
+        return False
+    return bool(get_jwt().get("member"))
+
+
 def check_auth_claims(admin=False, moderator=False, member=False):
     """
     Checks if the requesting user is authorized to perform an action. Usually this means checking that he exists

@@ -1,0 +1,257 @@
+:host {
+  display: contents;
+}
+
+.rock-explorer__panel {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(26rem, 100%);
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-content-background);
+  border-left: 1px solid var(--p-content-border-color);
+  box-shadow: var(--p-card-shadow);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+
+  &--map-pick-hidden {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+  }
+
+  input,
+  textarea,
+  p-select,
+  p-multiSelect {
+    width: 100%;
+  }
+}
+
+.rock-explorer__panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rock-explorer__view .rock-explorer__panel-body {
+  overflow: hidden;
+  padding: 0;
+  gap: 0;
+}
+
+.rock-explorer__form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.rock-explorer__form .rock-explorer__panel-body {
+  gap: 0;
+
+  > .rock-explorer__field:first-child .form-label {
+    margin-top: 0;
+  }
+}
+
+.rock-explorer__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .form-label {
+    font-size: 0.875rem;
+  }
+}
+
+.rock-explorer__view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.rock-explorer__panel-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--p-content-border-color);
+  background: var(--p-content-background);
+
+  > p-button:only-child {
+    display: block;
+    width: 100%;
+  }
+}
+
+.rock-explorer__potential-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rock-explorer__potential-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.rock-explorer__panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0.75rem;
+  background: var(--p-content-hover-background);
+
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+}
+
+.rock-explorer__panel-header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.15rem;
+}
+
+.rock-explorer__tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+
+  ::ng-deep {
+    > p-tablist,
+    > .p-tablist {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    > p-tabpanels,
+    > .p-tabpanels {
+      display: block;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 1rem;
+    }
+
+    .p-tab {
+      gap: 0.35rem;
+    }
+  }
+}
+
+.rock-explorer__tab-badge {
+  margin-inline-start: 0.15rem;
+}
+
+.rock-explorer__panel-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 10rem;
+}
+
+.rock-explorer__view-fields {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rock-explorer__view-field {
+  dt {
+    margin: 0 0 0.15rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--p-text-muted-color, var(--p-surface-500, #78716c));
+  }
+
+  dd {
+    margin: 0;
+    color: var(--p-text-color);
+  }
+}
+
+.rock-explorer__created-by {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  lc-user-avatar {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+}
+
+.rock-explorer__created-by-name {
+  line-height: 1.25;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.rock-explorer__view-description {
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.rock-explorer__grade-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.rock-explorer__topo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .rock-explorer__panel {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 55%;
+    border-left: none;
+    border-top: 1px solid var(--p-content-border-color);
+  }
+}

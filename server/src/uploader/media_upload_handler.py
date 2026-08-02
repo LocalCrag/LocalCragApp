@@ -6,6 +6,7 @@ from werkzeug.datastructures import FileStorage
 
 from models.file import File
 from uploader.do_s3 import get_s3_client, upload_file
+from uploader.image_gps import extract_gps_from_image
 from uploader.upload_handler_utils import (
     check_filesize_limit,
     get_image_bytes,
@@ -64,6 +65,9 @@ def handle_image_upload(path: str, file, qquuid):
     img = Image.open(path)
     s3_client = get_s3_client()
 
+    # GPS is stripped when the image is re-encoded; read it first.
+    lat, lng = extract_gps_from_image(img)
+
     ImageOps.exif_transpose(img, in_place=True)
 
     extension = img.format.lower()
@@ -81,6 +85,8 @@ def handle_image_upload(path: str, file, qquuid):
     file_object.thumbnail_m = False
     file_object.thumbnail_l = False
     file_object.thumbnail_xl = False
+    file_object.exif_lat = lat
+    file_object.exif_lng = lng
 
     # Create thumbnails
     for size_key, size in image_sizes.items():

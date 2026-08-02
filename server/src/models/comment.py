@@ -11,6 +11,7 @@ from models.crag import Crag
 from models.line import Line
 from models.post import Post
 from models.region import Region
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 
 
@@ -78,3 +79,11 @@ def cascade_delete_region_comments(mapper, connection, target):
 def cascade_delete_post_comments(mapper, connection, target):
     session = Session.object_session(target)
     session.query(Comment).filter(and_(Comment.object_id == target.id, Comment.object_type == "Post")).delete()
+
+
+@listens_for(RockExplorerFeature, "before_delete")
+def cascade_delete_rock_explorer_feature_comments(mapper, connection, target):
+    session = Session.object_session(target)
+    session.query(Comment).filter(
+        and_(Comment.object_id == target.id, Comment.object_type == "RockExplorerFeature")
+    ).delete()

@@ -312,42 +312,61 @@ export class MenuComponent implements OnInit, AfterViewInit {
           }
 
           // Account category is always present
+          const accountItems: MenuItem[] = [
+            {
+              icon: 'pi pi-fw pi-user',
+              label: this.translocoService.translate(
+                marker('menu.accountDetail'),
+              ),
+              routerLink: `/users/${authState.user.slug}`,
+            },
+            {
+              icon: 'pi pi-fw pi-check-circle',
+              label: this.translocoService.translate(marker('menu.todos')),
+              routerLink: `/todos`,
+            },
+            {
+              icon: 'pi pi-fw pi-user-edit',
+              label: this.translocoService.translate(marker('menu.account')),
+              routerLink: '/account',
+            },
+            {
+              icon: 'pi pi-fw pi-shield',
+              label: this.translocoService.translate(
+                marker('menu.changePassword'),
+              ),
+              routerLink: '/change-password',
+            },
+            {
+              id: 'auth-menu-logout',
+              label: this.translocoService.translate(marker('menu.logout')),
+              icon: 'pi pi-fw pi-sign-out',
+              command: this.logout.bind(this),
+            },
+          ];
           items.push({
             label: this.translocoService.translate(
               marker('menu.accountCategory'),
             ),
-            items: [
-              {
-                icon: 'pi pi-fw pi-user',
-                label: this.translocoService.translate(
-                  marker('menu.accountDetail'),
-                ),
-                routerLink: `/users/${authState.user.slug}`,
-              },
-              {
-                icon: 'pi pi-fw pi-check-circle',
-                label: this.translocoService.translate(marker('menu.todos')),
-                routerLink: `/todos`,
-              },
-              {
-                icon: 'pi pi-fw pi-user-edit',
-                label: this.translocoService.translate(marker('menu.account')),
-                routerLink: '/account',
-              },
-              {
-                icon: 'pi pi-fw pi-shield',
-                label: this.translocoService.translate(
-                  marker('menu.changePassword'),
-                ),
-                routerLink: '/change-password',
-              },
-              {
-                label: this.translocoService.translate(marker('menu.logout')),
-                icon: 'pi pi-fw pi-sign-out',
-                command: this.logout.bind(this),
-              },
-            ],
+            items: accountItems,
           });
+
+          if (authState.user.member) {
+            items.push({
+              label: this.translocoService.translate(
+                marker('menu.toolsCategory'),
+              ),
+              items: [
+                {
+                  icon: 'pi pi-fw pi-map',
+                  label: this.translocoService.translate(
+                    marker('menu.rockExplorer'),
+                  ),
+                  routerLink: '/rock-explorer',
+                },
+              ],
+            });
+          }
 
           // If the only group present is the account category, unwrap it so
           // the p-menu receives a flat list of MenuItem entries instead of

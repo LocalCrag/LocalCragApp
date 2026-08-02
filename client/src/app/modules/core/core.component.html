@@ -2,22 +2,31 @@
 <header
   #siteHeader
   class="site-header"
-  [class.site-header--hidden]="headerHidden"
+  [class.site-header--hidden]="headerHidden && !fullscreenMap"
 >
   <lc-app-level-alerts></lc-app-level-alerts>
   <lc-menu></lc-menu>
 </header>
 <div class="site-header-spacer"></div>
-<div class="body-row">
-  <div class="layout-columns">
-    <lc-sidebar></lc-sidebar>
-    <div class="main">
-      <lc-page-title></lc-page-title>
-      <lc-rules-alert></lc-rules-alert>
+<div class="body-row" [class.body-row--fullscreen-map]="fullscreenMap">
+  <div
+    class="layout-columns"
+    [class.layout-columns--fullscreen-map]="fullscreenMap"
+  >
+    @if (!fullscreenMap) {
+      <lc-sidebar></lc-sidebar>
+    }
+    <div class="main" [class.main--fullscreen-map]="fullscreenMap">
+      @if (!fullscreenMap) {
+        <lc-page-title></lc-page-title>
+        <lc-rules-alert></lc-rules-alert>
+      }
       <router-outlet></router-outlet>
     </div>
   </div>
 </div>
-<lc-footer></lc-footer>
+@if (!fullscreenMap) {
+  <lc-footer></lc-footer>
+}
 <lc-refresh-login-modal></lc-refresh-login-modal>
 <p-toast position="bottom-right"></p-toast>

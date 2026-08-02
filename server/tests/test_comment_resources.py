@@ -634,3 +634,168 @@ def test_cannot_react_to_own_comment(client, member_token):
         json={"emoji": "🔥"},
     )
     assert rv.status_code == 400
+
+
+# Rock explorer access-control tests
+# ---------------------------------------------------------------------------
+# Rock explorer comments are members-only for both create and list (including
+# replies mode), unlike Line/Area/Sector/Crag/Region/Post which stay public
+# for listing. See 08-02-PLAN.md.
+
+
+def _create_rock_explorer_feature():
+    from extensions import db
+    from models.rock_explorer_feature import RockExplorerFeature
+
+    feature = RockExplorerFeature()
+    feature.title = "Comment feature"
+    feature.geometry = {"type": "Point", "coordinates": [8.1, 50.2]}
+    db.session.add(feature)
+    db.session.commit()
+    return feature
+
+
+def test_rock_explorer_member_can_create_comment_on_feature(client, member_token):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Feature comment",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 201
+    assert rv.json["message"] == "Feature comment"
+
+
+def test_rock_explorer_non_member_cannot_create_comment(client, user_token):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        token=user_token,
+        json={
+            "message": "Nope",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 401
+
+
+def test_rock_explorer_anonymous_cannot_create_comment(client):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        json={
+            "message": "Nope",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 401
+
+
+def test_rock_explorer_member_can_list_comments(client, member_token):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Listed comment",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 201
+    comment_id = rv.json["id"]
+
+    rv = client.get(
+        f"/api/comments?object-type=RockExplorerFeature&object-id={feature.id}&per-page=20",
+        token=member_token,
+    )
+    assert rv.status_code == 200
+    assert comment_id in [i["id"] for i in rv.json["items"]]
+
+
+def test_rock_explorer_non_member_cannot_list_comments(client, member_token, user_token):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Listed comment",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 201
+
+    rv = client.get(
+        f"/api/comments?object-type=RockExplorerFeature&object-id={feature.id}&per-page=20",
+        token=user_token,
+    )
+    assert rv.status_code == 401
+
+
+def test_rock_explorer_anonymous_cannot_list_comments(client):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.get(f"/api/comments?object-type=RockExplorerFeature&object-id={feature.id}&per-page=20")
+    assert rv.status_code == 401
+
+
+def test_rock_explorer_replies_mode_is_member_gated(client, member_token, user_token):
+    feature = _create_rock_explorer_feature()
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Root",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": None,
+        },
+    )
+    assert rv.status_code == 201
+    root_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Reply",
+            "objectType": "RockExplorerFeature",
+            "objectId": str(feature.id),
+            "parentId": root_id,
+        },
+    )
+    assert rv.status_code == 201
+
+    rv = client.get(f"/api/comments?root-id={root_id}&per-page=20")
+    assert rv.status_code == 401
+
+    rv = client.get(f"/api/comments?root-id={root_id}&per-page=20", token=user_token)
+    assert rv.status_code == 401
+
+    rv = client.get(f"/api/comments?root-id={root_id}&per-page=20", token=member_token)
+    assert rv.status_code == 200
+    assert any(item["message"] == "Reply" for item in rv.json["items"])
+
+
+def test_rock_explorer_gating_does_not_affect_line_comments(client):
+    line_id = Line.get_id_by_slug("the-vessel")
+    rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&per-page=20")
+    assert rv.status_code == 200

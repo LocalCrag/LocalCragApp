@@ -90,4 +90,31 @@
   > *:not(router-outlet) {
     width: 100%;
   }
+
+  &--fullscreen-map {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    overflow: hidden;
+    height: calc(
+      100vh - var(--lc-menu-height, 3.25rem) - var(
+          --lc-offline-alert-height,
+          0px
+        )
+    );
+  }
+}
+
+.body-row--fullscreen-map {
+  padding: 0;
+  background-color: transparent;
+}
+
+.layout-columns--fullscreen-map {
+  max-width: none;
+  margin: 0;
+  gap: 0;
+  height: 100%;
+  align-items: stretch;
 }

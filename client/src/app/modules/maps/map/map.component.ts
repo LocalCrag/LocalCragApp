@@ -27,7 +27,7 @@ import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { forkJoin, from, mergeMap, Observable, toArray } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 
 import { Store } from '@ngrx/store';
@@ -35,6 +35,8 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { take } from 'rxjs/operators';
 import { MapStyles } from '../../../enums/map-styles';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { loadMapImages } from '../../../utility/map/load-map-images';
+import { maptilerStyleUrl } from '../../../utility/map/maptiler-style';
 
 @Component({
   selector: 'lc-map',
@@ -99,16 +101,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([markersSource, instanceSettingsState]) => {
-        let mapStyleUrl = '';
         this.apiKey = instanceSettingsState.maptilerApiKey;
-        switch (this.mapStyle) {
-          case MapStyles.TOPO:
-            mapStyleUrl = `https://api.maptiler.com/maps/topo-v2/style.json?key=${this.apiKey}`;
-            break;
-          case MapStyles.SATELLITE:
-            mapStyleUrl = `https://api.maptiler.com/maps/satellite/style.json?key=${this.apiKey}`;
-            break;
-        }
+        const mapStyleUrl = maptilerStyleUrl(this.apiKey, this.mapStyle);
         this.markersSource = markersSource;
         if (this.markersSource?.features?.length === 0 || !this.apiKey) {
           return;
@@ -133,29 +127,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             { name: 'info', path: 'assets/icons/info.svg' },
             { name: 'boulder', path: 'assets/icons/boulder.svg' },
           ];
-          from(images)
-            .pipe(
-              mergeMap(
-                (image) =>
-                  new Observable((observer) => {
-                    const img = new Image(100, 100);
-                    img.onload = () => {
-                      this.map.addImage(image.name, img);
-                      observer.next(null);
-                      observer.complete();
-                    };
-                    img.src = image.path;
-                  }),
-              ),
-              toArray(),
-            )
-            .subscribe(() => {
-              this.addSource();
-              this.addLayers();
-              this.addCurrentLocation();
-              this.setupClickActions();
-              this.setupCursors();
-            });
+          loadMapImages(this.map, images).then(() => {
+            this.addSource();
+            this.addLayers();
+            this.addCurrentLocation();
+            this.setupClickActions();
+            this.setupCursors();
+          });
         });
         this.fitBounds();
       });

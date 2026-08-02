@@ -5,6 +5,7 @@ import {
   forwardRef,
   inject,
   Injector,
+  Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -57,6 +58,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class CoordinatesComponent
   implements OnInit, ControlValueAccessor, AfterViewInit
 {
+  /** Prefix for input element ids when multiple instances are on one page. */
+  @Input() idPrefix = '';
+
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public formControl: NgControl;
@@ -72,6 +76,18 @@ export class CoordinatesComponent
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
   private inj = inject(Injector);
+
+  public get latInputId(): string {
+    return `${this.idPrefix}lat`;
+  }
+
+  public get lngInputId(): string {
+    return `${this.idPrefix}lng`;
+  }
+
+  public get locationButtonId(): string {
+    return `${this.idPrefix}get-location-button`;
+  }
 
   private buildForm() {
     this.coordinatesForm = this.fb.group({
@@ -114,10 +130,13 @@ export class CoordinatesComponent
    */
   writeValue(coordinates: Coordinates): void {
     this.coordinates = coordinates;
-    this.coordinatesForm.patchValue({
-      lat: coordinates?.lat || null,
-      lng: coordinates?.lng || null,
-    });
+    this.coordinatesForm.patchValue(
+      {
+        lat: coordinates?.lat ?? null,
+        lng: coordinates?.lng ?? null,
+      },
+      { emitEvent: false },
+    );
     if (this.coordinatesForm.invalid) {
       this.formDirective.markAsTouched();
     }

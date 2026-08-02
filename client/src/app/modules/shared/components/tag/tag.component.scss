@@ -1,12 +1,22 @@
 lc-tag {
   .p-tag {
-    background-color: var(--p-gray-400);
-    transition: background-color 0.3s ease;
+    // Subtle chip on content surfaces (panel, gallery card) in light and dark.
+    color: var(--p-text-color);
+    background-color: color-mix(
+      in srgb,
+      var(--p-text-color) 12%,
+      var(--p-content-hover-background)
+    );
+    transition: background-color 0.2s ease;
     cursor: pointer;
     padding-left: 0.25rem;
 
     &:hover {
-      background-color: var(--p-gray-500);
+      background-color: color-mix(
+        in srgb,
+        var(--p-text-color) 20%,
+        var(--p-content-hover-background)
+      );
     }
   }
 }
