@@ -137,7 +137,6 @@ from resources.rock_explorer_resources import (
     CreateRockExplorerFeature,
     DeleteRockExplorerFeature,
     GetRockExplorerFeature,
-    GetRockExplorerFeatures,
     GetRockExplorerFeaturesGeoJSON,
     UpdateRockExplorerFeature,
 )
@@ -568,7 +567,6 @@ def configure_api(app):
     rock_explorer_bp.add_url_rule(
         "/features.geojson", view_func=GetRockExplorerFeaturesGeoJSON.as_view("get_rock_explorer_features_geojson")
     )
-    rock_explorer_bp.add_url_rule("/features", view_func=GetRockExplorerFeatures.as_view("get_rock_explorer_features"))
     rock_explorer_bp.add_url_rule(
         "/features", view_func=CreateRockExplorerFeature.as_view("create_rock_explorer_feature")
     )

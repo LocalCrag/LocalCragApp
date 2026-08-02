@@ -30,8 +30,8 @@ export const miscRoutes: Routes = [
   {
     path: 'rock-explorer',
     loadComponent: () =>
-      import('../../rock-explorer/rock-explorer-page/rock-explorer-page.component').then(
-        (m) => m.RockExplorerPageComponent,
+      import('../../rock-explorer/rock-explorer/rock-explorer.component').then(
+        (m) => m.RockExplorerComponent,
       ),
     canActivate: [isMember],
     data: { fullscreenMap: true },

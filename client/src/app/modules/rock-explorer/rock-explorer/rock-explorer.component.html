@@ -1,0 +1,18 @@
+<div class="rock-explorer" *transloco="let t">
+  <p-toast />
+  <p-confirmpopup />
+
+  @if (loading) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
+  } @else if (noApiKey) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.noApiKey") }}</div>
+  } @else {
+    <lc-rock-explorer-toolbar />
+
+    <div #map class="rock-explorer__map"></div>
+
+    @if (ui.panelOpen()) {
+      <lc-rock-explorer-panel />
+    }
+  }
+</div>

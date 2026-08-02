@@ -298,7 +298,6 @@ export class ApiService {
   };
 
   public rockExplorer = {
-    getFeatures: (): string => `${this.apiHost}rock-explorer/features`,
     getFeaturesGeoJSON: (): string =>
       `${this.apiHost}rock-explorer/features.geojson`,
     getFeature: (id: string): string =>

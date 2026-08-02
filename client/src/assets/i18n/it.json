@@ -1041,6 +1041,7 @@
   "rockExplorer.modePoint": "Punto",
   "rockExplorer.modePolygon": "Poligono",
   "rockExplorer.finishPolygon": "Chiudi poligono",
+  "rockExplorer.polygonSelfIntersecting": "I lati del poligono non devono intersecarsi. Sposta i vertici in modo che le linee non si crociano.",
   "rockExplorer.editGeometry": "Modifica forma",
   "rockExplorer.saveGeometry": "Salva forma",
   "rockExplorer.filters": "Filtri",

@@ -1,7 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import (
-    get_jwt,
     get_jwt_identity,
     jwt_required,
     verify_jwt_in_request,
@@ -31,16 +30,16 @@ from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
 from util.email import send_comment_created_email
-from util.generic_relationships import ROCK_EXPLORER_OBJECT_TYPES
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from util.secret_service import SecretService
+from util.security_util import current_user_is_member
 from webargs_schemas.comment_args import comment_args, comment_update_args
 
 
 def require_rock_explorer_membership(object_type: str) -> None:
     """Rock explorer content is member-only; there is no public tier for these object types."""
-    if object_type in ROCK_EXPLORER_OBJECT_TYPES and not get_jwt().get("member"):
+    if object_type == "RockExplorerFeature" and not current_user_is_member():
         raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
 
@@ -234,7 +233,7 @@ class GetComments(MethodView):
         else:
             # Top-level listing requires object info
             if (
-                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", *ROCK_EXPLORER_OBJECT_TYPES]
+                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", "RockExplorerFeature"]
                 or not obj_id
             ):
                 raise BadRequest("object-type and object-id are required and must be valid.")

@@ -1,72 +1,26 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import func
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.rock_explorer_schema import (
+    dump_rock_explorer_geojson_collection,
     rock_explorer_feature_schema,
-    rock_explorer_features_schema,
 )
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
-from models.gallery_image import gallery_image_tags
 from models.rock_explorer_feature import RockExplorerFeature
-from models.tag import Tag
 from models.user import User
 from util.rock_explorer import apply_rock_explorer_metadata
 from util.security_util import check_auth_claims
 from util.tag_object_prefetch import prefetch_tag_objects
-from webargs_schemas.rock_explorer_args import rock_explorer_feature_args
-
-ALLOWED_GEOMETRY_TYPES = {"Point", "Polygon"}
-
-
-def _validate_geometry(geometry: dict) -> dict:
-    if not isinstance(geometry, dict):
-        raise BadRequest("geometry must be a GeoJSON geometry object.")
-    geom_type = geometry.get("type")
-    if geom_type not in ALLOWED_GEOMETRY_TYPES:
-        raise BadRequest(f"geometry.type must be one of: {', '.join(sorted(ALLOWED_GEOMETRY_TYPES))}.")
-    if "coordinates" not in geometry:
-        raise BadRequest("geometry.coordinates is required.")
-    return geometry
-
-
-def _feature_properties(feature: RockExplorerFeature, has_images: bool = False) -> dict:
-    return {
-        "id": str(feature.id),
-        "title": feature.title,
-        "description": feature.description,
-        "potential": feature.potential.value if feature.potential else None,
-        "rockQuality": feature.rock_quality.value if feature.rock_quality else None,
-        "rockType": feature.rock_type.value if feature.rock_type else None,
-        "gradeLineType": feature.grade_line_type.value if feature.grade_line_type else None,
-        "gradeScale": feature.grade_scale,
-        "gradeValueMin": feature.grade_value_min,
-        "gradeValueMax": feature.grade_value_max,
-        "accessIssues": feature.access_issues or [],
-        "hasImages": has_images,
-    }
-
-
-def _feature_ids_with_images(features: list[RockExplorerFeature]) -> set:
-    """One aggregate query for the whole collection — never one per feature."""
-    feature_ids = [feature.id for feature in features]
-    if not feature_ids:
-        return set()
-    rows = (
-        db.session.query(Tag.object_id)
-        .join(gallery_image_tags, gallery_image_tags.c.tag_id == Tag.id)
-        .filter(Tag.object_type == "RockExplorerFeature", Tag.object_id.in_(feature_ids))
-        .group_by(Tag.object_id)
-        .having(func.count(gallery_image_tags.c.gallery_image_id) > 0)
-        .all()
-    )
-    return {row[0] for row in rows}
+from webargs_schemas.rock_explorer_args import (
+    cross_validate_rock_explorer_feature_args,
+    rock_explorer_feature_args,
+)
 
 
 def _apply_feature_filters(query):
@@ -96,40 +50,13 @@ def _dump_feature(feature: RockExplorerFeature):
     return rock_explorer_feature_schema.dump(feature)
 
 
-def _dump_features(features: list[RockExplorerFeature]):
-    prefetch_tag_objects([tag for feature in features for tag in (feature.topo_links or [])])
-    return rock_explorer_features_schema.dump(features)
-
-
-class GetRockExplorerFeatures(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
-    def get(self):
-        query = _apply_feature_filters(RockExplorerFeature.query)
-        features = query.order_by(RockExplorerFeature.time_created.desc()).all()
-        return jsonify(_dump_features(features)), 200
-
-
 class GetRockExplorerFeaturesGeoJSON(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
     def get(self):
         query = _apply_feature_filters(RockExplorerFeature.query)
         features = query.order_by(RockExplorerFeature.time_created.desc()).all()
-        ids_with_images = _feature_ids_with_images(features)
-        collection = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "id": str(feature.id),
-                    "geometry": feature.geometry,
-                    "properties": _feature_properties(feature, has_images=feature.id in ids_with_images),
-                }
-                for feature in features
-            ],
-        }
-        return jsonify(collection), 200
+        return jsonify(dump_rock_explorer_geojson_collection(features)), 200
 
 
 class GetRockExplorerFeature(MethodView):
@@ -144,11 +71,15 @@ class CreateRockExplorerFeature(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
     def post(self):
-        data = parser.parse(rock_explorer_feature_args, request)
+        data = parser.parse(
+            rock_explorer_feature_args,
+            request,
+            validate=cross_validate_rock_explorer_feature_args,
+        )
         created_by = User.find_by_email(get_jwt_identity())
 
         feature = RockExplorerFeature()
-        feature.geometry = _validate_geometry(data["geometry"])
+        feature.geometry = data["geometry"]
         feature.created_by_id = created_by.id
         apply_rock_explorer_metadata(feature, data)
 
@@ -161,10 +92,14 @@ class UpdateRockExplorerFeature(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
     def put(self, feature_id):
-        data = parser.parse(rock_explorer_feature_args, request)
+        data = parser.parse(
+            rock_explorer_feature_args,
+            request,
+            validate=cross_validate_rock_explorer_feature_args,
+        )
         feature = RockExplorerFeature.find_by_id(feature_id)
 
-        feature.geometry = _validate_geometry(data["geometry"])
+        feature.geometry = data["geometry"]
         apply_rock_explorer_metadata(feature, data)
 
         db.session.add(feature)

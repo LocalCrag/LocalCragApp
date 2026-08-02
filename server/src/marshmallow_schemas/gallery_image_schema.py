@@ -10,6 +10,8 @@ class GalleryImageSchema(ma.SQLAlchemySchema):
     createdBy = ma.Nested("UserMinWithAvatarSchema", attribute="created_by")
     image = fields.Nested(file_schema, attribute="file")
     description = fields.String(allow_none=True)
+    lat = fields.Float(allow_none=True)
+    lng = fields.Float(allow_none=True)
     tags = fields.Nested(tag_schema, many=True)
 
 

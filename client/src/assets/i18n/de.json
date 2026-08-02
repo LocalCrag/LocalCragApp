@@ -1041,6 +1041,7 @@
   "rockExplorer.modePoint": "Punkt",
   "rockExplorer.modePolygon": "Polygon",
   "rockExplorer.finishPolygon": "Polygon abschließen",
+  "rockExplorer.polygonSelfIntersecting": "Polygonkanten dürfen sich nicht kreuzen. Verschiebe die Eckpunkte, bis sich keine Linien mehr schneiden.",
   "rockExplorer.editGeometry": "Form bearbeiten",
   "rockExplorer.saveGeometry": "Form speichern",
   "rockExplorer.redrawAsPoint": "Als Punkt neu zeichnen",

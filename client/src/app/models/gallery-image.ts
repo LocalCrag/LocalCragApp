@@ -6,16 +6,18 @@ import { User } from './user';
 export class GalleryImage extends AbstractModel {
   image: File;
   description: string | null;
+  lat: number | null;
+  lng: number | null;
   tags: Tag[];
   createdBy: User;
-  /** When true, serializeForUpdate includes lat/lng from image. */
-  updateCoordinates = false;
 
   public static deserialize(payload: any): GalleryImage {
     const galleryImage = new GalleryImage();
     AbstractModel.deserializeAbstractAttributes(galleryImage, payload);
     galleryImage.image = payload.image ? File.deserialize(payload.image) : null;
     galleryImage.description = payload.description ?? null;
+    galleryImage.lat = payload.lat ?? null;
+    galleryImage.lng = payload.lng ?? null;
     galleryImage.tags = payload.tags ? payload.tags.map(Tag.deserialize) : null;
     galleryImage.createdBy = User.deserialize(payload.createdBy);
     return galleryImage;
@@ -30,18 +32,11 @@ export class GalleryImage extends AbstractModel {
   }
 
   public static serializeForUpdate(galleryImage: GalleryImage): any {
-    const payload: Record<string, unknown> = {};
-    if (galleryImage.tags != null) {
-      payload.tags = galleryImage.tags.map(Tag.serialize);
-    }
-    // Only send when set so tag-only updates (gallery form) keep existing descriptions.
-    if (galleryImage.description !== undefined) {
-      payload.description = galleryImage.description ?? null;
-    }
-    if (galleryImage.updateCoordinates && galleryImage.image) {
-      payload.lat = galleryImage.image.lat ?? null;
-      payload.lng = galleryImage.image.lng ?? null;
-    }
-    return payload;
+    return {
+      tags: galleryImage.tags ? galleryImage.tags.map(Tag.serialize) : [],
+      description: galleryImage.description ?? null,
+      lat: galleryImage.lat ?? null,
+      lng: galleryImage.lng ?? null,
+    };
   }
 }

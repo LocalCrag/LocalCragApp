@@ -1041,6 +1041,7 @@
   "rockExplorer.modePoint": "Punt",
   "rockExplorer.modePolygon": "Veelhoek",
   "rockExplorer.finishPolygon": "Veelhoek afronden",
+  "rockExplorer.polygonSelfIntersecting": "Zijden van de veelhoek mogen elkaar niet kruisen. Verplaats hoekpunten zodat lijnen niet snijden.",
   "rockExplorer.editGeometry": "Vorm bewerken",
   "rockExplorer.saveGeometry": "Vorm opslaan",
   "rockExplorer.filters": "Filters",

@@ -44,7 +44,7 @@ def test_potential_required(client, member_token):
 
 
 def test_non_member_cannot_access_features(client, user_token):
-    rv = client.get("/api/rock-explorer/features", token=user_token)
+    rv = client.get("/api/rock-explorer/features.geojson", token=user_token)
     assert rv.status_code == 401
 
     rv = client.post("/api/rock-explorer/features", token=user_token, json=_point_payload())
@@ -52,7 +52,7 @@ def test_non_member_cannot_access_features(client, user_token):
 
 
 def test_anonymous_cannot_access_features(client):
-    rv = client.get("/api/rock-explorer/features")
+    rv = client.get("/api/rock-explorer/features.geojson")
     assert rv.status_code == 401
 
 
@@ -94,9 +94,9 @@ def test_features_geojson_and_filter(client, member_token):
     assert geo.json["features"][0]["geometry"]["type"] in ("Point", "Polygon")
     assert "potential" in geo.json["features"][0]["properties"]
 
-    filtered = client.get("/api/rock-explorer/features?potential=HIGH", token=member_token)
+    filtered = client.get("/api/rock-explorer/features.geojson?potential=HIGH", token=member_token)
     assert filtered.status_code == 200
-    assert all(f["potential"] == "HIGH" for f in filtered.json)
+    assert all(f["properties"]["potential"] == "HIGH" for f in filtered.json["features"])
 
 
 def test_member_can_update_and_delete_feature(client, member_token):
@@ -117,39 +117,6 @@ def test_member_can_update_and_delete_feature(client, member_token):
 
     missing = client.get(f"/api/rock-explorer/features/{feature_id}", token=member_token)
     assert missing.status_code == 404
-
-
-def test_features_geojson_reports_has_images(client, member_token):
-    from extensions import db
-    from models.file import File
-    from models.gallery_image import GalleryImage
-    from models.rock_explorer_feature import RockExplorerFeature
-    from models.tag import Tag
-
-    tagged_id = client.post(
-        "/api/rock-explorer/features", token=member_token, json=_point_payload(title="With image")
-    ).json["id"]
-    untagged_id = client.post(
-        "/api/rock-explorer/features", token=member_token, json=_point_payload(title="Without image")
-    ).json["id"]
-
-    geo = client.get("/api/rock-explorer/features.geojson", token=member_token)
-    props = {f["id"]: f["properties"] for f in geo.json["features"]}
-    assert props[tagged_id]["hasImages"] is False
-    assert props[untagged_id]["hasImages"] is False
-
-    tag = Tag()
-    tag.object = RockExplorerFeature.find_by_id(tagged_id)
-    image = GalleryImage()
-    image.file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
-    image.tags = [tag]
-    db.session.add_all([tag, image])
-    db.session.commit()
-
-    geo = client.get("/api/rock-explorer/features.geojson", token=member_token)
-    props = {f["id"]: f["properties"] for f in geo.json["features"]}
-    assert props[tagged_id]["hasImages"] is True
-    assert props[untagged_id]["hasImages"] is False
 
 
 def test_feature_topo_links_multi_and_dump(client, member_token):

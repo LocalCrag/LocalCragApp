@@ -210,8 +210,10 @@ export class RockExplorerGalleryComponent
         const payload = new GalleryImage();
         payload.id = image.id;
         payload.description = image.description ?? null;
+        payload.lat = image.lat ?? null;
+        payload.lng = image.lng ?? null;
+        payload.tags = image.tags;
         payload.image = image.image;
-        payload.updateCoordinates = this.isCoordinatesDirty(image);
         return this.galleryService
           .updateGalleryImage(payload)
           .pipe(catchError(() => of(null)));
@@ -224,15 +226,8 @@ export class RockExplorerGalleryComponent
           results.forEach((updated, index) => {
             if (updated) {
               dirty[index].description = updated.description;
-              if (updated.image && dirty[index].image) {
-                // Keep existing GPS if the response omits it (e.g. partial dump).
-                if (updated.image.lat != null) {
-                  dirty[index].image.lat = updated.image.lat;
-                }
-                if (updated.image.lng != null) {
-                  dirty[index].image.lng = updated.image.lng;
-                }
-              }
+              dirty[index].lat = updated.lat;
+              dirty[index].lng = updated.lng;
             }
           });
           this.saving = false;
@@ -275,6 +270,18 @@ export class RockExplorerGalleryComponent
     this.galleryVisible = true;
   }
 
+  openGalleryById(galleryImageId: string): boolean {
+    if (this.editMode) {
+      return false;
+    }
+    const index = this.images.findIndex((image) => image.id === galleryImageId);
+    if (index < 0) {
+      return false;
+    }
+    this.openGallery(index);
+    return true;
+  }
+
   @HostListener('document:keydown', ['$event'])
   onGalleryKeydown(event: KeyboardEvent): void {
     if (!this.galleryVisible || this.editMode) {
@@ -304,8 +311,8 @@ export class RockExplorerGalleryComponent
   }
 
   getImageCoordinates(image: GalleryImage): Coordinates | null {
-    const lat = image.image?.lat;
-    const lng = image.image?.lng;
+    const lat = image.lat;
+    const lng = image.lng;
     if (lat == null || lng == null) {
       return null;
     }
@@ -322,16 +329,13 @@ export class RockExplorerGalleryComponent
     image: GalleryImage,
     coordinates: Coordinates | null,
   ): void {
-    if (!image.image) {
-      return;
-    }
     const nextLat = coordinates?.lat ?? null;
     const nextLng = coordinates?.lng ?? null;
-    if (image.image.lat === nextLat && image.image.lng === nextLng) {
+    if (image.lat === nextLat && image.lng === nextLng) {
       return;
     }
-    image.image.lat = nextLat;
-    image.image.lng = nextLng;
+    image.lat = nextLat;
+    image.lng = nextLng;
     if (nextLat == null || nextLng == null) {
       this.coordinatesViewCache.set(image.id, null);
     } else {

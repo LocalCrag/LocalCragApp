@@ -6,8 +6,6 @@ from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
 
-ROCK_EXPLORER_OBJECT_TYPES = ("RockExplorerFeature",)
-
 
 def check_object_exists(object_type, object_id):
     """

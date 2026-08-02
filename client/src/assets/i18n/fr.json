@@ -1041,6 +1041,7 @@
   "rockExplorer.modePoint": "Point",
   "rockExplorer.modePolygon": "Polygone",
   "rockExplorer.finishPolygon": "Terminer le polygone",
+  "rockExplorer.polygonSelfIntersecting": "Les arêtes du polygone ne doivent pas se croiser. Déplacez les sommets pour éviter les intersections.",
   "rockExplorer.editGeometry": "Modifier la forme",
   "rockExplorer.saveGeometry": "Enregistrer la forme",
   "rockExplorer.filters": "Filtres",

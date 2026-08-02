@@ -1041,6 +1041,7 @@
   "rockExplorer.modePoint": "Point",
   "rockExplorer.modePolygon": "Polygon",
   "rockExplorer.finishPolygon": "Finish polygon",
+  "rockExplorer.polygonSelfIntersecting": "Polygon edges cannot cross. Move vertices so lines do not intersect.",
   "rockExplorer.editGeometry": "Edit shape",
   "rockExplorer.saveGeometry": "Save shape",
   "rockExplorer.redrawAsPoint": "Redraw as point",

@@ -20,31 +20,21 @@ from marshmallow_schemas.gallery_image_schema import (
 from messages.messages import ResponseMessage
 from models.area import Area
 from models.crag import Crag
+from models.file import File
 from models.gallery_image import GalleryImage
 from models.line import Line
 from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
-from util.generic_relationships import ROCK_EXPLORER_OBJECT_TYPES
 from util.rock_explorer import rock_explorer_gallery_image_ids_subquery
 from util.secret_service import SecretService
+from util.security_util import current_user_is_member
 from util.tag_object_prefetch import prefetch_tag_objects
 from util.tags import set_tags
 from webargs_schemas.gallery_image_args import (
     gallery_image_post_args,
     gallery_image_put_args,
 )
-
-
-def _current_request_is_member() -> bool:
-    return bool(get_jwt().get("member"))
-
-
-def _require_member_for_rock_explorer_tags(tag_data) -> None:
-    """Gallery uploads stay open to any logged-in user, except when a rock explorer entity is tagged."""
-    targets_rock_explorer = any(tag.get("objectType") in ROCK_EXPLORER_OBJECT_TYPES for tag in tag_data or [])
-    if targets_rock_explorer and not _current_request_is_member():
-        raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
 
 def set_image_tags(image, tag_data):
@@ -62,8 +52,8 @@ class GetGalleryImages(MethodView):
         per_page = request.args.get("per_page") or 10
 
         tag_object_id = None
-        if tag_object_type in ROCK_EXPLORER_OBJECT_TYPES:
-            if not _current_request_is_member():
+        if tag_object_type == "RockExplorerFeature":
+            if not current_user_is_member():
                 raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
             tag_object_id = request.args.get("tag-object-id")
             if not tag_object_id:
@@ -107,7 +97,7 @@ class GetGalleryImages(MethodView):
             secret_images_subquery = SecretService.secret_gallery_image_ids_subquery()
             images_query = images_query.filter(~GalleryImage.id.in_(secret_images_subquery))
 
-        if not _current_request_is_member():
+        if not current_user_is_member():
             images_query = images_query.filter(~GalleryImage.id.in_(rock_explorer_gallery_image_ids_subquery()))
 
         images_query = images_query.options(
@@ -127,12 +117,16 @@ class CreateGalleryImage(MethodView):
     @jwt_required()
     def post(self):
         gallery_image_data = parser.parse(gallery_image_post_args, request)
-        _require_member_for_rock_explorer_tags(gallery_image_data["tags"])
         created_by = User.find_by_email(get_jwt_identity())
         image = GalleryImage()
         image.created_by = created_by
         image.file_id = gallery_image_data["fileId"]
         image.description = gallery_image_data.get("description") or None
+        # Seed editable GPS from upload EXIF when present.
+        file_row = File.find_by_id(gallery_image_data["fileId"])
+        if file_row is not None:
+            image.lat = file_row.exif_lat
+            image.lng = file_row.exif_lng
         set_image_tags(image, gallery_image_data["tags"])
 
         db.session.add(image)
@@ -154,28 +148,20 @@ class UpdateGalleryImage(MethodView):
         if not is_owner and not is_moderator:
             raise Unauthorized("You are not allowed to update this image.")
 
-        if "tags" in image_data and image_data["tags"] is not None:
-            _require_member_for_rock_explorer_tags(image_data["tags"])
-            _require_member_for_rock_explorer_tags([{"objectType": tag.object_type} for tag in image.tags])
-            set_image_tags(image, image_data["tags"])
+        set_image_tags(image, image_data["tags"])
 
-        if "description" in image_data:
-            image.description = image_data["description"] or None
+        image.description = image_data["description"] or None
 
-        if "lat" in image_data or "lng" in image_data:
-            lat = image_data.get("lat")
-            lng = image_data.get("lng")
-            if (lat is None) != (lng is None):
-                raise BadRequest("lat and lng must both be set or both be null.")
-            image.file.lat = lat
-            image.file.lng = lng
-            db.session.add(image.file)
+        lat = image_data["lat"]
+        lng = image_data["lng"]
+        if (lat is None) != (lng is None):
+            raise BadRequest("lat and lng must both be set or both be null.")
+        image.lat = lat
+        image.lng = lng
 
         db.session.add(image)
         db.session.commit()
         db.session.refresh(image)
-        if image.file is not None:
-            db.session.refresh(image.file)
 
         return jsonify(gallery_image_schema.dump(image)), 200
 

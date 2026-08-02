@@ -123,6 +123,9 @@ export class GalleryFormComponent implements OnInit {
       ).map(Tag.fromSearchable);
       if (this.editMode) {
         galleryImage.id = this.galleryImage.id;
+        galleryImage.description = this.galleryImage.description;
+        galleryImage.lat = this.galleryImage.lat;
+        galleryImage.lng = this.galleryImage.lng;
         this.galleryService
           .updateGalleryImage(galleryImage)
           .subscribe((galleryImage) => {

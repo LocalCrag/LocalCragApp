@@ -43,7 +43,9 @@
         ></p-button>
         <p-divider type="solid"></p-divider>
       }
-      <lc-comments></lc-comments>
+      @if (post) {
+        <lc-comments [object]="post"></lc-comments>
+      }
     </div>
   </div>
 </ng-container>

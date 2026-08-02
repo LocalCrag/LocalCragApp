@@ -10,10 +10,8 @@ gallery_image_post_args = {
 }
 
 gallery_image_put_args = {
-    # Omit load_default so partial updates can send only tags or only description.
-    "tags": fields.Nested(tag_args, many=True, required=False, allow_none=True),
-    "description": fields.Str(required=False, allow_none=True),
-    # Manual geotag on the nested file; both null clears GPS.
-    "lat": fields.Float(required=False, allow_none=True, validate=validate_latitude),
-    "lng": fields.Float(required=False, allow_none=True, validate=validate_longitude),
+    "tags": fields.Nested(tag_args, many=True, required=True),
+    "description": fields.Str(required=True, allow_none=True),
+    "lat": fields.Float(required=True, allow_none=True, validate=validate_latitude),
+    "lng": fields.Float(required=True, allow_none=True, validate=validate_longitude),
 }

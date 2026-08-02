@@ -85,8 +85,8 @@ def handle_image_upload(path: str, file, qquuid):
     file_object.thumbnail_m = False
     file_object.thumbnail_l = False
     file_object.thumbnail_xl = False
-    file_object.lat = lat
-    file_object.lng = lng
+    file_object.exif_lat = lat
+    file_object.exif_lng = lng
 
     # Create thumbnails
     for size_key, size in image_sizes.items():

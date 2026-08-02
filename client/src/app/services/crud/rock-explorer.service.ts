@@ -19,20 +19,6 @@ export class RockExplorerService {
   private api = inject(ApiService);
   private http = inject(HttpClient);
 
-  public getFeatures(
-    filters: RockExplorerFeatureFilters = {},
-  ): Observable<RockExplorerFeature[]> {
-    return this.http
-      .get(this.api.rockExplorer.getFeatures(), {
-        params: this.toParams(filters),
-      })
-      .pipe(
-        map((list: any) =>
-          (list as any[]).map(RockExplorerFeature.deserialize),
-        ),
-      );
-  }
-
   public getFeaturesGeoJSON(
     filters: RockExplorerFeatureFilters = {},
   ): Observable<FeatureCollection<Geometry>> {

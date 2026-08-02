@@ -11,8 +11,8 @@ export const loadGalleryComponent: LazyComponentLoader = () =>
   );
 
 export const loadCommentsComponent: LazyComponentLoader = () =>
-  import('../../comments/comments/comments.component').then(
-    (m) => m.CommentsComponent,
+  import('../../comments/routed-comments/routed-comments.component').then(
+    (m) => m.RoutedCommentsComponent,
   );
 
 interface OutletRouteOptions {

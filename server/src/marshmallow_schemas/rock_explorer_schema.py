@@ -1,13 +1,13 @@
-from marshmallow import fields
+from marshmallow import fields, post_dump
 from marshmallow_enum import EnumField
 
+from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.tag_schema import TagSchema
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
-from util.secret_service import SecretService
 
 
 class RockExplorerFeatureSchema(BaseEntitySchema):
@@ -24,17 +24,34 @@ class RockExplorerFeatureSchema(BaseEntitySchema):
     geometry = fields.Dict(required=True)
     parkingSites = fields.List(fields.Dict(), attribute="parking_sites", dump_default=list)
     paths = fields.List(fields.Dict(), dump_default=list)
-    topoLinks = fields.Method("get_topo_links")
+    topoLinks = fields.Nested(TagSchema, attribute="topo_links", many=True)
 
-    def get_topo_links(self, obj):
-        """Same TagSchema shape as gallery tags; omit secret targets the viewer cannot see."""
-        visible = []
-        for tag in obj.topo_links or []:
-            if SecretService.is_secret(tag.object_id) and not SecretService.can_view_secrets():
-                continue
-            visible.append(tag)
-        return TagSchema(many=True).dump(visible)
+
+class RockExplorerGeoJSONFeatureSchema(ma.Schema):
+    """Map layer only: id for selection, title for labels, potential for paint."""
+
+    id = fields.String()
+    geometry = fields.Dict()
+    title = fields.String(allow_none=True)
+    potential = EnumField(RockExplorerPotentialEnum, by_value=True, allow_none=True)
+
+    @post_dump
+    def to_geojson_feature(self, data, **kwargs):
+        geometry = data.pop("geometry")
+        return {
+            "type": "Feature",
+            "id": data["id"],
+            "geometry": geometry,
+            "properties": data,
+        }
 
 
 rock_explorer_feature_schema = RockExplorerFeatureSchema()
-rock_explorer_features_schema = RockExplorerFeatureSchema(many=True)
+rock_explorer_geojson_features_schema = RockExplorerGeoJSONFeatureSchema(many=True)
+
+
+def dump_rock_explorer_geojson_collection(features):
+    return {
+        "type": "FeatureCollection",
+        "features": rock_explorer_geojson_features_schema.dump(features),
+    }
