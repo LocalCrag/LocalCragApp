@@ -13,6 +13,7 @@ import {
 } from './mixins/has-order-index';
 import { deserializeSlugAttributes, HasSlug } from './mixins/has-slug';
 import { topoCragRouterLink } from './topo-router-link';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 /**
  * Model of a climbing crag.
@@ -57,9 +58,7 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     crag.shortDescription = payload.shortDescription;
     crag.rules = payload.rules;
     crag.rulesTitle = payload.rulesTitle ?? null;
-    crag.rulesUpdatedAt = payload.rulesUpdatedAt
-      ? new Date(payload.rulesUpdatedAt)
-      : null;
+    crag.rulesUpdatedAt = parseServerUtcDate(payload.rulesUpdatedAt);
     crag.secret = payload.secret;
     crag.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
