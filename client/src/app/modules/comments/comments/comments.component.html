@@ -21,7 +21,11 @@
       <lc-comments-skeleton></lc-comments-skeleton>
     }
     @if (hasNextPage) {
-      <div class="flex justify-center" [class.mt-20]="!compact" [class.mt-4]="compact">
+      <div
+        class="flex justify-center"
+        [class.mt-20]="!compact"
+        [class.mt-4]="compact"
+      >
         <p-button
           label="{{ t('loadMore') }}"
           (scrolled)="loadNextPage()"

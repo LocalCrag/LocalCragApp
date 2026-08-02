@@ -156,7 +156,10 @@
                     <dt>{{ t("rockExplorer.fields.rockQuality") }}</dt>
                     <dd>
                       {{
-                        enumLabel("rockQuality", ui.editingFeature()!.rockQuality)
+                        enumLabel(
+                          "rockQuality",
+                          ui.editingFeature()!.rockQuality
+                        )
                       }}
                     </dd>
                   </div>
@@ -211,7 +214,9 @@
                         @if (ui.editingFeature()!.createdBy.routerLink) {
                           <a
                             class="rock-explorer__created-by-name"
-                            [routerLink]="ui.editingFeature()!.createdBy.routerLink"
+                            [routerLink]="
+                              ui.editingFeature()!.createdBy.routerLink
+                            "
                           >
                             {{ ui.editingFeature()!.createdBy.firstname }}
                             {{ ui.editingFeature()!.createdBy.lastname }}

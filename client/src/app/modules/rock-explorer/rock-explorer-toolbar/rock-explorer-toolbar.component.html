@@ -78,7 +78,9 @@
           <ng-template #content>
             <span class="p-button-icon pi pi-filter"></span>
             <span class="rock-explorer__filter-label-group">
-              <span class="p-button-label">{{ t("rockExplorer.filters") }}</span>
+              <span class="p-button-label">{{
+                t("rockExplorer.filters")
+              }}</span>
               @if (hasActiveFilters) {
                 <span
                   class="rock-explorer__filter-active-dot"
@@ -121,7 +123,9 @@
         <ng-template #content>
           <span class="p-button-icon pi pi-ellipsis-v"></span>
           <span class="rock-explorer__filter-label-group">
-            <span class="p-button-label">{{ t("rockExplorer.moreTools") }}</span>
+            <span class="p-button-label">{{
+              t("rockExplorer.moreTools")
+            }}</span>
             @if (hasActiveFilters) {
               <span
                 class="rock-explorer__filter-active-dot"
