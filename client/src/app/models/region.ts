@@ -1,5 +1,6 @@
 import { AbstractModel } from './abstract-model';
 import { File } from './file';
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 
 /**
  * Model of a climbing region.
@@ -31,9 +32,7 @@ export class Region extends AbstractModel {
     region.description = payload.description;
     region.rules = payload.rules;
     region.rulesTitle = payload.rulesTitle ?? null;
-    region.rulesUpdatedAt = payload.rulesUpdatedAt
-      ? new Date(payload.rulesUpdatedAt)
-      : null;
+    region.rulesUpdatedAt = parseServerUtcDate(payload.rulesUpdatedAt);
     region.image = payload.image ? File.deserialize(payload.image) : null;
     region.ascentCount = payload.ascentCount;
     region.imageCount = payload.imageCount;

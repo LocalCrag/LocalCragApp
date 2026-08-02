@@ -1,3 +1,5 @@
+import { parseServerUtcDate } from '../utility/parse-server-utc-date';
+
 /**
  * The most basic model.
  * The database base_entity's property created_by cannot be parsed here because importing User would result in circular
@@ -19,11 +21,7 @@ export class AbstractModel {
     payload: any,
   ): void {
     model.id = payload.id;
-    model.timeCreated = payload.timeCreated
-      ? new Date(payload.timeCreated)
-      : null;
-    model.timeUpdated = payload.timeUpdated
-      ? new Date(payload.timeUpdated)
-      : null;
+    model.timeCreated = parseServerUtcDate(payload.timeCreated);
+    model.timeUpdated = parseServerUtcDate(payload.timeUpdated);
   }
 }
