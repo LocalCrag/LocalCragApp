@@ -40,7 +40,7 @@ def test_potential_required(client, member_token):
         token=member_token,
         json=_point_payload(potential=None),
     )
-    assert rv.status_code == 422
+    assert rv.status_code == 400
 
 
 def test_non_member_cannot_access_features(client, user_token):
