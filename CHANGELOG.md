@@ -1,3 +1,10 @@
+## [1.48.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.1...v1.48.2) (2026-08-02)
+
+
+### Bug Fixes
+
+* **core:** fix heml chart backup script ([#1232](https://github.com/LocalCrag/LocalCragApp/issues/1232)) ([fd4af0e](https://github.com/LocalCrag/LocalCragApp/commit/fd4af0e556714cda1e7482254bc34ab8915a6e9a))
+
 ## [1.48.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.0...v1.48.1) (2026-08-02)
 
 
