@@ -1,6 +1,6 @@
 {
   "name": "localcrag-client",
-  "version": "1.48.0",
+  "version": "1.48.1",
   "scripts": {
     "ng": "ng",
     "tw:build": "tailwindcss -i ./src/tailwind.css -o ./src/tailwind.generated.css",

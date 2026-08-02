@@ -1,3 +1,10 @@
+## [1.48.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.0...v1.48.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **core:** fix parsing server side utc datetimes in correct timezone ([#1231](https://github.com/LocalCrag/LocalCragApp/issues/1231)) ([d4d4f15](https://github.com/LocalCrag/LocalCragApp/commit/d4d4f156660057fb1c10a1fd0a2c2019c9d8c1c8)), closes [#1230](https://github.com/LocalCrag/LocalCragApp/issues/1230)
+
 # [1.48.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.47.0...v1.48.0) (2026-08-02)
 
 
