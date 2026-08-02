@@ -1,0 +1,168 @@
+:host {
+  display: contents;
+}
+
+.rock-explorer__toolbar {
+  position: absolute;
+  z-index: 2;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.rock-explorer__finish-polygon-wrap {
+  display: inline-flex;
+}
+
+.rock-explorer__layer-toggle {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.rock-explorer__filters {
+  position: absolute;
+  z-index: 2;
+  top: 3.5rem;
+  left: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.75rem;
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+
+  > p-select,
+  > p-button {
+    display: flex;
+  }
+
+  > p-button ::ng-deep .p-button {
+    height: 100%;
+  }
+}
+
+:host
+  ::ng-deep
+  p-button.rock-explorer__filter-btn
+  .rock-explorer__filter-label-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+:host
+  ::ng-deep
+  p-button.rock-explorer__filter-btn
+  .rock-explorer__filter-active-dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--p-green-500);
+  pointer-events: none;
+  animation: rock-explorer-filter-dot-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes rock-explorer-filter-dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(1.2);
+  }
+}
+
+.rock-explorer__map-pick-banner {
+  position: absolute;
+  z-index: 4;
+  top: 3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: min(28rem, calc(100% - 1.5rem));
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--p-content-border-radius);
+  background: var(--p-content-background, #fff);
+  color: var(--p-text-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 0.9rem;
+}
+
+.rock-explorer__map-pick-banner--tools {
+  max-width: calc(100% - 1.5rem);
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+
+  ::ng-deep .p-button {
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-button-label {
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-button-sm {
+    font-size: 0.75rem;
+    padding-block: 0.2rem;
+    padding-inline: 0.5rem;
+  }
+}
+
+.rock-explorer__potential-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rock-explorer__potential-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.rock-explorer__overflow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 16rem;
+  padding: 0.25rem;
+}
+
+.rock-explorer__overflow-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rock-explorer__layer-toggle--overflow {
+  margin-left: 0;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .rock-explorer__layer-toggle {
+    margin-left: 0;
+  }
+}

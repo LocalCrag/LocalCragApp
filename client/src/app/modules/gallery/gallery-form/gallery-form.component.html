@@ -24,26 +24,11 @@
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="image">{{ t("tagsLabel") }}</label>
-      <p-autoComplete
+      <lc-tag-input
         lcFormControl
         formControlName="searchables"
-        [appendTo]="'body'"
-        [unique]="true"
-        [dataKey]="'id'"
-        [panelStyleClass]="'searchable-autocomplete'"
         [placeholder]="t('tagsPlaceholder')"
-        [optionLabel]="'name'"
-        [suggestions]="searchablesSuggestions"
-        (completeMethod)="loadTagSuggestions($event)"
-        [multiple]="true"
-      >
-        <ng-template let-searchable #item>
-          <lc-searchable
-            [searchable]="searchable"
-            [disableNavigation]="true"
-          ></lc-searchable>
-        </ng-template>
-      </p-autoComplete>
+      ></lc-tag-input>
       <small class="lc-error" *lcIfError="'required'">{{
         t("min1TagRequired")
       }}</small>

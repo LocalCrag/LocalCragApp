@@ -24,7 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
 import { catchError, map, take } from 'rxjs/operators';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -33,6 +33,7 @@ import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 
 import { StartingPosition } from '../../../enums/starting-position';
+import { Drying } from '../../../enums/drying';
 import { Title } from '@angular/platform-browser';
 import { Editor } from 'primeng/editor';
 import {
@@ -77,6 +78,7 @@ import { MoveObjectDialogComponent } from '../../shared/components/move-object-d
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * Form component for lines.
@@ -114,6 +116,7 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
     FormsModule,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class LineFormComponent implements OnInit {
@@ -140,6 +143,7 @@ export class LineFormComponent implements OnInit {
     StartingPosition.FRENCH,
     StartingPosition.CANDLE,
   ];
+  public dryingOptions = [Drying.FAST, Drying.SLOW];
   public today = new Date(new Date().getFullYear(), 11, 31);
   public parentArea: Area;
   public parentClosureState: ClosureState | null = null;
@@ -176,6 +180,11 @@ export class LineFormComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
+
+  public findLinesByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Line[]> => this.linesService.findByName(name, excludeId);
 
   /**
    * Builds the form on component initialization.
@@ -232,6 +241,10 @@ export class LineFormComponent implements OnInit {
           this.lineForm
             .get('scale')
             .setValue(this.defaultScales[item] ?? this.scaleOptions[0].value);
+          if (item !== LineType.SPORT) {
+            this.lineForm.get('bolter').setValue(null);
+            this.lineForm.get('boltDate').setValue(null);
+          }
         });
       this.lineForm
         .get('scale')
@@ -360,10 +373,13 @@ export class LineFormComponent implements OnInit {
           faName: [null, [Validators.maxLength(120)]],
           routesetter: [null, [Validators.maxLength(120)]],
           setDate: [null, [dateNotInFutureValidator()]],
+          bolter: [null, [Validators.maxLength(120)]],
+          boltDate: [null, [dateNotInFutureValidator()]],
           startingPosition: [
             instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
             [Validators.required],
           ],
+          drying: [null],
           eliminate: [false],
           traverse: [false],
           highball: [false],
@@ -466,7 +482,10 @@ export class LineFormComponent implements OnInit {
       faName: this.line.faName,
       routesetter: this.line.routesetter,
       setDate: this.line.setDate,
+      bolter: this.line.bolter,
+      boltDate: this.line.boltDate,
       startingPosition: this.line.startingPosition,
+      drying: this.line.drying,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
@@ -551,7 +570,15 @@ export class LineFormComponent implements OnInit {
       line.faName = this.lineForm.get('faName').value;
       line.routesetter = this.lineForm.get('routesetter').value;
       line.setDate = this.lineForm.get('setDate').value;
+      if (line.type === LineType.SPORT) {
+        line.bolter = this.lineForm.get('bolter').value;
+        line.boltDate = this.lineForm.get('boltDate').value;
+      } else {
+        line.bolter = null;
+        line.boltDate = null;
+      }
       line.startingPosition = this.lineForm.get('startingPosition').value;
+      line.drying = this.lineForm.get('drying').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;

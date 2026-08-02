@@ -4,13 +4,17 @@ from typing import List
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import text
+from sqlalchemy import func, text
+from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
-from marshmallow_schemas.search_schema import sector_search_schema
+from marshmallow_schemas.search_schema import (
+    sector_search_schema,
+    sectors_search_schema,
+)
 from marshmallow_schemas.sector_schema import sector_schema, sectors_schema
 from models.area import Area
 from models.crag import Crag
@@ -27,6 +31,7 @@ from util.propagating_boolean_attrs import (
     set_sector_parents_false,
     update_sector_propagating_boolean_attr,
 )
+from util.rules_emphasis import apply_rules_emphasis
 from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
@@ -97,6 +102,25 @@ class GetSectors(MethodView):
         return jsonify(sectors_schema.dump(sectors)), 200
 
 
+class FindSectorsByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all sectors whose name matches (case-insensitive, trimmed).
+        Optionally excludes a sector by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Sector.query.options(joinedload(Sector.crag)).filter(func.lower(Sector.name) == name.lower())
+        if exclude_id:
+            query = query.filter(Sector.id != exclude_id)
+        matches = query.order_by(Sector.name.asc()).all()
+        return jsonify(sectors_search_schema.dump(matches)), 200
+
+
 class GetSector(MethodView):
     def get(self, sector_slug):
         """
@@ -128,7 +152,9 @@ class CreateSector(MethodView):
         new_sector.description = sanitize_wysiwyg_html(sector_data["description"])
         new_sector.short_description = sanitize_wysiwyg_html(sector_data["shortDescription"])
         new_sector.portrait_image_id = sector_data["portraitImage"]
-        new_sector.rules = sanitize_wysiwyg_html(sector_data["rules"])
+        apply_rules_emphasis(
+            new_sector, sanitize_wysiwyg_html(sector_data["rules"]), sector_data["rulesTitle"], is_create=True
+        )
         new_sector.crag_id = crag_id
         new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
@@ -169,7 +195,9 @@ class UpdateSector(MethodView):
         sector.description = sanitize_wysiwyg_html(sector_data["description"])
         sector.short_description = sanitize_wysiwyg_html(sector_data["shortDescription"])
         sector.portrait_image_id = sector_data["portraitImage"]
-        sector.rules = sanitize_wysiwyg_html(sector_data["rules"])
+        apply_rules_emphasis(
+            sector, sanitize_wysiwyg_html(sector_data["rules"]), sector_data["rulesTitle"], is_create=False
+        )
         update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
         apply_closable_configuration(sector, sector_data, "sector_id")
         sector.default_boulder_scale = sector_data["defaultBoulderScale"]

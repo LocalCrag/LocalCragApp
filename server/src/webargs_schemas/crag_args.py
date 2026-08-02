@@ -12,6 +12,7 @@ class CragArgsSchema(Schema):
     description = fields.Str(required=True, allow_none=True)
     shortDescription = fields.Str(required=True, allow_none=True)
     rules = fields.Str(required=True, allow_none=True)
+    rulesTitle = fields.Str(required=True, allow_none=True, validate=validate.Length(max=255))
     portraitImage = fields.String(required=True, allow_none=True)
     secret = fields.Boolean(required=True, allow_none=False)
     mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)

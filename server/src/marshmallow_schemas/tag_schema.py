@@ -11,8 +11,17 @@ from marshmallow_schemas.user_schema import UserMinWithAvatarSchema
 from models.area import Area
 from models.crag import Crag
 from models.line import Line
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
+
+
+class RockExplorerTagTargetSchema(ma.Schema):
+    id = fields.String()
+    title = fields.String(allow_none=True)
+
+
+rock_explorer_tag_target_schema = RockExplorerTagTargetSchema()
 
 
 class GenericRelatedTagField(fields.Field):
@@ -27,6 +36,8 @@ class GenericRelatedTagField(fields.Field):
             return SectorSearchSchema().dump(value)
         if isinstance(value, Crag):
             return CragSearchSchema().dump(value)
+        if isinstance(value, RockExplorerFeature):
+            return rock_explorer_tag_target_schema.dump(value)
         else:
             return None
 

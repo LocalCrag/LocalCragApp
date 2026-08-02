@@ -1,5 +1,6 @@
 import { LineType } from '../../../enums/line-type';
 import { StartingPosition } from '../../../enums/starting-position';
+import { Drying } from '../../../enums/drying';
 import { SelectItem } from 'primeng/api';
 
 export type LineListVideoFilterMode = 'any' | 'yes' | 'no';
@@ -44,6 +45,8 @@ export interface LineListAdvancedFilters {
   maxRating: number;
   /** `null` = do not filter by starting position. */
   startingPosition: StartingPosition | null;
+  /** `null` = do not filter by drying. */
+  drying: Drying | null;
   hasVideo: LineListVideoFilterMode;
   faYearFrom: number | null;
   faYearTo: number | null;
@@ -65,6 +68,7 @@ export function defaultLineListAdvancedFilters(): LineListAdvancedFilters {
     minRating: 0,
     maxRating: 5,
     startingPosition: null,
+    drying: null,
     hasVideo: 'any',
     faYearFrom: null,
     faYearTo: null,
@@ -82,6 +86,7 @@ export function advancedLineListFiltersActive(
   if (f.requiredBoolKeys.length > 0) return true;
   if (f.minRating > 0 || f.maxRating < 5) return true;
   if (f.startingPosition != null) return true;
+  if (f.drying != null) return true;
   if (f.hasVideo !== 'any') return true;
   if (f.faYearFrom != null || f.faYearTo != null) return true;
   if (f.climbState !== 'any') return true;
@@ -91,6 +96,11 @@ export function advancedLineListFiltersActive(
 /** Type guard for keys in {@link LINE_LIST_BOOL_KEYS}. */
 function isLineListBoolKey(k: string): k is LineListBoolKey {
   return (LINE_LIST_BOOL_KEYS as readonly string[]).includes(k);
+}
+
+/** Type guard for drying enum values. */
+function isDrying(v: unknown): v is Drying {
+  return v === Drying.FAST || v === Drying.SLOW;
 }
 
 /**
@@ -109,6 +119,7 @@ export function sanitizeLineListAdvancedFilters(
       )
     : [];
   const startingPosition = raw.startingPosition ?? null;
+  const drying = isDrying(raw.drying) ? raw.drying : null;
   const hasVideo =
     raw.hasVideo === 'yes' || raw.hasVideo === 'no' ? raw.hasVideo : 'any';
   const climbState =
@@ -138,6 +149,7 @@ export function sanitizeLineListAdvancedFilters(
     minRating: Math.min(minRating, maxRating),
     maxRating: Math.max(minRating, maxRating),
     startingPosition,
+    drying,
     hasVideo,
     faYearFrom,
     faYearTo,

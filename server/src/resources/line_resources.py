@@ -12,11 +12,12 @@ from marshmallow_schemas.line_schema import (
     lines_schema,
     paginated_lines_schema,
 )
-from marshmallow_schemas.search_schema import line_search_schema
+from marshmallow_schemas.search_schema import line_search_schema, lines_search_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
+from models.enums.line_type_enum import LineTypeEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
@@ -111,6 +112,27 @@ class GetLinesForLineEditor(MethodView):
         """
         lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
+
+
+class FindLinesByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all lines whose name matches (case-insensitive, trimmed).
+        Optionally excludes a line by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Line.query.options(joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag)).filter(
+            func.lower(Line.name) == name.lower()
+        )
+        if exclude_id:
+            query = query.filter(Line.id != exclude_id)
+        matches = query.order_by(Line.name.asc()).all()
+        return jsonify(lines_search_schema.dump(matches)), 200
 
 
 class GetLines(MethodView):
@@ -243,6 +265,7 @@ class CreateLine(MethodView):
         new_line.author_grade_value = line_data["authorGradeValue"]
         new_line.user_grade_value = line_data["authorGradeValue"]
         new_line.starting_position = line_data["startingPosition"]
+        new_line.drying = line_data["drying"]
         new_line.author_rating = line_data["authorRating"]
         new_line.user_rating = line_data["authorRating"]
         new_line.secret = line_data["secret"]
@@ -258,6 +281,13 @@ class CreateLine(MethodView):
 
         new_line.routesetter = line_data["routesetter"]
         new_line.set_date = line_data["setDate"]
+
+        if new_line.type == LineTypeEnum.SPORT:
+            new_line.bolter = line_data["bolter"]
+            new_line.bolt_date = line_data["boltDate"]
+        else:
+            new_line.bolter = None
+            new_line.bolt_date = None
 
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
@@ -337,6 +367,7 @@ class UpdateLine(MethodView):
         line.author_grade_value = line_data["authorGradeValue"]
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
+        line.drying = line_data["drying"]
         line.author_rating = line_data["authorRating"]
         update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
         apply_closable_configuration(line, line_data, "line_id")
@@ -354,6 +385,13 @@ class UpdateLine(MethodView):
 
         line.routesetter = line_data["routesetter"]
         line.set_date = line_data["setDate"]
+
+        if line.type == LineTypeEnum.SPORT:
+            line.bolter = line_data["bolter"]
+            line.bolt_date = line_data["boltDate"]
+        else:
+            line.bolter = None
+            line.bolt_date = None
 
         line.eliminate = line_data["eliminate"]
         line.traverse = line_data["traverse"]

@@ -1,0 +1,23 @@
+<p-autoComplete
+  [ngModel]="value"
+  (ngModelChange)="onValueChange($event)"
+  [disabled]="disabled"
+  [suggestions]="suggestions"
+  (completeMethod)="loadSuggestions($event)"
+  [multiple]="true"
+  [unique]="true"
+  [dataKey]="'id'"
+  [optionLabel]="'name'"
+  [forceSelection]="true"
+  [placeholder]="placeholder"
+  [appendTo]="'body'"
+  [panelStyleClass]="'searchable-autocomplete'"
+  fluid
+>
+  <ng-template let-searchable #item>
+    <lc-searchable
+      [searchable]="searchable"
+      [disableNavigation]="true"
+    ></lc-searchable>
+  </ng-template>
+</p-autoComplete>

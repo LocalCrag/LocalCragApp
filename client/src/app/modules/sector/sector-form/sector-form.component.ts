@@ -24,7 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -67,6 +67,7 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -98,6 +99,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     OutdoorModeDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class SectorFormComponent implements OnInit {
@@ -132,6 +134,11 @@ export class SectorFormComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
+
+  public findSectorsByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Sector[]> => this.sectorsService.findByName(name, excludeId);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -228,6 +235,7 @@ export class SectorFormComponent implements OnInit {
       shortDescription: [null],
       portraitImage: [null],
       rules: [null],
+      rulesTitle: [null, [Validators.maxLength(255)]],
       secret: [false],
       mapMarkers: [[]],
       defaultBoulderScale: [null],
@@ -252,6 +260,7 @@ export class SectorFormComponent implements OnInit {
       shortDescription: this.sector.shortDescription,
       portraitImage: this.sector.portraitImage,
       rules: this.sector.rules,
+      rulesTitle: this.sector.rulesTitle,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
       defaultBoulderScale: this.sector.defaultBoulderScale,
@@ -284,6 +293,7 @@ export class SectorFormComponent implements OnInit {
       sector.description = this.sectorForm.get('description').value;
       sector.shortDescription = this.sectorForm.get('shortDescription').value;
       sector.rules = this.sectorForm.get('rules').value;
+      sector.rulesTitle = this.sectorForm.get('rulesTitle').value || null;
       sector.portraitImage = this.sectorForm.get('portraitImage').value;
       sector.secret = this.sectorForm.get('secret').value;
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;

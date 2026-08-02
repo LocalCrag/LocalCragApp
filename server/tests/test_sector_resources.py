@@ -1,3 +1,4 @@
+from extensions import db
 from models.crag import Crag
 from models.enums.map_marker_type_enum import MapMarkerType
 from models.sector import Sector
@@ -46,6 +47,7 @@ def test_successful_create_sector(client, moderator_token, any_file):
             }
         ],
         "rules": "test rules",
+        "rulesTitle": "Important rules",
         "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": "UIAA",
@@ -68,6 +70,8 @@ def test_successful_create_sector(client, moderator_token, any_file):
     assert res["ascentCount"] == 0
     assert res["secret"] is False
     assert res["rules"] == "test rules"
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] is None
@@ -84,6 +88,7 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "portraitImage": None,
         "mapMarkers": [],
         "rules": None,
+        "rulesTitle": None,
         "secret": False,
         "defaultBoulderScale": None,
         "defaultSportScale": None,
@@ -131,6 +136,8 @@ def test_successful_get_sector(client):
     assert res["shortDescription"] == "Short description of Pampelmousse"
     assert len(res["mapMarkers"]) == 0
     assert res["rules"] is None
+    assert res["rulesTitle"] is None
+    assert res["rulesUpdatedAt"] is None
     assert res["secret"] is False
     assert res["closed"] is False
     assert res["closedReasons"] == []
@@ -168,6 +175,7 @@ def test_successful_edit_sector(client, moderator_token, any_file):
             }
         ],
         "rules": "test rules",
+        "rulesTitle": "Important rules",
         "secret": False,
         "defaultBoulderScale": "FB",
         "defaultSportScale": None,
@@ -190,6 +198,8 @@ def test_successful_edit_sector(client, moderator_token, any_file):
     assert res["ascentCount"] == 1
     assert res["secret"] is False
     assert res["rules"] == "test rules"
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
     assert res["defaultBoulderScale"] == "FB"
@@ -230,3 +240,33 @@ def test_successful_get_sector_grades(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}
+
+
+def test_find_sectors_by_name_across_crags(client, moderator_token):
+    other = Crag.find_by_slug("chironico")
+    duplicate = Sector()
+    duplicate.name = "Pampelmousse"
+    duplicate.crag_id = other.id
+    duplicate.order_index = Sector.find_max_order_index(other.id) + 1
+    db.session.add(duplicate)
+    db.session.commit()
+
+    rv = client.get("/api/sectors/find-by-name?name=pampelmousse", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 2
+    assert {item["crag"]["slug"] for item in res} == {"brione", "chironico"}
+    for item in res:
+        assert item["name"] == "Pampelmousse"
+        assert item["slug"]
+        assert item["crag"]["slug"]
+
+    original = Sector.find_by_slug("pampelmousse")
+    rv = client.get(
+        f"/api/sectors/find-by-name?name=pampelmousse&excludeId={original.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 1
+    assert res[0]["crag"]["slug"] == "chironico"

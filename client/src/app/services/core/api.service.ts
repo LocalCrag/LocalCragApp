@@ -41,6 +41,9 @@ export class ApiService {
       `${this.apiHost}account/notifications/dismiss-all`,
     releaseNoteBundle: (bundleId: string): string =>
       `${this.apiHost}account/release-notes/${bundleId}`,
+    getRulesReadStatus: (): string =>
+      `${this.apiHost}account/rules-read-status`,
+    markRulesRead: (): string => `${this.apiHost}account/rules-read-status`,
   };
 
   public statistics = {
@@ -163,6 +166,7 @@ export class ApiService {
     update: (slug: string): string => `${this.apiHost}crags/${slug}`,
     getGrades: (slug: string): string => `${this.apiHost}crags/${slug}/grades`,
     updateOrder: (): string => `${this.apiHost}crags/update-order`,
+    findByName: (): string => `${this.apiHost}crags/find-by-name`,
   };
 
   public sectors = {
@@ -182,6 +186,7 @@ export class ApiService {
     getSeason: (cragSlug: string): string =>
       `${this.apiHost}crags/${cragSlug}/season`,
     move: (slug: string): string => `${this.apiHost}sectors/${slug}/move`,
+    findByName: (): string => `${this.apiHost}sectors/find-by-name`,
   };
 
   public areas = {
@@ -200,6 +205,7 @@ export class ApiService {
     batchCreate: (slug: string): string =>
       `${this.apiHost}areas/${slug}/batch-create`,
     move: (slug: string): string => `${this.apiHost}areas/${slug}/move`,
+    findByName: (): string => `${this.apiHost}areas/find-by-name`,
   };
 
   public ascents = {
@@ -251,6 +257,7 @@ export class ApiService {
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
     update: (slug: string): string => `${this.apiHost}lines/${slug}`,
     move: (id: string): string => `${this.apiHost}lines/${id}/move`,
+    findByName: (): string => `${this.apiHost}lines/find-by-name`,
   };
 
   public uploader = {
@@ -288,6 +295,18 @@ export class ApiService {
       `${this.apiHost}reactions/${targetType}/${targetId}`,
     delete: (targetType: string, targetId: string): string =>
       `${this.apiHost}reactions/${targetType}/${targetId}`,
+  };
+
+  public rockExplorer = {
+    getFeaturesGeoJSON: (): string =>
+      `${this.apiHost}rock-explorer/features.geojson`,
+    getFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
+    createFeature: (): string => `${this.apiHost}rock-explorer/features`,
+    updateFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
+    deleteFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;

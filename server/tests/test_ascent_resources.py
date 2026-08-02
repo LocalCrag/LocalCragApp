@@ -543,3 +543,59 @@ def test_moderator_clear_ascent_fa_idempotent(client, moderator_token, admin_tok
     rv = client.post(f"/api/ascents/{ascent_id}/clear-fa", token=moderator_token, json={})
     assert rv.status_code == 200
     assert rv.json["fa"] is False
+
+
+def test_get_ascents_filters_flash_fa_kneepad(client, member_token):
+    # Seed ascent: flash=False, fa=True, withKneepad=True on super-spreader.
+    seed = Ascent.query.first()
+    assert seed.flash is False
+    assert seed.fa is True
+    assert seed.with_kneepad is True
+
+    flash_ascent_data = {
+        "flash": True,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 2,
+        "comment": "flash tick",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("the-vessel")),
+        "date": "2024-04-15",
+    }
+    rv = client.post("/api/ascents", token=member_token, json=flash_ascent_data)
+    assert rv.status_code == 201
+    flash_id = rv.json["id"]
+
+    rv = client.get("/api/ascents?page=1&flash=1")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+    assert len(items) == 1
+    assert items[0]["id"] == flash_id
+    assert items[0]["flash"] is True
+
+    rv = client.get("/api/ascents?page=1&fa=1")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+    assert len(items) == 1
+    assert items[0]["id"] == str(seed.id)
+    assert items[0]["fa"] is True
+
+    rv = client.get("/api/ascents?page=1&with_kneepad=1")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+    assert len(items) == 1
+    assert items[0]["id"] == str(seed.id)
+    assert items[0]["withKneepad"] is True
+
+    rv = client.get("/api/ascents?page=1&fa=1&with_kneepad=1")
+    assert rv.status_code == 200
+    items = rv.json["items"]
+    assert len(items) == 1
+    assert items[0]["id"] == str(seed.id)
+
+    rv = client.get("/api/ascents?page=1&flash=1&fa=1")
+    assert rv.status_code == 200
+    assert rv.json["items"] == []

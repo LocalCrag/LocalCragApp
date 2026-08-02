@@ -26,10 +26,19 @@
                 <div class="p-metergroup-label">
                   <p-tag
                     value="{{ meterValue.value }} {{ meterValue.label }}"
+                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: meterValue.color,
                       color: textColor(meterValue.color, '#2e3132'),
                     }"
+                    (click)="
+                      onGradeRangeClick(
+                        $event,
+                        data,
+                        meterValue.minGrade,
+                        meterValue.maxGrade
+                      )
+                    "
                   />
                 </div>
               }
@@ -39,10 +48,12 @@
                     value="{{ data.ungraded }} {{
                       t('leveledGradeDistributionUngraded')
                     }}"
+                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: '#e5e7eb',
                       color: textColor('#e5e7eb', '#2e3132'),
                     }"
+                    (click)="onGradeRangeClick($event, data, 0, 0)"
                   />
                 </div>
               }
@@ -52,10 +63,12 @@
                     value="{{ data.projects }} {{
                       t('leveledGradeDistributionProjects')
                     }}"
+                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: '#e5e7eb',
                       color: textColor('#e5e7eb', '#2e3132'),
                     }"
+                    (click)="onGradeRangeClick($event, data, -2, -1)"
                   />
                 </div>
               }

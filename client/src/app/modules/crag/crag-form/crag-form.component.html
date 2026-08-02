@@ -24,6 +24,12 @@
         <small class="lc-error" *lcIfError="'maxlength'">{{
           "validation.maxLength" | transloco: { max: 120 }
         }}</small>
+        <lc-duplicate-name-warning
+          [nameControl]="cragForm.get('name')"
+          [excludeId]="crag?.id"
+          entityType="crag"
+          [findByName]="findCragsByName"
+        />
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
@@ -172,6 +178,29 @@
             </span>
           </ng-template>
         </p-editor>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <div class="form-label flex items-center">
+          <label for="rulesTitle">{{ t("cragRulesTitleLabel") }}</label>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('cragRulesTitleTooltip')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+        <input
+          id="rulesTitle"
+          type="text"
+          pInputText
+          formControlName="rulesTitle"
+          placeholder="{{ t('cragRulesTitlePlaceholder') }}"
+          lcFormControl
+          data-cy="crag-form-rulesTitle"
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 255 }
+        }}</small>
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>

@@ -5,11 +5,15 @@ from models.enums.map_marker_type_enum import MapMarkerType
 
 
 def validate_latitude(value):
+    if value is None:
+        return
     if abs(value) > 90:
         raise validate.ValidationError("Latitude must be between -90 and 90.")
 
 
 def validate_longitude(value):
+    if value is None:
+        return
     if abs(value) > 180:
         raise validate.ValidationError("Longitude must be between -180 and 180.")
 

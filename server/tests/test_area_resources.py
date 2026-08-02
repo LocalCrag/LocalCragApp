@@ -286,3 +286,23 @@ def test_successful_get_area_grades(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["BOULDER"]["FB"] == {"20": 1, "22": 1}
+
+
+def test_find_areas_by_name(client, moderator_token):
+    area = Area.query.first()
+    assert area is not None
+
+    rv = client.get(f"/api/areas/find-by-name?name={area.name}", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) >= 1
+    match = next(item for item in res if item["slug"] == area.slug)
+    assert match["sector"]["slug"]
+    assert match["sector"]["crag"]["slug"]
+
+    rv = client.get(
+        f"/api/areas/find-by-name?name={area.name}&excludeId={area.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    assert all(item["id"] != str(area.id) for item in rv.json)

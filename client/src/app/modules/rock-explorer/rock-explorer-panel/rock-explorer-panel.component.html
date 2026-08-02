@@ -1,0 +1,592 @@
+<aside
+  class="rock-explorer__panel"
+  [class.rock-explorer__panel--map-pick-hidden]="ui.mapPickHidesPanel()"
+  *transloco="let t"
+>
+  @if (!ui.featureFormActive() && ui.editingFeature()?.id) {
+    <div class="rock-explorer__view">
+      <header class="rock-explorer__panel-header">
+        <h2>
+          {{ ui.editingFeature()!.title || t("rockExplorer.untitledFeature") }}
+        </h2>
+        <div class="rock-explorer__panel-header-actions">
+          <p-button
+            icon="pi pi-ellipsis-v"
+            [rounded]="true"
+            [text]="true"
+            [attr.aria-label]="t('rockExplorer.moreTools')"
+            (onClick)="featureActionsPopover.toggle($event)"
+          />
+          <p-popover #featureActionsPopover>
+            <div class="rock-explorer__panel-menu">
+              <p-button
+                [label]="t('rockExplorer.showOnMap')"
+                icon="pi pi-map-marker"
+                [text]="true"
+                styleClass="w-full justify-start"
+                (onClick)="
+                  ui.dispatch({ type: 'focusOnMap' });
+                  featureActionsPopover.hide()
+                "
+              />
+              @if (ui.editingFeature()!.geometry?.type === "Polygon") {
+                <p-button
+                  [label]="t('rockExplorer.editGeometry')"
+                  icon="pi pi-pencil"
+                  [text]="true"
+                  styleClass="w-full justify-start"
+                  (onClick)="
+                    ui.dispatch({ type: 'editGeometry' });
+                    featureActionsPopover.hide()
+                  "
+                />
+              }
+              <p-button
+                [label]="t('rockExplorer.redrawAsPoint')"
+                icon="pi pi-map-marker"
+                [text]="true"
+                styleClass="w-full justify-start"
+                (onClick)="
+                  ui.dispatch({ type: 'redrawAsPoint' });
+                  featureActionsPopover.hide()
+                "
+              />
+              <p-button
+                [label]="t('rockExplorer.redrawAsPolygon')"
+                icon="pi pi-stop"
+                [text]="true"
+                styleClass="w-full justify-start"
+                (onClick)="
+                  ui.dispatch({ type: 'redrawAsPolygon' });
+                  featureActionsPopover.hide()
+                "
+              />
+              <p-button
+                [label]="t('rockExplorer.redrawFromContent')"
+                icon="pi pi-sitemap"
+                [text]="true"
+                styleClass="w-full justify-start"
+                [disabled]="!canAutoRedrawGeometry"
+                (onClick)="
+                  ui.dispatch({ type: 'redrawFromContent' });
+                  featureActionsPopover.hide()
+                "
+              />
+              <p-button
+                [label]="t('rockExplorer.delete')"
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                styleClass="w-full justify-start"
+                (click)="
+                  ui.dispatch({ type: 'deleteRequest', event: $event });
+                  featureActionsPopover.hide()
+                "
+              />
+            </div>
+          </p-popover>
+          <p-button
+            icon="pi pi-times"
+            [rounded]="true"
+            [text]="true"
+            (onClick)="ui.dispatch({ type: 'closePanel' })"
+          />
+        </div>
+      </header>
+
+      <div class="rock-explorer__panel-body">
+        <p-tabs
+          class="rock-explorer__tabs"
+          [(value)]="panelActiveTab"
+          (valueChange)="onPanelTabChange($event)"
+        >
+          <p-tablist>
+            <p-tab value="info">{{ t("rockExplorer.info") }}</p-tab>
+            <p-tab value="images">
+              {{ t("rockExplorer.images") }}
+              <p-badge
+                [value]="'' + panelImageCount"
+                badgeSize="small"
+                severity="secondary"
+                class="rock-explorer__tab-badge"
+              />
+            </p-tab>
+            <p-tab value="comments">
+              {{ t("rockExplorer.comments") }}
+              <p-badge
+                [value]="'' + panelCommentCount"
+                badgeSize="small"
+                severity="secondary"
+                class="rock-explorer__tab-badge"
+              />
+            </p-tab>
+            <p-tab value="misc">{{ t("rockExplorer.misc") }}</p-tab>
+          </p-tablist>
+          <p-tabpanels>
+            <p-tabpanel value="info">
+              <dl class="rock-explorer__view-fields">
+                @if (ui.editingFeature()!.description) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.description") }}</dt>
+                    <dd class="rock-explorer__view-description">
+                      {{ ui.editingFeature()!.description }}
+                    </dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.potential) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.potential") }}</dt>
+                    <dd>
+                      <span class="rock-explorer__potential-option">
+                        <span
+                          class="rock-explorer__potential-swatch"
+                          [style.background]="
+                            potentialColor(ui.editingFeature()!.potential)
+                          "
+                        ></span>
+                        {{
+                          enumLabel("potential", ui.editingFeature()!.potential)
+                        }}
+                      </span>
+                    </dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.rockQuality) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.rockQuality") }}</dt>
+                    <dd>
+                      {{
+                        enumLabel(
+                          "rockQuality",
+                          ui.editingFeature()!.rockQuality
+                        )
+                      }}
+                    </dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.rockType) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.rockType") }}</dt>
+                    <dd>
+                      {{ enumLabel("rockType", ui.editingFeature()!.rockType) }}
+                    </dd>
+                  </div>
+                }
+                @if (featureGradeLabel(ui.editingFeature()!); as gradeLabel) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.gradeLineType") }}</dt>
+                    <dd>{{ gradeLabel }}</dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.accessIssues?.length) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.accessIssues") }}</dt>
+                    <dd>
+                      {{ accessIssuesLabel(ui.editingFeature()!.accessIssues) }}
+                    </dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.topoLinks?.length) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.topoLinks") }}</dt>
+                    <dd>
+                      <div class="rock-explorer__topo-tags">
+                        @for (
+                          tag of ui.editingFeature()!.topoLinks;
+                          track tag.object.id
+                        ) {
+                          <lc-tag [tag]="tag"></lc-tag>
+                        }
+                      </div>
+                    </dd>
+                  </div>
+                }
+                @if (ui.editingFeature()!.createdBy) {
+                  <div class="rock-explorer__view-field">
+                    <dt>{{ t("rockExplorer.fields.createdBy") }}</dt>
+                    <dd>
+                      <div class="rock-explorer__created-by">
+                        <lc-user-avatar
+                          [user]="ui.editingFeature()!.createdBy"
+                          thumbnail="thumbnailS"
+                          size="normal"
+                        ></lc-user-avatar>
+                        @if (ui.editingFeature()!.createdBy.routerLink) {
+                          <a
+                            class="rock-explorer__created-by-name"
+                            [routerLink]="
+                              ui.editingFeature()!.createdBy.routerLink
+                            "
+                          >
+                            {{ ui.editingFeature()!.createdBy.firstname }}
+                            {{ ui.editingFeature()!.createdBy.lastname }}
+                          </a>
+                        } @else {
+                          <span class="rock-explorer__created-by-name">
+                            {{ ui.editingFeature()!.createdBy.firstname }}
+                            {{ ui.editingFeature()!.createdBy.lastname }}
+                          </span>
+                        }
+                      </div>
+                    </dd>
+                  </div>
+                }
+              </dl>
+            </p-tabpanel>
+            <p-tabpanel value="images">
+              <lc-rock-explorer-gallery
+                #panelGallery
+                [object]="ui.editingFeature()!"
+                [showHeading]="false"
+                (imagesChanged)="ui.dispatch({ type: 'imagesChanged' })"
+                (countChange)="panelImageCount = $event"
+                (editModeChange)="
+                  imageEditMode = $event;
+                  ui.dispatch({ type: 'imageEditModeChange', editMode: $event })
+                "
+                (mapPickChange)="
+                  ui.dispatch({ type: 'imageMapPickChange', active: $event })
+                "
+                (coordinatesPreviewChange)="
+                  ui.dispatch({ type: 'coordinatesPreviewChange' })
+                "
+                (imagesLoaded)="ui.dispatch({ type: 'imagesLoaded' })"
+                (focusCoordinates)="
+                  ui.dispatch({
+                    type: 'focusCoordinates',
+                    coordinates: $event,
+                  })
+                "
+              ></lc-rock-explorer-gallery>
+            </p-tabpanel>
+            <p-tabpanel value="comments">
+              <lc-comments
+                [object]="ui.editingFeature()!"
+                [compact]="true"
+                (countChange)="panelCommentCount = $event"
+              ></lc-comments>
+            </p-tabpanel>
+            <p-tabpanel value="misc">
+              <lc-rock-explorer-misc
+                #panelMisc
+                [object]="ui.editingFeature()!"
+                (editModeChange)="
+                  miscEditMode = $event;
+                  ui.dispatch({ type: 'miscEditModeChange', editMode: $event })
+                "
+                (mapPickChange)="
+                  ui.dispatch({ type: 'parkingMapPickChange', active: $event })
+                "
+                (pathDrawChange)="
+                  ui.dispatch({ type: 'pathDrawChange', active: $event })
+                "
+                (pathDraftChange)="ui.dispatch({ type: 'pathDraftChange' })"
+                (previewChange)="ui.dispatch({ type: 'miscPreviewChange' })"
+                (saved)="ui.dispatch({ type: 'miscSaved', feature: $event })"
+                (focusCoordinates)="
+                  ui.dispatch({
+                    type: 'focusCoordinates',
+                    coordinates: $event,
+                  })
+                "
+                (focusPathGeometry)="
+                  ui.dispatch({
+                    type: 'focusPathGeometry',
+                    positions: $event,
+                  })
+                "
+              ></lc-rock-explorer-misc>
+            </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
+      </div>
+
+      @if (panelActiveTab !== "comments") {
+        <div *isMember="true" class="rock-explorer__panel-footer">
+          @if (panelActiveTab === "images") {
+            @if (!imageEditMode) {
+              <p-button
+                [label]="t('rockExplorer.editImages')"
+                icon="pi pi-pencil"
+                [fluid]="true"
+                (onClick)="gallery?.setEditMode(true)"
+              />
+            } @else {
+              <p-button
+                [label]="t('rockExplorer.save')"
+                (onClick)="gallery?.saveAll()"
+                [loading]="!!gallery?.saving"
+              />
+              <p-button
+                [label]="t('rockExplorer.cancelEdit')"
+                severity="secondary"
+                [outlined]="true"
+                [disabled]="!!gallery?.saving"
+                (onClick)="gallery?.cancelEdit()"
+              />
+            }
+          } @else if (panelActiveTab === "misc") {
+            @if (!miscEditMode) {
+              <p-button
+                [label]="t('rockExplorer.editMisc')"
+                icon="pi pi-pencil"
+                [fluid]="true"
+                (onClick)="misc?.setEditMode(true)"
+              />
+            } @else {
+              <p-button
+                [label]="t('rockExplorer.save')"
+                (onClick)="misc?.saveAll()"
+                [loading]="!!misc?.saving"
+              />
+              <p-button
+                [label]="t('rockExplorer.cancelEdit')"
+                severity="secondary"
+                [outlined]="true"
+                [disabled]="!!misc?.saving"
+                (onClick)="misc?.cancelEdit()"
+              />
+            }
+          } @else if (panelActiveTab === "info") {
+            <p-button
+              [label]="t('rockExplorer.editFeature')"
+              icon="pi pi-pencil"
+              [fluid]="true"
+              (onClick)="enterFeatureEdit()"
+            />
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="rock-explorer__form">
+      <header class="rock-explorer__panel-header">
+        <h2>
+          {{
+            ui.editingFeature()?.id
+              ? t("rockExplorer.editFeature")
+              : t("rockExplorer.newFeature")
+          }}
+        </h2>
+        <p-button
+          icon="pi pi-times"
+          [rounded]="true"
+          [text]="true"
+          (onClick)="ui.dispatch({ type: 'closePanel' })"
+        />
+      </header>
+
+      <div class="rock-explorer__panel-body" [formGroup]="featureForm" lcForm>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-potential">{{
+            t("rockExplorer.fields.potential")
+          }}</label>
+          <p-select
+            inputId="re-potential"
+            formControlName="potential"
+            [options]="ui.potentialOptions()"
+            optionLabel="label"
+            optionValue="value"
+            lcFormControl
+          >
+            <ng-template let-option #item>
+              <span class="rock-explorer__potential-option">
+                <span
+                  class="rock-explorer__potential-swatch"
+                  [style.background]="potentialColor(option.value)"
+                ></span>
+                {{ option.label }}
+              </span>
+            </ng-template>
+            <ng-template let-option #selectedItem>
+              <span class="rock-explorer__potential-option">
+                <span
+                  class="rock-explorer__potential-swatch"
+                  [style.background]="potentialColor(option.value)"
+                ></span>
+                {{ option.label }}
+              </span>
+            </ng-template>
+          </p-select>
+          <small class="lc-error" *lcIfError="'required'">{{
+            "validation.required" | transloco
+          }}</small>
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-title">{{
+            t("rockExplorer.fields.title")
+          }}</label>
+          <input
+            id="re-title"
+            pInputText
+            formControlName="title"
+            lcFormControl
+          />
+          <small class="lc-error" *lcIfError="'maxlength'">{{
+            "validation.maxLength" | transloco: { max: 120 }
+          }}</small>
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-description">{{
+            t("rockExplorer.fields.description")
+          }}</label>
+          <textarea
+            id="re-description"
+            pTextarea
+            formControlName="description"
+            rows="3"
+            lcFormControl
+          ></textarea>
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-rock-quality">{{
+            t("rockExplorer.fields.rockQuality")
+          }}</label>
+          <p-select
+            inputId="re-rock-quality"
+            formControlName="rockQuality"
+            [options]="ui.rockQualityOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            lcFormControl
+          />
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-rock-type">{{
+            t("rockExplorer.fields.rockType")
+          }}</label>
+          <p-select
+            inputId="re-rock-type"
+            formControlName="rockType"
+            [options]="ui.rockTypeOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            lcFormControl
+          />
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-grade-line-type">{{
+            t("rockExplorer.fields.gradeLineType")
+          }}</label>
+          <p-select
+            inputId="re-grade-line-type"
+            formControlName="gradeLineType"
+            [options]="lineTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            lcFormControl
+          />
+        </div>
+        @if (featureForm.get("gradeLineType")?.value) {
+          <div class="rock-explorer__field" lcControlGroup>
+            <label class="form-label" for="re-grade-scale">{{
+              t("rockExplorer.fields.gradeScale")
+            }}</label>
+            <p-select
+              inputId="re-grade-scale"
+              formControlName="gradeScale"
+              [options]="scaleOptions"
+              optionLabel="label"
+              optionValue="value"
+              [showClear]="true"
+              lcFormControl
+            />
+          </div>
+        }
+        @if (featureForm.get("gradeScale")?.value) {
+          <div class="rock-explorer__grade-row">
+            <div class="rock-explorer__field" lcControlGroup>
+              <label class="form-label" for="re-grade-min">{{
+                t("rockExplorer.fields.gradeValueMin")
+              }}</label>
+              <p-select
+                inputId="re-grade-min"
+                formControlName="gradeValueMin"
+                [options]="gradeOptions"
+                optionLabel="name"
+                optionValue="value"
+                [showClear]="true"
+                lcFormControl
+              >
+                <ng-template let-grade #item>
+                  {{ grade.name | translateSpecialGrades }}
+                </ng-template>
+                <ng-template let-grade #selectedItem>
+                  {{ grade.name | translateSpecialGrades }}
+                </ng-template>
+              </p-select>
+            </div>
+            <div class="rock-explorer__field" lcControlGroup>
+              <label class="form-label" for="re-grade-max">{{
+                t("rockExplorer.fields.gradeValueMax")
+              }}</label>
+              <p-select
+                inputId="re-grade-max"
+                formControlName="gradeValueMax"
+                [options]="gradeOptions"
+                optionLabel="name"
+                optionValue="value"
+                [showClear]="true"
+                lcFormControl
+              >
+                <ng-template let-grade #item>
+                  {{ grade.name | translateSpecialGrades }}
+                </ng-template>
+                <ng-template let-grade #selectedItem>
+                  {{ grade.name | translateSpecialGrades }}
+                </ng-template>
+              </p-select>
+              <small class="lc-error" *lcIfError="'gradeRange'">{{
+                t("rockExplorer.validation.gradeRange")
+              }}</small>
+            </div>
+          </div>
+        }
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-access-issues">{{
+            t("rockExplorer.fields.accessIssues")
+          }}</label>
+          <p-multiSelect
+            inputId="re-access-issues"
+            formControlName="accessIssues"
+            [options]="accessIssueOptions"
+            optionLabel="label"
+            optionValue="value"
+            lcFormControl
+          />
+        </div>
+        <div class="rock-explorer__field" lcControlGroup>
+          <label class="form-label" for="re-topo-links">{{
+            t("rockExplorer.fields.topoLinks")
+          }}</label>
+          <lc-tag-input
+            id="re-topo-links"
+            formControlName="topoLinks"
+            [allowedKinds]="['line', 'area', 'sector', 'crag']"
+            [placeholder]="t('rockExplorer.topoLinkPlaceholder')"
+            lcFormControl
+          ></lc-tag-input>
+        </div>
+      </div>
+
+      <div class="rock-explorer__panel-footer">
+        <p-button
+          [label]="t('rockExplorer.save')"
+          (onClick)="onSaveFeature()"
+          [loading]="ui.saving()"
+        />
+        @if (ui.editingFeature()?.id) {
+          <p-button
+            [label]="t('rockExplorer.cancelEdit')"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="cancelFeatureEdit()"
+          />
+        }
+      </div>
+    </div>
+  }
+</aside>

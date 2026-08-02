@@ -27,6 +27,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-area',
@@ -55,6 +57,8 @@ export class AreaComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
+  private rulesAlertService = inject(RulesAlertService);
+  private regionService = inject(RegionService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -96,6 +100,7 @@ export class AreaComponent implements OnInit {
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectGymMode), take(1)),
           this.store.pipe(select(selectBgImage), take(1)),
+          this.regionService.getRegionCached(),
         ]).subscribe(
           ([
             crag,
@@ -105,6 +110,7 @@ export class AreaComponent implements OnInit {
             blocWeatherConfig,
             isGymMode,
             bgImage,
+            region,
           ]) => {
             this.hasBlocweather = !!blocWeatherConfig;
             this.crag = crag;
@@ -115,6 +121,7 @@ export class AreaComponent implements OnInit {
               area.portraitImage,
               bgImage,
             );
+            this.rulesAlertService.setContext({ sector, crag, region });
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

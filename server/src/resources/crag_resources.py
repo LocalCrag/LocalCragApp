@@ -3,13 +3,14 @@ from collections import Counter, defaultdict
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import text
+from sqlalchemy import func, text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
+from marshmallow_schemas.search_schema import crags_search_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
@@ -23,6 +24,7 @@ from models.user import User
 from resources.map_resources import create_or_update_markers
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
+from util.rules_emphasis import apply_rules_emphasis
 from util.scheduled_closure import (
     apply_closable_configuration,
     finalize_closable_save,
@@ -44,6 +46,25 @@ class GetCrags(MethodView):
         attach_crag_counts(crags)
         SecretService.attach_secret_flags(crags)
         return jsonify(crags_schema.dump(crags)), 200
+
+
+class FindCragsByName(MethodView):
+    @jwt_required()
+    @check_auth_claims(moderator=True)
+    def get(self):
+        """
+        Returns all crags whose name matches (case-insensitive, trimmed).
+        Optionally excludes a crag by id via excludeId.
+        """
+        name = (request.args.get("name") or "").strip()
+        if not name:
+            return jsonify([]), 200
+        exclude_id = (request.args.get("excludeId") or "").strip() or None
+        query = Crag.query.filter(func.lower(Crag.name) == name.lower())
+        if exclude_id:
+            query = query.filter(Crag.id != exclude_id)
+        matches = query.order_by(Crag.name.asc()).all()
+        return jsonify(crags_search_schema.dump(matches)), 200
 
 
 class GetCrag(MethodView):
@@ -75,7 +96,9 @@ class CreateCrag(MethodView):
         new_crag.name = crag_data["name"].strip()
         new_crag.description = sanitize_wysiwyg_html(crag_data["description"])
         new_crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
-        new_crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
+        apply_rules_emphasis(
+            new_crag, sanitize_wysiwyg_html(crag_data["rules"]), crag_data["rulesTitle"], is_create=True
+        )
         new_crag.portrait_image_id = crag_data["portraitImage"]
         new_crag.secret = crag_data["secret"]
         new_crag.created_by_id = created_by.id
@@ -113,7 +136,7 @@ class UpdateCrag(MethodView):
         crag.name = crag_data["name"].strip()
         crag.description = sanitize_wysiwyg_html(crag_data["description"])
         crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
-        crag.rules = sanitize_wysiwyg_html(crag_data["rules"])
+        apply_rules_emphasis(crag, sanitize_wysiwyg_html(crag_data["rules"]), crag_data["rulesTitle"], is_create=False)
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")

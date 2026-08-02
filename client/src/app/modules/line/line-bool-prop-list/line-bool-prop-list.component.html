@@ -87,4 +87,7 @@
   @if (line.pinches) {
     <span>{{ t("pinches") }}</span>
   }
+  @if (line.drying) {
+    <span>{{ line.drying | transloco }}</span>
+  }
 </ng-container>

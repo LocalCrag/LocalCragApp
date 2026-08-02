@@ -1,0 +1,103 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.rock-explorer {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-surface-950, #1c1917);
+}
+
+.rock-explorer__status {
+  margin: auto;
+  padding: 1.5rem;
+  color: var(--p-text-color);
+}
+
+.rock-explorer__map {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+:host ::ng-deep .rock-explorer-image-hover-popup {
+  // MapLibre hardcodes tip/content to #fff — keep both on the theme surface.
+  --rock-explorer-image-hover-popup-bg: var(--p-content-background);
+
+  .maplibregl-popup-content {
+    padding: 0.35rem;
+    border-radius: var(--p-content-border-radius, 8px);
+    background: var(--rock-explorer-image-hover-popup-bg);
+    color: var(--p-text-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  // !important beats MapLibre's `#fff` tip fills (global CSS can load after).
+  &.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+  &.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+  &.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+    border-bottom-color: var(--rock-explorer-image-hover-popup-bg) !important;
+  }
+
+  &.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+  &.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+  &.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+    border-top-color: var(--rock-explorer-image-hover-popup-bg) !important;
+  }
+
+  &.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+    border-right-color: var(--rock-explorer-image-hover-popup-bg) !important;
+  }
+
+  &.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+    border-left-color: var(--rock-explorer-image-hover-popup-bg) !important;
+  }
+}
+
+:host ::ng-deep .rock-explorer-image-hover-popup__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 180px;
+}
+
+:host ::ng-deep .rock-explorer-image-hover-popup__image-btn {
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: calc(var(--p-content-border-radius, 8px) - 2px);
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+  }
+}
+
+:host ::ng-deep .rock-explorer-image-hover-popup__caption {
+  padding: 0 0.25rem 0.15rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--p-text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+// Sit below the toolbar / topo–satellite toggle on the right.
+:host ::ng-deep .maplibregl-ctrl-top-right {
+  top: 3.5rem;
+}

@@ -4,12 +4,14 @@ import pytz
 
 from extensions import db
 from models.area import Area
+from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.line import Line
 from models.line_path import LinePath
 from models.topo_image import TopoImage
+from models.user import User
 
 
 def test_successful_move_line_to_different_area(client, moderator_token):
@@ -160,7 +162,11 @@ def test_successful_create_line(client, moderator_token):
     assert res["faYear"] == 2016
     assert res["faDate"] is None
     assert res["faName"] == "Dave Graham"
+    assert res["faUsers"] == []
+    assert res["bolter"] is None
+    assert res["boltDate"] is None
     assert res["startingPosition"] == "FRENCH"
+    assert res["drying"] is None
     assert res["eliminate"] is True
     assert res["traverse"] is True
     assert res["highball"] is True
@@ -193,6 +199,74 @@ def test_successful_create_line(client, moderator_token):
     assert len(res["linePaths"]) == 0
     assert res["closed"] is False
     assert res["closedReasons"] == []
+
+
+def test_successful_create_and_edit_sport_line_with_bolter(client, moderator_token):
+    line_data = {
+        "name": "Bolted Beauty",
+        "description": "Sport route",
+        "videos": None,
+        "color": None,
+        "authorGradeValue": 17,
+        "gradeScale": "UIAA",
+        "type": "SPORT",
+        "authorRating": 4,
+        "faYear": 2018,
+        "faDate": None,
+        "faName": "First Climber",
+        "bolter": "Kurt Albert",
+        "boltDate": "2017-05-20",
+        "startingPosition": "STAND",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": True,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["type"] == "SPORT"
+    assert res["bolter"] == "Kurt Albert"
+    assert res["boltDate"] == "2017-05-20"
+
+    line_data["bolter"] = "Kurt Albert & friends"
+    line_data["boltDate"] = "2017-06-01"
+    line_data["type"] = "BOULDER"
+    line_data["gradeScale"] = "FB"
+    line_data["authorGradeValue"] = 19
+
+    rv = client.put(f"/api/lines/{res['slug']}", token=moderator_token, json=line_data)
+    assert rv.status_code == 200
+    res = rv.json
+    assert res["type"] == "BOULDER"
+    assert res["bolter"] is None
+    assert res["boltDate"] is None
 
 
 def test_successful_create_line_with_project_status(client, moderator_token):
@@ -976,6 +1050,13 @@ def test_successful_get_line(client):
     assert res["faYear"] == 2024
     assert res["faDate"] is None
     assert res["faName"] == "Felix Engelmann"
+    assert len(res["faUsers"]) == 1
+    assert res["faUsers"][0]["firstname"] == "admin"
+    assert res["faUsers"][0]["lastname"] == "admin"
+    assert res["faUsers"][0]["slug"] == "admin-admin"
+    assert res["faUsers"][0]["id"] is not None
+    assert res["faUsers"][0]["date"] == "2024-04-16"
+    assert res["faUsers"][0]["year"] is None
     assert res["startingPosition"] == "SIT"
     assert res["eliminate"] is False
     assert res["traverse"] is False
@@ -1012,6 +1093,87 @@ def test_successful_get_line(client):
     assert res["linePaths"][0]["topoImage"]["orderIndex"] == 0
     assert res["closed"] is False
     assert res["closedReasons"] == []
+
+
+def test_line_get_fa_users_super_spreader():
+    line = Line.find_by_slug("super-spreader")
+    fa_users = line.get_fa_users()
+    assert len(fa_users) == 1
+    assert fa_users[0]["user"].firstname == "admin"
+    assert fa_users[0]["user"].lastname == "admin"
+    assert fa_users[0]["user"].slug == "admin-admin"
+    assert fa_users[0]["year"] is None
+    assert fa_users[0]["date"] == datetime.date(2024, 4, 16)
+
+
+def test_line_get_fa_users_empty_when_no_fa_ascents():
+    line = Line.find_by_slug("the-vessel")
+    assert line.get_fa_users() == []
+
+
+def test_line_get_fa_users_shared_fa_ordered_by_ascent_date(client):
+    """Two FA ascents on the same line are ordered by ascent_date ASC, then lastname/firstname."""
+    line = Line.find_by_slug("the-vessel")
+    member = User.find_by_email("member@localcrag.invalid.org")
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+
+    # Member FA first (earlier date) — should appear first despite lastname "member" > "admin"
+    member_ascent = Ascent()
+    member_ascent.fa = True
+    member_ascent.grade_value = 11
+    member_ascent.rating = 2
+    member_ascent.date = datetime.date(2020, 1, 1)
+    member_ascent.ascent_date = datetime.date(2020, 1, 1)
+    member_ascent.created_by_id = member.id
+    member_ascent.line_id = line.id
+    db.session.add(member_ascent)
+
+    admin_ascent = Ascent()
+    admin_ascent.fa = True
+    admin_ascent.grade_value = 11
+    admin_ascent.rating = 2
+    admin_ascent.year = 2021
+    admin_ascent.ascent_date = datetime.date(2021, 1, 1)
+    admin_ascent.created_by_id = admin.id
+    admin_ascent.line_id = line.id
+    db.session.add(admin_ascent)
+    db.session.commit()
+
+    fa_users = line.get_fa_users()
+    assert len(fa_users) == 2
+    assert fa_users[0]["user"].slug == "member-member"
+    assert fa_users[0]["date"] == datetime.date(2020, 1, 1)
+    assert fa_users[0]["year"] is None
+    assert fa_users[1]["user"].slug == "admin-admin"
+    assert fa_users[1]["year"] == 2021
+    assert fa_users[1]["date"] is None
+
+    # API GET also returns ordered faUsers with ascent year/date; faName stays untouched
+    rv = client.get("/api/lines/the-vessel")
+    assert rv.status_code == 200
+    res = rv.json
+    assert [u["slug"] for u in res["faUsers"]] == ["member-member", "admin-admin"]
+    assert res["faUsers"][0]["date"] == "2020-01-01"
+    assert res["faUsers"][0]["year"] is None
+    assert res["faUsers"][1]["year"] == 2021
+    assert res["faUsers"][1]["date"] is None
+    assert res["faName"] is None
+
+
+def test_get_line_fa_users_does_not_sync_fa_name(client):
+    """faName remains the free-text column; faUsers does not overwrite it."""
+    line = Line.find_by_slug("super-spreader")
+    original_fa_name = line.fa_name
+
+    rv = client.get("/api/lines/super-spreader")
+    assert rv.status_code == 200
+    assert rv.json["faName"] == original_fa_name
+    assert len(rv.json["faUsers"]) == 1
+    assert rv.json["faUsers"][0]["date"] == "2024-04-16"
+    assert rv.json["faUsers"][0]["year"] is None
+
+    db.session.refresh(line)
+    assert line.fa_name == original_fa_name
 
 
 def test_get_deleted_line(client):
@@ -1363,3 +1525,108 @@ def test_get_lines_starting_position_filters_lines(client):
     slugs = {item["slug"] for item in rv.json["items"]}
     assert slugs == {"super-spreader"}
     assert all(item["startingPosition"] == "SIT" for item in rv.json["items"])
+
+
+def test_get_lines_rejects_invalid_drying(client):
+    rv = client.get("/api/lines?drying=NOT_A_VALUE")
+    assert rv.status_code == 400
+
+
+def test_get_lines_drying_filters_lines(client):
+    from models.enums.drying_enum import DryingEnum
+
+    rv = client.get("/api/lines?drying=FAST&per_page=50")
+    assert rv.status_code == 200
+    assert rv.json["items"] == []
+
+    line: Line = Line.find_by_slug("the-vessel")
+    line.drying = DryingEnum.FAST
+    db.session.add(line)
+    db.session.commit()
+
+    rv2 = client.get("/api/lines?drying=FAST&per_page=50")
+    assert rv2.status_code == 200
+    slugs = {item["slug"] for item in rv2.json["items"]}
+    assert slugs == {"the-vessel"}
+    assert all(item["drying"] == "FAST" for item in rv2.json["items"])
+
+
+def test_create_line_with_drying(client, moderator_token):
+    line_data = {
+        "name": "Quick Dry",
+        "description": None,
+        "videos": None,
+        "authorGradeValue": 10,
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "authorRating": None,
+        "faYear": None,
+        "faDate": None,
+        "faName": None,
+        "startingPosition": "STAND",
+        "drying": "SLOW",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": False,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=line_data)
+    assert rv.status_code == 201
+    assert rv.json["drying"] == "SLOW"
+    slug = rv.json["slug"]
+
+    line_data["drying"] = "FAST"
+    rv2 = client.put(f"/api/lines/{slug}", token=moderator_token, json=line_data)
+    assert rv2.status_code == 200
+    assert rv2.json["drying"] == "FAST"
+
+    line_data["drying"] = None
+    rv3 = client.put(f"/api/lines/{slug}", token=moderator_token, json=line_data)
+    assert rv3.status_code == 200
+    assert rv3.json["drying"] is None
+
+
+def test_find_lines_by_name(client, moderator_token):
+    line = Line.query.filter_by(archived=False).first()
+    assert line is not None
+
+    rv = client.get(f"/api/lines/find-by-name?name={line.name}", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) >= 1
+    match = next(item for item in res if item["slug"] == line.slug)
+    assert match["area"]["slug"]
+    assert match["area"]["sector"]["slug"]
+    assert match["area"]["sector"]["crag"]["slug"]
+
+    rv = client.get(
+        f"/api/lines/find-by-name?name={line.name}&excludeId={line.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    assert all(item["id"] != str(line.id) for item in rv.json)

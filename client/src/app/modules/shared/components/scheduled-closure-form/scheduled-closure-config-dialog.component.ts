@@ -38,6 +38,8 @@ import {
   patchClosureScheduleDialogForm,
   readClosureScheduleFromDialogForm,
 } from '../../utils/scheduled-closure-form';
+import { PrimeNG } from 'primeng/config';
+import { toPrimeNgDayMonthFormat } from '../../../../models/closure-reason-alert';
 
 @Component({
   selector: 'lc-scheduled-closure-config-dialog',
@@ -78,6 +80,13 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
+  private primeNG = inject(PrimeNG);
+
+  get annualDateFormat(): string {
+    return toPrimeNgDayMonthFormat(
+      this.primeNG.getTranslation('dateFormat') || 'dd.mm.yy',
+    );
+  }
 
   ngOnInit(): void {
     this.scheduleForm = buildClosureScheduleDialogForm(this.fb);

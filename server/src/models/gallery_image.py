@@ -20,4 +20,7 @@ class GalleryImage(BaseEntity):
 
     file_id: Mapped[UUID] = mapped_column(db.ForeignKey("files.id"), primary_key=True)
     file: Mapped[File] = relationship("File")
+    description = db.Column(db.Text, nullable=True)
+    lat = db.Column(db.Float, nullable=True)
+    lng = db.Column(db.Float, nullable=True)
     tags = db.relationship(Tag, secondary=gallery_image_tags)

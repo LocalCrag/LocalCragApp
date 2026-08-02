@@ -65,6 +65,7 @@ export const topoCragRoutes: Routes = [
         'cragContent',
         {
           canActivate: [skipHierarchy(2, ['/topo'], ['rules'])],
+          data: { rulesAlertLevel: 'crag' },
         },
       ),
       lazyOutletRoute('gallery', loadGalleryComponent, 'cragContent', {

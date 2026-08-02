@@ -1,0 +1,16 @@
+@if (ready) {
+  <ng-container *transloco="let t; read: 'rulesAlert'">
+    <div class="rules-view-meta">
+      @if (updatedSinceLastView) {
+        <p class="rules-view-meta__updated" data-cy="rules-updated-notice">
+          {{ t("updatedSinceLastView") }}
+        </p>
+      }
+      @if (rulesUpdatedAt) {
+        <p class="rules-view-meta__date">
+          {{ t("lastUpdated", { date: rulesUpdatedAt | date: "datetime" }) }}
+        </p>
+      }
+    </div>
+  </ng-container>
+}

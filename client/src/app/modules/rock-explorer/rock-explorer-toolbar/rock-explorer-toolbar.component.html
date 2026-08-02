@@ -1,0 +1,346 @@
+<div *transloco="let t">
+  <div class="rock-explorer__toolbar">
+    @if (!ui.isDrawToolActive()) {
+      <p-button
+        severity="secondary"
+        icon="pi pi-map-marker"
+        [label]="t('rockExplorer.modePoint')"
+        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'point' })"
+        size="small"
+      />
+      <p-button
+        severity="secondary"
+        icon="pi pi-stop"
+        [label]="t('rockExplorer.modePolygon')"
+        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'polygon' })"
+        size="small"
+      />
+    }
+    @if (ui.drawMode() === "point") {
+      <p-button
+        icon="pi pi-times"
+        [label]="t('rockExplorer.cancelDraw')"
+        (onClick)="ui.dispatch({ type: 'cancelPointDraw' })"
+        size="small"
+        severity="secondary"
+      />
+    }
+    @if (ui.isPolygonToolActive()) {
+      @if (ui.drawMode() === "polygon") {
+        <p-button
+          icon="pi pi-undo"
+          [label]="t('rockExplorer.undoVertex')"
+          (onClick)="ui.dispatch({ type: 'undoPolygonVertex' })"
+          [disabled]="ui.polygonVertexCount() === 0"
+          size="small"
+          severity="secondary"
+        />
+      }
+      <span
+        class="rock-explorer__finish-polygon-wrap"
+        [pTooltip]="t('rockExplorer.polygonSelfIntersecting')"
+        tooltipPosition="bottom"
+        [tooltipDisabled]="!ui.polygonSelfIntersecting()"
+      >
+        <p-button
+          icon="pi pi-check"
+          [label]="
+            ui.geometryEditActive()
+              ? t('rockExplorer.saveGeometry')
+              : t('rockExplorer.finishPolygon')
+          "
+          (onClick)="ui.dispatch({ type: 'finishPolygon' })"
+          [disabled]="
+            ui.polygonVertexCount() < 3 || ui.polygonSelfIntersecting()
+          "
+          [loading]="ui.saving()"
+          size="small"
+          severity="success"
+        />
+      </span>
+      <p-button
+        icon="pi pi-times"
+        [label]="t('rockExplorer.cancelDraw')"
+        (onClick)="ui.dispatch({ type: 'cancelPolygonDraw' })"
+        [disabled]="ui.saving()"
+        size="small"
+        severity="secondary"
+      />
+    }
+    @if (!ui.isMobileViewport()) {
+      @if (!ui.isDrawToolActive()) {
+        <p-button
+          class="rock-explorer__filter-btn"
+          (onClick)="ui.toggleFilters()"
+          [severity]="ui.showFilters() ? 'primary' : 'secondary'"
+          size="small"
+        >
+          <ng-template #content>
+            <span class="p-button-icon pi pi-filter"></span>
+            <span class="rock-explorer__filter-label-group">
+              <span class="p-button-label">{{
+                t("rockExplorer.filters")
+              }}</span>
+              @if (hasActiveFilters) {
+                <span
+                  class="rock-explorer__filter-active-dot"
+                  aria-hidden="true"
+                ></span>
+              }
+            </span>
+          </ng-template>
+        </p-button>
+      }
+      <div class="rock-explorer__layer-toggle">
+        <p-button
+          [severity]="
+            ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
+          "
+          [label]="t('rockExplorer.mapStyle.topo')"
+          (onClick)="
+            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
+          "
+          size="small"
+        />
+        <p-button
+          [severity]="
+            ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
+          "
+          [label]="t('rockExplorer.mapStyle.satellite')"
+          (onClick)="
+            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.SATELLITE })
+          "
+          size="small"
+        />
+      </div>
+    } @else if (!ui.isDrawToolActive()) {
+      <p-button
+        class="rock-explorer__filter-btn"
+        (onClick)="overflowPopover.toggle($event)"
+        size="small"
+        severity="secondary"
+      >
+        <ng-template #content>
+          <span class="p-button-icon pi pi-ellipsis-v"></span>
+          <span class="rock-explorer__filter-label-group">
+            <span class="p-button-label">{{
+              t("rockExplorer.moreTools")
+            }}</span>
+            @if (hasActiveFilters) {
+              <span
+                class="rock-explorer__filter-active-dot"
+                aria-hidden="true"
+              ></span>
+            }
+          </span>
+        </ng-template>
+      </p-button>
+      <p-popover #overflowPopover>
+        <div class="rock-explorer__overflow" [formGroup]="filterForm">
+          <p-select
+            formControlName="potential"
+            [options]="ui.potentialOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="t('rockExplorer.fields.potential')"
+            [showClear]="true"
+            appendTo="body"
+          >
+            <ng-template let-option #item>
+              <span class="rock-explorer__potential-option">
+                <span
+                  class="rock-explorer__potential-swatch"
+                  [style.background]="ui.potentialColor(option.value)"
+                ></span>
+                {{ option.label }}
+              </span>
+            </ng-template>
+            <ng-template let-option #selectedItem>
+              <span class="rock-explorer__potential-option">
+                <span
+                  class="rock-explorer__potential-swatch"
+                  [style.background]="ui.potentialColor(option.value)"
+                ></span>
+                {{ option.label }}
+              </span>
+            </ng-template>
+          </p-select>
+          <p-select
+            formControlName="rockQuality"
+            [options]="ui.rockQualityOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="t('rockExplorer.fields.rockQuality')"
+            [showClear]="true"
+            appendTo="body"
+          />
+          <p-select
+            formControlName="rockType"
+            [options]="ui.rockTypeOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="t('rockExplorer.fields.rockType')"
+            [showClear]="true"
+            appendTo="body"
+          />
+          <div class="rock-explorer__overflow-actions">
+            <p-button
+              [label]="t('rockExplorer.clearFilters')"
+              (onClick)="clearFilters(); overflowPopover.hide()"
+              severity="secondary"
+              [outlined]="true"
+              [disabled]="!hasActiveFilters"
+            />
+          </div>
+          <div
+            class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
+          >
+            <p-button
+              [severity]="
+                ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
+              "
+              [label]="t('rockExplorer.mapStyle.topo')"
+              (onClick)="
+                ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
+              "
+              size="small"
+            />
+            <p-button
+              [severity]="
+                ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
+              "
+              [label]="t('rockExplorer.mapStyle.satellite')"
+              (onClick)="
+                ui.dispatch({
+                  type: 'switchMapStyle',
+                  style: MapStyles.SATELLITE,
+                })
+              "
+              size="small"
+            />
+          </div>
+        </div>
+      </p-popover>
+    }
+  </div>
+
+  @if (ui.showFilters() && !ui.isMobileViewport() && !ui.isDrawToolActive()) {
+    <div class="rock-explorer__filters" [formGroup]="filterForm">
+      <p-select
+        formControlName="potential"
+        [options]="ui.potentialOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="t('rockExplorer.fields.potential')"
+        [showClear]="true"
+      >
+        <ng-template let-option #item>
+          <span class="rock-explorer__potential-option">
+            <span
+              class="rock-explorer__potential-swatch"
+              [style.background]="ui.potentialColor(option.value)"
+            ></span>
+            {{ option.label }}
+          </span>
+        </ng-template>
+        <ng-template let-option #selectedItem>
+          <span class="rock-explorer__potential-option">
+            <span
+              class="rock-explorer__potential-swatch"
+              [style.background]="ui.potentialColor(option.value)"
+            ></span>
+            {{ option.label }}
+          </span>
+        </ng-template>
+      </p-select>
+      <p-select
+        formControlName="rockQuality"
+        [options]="ui.rockQualityOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="t('rockExplorer.fields.rockQuality')"
+        [showClear]="true"
+      />
+      <p-select
+        formControlName="rockType"
+        [options]="ui.rockTypeOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="t('rockExplorer.fields.rockType')"
+        [showClear]="true"
+      />
+      <p-button
+        [label]="t('rockExplorer.clearFilters')"
+        (onClick)="clearFilters()"
+        severity="secondary"
+        [outlined]="true"
+        [disabled]="!hasActiveFilters"
+      />
+      <p-button
+        icon="pi pi-times"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        [attr.aria-label]="t('rockExplorer.closeFilters')"
+        (onClick)="ui.toggleFilters()"
+      />
+    </div>
+  }
+
+  @if (ui.pickingImageCoordinates()) {
+    <div class="rock-explorer__map-pick-banner" role="status">
+      <span>{{ t("rockExplorer.pickImageCoordinatesHint") }}</span>
+      <p-button
+        [label]="t('rockExplorer.cancelPickImageCoordinates')"
+        icon="pi pi-times"
+        size="small"
+        severity="secondary"
+        [text]="true"
+        (onClick)="ui.dispatch({ type: 'cancelImageCoordinatePick' })"
+      />
+    </div>
+  } @else if (ui.pickingParkingCoordinates()) {
+    <div class="rock-explorer__map-pick-banner" role="status">
+      <span>{{ t("rockExplorer.pickParkingCoordinatesHint") }}</span>
+      <p-button
+        [label]="t('rockExplorer.cancelPickParkingCoordinates')"
+        icon="pi pi-times"
+        size="small"
+        severity="secondary"
+        [text]="true"
+        (onClick)="ui.dispatch({ type: 'cancelParkingCoordinatePick' })"
+      />
+    </div>
+  } @else if (ui.drawingPath()) {
+    <div
+      class="rock-explorer__map-pick-banner rock-explorer__map-pick-banner--tools"
+      role="toolbar"
+      [attr.aria-label]="t('rockExplorer.drawPath')"
+    >
+      @if (ui.selectedPathVertexIndex() !== null) {
+        <p-button
+          [label]="t('rockExplorer.deletePathVertex')"
+          icon="pi pi-trash"
+          size="small"
+          severity="danger"
+          (onClick)="ui.dispatch({ type: 'deletePathVertex' })"
+        />
+      }
+      <p-button
+        [label]="t('rockExplorer.finishPath')"
+        icon="pi pi-check"
+        size="small"
+        [disabled]="ui.pathDraftVertexCount() < 2"
+        (onClick)="ui.dispatch({ type: 'finishPathDraw' })"
+      />
+      <p-button
+        [label]="t('rockExplorer.cancelDraw')"
+        icon="pi pi-times"
+        size="small"
+        severity="secondary"
+        [text]="true"
+        (onClick)="ui.dispatch({ type: 'cancelPathDraw' })"
+      />
+    </div>
+  }
+</div>

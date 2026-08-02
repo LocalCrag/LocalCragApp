@@ -1,5 +1,10 @@
 <div class="p-6">
   @if (region) {
+    <lc-rules-view-meta
+      entityType="Region"
+      [entityId]="region.id"
+      [rulesUpdatedAt]="region.rulesUpdatedAt"
+    ></lc-rules-view-meta>
     <section
       [innerHTML]="region.rules | sanitizeHtml"
       class="quill-content"

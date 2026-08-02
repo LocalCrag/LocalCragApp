@@ -21,6 +21,8 @@ class Region(BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     rules = db.Column(db.Text, nullable=True)
+    rules_title = db.Column(db.String(255), nullable=True)
+    rules_updated_at = db.Column(db.DateTime(), nullable=True)
     image_id = db.Column(UUID(), db.ForeignKey("files.id"), nullable=True)
     image = db.relationship("File", lazy="joined", foreign_keys=[image_id])
 

@@ -21,7 +21,7 @@ import { environment } from '../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import {
@@ -59,6 +59,7 @@ import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * A component for creating and editing crags.
@@ -87,6 +88,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     Tooltip,
     OutdoorModeDirective,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class CragFormComponent implements OnInit {
@@ -116,6 +118,11 @@ export class CragFormComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private languageService = inject(LanguageService);
   private pageTitleService = inject(PageTitleService);
+
+  public findCragsByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Crag[]> => this.cragsService.findByName(name, excludeId);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();
@@ -197,6 +204,7 @@ export class CragFormComponent implements OnInit {
       description: [null],
       shortDescription: [null],
       rules: [null],
+      rulesTitle: [null, [Validators.maxLength(255)]],
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
@@ -221,6 +229,7 @@ export class CragFormComponent implements OnInit {
       description: this.crag.description,
       shortDescription: this.crag.shortDescription,
       rules: this.crag.rules,
+      rulesTitle: this.crag.rulesTitle,
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
@@ -254,6 +263,7 @@ export class CragFormComponent implements OnInit {
       crag.description = this.cragForm.get('description').value;
       crag.shortDescription = this.cragForm.get('shortDescription').value;
       crag.rules = this.cragForm.get('rules').value;
+      crag.rulesTitle = this.cragForm.get('rulesTitle').value || null;
       crag.portraitImage = this.cragForm.get('portraitImage').value;
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;

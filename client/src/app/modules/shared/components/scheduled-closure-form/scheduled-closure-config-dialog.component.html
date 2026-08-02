@@ -57,9 +57,9 @@
                 [ngModel]="startDate"
                 (ngModelChange)="onStartDateChange($event)"
                 [dateFormat]="
-                  scheduleType === ClosureScheduleType.FIXED
-                    ? 'dd.mm.yy'
-                    : 'dd.mm'
+                  scheduleType === ClosureScheduleType.ANNUAL
+                    ? annualDateFormat
+                    : undefined
                 "
                 [defaultDate]="
                   scheduleType === ClosureScheduleType.ANNUAL
@@ -84,9 +84,9 @@
                 [ngModel]="endDate"
                 (ngModelChange)="onEndDateChange($event)"
                 [dateFormat]="
-                  scheduleType === ClosureScheduleType.FIXED
-                    ? 'dd.mm.yy'
-                    : 'dd.mm'
+                  scheduleType === ClosureScheduleType.ANNUAL
+                    ? annualDateFormat
+                    : undefined
                 "
                 [defaultDate]="
                   scheduleType === ClosureScheduleType.ANNUAL

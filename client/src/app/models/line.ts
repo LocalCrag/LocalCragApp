@@ -3,9 +3,11 @@ import { LineType } from '../enums/line-type';
 import { LinePath } from './line-path';
 import { TopoImage } from './topo-image';
 import { StartingPosition } from '../enums/starting-position';
+import { Drying } from '../enums/drying';
 import { Area } from './area';
 import { Crag } from './crag';
 import { Sector } from './sector';
+import { User } from './user';
 import {
   deserializeClosableAttributes,
   IsClosable,
@@ -21,6 +23,13 @@ import {
 export interface LineVideo {
   url: string;
   title: string;
+}
+
+/** Registered FA climber plus their FA ascent year/date. */
+export interface LineFaUser {
+  user: User;
+  year: number | null;
+  date: Date | null;
 }
 
 /**
@@ -40,9 +49,13 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   faYear: number;
   faDate: Date;
   faName: string;
+  faUsers: LineFaUser[] = [];
   routesetter: string;
   setDate: Date;
+  bolter: string;
+  boltDate: Date;
   startingPosition: StartingPosition;
+  drying: Drying | null;
   secret: boolean;
   archived?: boolean;
 
@@ -131,11 +144,25 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
       ? parseLocalCalendarDate(payload.faDate)
       : null;
     line.faName = payload.faName;
+    line.faUsers = payload.faUsers
+      ? payload.faUsers.map(
+          (faUser: any): LineFaUser => ({
+            user: User.deserialize(faUser),
+            year: faUser.year ?? null,
+            date: faUser.date ? parseLocalCalendarDate(faUser.date) : null,
+          }),
+        )
+      : [];
     line.routesetter = payload.routesetter;
     line.setDate = payload.setDate
       ? parseLocalCalendarDate(payload.setDate)
       : null;
+    line.bolter = payload.bolter;
+    line.boltDate = payload.boltDate
+      ? parseLocalCalendarDate(payload.boltDate)
+      : null;
     line.startingPosition = payload.startingPosition;
+    line.drying = payload.drying ?? null;
     line.secret = payload.secret;
     line.archived = payload.archived;
 
@@ -229,7 +256,10 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         faName: line.faName ? line.faName : null,
         routesetter: line.routesetter ? line.routesetter : null,
         setDate: line.setDate ? formatLocalCalendarDate(line.setDate) : null,
+        bolter: line.bolter ? line.bolter : null,
+        boltDate: line.boltDate ? formatLocalCalendarDate(line.boltDate) : null,
         startingPosition: line.startingPosition,
+        drying: line.drying ?? null,
         secret: line.secret,
 
         eliminate: line.eliminate,

@@ -8,6 +8,7 @@ def test_successful_create_crag(client, moderator_token, any_file):
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
+        "rulesTitle": "Important rules",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -34,6 +35,8 @@ def test_successful_create_crag(client, moderator_token, any_file):
     assert res["description"] == "Fodere et scandere."
     assert res["shortDescription"] == "Fodere et scandere 2."
     assert res["rules"] == "Parking only on Saturday and Sunday."
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["mapMarkers"][0]["lat"] == 12.13
     assert res["mapMarkers"][0]["lng"] == 42.42
     assert res["portraitImage"]["id"] == str(any_file.id)
@@ -56,6 +59,7 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "description": "Fodere et scandere.",
         "shortDescription": "Fodere et scandere 2.",
         "rules": "Parking only on Saturday and Sunday.",
+        "rulesTitle": None,
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
@@ -107,6 +111,8 @@ def test_successful_get_crag(client):
     assert res["description"] == crag.description
     assert res["shortDescription"] == crag.short_description
     assert res["rules"] == crag.rules
+    assert res["rulesTitle"] == crag.rules_title
+    assert res["rulesUpdatedAt"] == crag.rules_updated_at
     assert len(res["mapMarkers"]) == len(crag.map_markers)
     assert res["secret"] == crag.secret
     assert res["closed"] == crag.closed
@@ -136,6 +142,7 @@ def test_successful_edit_crag(client, moderator_token, any_file):
         "description": "Fodere et scandere. 2",
         "shortDescription": "Fodere et scandere 3.",
         "rules": "Parking only on Saturday and Sunday 2.",
+        "rulesTitle": "Important rules",
         "portraitImage": str(any_file.id),
         "mapMarkers": [
             {
@@ -162,6 +169,8 @@ def test_successful_edit_crag(client, moderator_token, any_file):
     assert res["description"] == "Fodere et scandere. 2"
     assert res["shortDescription"] == "Fodere et scandere 3."
     assert res["rules"] == "Parking only on Saturday and Sunday 2."
+    assert res["rulesTitle"] == "Important rules"
+    assert res["rulesUpdatedAt"] is not None
     assert res["mapMarkers"][0]["lat"] == 42.1
     assert res["mapMarkers"][0]["lng"] == 42.2
     assert res["orderIndex"] == 0
@@ -244,3 +253,42 @@ def test_crag_season(client):
         assert month in map(str, range(1, 13))
     # All percentages have to add up to 1
     assert sum(res.values()) == 1
+
+
+def test_find_crags_by_name_requires_moderator(client, member_token):
+    rv = client.get("/api/crags/find-by-name?name=Brione", token=member_token)
+    assert rv.status_code == 401
+
+
+def test_find_crags_by_name(client, moderator_token):
+    rv = client.get("/api/crags/find-by-name?name=brione", token=moderator_token)
+    assert rv.status_code == 200
+    res = rv.json
+    assert len(res) == 1
+    assert res[0]["name"] == "Brione"
+    assert res[0]["slug"] == "brione"
+    assert "id" in res[0]
+
+    rv = client.get("/api/crags/find-by-name?name=does-not-exist", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []
+
+
+def test_find_crags_by_name_excludes_id(client, moderator_token):
+    crag = Crag.find_by_slug("brione")
+    rv = client.get(
+        f"/api/crags/find-by-name?name=brione&excludeId={crag.id}",
+        token=moderator_token,
+    )
+    assert rv.status_code == 200
+    assert rv.json == []
+
+
+def test_find_crags_by_name_empty_returns_empty_list(client, moderator_token):
+    rv = client.get("/api/crags/find-by-name?name=", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []
+
+    rv = client.get("/api/crags/find-by-name", token=moderator_token)
+    assert rv.status_code == 200
+    assert rv.json == []

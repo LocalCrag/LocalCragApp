@@ -37,7 +37,6 @@
             appendTo="body"
             [maxDate]="today"
             [readonlyInput]="true"
-            dateFormat="dd.mm.yy"
           ></p-date-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("dateInFutureValidationError")

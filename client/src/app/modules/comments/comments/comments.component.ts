@@ -2,20 +2,22 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  EventEmitter,
   inject,
-  OnInit,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
-import { CommentEditorComponent } from '../comment-editor/comment-editor.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, switchMap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
-import { ObjectUtilsService } from '../../../services/utils/object-utils.service';
-import { ObjectType } from '../../../models/object';
+import { CommentEditorComponent } from '../comment-editor/comment-editor.component';
+import { getObjectType, LCObject } from '../../../models/object';
 import { Comment } from '../../../models/comment';
 import { LoadingState } from '../../../enums/loading-state';
 import {
   beginPaginatedPageLoad,
   completePaginatedPageLoad,
+  failPaginatedPageLoad,
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
@@ -46,7 +48,13 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
   styleUrl: './comments.component.scss',
   providers: [CommentsContextService],
 })
-export class CommentsComponent implements OnInit, PaginatedListView {
+export class CommentsComponent implements OnChanges, PaginatedListView {
+  /** Target entity to list/create comments for. */
+  @Input({ required: true }) object!: LCObject;
+  /** Tighter layout for side panels / tabs. */
+  @Input() compact = false;
+  @Output() countChange = new EventEmitter<number>();
+
   public comments: Comment[] = [];
   public hasNextPage = true;
   public currentPage = 0;
@@ -54,71 +62,25 @@ export class CommentsComponent implements OnInit, PaginatedListView {
   public loading: LoadingState = LoadingState.DEFAULT;
   public commentsContextService = inject(CommentsContextService);
 
-  private objectType: ObjectType;
-  private objectSlug: string;
-
   private destroyRef = inject(DestroyRef);
-  private route = inject(ActivatedRoute);
-  private objectUtilsService = inject(ObjectUtilsService);
   private commentsService = inject(CommentsService);
   private cdr = inject(ChangeDetectorRef);
 
-  ngOnInit(): void {
-    this.route.data
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((data) => {
-          this.objectType = data['objectType'];
-          const paramSource =
-            this.objectType === ObjectType.Post
-              ? this.route
-              : this.route.parent!.parent!;
-          return paramSource.paramMap.pipe(
-            takeUntilDestroyed(this.destroyRef),
-            switchMap((params) => {
-              switch (this.objectType) {
-                case ObjectType.Crag:
-                  this.objectSlug = params.get('crag-slug');
-                  break;
-                case ObjectType.Sector:
-                  this.objectSlug = params.get('sector-slug');
-                  break;
-                case ObjectType.Area:
-                  this.objectSlug = params.get('area-slug');
-                  break;
-                case ObjectType.Line:
-                  this.objectSlug = params.get('line-slug');
-                  break;
-                case ObjectType.Region:
-                  // Region has no slug in the route - use empty string (getObject ignores slug for Region)
-                  this.objectSlug = '';
-                  break;
-                case ObjectType.User:
-                  this.objectSlug = params.get('user-slug');
-                  break;
-                case ObjectType.Post:
-                  this.objectSlug = params.get('post-slug');
-              }
-              return this.objectUtilsService.getObject(
-                this.objectType,
-                this.objectSlug,
-              );
-            }),
-          );
-        }),
-      )
-      .subscribe((obj) => {
-        this.commentsContextService.object = obj;
-        this.loadFirstPage();
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['object'] || !this.object?.id) {
+      return;
+    }
+    this.commentsContextService.object = this.object;
+    this.countChange.emit(0);
+    this.loadFirstPage();
   }
 
-  loadFirstPage() {
+  loadFirstPage(): void {
     loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
 
-  loadNextPage() {
-    const objectId = this.commentsContextService.object?.id;
+  loadNextPage(): void {
+    const objectId = this.object?.id;
     if (!objectId) {
       return;
     }
@@ -132,26 +94,36 @@ export class CommentsComponent implements OnInit, PaginatedListView {
     const params: ApiQueryParams = {
       page: this.currentPage,
       'per-page': 20,
+      'object-type': getObjectType(this.object),
+      'object-id': objectId,
     };
-    if (this.objectType) {
-      params['object-type'] = this.objectType;
-      params['object-id'] = objectId;
-    }
     this.commentsService
       .getComments(params)
-      .pipe(
-        map((comments) => {
-          this.comments.push(...comments.items);
-          this.commentsContextService.addComments(comments.items);
-          completePaginatedPageLoad(this, comments.hasNext);
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (pageResult) => {
+          this.comments.push(...pageResult.items);
+          this.commentsContextService.addComments(pageResult.items);
+          completePaginatedPageLoad(this, pageResult.hasNext);
+          this.emitCount();
           this.cdr.detectChanges();
-        }),
-      )
-      .subscribe();
+        },
+        error: () => {
+          failPaginatedPageLoad(this);
+          this.cdr.detectChanges();
+        },
+      });
   }
 
-  onCommentCreated(comment: Comment) {
+  onCommentCreated(comment: Comment): void {
     this.comments.unshift(comment);
     this.commentsContextService.addComments([comment]);
+    this.emitCount();
+  }
+
+  private emitCount(): void {
+    this.countChange.emit(
+      this.comments.filter((comment) => !comment.isDeleted).length,
+    );
   }
 }

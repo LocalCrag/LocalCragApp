@@ -2,6 +2,8 @@ from marshmallow import validate
 from webargs import fields
 
 tag_args = {
-    "objectType": fields.Str(required=True, validate=validate.OneOf(["Line", "Area", "Sector", "Crag", "User"])),
+    "objectType": fields.Str(
+        required=True, validate=validate.OneOf(["Line", "Area", "Sector", "Crag", "User", "RockExplorerFeature"])
+    ),
     "objectId": fields.UUID(required=True),
 }

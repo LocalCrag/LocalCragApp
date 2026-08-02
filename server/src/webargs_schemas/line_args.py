@@ -4,6 +4,7 @@ import validators
 from marshmallow import Schema, ValidationError, validate
 from webargs import fields
 
+from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from util.validators import color_validator
@@ -24,6 +25,11 @@ def validate_fa_date(fa_date: datetime.date):
 def validate_set_date(set_date: datetime.date):
     if set_date > datetime.date.today():
         raise ValidationError("Set date cannot be in the future.")
+
+
+def validate_bolt_date(bolt_date: datetime.date):
+    if bolt_date > datetime.date.today():
+        raise ValidationError("Bolt date cannot be in the future.")
 
 
 def validate_video_url(url: str):
@@ -60,6 +66,9 @@ class LineArgsSchema(BatchLineArgsSchema):
     faDate = fields.Date(required=True, allow_none=True, validate=validate_fa_date)
     routesetter = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
     setDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_set_date)
+    bolter = fields.Str(required=False, allow_none=True, load_default=None, validate=validate.Length(max=120))
+    boltDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_bolt_date)
+    drying = fields.Enum(DryingEnum, required=False, allow_none=True, load_default=None)
     secret = fields.Boolean(required=True, allow_none=False)
     eliminate = fields.Boolean(required=True, allow_none=False)
     traverse = fields.Boolean(required=True, allow_none=False)

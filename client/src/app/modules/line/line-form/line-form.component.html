@@ -25,6 +25,12 @@
           <small class="lc-error" *lcIfError="'maxlength'">{{
             "validation.maxLength" | transloco: { max: 120 }
           }}</small>
+          <lc-duplicate-name-warning
+            [nameControl]="lineForm.get('name')"
+            [excludeId]="line?.id"
+            entityType="line"
+            [findByName]="findLinesByName"
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
@@ -182,6 +188,30 @@
           }}</small>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="drying">{{ t("dryingLabel") }}</label>
+          <p-select
+            id="drying"
+            formControlName="drying"
+            [options]="dryingOptions"
+            [showClear]="true"
+            lcFormControl
+            data-cy="drying-dropdown"
+            [placeholder]="t('dryingPlaceholder')"
+          >
+            <ng-template let-drying #item>
+              <div
+                class="flex items-center gap-2"
+                data-cy="drying-dropdown-item"
+              >
+                <div>{{ drying | transloco }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedItem #selectedItem>
+              {{ selectedItem | transloco }}
+            </ng-template>
+          </p-select>
+        </div>
+        <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rating">{{
             t("lineRatingLabel")
           }}</label>
@@ -312,7 +342,6 @@
                 id="fa-date"
                 formControlName="faDate"
                 view="date"
-                dateFormat="dd.mm.yy"
                 inputId="faDate"
                 lcFormControl
                 [maxDate]="today"
@@ -336,6 +365,46 @@
               variant="outlined"
             />
           </div>
+        </ng-container>
+        <ng-container *isOutdoorMode="true">
+          @if (lineForm.get("type").value === LineType.SPORT) {
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="bolter">{{
+                t("lineBolterLabel")
+              }}</label>
+              <input
+                id="bolter"
+                type="text"
+                pInputText
+                formControlName="bolter"
+                placeholder="{{ t('lineBolterPlaceholder') }}"
+                lcFormControl
+                data-cy="line-form-bolter"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                "validation.maxLength" | transloco: { max: 120 }
+              }}</small>
+            </div>
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="bolt-date">{{
+                t("lineBoltDateLabel")
+              }}</label>
+              <p-date-picker
+                id="bolt-date"
+                formControlName="boltDate"
+                view="date"
+                dateFormat="dd.mm.yy"
+                inputId="boltDate"
+                lcFormControl
+                [maxDate]="today"
+                [readonlyInput]="true"
+                data-cy="line-form-boltDate"
+              ></p-date-picker>
+              <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                t("dateInFutureValidationError")
+              }}</small>
+            </div>
+          }
         </ng-container>
         <ng-container *isGymMode="true">
           <div class="flex flex-col gap-2" lcControlGroup>
@@ -363,7 +432,6 @@
               id="set-date"
               formControlName="setDate"
               view="date"
-              dateFormat="dd.mm.yy"
               inputId="setDate"
               lcFormControl
               [maxDate]="today"

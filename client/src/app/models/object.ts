@@ -5,6 +5,7 @@ import { User } from './user';
 import { Post } from './post';
 import { Region } from './region';
 import { Line } from './line';
+import { RockExplorerFeature } from './rock-explorer-feature';
 
 export enum ObjectType {
   Crag = 'Crag',
@@ -14,9 +15,18 @@ export enum ObjectType {
   User = 'User',
   Post = 'Post',
   Region = 'Region',
+  RockExplorerFeature = 'RockExplorerFeature',
 }
 
-export type LCObject = Region | Crag | Sector | Area | Line | User | Post;
+export type LCObject =
+  | Region
+  | Crag
+  | Sector
+  | Area
+  | Line
+  | User
+  | Post
+  | RockExplorerFeature;
 
 export const getObjectType = (object: LCObject): ObjectType => {
   if (object instanceof Crag) {
@@ -33,6 +43,8 @@ export const getObjectType = (object: LCObject): ObjectType => {
     return ObjectType.Post;
   } else if (object instanceof Region) {
     return ObjectType.Region;
+  } else if (object instanceof RockExplorerFeature) {
+    return ObjectType.RockExplorerFeature;
   } else {
     throw new Error('Unknown object type');
   }
@@ -57,6 +69,8 @@ export const deserializeLCObject = (
       return User.deserialize(payload);
     case 'Post':
       return Post.deserialize({ ...payload, text: '' }); // PostSearchSchema has no text
+    case 'RockExplorerFeature':
+      return RockExplorerFeature.deserialize(payload);
     default:
       return null;
   }

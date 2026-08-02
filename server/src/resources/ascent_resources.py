@@ -64,6 +64,9 @@ class GetAscents(MethodView):
         min_grade_value = request.args.get("min_grade") or None
         line_type = request.args.get("line_type", None, type=LineTypeEnum)
         grade_scale = request.args.get("grade_scale", None)
+        filter_flash = request.args.get("flash", False, type=bool)
+        filter_fa = request.args.get("fa", False, type=bool)
+        filter_with_kneepad = request.args.get("with_kneepad", False, type=bool)
 
         if order_by not in ["time_created", "ascent_date", "grade_value"] or order_direction not in ["asc", "desc"]:
             raise BadRequest("Invalid order by query parameters")
@@ -104,10 +107,16 @@ class GetAscents(MethodView):
                     Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
                 )
 
+        if filter_flash:
+            query = query.filter(Ascent.flash.is_(True))
+        if filter_fa:
+            query = query.filter(Ascent.fa.is_(True))
+        if filter_with_kneepad:
+            query = query.filter(Ascent.with_kneepad.is_(True))
+
         # Filter secret spots
         if not SecretService.can_view_secrets():
             query = query.filter(Ascent.line.has(secret=False))
-
         # Apply ordering
         order_col: ColumnElement
         if order_by in {"time_created", "ascent_date"}:

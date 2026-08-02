@@ -24,6 +24,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { RegionService } from '../../../services/crud/region.service';
 
 @Component({
   selector: 'lc-crag',
@@ -48,6 +50,8 @@ export class CragComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
+  private rulesAlertService = inject(RulesAlertService);
+  private regionService = inject(RegionService);
   private hasBlocweather = false;
 
   ngOnInit() {
@@ -71,8 +75,16 @@ export class CragComponent implements OnInit {
           this.store.pipe(select(selectGymMode), take(1)),
           this.blocWeatherService.getNearest('crag', cragSlug),
           this.store.pipe(select(selectBgImage), take(1)),
+          this.regionService.getRegionCached(),
         ]).subscribe(
-          ([crag, isModerator, isGymMode, blocweatherConfig, bgImage]) => {
+          ([
+            crag,
+            isModerator,
+            isGymMode,
+            blocweatherConfig,
+            bgImage,
+            region,
+          ]) => {
             this.hasBlocweather = !!blocweatherConfig;
             this.crag = crag;
             this.pageTitleService.setPortraitTitle(
@@ -80,6 +92,7 @@ export class CragComponent implements OnInit {
               crag.portraitImage,
               bgImage,
             );
+            this.rulesAlertService.setContext({ crag, region });
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

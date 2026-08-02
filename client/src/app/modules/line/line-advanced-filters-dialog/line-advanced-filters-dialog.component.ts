@@ -8,6 +8,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
 import { StartingPosition } from '../../../enums/starting-position';
+import { Drying } from '../../../enums/drying';
 import { LineType } from '../../../enums/line-type';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
@@ -59,6 +60,7 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
   videoOptions: { label: string; value: string }[];
   climbOptions: { label: string; value: string }[];
   startingPositionOptions: { label: string; value: StartingPosition | null }[];
+  dryingOptions: { label: string; value: Drying | null }[];
 
   readonly boolGeneralKeys: LineListBoolKey[] = [
     'eliminate',
@@ -193,6 +195,18 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
         value: null,
       },
       ...Object.values(StartingPosition).map((value) => ({
+        label: this.transloco.translate(value),
+        value,
+      })),
+    ];
+    this.dryingOptions = [
+      {
+        label: this.transloco.translate(
+          'line.lineList.advancedFiltersDryingPlaceholder',
+        ),
+        value: null,
+      },
+      ...Object.values(Drying).map((value) => ({
         label: this.transloco.translate(value),
         value,
       })),

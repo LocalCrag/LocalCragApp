@@ -1,6 +1,11 @@
 <div class="p-6">
   @if (crag) {
     @if (crag.rules) {
+      <lc-rules-view-meta
+        entityType="Crag"
+        [entityId]="crag.id"
+        [rulesUpdatedAt]="crag.rulesUpdatedAt"
+      ></lc-rules-view-meta>
       <section
         [innerHTML]="crag.rules | sanitizeHtml"
         class="quill-content"

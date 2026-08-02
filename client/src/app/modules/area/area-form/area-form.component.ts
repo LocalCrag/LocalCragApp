@@ -25,7 +25,7 @@ import {
 } from '@jsverse/transloco';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
@@ -65,6 +65,7 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 
 /**
  * Form component for creating and editing areas.
@@ -96,6 +97,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     OutdoorModeDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
+    DuplicateNameWarningComponent,
   ],
 })
 export class AreaFormComponent implements OnInit {
@@ -131,6 +133,11 @@ export class AreaFormComponent implements OnInit {
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
+
+  public findAreasByName = (
+    name: string,
+    excludeId: string | null = null,
+  ): Observable<Area[]> => this.areasService.findByName(name, excludeId);
 
   constructor() {
     this.quillModules = this.uploadService.getQuillFileUploadModules();

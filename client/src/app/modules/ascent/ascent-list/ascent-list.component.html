@@ -99,6 +99,48 @@
           }
         </div>
 
+        <div
+          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+        >
+          {{ t("filterLabel") }}
+          <div class="flex flex-wrap gap-2 items-center">
+            <p-toggleButton
+              [(ngModel)]="filterFlash"
+              [dt]="toggleButtonDt"
+              [onLabel]="t('flash')"
+              [offLabel]="t('flash')"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (onChange)="loadFirstPage()"
+              data-cy="filterFlash"
+            />
+            <p-toggleButton
+              [(ngModel)]="filterWithKneepad"
+              [dt]="toggleButtonDt"
+              [onLabel]="t('withKneepad')"
+              [offLabel]="t('withKneepad')"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (onChange)="loadFirstPage()"
+              data-cy="filterWithKneepad"
+            />
+            <p-toggleButton
+              *isGymMode="false"
+              [(ngModel)]="filterFa"
+              [dt]="toggleButtonDt"
+              [onLabel]="t('fa')"
+              [offLabel]="t('fa')"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (onChange)="loadFirstPage()"
+              data-cy="filterFa"
+            />
+          </div>
+        </div>
+
         @if (
           !disableGradeOrderAndFiltering &&
           scaleKey?.value &&

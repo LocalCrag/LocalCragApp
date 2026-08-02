@@ -12,6 +12,8 @@ class RegionSchema(BaseEntityMinSchema, ModeratorTaskCountSchemaMixin):
     name = fields.String()
     description = fields.String()
     rules = fields.String()
+    rulesTitle = fields.String(attribute="rules_title")
+    rulesUpdatedAt = fields.DateTime(attribute="rules_updated_at")
     image = fields.Nested(file_schema, attribute="image")
     ascentCount = fields.Integer(attribute="ascent_count")
     imageCount = fields.Integer(attribute="image_count")

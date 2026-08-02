@@ -39,6 +39,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { InstanceSettings } from '../../../models/instance-settings';
+import { Tooltip } from 'primeng/tooltip';
 
 /**
  * A component for editing regions.
@@ -57,6 +58,7 @@ import { InstanceSettings } from '../../../models/instance-settings';
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
+    Tooltip,
   ],
   templateUrl: './region-form.component.html',
   styleUrl: './region-form.component.scss',
@@ -137,6 +139,7 @@ export class RegionFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(120)]],
       description: [null],
       rules: [null],
+      rulesTitle: [null, [Validators.maxLength(255)]],
       image: [null],
     });
   }
@@ -150,6 +153,7 @@ export class RegionFormComponent implements OnInit {
       name: this.region.name,
       description: this.region.description,
       rules: this.region.rules,
+      rulesTitle: this.region.rulesTitle,
       image: this.region.image ?? this.instanceSettings?.bgImage ?? null,
     });
   }
@@ -171,6 +175,7 @@ export class RegionFormComponent implements OnInit {
       region.name = this.regionForm.get('name').value;
       region.description = this.regionForm.get('description').value;
       region.rules = this.regionForm.get('rules').value;
+      region.rulesTitle = this.regionForm.get('rulesTitle').value || null;
       region.image = this.regionForm.get('image').value;
       this.uploadService
         .saveFileFocusIfChanged(region.image)

@@ -6,29 +6,33 @@ import {
   formatClosureScheduleRange,
 } from '../../../../models/closure-reason-alert';
 import { parseLocalCalendarDate } from '../../../../utility/local-calendar-date';
+import { LanguageService } from '../../../../services/core/language.service';
+import { DatePipe } from '../../pipes/date.pipe';
 
 @Component({
   selector: 'lc-upcoming-closure-alert',
   imports: [MessageModule, TranslocoDirective],
   templateUrl: './upcoming-closure-alert.component.html',
   styleUrl: './upcoming-closure-alert.component.scss',
+  providers: [DatePipe],
 })
 export class UpcomingClosureAlertComponent {
   @Input() warnings: ClosureReasonAlert[] = [];
 
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
+  private datePipe = inject(DatePipe);
 
   formatStartsOn(startsOn: string): string {
-    const date = parseLocalCalendarDate(startsOn);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
+    return this.datePipe.transform(parseLocalCalendarDate(startsOn));
   }
 
   warningText(warning: ClosureReasonAlert): string {
     const date = warning.startsOn ? this.formatStartsOn(warning.startsOn) : '';
-    const range = formatClosureScheduleRange(warning);
+    const range = formatClosureScheduleRange(
+      warning,
+      this.languageService.calculatedLanguage,
+    );
     const reason = warning.reason?.trim() || null;
 
     if (reason && range) {

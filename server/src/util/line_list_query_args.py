@@ -10,6 +10,7 @@ from typing import FrozenSet, Optional, Set
 from flask import Request
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
@@ -53,6 +54,13 @@ def _parse_starting_position(value: str) -> StartingPositionEnum:
         raise BadRequest(f"Invalid starting position: {value}") from e
 
 
+def _parse_drying(value: str) -> DryingEnum:
+    try:
+        return DryingEnum(value)
+    except ValueError as e:
+        raise BadRequest(f"Invalid drying value: {value}") from e
+
+
 @dataclass(frozen=True)
 class LineListFilters:
     line_type: Optional[LineTypeEnum]
@@ -62,6 +70,7 @@ class LineListFilters:
     min_rating: Optional[int]
     max_rating: Optional[int]
     starting_position: Optional[StartingPositionEnum]
+    drying: Optional[DryingEnum]
     has_video: str
     fa_year_from: Optional[int]
     fa_year_to: Optional[int]
@@ -100,6 +109,11 @@ def parse_line_list_filters(request: Request) -> LineListFilters:
     if raw_position:
         starting_position = _parse_starting_position(raw_position.strip())
 
+    drying: Optional[DryingEnum] = None
+    raw_drying = request.args.get("drying", type=str)
+    if raw_drying:
+        drying = _parse_drying(raw_drying.strip())
+
     has_video = (request.args.get("has_video") or "any").lower()
     if has_video not in ("any", "yes", "no"):
         raise BadRequest("Invalid has_video value.")
@@ -132,6 +146,7 @@ def parse_line_list_filters(request: Request) -> LineListFilters:
         min_rating=min_rating,
         max_rating=max_rating,
         starting_position=starting_position,
+        drying=drying,
         has_video=has_video,
         fa_year_from=fa_year_from,
         fa_year_to=fa_year_to,
