@@ -156,10 +156,8 @@ spec:
                   DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
 
                   echo "Configuring mc aliases..."
-                  # src: in-cluster MinIO — path-style is fine
                   mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" --api S3v4 --path on
-                  # dst: S3-compatible backup target (e.g. Hetzner) requires virtual-hosted style
-                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" --api S3v4 --path off
+                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" --api S3v4 --path on
 
                   echo "--- Bundled backup snapshot: ${TS} ---"
 
