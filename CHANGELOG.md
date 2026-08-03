@@ -1,3 +1,10 @@
+## [1.48.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.3...v1.48.4) (2026-08-03)
+
+
+### Bug Fixes
+
+* **core:** fix backup helm chart path issue ([#1234](https://github.com/LocalCrag/LocalCragApp/issues/1234)) ([530e089](https://github.com/LocalCrag/LocalCragApp/commit/530e089884ed0fe96db3407867f9ffb94afa5bcf))
+
 ## [1.48.3](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.2...v1.48.3) (2026-08-02)
 
 
