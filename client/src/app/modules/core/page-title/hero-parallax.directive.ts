@@ -21,13 +21,7 @@ export class HeroParallaxDirective implements OnInit {
     }
 
     const update = (): void => {
-      const hero = this.el.nativeElement.parentElement;
-      if (!hero) {
-        return;
-      }
-
-      const rect = hero.getBoundingClientRect();
-      const offset = -rect.top * 0.35;
+      const offset = window.scrollY * 0.35;
       this.el.nativeElement.style.transform = `translate3d(0, ${offset}px, 0)`;
     };
 
