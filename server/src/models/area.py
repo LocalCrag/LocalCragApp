@@ -16,7 +16,7 @@ from models.mixins.is_secret import IsSecret
 from models.topo_image import TopoImage
 from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
 from util.secret_service import SecretService
-from util.topo_tab_counts import count_gallery_images, count_root_comments
+from util.topo_tab_counts import count_comments, count_gallery_images
 
 
 class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
@@ -64,7 +64,7 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
 
     @hybrid_property
     def comment_count(self):
-        return count_root_comments("Area", self.id)
+        return count_comments("Area", self.id)
 
     @hybrid_property
     def image_count(self):
