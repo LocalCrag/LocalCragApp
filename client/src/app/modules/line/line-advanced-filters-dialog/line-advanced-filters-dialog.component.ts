@@ -308,15 +308,13 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
 function cloneScaleItems(
   items: LineListScaleSelectItem[],
 ): LineListScaleSelectItem[] {
-  return items.map(
-    (s): LineListScaleSelectItem => ({
-      label: s.label,
-      value: s.value
-        ? {
-            lineType: s.value.lineType as LineType,
-            gradeScale: s.value.gradeScale,
-          }
-        : undefined,
-    }),
-  );
+  return items.map((s): LineListScaleSelectItem => ({
+    label: s.label,
+    value: s.value
+      ? {
+          lineType: s.value.lineType as LineType,
+          gradeScale: s.value.gradeScale,
+        }
+      : undefined,
+  }));
 }
