@@ -50,8 +50,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   public map: MaplibreMap | undefined;
   public markersSource:
-    | FeatureCollection<Point, MapMarkerProperties>
-    | undefined;
+    FeatureCollection<Point, MapMarkerProperties> | undefined;
   public apiKey: string;
 
   @ViewChild('map')
