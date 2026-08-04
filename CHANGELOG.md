@@ -1,3 +1,16 @@
+# [1.50.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.49.0...v1.50.0) (2026-08-04)
+
+
+### Bug Fixes
+
+* **core:** fix issue where emails have been sent in the wrong language ([5aa99a2](https://github.com/LocalCrag/LocalCragApp/commit/5aa99a2b7fe2815b0dab249de3482cc093cb8c70))
+
+
+### Features
+
+* **rock-explorer:** add option to share features via URL ([#1240](https://github.com/LocalCrag/LocalCragApp/issues/1240)) ([ad45320](https://github.com/LocalCrag/LocalCragApp/commit/ad453206760362286bbf5d325759d48f77e8c8ac)), closes [#1227](https://github.com/LocalCrag/LocalCragApp/issues/1227)
+* **rock-explorer:** cluster image markers if they are very near each other ([#1241](https://github.com/LocalCrag/LocalCragApp/issues/1241)) ([163b186](https://github.com/LocalCrag/LocalCragApp/commit/163b186a1306c5f2d72c417ce47b125f7174e65e)), closes [#1229](https://github.com/LocalCrag/LocalCragApp/issues/1229)
+
 # [1.49.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.4...v1.49.0) (2026-08-04)
 
 
