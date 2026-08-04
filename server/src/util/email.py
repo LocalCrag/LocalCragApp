@@ -98,7 +98,7 @@ def send_generic_mail(msg):
 def prepare_message(user: User, i18n_dict_source):
     """
     Prepares the default message.
-    :param user: User that triggered the mail that was sent.
+    :param user: Mail recipient; language is taken from this user's account settings.
     :param i18n_dict_source: Translation source dict.
     :return: Tuple of message object and translation dict.
     """
@@ -173,7 +173,7 @@ def send_create_user_email(password: str, created_user: User):
 
 
 def send_user_registered_email(registered_user: User, receiver: User, user_count: int):
-    msg, i18n_keyword_arg_dict = prepare_message(registered_user, user_registered_mail)
+    msg, i18n_keyword_arg_dict = prepare_message(receiver, user_registered_mail)
     msg["To"] = receiver.email
     action_link = _frontend_url(f"users/{registered_user.slug}")
     template = render_template(
@@ -192,7 +192,7 @@ def send_user_registered_email(registered_user: User, receiver: User, user_count
 
 
 def send_project_climbed_email(climber: User, receiver: User, message: str, line: Line):
-    msg, i18n_keyword_arg_dict = prepare_message(climber, project_climbed_mail)
+    msg, i18n_keyword_arg_dict = prepare_message(receiver, project_climbed_mail)
     msg["To"] = receiver.email
     action_link_project = _frontend_url(
         f"topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}"
@@ -214,7 +214,7 @@ def send_project_climbed_email(climber: User, receiver: User, message: str, line
 
 
 def send_comment_created_email(author: User, receiver: User, comment: Comment):
-    msg, i18n_keyword_arg_dict = prepare_message(author, comment_created_mail)
+    msg, i18n_keyword_arg_dict = prepare_message(receiver, comment_created_mail)
     msg["To"] = receiver.email
     action_link = _build_comment_action_link(comment)
     template = render_template(

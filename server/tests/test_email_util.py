@@ -4,14 +4,21 @@ from email.mime.text import MIMEText
 from flask import render_template
 
 from app import app
+from extensions import db
 from i18n.mail_common import merge_mail_translations
 from i18n.reset_password_mail import reset_password_mail
+from models.comment import Comment
 from models.instance_settings import InstanceSettings
+from models.line import Line
+from models.user import User
 from util.email import (
     _apply_instance_branding,
     _html_to_plain_text,
     build_i18n_keyword_arg_dict,
     log_decoded_email_parts,
+    send_comment_created_email,
+    send_project_climbed_email,
+    send_user_registered_email,
 )
 
 
@@ -89,3 +96,61 @@ def test_log_decoded_email_parts_logs_markup_then_plain(caplog):
             assert "Could not decode part" not in out
         finally:
             app.logger.removeHandler(caplog.handler)
+
+
+def test_comment_created_email_uses_receiver_language(client, smtp_mock):
+    """Comment notification mails must follow the receiver's account language (#1224)."""
+    from email import message_from_string
+
+    author = User.find_by_email("member@localcrag.invalid.org")
+    receiver = User.find_by_email("admin@localcrag.invalid.org")
+    author.account_settings.language = "en"
+    receiver.account_settings.language = "de"
+    db.session.commit()
+
+    line = Line.find_by_slug("the-vessel")
+    comment = Comment(message="Locale check", object=line)
+    db.session.add(comment)
+    db.session.commit()
+
+    send_comment_created_email(author, receiver, comment)
+
+    raw = smtp_mock.return_value.__enter__.return_value.sendmail.call_args[0][2]
+    mail = message_from_string(raw)
+    assert mail["Subject"] == "Neuer Kommentar"
+    html_part = mail.get_payload()[0]
+    html = html_part.get_payload(decode=True).decode(html_part.get_content_charset() or "utf-8")
+    assert "Es wurde ein neuer Kommentar erstellt von" in html
+    assert "A new comment was posted by" not in html
+
+
+def _assert_mail_uses_german_subject(smtp_mock, expected_subject: str, english_subject: str):
+    from email import message_from_string
+
+    raw = smtp_mock.return_value.__enter__.return_value.sendmail.call_args[0][2]
+    mail = message_from_string(raw)
+    assert mail["Subject"] == expected_subject
+    assert english_subject not in mail["Subject"]
+
+
+def test_user_registered_email_uses_receiver_language(client, smtp_mock):
+    registered_user = User.find_by_email("member@localcrag.invalid.org")
+    receiver = User.find_by_email("admin@localcrag.invalid.org")
+    registered_user.account_settings.language = "en"
+    receiver.account_settings.language = "de"
+    db.session.commit()
+
+    send_user_registered_email(registered_user, receiver, user_count=42)
+    _assert_mail_uses_german_subject(smtp_mock, "Neuer Benutzer!", "New user")
+
+
+def test_project_climbed_email_uses_receiver_language(client, smtp_mock):
+    climber = User.find_by_email("member@localcrag.invalid.org")
+    receiver = User.find_by_email("admin@localcrag.invalid.org")
+    climber.account_settings.language = "en"
+    receiver.account_settings.language = "de"
+    db.session.commit()
+
+    line = Line.find_by_slug("the-vessel")
+    send_project_climbed_email(climber, receiver, "Done!", line)
+    _assert_mail_uses_german_subject(smtp_mock, "Ein Projekt wurde geklettert!", "A project has been climbed!")
