@@ -1,7 +1,5 @@
 """Rock Explorer live-tracking drafts API tests (Phase 10)."""
 
-import pytest
-
 from models.file import File
 
 
@@ -205,10 +203,77 @@ def test_device_lock_wrong_device_conflict(client, member_token):
     assert ok_del.status_code == 204
 
 
-@pytest.mark.skip(reason="Phase 10 Wave 0 — implement in plan 03")
-def test_clone_draft_copies_paths_and_images(client, member_token):
-    """RE-TRACK-04, T-10-03: clone new id, paths, device; duplicate gallery tags."""
-    pass
+def test_clone_draft_copies_paths_and_images(client, member_token, admin_token):
+    """RE-TRACK-04, T-10-03/T-10-05: clone new id, paths, device; duplicate gallery tags."""
+    paths = [_gps_path("p1"), _gps_path("p2", [[8.14, 50.24], [8.15, 50.25]])]
+    created = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_draft_payload(paths=paths, title="Source session"),
+    ).json
+    source_id = created["id"]
+
+    gallery = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={
+            "fileId": _file_id(),
+            "tags": [{"objectType": "RockExplorerFeature", "objectId": source_id}],
+        },
+    )
+    assert gallery.status_code == 201
+    image_id = gallery.json["id"]
+
+    clone_rv = client.post(
+        f"/api/rock-explorer/features/{source_id}/clone",
+        token=member_token,
+        json={"recordingDeviceId": "device-b"},
+    )
+    assert clone_rv.status_code == 201
+    clone = clone_rv.json
+    assert clone["id"] != source_id
+    assert clone["status"] == "draft"
+    assert clone["recordingDeviceId"] == "device-b"
+    assert clone["title"] == "Source session"
+    assert len(clone["paths"]) == 2
+    assert clone["paths"][0]["id"] == "p1"
+    assert clone["paths"][1]["id"] == "p2"
+
+    source_get = client.get(f"/api/rock-explorer/features/{source_id}", token=member_token)
+    assert source_get.status_code == 200
+    assert source_get.json["recordingDeviceId"] == "device-a"
+
+    source_gallery = client.get(
+        f"/api/gallery?page=1&tag-object-type=RockExplorerFeature&tag-object-id={source_id}",
+        token=member_token,
+    )
+    assert source_gallery.status_code == 200
+    source_image_ids = {img["id"] for img in source_gallery.json["items"]}
+    assert image_id in source_image_ids
+
+    clone_gallery = client.get(
+        f"/api/gallery?page=1&tag-object-type=RockExplorerFeature&tag-object-id={clone['id']}",
+        token=member_token,
+    )
+    assert clone_gallery.status_code == 200
+    clone_image_ids = {img["id"] for img in clone_gallery.json["items"]}
+    assert image_id in clone_image_ids
+
+    # Source lock unchanged: wrong device still 409 after clone
+    wrong_put = client.put(
+        f"/api/rock-explorer/features/{source_id}",
+        token=member_token,
+        json=_draft_payload(recordingDeviceId="device-b", title="hijack via clone"),
+    )
+    assert wrong_put.status_code == 409
+
+    # Non-owner cannot clone
+    denied = client.post(
+        f"/api/rock-explorer/features/{source_id}/clone",
+        token=admin_token,
+        json={"recordingDeviceId": "admin-device"},
+    )
+    assert denied.status_code == 401
 
 
 def test_published_create_still_geojson_visible(client, member_token):
