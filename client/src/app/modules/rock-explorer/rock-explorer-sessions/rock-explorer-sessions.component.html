@@ -57,7 +57,7 @@
                 (onClick)="
                   ui.dispatch({
                     type: 'continueDraft',
-                    localId: draft.localId
+                    localId: draft.localId,
                   })
                 "
               />
@@ -68,7 +68,7 @@
                 (onClick)="
                   ui.dispatch({
                     type: 'finishDraftStub',
-                    localId: draft.localId
+                    localId: draft.localId,
                   })
                 "
               />
@@ -81,7 +81,7 @@
                   ui.dispatch({
                     type: 'deleteDraft',
                     localId: draft.localId,
-                    event: $event
+                    event: $event,
                   })
                 "
               />
