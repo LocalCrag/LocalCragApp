@@ -1,6 +1,12 @@
 import { Position } from 'geojson';
 import { RockExplorerFeature } from '../../models/rock-explorer-feature';
-import { RockExplorerPath, newPathId } from '../../models/rock-explorer-misc';
+import {
+  RockExplorerPath,
+  cloneParkingSites,
+  clonePaths,
+  newPathId,
+} from '../../models/rock-explorer-misc';
+import type { RockExplorerDraftSnapshot } from './offline/rock-explorer-draft.types';
 
 /** localStorage key for stable hard-lock device id (Phase 10). */
 export const RECORDING_DEVICE_ID_KEY = 'rockExplorer.recordingDeviceId';
@@ -243,6 +249,73 @@ export class RockExplorerRecordingSession {
     return this.feature.paths.filter(
       (p) => (p.geometry?.coordinates?.length ?? 0) >= 2,
     );
+  }
+
+  /**
+   * Full local snapshot for IndexedDB — includes open short paths and session fields.
+   * Never use RockExplorerFeature.serialize() for local restore.
+   */
+  toSnapshot(): RockExplorerDraftSnapshot {
+    const f = this.feature;
+    return {
+      feature: {
+        id: f.id,
+        timeCreated: f.timeCreated,
+        timeUpdated: f.timeUpdated,
+        title: f.title,
+        description: f.description,
+        status: f.status,
+        recordingDeviceId: f.recordingDeviceId,
+        recordingState: f.recordingState,
+        recordingUpdatedAt: f.recordingUpdatedAt,
+        potential: f.potential,
+        rockQuality: f.rockQuality,
+        rockType: f.rockType,
+        gradeLineType: f.gradeLineType,
+        gradeScale: f.gradeScale,
+        gradeValueMin: f.gradeValueMin,
+        gradeValueMax: f.gradeValueMax,
+        accessIssues: [...(f.accessIssues ?? [])],
+        geometry: f.geometry ? structuredClone(f.geometry) : null,
+        parkingSites: cloneParkingSites(f.parkingSites),
+        paths: clonePaths(f.paths),
+        topoLinks: [],
+        createdBy: null,
+      },
+      activePathId: this.activePathId,
+      keptSinceSync: this.keptSinceSync,
+      lastSyncAtMs: this.lastSyncAtMs,
+      lastKept: this.lastKept ? { ...this.lastKept } : null,
+    };
+  }
+
+  /**
+   * Restore a session from a local IDB snapshot (Continue / refresh).
+   * Reconstructs open 0–1 vertex paths that API serialize would drop.
+   */
+  static hydrateFromSnapshot(
+    snapshot: RockExplorerDraftSnapshot,
+    deviceId?: string,
+  ): RockExplorerRecordingSession {
+    const device =
+      deviceId ??
+      (typeof snapshot.feature['recordingDeviceId'] === 'string'
+        ? (snapshot.feature['recordingDeviceId'] as string)
+        : getOrCreateRecordingDeviceId());
+    const session = new RockExplorerRecordingSession(device);
+    session.feature = RockExplorerFeature.deserialize({
+      ...snapshot.feature,
+      // Ensure all paths (including short open ones) are present
+      paths: snapshot.feature['paths'] ?? [],
+    });
+    if (deviceId) {
+      session.feature.recordingDeviceId = deviceId;
+    }
+    session.activePathId = snapshot.activePathId;
+    session.keptSinceSync = snapshot.keptSinceSync;
+    session.lastSyncAtMs = snapshot.lastSyncAtMs;
+    session.lastKept = snapshot.lastKept ? { ...snapshot.lastKept } : null;
+    return session;
   }
 
   private startNewPathInternal(): void {

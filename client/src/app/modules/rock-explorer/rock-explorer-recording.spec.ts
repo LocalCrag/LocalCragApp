@@ -121,5 +121,38 @@ describe('rock-explorer-recording', () => {
       session.tryAppendFix({ lng: 8.00015, lat: 50 });
       expect(session.pathsForSerialize().length).toBe(1);
     });
+
+    it('toSnapshot / hydrateFromSnapshot round-trips open 1-vertex path', () => {
+      expect(
+        session.tryAppendFix({ lng: 8.1, lat: 50.2, timestampMs: 42 }),
+      ).toBeTrue();
+      expect(session.activePath!.geometry.coordinates.length).toBe(1);
+      session.keptSinceSync = 3;
+      session.lastSyncAtMs = 99;
+
+      const snapshot = session.toSnapshot();
+      expect(snapshot.activePathId).toBe(session.activePathId);
+      expect(snapshot.keptSinceSync).toBe(3);
+      expect(snapshot.lastSyncAtMs).toBe(99);
+      expect(snapshot.lastKept).toEqual({ lng: 8.1, lat: 50.2 });
+      const paths = snapshot.feature['paths'] as Array<{
+        geometry: { coordinates: number[][] };
+      }>;
+      expect(paths[0].geometry.coordinates.length).toBe(1);
+      expect(paths[0].geometry.coordinates[0][0]).toBe(8.1);
+
+      const restored = RockExplorerRecordingSession.hydrateFromSnapshot(
+        snapshot,
+        'device-test',
+      );
+      expect(restored.activePathId).toBe(session.activePathId);
+      expect(restored.keptSinceSync).toBe(3);
+      expect(restored.lastSyncAtMs).toBe(99);
+      expect(restored.activePath!.geometry.coordinates.length).toBe(1);
+      expect(restored.activePath!.geometry.coordinates[0][0]).toBe(8.1);
+      expect(restored.activePath!.geometry.coordinates[0][1]).toBe(50.2);
+      // API serialize would drop this path — snapshot must not
+      expect(restored.pathsForSerialize().length).toBe(0);
+    });
   });
 });
