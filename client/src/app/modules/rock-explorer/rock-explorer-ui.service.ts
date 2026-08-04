@@ -9,10 +9,7 @@ import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
 export type RockExplorerSelectOption = { label: string; value: string };
 
 export type RockExplorerDrawMode =
-  | 'select'
-  | 'point'
-  | 'polygon'
-  | 'editPolygon';
+  'select' | 'point' | 'polygon' | 'editPolygon';
 
 export type RockExplorerFilters = {
   potential?: string;
