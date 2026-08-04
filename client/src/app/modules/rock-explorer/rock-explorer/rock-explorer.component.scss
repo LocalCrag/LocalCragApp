@@ -65,10 +65,12 @@
   flex-direction: column;
   gap: 0.35rem;
   max-width: 180px;
+  position: relative;
 }
 
 :host ::ng-deep .rock-explorer-image-hover-popup__image-btn {
   display: block;
+  position: relative;
   padding: 0;
   margin: 0;
   border: 0;
@@ -83,6 +85,25 @@
     height: 120px;
     object-fit: cover;
   }
+}
+
+:host ::ng-deep .rock-explorer-image-hover-popup__badge {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.72);
+  pointer-events: none;
 }
 
 :host ::ng-deep .rock-explorer-image-hover-popup__caption {

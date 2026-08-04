@@ -19,6 +19,10 @@ function escapeHtml(value: string): string {
 export type RockExplorerImageHoverShowOptions = {
   /** Keep the popup open after the pointer leaves the map marker. */
   pin?: boolean;
+  /** Cluster size badge; shown when greater than 1. */
+  count?: number;
+  /** Stable key override (e.g. `cluster:{id}`); defaults to galleryImageId:coords. */
+  featureKey?: string;
 };
 
 /** Thumbnail hover/pin popup for gallery GPS dots on the rock-explorer map. */
@@ -47,7 +51,9 @@ export class RockExplorerImageHoverPopup {
     options?: RockExplorerImageHoverShowOptions,
   ): void {
     this.clearHideTimer();
-    const featureKey = `${feature.properties?.['galleryImageId'] ?? ''}:${coordinates.join(',')}`;
+    const featureKey =
+      options?.featureKey ??
+      `${feature.properties?.['galleryImageId'] ?? ''}:${coordinates.join(',')}`;
     const pin = options?.pin === true;
 
     // While pinned, ignore hover updates for other markers.
@@ -76,10 +82,18 @@ export class RockExplorerImageHoverPopup {
       return;
     }
 
+    const count =
+      typeof options?.count === 'number' && options.count > 1
+        ? options.count
+        : null;
+    const badgeHtml =
+      count != null
+        ? `<span class="rock-explorer-image-hover-popup__badge">${String(count)}</span>`
+        : '';
     const descriptionHtml = description
       ? `<div class="rock-explorer-image-hover-popup__caption">${escapeHtml(description)}</div>`
       : '';
-    const html = `<div class="rock-explorer-image-hover-popup__content"><button type="button" class="rock-explorer-image-hover-popup__image-btn" aria-label="Open image"><img src="${escapeHtml(thumbnailUrl)}" alt="" /></button>${descriptionHtml}</div>`;
+    const html = `<div class="rock-explorer-image-hover-popup__content"><button type="button" class="rock-explorer-image-hover-popup__image-btn" aria-label="Open image"><img src="${escapeHtml(thumbnailUrl)}" alt="" />${badgeHtml}</button>${descriptionHtml}</div>`;
 
     if (!this.popup) {
       this.popup = new Popup({
