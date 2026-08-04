@@ -409,12 +409,18 @@ export class RockExplorerMapLayers {
   private ensureImageLocationLayer(
     imageLocations: FeatureCollection<Geometry>,
   ): void {
-    ensureGeoJsonSource(this.map, S.imageLocations, imageLocations);
+    ensureGeoJsonSource(this.map, S.imageLocations, imageLocations, {
+      cluster: true,
+      clusterRadius: 50,
+      clusterMinPoints: 2,
+      tolerance: 0,
+    });
     if (!this.map.getLayer(L.imageLocations)) {
       this.map.addLayer({
         id: L.imageLocations,
         type: 'circle',
         source: S.imageLocations,
+        filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-radius': 7,
           'circle-color': MAP_MEDIA_ACCENT,
@@ -428,6 +434,47 @@ export class RockExplorerMapLayers {
         'circle-color',
         MAP_MEDIA_ACCENT,
       );
+      this.map.setFilter(L.imageLocations, ['!', ['has', 'point_count']]);
+    }
+
+    if (!this.map.getLayer(L.imageClusters)) {
+      this.map.addLayer({
+        id: L.imageClusters,
+        type: 'circle',
+        source: S.imageLocations,
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': MAP_MEDIA_ACCENT,
+          'circle-radius': 14,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
+    } else {
+      this.map.setPaintProperty(
+        L.imageClusters,
+        'circle-color',
+        MAP_MEDIA_ACCENT,
+      );
+      this.map.setPaintProperty(L.imageClusters, 'circle-radius', 14);
+    }
+
+    if (!this.map.getLayer(L.imageClusterCount)) {
+      this.map.addLayer({
+        id: L.imageClusterCount,
+        type: 'symbol',
+        source: S.imageLocations,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count}',
+          'text-size': 12,
+        },
+        paint: {
+          'text-color': '#ffffff',
+        },
+      });
+    } else {
+      this.map.setLayoutProperty(L.imageClusterCount, 'text-size', 12);
     }
   }
 
@@ -472,6 +519,8 @@ export class RockExplorerMapLayers {
       L.pathLabels,
       L.parking,
       L.imageLocations,
+      L.imageClusters,
+      L.imageClusterCount,
     ]) {
       if (this.map.getLayer(layerId)) {
         this.map.moveLayer(layerId);

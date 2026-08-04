@@ -33,6 +33,7 @@ export type RockExplorerCommand =
   | { type: 'finishPathDraw' }
   | { type: 'closePanel' }
   | { type: 'focusOnMap' }
+  | { type: 'shareFeature' }
   | { type: 'editGeometry' }
   | { type: 'redrawAsPoint' }
   | { type: 'redrawAsPolygon' }

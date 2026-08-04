@@ -1,6 +1,7 @@
 import {
   Component,
   DestroyRef,
+  HostListener,
   inject,
   ViewEncapsulation,
 } from '@angular/core';
@@ -88,6 +89,16 @@ export class SearchDialogComponent {
           this.ref.close();
         }
       });
+  }
+
+  /**
+   * PrimeNG DynamicDialog Escape can no-op when its z-index gate fails;
+   * close via the dialog ref so Escape always dismisses search.
+   */
+  @HostListener('document:keydown.escape', ['$event'])
+  onDocumentEscape(event: Event) {
+    event.preventDefault();
+    this.close();
   }
 
   search() {

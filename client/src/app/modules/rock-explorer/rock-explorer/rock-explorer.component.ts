@@ -10,8 +10,10 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   GeolocateControl,
+  GeoJSONSource,
   Map as MaplibreMap,
   MapLayerMouseEvent,
   MapMouseEvent,
@@ -30,6 +32,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { GalleryService } from '../../../services/crud/gallery.service';
+import { ClipboardService } from '../../../services/core/clipboard.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { ObjectType } from '../../../models/object';
@@ -62,7 +65,10 @@ import {
   polygonRingSelfIntersects,
 } from '../map/polygon-draft';
 import { RockExplorerMapLayers } from '../map/rock-explorer-map-layers';
-import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
+import {
+  ROCK_EXPLORER_LAYERS,
+  ROCK_EXPLORER_SOURCES,
+} from '../map/rock-explorer-map.constants';
 
 /** When set with point/polygon draw mode, finishing saves onto this feature instead of creating. */
 type GeometryRedrawMode = 'point' | 'polygon' | null;
@@ -97,6 +103,10 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private consumingParkingMapPick = false;
   public loading = true;
   public noApiKey = false;
+  /** Feature id from the route to open once the map is ready. */
+  private pendingDeepLinkFeatureId: string | null = null;
+  /** Skip paramMap reactions while we are writing the URL ourselves. */
+  private syncingFeatureUrl = false;
 
   private map?: MaplibreMap;
   private layers?: RockExplorerMapLayers;
@@ -120,6 +130,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private store = inject(Store);
   private rockExplorerService = inject(RockExplorerService);
   private galleryService = inject(GalleryService);
+  private clipboardService = inject(ClipboardService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
@@ -130,6 +143,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private imageLocationsData: FeatureCollection<Geometry> =
     emptyFeatureCollection();
   private readonly imageHover = new RockExplorerImageHoverPopup();
+  /** Guards async getClusterLeaves against stale mousemove results. */
+  private imageClusterHoverRequestId = 0;
   /** True for the rest of a map click after an image GPS marker pin is handled. */
   private consumingImageLocationClick = false;
 
@@ -147,6 +162,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.commands$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((cmd) => this.handleUiCommand(cmd));
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        if (this.syncingFeatureUrl) {
+          return;
+        }
+        this.onFeatureRouteParam(params.get('featureId'));
+      });
   }
 
   /**
@@ -196,6 +219,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'focusOnMap':
         this.focusActiveFeature();
+        break;
+      case 'shareFeature':
+        this.shareActiveFeature();
         break;
       case 'editGeometry':
         this.startPolygonEdit();
@@ -865,7 +891,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  public closePanel() {
+  public closePanel(options?: { skipUrlSync?: boolean }) {
     this.ui.panelOpen.set(false);
     this.miscEditMode = false;
     this.cancelImageCoordinatePick();
@@ -877,6 +903,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.clearImageLocations();
     this.clearMiscOverlays();
     this.applySelectionFilters();
+    if (!options?.skipUrlSync) {
+      this.syncFeatureUrl(null);
+    }
   }
 
   public finishPolygon() {
@@ -1028,7 +1057,10 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         'top-right',
       );
       this.map.on('load', () => {
-        void this.rebindMapLayers().then(() => this.fitToFeatures());
+        void this.rebindMapLayers().then(() => {
+          this.fitToFeatures();
+          this.flushPendingDeepLink();
+        });
         this.map!.on('mousedown', ROCK_EXPLORER_LAYERS.draftPoints, (event) =>
           this.onDraftVertexMouseDown(event),
         );
@@ -1076,6 +1108,25 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.map!.on('click', ROCK_EXPLORER_LAYERS.imageLocations, (event) =>
           this.ngZone.run(() => this.onImageLocationClick(event)),
         );
+        for (const clusterLayerId of [
+          ROCK_EXPLORER_LAYERS.imageClusters,
+          ROCK_EXPLORER_LAYERS.imageClusterCount,
+        ]) {
+          this.map!.on('mouseenter', clusterLayerId, () => {
+            if (this.map) {
+              this.map.getCanvas().style.cursor = 'pointer';
+            }
+          });
+          this.map!.on('mousemove', clusterLayerId, (event) =>
+            this.onImageLocationMouseMove(event),
+          );
+          this.map!.on('mouseleave', clusterLayerId, () =>
+            this.onImageLocationMouseLeave(),
+          );
+          this.map!.on('click', clusterLayerId, (event) =>
+            this.ngZone.run(() => this.onImageLocationClick(event)),
+          );
+        }
         this.map!.on('click', (event) => {
           // Geometry drafting updates the map directly; only re-enter Angular for UI chrome.
           if (
@@ -1351,19 +1402,38 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.panelOpen.set(true);
     this.renderDraftGeometry(geometry);
     this.applySelectionFilters();
+    this.syncFeatureUrl(null);
     this.cdr.detectChanges();
     queueMicrotask(() => this.panel?.showCreateForm());
   }
 
-  public openEditPanel(id: string) {
+  public openEditPanel(id: string, options?: { focus?: boolean }) {
     if (this.ui.panelOpen() && this.ui.editingFeature()?.id === id) {
+      if (options?.focus) {
+        this.focusActiveFeature();
+      }
       return;
     }
     this.rockExplorerService
       .getFeature(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((feature) => {
-        this.applyFeatureToPanel(feature, false);
+      .subscribe({
+        next: (feature) => {
+          this.applyFeatureToPanel(feature, false);
+          if (options?.focus) {
+            queueMicrotask(() => this.focusActiveFeature());
+          }
+        },
+        error: () => {
+          this.pendingDeepLinkFeatureId = null;
+          this.messageService.add({
+            severity: 'error',
+            summary: this.transloco.translate(
+              marker('rockExplorer.featureNotFound'),
+            ),
+          });
+          this.syncFeatureUrl(null);
+        },
       });
   }
 
@@ -1380,8 +1450,76 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (feature.id) {
       this.loadFeatureImageLocations(feature.id);
     }
+    this.syncFeatureUrl(feature.id ?? null);
     this.cdr.detectChanges();
     queueMicrotask(() => this.panel?.showFeature(feature, formActive));
+  }
+
+  private onFeatureRouteParam(featureId: string | null) {
+    const currentId = this.ui.editingFeature()?.id ?? null;
+    if (featureId === currentId) {
+      return;
+    }
+    if (featureId) {
+      if (!this.map) {
+        this.pendingDeepLinkFeatureId = featureId;
+        return;
+      }
+      this.openEditPanel(featureId, { focus: true });
+      return;
+    }
+    this.pendingDeepLinkFeatureId = null;
+    if (this.ui.panelOpen() && currentId) {
+      this.closePanel({ skipUrlSync: true });
+    }
+  }
+
+  private flushPendingDeepLink() {
+    const id = this.pendingDeepLinkFeatureId;
+    if (!id) {
+      return;
+    }
+    this.pendingDeepLinkFeatureId = null;
+    this.openEditPanel(id, { focus: true });
+  }
+
+  private syncFeatureUrl(featureId: string | null) {
+    const current = this.route.snapshot.paramMap.get('featureId');
+    if ((featureId ?? null) === (current ?? null)) {
+      return;
+    }
+    this.syncingFeatureUrl = true;
+    void this.router
+      .navigate(
+        featureId ? ['/rock-explorer', featureId] : ['/rock-explorer'],
+        {
+          replaceUrl: true,
+        },
+      )
+      .finally(() => {
+        this.syncingFeatureUrl = false;
+      });
+  }
+
+  private shareActiveFeature() {
+    const id = this.ui.editingFeature()?.id;
+    if (!id) {
+      return;
+    }
+    const path = this.router.serializeUrl(
+      this.router.createUrlTree(['/rock-explorer', id]),
+    );
+    this.clipboardService.copyTextToClipboard(
+      `${window.location.origin}${path}`,
+      {
+        successSummary: this.transloco.translate(
+          marker('rockExplorer.shareSuccessTitle'),
+        ),
+        successDetail: this.transloco.translate(
+          marker('rockExplorer.shareSuccessDetail'),
+        ),
+      },
+    );
   }
 
   private rebuildEnumOptions() {
@@ -1628,10 +1766,58 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       number,
       number,
     ];
+    const clusterId = feature.properties?.['cluster_id'];
+    const pointCount = feature.properties?.['point_count'];
+    if (clusterId != null && typeof pointCount === 'number') {
+      void this.showClusterImageHover(clusterId, pointCount, coordinates);
+      return;
+    }
+    // Invalidate any in-flight getClusterLeaves so a stale cluster popup
+    // cannot overwrite this unclustered hover.
+    this.imageClusterHoverRequestId++;
     this.imageHover.show(this.map, feature, coordinates);
   }
 
+  private async showClusterImageHover(
+    clusterId: number | string,
+    pointCount: number,
+    coordinates: [number, number],
+  ): Promise<void> {
+    if (!this.map) {
+      return;
+    }
+    const requestId = ++this.imageClusterHoverRequestId;
+    const featureKey = `cluster:${clusterId}`;
+    const source = this.map.getSource(ROCK_EXPLORER_SOURCES.imageLocations) as
+      GeoJSONSource | undefined;
+    if (!source) {
+      return;
+    }
+    try {
+      const leaves = await source.getClusterLeaves(Number(clusterId), 1, 0);
+      if (
+        requestId !== this.imageClusterHoverRequestId ||
+        !this.map ||
+        this.isMapOverlayInteractionActive ||
+        this.ui.isPolygonToolActive()
+      ) {
+        return;
+      }
+      const leaf = leaves[0];
+      if (!leaf) {
+        return;
+      }
+      this.imageHover.show(this.map, leaf, coordinates, {
+        count: pointCount,
+        featureKey,
+      });
+    } catch {
+      // Ignore transient cluster-leaf errors during rapid hover / style switch.
+    }
+  }
+
   private onImageLocationMouseLeave() {
+    this.imageClusterHoverRequestId++;
     this.imageHover.hide();
     if (
       this.map &&
@@ -1660,11 +1846,46 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       number,
       number,
     ];
+    const clusterId = feature.properties?.['cluster_id'];
+    if (clusterId != null) {
+      void this.expandImageCluster(clusterId, coordinates);
+      this.consumingImageLocationClick = true;
+      setTimeout(() => {
+        this.consumingImageLocationClick = false;
+      }, 0);
+      return;
+    }
     this.imageHover.show(this.map, feature, coordinates, { pin: true });
     this.consumingImageLocationClick = true;
     setTimeout(() => {
       this.consumingImageLocationClick = false;
     }, 0);
+  }
+
+  private async expandImageCluster(
+    clusterId: number | string,
+    coordinates: [number, number],
+  ): Promise<void> {
+    if (!this.map) {
+      return;
+    }
+    const source = this.map.getSource(ROCK_EXPLORER_SOURCES.imageLocations) as
+      GeoJSONSource | undefined;
+    if (!source) {
+      return;
+    }
+    try {
+      const zoom = await source.getClusterExpansionZoom(Number(clusterId));
+      if (!this.map) {
+        return;
+      }
+      this.map.easeTo({
+        center: coordinates,
+        zoom,
+      });
+    } catch {
+      // Ignore if cluster no longer exists after data/style refresh.
+    }
   }
 
   private openGalleryFromMapImage(galleryImageId: string): void {

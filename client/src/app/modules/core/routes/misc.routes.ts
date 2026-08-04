@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { isLoggedIn } from '../../../guards/is-logged-in';
 import { isMember } from '../../../guards/is-member';
+import { rockExplorerMatcher } from './rock-explorer.matcher';
 
 export const rootRedirectRoutes: Routes = [
   {
@@ -28,7 +29,7 @@ export const miscRoutes: Routes = [
     canActivate: [isLoggedIn],
   },
   {
-    path: 'rock-explorer',
+    matcher: rockExplorerMatcher,
     loadComponent: () =>
       import('../../rock-explorer/rock-explorer/rock-explorer.component').then(
         (m) => m.RockExplorerComponent,
