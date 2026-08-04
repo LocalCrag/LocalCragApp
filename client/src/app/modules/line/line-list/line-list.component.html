@@ -250,20 +250,22 @@
                       ></div>
                     }
                     <div class="flex flex-wrap items-center gap-2">
-                      <lc-ascent-count
-                        [ascentCount]="line.ascentCount"
-                        [routerLink]="
-                          '/topo/' +
-                          line.cragSlug +
-                          '/' +
-                          line.sectorSlug +
-                          '/' +
-                          line.areaSlug +
-                          '/' +
-                          line.slug +
-                          '/ascents'
-                        "
-                      ></lc-ascent-count>
+                      @if (line.ascentCount > 0) {
+                        <lc-ascent-count
+                          [ascentCount]="line.ascentCount"
+                          [routerLink]="
+                            '/topo/' +
+                            line.cragSlug +
+                            '/' +
+                            line.sectorSlug +
+                            '/' +
+                            line.areaSlug +
+                            '/' +
+                            line.slug +
+                            '/ascents'
+                          "
+                        ></lc-ascent-count>
+                      }
                       @if (line.commentCount > 0) {
                         <lc-comment-count
                           [commentCount]="line.commentCount"
