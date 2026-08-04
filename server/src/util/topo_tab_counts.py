@@ -3,7 +3,8 @@
 Used by hybrid properties on Crag, Sector, Area, Line, and Region so detail schemas
 can expose ``commentCount`` and ``imageCount`` for page-title tab pills.
 
-- Comments: root threads on the entity itself (matches ``GetComments`` listing).
+- Comments: all non-deleted comments on the entity itself, including replies
+  (matches post commentCount semantics; scoped to ``object_type`` + ``object_id``).
 - Images: entity tag plus child tags (matches ``GetGalleryImages`` + ``get_child_tags``),
   with secret-gallery filtering via ``SecretService``.
 
@@ -17,8 +18,8 @@ from extensions import db
 from util.secret_service import SecretService
 
 
-def count_root_comments(object_type: str, object_id) -> int:
-    """Count top-level comments for a single topo (or related) entity."""
+def count_comments(object_type: str, object_id) -> int:
+    """Count non-deleted comments (roots and replies) for a single topo entity."""
     from models.comment import Comment
 
     return int(
@@ -26,7 +27,7 @@ def count_root_comments(object_type: str, object_id) -> int:
         .filter(
             Comment.object_type == object_type,
             Comment.object_id == object_id,
-            Comment.parent_id.is_(None),
+            Comment.is_deleted.is_(False),
         )
         .scalar()
         or 0
