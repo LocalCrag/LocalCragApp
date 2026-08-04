@@ -408,3 +408,47 @@ def test_published_requires_geometry_and_potential(client, member_token):
         json=_draft_payload(status="published", recordingDeviceId=None, recordingState=None),
     )
     assert flip.status_code == 400
+
+
+def test_publish_draft_with_query_device_id(client, member_token):
+    """RE-TRACK-11: draft→published PUT with ?recordingDeviceId= succeeds."""
+    draft = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_draft_payload(paths=[_gps_path()]),
+    ).json
+    feature_id = draft["id"]
+
+    wrong = client.put(
+        f"/api/rock-explorer/features/{feature_id}?recordingDeviceId=other-device",
+        token=member_token,
+        json=_published_payload(
+            status="published",
+            title="Published from draft",
+            recordingDeviceId=None,
+            recordingState=None,
+        ),
+    )
+    assert wrong.status_code == 409
+
+    ok = client.put(
+        f"/api/rock-explorer/features/{feature_id}?recordingDeviceId=device-a",
+        token=member_token,
+        json=_published_payload(
+            status="published",
+            title="Published from draft",
+            recordingDeviceId=None,
+            recordingState=None,
+        ),
+    )
+    assert ok.status_code == 200
+    body = ok.json
+    assert body["status"] == "published"
+    assert body["potential"] == "HIGH"
+    assert body["geometry"]["type"] == "Point"
+    assert body.get("recordingDeviceId") in (None, "")
+    assert body.get("recordingState") in (None, "")
+
+    geo = client.get("/api/rock-explorer/features.geojson", token=member_token).json
+    ids = {f["id"] for f in geo["features"]}
+    assert feature_id in ids

@@ -139,7 +139,8 @@ class UpdateRockExplorerFeature(MethodView):
         )
         feature = RockExplorerFeature.find_by_id(feature_id)
         user = _current_user()
-        assert_draft_mutable(feature, user, data.get("recordingDeviceId"))
+        device_id = data.get("recordingDeviceId") or request.args.get("recordingDeviceId")
+        assert_draft_mutable(feature, user, device_id)
 
         feature.geometry = data["geometry"]
         apply_rock_explorer_metadata(feature, data)

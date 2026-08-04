@@ -64,6 +64,27 @@ export class RockExplorerService {
       .pipe(map(RockExplorerFeature.deserialize));
   }
 
+  /**
+   * Draft → published PUT. Device lock is proven via query param (body must
+   * keep recording fields null for published validation).
+   */
+  public publishFeature(
+    feature: RockExplorerFeature,
+    recordingDeviceId: string,
+  ): Observable<RockExplorerFeature> {
+    feature.status = 'published';
+    feature.recordingDeviceId = null;
+    feature.recordingState = null;
+    const params = new HttpParams().set('recordingDeviceId', recordingDeviceId);
+    return this.http
+      .put(
+        this.api.rockExplorer.updateFeature(feature.id),
+        RockExplorerFeature.serialize(feature),
+        { params },
+      )
+      .pipe(map(RockExplorerFeature.deserialize));
+  }
+
   public cloneFeature(
     featureId: string,
     recordingDeviceId: string,
