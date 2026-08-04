@@ -2,6 +2,9 @@ import datetime
 
 import pytz
 
+from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.conflict import Conflict
+from error_handling.http_exceptions.unauthorized import Unauthorized
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
@@ -13,6 +16,33 @@ from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from util.tags import set_tags
 
 TOPO_LINK_OBJECT_TYPES = {"Line", "Area", "Sector", "Crag"}
+
+
+def is_draft(feature) -> bool:
+    status = feature.status
+    if status == RockExplorerFeatureStatusEnum.DRAFT:
+        return True
+    return getattr(status, "value", status) == "draft"
+
+
+def assert_can_view_feature(feature, user) -> None:
+    """Published: any member (caller already member-gated). Draft: owner only."""
+    if not is_draft(feature):
+        return
+    if feature.created_by_id != user.id:
+        raise Unauthorized("Only the creator can view this draft.")
+
+
+def assert_draft_mutable(feature, user, device_id: str | None) -> None:
+    """No-op for published. Draft: owner + matching recordingDeviceId required."""
+    if not is_draft(feature):
+        return
+    if feature.created_by_id != user.id:
+        raise Unauthorized("Only the creator can modify this draft.")
+    if device_id is None or str(device_id).strip() == "":
+        raise BadRequest("recordingDeviceId is required to modify a draft.")
+    if feature.recording_device_id != device_id:
+        raise Conflict("Draft is locked by another device. Clone to continue.")
 
 
 def apply_rock_explorer_metadata(entity, data: dict) -> None:
@@ -38,7 +68,9 @@ def apply_rock_explorer_metadata(entity, data: dict) -> None:
         entity.recording_state = None
         entity.recording_updated_at = None
     else:
-        entity.recording_device_id = data.get("recordingDeviceId")
+        # Preserve existing device lock on update; only set from payload when unset (create).
+        if entity.recording_device_id is None:
+            entity.recording_device_id = data.get("recordingDeviceId")
         entity.recording_state = (
             RockExplorerRecordingStateEnum(data["recordingState"]) if data.get("recordingState") else None
         )
