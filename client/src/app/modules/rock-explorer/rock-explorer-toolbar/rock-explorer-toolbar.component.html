@@ -6,6 +6,7 @@
         icon="pi pi-circle-fill"
         [label]="t('rockExplorer.modeRecord')"
         (onClick)="ui.dispatch({ type: 'enterRecord' })"
+        [disabled]="!ui.storageOk()"
         size="small"
       />
       <p-button
@@ -65,6 +66,27 @@
         icon="pi pi-times"
         [label]="t('rockExplorer.recordExit')"
         (onClick)="ui.dispatch({ type: 'exitRecord' })"
+        size="small"
+        severity="secondary"
+      />
+      @if (ui.syncStatus(); as status) {
+        <span
+          class="rock-explorer__sync-status"
+          [attr.data-status]="status"
+          role="status"
+        >
+          {{ t("rockExplorer.syncStatus." + status) }}
+        </span>
+      }
+      <p-button
+        icon="pi pi-sync"
+        [label]="t('rockExplorer.syncNow')"
+        (onClick)="ui.dispatch({ type: 'syncNow' })"
+        [disabled]="
+          !ui.storageOk() ||
+          !ui.activeLocalDraftId() ||
+          ui.syncStatus() === 'syncing'
+        "
         size="small"
         severity="secondary"
       />

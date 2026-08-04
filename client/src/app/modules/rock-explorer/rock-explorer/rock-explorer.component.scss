@@ -19,6 +19,13 @@
   color: var(--p-text-color);
 }
 
+.rock-explorer__device-lock-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
 .rock-explorer__map {
   flex: 1;
   min-height: 0;

@@ -6,6 +6,7 @@ import { Coordinates } from '../../interfaces/coordinates.interface';
 import { Position } from 'geojson';
 import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
 import { RecordingState } from './rock-explorer-recording';
+import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
@@ -59,7 +60,8 @@ export type RockExplorerCommand =
   | { type: 'pauseRecording' }
   | { type: 'resumeRecording' }
   | { type: 'finishRecordPath' }
-  | { type: 'newRecordPath' };
+  | { type: 'newRecordPath' }
+  | { type: 'syncNow' };
 
 /**
  * Session state + command bus for rock explorer.
@@ -101,6 +103,14 @@ export class RockExplorerUiService {
   readonly recordPathVertexCount = signal(0);
   /** True while an in-memory draft session exists (survives exit Record). */
   readonly hasRecordingSession = signal(false);
+  /** Draft sync chrome status (pending|syncing|synced|error). */
+  readonly syncStatus = signal<DraftSyncStatus | null>(null);
+  /** False when IndexedDB probe/open fails (D-19) — Record disabled. */
+  readonly storageOk = signal(true);
+  /** Active local draft id while a recording session is bound. */
+  readonly activeLocalDraftId = signal<string | null>(null);
+  /** Stub for plan 03 sessions panel; default closed. */
+  readonly sessionsPanelOpen = signal(false);
 
   readonly isPolygonToolActive = computed(() => {
     const mode = this.drawMode();

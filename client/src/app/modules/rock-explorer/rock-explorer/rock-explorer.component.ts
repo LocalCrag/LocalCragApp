@@ -23,10 +23,12 @@ import { Feature, FeatureCollection, Geometry, Position } from 'geojson';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Dialog } from 'primeng/dialog';
+import { Button } from 'primeng/button';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { forkJoin } from 'rxjs';
+import { forkJoin, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MapStyles } from '../../../enums/map-styles';
@@ -52,6 +54,11 @@ import {
   RockExplorerRecordingSession,
   getOrCreateRecordingDeviceId,
 } from '../rock-explorer-recording';
+import { RockExplorerDraftStoreService } from '../offline/rock-explorer-draft-store.service';
+import {
+  DeviceLockConflictEvent,
+  RockExplorerDraftSyncService,
+} from '../offline/rock-explorer-draft-sync.service';
 import { geometryFromOverlayPoints } from '../../../utility/geo/convex-hull';
 import { startDocumentDrag } from '../../../utility/map/document-drag';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
@@ -82,6 +89,8 @@ type GeometryRedrawMode = 'point' | 'polygon' | null;
   imports: [
     Toast,
     ConfirmPopup,
+    Dialog,
+    Button,
     TranslocoDirective,
     RockExplorerPanelComponent,
     RockExplorerToolbarComponent,
@@ -141,6 +150,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private transloco = inject(TranslocoService);
+  private draftStore = inject(RockExplorerDraftStoreService);
+  private draftSync = inject(RockExplorerDraftSyncService);
   private mobileMediaQuery?: MediaQueryList;
   private mobileMediaListener?: (event: MediaQueryListEvent) => void;
   private imageLocationsRequestId = 0;
@@ -154,9 +165,24 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
 
   /** Live-tracking session (survives exit Record until component destroy). */
   private recordingSession: RockExplorerRecordingSession | null = null;
+  /** IndexedDB local draft id for the active recording session. */
+  private activeLocalId: string | null = null;
   private geolocateControl: GeolocateControl | null = null;
   private geoWatchId: number | null = null;
-  private recordingSyncInFlight = false;
+  private persistInFlight = false;
+  private readonly onWindowOnline = (): void => {
+    void this.flushDraftQueue();
+  };
+  private readonly onVisibilityChange = (): void => {
+    if (document.visibilityState === 'visible') {
+      void this.flushDraftQueue();
+    }
+  };
+  /** 409 device-lock clone dialog. */
+  public deviceLockDialogVisible = false;
+  private deviceLockLocalId: string | null = null;
+  private deviceLockServerId: string | null = null;
+  private deviceLockCloneInFlight = false;
 
   public get isCoordinatePickActive(): boolean {
     return (
@@ -179,6 +205,13 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           return;
         }
         this.onFeatureRouteParam(params.get('featureId'));
+      });
+    this.draftSync.deviceLockConflict$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        this.ngZone.run(() => {
+          void this.handleDeviceLockConflict(event);
+        });
       });
   }
 
@@ -308,6 +341,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       case 'newRecordPath':
         this.newRecordPath();
         break;
+      case 'syncNow':
+        void this.onSyncNow();
+        break;
     }
   }
 
@@ -326,6 +362,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.bindMobileViewport();
     this.rebuildEnumOptions();
+    void this.probeDraftStorage();
+    window.addEventListener('online', this.onWindowOnline);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
     this.transloco.langChanges$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
@@ -362,6 +401,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    window.removeEventListener('online', this.onWindowOnline);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
     if (this.mobileMediaQuery && this.mobileMediaListener) {
       this.mobileMediaQuery.removeEventListener(
         'change',
@@ -1938,6 +1979,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (this.ui.recordModeActive()) {
       return;
     }
+    if (!this.ui.storageOk()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.transloco.translate(
+          marker('rockExplorer.storageUnavailable'),
+        ),
+      });
+      return;
+    }
     if (this.ui.isDrawToolActive()) {
       this.setRockExplorerDrawMode('select');
     }
@@ -1949,9 +1999,13 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.drawMode.set('select');
 
     if (!this.recordingSession) {
+      const localId = crypto.randomUUID();
+      this.activeLocalId = localId;
+      this.ui.activeLocalDraftId.set(localId);
       this.recordingSession = new RockExplorerRecordingSession(
         getOrCreateRecordingDeviceId(),
       );
+      this.ui.syncStatus.set('pending');
     } else {
       this.recordingSession.resume();
     }
@@ -1979,7 +2033,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.ui.recordModeActive.set(false);
     this.syncRecordUiSignals();
-    void this.syncRecordingToServer(true);
+    void this.persistAndSync(true);
     this.cdr.detectChanges();
   }
 
@@ -1989,7 +2043,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.recordingSession.pause();
     this.syncRecordUiSignals();
-    void this.syncRecordingToServer(true);
+    void this.persistAndSync(true);
     this.cdr.detectChanges();
   }
 
@@ -2018,7 +2072,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
-    void this.syncRecordingToServer(true);
+    void this.persistAndSync(true);
     this.cdr.detectChanges();
   }
 
@@ -2030,7 +2084,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
     this.startGeoWatch();
-    void this.syncRecordingToServer(true);
+    void this.persistAndSync(true);
     this.cdr.detectChanges();
   }
 
@@ -2041,6 +2095,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.recordPathVertexCount.set(
       session?.activePath?.geometry.coordinates.length ?? 0,
     );
+    this.ui.activeLocalDraftId.set(this.activeLocalId);
   }
 
   private startGeoWatch(): void {
@@ -2103,7 +2158,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       });
     }
     if (this.recordingSession.shouldSyncNow()) {
-      void this.syncRecordingToServer(false);
+      void this.persistAndSync(false);
     }
     this.cdr.detectChanges();
   }
@@ -2140,63 +2195,190 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private async syncRecordingToServer(force: boolean): Promise<void> {
+  private async probeDraftStorage(): Promise<void> {
+    const ok = await this.draftStore.probeOpen();
+    this.ui.storageOk.set(ok);
+    if (!ok) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.transloco.translate(
+          marker('rockExplorer.storageUnavailable'),
+        ),
+      });
+      this.cdr.detectChanges();
+    }
+  }
+
+  private async flushDraftQueue(): Promise<void> {
+    const preferLocalId = this.activeLocalId ?? undefined;
+    try {
+      if (this.recordingSession && this.activeLocalId) {
+        await this.persistAndSync(true);
+        return;
+      }
+      this.ui.syncStatus.set('syncing');
+      await this.draftSync.flush({ preferLocalId });
+      if (this.activeLocalId) {
+        await this.refreshSyncStatusFromDraft(this.activeLocalId);
+      } else {
+        this.ui.syncStatus.set(null);
+      }
+    } catch {
+      this.ui.syncStatus.set('error');
+    }
+    this.cdr.detectChanges();
+  }
+
+  private async onSyncNow(): Promise<void> {
+    if (!this.ui.storageOk()) {
+      return;
+    }
+    if (this.recordingSession && this.activeLocalId) {
+      await this.persistAndSync(true);
+      return;
+    }
+    this.ui.syncStatus.set('syncing');
+    try {
+      await this.draftSync.flush();
+      this.ui.syncStatus.set(null);
+    } catch {
+      this.ui.syncStatus.set('error');
+    }
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Persist session to IndexedDB, enqueue upsert, flush when online (or force).
+   * Never skips IDB write when offline — only skips HTTP flush.
+   */
+  private async persistAndSync(force: boolean): Promise<void> {
     const session = this.recordingSession;
-    if (!session || this.recordingSyncInFlight) {
+    const localId = this.activeLocalId;
+    if (!session || !localId) {
+      return;
+    }
+    if (this.persistInFlight) {
       return;
     }
     if (!force && !session.shouldSyncNow()) {
       return;
     }
-    if (!navigator.onLine) {
-      return;
-    }
-    // Need at least one serializable path, or allow create with empty paths for device lock.
-    const serializable = session.pathsForSerialize();
-    if (!session.feature.id && serializable.length === 0 && !force) {
-      return;
-    }
 
-    this.recordingSyncInFlight = true;
-    const payload = session.feature;
-    // Temporarily expose only serializable paths for API (≥2 verts).
-    const allPaths = payload.paths;
-    payload.paths =
-      serializable.length > 0
-        ? serializable
-        : allPaths.filter((p) => (p.geometry?.coordinates?.length ?? 0) >= 2);
-
+    this.persistInFlight = true;
     try {
-      if (!payload.id) {
-        const created = await new Promise<RockExplorerFeature>(
-          (resolve, reject) => {
-            this.rockExplorerService.createFeature(payload).subscribe({
-              next: resolve,
-              error: reject,
-            });
-          },
-        );
-        session.feature.id = created.id;
-        if (created.timeCreated) {
-          session.feature.timeCreated = created.timeCreated;
+      await this.draftStore.putSnapshot(localId, session);
+      await this.draftSync.enqueueUpsert(localId);
+      this.ui.syncStatus.set('pending');
+
+      if (force || this.draftSync.isOnline()) {
+        this.ui.syncStatus.set('syncing');
+        await this.draftSync.flush({ preferLocalId: localId });
+        await this.refreshSyncStatusFromDraft(localId);
+        const draft = await this.draftStore.get(localId);
+        if (draft?.serverId) {
+          session.feature.id = draft.serverId;
         }
-      } else {
-        const updated = await new Promise<RockExplorerFeature>(
-          (resolve, reject) => {
-            this.rockExplorerService.updateFeature(payload).subscribe({
-              next: resolve,
-              error: reject,
-            });
-          },
-        );
-        session.feature.id = updated.id;
+        if (draft?.syncStatus === 'synced') {
+          session.markSynced();
+        }
       }
-      session.markSynced();
     } catch {
-      // Offline / lock errors: keep local buffer (Phase 12 durable queue).
+      this.ui.syncStatus.set('error');
+      if (localId) {
+        await this.draftStore.patch(localId, { syncStatus: 'error' });
+      }
     } finally {
-      payload.paths = allPaths;
-      this.recordingSyncInFlight = false;
+      this.persistInFlight = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  private async refreshSyncStatusFromDraft(localId: string): Promise<void> {
+    const draft = await this.draftStore.get(localId);
+    this.ui.syncStatus.set(draft?.syncStatus ?? null);
+  }
+
+  private async handleDeviceLockConflict(
+    event: DeviceLockConflictEvent,
+  ): Promise<void> {
+    if (this.recordingSession) {
+      this.recordingSession.pause();
+      this.stopGeoWatch();
+    }
+    if (event.localId) {
+      await this.draftStore.patch(event.localId, {
+        recordingState: 'paused',
+        syncStatus: 'error',
+      });
+    }
+    this.ui.syncStatus.set('error');
+    this.syncRecordUiSignals();
+    this.deviceLockLocalId = event.localId;
+    this.deviceLockServerId = event.serverId;
+    this.deviceLockDialogVisible = true;
+    this.cdr.detectChanges();
+  }
+
+  public cancelDeviceLockDialog(): void {
+    this.deviceLockDialogVisible = false;
+    this.deviceLockLocalId = null;
+    this.deviceLockServerId = null;
+    this.cdr.detectChanges();
+  }
+
+  public async confirmDeviceLockClone(): Promise<void> {
+    if (this.deviceLockCloneInFlight || !this.deviceLockServerId) {
+      return;
+    }
+    this.deviceLockCloneInFlight = true;
+    const oldLocalId = this.deviceLockLocalId;
+    const serverId = this.deviceLockServerId;
+    const deviceId = getOrCreateRecordingDeviceId();
+    try {
+      const cloned = await firstValueFrom(
+        this.rockExplorerService.cloneFeature(serverId, deviceId),
+      );
+      const newLocalId = crypto.randomUUID();
+      const temp = new RockExplorerRecordingSession(deviceId);
+      temp.feature = cloned;
+      temp.feature.recordingDeviceId = deviceId;
+      temp.activePathId = null;
+      temp.pause();
+      const session = RockExplorerRecordingSession.hydrateFromSnapshot(
+        temp.toSnapshot(),
+        deviceId,
+      );
+      session.pause();
+
+      if (oldLocalId) {
+        await this.draftStore.deleteLocal(oldLocalId);
+      }
+      await this.draftStore.putSnapshot(newLocalId, session, {
+        serverId: cloned.id,
+        deviceId,
+        syncStatus: 'synced',
+        recordingState: 'paused',
+      });
+
+      this.activeLocalId = newLocalId;
+      this.recordingSession = session;
+      this.ui.activeLocalDraftId.set(newLocalId);
+      this.ui.syncStatus.set('synced');
+      this.ui.hasRecordingSession.set(true);
+      this.syncRecordUiSignals();
+      this.refreshRecordingPathsOnMap();
+      this.deviceLockDialogVisible = false;
+      this.deviceLockLocalId = null;
+      this.deviceLockServerId = null;
+    } catch {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.transloco.translate(marker('rockExplorer.loadError')),
+      });
+      this.ui.syncStatus.set('error');
+    } finally {
+      this.deviceLockCloneInFlight = false;
+      this.cdr.detectChanges();
     }
   }
 }

@@ -2,6 +2,30 @@
   <p-toast />
   <p-confirmpopup />
 
+  <p-dialog
+    [header]="t('rockExplorer.deviceLockTitle')"
+    [(visible)]="deviceLockDialogVisible"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="false"
+    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
+    (onHide)="cancelDeviceLockDialog()"
+  >
+    <p>{{ t("rockExplorer.deviceLockMessage") }}</p>
+    <div class="rock-explorer__device-lock-actions">
+      <p-button
+        [label]="t('rockExplorer.deviceLockCancel')"
+        severity="secondary"
+        [text]="true"
+        (onClick)="cancelDeviceLockDialog()"
+      />
+      <p-button
+        [label]="t('rockExplorer.deviceLockClone')"
+        (onClick)="confirmDeviceLockClone()"
+      />
+    </div>
+  </p-dialog>
+
   @if (loading) {
     <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
   } @else if (noApiKey) {
