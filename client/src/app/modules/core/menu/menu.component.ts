@@ -503,6 +503,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
   openSearch() {
     this.ref = this.dialogService.open(SearchDialogComponent, {
       position: 'top',
+      closable: true,
       closeOnEscape: true,
       dismissableMask: true,
       modal: true,

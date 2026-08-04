@@ -16,7 +16,7 @@ from models.mixins.is_searchable import IsSearchable
 from models.mixins.is_secret import IsSecret
 from util.entity_count_cache import get_cached_ascent_count, get_cached_line_count
 from util.secret_service import SecretService
-from util.topo_tab_counts import count_gallery_images, count_root_comments
+from util.topo_tab_counts import count_comments, count_gallery_images
 
 
 class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntity):
@@ -80,7 +80,7 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEnt
 
     @hybrid_property
     def comment_count(self):
-        return count_root_comments("Sector", self.id)
+        return count_comments("Sector", self.id)
 
     @hybrid_property
     def image_count(self):

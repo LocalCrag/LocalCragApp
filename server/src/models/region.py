@@ -8,7 +8,7 @@ from models.base_entity import BaseEntity
 from models.crag import Crag
 from models.line import Line
 from util.secret_service import SecretService
-from util.topo_tab_counts import count_all_gallery_images, count_root_comments
+from util.topo_tab_counts import count_all_gallery_images, count_comments
 
 
 class Region(BaseEntity):
@@ -46,7 +46,7 @@ class Region(BaseEntity):
 
     @hybrid_property
     def comment_count(self):
-        return count_root_comments("Region", self.id)
+        return count_comments("Region", self.id)
 
     @hybrid_property
     def image_count(self):

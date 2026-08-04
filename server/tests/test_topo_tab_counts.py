@@ -17,7 +17,7 @@ from util.propagating_boolean_attrs import (
     update_crag_propagating_boolean_attr,
     update_sector_propagating_boolean_attr,
 )
-from util.topo_tab_counts import count_gallery_images, count_root_comments
+from util.topo_tab_counts import count_comments, count_gallery_images
 
 
 def _secret_line_payload(name="Tab Count Secret Line"):
@@ -78,7 +78,7 @@ def test_count_gallery_images_matches_seed_hierarchy():
     assert count_gallery_images("Crag", crag.id) == 2
 
 
-def test_count_root_comments_excludes_replies(client, member_token):
+def test_count_comments_includes_replies_and_excludes_deleted(client, member_token):
     line = Line.find_by_slug("super-spreader")
     user = User.query.filter_by(email="user@localcrag.invalid.org").first()
 
@@ -98,10 +98,19 @@ def test_count_root_comments_excludes_replies(client, member_token):
     reply.root_id = root.id
     reply.created_by_id = user.id
     db.session.add(reply)
+
+    deleted = Comment()
+    deleted.message = None
+    deleted.object_type = "Line"
+    deleted.object_id = line.id
+    deleted.created_by_id = None
+    deleted.is_deleted = True
+    db.session.add(deleted)
     db.session.commit()
 
-    assert count_root_comments("Line", line.id) == 1
-    assert line.comment_count == 1
+    assert count_comments("Line", line.id) == 2
+    assert line.comment_count == 2
+    assert client.get("/api/lines/super-spreader").json["commentCount"] == 2
 
 
 def test_crag_detail_includes_tab_counts(client):
