@@ -77,6 +77,27 @@
         severity="secondary"
       />
       <p-button
+        icon="pi pi-image"
+        [label]="t('rockExplorer.addImage')"
+        (onClick)="ui.dispatch({ type: 'addRecordImage' })"
+        size="small"
+        severity="secondary"
+      />
+      <p-button
+        icon="pi pi-pencil"
+        [label]="t('rockExplorer.editInfo')"
+        (onClick)="ui.dispatch({ type: 'editRecordInfo' })"
+        size="small"
+        severity="secondary"
+      />
+      <p-button
+        icon="pi pi-upload"
+        [label]="t('rockExplorer.modePublish')"
+        (onClick)="ui.dispatch({ type: 'publishDraft' })"
+        size="small"
+        severity="success"
+      />
+      <p-button
         icon="pi pi-times"
         [label]="t('rockExplorer.recordExit')"
         (onClick)="ui.dispatch({ type: 'exitRecord' })"

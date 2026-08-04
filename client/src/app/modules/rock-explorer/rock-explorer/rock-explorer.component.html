@@ -26,6 +26,76 @@
     </div>
   </p-dialog>
 
+  <p-dialog
+    [header]="t('rockExplorer.publishTitle')"
+    [(visible)]="publishDialogVisible"
+    [modal]="true"
+    [closable]="!publishInFlight"
+    [dismissableMask]="false"
+    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
+    (onHide)="cancelPublishDialog()"
+  >
+    <div class="rock-explorer__publish-form">
+      <label class="rock-explorer__publish-label" for="re-publish-potential">
+        {{ t("rockExplorer.publishPotential") }}
+      </label>
+      <p-select
+        inputId="re-publish-potential"
+        [options]="ui.potentialOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="publishPotential"
+        [placeholder]="t('rockExplorer.publishPotential')"
+        [disabled]="publishInFlight"
+        styleClass="w-full"
+      />
+      <label class="rock-explorer__publish-label" for="re-publish-title">
+        {{ t("rockExplorer.publishTitleField") }}
+      </label>
+      <input
+        id="re-publish-title"
+        pInputText
+        class="w-full"
+        [(ngModel)]="publishTitle"
+        [disabled]="publishInFlight"
+        maxlength="120"
+      />
+      <label class="rock-explorer__publish-label" for="re-publish-description">
+        {{ t("rockExplorer.publishDescriptionField") }}
+      </label>
+      <textarea
+        id="re-publish-description"
+        pTextarea
+        class="w-full"
+        rows="3"
+        [(ngModel)]="publishDescription"
+        [disabled]="publishInFlight"
+      ></textarea>
+    </div>
+    <div class="rock-explorer__device-lock-actions">
+      <p-button
+        [label]="t('rockExplorer.publishCancel')"
+        severity="secondary"
+        [text]="true"
+        [disabled]="publishInFlight"
+        (onClick)="cancelPublishDialog()"
+      />
+      <p-button
+        [label]="t('rockExplorer.publishConfirm')"
+        [loading]="publishInFlight"
+        (onClick)="confirmPublishDialog()"
+      />
+    </div>
+  </p-dialog>
+
+  <input
+    #recordImageInput
+    type="file"
+    accept="image/*"
+    class="rock-explorer__hidden-file"
+    (change)="onRecordImageSelected($event)"
+  />
+
   @if (loading) {
     <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
   } @else if (noApiKey) {

@@ -66,7 +66,9 @@ export type RockExplorerCommand =
   | { type: 'openSessionsPanel' }
   | { type: 'closeSessionsPanel' }
   | { type: 'continueDraft'; localId: string }
-  | { type: 'finishDraftStub'; localId: string }
+  | { type: 'publishDraft'; localId?: string }
+  | { type: 'addRecordImage' }
+  | { type: 'editRecordInfo' }
   | { type: 'deleteDraft'; localId: string; event?: Event };
 
 /**
