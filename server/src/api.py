@@ -134,6 +134,7 @@ from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateR
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.release_note_resources import GetReleaseNoteBundle
 from resources.rock_explorer_resources import (
+    CloneRockExplorerFeature,
     DeleteRockExplorerFeature,
     GetRockExplorerFeature,
     GetRockExplorerFeaturesGeoJSON,
@@ -576,6 +577,11 @@ def configure_api(app):
     )
     rock_explorer_bp.add_url_rule(
         "/features/<uuid:feature_id>", view_func=DeleteRockExplorerFeature.as_view("delete_rock_explorer_feature")
+    )
+    rock_explorer_bp.add_url_rule(
+        "/features/<uuid:feature_id>/clone",
+        view_func=CloneRockExplorerFeature.as_view("clone_rock_explorer_feature"),
+        methods=["POST"],
     )
     app.register_blueprint(rock_explorer_bp, url_prefix="/api/rock-explorer")
 

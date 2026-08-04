@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from marshmallow import fields, validate
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -19,6 +20,7 @@ from util.rock_explorer import (
     apply_rock_explorer_metadata,
     assert_can_view_feature,
     assert_draft_mutable,
+    clone_rock_explorer_feature,
     is_draft,
 )
 from util.security_util import check_auth_claims
@@ -161,3 +163,20 @@ class DeleteRockExplorerFeature(MethodView):
         db.session.delete(feature)
         db.session.commit()
         return jsonify(None), 204
+
+
+_clone_args = {
+    "recordingDeviceId": fields.Str(required=True, validate=validate.Length(min=1, max=128)),
+}
+
+
+class CloneRockExplorerFeature(MethodView):
+    @jwt_required()
+    @check_auth_claims(member=True)
+    def post(self, feature_id):
+        data = parser.parse(_clone_args, request)
+        feature = RockExplorerFeature.find_by_id(feature_id)
+        user = _current_user()
+        clone = clone_rock_explorer_feature(feature, user, data["recordingDeviceId"])
+        db.session.commit()
+        return _dump_feature(clone), 201
