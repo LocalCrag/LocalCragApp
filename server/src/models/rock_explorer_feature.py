@@ -4,7 +4,11 @@ from sqlalchemy.dialects.postgresql import JSON
 from extensions import db
 from models.base_entity import BaseEntity
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
+from models.enums.rock_explorer_recording_state_enum import (
+    RockExplorerRecordingStateEnum,
+)
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from models.tag import Tag
@@ -24,7 +28,7 @@ class RockExplorerFeature(BaseEntity):
 
     __tablename__ = "rock_explorer_features"
 
-    geometry = db.Column(JSON, nullable=False)
+    geometry = db.Column(JSON, nullable=True)
     parking_sites = db.Column(JSON, nullable=False, default=lambda: [])
     paths = db.Column(JSON, nullable=False, default=lambda: [])
 
@@ -38,6 +42,24 @@ class RockExplorerFeature(BaseEntity):
     grade_value_min = db.Column(db.Integer, nullable=True)
     grade_value_max = db.Column(db.Integer, nullable=True)
     access_issues = db.Column(JSON, nullable=False, default=lambda: [])
+
+    status = db.Column(
+        db.Enum(
+            RockExplorerFeatureStatusEnum,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
+        nullable=False,
+        default=RockExplorerFeatureStatusEnum.PUBLISHED,
+    )
+    recording_device_id = db.Column(db.String(128), nullable=True)
+    recording_state = db.Column(
+        db.Enum(
+            RockExplorerRecordingStateEnum,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
+        nullable=True,
+    )
+    recording_updated_at = db.Column(db.DateTime(), nullable=True)
 
     # Same Tag association pattern as GalleryImage.tags (topo links).
     topo_links = db.relationship(Tag, secondary=rock_explorer_feature_tags)
