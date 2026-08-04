@@ -32,6 +32,7 @@ from models.user import User
 from util.email import send_comment_created_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
+from util.rock_explorer import assert_can_view_feature
 from util.secret_service import SecretService
 from util.security_util import current_user_is_member
 from webargs_schemas.comment_args import comment_args, comment_update_args
@@ -41,6 +42,14 @@ def require_rock_explorer_membership(object_type: str) -> None:
     """Rock explorer content is member-only; there is no public tier for these object types."""
     if object_type == "RockExplorerFeature" and not current_user_is_member():
         raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
+
+def _assert_can_view_rock_explorer_comment_target(obj_type: str, target) -> None:
+    """Draft rock-explorer features are owner-only for comments (T-10-05)."""
+    if obj_type != "RockExplorerFeature":
+        return
+    user = User.find_by_email(get_jwt_identity())
+    assert_can_view_feature(target, user)
 
 
 class CreateComment(MethodView):
@@ -71,6 +80,7 @@ class CreateComment(MethodView):
             raise BadRequest("Unsupported object type")
 
         require_rock_explorer_membership(obj_type)
+        _assert_can_view_rock_explorer_comment_target(obj_type, target)
 
         # Enforce secret spot visibility
         if hasattr(target, "secret") and target.secret and not SecretService.can_view_secrets():
@@ -228,6 +238,9 @@ class GetComments(MethodView):
             root = Comment.find_by_id(root_id)
             current_type_for_secret = root.object_type
             require_rock_explorer_membership(root.object_type)
+            if root.object_type == "RockExplorerFeature":
+                feature = RockExplorerFeature.find_by_id(root.object_id)
+                _assert_can_view_rock_explorer_comment_target(root.object_type, feature)
             filters.extend([Comment.root_id == root_id])
             order_by_cols = [Comment.time_created.asc(), Comment.id]
         else:
@@ -239,6 +252,9 @@ class GetComments(MethodView):
                 raise BadRequest("object-type and object-id are required and must be valid.")
             current_type_for_secret = obj_type
             require_rock_explorer_membership(obj_type)
+            if obj_type == "RockExplorerFeature":
+                feature = RockExplorerFeature.find_by_id(obj_id)
+                _assert_can_view_rock_explorer_comment_target(obj_type, feature)
             filters.extend(
                 [
                     Comment.object_type == obj_type,
