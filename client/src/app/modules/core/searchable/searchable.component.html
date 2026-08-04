@@ -25,8 +25,7 @@
         <div class="search-result-name">{{ searchable.line.name }}</div>
         <div class="search-result-meta">
           <b>{{ t(searchable.line.type) }}</b
-          >, {{ searchable.line.area.name
-          }}<!--
+          >, {{ searchable.line.area.name }}<!--
             -->
           @if (searchable.line.area.sector.slug !== environment.skippedSlug) {
             , {{ searchable.line.area.sector.name }}
@@ -61,8 +60,7 @@
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.area.name }}</div>
         <div class="search-result-meta">
-          <b>{{ t("area") }}</b
-          ><!--
+          <b>{{ t("area") }}</b><!--
             -->
           @if (searchable.area.sector.slug !== environment.skippedSlug) {
             , {{ searchable.area.sector.name }}
@@ -95,8 +93,7 @@
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.sector.name }}</div>
         <div class="search-result-meta">
-          <b>{{ t("sector") }}</b
-          ><!--
+          <b>{{ t("sector") }}</b><!--
             -->
           @if (searchable.sector.crag.slug !== environment.skippedSlug) {
             , {{ searchable.sector.crag.name }}

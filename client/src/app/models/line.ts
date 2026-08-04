@@ -145,13 +145,11 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
       : null;
     line.faName = payload.faName;
     line.faUsers = payload.faUsers
-      ? payload.faUsers.map(
-          (faUser: any): LineFaUser => ({
-            user: User.deserialize(faUser),
-            year: faUser.year ?? null,
-            date: faUser.date ? parseLocalCalendarDate(faUser.date) : null,
-          }),
-        )
+      ? payload.faUsers.map((faUser: any): LineFaUser => ({
+          user: User.deserialize(faUser),
+          year: faUser.year ?? null,
+          date: faUser.date ? parseLocalCalendarDate(faUser.date) : null,
+        }))
       : [];
     line.routesetter = payload.routesetter;
     line.setDate = payload.setDate
