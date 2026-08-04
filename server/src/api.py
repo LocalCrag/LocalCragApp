@@ -134,10 +134,10 @@ from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateR
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.release_note_resources import GetReleaseNoteBundle
 from resources.rock_explorer_resources import (
-    CreateRockExplorerFeature,
     DeleteRockExplorerFeature,
     GetRockExplorerFeature,
     GetRockExplorerFeaturesGeoJSON,
+    RockExplorerFeatures,
     UpdateRockExplorerFeature,
 )
 from resources.scale_resources import (
@@ -567,9 +567,7 @@ def configure_api(app):
     rock_explorer_bp.add_url_rule(
         "/features.geojson", view_func=GetRockExplorerFeaturesGeoJSON.as_view("get_rock_explorer_features_geojson")
     )
-    rock_explorer_bp.add_url_rule(
-        "/features", view_func=CreateRockExplorerFeature.as_view("create_rock_explorer_feature")
-    )
+    rock_explorer_bp.add_url_rule("/features", view_func=RockExplorerFeatures.as_view("get_rock_explorer_features"))
     rock_explorer_bp.add_url_rule(
         "/features/<uuid:feature_id>", view_func=GetRockExplorerFeature.as_view("get_rock_explorer_feature")
     )

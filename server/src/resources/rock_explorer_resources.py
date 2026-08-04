@@ -9,12 +9,18 @@ from marshmallow_schemas.rock_explorer_schema import (
     dump_rock_explorer_geojson_collection,
     rock_explorer_feature_schema,
 )
+from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from models.rock_explorer_feature import RockExplorerFeature
 from models.user import User
-from util.rock_explorer import apply_rock_explorer_metadata
+from util.rock_explorer import (
+    apply_rock_explorer_metadata,
+    assert_can_view_feature,
+    assert_draft_mutable,
+    is_draft,
+)
 from util.security_util import check_auth_claims
 from util.tag_object_prefetch import prefetch_tag_objects
 from webargs_schemas.rock_explorer_args import (
@@ -50,11 +56,16 @@ def _dump_feature(feature: RockExplorerFeature):
     return rock_explorer_feature_schema.dump(feature)
 
 
+def _current_user():
+    return User.find_by_email(get_jwt_identity())
+
+
 class GetRockExplorerFeaturesGeoJSON(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
     def get(self):
         query = _apply_feature_filters(RockExplorerFeature.query)
+        query = query.filter(RockExplorerFeature.status == RockExplorerFeatureStatusEnum.PUBLISHED)
         features = query.order_by(RockExplorerFeature.time_created.desc()).all()
         return jsonify(dump_rock_explorer_geojson_collection(features)), 200
 
@@ -64,10 +75,33 @@ class GetRockExplorerFeature(MethodView):
     @check_auth_claims(member=True)
     def get(self, feature_id):
         feature = RockExplorerFeature.find_by_id(feature_id)
+        assert_can_view_feature(feature, _current_user())
         return _dump_feature(feature), 200
 
 
-class CreateRockExplorerFeature(MethodView):
+class RockExplorerFeatures(MethodView):
+    """Collection: GET owner drafts (?status=draft), POST create."""
+
+    @jwt_required()
+    @check_auth_claims(member=True)
+    def get(self):
+        status = request.args.get("status")
+        if status != "draft":
+            raise BadRequest("GET /features requires status=draft.")
+        user = _current_user()
+        features = (
+            RockExplorerFeature.query.filter(
+                RockExplorerFeature.status == RockExplorerFeatureStatusEnum.DRAFT,
+                RockExplorerFeature.created_by_id == user.id,
+            )
+            .order_by(
+                RockExplorerFeature.recording_updated_at.desc().nullslast(),
+                RockExplorerFeature.time_updated.desc(),
+            )
+            .all()
+        )
+        return [_dump_feature(f) for f in features], 200
+
     @jwt_required()
     @check_auth_claims(member=True)
     def post(self):
@@ -76,7 +110,7 @@ class CreateRockExplorerFeature(MethodView):
             request,
             validate=cross_validate_rock_explorer_feature_args,
         )
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = _current_user()
 
         feature = RockExplorerFeature()
         feature.geometry = data["geometry"]
@@ -86,6 +120,10 @@ class CreateRockExplorerFeature(MethodView):
         db.session.add(feature)
         db.session.commit()
         return _dump_feature(feature), 201
+
+
+# Back-compat alias for imports that still reference CreateRockExplorerFeature
+CreateRockExplorerFeature = RockExplorerFeatures
 
 
 class UpdateRockExplorerFeature(MethodView):
@@ -98,6 +136,8 @@ class UpdateRockExplorerFeature(MethodView):
             validate=cross_validate_rock_explorer_feature_args,
         )
         feature = RockExplorerFeature.find_by_id(feature_id)
+        user = _current_user()
+        assert_draft_mutable(feature, user, data.get("recordingDeviceId"))
 
         feature.geometry = data["geometry"]
         apply_rock_explorer_metadata(feature, data)
@@ -112,6 +152,12 @@ class DeleteRockExplorerFeature(MethodView):
     @check_auth_claims(member=True)
     def delete(self, feature_id):
         feature = RockExplorerFeature.find_by_id(feature_id)
+        user = _current_user()
+        if is_draft(feature):
+            device_id = request.args.get("recordingDeviceId")
+            if device_id is None and request.is_json and request.json:
+                device_id = request.json.get("recordingDeviceId")
+            assert_draft_mutable(feature, user, device_id)
         db.session.delete(feature)
         db.session.commit()
         return jsonify(None), 204
