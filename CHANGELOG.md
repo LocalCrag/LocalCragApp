@@ -1,3 +1,18 @@
+# [1.49.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.4...v1.49.0) (2026-08-04)
+
+
+### Bug Fixes
+
+* **core:** fix hero scroll position to prevent gap with active top level alert ([#1239](https://github.com/LocalCrag/LocalCragApp/issues/1239)) ([f2e148a](https://github.com/LocalCrag/LocalCragApp/commit/f2e148ae37d28a8410fe0c8b11c1172b7662412c)), closes [#1225](https://github.com/LocalCrag/LocalCragApp/issues/1225)
+* **core:** fix issue where menu could not be scrolled on mobile on overflow ([#1235](https://github.com/LocalCrag/LocalCragApp/issues/1235)) ([acd8484](https://github.com/LocalCrag/LocalCragApp/commit/acd8484a6edcede32602b83b49b4c73dadaa226a)), closes [#1218](https://github.com/LocalCrag/LocalCragApp/issues/1218)
+* **topo:** fix issue where comment count in tabs didn't include replies ([#1237](https://github.com/LocalCrag/LocalCragApp/issues/1237)) ([fef0560](https://github.com/LocalCrag/LocalCragApp/commit/fef0560c9c1905c9cca3e4a7d59ce4cf800444df)), closes [#1223](https://github.com/LocalCrag/LocalCragApp/issues/1223)
+* **topo:** hide ascent count chip in line list if line has no ascents ([#1238](https://github.com/LocalCrag/LocalCragApp/issues/1238)) ([1da430b](https://github.com/LocalCrag/LocalCragApp/commit/1da430bc2bdc4a93f4f2475be6f7cd46401f04b7)), closes [#1226](https://github.com/LocalCrag/LocalCragApp/issues/1226)
+
+
+### Features
+
+* **menu:** make search dialog closable via keyboard ([#1236](https://github.com/LocalCrag/LocalCragApp/issues/1236)) ([a75759a](https://github.com/LocalCrag/LocalCragApp/commit/a75759a67f98332b026646d85e489cafffab17df)), closes [#1219](https://github.com/LocalCrag/LocalCragApp/issues/1219)
+
 ## [1.48.4](https://github.com/LocalCrag/LocalCragApp/compare/v1.48.3...v1.48.4) (2026-08-03)
 
 
