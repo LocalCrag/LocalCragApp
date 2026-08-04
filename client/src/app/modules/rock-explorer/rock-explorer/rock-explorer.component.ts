@@ -12,6 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   GeolocateControl,
+  GeoJSONSource,
   Map as MaplibreMap,
   MapLayerMouseEvent,
   MapMouseEvent,
@@ -62,7 +63,10 @@ import {
   polygonRingSelfIntersects,
 } from '../map/polygon-draft';
 import { RockExplorerMapLayers } from '../map/rock-explorer-map-layers';
-import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
+import {
+  ROCK_EXPLORER_LAYERS,
+  ROCK_EXPLORER_SOURCES,
+} from '../map/rock-explorer-map.constants';
 
 /** When set with point/polygon draw mode, finishing saves onto this feature instead of creating. */
 type GeometryRedrawMode = 'point' | 'polygon' | null;
@@ -130,6 +134,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private imageLocationsData: FeatureCollection<Geometry> =
     emptyFeatureCollection();
   private readonly imageHover = new RockExplorerImageHoverPopup();
+  /** Guards async getClusterLeaves against stale mousemove results. */
+  private imageClusterHoverRequestId = 0;
   /** True for the rest of a map click after an image GPS marker pin is handled. */
   private consumingImageLocationClick = false;
 
@@ -1076,6 +1082,25 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.map!.on('click', ROCK_EXPLORER_LAYERS.imageLocations, (event) =>
           this.ngZone.run(() => this.onImageLocationClick(event)),
         );
+        for (const clusterLayerId of [
+          ROCK_EXPLORER_LAYERS.imageClusters,
+          ROCK_EXPLORER_LAYERS.imageClusterCount,
+        ]) {
+          this.map!.on('mouseenter', clusterLayerId, () => {
+            if (this.map) {
+              this.map.getCanvas().style.cursor = 'pointer';
+            }
+          });
+          this.map!.on('mousemove', clusterLayerId, (event) =>
+            this.onImageLocationMouseMove(event),
+          );
+          this.map!.on('mouseleave', clusterLayerId, () =>
+            this.onImageLocationMouseLeave(),
+          );
+          this.map!.on('click', clusterLayerId, (event) =>
+            this.ngZone.run(() => this.onImageLocationClick(event)),
+          );
+        }
         this.map!.on('click', (event) => {
           // Geometry drafting updates the map directly; only re-enter Angular for UI chrome.
           if (
@@ -1628,10 +1653,58 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       number,
       number,
     ];
+    const clusterId = feature.properties?.['cluster_id'];
+    const pointCount = feature.properties?.['point_count'];
+    if (clusterId != null && typeof pointCount === 'number') {
+      void this.showClusterImageHover(clusterId, pointCount, coordinates);
+      return;
+    }
+    // Invalidate any in-flight getClusterLeaves so a stale cluster popup
+    // cannot overwrite this unclustered hover.
+    this.imageClusterHoverRequestId++;
     this.imageHover.show(this.map, feature, coordinates);
   }
 
+  private async showClusterImageHover(
+    clusterId: number | string,
+    pointCount: number,
+    coordinates: [number, number],
+  ): Promise<void> {
+    if (!this.map) {
+      return;
+    }
+    const requestId = ++this.imageClusterHoverRequestId;
+    const featureKey = `cluster:${clusterId}`;
+    const source = this.map.getSource(ROCK_EXPLORER_SOURCES.imageLocations) as
+      GeoJSONSource | undefined;
+    if (!source) {
+      return;
+    }
+    try {
+      const leaves = await source.getClusterLeaves(Number(clusterId), 1, 0);
+      if (
+        requestId !== this.imageClusterHoverRequestId ||
+        !this.map ||
+        this.isMapOverlayInteractionActive ||
+        this.ui.isPolygonToolActive()
+      ) {
+        return;
+      }
+      const leaf = leaves[0];
+      if (!leaf) {
+        return;
+      }
+      this.imageHover.show(this.map, leaf, coordinates, {
+        count: pointCount,
+        featureKey,
+      });
+    } catch {
+      // Ignore transient cluster-leaf errors during rapid hover / style switch.
+    }
+  }
+
   private onImageLocationMouseLeave() {
+    this.imageClusterHoverRequestId++;
     this.imageHover.hide();
     if (
       this.map &&
@@ -1660,11 +1733,46 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       number,
       number,
     ];
+    const clusterId = feature.properties?.['cluster_id'];
+    if (clusterId != null) {
+      void this.expandImageCluster(clusterId, coordinates);
+      this.consumingImageLocationClick = true;
+      setTimeout(() => {
+        this.consumingImageLocationClick = false;
+      }, 0);
+      return;
+    }
     this.imageHover.show(this.map, feature, coordinates, { pin: true });
     this.consumingImageLocationClick = true;
     setTimeout(() => {
       this.consumingImageLocationClick = false;
     }, 0);
+  }
+
+  private async expandImageCluster(
+    clusterId: number | string,
+    coordinates: [number, number],
+  ): Promise<void> {
+    if (!this.map) {
+      return;
+    }
+    const source = this.map.getSource(ROCK_EXPLORER_SOURCES.imageLocations) as
+      GeoJSONSource | undefined;
+    if (!source) {
+      return;
+    }
+    try {
+      const zoom = await source.getClusterExpansionZoom(Number(clusterId));
+      if (!this.map) {
+        return;
+      }
+      this.map.easeTo({
+        center: coordinates,
+        zoom,
+      });
+    } catch {
+      // Ignore if cluster no longer exists after data/style refresh.
+    }
   }
 
   private openGalleryFromMapImage(galleryImageId: string): void {

@@ -21,6 +21,8 @@ export const ROCK_EXPLORER_LAYERS = {
   selectedPolygons: 'rock-explorer-selected-polygons',
   labels: 'rock-explorer-labels',
   imageLocations: 'rock-explorer-image-locations',
+  imageClusters: 'rock-explorer-image-clusters',
+  imageClusterCount: 'rock-explorer-image-cluster-count',
   paths: 'rock-explorer-paths',
   pathLabels: 'rock-explorer-path-labels',
   parking: 'rock-explorer-parking',
