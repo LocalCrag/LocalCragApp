@@ -19,14 +19,7 @@ export enum ObjectType {
 }
 
 export type LCObject =
-  | Region
-  | Crag
-  | Sector
-  | Area
-  | Line
-  | User
-  | Post
-  | RockExplorerFeature;
+  Region | Crag | Sector | Area | Line | User | Post | RockExplorerFeature;
 
 export const getObjectType = (object: LCObject): ObjectType => {
   if (object instanceof Crag) {
