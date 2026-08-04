@@ -1,6 +1,13 @@
 <div *transloco="let t">
   <div class="rock-explorer__toolbar">
-    @if (!ui.isDrawToolActive()) {
+    @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
+      <p-button
+        severity="secondary"
+        icon="pi pi-circle-fill"
+        [label]="t('rockExplorer.modeRecord')"
+        (onClick)="ui.dispatch({ type: 'enterRecord' })"
+        size="small"
+      />
       <p-button
         severity="secondary"
         icon="pi pi-map-marker"
@@ -14,6 +21,52 @@
         [label]="t('rockExplorer.modePolygon')"
         (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'polygon' })"
         size="small"
+      />
+    }
+    @if (ui.recordModeActive()) {
+      @if (ui.recordingState() === "recording") {
+        <p-button
+          icon="pi pi-pause"
+          [label]="t('rockExplorer.recordPause')"
+          (onClick)="ui.dispatch({ type: 'pauseRecording' })"
+          size="small"
+          severity="secondary"
+        />
+      } @else {
+        <p-button
+          icon="pi pi-play"
+          [label]="t('rockExplorer.recordResume')"
+          (onClick)="ui.dispatch({ type: 'resumeRecording' })"
+          size="small"
+          severity="secondary"
+        />
+      }
+      <p-button
+        icon="pi pi-check"
+        [label]="t('rockExplorer.recordFinishPath')"
+        (onClick)="ui.dispatch({ type: 'finishRecordPath' })"
+        [disabled]="ui.recordPathVertexCount() < 2"
+        size="small"
+        severity="success"
+      />
+      <p-button
+        icon="pi pi-plus"
+        [label]="t('rockExplorer.recordNewPath')"
+        (onClick)="ui.dispatch({ type: 'newRecordPath' })"
+        [disabled]="
+          ui.recordingState() === 'recording' &&
+          ui.recordPathVertexCount() > 0 &&
+          ui.recordPathVertexCount() < 2
+        "
+        size="small"
+        severity="secondary"
+      />
+      <p-button
+        icon="pi pi-times"
+        [label]="t('rockExplorer.recordExit')"
+        (onClick)="ui.dispatch({ type: 'exitRecord' })"
+        size="small"
+        severity="secondary"
       />
     }
     @if (ui.drawMode() === "point") {
@@ -68,7 +121,7 @@
       />
     }
     @if (!ui.isMobileViewport()) {
-      @if (!ui.isDrawToolActive()) {
+      @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
         <p-button
           class="rock-explorer__filter-btn"
           (onClick)="ui.toggleFilters()"

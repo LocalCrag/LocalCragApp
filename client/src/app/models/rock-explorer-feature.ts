@@ -10,16 +10,25 @@ import { Tag } from './tag';
 import {
   RockExplorerParkingSite,
   RockExplorerPath,
+  RockExplorerPathSource,
   cloneParkingSites,
   clonePaths,
 } from './rock-explorer-misc';
 
+export type RockExplorerFeatureStatus = 'draft' | 'published';
+export type RockExplorerRecordingState = 'recording' | 'paused';
+
 /**
  * Rock Explorer mapped feature (Point or Polygon).
+ * Drafts may omit geometry until publish (Phase 10+).
  */
 export class RockExplorerFeature extends AbstractModel {
   title: string | null;
   description: string | null;
+  status: RockExplorerFeatureStatus;
+  recordingDeviceId: string | null;
+  recordingState: RockExplorerRecordingState | null;
+  recordingUpdatedAt: string | null;
   potential: RockExplorerPotential | null;
   rockQuality: RockExplorerRockQuality | null;
   rockType: RockExplorerRockType | null;
@@ -28,7 +37,7 @@ export class RockExplorerFeature extends AbstractModel {
   gradeValueMin: number | null;
   gradeValueMax: number | null;
   accessIssues: RockExplorerAccessIssue[];
-  geometry: Geometry;
+  geometry: Geometry | null;
   parkingSites: RockExplorerParkingSite[];
   paths: RockExplorerPath[];
   /** Topo targets stored as Tag associations (same shape as gallery tags). */
@@ -40,6 +49,10 @@ export class RockExplorerFeature extends AbstractModel {
     AbstractModel.deserializeAbstractAttributes(feature, payload);
     feature.title = payload.title ?? null;
     feature.description = payload.description ?? null;
+    feature.status = payload.status ?? 'published';
+    feature.recordingDeviceId = payload.recordingDeviceId ?? null;
+    feature.recordingState = payload.recordingState ?? null;
+    feature.recordingUpdatedAt = payload.recordingUpdatedAt ?? null;
     feature.potential = payload.potential ?? null;
     feature.rockQuality = payload.rockQuality ?? null;
     feature.rockType = payload.rockType ?? null;
@@ -48,10 +61,11 @@ export class RockExplorerFeature extends AbstractModel {
     feature.gradeValueMin = payload.gradeValueMin ?? null;
     feature.gradeValueMax = payload.gradeValueMax ?? null;
     feature.accessIssues = payload.accessIssues ?? [];
-    feature.geometry = payload.geometry;
+    feature.geometry = payload.geometry ?? null;
     feature.parkingSites = cloneParkingSites(payload.parkingSites);
     feature.paths = (payload.paths ?? []).map((path: any) => ({
       id: path.id,
+      source: (path.source as RockExplorerPathSource) ?? 'manual',
       title: path.title ?? null,
       description: path.description ?? null,
       geometry: path.geometry as LineString,
@@ -64,9 +78,11 @@ export class RockExplorerFeature extends AbstractModel {
   }
 
   public static serialize(feature: RockExplorerFeature): any {
-    return {
+    const status = feature.status ?? 'published';
+    const body: any = {
       title: feature.title,
       description: feature.description,
+      status,
       potential: feature.potential,
       rockQuality: feature.rockQuality,
       rockType: feature.rockType,
@@ -83,10 +99,24 @@ export class RockExplorerFeature extends AbstractModel {
           lat: site.lat as number,
           lng: site.lng as number,
         })),
-      paths: clonePaths(feature.paths).filter(
-        (path) => (path.geometry?.coordinates?.length ?? 0) >= 2,
-      ),
+      paths: clonePaths(feature.paths)
+        .filter((path) => (path.geometry?.coordinates?.length ?? 0) >= 2)
+        .map((path) => ({
+          id: path.id,
+          source: path.source ?? 'manual',
+          title: path.title,
+          description: path.description,
+          geometry: path.geometry,
+        })),
       topoLinks: (feature.topoLinks ?? []).map(Tag.serialize),
     };
+    if (status === 'draft') {
+      body.recordingDeviceId = feature.recordingDeviceId;
+      body.recordingState = feature.recordingState;
+    } else {
+      body.recordingDeviceId = null;
+      body.recordingState = null;
+    }
+    return body;
   }
 }

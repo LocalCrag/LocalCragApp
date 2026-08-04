@@ -28,6 +28,14 @@ export class RockExplorerService {
     );
   }
 
+  /** Owner-only draft list (Phase 10: GET /features?status=draft). */
+  public listDrafts(): Observable<RockExplorerFeature[]> {
+    const params = new HttpParams().set('status', 'draft');
+    return this.http
+      .get<any[]>(this.api.rockExplorer.getFeatures(), { params })
+      .pipe(map((rows) => (rows ?? []).map(RockExplorerFeature.deserialize)));
+  }
+
   public getFeature(id: string): Observable<RockExplorerFeature> {
     return this.http
       .get(this.api.rockExplorer.getFeature(id))
@@ -56,9 +64,24 @@ export class RockExplorerService {
       .pipe(map(RockExplorerFeature.deserialize));
   }
 
-  public deleteFeature(feature: RockExplorerFeature): Observable<null> {
+  public cloneFeature(
+    featureId: string,
+    recordingDeviceId: string,
+  ): Observable<RockExplorerFeature> {
     return this.http
-      .delete(this.api.rockExplorer.deleteFeature(feature.id))
+      .post(this.api.rockExplorer.cloneFeature(featureId), {
+        recordingDeviceId,
+      })
+      .pipe(map(RockExplorerFeature.deserialize));
+  }
+
+  public deleteFeature(feature: RockExplorerFeature): Observable<null> {
+    let params = new HttpParams();
+    if (feature.status === 'draft' && feature.recordingDeviceId) {
+      params = params.set('recordingDeviceId', feature.recordingDeviceId);
+    }
+    return this.http
+      .delete(this.api.rockExplorer.deleteFeature(feature.id), { params })
       .pipe(map(() => null));
   }
 

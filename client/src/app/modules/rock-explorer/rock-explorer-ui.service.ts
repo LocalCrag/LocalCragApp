@@ -5,6 +5,7 @@ import { RockExplorerFeature } from '../../models/rock-explorer-feature';
 import { Coordinates } from '../../interfaces/coordinates.interface';
 import { Position } from 'geojson';
 import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
+import { RecordingState } from './rock-explorer-recording';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
@@ -52,7 +53,13 @@ export type RockExplorerCommand =
   | { type: 'pathDraftChange' }
   | { type: 'miscPreviewChange' }
   | { type: 'miscSaved'; feature: RockExplorerFeature }
-  | { type: 'focusPathGeometry'; positions: Position[] };
+  | { type: 'focusPathGeometry'; positions: Position[] }
+  | { type: 'enterRecord' }
+  | { type: 'exitRecord' }
+  | { type: 'pauseRecording' }
+  | { type: 'resumeRecording' }
+  | { type: 'finishRecordPath' }
+  | { type: 'newRecordPath' };
 
 /**
  * Session state + command bus for rock explorer.
@@ -86,6 +93,15 @@ export class RockExplorerUiService {
   readonly selectedPathVertexIndex = signal<number | null>(null);
   readonly showFilters = signal(false);
 
+  /** True while Record mode chrome is active (exclusive vs point/polygon). */
+  readonly recordModeActive = signal(false);
+  /** Mirrors session recordingState for toolbar Pause/Resume. */
+  readonly recordingState = signal<RecordingState | null>(null);
+  /** Active open GPS path vertex count (for Finish path enablement). */
+  readonly recordPathVertexCount = signal(0);
+  /** True while an in-memory draft session exists (survives exit Record). */
+  readonly hasRecordingSession = signal(false);
+
   readonly isPolygonToolActive = computed(() => {
     const mode = this.drawMode();
     return mode === 'polygon' || mode === 'editPolygon';
@@ -93,6 +109,8 @@ export class RockExplorerUiService {
   readonly isDrawToolActive = computed(
     () => this.drawMode() === 'point' || this.isPolygonToolActive(),
   );
+  /** Point/polygon tools available only when not in Record mode. */
+  readonly canUseGeometryTools = computed(() => !this.recordModeActive());
 
   private readonly commandsSubject = new Subject<RockExplorerCommand>();
   readonly commands$ = this.commandsSubject.asObservable();
@@ -113,6 +131,9 @@ export class RockExplorerUiService {
   }
 
   setDrawMode(mode: RockExplorerDrawMode): void {
+    if (this.recordModeActive()) {
+      return;
+    }
     this.drawMode.set(mode);
   }
 

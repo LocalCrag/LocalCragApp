@@ -48,6 +48,10 @@ import {
   RockExplorerDrawMode,
   RockExplorerFilters,
 } from '../rock-explorer-ui.service';
+import {
+  RockExplorerRecordingSession,
+  getOrCreateRecordingDeviceId,
+} from '../rock-explorer-recording';
 import { geometryFromOverlayPoints } from '../../../utility/geo/convex-hull';
 import { startDocumentDrag } from '../../../utility/map/document-drag';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
@@ -147,6 +151,12 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private imageClusterHoverRequestId = 0;
   /** True for the rest of a map click after an image GPS marker pin is handled. */
   private consumingImageLocationClick = false;
+
+  /** Live-tracking session (survives exit Record until component destroy). */
+  private recordingSession: RockExplorerRecordingSession | null = null;
+  private geolocateControl: GeolocateControl | null = null;
+  private geoWatchId: number | null = null;
+  private recordingSyncInFlight = false;
 
   public get isCoordinatePickActive(): boolean {
     return (
@@ -280,6 +290,24 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       case 'focusPathGeometry':
         this.fitMapToPositions(cmd.positions);
         break;
+      case 'enterRecord':
+        this.enterRecordMode();
+        break;
+      case 'exitRecord':
+        this.exitRecordMode();
+        break;
+      case 'pauseRecording':
+        this.pauseRecording();
+        break;
+      case 'resumeRecording':
+        this.resumeRecording();
+        break;
+      case 'finishRecordPath':
+        this.finishRecordPath();
+        break;
+      case 'newRecordPath':
+        this.newRecordPath();
+        break;
     }
   }
 
@@ -341,11 +369,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       );
     }
     this.cancelDragListeners();
+    this.stopGeoWatch();
     this.imageHover.hide({ force: true });
     this.map?.remove();
   }
 
   public setRockExplorerDrawMode(mode: RockExplorerDrawMode) {
+    if (this.ui.recordModeActive()) {
+      return;
+    }
     this.endVertexDrag();
     this.cancelImageCoordinatePick();
     this.ui.drawMode.set(mode);
@@ -631,6 +663,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   public onPathDrawChange(active: boolean): void {
+    if (active && this.ui.recordModeActive()) {
+      return;
+    }
     if (active) {
       this.cancelImageCoordinatePick();
       this.cancelParkingCoordinatePick();
@@ -1049,13 +1084,12 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         zoom: 5,
       });
       this.map.addControl(new NavigationControl({}), 'top-right');
-      this.map.addControl(
-        new GeolocateControl({
-          positionOptions: { enableHighAccuracy: true },
-          trackUserLocation: true,
-        }),
-        'top-right',
-      );
+      this.geolocateControl = new GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+        showAccuracyCircle: true,
+      });
+      this.map.addControl(this.geolocateControl, 'top-right');
       this.map.on('load', () => {
         void this.rebindMapLayers().then(() => {
           this.fitToFeatures();
@@ -1898,5 +1932,271 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.panel.gallery.openGalleryById(galleryImageId);
     this.cdr.detectChanges();
+  }
+
+  private enterRecordMode(): void {
+    if (this.ui.recordModeActive()) {
+      return;
+    }
+    if (this.ui.isDrawToolActive()) {
+      this.setRockExplorerDrawMode('select');
+    }
+    if (this.ui.drawingPath()) {
+      this.cancelPathDraw();
+    }
+    this.closePanel();
+    this.ui.showFilters.set(false);
+    this.ui.drawMode.set('select');
+
+    if (!this.recordingSession) {
+      this.recordingSession = new RockExplorerRecordingSession(
+        getOrCreateRecordingDeviceId(),
+      );
+    } else {
+      this.recordingSession.resume();
+    }
+
+    this.ui.recordModeActive.set(true);
+    this.ui.hasRecordingSession.set(true);
+    this.syncRecordUiSignals();
+    this.refreshRecordingPathsOnMap();
+    this.startGeoWatch();
+    try {
+      this.geolocateControl?.trigger();
+    } catch {
+      // Geolocate may throw if permissions pending; watch handles denial.
+    }
+    this.cdr.detectChanges();
+  }
+
+  private exitRecordMode(): void {
+    if (!this.ui.recordModeActive()) {
+      return;
+    }
+    this.stopGeoWatch();
+    if (this.recordingSession?.isRecording) {
+      this.recordingSession.pause();
+    }
+    this.ui.recordModeActive.set(false);
+    this.syncRecordUiSignals();
+    void this.syncRecordingToServer(true);
+    this.cdr.detectChanges();
+  }
+
+  private pauseRecording(): void {
+    if (!this.recordingSession || !this.ui.recordModeActive()) {
+      return;
+    }
+    this.recordingSession.pause();
+    this.syncRecordUiSignals();
+    void this.syncRecordingToServer(true);
+    this.cdr.detectChanges();
+  }
+
+  private resumeRecording(): void {
+    if (!this.recordingSession || !this.ui.recordModeActive()) {
+      return;
+    }
+    this.recordingSession.resume();
+    this.syncRecordUiSignals();
+    this.startGeoWatch();
+    this.cdr.detectChanges();
+  }
+
+  private finishRecordPath(): void {
+    if (!this.recordingSession || !this.ui.recordModeActive()) {
+      return;
+    }
+    if (!this.recordingSession.finishPath()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.transloco.translate(
+          marker('rockExplorer.recordFinishPathTooShort'),
+        ),
+      });
+      return;
+    }
+    this.syncRecordUiSignals();
+    this.refreshRecordingPathsOnMap();
+    void this.syncRecordingToServer(true);
+    this.cdr.detectChanges();
+  }
+
+  private newRecordPath(): void {
+    if (!this.recordingSession || !this.ui.recordModeActive()) {
+      return;
+    }
+    this.recordingSession.newPath();
+    this.syncRecordUiSignals();
+    this.refreshRecordingPathsOnMap();
+    this.startGeoWatch();
+    void this.syncRecordingToServer(true);
+    this.cdr.detectChanges();
+  }
+
+  private syncRecordUiSignals(): void {
+    const session = this.recordingSession;
+    this.ui.hasRecordingSession.set(session != null);
+    this.ui.recordingState.set(session?.recordingState ?? null);
+    this.ui.recordPathVertexCount.set(
+      session?.activePath?.geometry.coordinates.length ?? 0,
+    );
+  }
+
+  private startGeoWatch(): void {
+    if (this.geoWatchId != null) {
+      return;
+    }
+    if (!navigator.geolocation) {
+      this.onGeoPermissionDenied();
+      return;
+    }
+    this.geoWatchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        this.ngZone.run(() => this.onRecordingGeoPosition(pos));
+      },
+      () => {
+        this.ngZone.run(() => this.onGeoPermissionDenied());
+      },
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 20000 },
+    );
+  }
+
+  private stopGeoWatch(): void {
+    if (this.geoWatchId != null) {
+      navigator.geolocation.clearWatch(this.geoWatchId);
+      this.geoWatchId = null;
+    }
+  }
+
+  private onGeoPermissionDenied(): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.transloco.translate(marker('rockExplorer.recordGeoDenied')),
+    });
+    this.exitRecordMode();
+  }
+
+  private onRecordingGeoPosition(pos: GeolocationPosition): void {
+    if (!this.recordingSession || !this.ui.recordModeActive()) {
+      return;
+    }
+    if (!this.recordingSession.isRecording) {
+      return;
+    }
+    const kept = this.recordingSession.tryAppendFix({
+      lng: pos.coords.longitude,
+      lat: pos.coords.latitude,
+      accuracyM: pos.coords.accuracy,
+      altitudeM: pos.coords.altitude,
+      timestampMs: pos.timestamp,
+    });
+    if (!kept) {
+      return;
+    }
+    this.syncRecordUiSignals();
+    this.refreshRecordingPathsOnMap();
+    if (this.map) {
+      this.map.easeTo({
+        center: [pos.coords.longitude, pos.coords.latitude],
+        duration: 300,
+      });
+    }
+    if (this.recordingSession.shouldSyncNow()) {
+      void this.syncRecordingToServer(false);
+    }
+    this.cdr.detectChanges();
+  }
+
+  private refreshRecordingPathsOnMap(): void {
+    if (!this.layers || !this.recordingSession) {
+      return;
+    }
+    // Prefer recording paths while Record mode is active (don't fight misc overlays).
+    if (this.ui.editingFeature() && !this.ui.recordModeActive()) {
+      return;
+    }
+    this.layers.ensureMiscOverlayLayers();
+    this.layers.setPaths({
+      type: 'FeatureCollection',
+      features: this.recordingSession.feature.paths
+        .filter((path) => (path.geometry?.coordinates?.length ?? 0) >= 2)
+        .map((path) => ({
+          type: 'Feature' as const,
+          geometry: {
+            type: 'LineString' as const,
+            // MapLibre paints with lng/lat only; strip rich extras for display.
+            coordinates: path.geometry.coordinates.map(
+              (c) => [c[0], c[1]] as [number, number],
+            ),
+          },
+          properties: {
+            id: path.id,
+            title: path.title,
+            description: path.description,
+            source: path.source ?? 'gps',
+          },
+        })),
+    });
+  }
+
+  private async syncRecordingToServer(force: boolean): Promise<void> {
+    const session = this.recordingSession;
+    if (!session || this.recordingSyncInFlight) {
+      return;
+    }
+    if (!force && !session.shouldSyncNow()) {
+      return;
+    }
+    if (!navigator.onLine) {
+      return;
+    }
+    // Need at least one serializable path, or allow create with empty paths for device lock.
+    const serializable = session.pathsForSerialize();
+    if (!session.feature.id && serializable.length === 0 && !force) {
+      return;
+    }
+
+    this.recordingSyncInFlight = true;
+    const payload = session.feature;
+    // Temporarily expose only serializable paths for API (≥2 verts).
+    const allPaths = payload.paths;
+    payload.paths =
+      serializable.length > 0
+        ? serializable
+        : allPaths.filter((p) => (p.geometry?.coordinates?.length ?? 0) >= 2);
+
+    try {
+      if (!payload.id) {
+        const created = await new Promise<RockExplorerFeature>(
+          (resolve, reject) => {
+            this.rockExplorerService.createFeature(payload).subscribe({
+              next: resolve,
+              error: reject,
+            });
+          },
+        );
+        session.feature.id = created.id;
+        if (created.timeCreated) {
+          session.feature.timeCreated = created.timeCreated;
+        }
+      } else {
+        const updated = await new Promise<RockExplorerFeature>(
+          (resolve, reject) => {
+            this.rockExplorerService.updateFeature(payload).subscribe({
+              next: resolve,
+              error: reject,
+            });
+          },
+        );
+        session.feature.id = updated.id;
+      }
+      session.markSynced();
+    } catch {
+      // Offline / lock errors: keep local buffer (Phase 12 durable queue).
+    } finally {
+      payload.paths = allPaths;
+      this.recordingSyncInFlight = false;
+    }
   }
 }
