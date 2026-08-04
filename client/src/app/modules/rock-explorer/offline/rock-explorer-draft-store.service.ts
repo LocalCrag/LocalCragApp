@@ -97,10 +97,17 @@ export class RockExplorerDraftStoreService {
   }
 
   async deleteLocal(localId: string): Promise<void> {
-    await this.db.transaction('rw', this.db.drafts, this.db.ops, async () => {
-      await this.db.drafts.delete(localId);
-      await this.db.ops.where('localId').equals(localId).delete();
-    });
+    await this.db.transaction(
+      'rw',
+      this.db.drafts,
+      this.db.ops,
+      this.db.pendingImages,
+      async () => {
+        await this.db.drafts.delete(localId);
+        await this.db.ops.where('localId').equals(localId).delete();
+        await this.db.pendingImages.where('localId').equals(localId).delete();
+      },
+    );
   }
 
   async count(): Promise<number> {

@@ -36,3 +36,15 @@ export interface RockExplorerOpRecord {
   kind: 'upsert';
   createdAt: number;
 }
+
+/** Queued geotagged image waiting for draft serverId (RE-TRACK-12). */
+export interface RockExplorerPendingImageRecord {
+  id: string;
+  localId: string;
+  blob: Blob;
+  mimeType: string;
+  fileName: string;
+  lat: number;
+  lng: number;
+  createdAt: number;
+}

@@ -5,6 +5,7 @@ import { RockExplorerService } from '../../../services/crud/rock-explorer.servic
 import { RockExplorerRecordingSession } from '../rock-explorer-recording';
 import { rockExplorerDraftDb } from './rock-explorer-draft.db';
 import { RockExplorerDraftStoreService } from './rock-explorer-draft-store.service';
+import { RockExplorerPendingImageService } from './rock-explorer-pending-image.service';
 import type { RockExplorerOpRecord } from './rock-explorer-draft.types';
 
 export type DeviceLockConflictEvent = {
@@ -32,6 +33,7 @@ const BACKOFF_MAX_MS = 30_000;
 export class RockExplorerDraftSyncService {
   private readonly store = inject(RockExplorerDraftStoreService);
   private readonly api = inject(RockExplorerService);
+  private readonly pendingImages = inject(RockExplorerPendingImageService);
   private readonly db = rockExplorerDraftDb;
 
   private flushInFlight = false;
@@ -186,6 +188,14 @@ export class RockExplorerDraftSyncService {
     } else {
       feature.id = draft.serverId;
       await firstValueFrom(this.api.updateFeature(feature));
+    }
+
+    if (draft.serverId) {
+      try {
+        await this.pendingImages.drainForLocalId(localId, draft.serverId);
+      } catch {
+        // Image drain is best-effort; draft sync already succeeded.
+      }
     }
   }
 
