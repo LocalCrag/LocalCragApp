@@ -10,6 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   GeolocateControl,
   Map as MaplibreMap,
@@ -30,6 +31,7 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { GalleryService } from '../../../services/crud/gallery.service';
+import { ClipboardService } from '../../../services/core/clipboard.service';
 import { GalleryImage } from '../../../models/gallery-image';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { ObjectType } from '../../../models/object';
@@ -97,6 +99,10 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private consumingParkingMapPick = false;
   public loading = true;
   public noApiKey = false;
+  /** Feature id from the route to open once the map is ready. */
+  private pendingDeepLinkFeatureId: string | null = null;
+  /** Skip paramMap reactions while we are writing the URL ourselves. */
+  private syncingFeatureUrl = false;
 
   private map?: MaplibreMap;
   private layers?: RockExplorerMapLayers;
@@ -120,6 +126,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private store = inject(Store);
   private rockExplorerService = inject(RockExplorerService);
   private galleryService = inject(GalleryService);
+  private clipboardService = inject(ClipboardService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
@@ -147,6 +156,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.commands$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((cmd) => this.handleUiCommand(cmd));
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        if (this.syncingFeatureUrl) {
+          return;
+        }
+        this.onFeatureRouteParam(params.get('featureId'));
+      });
   }
 
   /**
@@ -196,6 +213,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'focusOnMap':
         this.focusActiveFeature();
+        break;
+      case 'shareFeature':
+        this.shareActiveFeature();
         break;
       case 'editGeometry':
         this.startPolygonEdit();
@@ -865,7 +885,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  public closePanel() {
+  public closePanel(options?: { skipUrlSync?: boolean }) {
     this.ui.panelOpen.set(false);
     this.miscEditMode = false;
     this.cancelImageCoordinatePick();
@@ -877,6 +897,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.clearImageLocations();
     this.clearMiscOverlays();
     this.applySelectionFilters();
+    if (!options?.skipUrlSync) {
+      this.syncFeatureUrl(null);
+    }
   }
 
   public finishPolygon() {
@@ -1028,7 +1051,10 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         'top-right',
       );
       this.map.on('load', () => {
-        void this.rebindMapLayers().then(() => this.fitToFeatures());
+        void this.rebindMapLayers().then(() => {
+          this.fitToFeatures();
+          this.flushPendingDeepLink();
+        });
         this.map!.on('mousedown', ROCK_EXPLORER_LAYERS.draftPoints, (event) =>
           this.onDraftVertexMouseDown(event),
         );
@@ -1351,19 +1377,38 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.panelOpen.set(true);
     this.renderDraftGeometry(geometry);
     this.applySelectionFilters();
+    this.syncFeatureUrl(null);
     this.cdr.detectChanges();
     queueMicrotask(() => this.panel?.showCreateForm());
   }
 
-  public openEditPanel(id: string) {
+  public openEditPanel(id: string, options?: { focus?: boolean }) {
     if (this.ui.panelOpen() && this.ui.editingFeature()?.id === id) {
+      if (options?.focus) {
+        this.focusActiveFeature();
+      }
       return;
     }
     this.rockExplorerService
       .getFeature(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((feature) => {
-        this.applyFeatureToPanel(feature, false);
+      .subscribe({
+        next: (feature) => {
+          this.applyFeatureToPanel(feature, false);
+          if (options?.focus) {
+            queueMicrotask(() => this.focusActiveFeature());
+          }
+        },
+        error: () => {
+          this.pendingDeepLinkFeatureId = null;
+          this.messageService.add({
+            severity: 'error',
+            summary: this.transloco.translate(
+              marker('rockExplorer.featureNotFound'),
+            ),
+          });
+          this.syncFeatureUrl(null);
+        },
       });
   }
 
@@ -1380,8 +1425,76 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (feature.id) {
       this.loadFeatureImageLocations(feature.id);
     }
+    this.syncFeatureUrl(feature.id ?? null);
     this.cdr.detectChanges();
     queueMicrotask(() => this.panel?.showFeature(feature, formActive));
+  }
+
+  private onFeatureRouteParam(featureId: string | null) {
+    const currentId = this.ui.editingFeature()?.id ?? null;
+    if (featureId === currentId) {
+      return;
+    }
+    if (featureId) {
+      if (!this.map) {
+        this.pendingDeepLinkFeatureId = featureId;
+        return;
+      }
+      this.openEditPanel(featureId, { focus: true });
+      return;
+    }
+    this.pendingDeepLinkFeatureId = null;
+    if (this.ui.panelOpen() && currentId) {
+      this.closePanel({ skipUrlSync: true });
+    }
+  }
+
+  private flushPendingDeepLink() {
+    const id = this.pendingDeepLinkFeatureId;
+    if (!id) {
+      return;
+    }
+    this.pendingDeepLinkFeatureId = null;
+    this.openEditPanel(id, { focus: true });
+  }
+
+  private syncFeatureUrl(featureId: string | null) {
+    const current = this.route.snapshot.paramMap.get('featureId');
+    if ((featureId ?? null) === (current ?? null)) {
+      return;
+    }
+    this.syncingFeatureUrl = true;
+    void this.router
+      .navigate(
+        featureId ? ['/rock-explorer', featureId] : ['/rock-explorer'],
+        {
+          replaceUrl: true,
+        },
+      )
+      .finally(() => {
+        this.syncingFeatureUrl = false;
+      });
+  }
+
+  private shareActiveFeature() {
+    const id = this.ui.editingFeature()?.id;
+    if (!id) {
+      return;
+    }
+    const path = this.router.serializeUrl(
+      this.router.createUrlTree(['/rock-explorer', id]),
+    );
+    this.clipboardService.copyTextToClipboard(
+      `${window.location.origin}${path}`,
+      {
+        successSummary: this.transloco.translate(
+          marker('rockExplorer.shareSuccessTitle'),
+        ),
+        successDetail: this.transloco.translate(
+          marker('rockExplorer.shareSuccessDetail'),
+        ),
+      },
+    );
   }
 
   private rebuildEnumOptions() {

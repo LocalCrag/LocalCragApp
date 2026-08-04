@@ -29,6 +29,16 @@
                   featureActionsPopover.hide()
                 "
               />
+              <p-button
+                [label]="t('rockExplorer.share')"
+                icon="pi pi-share-alt"
+                [text]="true"
+                styleClass="w-full justify-start"
+                (onClick)="
+                  ui.dispatch({ type: 'shareFeature' });
+                  featureActionsPopover.hide()
+                "
+              />
               @if (ui.editingFeature()!.geometry?.type === "Polygon") {
                 <p-button
                   [label]="t('rockExplorer.editGeometry')"
