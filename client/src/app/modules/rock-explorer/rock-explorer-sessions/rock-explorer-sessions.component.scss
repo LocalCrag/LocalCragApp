@@ -1,0 +1,104 @@
+:host {
+  display: contents;
+}
+
+.rock-explorer-sessions {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: min(70vh, 28rem);
+  padding: 0.75rem;
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  color: var(--p-text-color);
+
+  // Desktop: floating card under toolbar, left side (away from feature panel).
+  top: 3.5rem;
+  left: 0.75rem;
+  width: min(22rem, calc(100% - 1.5rem));
+
+  @media (max-width: 640px) {
+    top: auto;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    max-height: min(55vh, 24rem);
+  }
+}
+
+.rock-explorer-sessions__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.rock-explorer-sessions__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.rock-explorer-sessions__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.rock-explorer-sessions__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rock-explorer-sessions__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.65rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  background: var(--p-surface-0, transparent);
+}
+
+.rock-explorer-sessions__row--active {
+  border-color: var(--p-primary-color, #3b82f6);
+}
+
+.rock-explorer-sessions__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.rock-explorer-sessions__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rock-explorer-sessions__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.rock-explorer-sessions__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}

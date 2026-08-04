@@ -20,6 +20,7 @@ import {
   NavigationControl,
 } from 'maplibre-gl';
 import { Feature, FeatureCollection, Geometry, Position } from 'geojson';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -44,6 +45,7 @@ import { RockExplorerRockQuality } from '../../../enums/rock-explorer-rock-quali
 import { RockExplorerRockType } from '../../../enums/rock-explorer-rock-type';
 import { RockExplorerPanelComponent } from '../rock-explorer-panel/rock-explorer-panel.component';
 import { RockExplorerToolbarComponent } from '../rock-explorer-toolbar/rock-explorer-toolbar.component';
+import { RockExplorerSessionsComponent } from '../rock-explorer-sessions/rock-explorer-sessions.component';
 import {
   RockExplorerUiService,
   RockExplorerCommand,
@@ -94,6 +96,7 @@ type GeometryRedrawMode = 'point' | 'polygon' | null;
     TranslocoDirective,
     RockExplorerPanelComponent,
     RockExplorerToolbarComponent,
+    RockExplorerSessionsComponent,
   ],
   providers: [MessageService, ConfirmationService, RockExplorerUiService],
   templateUrl: './rock-explorer.component.html',
@@ -343,6 +346,21 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'syncNow':
         void this.onSyncNow();
+        break;
+      case 'openSessionsPanel':
+        this.ui.sessionsPanelOpen.set(true);
+        break;
+      case 'closeSessionsPanel':
+        this.ui.sessionsPanelOpen.set(false);
+        break;
+      case 'continueDraft':
+        void this.continueDraft(cmd.localId);
+        break;
+      case 'finishDraftStub':
+        this.finishDraftStub();
+        break;
+      case 'deleteDraft':
+        this.confirmDeleteDraft(cmd.localId, cmd.event);
         break;
     }
   }
@@ -1976,6 +1994,16 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   private enterRecordMode(): void {
+    void this.enterRecordModeAsync({ resume: true });
+  }
+
+  /**
+   * Enter Record chrome. When resume=false (Continue draft), stay paused and
+   * do not start GPS until the user hits Resume.
+   */
+  private async enterRecordModeAsync(options: {
+    resume: boolean;
+  }): Promise<void> {
     if (this.ui.recordModeActive()) {
       return;
     }
@@ -1987,6 +2015,17 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         ),
       });
       return;
+    }
+    if (!this.recordingSession) {
+      if (!(await this.draftStore.canCreateDraft())) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.transloco.translate(
+            marker('rockExplorer.draftCapReached'),
+          ),
+        });
+        return;
+      }
     }
     if (this.ui.isDrawToolActive()) {
       this.setRockExplorerDrawMode('select');
@@ -2006,20 +2045,148 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         getOrCreateRecordingDeviceId(),
       );
       this.ui.syncStatus.set('pending');
-    } else {
+    } else if (options.resume) {
       this.recordingSession.resume();
+    } else {
+      this.recordingSession.pause();
     }
 
     this.ui.recordModeActive.set(true);
     this.ui.hasRecordingSession.set(true);
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
-    this.startGeoWatch();
-    try {
-      this.geolocateControl?.trigger();
-    } catch {
-      // Geolocate may throw if permissions pending; watch handles denial.
+    if (options.resume && this.recordingSession.isRecording) {
+      this.startGeoWatch();
+      try {
+        this.geolocateControl?.trigger();
+      } catch {
+        // Geolocate may throw if permissions pending; watch handles denial.
+      }
     }
+    this.cdr.detectChanges();
+  }
+
+  private async continueDraft(localId: string): Promise<void> {
+    if (this.ui.recordModeActive()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.transloco.translate(
+          marker('rockExplorer.exitRecordBeforeSwitch'),
+        ),
+      });
+      return;
+    }
+    if (!this.ui.storageOk()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.transloco.translate(
+          marker('rockExplorer.storageUnavailable'),
+        ),
+      });
+      return;
+    }
+
+    if (
+      this.recordingSession &&
+      this.activeLocalId &&
+      this.activeLocalId !== localId
+    ) {
+      await this.persistAndSync(true);
+    }
+
+    const draft = await this.draftStore.get(localId);
+    if (!draft) {
+      return;
+    }
+
+    const session = RockExplorerRecordingSession.hydrateFromSnapshot(
+      draft.snapshot,
+      draft.deviceId || getOrCreateRecordingDeviceId(),
+    );
+    session.pause();
+    if (draft.serverId) {
+      session.feature.id = draft.serverId;
+    }
+
+    this.recordingSession = session;
+    this.activeLocalId = localId;
+    this.ui.activeLocalDraftId.set(localId);
+    this.ui.syncStatus.set(draft.syncStatus);
+    this.ui.hasRecordingSession.set(true);
+    await this.enterRecordModeAsync({ resume: false });
+  }
+
+  private finishDraftStub(): void {
+    this.messageService.add({
+      severity: 'info',
+      summary: this.transloco.translate(
+        marker('rockExplorer.finishComingSoon'),
+      ),
+    });
+  }
+
+  private confirmDeleteDraft(localId: string, event?: Event): void {
+    const target = event?.currentTarget ?? event?.target ?? undefined;
+    this.confirmationService.confirm({
+      target: target as EventTarget | undefined,
+      message: this.transloco.translate(
+        marker('rockExplorer.deleteDraftConfirm'),
+      ),
+      acceptLabel: this.transloco.translate(
+        marker('rockExplorer.imageDeleteYes'),
+      ),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: this.transloco.translate(
+        marker('rockExplorer.imageDeleteNo'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        void this.deleteDraft(localId);
+      },
+    });
+  }
+
+  private async deleteDraft(localId: string): Promise<void> {
+    const draft = await this.draftStore.get(localId);
+    const wasActive = this.activeLocalId === localId;
+
+    await this.draftStore.deleteLocal(localId);
+
+    if (wasActive) {
+      if (this.ui.recordModeActive()) {
+        this.stopGeoWatch();
+        this.ui.recordModeActive.set(false);
+      }
+      this.recordingSession = null;
+      this.activeLocalId = null;
+      this.ui.activeLocalDraftId.set(null);
+      this.ui.syncStatus.set(null);
+      this.ui.hasRecordingSession.set(false);
+      this.syncRecordUiSignals();
+      if (this.layers) {
+        this.layers.setPaths(emptyFeatureCollection());
+      }
+    }
+
+    if (draft?.serverId && this.draftSync.isOnline()) {
+      const feature = new RockExplorerFeature();
+      feature.id = draft.serverId;
+      feature.status = 'draft';
+      feature.recordingDeviceId =
+        draft.deviceId || getOrCreateRecordingDeviceId();
+      try {
+        await firstValueFrom(this.rockExplorerService.deleteFeature(feature));
+      } catch (err) {
+        const locked = err instanceof HttpErrorResponse && err.status === 409;
+        this.messageService.add({
+          severity: locked ? 'warn' : 'warn',
+          summary: this.transloco.translate(
+            marker('rockExplorer.deleteServerRemains'),
+          ),
+        });
+      }
+    }
+
     this.cdr.detectChanges();
   }
 

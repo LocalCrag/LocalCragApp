@@ -7,6 +7,7 @@ import { Position } from 'geojson';
 import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
 import { RecordingState } from './rock-explorer-recording';
 import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
+import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
@@ -61,7 +62,12 @@ export type RockExplorerCommand =
   | { type: 'resumeRecording' }
   | { type: 'finishRecordPath' }
   | { type: 'newRecordPath' }
-  | { type: 'syncNow' };
+  | { type: 'syncNow' }
+  | { type: 'openSessionsPanel' }
+  | { type: 'closeSessionsPanel' }
+  | { type: 'continueDraft'; localId: string }
+  | { type: 'finishDraftStub'; localId: string }
+  | { type: 'deleteDraft'; localId: string; event?: Event };
 
 /**
  * Session state + command bus for rock explorer.
@@ -109,8 +115,19 @@ export class RockExplorerUiService {
   readonly storageOk = signal(true);
   /** Active local draft id while a recording session is bound. */
   readonly activeLocalDraftId = signal<string | null>(null);
-  /** Stub for plan 03 sessions panel; default closed. */
+  /** Floating sessions panel open state (D-09). */
   readonly sessionsPanelOpen = signal(false);
+  /** Local unfinished draft count for Record cap (D-18). */
+  readonly unfinishedDraftCount = signal(0);
+
+  /** Record allowed when storage OK and either resuming session or under cap. */
+  readonly canStartRecord = computed(
+    () =>
+      this.storageOk() &&
+      (this.hasRecordingSession() ||
+        this.unfinishedDraftCount() <
+          RockExplorerDraftStoreService.MAX_UNFINISHED_DRAFTS),
+  );
 
   readonly isPolygonToolActive = computed(() => {
     const mode = this.drawMode();

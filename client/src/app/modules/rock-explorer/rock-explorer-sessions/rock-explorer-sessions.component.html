@@ -1,0 +1,94 @@
+@if (ui.sessionsPanelOpen()) {
+  <div
+    class="rock-explorer-sessions"
+    *transloco="let t"
+    role="dialog"
+    [attr.aria-label]="t('rockExplorer.sessionsTitle')"
+  >
+    <div class="rock-explorer-sessions__header">
+      <h2 class="rock-explorer-sessions__title">
+        {{ t("rockExplorer.sessionsTitle") }}
+      </h2>
+      <p-button
+        icon="pi pi-times"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        size="small"
+        [attr.aria-label]="t('rockExplorer.sessionsClose')"
+        (onClick)="ui.dispatch({ type: 'closeSessionsPanel' })"
+      />
+    </div>
+
+    @if (drafts().length === 0) {
+      <p class="rock-explorer-sessions__empty">
+        {{ t("rockExplorer.sessionsEmpty") }}
+      </p>
+    } @else {
+      <ul class="rock-explorer-sessions__list">
+        @for (draft of drafts(); track draft.localId) {
+          <li
+            class="rock-explorer-sessions__row"
+            [class.rock-explorer-sessions__row--active]="
+              draft.localId === ui.activeLocalDraftId()
+            "
+          >
+            <div class="rock-explorer-sessions__meta">
+              <span class="rock-explorer-sessions__name">
+                {{ draft.title || t("rockExplorer.sessionsUntitled") }}
+              </span>
+              <span class="rock-explorer-sessions__details">
+                <span>{{
+                  t("rockExplorer.recordingState." + draft.recordingState)
+                }}</span>
+                <span aria-hidden="true">·</span>
+                <span>{{
+                  t("rockExplorer.syncStatus." + draft.syncStatus)
+                }}</span>
+                <span aria-hidden="true">·</span>
+                <span>{{ draft.updatedAt | timeAgo }}</span>
+              </span>
+            </div>
+            <div class="rock-explorer-sessions__actions">
+              <p-button
+                [label]="t('rockExplorer.sessionsContinue')"
+                size="small"
+                severity="secondary"
+                (onClick)="
+                  ui.dispatch({
+                    type: 'continueDraft',
+                    localId: draft.localId
+                  })
+                "
+              />
+              <p-button
+                [label]="t('rockExplorer.sessionsFinish')"
+                size="small"
+                severity="secondary"
+                (onClick)="
+                  ui.dispatch({
+                    type: 'finishDraftStub',
+                    localId: draft.localId
+                  })
+                "
+              />
+              <p-button
+                [label]="t('rockExplorer.sessionsDelete')"
+                size="small"
+                severity="danger"
+                [text]="true"
+                (onClick)="
+                  ui.dispatch({
+                    type: 'deleteDraft',
+                    localId: draft.localId,
+                    event: $event
+                  })
+                "
+              />
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}

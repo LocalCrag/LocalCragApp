@@ -6,7 +6,7 @@
         icon="pi pi-circle-fill"
         [label]="t('rockExplorer.modeRecord')"
         (onClick)="ui.dispatch({ type: 'enterRecord' })"
-        [disabled]="!ui.storageOk()"
+        [disabled]="!ui.canStartRecord()"
         size="small"
       />
       <p-button
@@ -21,6 +21,20 @@
         icon="pi pi-stop"
         [label]="t('rockExplorer.modePolygon')"
         (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'polygon' })"
+        size="small"
+      />
+      <p-button
+        severity="secondary"
+        icon="pi pi-list"
+        [label]="t('rockExplorer.sessionsTitle')"
+        [outlined]="ui.sessionsPanelOpen()"
+        (onClick)="
+          ui.dispatch({
+            type: ui.sessionsPanelOpen()
+              ? 'closeSessionsPanel'
+              : 'openSessionsPanel'
+          })
+        "
         size="small"
       />
     }
