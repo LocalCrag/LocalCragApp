@@ -452,3 +452,27 @@ def test_publish_draft_with_query_device_id(client, member_token):
     geo = client.get("/api/rock-explorer/features.geojson", token=member_token).json
     ids = {f["id"] for f in geo["features"]}
     assert feature_id in ids
+
+
+def test_publish_draft_with_body_device_id(client, member_token):
+    """RE-TRACK-11: draft→published may send recordingDeviceId in body for lock."""
+    draft = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_draft_payload(paths=[_gps_path()]),
+    ).json
+    feature_id = draft["id"]
+
+    ok = client.put(
+        f"/api/rock-explorer/features/{feature_id}",
+        token=member_token,
+        json=_published_payload(
+            status="published",
+            title="Published via body device",
+            recordingDeviceId="device-a",
+            recordingState=None,
+        ),
+    )
+    assert ok.status_code == 200
+    assert ok.json["status"] == "published"
+    assert ok.json.get("recordingDeviceId") in (None, "")

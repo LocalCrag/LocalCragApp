@@ -2316,6 +2316,19 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
 
     this.publishInFlight = true;
     try {
+      const deviceId = (
+        draft.deviceId ||
+        session.feature.recordingDeviceId ||
+        getOrCreateRecordingDeviceId()
+      ).trim();
+      if (!deviceId) {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.transloco.translate(marker('rockExplorer.loadError')),
+        });
+        return;
+      }
+
       session.feature.geometry = geometry;
       session.feature.status = 'published';
       session.feature.recordingDeviceId = null;
@@ -2323,7 +2336,6 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       // Paths for HTTP: finished lines only
       session.feature.paths = session.pathsForSerialize();
 
-      const deviceId = draft.deviceId || getOrCreateRecordingDeviceId();
       const published = await firstValueFrom(
         this.rockExplorerService.publishFeature(session.feature, deviceId),
       );

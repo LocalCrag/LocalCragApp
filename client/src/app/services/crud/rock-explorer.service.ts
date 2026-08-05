@@ -65,23 +65,30 @@ export class RockExplorerService {
   }
 
   /**
-   * Draft → published PUT. Device lock is proven via query param (body must
-   * keep recording fields null for published validation).
+   * Draft → published PUT. Device lock via body + query recordingDeviceId
+   * (apply clears recording columns for published).
    */
   public publishFeature(
     feature: RockExplorerFeature,
     recordingDeviceId: string,
   ): Observable<RockExplorerFeature> {
+    const deviceId = (recordingDeviceId ?? '').trim();
     feature.status = 'published';
     feature.recordingDeviceId = null;
     feature.recordingState = null;
-    const params = new HttpParams().set('recordingDeviceId', recordingDeviceId);
+    const body = RockExplorerFeature.serialize(feature) as Record<
+      string,
+      unknown
+    >;
+    // serialize() nulls recordingDeviceId for published — restore for lock check
+    body['recordingDeviceId'] = deviceId || null;
+    body['recordingState'] = null;
+    let params = new HttpParams();
+    if (deviceId) {
+      params = params.set('recordingDeviceId', deviceId);
+    }
     return this.http
-      .put(
-        this.api.rockExplorer.updateFeature(feature.id),
-        RockExplorerFeature.serialize(feature),
-        { params },
-      )
+      .put(this.api.rockExplorer.updateFeature(feature.id), body, { params })
       .pipe(map(RockExplorerFeature.deserialize));
   }
 

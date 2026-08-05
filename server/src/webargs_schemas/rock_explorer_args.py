@@ -148,10 +148,12 @@ def cross_validate_rock_explorer_feature_args(args):
             raise ValidationError({"geometry": ["Geometry is required for published features."]})
         if args.get("potential") is None:
             raise ValidationError({"potential": ["Potential is required for published features."]})
-        if args.get("recordingDeviceId") is not None or args.get("recordingState") is not None:
+        # recordingDeviceId may be present for draft→published lock check (cleared on apply).
+        # recordingState must still be null on published payloads.
+        if args.get("recordingState") is not None:
             raise ValidationError(
                 {
-                    "recordingDeviceId": ["Recording metadata must be null for published features."],
+                    "recordingState": ["Recording state must be null for published features."],
                 }
             )
     elif status == "draft":
