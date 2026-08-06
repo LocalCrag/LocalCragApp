@@ -147,7 +147,9 @@ export class RockExplorerDraftSyncService {
           // Leave op queued; do not retry this flush cycle
           return 'conflict';
         }
-        if (attempt >= MAX_TRANSIENT_ATTEMPTS) {
+        // Status 0 / unreachable: fail immediately so sync chrome turns red
+        // (retries only help for transient 5xx / timeouts with a real response).
+        if (this.isNetworkFailure(err) || attempt >= MAX_TRANSIENT_ATTEMPTS) {
           await this.store.patch(op.localId, { syncStatus: 'error' });
           return 'failed';
         }
@@ -201,5 +203,9 @@ export class RockExplorerDraftSyncService {
 
   private isDeviceLockConflict(err: unknown): boolean {
     return err instanceof HttpErrorResponse && err.status === 409;
+  }
+
+  private isNetworkFailure(err: unknown): boolean {
+    return err instanceof HttpErrorResponse && err.status === 0;
   }
 }

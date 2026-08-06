@@ -3,6 +3,8 @@
 export const ROCK_EXPLORER_SOURCES = {
   features: 'rock-explorer-features',
   draft: 'rock-explorer-draft',
+  localDrafts: 'rock-explorer-local-drafts',
+  localDraftLabels: 'rock-explorer-local-draft-labels',
   labels: 'rock-explorer-feature-labels',
   imageLocations: 'rock-explorer-image-locations',
   parking: 'rock-explorer-parking',
@@ -13,6 +15,9 @@ export const ROCK_EXPLORER_LAYERS = {
   polygonsFill: 'rock-explorer-polygons-fill',
   polygonsOutline: 'rock-explorer-polygons-outline',
   points: 'rock-explorer-points',
+  localDraftsFill: 'rock-explorer-local-drafts-fill',
+  localDraftsOutline: 'rock-explorer-local-drafts-outline',
+  localDraftLabels: 'rock-explorer-local-draft-labels',
   draftLine: 'rock-explorer-draft-line',
   draftFill: 'rock-explorer-draft-fill',
   draftOutline: 'rock-explorer-draft-outline',
@@ -47,6 +52,10 @@ export const POTENTIAL_OUTLINE_COLORS: Record<string, string> = {
 
 /** Shared accent for gallery GPS dots and path overlays. */
 export const MAP_MEDIA_ACCENT = '#ec4899';
+
+/** Local unfinished draft polygons (distinct from published potential colors). */
+export const LOCAL_DRAFT_FILL = '#9ca3af';
+export const LOCAL_DRAFT_OUTLINE = '#6b7280';
 
 export const PARKING_ICON = {
   name: 'lc-parking',

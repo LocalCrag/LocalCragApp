@@ -1,4 +1,4 @@
-import { Component, HostListener, effect, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
@@ -26,12 +26,6 @@ export class RockExplorerSessionsComponent {
     ),
     { initialValue: [] as RockExplorerDraftRecord[] },
   );
-
-  constructor() {
-    effect(() => {
-      this.ui.unfinishedDraftCount.set(this.drafts().length);
-    });
-  }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {

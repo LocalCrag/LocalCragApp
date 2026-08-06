@@ -10,6 +10,7 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../services/core/error-handler.service';
+import { CONNECTIVITY_PROBE } from '../http-context/connectivity-probe.context';
 
 /**
  * Http interceptor for connectivity-aware error handling.
@@ -33,6 +34,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+    const isProbe = request.context.get(CONNECTIVITY_PROBE);
     return next.handle(request).pipe(
       tap({
         next: (event) => {
@@ -41,7 +43,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
           }
         },
         error: (err: any) => {
-          if (err instanceof HttpErrorResponse) {
+          if (err instanceof HttpErrorResponse && !isProbe) {
             this.errorHandler.handleHttpError(err);
           }
         },

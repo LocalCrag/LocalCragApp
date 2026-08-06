@@ -2,18 +2,16 @@
   <div class="rock-explorer__toolbar">
     @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
       <p-button
-        severity="secondary"
-        icon="pi pi-circle-fill"
-        [label]="t('rockExplorer.modeRecord')"
-        (onClick)="ui.dispatch({ type: 'enterRecord' })"
-        [disabled]="!ui.canStartRecord()"
-        size="small"
-      />
-      <p-button
-        severity="secondary"
-        icon="pi pi-map-marker"
-        [label]="t('rockExplorer.modePoint')"
-        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'point' })"
+        [severity]="ui.sessionsPanelOpen() ? 'primary' : 'secondary'"
+        icon="pi pi-list"
+        [label]="t('rockExplorer.sessionsTitle')"
+        (onClick)="
+          ui.dispatch({
+            type: ui.sessionsPanelOpen()
+              ? 'closeSessionsPanel'
+              : 'openSessionsPanel',
+          })
+        "
         size="small"
       />
       <p-button
@@ -25,106 +23,120 @@
       />
       <p-button
         severity="secondary"
-        icon="pi pi-list"
-        [label]="t('rockExplorer.sessionsTitle')"
-        [outlined]="ui.sessionsPanelOpen()"
-        (onClick)="
-          ui.dispatch({
-            type: ui.sessionsPanelOpen()
-              ? 'closeSessionsPanel'
-              : 'openSessionsPanel',
-          })
-        "
+        icon="pi pi-map-marker"
+        [label]="t('rockExplorer.modePoint')"
+        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'point' })"
         size="small"
       />
     }
     @if (ui.recordModeActive()) {
-      @if (ui.recordingState() === "recording") {
-        <p-button
-          icon="pi pi-pause"
-          [label]="t('rockExplorer.recordPause')"
-          (onClick)="ui.dispatch({ type: 'pauseRecording' })"
-          size="small"
-          severity="secondary"
-        />
-      } @else {
-        <p-button
-          icon="pi pi-play"
-          [label]="t('rockExplorer.recordResume')"
-          (onClick)="ui.dispatch({ type: 'resumeRecording' })"
-          size="small"
-          severity="secondary"
-        />
-      }
-      <p-button
-        icon="pi pi-check"
-        [label]="t('rockExplorer.recordFinishPath')"
-        (onClick)="ui.dispatch({ type: 'finishRecordPath' })"
-        [disabled]="ui.recordPathVertexCount() < 2"
-        size="small"
-        severity="success"
-      />
-      <p-button
-        icon="pi pi-plus"
-        [label]="t('rockExplorer.recordNewPath')"
-        (onClick)="ui.dispatch({ type: 'newRecordPath' })"
-        [disabled]="
-          ui.recordingState() === 'recording' &&
-          ui.recordPathVertexCount() > 0 &&
-          ui.recordPathVertexCount() < 2
-        "
-        size="small"
-        severity="secondary"
-      />
-      <p-button
-        icon="pi pi-image"
-        [label]="t('rockExplorer.addImage')"
-        (onClick)="ui.dispatch({ type: 'addRecordImage' })"
-        size="small"
-        severity="secondary"
-      />
-      <p-button
-        icon="pi pi-pencil"
-        [label]="t('rockExplorer.editInfo')"
-        (onClick)="ui.dispatch({ type: 'editRecordInfo' })"
-        size="small"
-        severity="secondary"
-      />
-      <p-button
-        icon="pi pi-upload"
-        [label]="t('rockExplorer.modePublish')"
-        (onClick)="ui.dispatch({ type: 'publishDraft' })"
-        size="small"
-        severity="success"
-      />
-      <p-button
-        icon="pi pi-times"
-        [label]="t('rockExplorer.recordExit')"
-        (onClick)="ui.dispatch({ type: 'exitRecord' })"
-        size="small"
-        severity="secondary"
-      />
-      @if (ui.syncStatus(); as status) {
-        <span
-          class="rock-explorer__sync-status"
-          [attr.data-status]="status"
-          role="status"
-        >
-          {{ t("rockExplorer.syncStatus." + status) }}
-        </span>
-      }
-      <p-button
-        icon="pi pi-sync"
-        [label]="t('rockExplorer.syncNow')"
-        (onClick)="ui.dispatch({ type: 'syncNow' })"
-        [disabled]="
-          !ui.storageOk() ||
-          !ui.activeLocalDraftId() ||
-          ui.syncStatus() === 'syncing'
-        "
-        size="small"
-        severity="secondary"
-      />
+      <div class="rock-explorer__record-groups">
+        <div class="rock-explorer__record-group">
+          <span class="rock-explorer__record-group-label">{{
+            t("rockExplorer.recordGroupPath")
+          }}</span>
+          <div class="rock-explorer__record-group-actions">
+            @if (ui.hasActiveRecordPath()) {
+              @if (ui.recordingState() === "recording") {
+                <p-button
+                  icon="pi pi-pause"
+                  [label]="t('rockExplorer.recordPause')"
+                  (onClick)="ui.dispatch({ type: 'pauseRecording' })"
+                  size="small"
+                  severity="secondary"
+                />
+              } @else {
+                <p-button
+                  icon="pi pi-play"
+                  [label]="t('rockExplorer.recordResume')"
+                  (onClick)="ui.dispatch({ type: 'resumeRecording' })"
+                  size="small"
+                  severity="secondary"
+                />
+              }
+              <p-button
+                icon="pi pi-check"
+                [label]="t('rockExplorer.recordFinishPath')"
+                (onClick)="ui.dispatch({ type: 'finishRecordPath' })"
+                [disabled]="ui.recordPathVertexCount() < 2"
+                size="small"
+                severity="success"
+              />
+            } @else {
+              <p-button
+                icon="pi pi-plus"
+                [label]="t('rockExplorer.recordNewPath')"
+                (onClick)="ui.dispatch({ type: 'newRecordPath' })"
+                size="small"
+                severity="secondary"
+              />
+            }
+          </div>
+        </div>
+        <div class="rock-explorer__record-group">
+          <span class="rock-explorer__record-group-label">{{
+            t("rockExplorer.recordGroupInfo")
+          }}</span>
+          <div class="rock-explorer__record-group-actions">
+            <p-button
+              icon="pi pi-image"
+              [label]="t('rockExplorer.addImage')"
+              (onClick)="ui.dispatch({ type: 'addRecordImage' })"
+              size="small"
+              severity="secondary"
+            />
+            <p-button
+              icon="pi pi-pencil"
+              [label]="t('rockExplorer.editInfo')"
+              (onClick)="ui.dispatch({ type: 'editRecordInfo' })"
+              size="small"
+              severity="secondary"
+            />
+          </div>
+        </div>
+        <div class="rock-explorer__record-group">
+          <span class="rock-explorer__record-group-label">{{
+            t("rockExplorer.recordGroupSession")
+          }}</span>
+          <div class="rock-explorer__record-group-actions">
+            <p-button
+              icon="pi pi-upload"
+              [label]="t('rockExplorer.modePublish')"
+              (onClick)="ui.dispatch({ type: 'publishDraft' })"
+              [disabled]="!ui.online()"
+              size="small"
+              severity="success"
+            />
+            @if (ui.syncStatus(); as status) {
+              <p-button
+                icon="pi pi-sync"
+                [label]="t('rockExplorer.syncStatus.' + status)"
+                (onClick)="ui.dispatch({ type: 'syncNow' })"
+                [disabled]="
+                  !ui.storageOk() ||
+                  !ui.activeLocalDraftId() ||
+                  status === 'syncing' ||
+                  !ui.online()
+                "
+                [loading]="status === 'syncing'"
+                size="small"
+                [severity]="status === 'error' ? 'danger' : 'secondary'"
+                [styleClass]="
+                  'rock-explorer__sync-status rock-explorer__sync-status--' +
+                  status
+                "
+              />
+            }
+            <p-button
+              icon="pi pi-times"
+              [label]="t('rockExplorer.recordExit')"
+              (onClick)="ui.dispatch({ type: 'exitRecord' })"
+              size="small"
+              severity="secondary"
+            />
+          </div>
+        </div>
+      </div>
     }
     @if (ui.drawMode() === "point") {
       <p-button

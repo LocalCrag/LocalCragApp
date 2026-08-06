@@ -77,18 +77,6 @@ describe('RockExplorerDraftStoreService', () => {
     ).toBe(0);
   });
 
-  it('canCreateDraft is false when count ≥ MAX_UNFINISHED_DRAFTS', async () => {
-    expect(store.MAX_UNFINISHED_DRAFTS).toBe(10);
-    const session = new RockExplorerRecordingSession('d');
-    for (let i = 0; i < 10; i++) {
-      await store.putSnapshot(`id-${i}`, session);
-    }
-    expect(await store.count()).toBe(10);
-    expect(await store.canCreateDraft()).toBeFalse();
-    await store.deleteLocal('id-0');
-    expect(await store.canCreateDraft()).toBeTrue();
-  });
-
   it('patch updates syncStatus', async () => {
     const session = new RockExplorerRecordingSession('d');
     await store.putSnapshot('p', session);
@@ -96,6 +84,19 @@ describe('RockExplorerDraftStoreService', () => {
     const got = await store.get('p');
     expect(got?.syncStatus).toBe('synced');
     expect(got?.serverId).toBe('srv-1');
+  });
+
+  it('putSnapshot preserves error syncStatus until explicitly cleared', async () => {
+    const session = new RockExplorerRecordingSession('d');
+    await store.putSnapshot('err', session);
+    await store.patch('err', { syncStatus: 'error' });
+    session.tryAppendFix({ lng: 1, lat: 2 });
+    const again = await store.putSnapshot('err', session);
+    expect(again.syncStatus).toBe('error');
+    const cleared = await store.putSnapshot('err', session, {
+      syncStatus: 'pending',
+    });
+    expect(cleared.syncStatus).toBe('pending');
   });
 
   it('uses DB name localcrag.rockExplorer', () => {

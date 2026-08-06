@@ -51,6 +51,19 @@ export class RockExplorerPendingImageService {
     return rows.map((r) => ({ lat: r.lat, lng: r.lng }));
   }
 
+  /** All pending geotagged pins across drafts (for map markers). */
+  async listAllGpsPins(): Promise<
+    { id: string; localId: string; lat: number; lng: number }[]
+  > {
+    const rows = await this.db.pendingImages.toArray();
+    return rows.map((r) => ({
+      id: r.id,
+      localId: r.localId,
+      lat: r.lat,
+      lng: r.lng,
+    }));
+  }
+
   async deleteForLocalId(localId: string): Promise<void> {
     await this.db.pendingImages.where('localId').equals(localId).delete();
   }

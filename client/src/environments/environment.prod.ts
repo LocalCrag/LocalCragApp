@@ -5,4 +5,5 @@ export const environment = {
   apiHost: '',
   skippedSlug: '_default',
   version: packageInfo.version,
+  mockGpsRecording: false,
 };

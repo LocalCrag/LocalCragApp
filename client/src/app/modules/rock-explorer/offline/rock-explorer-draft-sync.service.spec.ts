@@ -144,7 +144,7 @@ describe('RockExplorerDraftSyncService', () => {
     expect(conflicts[0].serverId).toBe('srv-lock');
   });
 
-  it('network failure exhausts backoff then sets error and keeps op', async () => {
+  it('network failure (status 0) sets error immediately and keeps op', async () => {
     await seedDraft('L-net', { twoPoints: true });
     await sync.enqueueUpsert('L-net');
 
@@ -156,7 +156,7 @@ describe('RockExplorerDraftSyncService', () => {
 
     await sync.flush({ online: true });
 
-    expect(createFeature.calls.count()).toBe(5);
+    expect(createFeature.calls.count()).toBe(1);
     expect((await store.get('L-net'))?.syncStatus).toBe('error');
     expect(
       await rockExplorerDraftDb.ops.where('localId').equals('L-net').count(),

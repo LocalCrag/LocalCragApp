@@ -2,51 +2,80 @@
   display: contents;
 }
 
-.rock-explorer-sessions {
+// Match feature panel shell (right-edge docked). Shared header/body/footer
+// classes live on the feature panel stylesheet; host uses display:contents so
+// ::ng-deep is not required for layout.
+.rock-explorer__sessions-panel {
   position: absolute;
   z-index: 3;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(26rem, 100%);
+  overflow: hidden;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-height: min(70vh, 28rem);
-  padding: 0.75rem;
   background: var(--p-content-background);
-  border: 1px solid var(--p-content-border-color);
-  border-radius: var(--p-content-border-radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  border-left: 1px solid var(--p-content-border-color);
+  box-shadow: var(--p-card-shadow);
   color: var(--p-text-color);
-
-  // Desktop: floating card under toolbar, left side (away from feature panel).
-  top: 3.5rem;
-  left: 0.75rem;
-  width: min(22rem, calc(100% - 1.5rem));
-
-  @media (max-width: 640px) {
-    top: auto;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    left: 0.5rem;
-    right: 0.5rem;
-    width: auto;
-    max-height: min(55vh, 24rem);
-  }
 }
 
-.rock-explorer-sessions__header {
+.rock-explorer__panel-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  padding: 1rem 1rem 0.75rem;
+  background: var(--p-content-hover-background);
+
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+  }
 }
 
-.rock-explorer-sessions__title {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
+.rock-explorer__panel-header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.15rem;
+}
+
+.rock-explorer__panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rock-explorer__panel-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--p-content-border-color);
+  background: var(--p-content-background);
+
+  > p-button {
+    display: block;
+    width: 100%;
+  }
+
+  ::ng-deep .rock-explorer-sessions__record-btn .p-button-icon {
+    color: var(--p-red-500, #ef4444);
+  }
 }
 
 .rock-explorer-sessions__empty {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   opacity: 0.8;
 }
 
@@ -54,7 +83,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -64,10 +92,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.6rem 0.65rem;
+  padding: 0.75rem;
   border: 1px solid var(--p-content-border-color);
   border-radius: var(--p-content-border-radius);
-  background: var(--p-surface-0, transparent);
+  background: var(--p-content-hover-background);
 }
 
 .rock-explorer-sessions__row--active {
@@ -82,7 +110,7 @@
 }
 
 .rock-explorer-sessions__name {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;

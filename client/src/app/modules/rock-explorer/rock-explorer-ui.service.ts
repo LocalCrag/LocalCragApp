@@ -7,7 +7,6 @@ import { Position } from 'geojson';
 import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
 import { RecordingState } from './rock-explorer-recording';
 import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
-import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
@@ -67,6 +66,7 @@ export type RockExplorerCommand =
   | { type: 'closeSessionsPanel' }
   | { type: 'continueDraft'; localId: string }
   | { type: 'publishDraft'; localId?: string }
+  | { type: 'showDraftOnMap'; localId: string }
   | { type: 'addRecordImage' }
   | { type: 'editRecordInfo' }
   | { type: 'deleteDraft'; localId: string; event?: Event };
@@ -109,27 +109,23 @@ export class RockExplorerUiService {
   readonly recordingState = signal<RecordingState | null>(null);
   /** Active open GPS path vertex count (for Finish path enablement). */
   readonly recordPathVertexCount = signal(0);
+  /** True while a GPS path is open (not yet finished) — hides New Path. */
+  readonly hasActiveRecordPath = signal(false);
   /** True while an in-memory draft session exists (survives exit Record). */
   readonly hasRecordingSession = signal(false);
   /** Draft sync chrome status (pending|syncing|synced|error). */
   readonly syncStatus = signal<DraftSyncStatus | null>(null);
+  /** True when Publish/sync should treat the app as reachable (not just navigator.onLine). */
+  readonly online = signal(true);
   /** False when IndexedDB probe/open fails (D-19) — Record disabled. */
   readonly storageOk = signal(true);
   /** Active local draft id while a recording session is bound. */
   readonly activeLocalDraftId = signal<string | null>(null);
   /** Floating sessions panel open state (D-09). */
   readonly sessionsPanelOpen = signal(false);
-  /** Local unfinished draft count for Record cap (D-18). */
-  readonly unfinishedDraftCount = signal(0);
 
-  /** Record allowed when storage OK and either resuming session or under cap. */
-  readonly canStartRecord = computed(
-    () =>
-      this.storageOk() &&
-      (this.hasRecordingSession() ||
-        this.unfinishedDraftCount() <
-          RockExplorerDraftStoreService.MAX_UNFINISHED_DRAFTS),
-  );
+  /** Record allowed when IndexedDB is available. */
+  readonly canStartRecord = computed(() => this.storageOk());
 
   readonly isPolygonToolActive = computed(() => {
     const mode = this.drawMode();

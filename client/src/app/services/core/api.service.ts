@@ -297,6 +297,10 @@ export class ApiService {
       `${this.apiHost}reactions/${targetType}/${targetId}`,
   };
 
+  public health = {
+    check: (): string => `${this.apiHost}health`,
+  };
+
   public rockExplorer = {
     getFeaturesGeoJSON: (): string =>
       `${this.apiHost}rock-explorer/features.geojson`,

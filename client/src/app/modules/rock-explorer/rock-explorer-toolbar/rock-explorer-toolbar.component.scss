@@ -11,7 +11,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  align-items: center;
+  align-items: flex-start;
   pointer-events: none;
 
   > * {
@@ -19,28 +19,58 @@
   }
 }
 
-.rock-explorer__sync-status {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  border-radius: var(--p-content-border-radius);
-  background: var(--p-content-background);
+.rock-explorer__record-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: stretch;
+  max-width: min(100%, 28rem);
+}
+
+.rock-explorer__record-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem 0.55rem;
+  background: color-mix(
+    in srgb,
+    var(--p-content-background) 72%,
+    transparent
+  );
   border: 1px solid var(--p-content-border-color);
-  color: var(--p-text-color);
+  border-radius: var(--p-content-border-radius);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
 }
 
-.rock-explorer__sync-status[data-status="error"] {
-  border-color: var(--p-red-400, #f87171);
+.rock-explorer__record-group-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--p-text-muted-color, var(--p-text-color));
+  opacity: 0.75;
+  line-height: 1.2;
+}
+
+.rock-explorer__record-group-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+:host ::ng-deep .rock-explorer__sync-status--error {
+  border-color: var(--p-red-500, #ef4444);
   color: var(--p-red-600, #dc2626);
+  background: color-mix(in srgb, var(--p-red-500, #ef4444) 12%, transparent);
 }
 
-.rock-explorer__sync-status[data-status="syncing"] {
+:host ::ng-deep .rock-explorer__sync-status--syncing {
   border-color: var(--p-blue-400, #60a5fa);
 }
 
-.rock-explorer__sync-status[data-status="synced"] {
+:host ::ng-deep .rock-explorer__sync-status--synced {
   border-color: var(--p-green-400, #4ade80);
 }
 

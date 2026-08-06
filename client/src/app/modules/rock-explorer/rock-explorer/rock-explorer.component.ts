@@ -36,6 +36,7 @@ import { Store } from '@ngrx/store';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectShowOfflineAlert } from '../../../ngrx/selectors/app-level-alerts.selectors';
 import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { GalleryService } from '../../../services/crud/gallery.service';
@@ -62,6 +63,9 @@ import {
   RockExplorerRecordingSession,
   getOrCreateRecordingDeviceId,
 } from '../rock-explorer-recording';
+import { RockExplorerMockGpsService } from '../rock-explorer-mock-gps.service';
+import { environment } from '../../../../environments/environment';
+import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.types';
 import { RockExplorerDraftStoreService } from '../offline/rock-explorer-draft-store.service';
 import {
   DeviceLockConflictEvent,
@@ -80,6 +84,7 @@ import {
   fitMapToPositions as fitMapPositions,
 } from '../../../utility/map/map-bounds';
 import { maptilerStyleUrl } from '../../../utility/map/maptiler-style';
+import { geometryLabelPoint } from '../../../utility/map/geometry-label-point';
 import { RockExplorerImageHoverPopup } from '../map/image-hover-popup';
 import {
   buildDraftGeometryPreview,
@@ -142,6 +147,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private layers?: RockExplorerMapLayers;
   private apiKey = '';
   private features: FeatureCollection<Geometry> = emptyFeatureCollection();
+  /** Last rendered local-draft polygons (for initial fit + style reloads). */
+  private localDraftFeatures: FeatureCollection<Geometry> =
+    emptyFeatureCollection();
   private draftGeometry: Geometry | null = null;
   private polygonVertices: Position[] = [];
   /** Feature being reshaped in `editPolygon` / redraw modes (panel may be closed). */
@@ -171,9 +179,22 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private draftSync = inject(RockExplorerDraftSyncService);
   private pendingImages = inject(RockExplorerPendingImageService);
   private uploadService = inject(UploadService);
+  private mockGps = inject(RockExplorerMockGpsService);
   private mobileMediaQuery?: MediaQueryList;
   private mobileMediaListener?: (event: MediaQueryListEvent) => void;
   private imageLocationsRequestId = 0;
+  /** Gallery GPS dots for the open published/edit feature. */
+  private featureImageLocationsData: FeatureCollection<Geometry> =
+    emptyFeatureCollection();
+  /** Pending IndexedDB geotagged dots for local drafts. */
+  private draftImageLocationsData: FeatureCollection<Geometry> =
+    emptyFeatureCollection();
+  /**
+   * Pins uploaded while online during Record — kept separate so refreshing
+   * pending-queue dots does not wipe them.
+   */
+  private liveDraftImageLocationsData: FeatureCollection<Geometry> =
+    emptyFeatureCollection();
   private imageLocationsData: FeatureCollection<Geometry> =
     emptyFeatureCollection();
   private readonly imageHover = new RockExplorerImageHoverPopup();
@@ -188,12 +209,35 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private activeLocalId: string | null = null;
   private geolocateControl: GeolocateControl | null = null;
   private geoWatchId: number | null = null;
-  private persistInFlight = false;
+  /** Serializes draft persists so exit/finish always awaits the latest write. */
+  private persistChain: Promise<void> = Promise.resolve();
+  /** Force another persist after the current chain step (exit during GPS sync). */
+  private persistForceQueued = false;
+  /**
+   * Delay before showing "Syncing…" so fast flushes don't flicker the toolbar.
+   */
+  private static readonly SYNCING_UI_DELAY_MS = 1000;
+  private syncingUiDelayHandle: ReturnType<typeof setTimeout> | null = null;
+  /** While true, ignore draft→UI sync status updates (except the delayed syncing paint). */
+  private syncUiHeld = false;
+  /** Browser network-interface heuristic (see OfflineAlertComponent). */
+  private browserOnline =
+    typeof navigator !== 'undefined' ? navigator.onLine : true;
+  /** App-level offline banner — failed request evidence, not navigator alone. */
+  private appOfflineAlert = false;
   private readonly onWindowOnline = (): void => {
+    this.browserOnline = true;
+    this.refreshOnlineUi();
     void this.flushDraftQueue();
+  };
+  private readonly onWindowOffline = (): void => {
+    this.browserOnline = false;
+    this.refreshOnlineUi();
   };
   private readonly onVisibilityChange = (): void => {
     if (document.visibilityState === 'visible') {
+      this.browserOnline = navigator.onLine;
+      this.refreshOnlineUi();
       void this.flushDraftQueue();
     }
   };
@@ -356,7 +400,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.enterRecordMode();
         break;
       case 'exitRecord':
-        this.exitRecordMode();
+        void this.exitRecordModeAsync();
         break;
       case 'pauseRecording':
         this.pauseRecording();
@@ -374,7 +418,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         void this.onSyncNow();
         break;
       case 'openSessionsPanel':
-        this.ui.sessionsPanelOpen.set(true);
+        this.openSessionsPanel();
         break;
       case 'closeSessionsPanel':
         this.ui.sessionsPanelOpen.set(false);
@@ -384,6 +428,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'publishDraft':
         void this.beginPublishDraft(cmd.localId);
+        break;
+      case 'showDraftOnMap':
+        void this.showDraftOnMap(cmd.localId);
         break;
       case 'addRecordImage':
         this.triggerAddRecordImage();
@@ -413,12 +460,25 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.bindMobileViewport();
     this.rebuildEnumOptions();
     void this.probeDraftStorage();
+    this.browserOnline = navigator.onLine;
+    this.refreshOnlineUi();
     window.addEventListener('online', this.onWindowOnline);
+    window.addEventListener('offline', this.onWindowOffline);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.store
+      .select(selectShowOfflineAlert)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((showOffline) => {
+        this.appOfflineAlert = showOffline;
+        this.refreshOnlineUi();
+      });
     this.transloco.langChanges$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.rebuildEnumOptions();
+        this.applyUntitledMapLabels();
+        this.layers?.setFeatures(this.features);
+        void this.refreshLocalDraftPolygons();
         this.cdr.detectChanges();
       });
     forkJoin([
@@ -451,7 +511,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.releaseSyncUiHold();
     window.removeEventListener('online', this.onWindowOnline);
+    window.removeEventListener('offline', this.onWindowOffline);
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     if (this.mobileMediaQuery && this.mobileMediaListener) {
       this.mobileMediaQuery.removeEventListener(
@@ -461,6 +523,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.cancelDragListeners();
     this.stopGeoWatch();
+    if (environment.mockGpsRecording) {
+      this.mockGps.uninstallNavigatorShim();
+    }
     this.imageHover.hide({ force: true });
     this.map?.remove();
   }
@@ -693,6 +758,10 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     feature.geometry = (this.draftGeometry ||
       this.ui.editingFeature()!.geometry) as Geometry;
 
+    // Keep the in-memory Record session + local draft in sync so Publish
+    // can prefill title / potential / description.
+    this.syncRecordingSessionFromEditedFeature(feature);
+
     this.ui.saving.set(true);
     const request$ = feature.id
       ? this.rockExplorerService.updateFeature(feature)
@@ -707,6 +776,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           severity: 'success',
           summary: this.transloco.translate(marker('rockExplorer.saveSuccess')),
         });
+        this.syncRecordingSessionFromEditedFeature(saved);
+        void this.persistAndSync(true);
         if (saved?.id) {
           this.applyFeatureToPanel(saved, false);
         } else {
@@ -721,6 +792,32 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         });
       },
     });
+  }
+
+  /** Copy editable metadata onto the active recording session when IDs match. */
+  private syncRecordingSessionFromEditedFeature(
+    feature: RockExplorerFeature,
+  ): void {
+    const session = this.recordingSession;
+    if (!session || !this.activeLocalId) {
+      return;
+    }
+    if (feature.id && session.feature.id && feature.id !== session.feature.id) {
+      return;
+    }
+    session.feature.title = feature.title;
+    session.feature.description = feature.description;
+    session.feature.potential = feature.potential;
+    session.feature.rockQuality = feature.rockQuality;
+    session.feature.rockType = feature.rockType;
+    session.feature.gradeLineType = feature.gradeLineType;
+    session.feature.gradeScale = feature.gradeScale;
+    session.feature.gradeValueMin = feature.gradeValueMin;
+    session.feature.gradeValueMax = feature.gradeValueMax;
+    session.feature.accessIssues = [...(feature.accessIssues ?? [])];
+    if (feature.id) {
+      session.feature.id = feature.id;
+    }
   }
 
   public onImageEditModeChange(editMode: boolean): void {
@@ -836,7 +933,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!this.panel?.gallery) {
       return;
     }
-    this.setImageLocations({
+    this.setFeatureImageLocations({
       type: 'FeatureCollection',
       features: this.panel.gallery.getGeotaggedMapFeatures(),
     });
@@ -964,6 +1061,25 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.openEditPanel(String(id));
   }
 
+  /** Click a grey local-draft polygon → reopen Record toolbar + show paths. */
+  private onLocalDraftClick(event: MapLayerMouseEvent): void {
+    if (this.consumingImageLocationClick) {
+      return;
+    }
+    event.originalEvent.stopPropagation();
+    if (this.ui.isDrawToolActive() || this.ui.recordModeActive()) {
+      return;
+    }
+    if (this.ui.drawMode() !== 'select') {
+      return;
+    }
+    const localId = event.features?.[0]?.properties?.['localId'];
+    if (typeof localId !== 'string' || !localId) {
+      return;
+    }
+    void this.continueDraft(localId);
+  }
+
   public focusActiveFeature() {
     const geometry =
       this.ui.editingFeature()?.geometry ?? this.draftGeometry ?? null;
@@ -1031,6 +1147,21 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.applySelectionFilters();
     if (!options?.skipUrlSync) {
       this.syncFeatureUrl(null);
+    }
+  }
+
+  private openSessionsPanel(): void {
+    if (this.ui.panelOpen()) {
+      this.closePanel();
+    }
+    this.ui.sessionsPanelOpen.set(true);
+    this.cdr.detectChanges();
+  }
+
+  /** Feature panel and sessions panel are mutually exclusive. */
+  private closeSessionsPanelIfOpen(): void {
+    if (this.ui.sessionsPanelOpen()) {
+      this.ui.sessionsPanelOpen.set(false);
     }
   }
 
@@ -1181,6 +1312,12 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         showAccuracyCircle: true,
       });
       this.map.addControl(this.geolocateControl, 'top-right');
+      if (environment.mockGpsRecording) {
+        this.mockGps.installNavigatorShim(() => {
+          const c = this.map?.getCenter();
+          return c ? { lat: c.lat, lng: c.lng } : undefined;
+        });
+      }
       this.map.on('load', () => {
         void this.rebindMapLayers().then(() => {
           this.fitToFeatures();
@@ -1271,6 +1408,19 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.map!.on('click', ROCK_EXPLORER_LAYERS.polygonsFill, (event) =>
           this.ngZone.run(() => this.onFeatureSelectClick(event)),
         );
+        this.map!.on('click', ROCK_EXPLORER_LAYERS.localDraftsFill, (event) =>
+          this.ngZone.run(() => this.onLocalDraftClick(event)),
+        );
+        this.map!.on('mouseenter', ROCK_EXPLORER_LAYERS.localDraftsFill, () => {
+          if (this.map) {
+            this.map.getCanvas().style.cursor = 'pointer';
+          }
+        });
+        this.map!.on('mouseleave', ROCK_EXPLORER_LAYERS.localDraftsFill, () => {
+          if (this.map && !this.ui.isDrawToolActive()) {
+            this.map.getCanvas().style.cursor = '';
+          }
+        });
       });
     });
   }
@@ -1280,8 +1430,18 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.layers = new RockExplorerMapLayers(this.map);
+    this.applyUntitledMapLabels();
     await this.layers.addAll(this.features, this.imageLocationsData);
     this.applySelectionFilters();
+    await this.refreshLocalDraftPolygons();
+    await this.refreshDraftImageLocations();
+  }
+
+  private applyUntitledMapLabels(): void {
+    this.layers?.setUntitledLabels(
+      this.transloco.translate(marker('rockExplorer.untitledFeature')),
+      this.transloco.translate(marker('rockExplorer.untitledDraft')),
+    );
   }
 
   private onMapClick(event: MapMouseEvent) {
@@ -1519,6 +1679,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   private openCreatePanel(geometry: Geometry) {
+    this.closeSessionsPanelIfOpen();
     this.ui.featureFormActive.set(true);
     this.ui.editingFeature.set(null);
     this.draftGeometry = geometry;
@@ -1566,6 +1727,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     feature: RockExplorerFeature,
     formActive: boolean,
   ) {
+    this.closeSessionsPanelIfOpen();
     this.ui.featureFormActive.set(formActive);
     this.ui.editingFeature.set(feature);
     this.draftGeometry = feature.geometry;
@@ -1697,7 +1859,17 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!this.map) {
       return;
     }
-    fitMapToFeatureCollection(this.map, this.features, {
+    const combined: FeatureCollection<Geometry> = {
+      type: 'FeatureCollection',
+      features: [
+        ...this.features.features,
+        ...this.localDraftFeatures.features,
+      ],
+    };
+    if (combined.features.length === 0) {
+      return;
+    }
+    fitMapToFeatureCollection(this.map, combined, {
       padding: 48,
       maxZoom: 16,
       duration: 700,
@@ -1739,7 +1911,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
             this.refreshImageLocationsFromGallery();
             return;
           }
-          this.setImageLocations({
+          this.setFeatureImageLocations({
             type: 'FeatureCollection',
             features: page.items
               .map((image) => this.galleryImageToMapFeature(image))
@@ -1748,7 +1920,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         },
         error: () => {
           if (requestId === this.imageLocationsRequestId) {
-            this.clearImageLocations();
+            this.clearFeatureImageLocations();
           }
         },
       });
@@ -1776,10 +1948,93 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     };
   }
 
-  private clearImageLocations() {
+  private clearFeatureImageLocations() {
     this.imageLocationsRequestId++;
     this.imageHover.hide({ force: true });
-    this.setImageLocations({ type: 'FeatureCollection', features: [] });
+    this.featureImageLocationsData = emptyFeatureCollection();
+    this.publishCombinedImageLocations();
+  }
+
+  /** @deprecated Prefer clearFeatureImageLocations — keeps draft image dots. */
+  private clearImageLocations() {
+    this.clearFeatureImageLocations();
+  }
+
+  /**
+   * Show pending geotagged images for all local drafts on the map.
+   * Does not clear live-uploaded Record pins.
+   */
+  private async refreshDraftImageLocations(): Promise<void> {
+    let pins: { id: string; localId: string; lat: number; lng: number }[] = [];
+    try {
+      pins = await this.pendingImages.listAllGpsPins();
+    } catch {
+      pins = [];
+    }
+    this.draftImageLocationsData = {
+      type: 'FeatureCollection',
+      features: pins.map((pin) => ({
+        type: 'Feature' as const,
+        geometry: {
+          type: 'Point' as const,
+          coordinates: [pin.lng, pin.lat],
+        },
+        properties: {
+          pendingImageId: pin.id,
+          localId: pin.localId,
+          draftImage: true,
+          thumbnailUrl: '',
+          description: '',
+        },
+      })),
+    };
+    this.publishCombinedImageLocations();
+  }
+
+  private appendLiveDraftImagePin(lat: number, lng: number): void {
+    this.liveDraftImageLocationsData = {
+      type: 'FeatureCollection',
+      features: [
+        ...this.liveDraftImageLocationsData.features,
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [lng, lat] },
+          properties: {
+            draftImage: true,
+            liveUpload: true,
+            thumbnailUrl: '',
+            description: '',
+          },
+        },
+      ],
+    };
+    this.publishCombinedImageLocations();
+  }
+
+  private clearLiveDraftImageLocations(): void {
+    this.liveDraftImageLocationsData = emptyFeatureCollection();
+  }
+
+  private setFeatureImageLocations(collection: FeatureCollection<Geometry>) {
+    this.featureImageLocationsData = collection;
+    this.publishCombinedImageLocations();
+  }
+
+  private publishCombinedImageLocations() {
+    this.imageLocationsData = {
+      type: 'FeatureCollection',
+      features: [
+        ...this.featureImageLocationsData.features,
+        ...this.draftImageLocationsData.features,
+        ...this.liveDraftImageLocationsData.features,
+      ],
+    };
+    this.layers?.setImageLocations(this.imageLocationsData);
+  }
+
+  private setImageLocations(collection: FeatureCollection<Geometry>) {
+    // Treat as feature-layer replacement (legacy call sites).
+    this.setFeatureImageLocations(collection);
   }
 
   private clearMiscOverlays() {
@@ -1868,11 +2123,6 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.layers?.setDraft(this.panel?.misc.getPathDraftCollection());
-  }
-
-  private setImageLocations(collection: FeatureCollection<Geometry>) {
-    this.imageLocationsData = collection;
-    this.layers?.setImageLocations(collection);
   }
 
   private onImageLocationMouseMove(event: MapLayerMouseEvent) {
@@ -2048,17 +2298,6 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       });
       return;
     }
-    if (!this.recordingSession) {
-      if (!(await this.draftStore.canCreateDraft())) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: this.transloco.translate(
-            marker('rockExplorer.draftCapReached'),
-          ),
-        });
-        return;
-      }
-    }
     if (this.ui.isDrawToolActive()) {
       this.setRockExplorerDrawMode('select');
     }
@@ -2066,6 +2305,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       this.cancelPathDraw();
     }
     this.closePanel();
+    this.closeSessionsPanelIfOpen();
     this.ui.showFilters.set(false);
     this.ui.drawMode.set('select');
 
@@ -2077,8 +2317,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         getOrCreateRecordingDeviceId(),
       );
       this.ui.syncStatus.set('pending');
+      if (environment.mockGpsRecording) {
+        this.mockGps.resetSeed();
+      }
     } else if (options.resume) {
       this.recordingSession.resume();
+      if (environment.mockGpsRecording) {
+        this.seedMockGpsNearActiveSession();
+      }
     } else {
       this.recordingSession.pause();
     }
@@ -2145,22 +2391,105 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.activeLocalDraftId.set(localId);
     this.ui.syncStatus.set(draft.syncStatus);
     this.ui.hasRecordingSession.set(true);
+
+    if (environment.mockGpsRecording) {
+      this.seedMockGpsNearDraft(session, draft);
+    }
+
     await this.enterRecordModeAsync({ resume: false });
+    if (draft.serverId) {
+      this.loadFeatureImageLocations(draft.serverId);
+    }
+    await this.refreshDraftImageLocations();
+    this.closeSessionsPanelIfOpen();
+    if (session.feature.geometry && this.map) {
+      fitMapToGeometry(this.map, session.feature.geometry, {
+        padding: 64,
+        maxZoom: 17,
+      });
+    } else {
+      const positions = this.positionsFromDraftSnapshot(draft);
+      if (positions.length > 0) {
+        this.fitMapToPositions(positions);
+      }
+    }
+  }
+
+  /** Place mock GPS near the draft polygon centroid (or path centroid). */
+  private seedMockGpsNearDraft(
+    session: RockExplorerRecordingSession,
+    draft: RockExplorerDraftRecord,
+  ): void {
+    let geometry =
+      session.feature.geometry ?? this.geometryFromDraftSnapshot(draft);
+    if (!geometry || geometry.type !== 'Polygon') {
+      geometry = this.computePolygonFromDraftRecord(draft);
+    }
+    this.seedMockGpsNearGeometryOrPaths(
+      geometry,
+      this.positionsFromDraftSnapshot(draft),
+    );
+  }
+
+  /** Re-seed from the active in-memory session (Resume / re-enter Record). */
+  private seedMockGpsNearActiveSession(): void {
+    const session = this.recordingSession;
+    if (!session) {
+      return;
+    }
+    let geometry = session.feature.geometry;
+    const pathPoints: Position[] = [];
+    for (const path of session.feature.paths ?? []) {
+      for (const coord of path.geometry?.coordinates ?? []) {
+        if (coord.length >= 2) {
+          pathPoints.push([coord[0], coord[1]]);
+        }
+      }
+    }
+    for (const site of session.feature.parkingSites ?? []) {
+      if (site.lat != null && site.lng != null) {
+        pathPoints.push([site.lng, site.lat]);
+      }
+    }
+    if (!geometry || geometry.type !== 'Polygon') {
+      geometry = geometryFromOverlayPoints(pathPoints);
+    }
+    this.seedMockGpsNearGeometryOrPaths(geometry, pathPoints);
+  }
+
+  private seedMockGpsNearGeometryOrPaths(
+    geometry: Geometry | null,
+    pathPoints: Position[],
+  ): void {
+    let centroid = geometry ? geometryLabelPoint(geometry) : null;
+    if (!centroid && pathPoints.length > 0) {
+      let lngSum = 0;
+      let latSum = 0;
+      for (const p of pathPoints) {
+        lngSum += p[0];
+        latSum += p[1];
+      }
+      centroid = [lngSum / pathPoints.length, latSum / pathPoints.length];
+    }
+    if (centroid) {
+      this.mockGps.seedNear({ lng: centroid[0], lat: centroid[1] });
+    }
   }
 
   private async beginPublishDraft(localId?: string): Promise<void> {
-    if (this.ui.recordModeActive()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.exitBeforePublish'),
-        ),
-      });
-      return;
-    }
-
     const targetLocalId =
       localId ?? this.activeLocalId ?? this.ui.activeLocalDraftId();
+
+    // Keep Record chrome when publishing the active draft; only leave Record
+    // when publishing a different session from the sessions panel.
+    if (this.ui.recordModeActive()) {
+      if (targetLocalId && targetLocalId === this.activeLocalId) {
+        await this.prepareRecordSessionForPublish();
+      } else {
+        await this.exitRecordModeAsync();
+      }
+    }
+
     if (!targetLocalId) {
       this.messageService.add({
         severity: 'warn',
@@ -2199,7 +2528,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    if (!this.draftSync.isOnline()) {
+    if (!this.ui.online()) {
       this.messageService.add({
         severity: 'warn',
         summary: this.transloco.translate(
@@ -2242,14 +2571,56 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       this.ui.activeLocalDraftId.set(targetLocalId);
       this.ui.hasRecordingSession.set(true);
       this.syncRecordUiSignals();
+    } else {
+      // Ensure latest panel edits are in the local draft before prefill.
+      await this.persistAndSync(true);
+      draft = (await this.draftStore.get(targetLocalId)) ?? draft;
     }
 
     this.publishLocalId = targetLocalId;
-    this.publishPotential = this.recordingSession.feature.potential ?? null;
-    this.publishTitle = this.recordingSession.feature.title ?? '';
-    this.publishDescription = this.recordingSession.feature.description ?? '';
+    this.prefillPublishDialogFromDraft(this.recordingSession.feature, draft);
     this.publishDialogVisible = true;
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Pause GPS, finish open path / build hull, persist — but stay in Record chrome
+   * so Publish cancel returns to an active draft toolbar.
+   */
+  private async prepareRecordSessionForPublish(): Promise<void> {
+    if (!this.recordingSession || !this.activeLocalId) {
+      return;
+    }
+    this.stopGeoWatch();
+    if (this.recordingSession.isRecording) {
+      this.recordingSession.pause();
+    }
+    await this.applyRecordingPolygon(this.recordingSession, this.activeLocalId);
+    this.syncRecordUiSignals();
+    this.refreshRecordingPathsOnMap();
+    await this.persistAndSync(true);
+  }
+
+  /** Prefill publish fields from session, falling back to the local draft snapshot. */
+  private prefillPublishDialogFromDraft(
+    feature: RockExplorerFeature,
+    draft: RockExplorerDraftRecord,
+  ): void {
+    const snap = draft.snapshot.feature;
+    const snapTitle =
+      typeof snap['title'] === 'string' ? (snap['title'] as string) : null;
+    const snapDescription =
+      typeof snap['description'] === 'string'
+        ? (snap['description'] as string)
+        : null;
+    const snapPotential =
+      typeof snap['potential'] === 'string'
+        ? (snap['potential'] as string)
+        : null;
+
+    this.publishTitle = feature.title ?? snapTitle ?? '';
+    this.publishDescription = feature.description ?? snapDescription ?? '';
+    this.publishPotential = feature.potential ?? snapPotential ?? null;
   }
 
   public cancelPublishDialog(): void {
@@ -2365,6 +2736,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       this.publishDialogVisible = false;
       this.publishLocalId = null;
       this.reloadFeatures(this.lastFilters);
+      await this.refreshLocalDraftPolygons();
+      this.clearLiveDraftImageLocations();
+      await this.refreshDraftImageLocations();
       this.applyFeatureToPanel(published, false);
       this.messageService.add({
         severity: 'success',
@@ -2391,6 +2765,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private async collectPublishOverlayPoints(
     session: RockExplorerRecordingSession,
     localId: string,
+    options?: { includeMapImagePins?: boolean },
   ): Promise<Position[]> {
     const points: Position[] = [];
     for (const site of session.feature.parkingSites ?? []) {
@@ -2405,13 +2780,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
-    // Uploaded image pins currently on map for this feature (if any)
-    for (const feature of this.imageLocationsData.features) {
-      if (feature.geometry?.type === 'Point') {
-        points.push([
-          feature.geometry.coordinates[0],
-          feature.geometry.coordinates[1],
-        ]);
+    if (options?.includeMapImagePins !== false) {
+      // Uploaded image pins currently on map for this feature (if any)
+      for (const feature of this.imageLocationsData.features) {
+        if (feature.geometry?.type === 'Point') {
+          points.push([
+            feature.geometry.coordinates[0],
+            feature.geometry.coordinates[1],
+          ]);
+        }
       }
     }
     const pendingPins = await this.pendingImages.listGpsPins(localId);
@@ -2443,7 +2820,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!localId) {
       return;
     }
-    if (!navigator.geolocation) {
+    if (!environment.mockGpsRecording && !navigator.geolocation) {
       this.messageService.add({
         severity: 'error',
         summary: this.transloco.translate(
@@ -2456,13 +2833,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     let lat: number;
     let lng: number;
     try {
-      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 0,
-        });
-      });
+      const pos = await this.getRecordingPosition();
       lat = pos.coords.latitude;
       lng = pos.coords.longitude;
     } catch {
@@ -2482,6 +2853,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (serverId && this.draftSync.isOnline()) {
       try {
         await this.uploadRecordImageNow(serverId, file, lat, lng);
+        this.appendLiveDraftImagePin(lat, lng);
         this.messageService.add({
           severity: 'success',
           summary: this.transloco.translate(
@@ -2491,6 +2863,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       } catch {
         // Fall back to queue
         await this.pendingImages.enqueue(localId, file, lat, lng, file.name);
+        await this.refreshDraftImageLocations();
         this.messageService.add({
           severity: 'info',
           summary: this.transloco.translate(
@@ -2500,6 +2873,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       }
     } else {
       await this.pendingImages.enqueue(localId, file, lat, lng, file.name);
+      await this.refreshDraftImageLocations();
       this.messageService.add({
         severity: 'info',
         summary: this.transloco.translate(
@@ -2545,8 +2919,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (draft?.serverId) {
       feature.id = draft.serverId;
     }
-    // Edit without publishing — open panel on draft feature
-    this.applyFeatureToPanel(feature, false);
+    // Open the feature form so title / potential / description can be edited
+    // and later prefilled into Publish.
+    this.applyFeatureToPanel(feature, true);
     this.cdr.detectChanges();
   }
 
@@ -2612,10 +2987,21 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       }
     }
 
+    await this.refreshLocalDraftPolygons();
+    await this.refreshDraftImageLocations();
     this.cdr.detectChanges();
   }
 
   private exitRecordMode(): void {
+    void this.exitRecordModeAsync();
+  }
+
+  /**
+   * Leave Record chrome: stop GPS, close open path if usable, auto-build a
+   * convex-hull polygon from overlays, then persist. Paths stay hidden until
+   * the draft is selected again; grey local-draft polygons stay on the map.
+   */
+  private async exitRecordModeAsync(): Promise<void> {
     if (!this.ui.recordModeActive()) {
       return;
     }
@@ -2623,10 +3009,220 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (this.recordingSession?.isRecording) {
       this.recordingSession.pause();
     }
+    if (this.recordingSession && this.activeLocalId) {
+      await this.applyRecordingPolygon(
+        this.recordingSession,
+        this.activeLocalId,
+      );
+    }
     this.ui.recordModeActive.set(false);
     this.syncRecordUiSignals();
-    void this.persistAndSync(true);
+    this.layers?.setPaths(emptyFeatureCollection());
+    this.clearDraftLayer();
+    await this.persistAndSync(true);
+    await this.refreshLocalDraftPolygons();
+    await this.refreshDraftImageLocations();
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Finish an open GPS path (≥2 verts) and set feature.geometry to a convex
+   * hull polygon around paths / parking / image pins when possible.
+   */
+  private async applyRecordingPolygon(
+    session: RockExplorerRecordingSession,
+    localId: string,
+    options?: { includeMapImagePins?: boolean },
+  ): Promise<void> {
+    const open = session.activePath;
+    if (open && (open.geometry?.coordinates.length ?? 0) >= 2) {
+      session.finishPath();
+    }
+    const points = await this.collectPublishOverlayPoints(
+      session,
+      localId,
+      options,
+    );
+    const geometry = geometryFromOverlayPoints(points);
+    if (geometry) {
+      session.feature.geometry = geometry;
+    }
+  }
+
+  /** Fit map to a draft's grey polygon (paths stay hidden until Record opens). */
+  private async showDraftOnMap(localId: string): Promise<void> {
+    const draft = await this.draftStore.get(localId);
+    if (!draft) {
+      return;
+    }
+    await this.refreshLocalDraftPolygons();
+    let geometry = this.geometryFromDraftSnapshot(draft);
+    if (!geometry) {
+      const session = RockExplorerRecordingSession.hydrateFromSnapshot(
+        draft.snapshot,
+        draft.deviceId || getOrCreateRecordingDeviceId(),
+      );
+      await this.applyRecordingPolygon(session, localId, {
+        includeMapImagePins: false,
+      });
+      geometry = session.feature.geometry;
+      if (geometry) {
+        // Persist full session (finished paths + hull), not geometry alone.
+        await this.draftStore.putSnapshot(localId, session, {
+          deviceId: draft.deviceId || undefined,
+          serverId: draft.serverId,
+          syncStatus: draft.syncStatus,
+          title: draft.title,
+          recordingState: session.recordingState,
+        });
+        await this.refreshLocalDraftPolygons();
+      }
+    }
+    this.layers?.setPaths(emptyFeatureCollection());
+    this.clearDraftLayer();
+    if (geometry && this.map) {
+      fitMapToGeometry(this.map, geometry, {
+        padding: 64,
+        maxZoom: 17,
+      });
+    } else {
+      const positions = this.positionsFromDraftSnapshot(draft);
+      if (positions.length > 0) {
+        this.fitMapToPositions(positions);
+      }
+    }
+    this.closeSessionsPanelIfOpen();
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Render all local unfinished drafts as grey polygons (no paths).
+   */
+  private async refreshLocalDraftPolygons(): Promise<void> {
+    if (!this.layers) {
+      return;
+    }
+    let drafts: RockExplorerDraftRecord[] = [];
+    try {
+      drafts = await this.draftStore.listByUpdatedAtDesc();
+    } catch {
+      this.localDraftFeatures = emptyFeatureCollection();
+      this.layers.clearLocalDrafts();
+      return;
+    }
+    const features: Feature[] = [];
+    for (const draft of drafts) {
+      let geometry = this.geometryFromDraftSnapshot(draft);
+      if (!geometry) {
+        geometry = this.computePolygonFromDraftRecord(draft);
+        if (geometry) {
+          // Re-read before write so a concurrent putSnapshot cannot be
+          // overwritten with a stale list snapshot (paths would be lost).
+          try {
+            const latest = await this.draftStore.get(draft.localId);
+            if (latest && !this.geometryFromDraftSnapshot(latest)) {
+              latest.snapshot.feature['geometry'] = structuredClone(geometry);
+              await this.draftStore.patch(draft.localId, {
+                snapshot: latest.snapshot,
+              });
+              draft.snapshot = latest.snapshot;
+            } else if (latest) {
+              geometry = this.geometryFromDraftSnapshot(latest);
+              draft.snapshot = latest.snapshot;
+            }
+          } catch {
+            // Display still works even if persist fails.
+          }
+        }
+      }
+      if (!geometry || geometry.type !== 'Polygon') {
+        continue;
+      }
+      features.push({
+        type: 'Feature',
+        geometry,
+        properties: {
+          localId: draft.localId,
+          title: draft.title,
+          serverId: draft.serverId,
+        },
+      });
+    }
+    this.localDraftFeatures = { type: 'FeatureCollection', features };
+    this.layers.setLocalDrafts(this.localDraftFeatures);
+  }
+
+  /** Build a convex hull from a draft's paths/parking when geometry is missing. */
+  private computePolygonFromDraftRecord(
+    draft: RockExplorerDraftRecord,
+  ): Geometry | null {
+    try {
+      const session = RockExplorerRecordingSession.hydrateFromSnapshot(
+        draft.snapshot,
+        draft.deviceId || getOrCreateRecordingDeviceId(),
+      );
+      const points: Position[] = [];
+      for (const path of session.feature.paths ?? []) {
+        for (const coord of path.geometry?.coordinates ?? []) {
+          if (coord.length >= 2) {
+            points.push([coord[0], coord[1]]);
+          }
+        }
+      }
+      for (const site of session.feature.parkingSites ?? []) {
+        if (site.lat != null && site.lng != null) {
+          points.push([site.lng, site.lat]);
+        }
+      }
+      return geometryFromOverlayPoints(points);
+    } catch {
+      return geometryFromOverlayPoints(this.positionsFromDraftSnapshot(draft));
+    }
+  }
+
+  private geometryFromDraftSnapshot(
+    draft: RockExplorerDraftRecord,
+  ): Geometry | null {
+    const raw = draft.snapshot.feature['geometry'];
+    if (!raw || typeof raw !== 'object') {
+      return null;
+    }
+    const geom = raw as Geometry;
+    if (geom.type === 'Polygon' && Array.isArray(geom.coordinates)) {
+      return structuredClone(geom);
+    }
+    return null;
+  }
+
+  private positionsFromDraftSnapshot(
+    draft: RockExplorerDraftRecord,
+  ): Position[] {
+    const points: Position[] = [];
+    const paths = draft.snapshot.feature['paths'];
+    if (Array.isArray(paths)) {
+      for (const path of paths) {
+        const coords = (path as { geometry?: { coordinates?: Position[] } })
+          ?.geometry?.coordinates;
+        if (!Array.isArray(coords)) {
+          continue;
+        }
+        for (const coord of coords) {
+          if (Array.isArray(coord) && coord.length >= 2) {
+            points.push([coord[0], coord[1]]);
+          }
+        }
+      }
+    }
+    const parkings = draft.snapshot.feature['parkingSites'];
+    if (Array.isArray(parkings)) {
+      for (const site of parkings) {
+        const s = site as { lat?: number; lng?: number };
+        if (s.lat != null && s.lng != null) {
+          points.push([s.lng, s.lat]);
+        }
+      }
+    }
+    return points;
   }
 
   private pauseRecording(): void {
@@ -2642,6 +3238,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private resumeRecording(): void {
     if (!this.recordingSession || !this.ui.recordModeActive()) {
       return;
+    }
+    if (environment.mockGpsRecording) {
+      this.seedMockGpsNearActiveSession();
     }
     this.recordingSession.resume();
     this.syncRecordUiSignals();
@@ -2672,6 +3271,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!this.recordingSession || !this.ui.recordModeActive()) {
       return;
     }
+    if (this.recordingSession.activePathId != null) {
+      return;
+    }
     this.recordingSession.newPath();
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
@@ -2687,6 +3289,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ui.recordPathVertexCount.set(
       session?.activePath?.geometry.coordinates.length ?? 0,
     );
+    this.ui.hasActiveRecordPath.set(session?.activePathId != null);
     this.ui.activeLocalDraftId.set(this.activeLocalId);
   }
 
@@ -2697,6 +3300,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!navigator.geolocation) {
       this.onGeoPermissionDenied();
       return;
+    }
+    if (environment.mockGpsRecording && !this.mockGps.isSeeded) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Mock GPS',
+        detail:
+          'Locate + Record use a simulated walker ~5 m/s (environment.mockGpsRecording)',
+        life: 4000,
+      });
     }
     this.geoWatchId = navigator.geolocation.watchPosition(
       (pos) => {
@@ -2710,10 +3322,22 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   }
 
   private stopGeoWatch(): void {
-    if (this.geoWatchId != null) {
-      navigator.geolocation.clearWatch(this.geoWatchId);
-      this.geoWatchId = null;
+    if (this.geoWatchId == null) {
+      return;
     }
+    navigator.geolocation.clearWatch(this.geoWatchId);
+    this.geoWatchId = null;
+  }
+
+  /** One-shot fix for geotagged images (mocked via navigator shim when enabled). */
+  private getRecordingPosition(): Promise<GeolocationPosition> {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0,
+      });
+    });
   }
 
   private onGeoPermissionDenied(): void {
@@ -2787,9 +3411,21 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  /**
+   * Publish/sync chrome: require both browser connectivity and no app-level
+   * offline banner (banner is driven by failed requests, not navigator alone).
+   */
+  private refreshOnlineUi(): void {
+    this.ui.online.set(this.browserOnline && !this.appOfflineAlert);
+    this.cdr.detectChanges();
+  }
+
   private async probeDraftStorage(): Promise<void> {
     const ok = await this.draftStore.probeOpen();
     this.ui.storageOk.set(ok);
+    if (ok && this.layers) {
+      await this.refreshLocalDraftPolygons();
+    }
     if (!ok) {
       this.messageService.add({
         severity: 'error',
@@ -2808,14 +3444,16 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         await this.persistAndSync(true);
         return;
       }
-      this.ui.syncStatus.set('syncing');
-      await this.draftSync.flush({ preferLocalId });
+      await this.runFlushWithDelayedSyncingUi(() =>
+        this.draftSync.flush({ preferLocalId }),
+      );
       if (this.activeLocalId) {
         await this.refreshSyncStatusFromDraft(this.activeLocalId);
       } else {
         this.ui.syncStatus.set(null);
       }
     } catch {
+      this.releaseSyncUiHold();
       this.ui.syncStatus.set('error');
     }
     this.cdr.detectChanges();
@@ -2829,11 +3467,19 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       await this.persistAndSync(true);
       return;
     }
-    this.ui.syncStatus.set('syncing');
     try {
-      await this.draftSync.flush();
-      this.ui.syncStatus.set(null);
+      await this.runFlushWithDelayedSyncingUi(() =>
+        this.draftSync.flush({
+          preferLocalId: this.activeLocalId ?? undefined,
+        }),
+      );
+      if (this.activeLocalId) {
+        await this.refreshSyncStatusFromDraft(this.activeLocalId);
+      } else {
+        this.ui.syncStatus.set(null);
+      }
     } catch {
+      this.releaseSyncUiHold();
       this.ui.syncStatus.set('error');
     }
     this.cdr.detectChanges();
@@ -2842,52 +3488,127 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   /**
    * Persist session to IndexedDB, enqueue upsert, flush when online (or force).
    * Never skips IDB write when offline — only skips HTTP flush.
+   * Writes are serialized; force persists always run after any in-flight write
+   * so exit/finish cannot lose finished paths behind a stale mid-recording snapshot.
+   * Callers that await a force persist wait until that write completes.
    */
-  private async persistAndSync(force: boolean): Promise<void> {
-    const session = this.recordingSession;
-    const localId = this.activeLocalId;
-    if (!session || !localId) {
-      return;
-    }
-    if (this.persistInFlight) {
-      return;
-    }
-    if (!force && !session.shouldSyncNow()) {
-      return;
+  private persistAndSync(force: boolean): Promise<void> {
+    if (force) {
+      this.persistForceQueued = true;
+    } else if (!this.recordingSession?.shouldSyncNow()) {
+      return Promise.resolve();
     }
 
-    this.persistInFlight = true;
+    const run = async (): Promise<void> => {
+      const useForce = this.persistForceQueued;
+      this.persistForceQueued = false;
+
+      const session = this.recordingSession;
+      const localId = this.activeLocalId;
+      if (!session || !localId) {
+        return;
+      }
+      if (!useForce && !session.shouldSyncNow()) {
+        return;
+      }
+
+      try {
+        await this.draftStore.putSnapshot(localId, session);
+        await this.draftSync.enqueueUpsert(localId);
+
+        if (this.draftSync.isOnline()) {
+          // Hold toolbar appearance for the whole in-flight request; only
+          // paint "Syncing…" if it lasts >1s, then apply the final status.
+          await this.runFlushWithDelayedSyncingUi(() =>
+            this.draftSync.flush({ preferLocalId: localId }),
+          );
+          await this.refreshSyncStatusFromDraft(localId);
+          const draft = await this.draftStore.get(localId);
+          if (draft?.serverId) {
+            session.feature.id = draft.serverId;
+          }
+          if (draft?.syncStatus === 'synced') {
+            session.markSynced();
+          }
+        } else {
+          await this.refreshSyncStatusFromDraft(localId);
+        }
+      } catch {
+        this.releaseSyncUiHold();
+        this.ui.syncStatus.set('error');
+        if (localId) {
+          await this.draftStore.patch(localId, { syncStatus: 'error' });
+        }
+      } finally {
+        this.cdr.detectChanges();
+      }
+
+      // Another force arrived while we were writing — run again before waiters resume.
+      if (this.persistForceQueued) {
+        await run();
+      }
+    };
+
+    const next = this.persistChain.then(run, run);
+    this.persistChain = next.then(
+      () => undefined,
+      () => undefined,
+    );
+    return next;
+  }
+
+  /**
+   * Hold sync-button appearance while a flush is in flight. Fast requests keep
+   * the previous label; only flushes lasting more than 1s paint "Syncing…".
+   * Callers must refresh the final status after this returns.
+   */
+  private async runFlushWithDelayedSyncingUi(
+    flush: () => Promise<void>,
+  ): Promise<void> {
+    this.syncUiHeld = true;
+    this.beginDelayedSyncingUi();
     try {
-      await this.draftStore.putSnapshot(localId, session);
-      await this.draftSync.enqueueUpsert(localId);
-      this.ui.syncStatus.set('pending');
-
-      if (force || this.draftSync.isOnline()) {
-        this.ui.syncStatus.set('syncing');
-        await this.draftSync.flush({ preferLocalId: localId });
-        await this.refreshSyncStatusFromDraft(localId);
-        const draft = await this.draftStore.get(localId);
-        if (draft?.serverId) {
-          session.feature.id = draft.serverId;
-        }
-        if (draft?.syncStatus === 'synced') {
-          session.markSynced();
-        }
-      }
-    } catch {
-      this.ui.syncStatus.set('error');
-      if (localId) {
-        await this.draftStore.patch(localId, { syncStatus: 'error' });
-      }
+      await flush();
     } finally {
-      this.persistInFlight = false;
-      this.cdr.detectChanges();
+      this.releaseSyncUiHold();
     }
   }
 
+  private beginDelayedSyncingUi(): void {
+    this.clearSyncingUiDelay();
+    this.syncingUiDelayHandle = setTimeout(() => {
+      this.syncingUiDelayHandle = null;
+      if (!this.syncUiHeld) {
+        return;
+      }
+      this.ui.syncStatus.set('syncing');
+      this.cdr.detectChanges();
+    }, RockExplorerComponent.SYNCING_UI_DELAY_MS);
+  }
+
+  private clearSyncingUiDelay(): void {
+    if (this.syncingUiDelayHandle != null) {
+      clearTimeout(this.syncingUiDelayHandle);
+      this.syncingUiDelayHandle = null;
+    }
+  }
+
+  private releaseSyncUiHold(): void {
+    this.clearSyncingUiDelay();
+    this.syncUiHeld = false;
+  }
+
   private async refreshSyncStatusFromDraft(localId: string): Promise<void> {
+    if (this.syncUiHeld) {
+      return;
+    }
     const draft = await this.draftStore.get(localId);
-    this.ui.syncStatus.set(draft?.syncStatus ?? null);
+    const status = draft?.syncStatus ?? null;
+    // IDB may briefly be 'syncing'; only the delayed timer shows that in UI.
+    if (status === 'syncing') {
+      return;
+    }
+    this.ui.syncStatus.set(status);
   }
 
   private async handleDeviceLockConflict(

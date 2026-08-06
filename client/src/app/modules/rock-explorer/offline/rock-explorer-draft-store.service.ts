@@ -26,11 +26,6 @@ export type PutSnapshotMeta = {
   providedIn: 'root',
 })
 export class RockExplorerDraftStoreService {
-  static readonly MAX_UNFINISHED_DRAFTS = 10;
-
-  readonly MAX_UNFINISHED_DRAFTS =
-    RockExplorerDraftStoreService.MAX_UNFINISHED_DRAFTS;
-
   private readonly db = rockExplorerDraftDb;
 
   /**
@@ -76,7 +71,11 @@ export class RockExplorerDraftStoreService {
         session.recordingState ??
         existing?.recordingState ??
         'paused',
-      syncStatus: meta.syncStatus ?? 'pending',
+      syncStatus:
+        meta.syncStatus ??
+        // Keep error sticky until a successful flush clears it — otherwise every
+        // GPS persist would paint the sync button back to pending after a failure.
+        (existing?.syncStatus === 'error' ? 'error' : 'pending'),
       updatedAt: Date.now(),
       snapshot,
     };
@@ -112,10 +111,6 @@ export class RockExplorerDraftStoreService {
 
   async count(): Promise<number> {
     return this.db.drafts.count();
-  }
-
-  async canCreateDraft(): Promise<boolean> {
-    return (await this.count()) < this.MAX_UNFINISHED_DRAFTS;
   }
 
   async patch(
