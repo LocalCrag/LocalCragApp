@@ -34,12 +34,14 @@ export const ROCK_EXPLORER_LAYERS = {
 } as const;
 
 export const POTENTIAL_FILL_COLORS: Record<string, string> = {
-  // Blues for known potential; yellow = unexplored; red = none.
+  // Blues for known potential; amber intensity = unexplored assumed grade; red = none.
   HIGH: '#1d4ed8',
   MEDIUM: '#3b82f6',
   LOW: '#93c5fd',
   NONE: '#dc2626',
-  UNEXPLORED: '#eab308',
+  UNEXPLORED_HIGH: '#ca8a04',
+  UNEXPLORED_MEDIUM: '#eab308',
+  UNEXPLORED_LOW: '#fde047',
 };
 
 export const POTENTIAL_OUTLINE_COLORS: Record<string, string> = {
@@ -47,7 +49,9 @@ export const POTENTIAL_OUTLINE_COLORS: Record<string, string> = {
   MEDIUM: '#1d4ed8',
   LOW: '#2563eb',
   NONE: '#b91c1c',
-  UNEXPLORED: '#a16207',
+  UNEXPLORED_HIGH: '#854d0e',
+  UNEXPLORED_MEDIUM: '#a16207',
+  UNEXPLORED_LOW: '#ca8a04',
 };
 
 /** Shared accent for gallery GPS dots and path overlays. */

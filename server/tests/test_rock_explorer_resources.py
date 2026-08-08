@@ -99,6 +99,33 @@ def test_features_geojson_and_filter(client, member_token):
     assert all(f["properties"]["potential"] == "HIGH" for f in filtered.json["features"])
 
 
+def test_unexplored_potential_variants(client, member_token):
+    """Three graded unexplored potentials; legacy UNEXPLORED rejected (#1242)."""
+    for value in ("UNEXPLORED_HIGH", "UNEXPLORED_MEDIUM", "UNEXPLORED_LOW"):
+        rv = client.post(
+            "/api/rock-explorer/features",
+            token=member_token,
+            json=_point_payload(title=f"U {value}", potential=value),
+        )
+        assert rv.status_code == 201, value
+        assert rv.json["potential"] == value
+
+    filtered = client.get(
+        "/api/rock-explorer/features.geojson?potential=UNEXPLORED_MEDIUM",
+        token=member_token,
+    )
+    assert filtered.status_code == 200
+    assert len(filtered.json["features"]) >= 1
+    assert all(f["properties"]["potential"] == "UNEXPLORED_MEDIUM" for f in filtered.json["features"])
+
+    legacy = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(title="Legacy", potential="UNEXPLORED"),
+    )
+    assert legacy.status_code == 400
+
+
 def test_member_can_update_and_delete_feature(client, member_token):
     created = client.post("/api/rock-explorer/features", token=member_token, json=_point_payload()).json
     feature_id = created["id"]
