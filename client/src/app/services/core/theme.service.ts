@@ -1,12 +1,16 @@
 import {
   DestroyRef,
   Injectable,
+  Injector,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import {
   cleanupCredentials,
   newAuthCredentials,
@@ -30,6 +34,7 @@ export class ThemeService {
 
   private actions$ = inject(Actions);
   private destroyRef = inject(DestroyRef);
+  private injector = inject(Injector);
   private mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   private mediaListener = () => {
     if (this.colorScheme() === 'system') {
@@ -57,6 +62,8 @@ export class ThemeService {
       .subscribe(() => {
         this.applyColorScheme(this.readGuestColorScheme() ?? 'system');
       });
+
+    this.syncNativeStatusBar();
   }
 
   toggleGuestColorScheme(): void {
@@ -87,5 +94,32 @@ export class ThemeService {
       return saved;
     }
     return null;
+  }
+
+  private syncNativeStatusBar(): void {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    effect(
+      () => {
+        const dark = this.isDarkMode();
+        // Style.Dark means light content drawn on dark chrome.
+        void StatusBar.setStyle({ style: dark ? Style.Dark : Style.Light });
+        void StatusBar.setBackgroundColor({ color: this.statusBarColor(dark) });
+      },
+      { injector: this.injector },
+    );
+  }
+
+  /** Reads the theme surface the site header already uses, so native chrome cannot drift. */
+  private statusBarColor(dark: boolean): string {
+    const token = getComputedStyle(document.documentElement)
+      .getPropertyValue('--p-content-background')
+      .trim();
+    return /^#[0-9a-fA-F]{6}$/.test(token)
+      ? token
+      : dark
+        ? '#18181b'
+        : '#ffffff';
   }
 }

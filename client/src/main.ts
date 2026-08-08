@@ -8,6 +8,8 @@ import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import BlotFormatter from 'quill-blot-formatter';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { Capacitor } from '@capacitor/core';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { appConfig } from './app/modules/core/app.config';
 import { CoreComponent } from './app/modules/core/core.component';
 
@@ -18,7 +20,13 @@ if (environment.production) {
 bootstrapApplication(CoreComponent, {
   ...appConfig,
   providers: [provideZoneChangeDetection(), ...appConfig.providers],
-}).catch((err) => console.error(err));
+})
+  .then(() => {
+    if (Capacitor.isNativePlatform()) {
+      void SplashScreen.hide();
+    }
+  })
+  .catch((err) => console.error(err));
 
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/blotFormatter', BlotFormatter);
