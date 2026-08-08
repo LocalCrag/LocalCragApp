@@ -9,14 +9,14 @@
 // source images into the full Android density matrix (mipmap-*, drawable-*,
 // drawable-night-*) under client/android/app/src/main/res.
 
-import { mkdir, readFile } from 'node:fs/promises';
-import sharp from 'sharp';
+import { mkdir, readFile } from "node:fs/promises";
+import sharp from "sharp";
 
-const LIGHT_BACKGROUND = '#ffffff';
-const DARK_BACKGROUND = '#18181b';
+const LIGHT_BACKGROUND = "#ffffff";
+const DARK_BACKGROUND = "#18181b";
 
-const logoSvg = await readFile('src/assets/lc_logo.svg');
-await mkdir('assets', { recursive: true });
+const logoSvg = await readFile("src/assets/lc_logo.svg");
+await mkdir("assets", { recursive: true });
 
 async function compose({ out, canvas, background, logoSize }) {
   const base = sharp({
@@ -28,43 +28,46 @@ async function compose({ out, canvas, background, logoSize }) {
   }
   const logo = await sharp(logoSvg, { density: 512 })
     .resize(logoSize, logoSize, {
-      fit: 'contain',
+      fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
     .png()
     .toBuffer();
-  await base.composite([{ input: logo, gravity: 'centre' }]).png().toFile(`assets/${out}`);
+  await base
+    .composite([{ input: logo, gravity: "centre" }])
+    .png()
+    .toFile(`assets/${out}`);
 }
 
 await compose({
-  out: 'icon-only.png',
+  out: "icon-only.png",
   canvas: 1024,
   background: LIGHT_BACKGROUND,
   logoSize: 640,
 });
 
 await compose({
-  out: 'icon-foreground.png',
+  out: "icon-foreground.png",
   canvas: 1024,
   background: { r: 0, g: 0, b: 0, alpha: 0 },
   logoSize: 560,
 });
 
 await compose({
-  out: 'icon-background.png',
+  out: "icon-background.png",
   canvas: 1024,
   background: LIGHT_BACKGROUND,
 });
 
 await compose({
-  out: 'splash.png',
+  out: "splash.png",
   canvas: 2732,
   background: LIGHT_BACKGROUND,
   logoSize: 800,
 });
 
 await compose({
-  out: 'splash-dark.png',
+  out: "splash-dark.png",
   canvas: 2732,
   // Matches the Aura dark surface painted behind .site-header, so the handoff
   // from splash to first paint has no color jump.
@@ -72,4 +75,4 @@ await compose({
   logoSize: 800,
 });
 
-console.log('Generated placeholder assets in client/assets/');
+console.log("Generated placeholder assets in client/assets/");
