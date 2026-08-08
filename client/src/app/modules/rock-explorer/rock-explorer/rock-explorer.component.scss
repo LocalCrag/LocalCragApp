@@ -19,6 +19,29 @@
   color: var(--p-text-color);
 }
 
+.rock-explorer__device-lock-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.rock-explorer__publish-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rock-explorer__publish-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.rock-explorer__hidden-file {
+  display: none;
+}
+
 .rock-explorer__map {
   flex: 1;
   min-height: 0;

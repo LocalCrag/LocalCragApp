@@ -1,0 +1,120 @@
+@if (ui.sessionsPanelOpen()) {
+  <aside
+    class="rock-explorer__panel rock-explorer__sessions-panel"
+    *transloco="let t"
+    role="dialog"
+    [attr.aria-label]="t('rockExplorer.sessionsTitle')"
+  >
+    <header class="rock-explorer__panel-header">
+      <div class="rock-explorer-sessions__title">
+        <h2>{{ t("rockExplorer.sessionsTitle") }}</h2>
+        <p-tag [value]="t('rockExplorer.beta')" severity="warn" />
+      </div>
+      <div class="rock-explorer__panel-header-actions">
+        <p-button
+          icon="pi pi-times"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          [attr.aria-label]="t('rockExplorer.sessionsClose')"
+          (onClick)="ui.dispatch({ type: 'closeSessionsPanel' })"
+        />
+      </div>
+    </header>
+
+    <div class="rock-explorer__panel-body">
+      @if (drafts().length === 0) {
+        <p class="rock-explorer-sessions__empty">
+          {{ t("rockExplorer.sessionsEmpty") }}
+        </p>
+      } @else {
+        <ul class="rock-explorer-sessions__list">
+          @for (draft of drafts(); track draft.localId) {
+            <li
+              class="rock-explorer-sessions__row"
+              [class.rock-explorer-sessions__row--active]="
+                draft.localId === ui.activeLocalDraftId()
+              "
+            >
+              <div class="rock-explorer-sessions__meta">
+                <span class="rock-explorer-sessions__name">
+                  {{ draft.title || t("rockExplorer.sessionsUntitled") }}
+                </span>
+                <span class="rock-explorer-sessions__details">
+                  <span>{{
+                    t("rockExplorer.recordingState." + draft.recordingState)
+                  }}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{{
+                    t("rockExplorer.syncStatus." + draft.syncStatus)
+                  }}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{{ draft.updatedAt | timeAgo }}</span>
+                </span>
+              </div>
+              <div class="rock-explorer-sessions__actions">
+                <p-button
+                  [label]="t('rockExplorer.sessionsShowOnMap')"
+                  size="small"
+                  severity="secondary"
+                  (onClick)="
+                    ui.dispatch({
+                      type: 'showDraftOnMap',
+                      localId: draft.localId,
+                    })
+                  "
+                />
+                <p-button
+                  [label]="t('rockExplorer.sessionsContinue')"
+                  size="small"
+                  severity="secondary"
+                  (onClick)="
+                    ui.dispatch({
+                      type: 'continueDraft',
+                      localId: draft.localId,
+                    })
+                  "
+                />
+                <p-button
+                  [label]="t('rockExplorer.sessionsFinish')"
+                  size="small"
+                  severity="secondary"
+                  [disabled]="!ui.online()"
+                  (onClick)="
+                    ui.dispatch({
+                      type: 'publishDraft',
+                      localId: draft.localId,
+                    })
+                  "
+                />
+                <p-button
+                  [label]="t('rockExplorer.sessionsDelete')"
+                  size="small"
+                  severity="danger"
+                  [text]="true"
+                  (onClick)="
+                    ui.dispatch({
+                      type: 'deleteDraft',
+                      localId: draft.localId,
+                      event: $event,
+                    })
+                  "
+                />
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="rock-explorer__panel-footer">
+      <p-button
+        icon="pi pi-circle-fill"
+        [label]="t('rockExplorer.modeRecord')"
+        (onClick)="ui.dispatch({ type: 'enterRecord' })"
+        [disabled]="!ui.canStartRecord()"
+        styleClass="w-full rock-explorer-sessions__record-btn"
+      />
+    </div>
+  </aside>
+}

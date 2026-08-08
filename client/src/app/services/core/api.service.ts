@@ -297,9 +297,14 @@ export class ApiService {
       `${this.apiHost}reactions/${targetType}/${targetId}`,
   };
 
+  public health = {
+    check: (): string => `${this.apiHost}health`,
+  };
+
   public rockExplorer = {
     getFeaturesGeoJSON: (): string =>
       `${this.apiHost}rock-explorer/features.geojson`,
+    getFeatures: (): string => `${this.apiHost}rock-explorer/features`,
     getFeature: (id: string): string =>
       `${this.apiHost}rock-explorer/features/${id}`,
     createFeature: (): string => `${this.apiHost}rock-explorer/features`,
@@ -307,6 +312,8 @@ export class ApiService {
       `${this.apiHost}rock-explorer/features/${id}`,
     deleteFeature: (id: string): string =>
       `${this.apiHost}rock-explorer/features/${id}`,
+    cloneFeature: (id: string): string =>
+      `${this.apiHost}rock-explorer/features/${id}/clone`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;

@@ -2,6 +2,100 @@
   <p-toast />
   <p-confirmpopup />
 
+  <p-dialog
+    [header]="t('rockExplorer.deviceLockTitle')"
+    [(visible)]="recording.deviceLockDialogVisible"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="false"
+    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
+    (onHide)="recording.cancelDeviceLockDialog()"
+  >
+    <p>{{ t("rockExplorer.deviceLockMessage") }}</p>
+    <div class="rock-explorer__device-lock-actions">
+      <p-button
+        [label]="t('rockExplorer.deviceLockCancel')"
+        severity="secondary"
+        [text]="true"
+        (onClick)="recording.cancelDeviceLockDialog()"
+      />
+      <p-button
+        [label]="t('rockExplorer.deviceLockClone')"
+        (onClick)="recording.confirmDeviceLockClone()"
+      />
+    </div>
+  </p-dialog>
+
+  <p-dialog
+    [header]="t('rockExplorer.publishTitle')"
+    [(visible)]="recording.publishDialogVisible"
+    [modal]="true"
+    [closable]="!recording.publishInFlight"
+    [dismissableMask]="false"
+    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
+    (onHide)="recording.cancelPublishDialog()"
+  >
+    <div class="rock-explorer__publish-form">
+      <label class="rock-explorer__publish-label" for="re-publish-potential">
+        {{ t("rockExplorer.publishPotential") }}
+      </label>
+      <p-select
+        inputId="re-publish-potential"
+        [options]="ui.potentialOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="recording.publishPotential"
+        [placeholder]="t('rockExplorer.publishPotential')"
+        [disabled]="recording.publishInFlight"
+        styleClass="w-full"
+      />
+      <label class="rock-explorer__publish-label" for="re-publish-title">
+        {{ t("rockExplorer.publishTitleField") }}
+      </label>
+      <input
+        id="re-publish-title"
+        pInputText
+        class="w-full"
+        [(ngModel)]="recording.publishTitle"
+        [disabled]="recording.publishInFlight"
+        maxlength="120"
+      />
+      <label class="rock-explorer__publish-label" for="re-publish-description">
+        {{ t("rockExplorer.publishDescriptionField") }}
+      </label>
+      <textarea
+        id="re-publish-description"
+        pTextarea
+        class="w-full"
+        rows="3"
+        [(ngModel)]="recording.publishDescription"
+        [disabled]="recording.publishInFlight"
+      ></textarea>
+    </div>
+    <div class="rock-explorer__device-lock-actions">
+      <p-button
+        [label]="t('rockExplorer.publishCancel')"
+        severity="secondary"
+        [text]="true"
+        [disabled]="recording.publishInFlight"
+        (onClick)="recording.cancelPublishDialog()"
+      />
+      <p-button
+        [label]="t('rockExplorer.publishConfirm')"
+        [loading]="recording.publishInFlight"
+        (onClick)="recording.confirmPublishDialog()"
+      />
+    </div>
+  </p-dialog>
+
+  <input
+    #recordImageInput
+    type="file"
+    accept="image/*"
+    class="rock-explorer__hidden-file"
+    (change)="recording.onRecordImageSelected($event)"
+  />
+
   @if (loading) {
     <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
   } @else if (noApiKey) {
@@ -14,5 +108,7 @@
     @if (ui.panelOpen()) {
       <lc-rock-explorer-panel />
     }
+
+    <lc-rock-explorer-sessions />
   }
 </div>

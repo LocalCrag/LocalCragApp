@@ -76,3 +76,38 @@ export function geometryFromOverlayPoints(points: Position[]): Geometry | null {
     coordinates: [[...hull, hull[0]]],
   };
 }
+
+/** Point at arithmetic mean of distinct overlay anchors. */
+export function pointAtCentroid(points: Position[]): Geometry | null {
+  const unique = dedupePositions(points);
+  if (unique.length === 0) {
+    return null;
+  }
+  let lngSum = 0;
+  let latSum = 0;
+  for (const p of unique) {
+    lngSum += p[0];
+    latSum += p[1];
+  }
+  return {
+    type: 'Point',
+    coordinates: [lngSum / unique.length, latSum / unique.length],
+  };
+}
+
+/**
+ * Geometry for publish: Polygon if ≥3 distinct anchors,
+ * Point at centroid if 1–2, null if empty.
+ */
+export function geometryForPublishFromOverlays(
+  points: Position[],
+): Geometry | null {
+  const unique = dedupePositions(points);
+  if (unique.length === 0) {
+    return null;
+  }
+  if (unique.length >= 3) {
+    return geometryFromOverlayPoints(unique);
+  }
+  return pointAtCentroid(unique);
+}

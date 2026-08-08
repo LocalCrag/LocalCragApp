@@ -223,6 +223,9 @@ export class RockExplorerPanelComponent {
     if (!feature.paths) {
       feature.paths = [];
     }
+    if (!feature.status) {
+      feature.status = 'published';
+    }
     feature.title = raw.title?.trim() || null;
     feature.description = raw.description?.trim() || null;
     feature.potential = raw.potential as RockExplorerPotential;

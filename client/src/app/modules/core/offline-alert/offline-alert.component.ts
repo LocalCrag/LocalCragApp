@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { AppState } from '../../../ngrx/reducers';
 import { selectShowOfflineAlert } from '../../../ngrx/selectors/app-level-alerts.selectors';
-import { hideOfflineAlert } from '../../../ngrx/actions/app-level-alerts.actions';
+import { ConnectivityProbeService } from '../../../services/core/connectivity-probe.service';
 
 /**
  * Fixed top banner for connectivity problems.
@@ -32,10 +32,11 @@ import { hideOfflineAlert } from '../../../ngrx/actions/app-level-alerts.actions
  *
  * ## When to hide
  *
- * - `window.online` — early clear when the OS reports connectivity again (no in-flight
- *   request required). Can fire a bit early relative to real API reachability.
- * - Successful HTTP response — stronger signal that the app can talk to the server again
+ * - Successful HTTP response — proves the app can talk to the server again
  *   (see ErrorHandlerService / ErrorHandlerInterceptor).
+ * - {@link ConnectivityProbeService} — polls `/api/health` while the banner is
+ *   visible so recovery is detected even without user-driven requests.
+ * - `window.online` — triggers an immediate probe (does not clear blindly).
  */
 @Component({
   selector: 'lc-offline-alert',
@@ -47,6 +48,8 @@ export class OfflineAlertComponent implements AfterViewInit, OnDestroy {
   private store = inject<Store<AppState>>(Store);
   private hostEl = inject(ElementRef<HTMLElement>);
   private destroyRef = inject(DestroyRef);
+  /** Ensures the root probe service is constructed with the offline banner. */
+  private readonly connectivityProbe = inject(ConnectivityProbeService);
   private resizeObserver?: ResizeObserver;
 
   public showOfflineAlert$: Observable<boolean> = this.store.pipe(
@@ -81,12 +84,12 @@ export class OfflineAlertComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Early clear when the browser reports connectivity restored.
-   * See class docs: this is a heuristic; successful HTTP is the stronger clear path.
+   * Browser reports a network interface again — probe the API rather than
+   * clearing blindly (interface up ≠ server reachable).
    */
   @HostListener('window:online')
   onWindowOnline() {
-    this.store.dispatch(hideOfflineAlert());
+    this.connectivityProbe.probeNow();
   }
 
   private updateHeight() {

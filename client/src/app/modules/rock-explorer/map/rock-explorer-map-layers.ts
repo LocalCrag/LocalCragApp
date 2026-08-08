@@ -10,6 +10,8 @@ import { loadMapImages } from '../../../utility/map/load-map-images';
 import { buildMatchExpression } from '../../../utility/map/match-expression';
 import {
   MAP_MEDIA_ACCENT,
+  LOCAL_DRAFT_FILL,
+  LOCAL_DRAFT_OUTLINE,
   PARKING_ICON,
   POTENTIAL_FILL_COLORS,
   POTENTIAL_OUTLINE_COLORS,
@@ -22,7 +24,16 @@ import {
  * Call {@link addAll} after map load and again after `style.load`.
  */
 export class RockExplorerMapLayers {
+  private untitledFeatureLabel = 'Untitled feature';
+  private untitledDraftLabel = 'Untitled draft';
+
   constructor(private readonly map: MaplibreMap) {}
+
+  /** Localized fallbacks for empty titles on the map. */
+  setUntitledLabels(featureLabel: string, draftLabel: string): void {
+    this.untitledFeatureLabel = featureLabel;
+    this.untitledDraftLabel = draftLabel;
+  }
 
   /** Ensure parking icon + all feature/draft/overlay layers exist. */
   async addAll(
@@ -36,6 +47,7 @@ export class RockExplorerMapLayers {
     }
     this.ensureFeatureSources(features);
     this.ensureFeatureLayers();
+    this.ensureLocalDraftLayers();
     this.ensureDraftLayers();
     this.ensureSelectionLayers();
     this.ensureLabelLayer();
@@ -56,6 +68,17 @@ export class RockExplorerMapLayers {
 
   clearDraft(): void {
     this.setDraft(emptyFeatureCollection());
+  }
+
+  setLocalDrafts(collection: FeatureCollection<Geometry>): void {
+    ensureGeoJsonSource(this.map, S.localDrafts);
+    this.ensureLocalDraftLayers();
+    setGeoJsonSourceData(this.map, S.localDrafts, collection);
+    this.setLocalDraftLabels(collection);
+  }
+
+  clearLocalDrafts(): void {
+    this.setLocalDrafts(emptyFeatureCollection());
   }
 
   setImageLocations(collection: FeatureCollection<Geometry>): void {
@@ -196,6 +219,8 @@ export class RockExplorerMapLayers {
 
   private ensureFeatureSources(features: FeatureCollection<Geometry>): void {
     ensureGeoJsonSource(this.map, S.features, features);
+    ensureGeoJsonSource(this.map, S.localDrafts);
+    ensureGeoJsonSource(this.map, S.localDraftLabels);
     ensureGeoJsonSource(this.map, S.draft);
     ensureGeoJsonSource(
       this.map,
@@ -249,6 +274,55 @@ export class RockExplorerMapLayers {
         'circle-stroke-color': '#fff',
       },
     });
+  }
+
+  private ensureLocalDraftLayers(): void {
+    if (!this.map.getLayer(L.localDraftsFill)) {
+      this.map.addLayer({
+        id: L.localDraftsFill,
+        type: 'fill',
+        source: S.localDrafts,
+        filter: ['==', ['geometry-type'], 'Polygon'],
+        paint: {
+          'fill-color': LOCAL_DRAFT_FILL,
+          'fill-opacity': 0.35,
+        },
+      });
+    }
+    if (!this.map.getLayer(L.localDraftsOutline)) {
+      this.map.addLayer({
+        id: L.localDraftsOutline,
+        type: 'line',
+        source: S.localDrafts,
+        filter: ['==', ['geometry-type'], 'Polygon'],
+        paint: {
+          'line-color': LOCAL_DRAFT_OUTLINE,
+          'line-width': 2,
+        },
+      });
+    }
+    if (!this.map.getLayer(L.localDraftLabels)) {
+      this.map.addLayer({
+        id: L.localDraftLabels,
+        type: 'symbol',
+        source: S.localDraftLabels,
+        layout: {
+          'text-field': ['get', 'title'],
+          'text-size': 12,
+          'text-offset': [0, 1.15],
+          'text-anchor': 'top',
+          'text-max-width': 12,
+          'text-optional': true,
+          'text-allow-overlap': false,
+          'symbol-placement': 'point',
+        },
+        paint: {
+          'text-color': LOCAL_DRAFT_OUTLINE,
+          'text-halo-color': 'rgba(255,255,255,0.92)',
+          'text-halo-width': 1.75,
+        },
+      });
+    }
   }
 
   private ensureDraftLayers(): void {
@@ -486,16 +560,17 @@ export class RockExplorerMapLayers {
     );
   }
 
-  /** One point per titled feature so polygon rings do not repeat labels. */
+  /** One point per feature; empty titles use the untitled fallback. */
   private buildFeatureLabelCollection(
     collection: FeatureCollection<Geometry>,
   ): FeatureCollection<Geometry> {
     const features: Feature[] = [];
     for (const feature of collection.features) {
-      const title = feature.properties?.['title'];
-      if (typeof title !== 'string' || !title.trim()) {
-        continue;
-      }
+      const raw = feature.properties?.['title'];
+      const title =
+        typeof raw === 'string' && raw.trim()
+          ? raw.trim()
+          : this.untitledFeatureLabel;
       const coordinates = geometryLabelPoint(feature.geometry);
       if (!coordinates) {
         continue;
@@ -505,15 +580,49 @@ export class RockExplorerMapLayers {
         geometry: { type: 'Point', coordinates },
         properties: {
           id: feature.properties?.['id'] ?? null,
-          title: title.trim(),
+          title,
         },
       });
     }
     return { type: 'FeatureCollection', features };
   }
 
+  private setLocalDraftLabels(collection: FeatureCollection<Geometry>): void {
+    ensureGeoJsonSource(this.map, S.localDraftLabels);
+    const features: Feature[] = [];
+    for (const feature of collection.features) {
+      if (feature.geometry?.type !== 'Polygon') {
+        continue;
+      }
+      const raw = feature.properties?.['title'];
+      const title =
+        typeof raw === 'string' && raw.trim()
+          ? raw.trim()
+          : this.untitledDraftLabel;
+      const coordinates = geometryLabelPoint(feature.geometry);
+      if (!coordinates) {
+        continue;
+      }
+      features.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates },
+        properties: {
+          localId: feature.properties?.['localId'] ?? null,
+          title,
+        },
+      });
+    }
+    setGeoJsonSourceData(this.map, S.localDraftLabels, {
+      type: 'FeatureCollection',
+      features,
+    });
+  }
+
   private bringOverlaysToFront(): void {
     for (const layerId of [
+      L.localDraftsFill,
+      L.localDraftsOutline,
+      L.localDraftLabels,
       L.labels,
       L.paths,
       L.pathLabels,

@@ -23,10 +23,14 @@ from models.crag import Crag
 from models.file import File
 from models.gallery_image import GalleryImage
 from models.line import Line
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
-from util.rock_explorer import rock_explorer_gallery_image_ids_subquery
+from util.rock_explorer import (
+    assert_can_view_feature,
+    rock_explorer_gallery_image_ids_subquery,
+)
 from util.secret_service import SecretService
 from util.security_util import current_user_is_member
 from util.tag_object_prefetch import prefetch_tag_objects
@@ -39,6 +43,15 @@ from webargs_schemas.gallery_image_args import (
 
 def set_image_tags(image, tag_data):
     set_tags(image, tag_data, attribute="tags")
+
+
+def _assert_can_view_rock_explorer_tag_targets(tag_data, user) -> None:
+    """Reject gallery tags pointing at drafts the caller cannot view."""
+    for tag in tag_data or []:
+        if tag.get("objectType") != "RockExplorerFeature":
+            continue
+        feature = RockExplorerFeature.find_by_id(tag["objectId"])
+        assert_can_view_feature(feature, user)
 
 
 class GetGalleryImages(MethodView):
@@ -58,6 +71,8 @@ class GetGalleryImages(MethodView):
             tag_object_id = request.args.get("tag-object-id")
             if not tag_object_id:
                 raise BadRequest("tag-object-id is required for rock explorer tag listings.")
+            feature = RockExplorerFeature.find_by_id(tag_object_id)
+            assert_can_view_feature(feature, User.find_by_email(get_jwt_identity()))
         elif tag_object_type and tag_object_slug:
             # Get the object_id for the slug based on object type
             tag_object_model = None
@@ -118,6 +133,7 @@ class CreateGalleryImage(MethodView):
     def post(self):
         gallery_image_data = parser.parse(gallery_image_post_args, request)
         created_by = User.find_by_email(get_jwt_identity())
+        _assert_can_view_rock_explorer_tag_targets(gallery_image_data["tags"], created_by)
         image = GalleryImage()
         image.created_by = created_by
         image.file_id = gallery_image_data["fileId"]
@@ -142,12 +158,14 @@ class UpdateGalleryImage(MethodView):
         image = GalleryImage.find_by_id(image_id)
         image_data = parser.parse(gallery_image_put_args, request)
 
-        is_owner = image.created_by_id == User.find_by_email(get_jwt_identity()).id
+        user = User.find_by_email(get_jwt_identity())
+        is_owner = image.created_by_id == user.id
         is_moderator = get_jwt()["moderator"]
 
         if not is_owner and not is_moderator:
             raise Unauthorized("You are not allowed to update this image.")
 
+        _assert_can_view_rock_explorer_tag_targets(image_data["tags"], user)
         set_image_tags(image, image_data["tags"])
 
         image.description = image_data["description"] or None
