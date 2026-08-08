@@ -1,7 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from marshmallow import fields, validate
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -21,12 +20,12 @@ from util.rock_explorer import (
     assert_can_view_feature,
     assert_draft_mutable,
     clone_rock_explorer_feature,
-    is_draft,
 )
 from util.security_util import check_auth_claims
 from util.tag_object_prefetch import prefetch_tag_objects
 from webargs_schemas.rock_explorer_args import (
     cross_validate_rock_explorer_feature_args,
+    rock_explorer_clone_args,
     rock_explorer_feature_args,
 )
 
@@ -124,10 +123,6 @@ class RockExplorerFeatures(MethodView):
         return _dump_feature(feature), 201
 
 
-# Back-compat alias for imports that still reference CreateRockExplorerFeature
-CreateRockExplorerFeature = RockExplorerFeatures
-
-
 class UpdateRockExplorerFeature(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
@@ -139,7 +134,7 @@ class UpdateRockExplorerFeature(MethodView):
         )
         feature = RockExplorerFeature.find_by_id(feature_id)
         user = _current_user()
-        device_id = data.get("recordingDeviceId") or request.args.get("recordingDeviceId")
+        device_id = data.get("recordingDeviceId")
         assert_draft_mutable(feature, user, device_id)
 
         feature.geometry = data["geometry"]
@@ -156,7 +151,7 @@ class DeleteRockExplorerFeature(MethodView):
     def delete(self, feature_id):
         feature = RockExplorerFeature.find_by_id(feature_id)
         user = _current_user()
-        if is_draft(feature):
+        if feature.status == RockExplorerFeatureStatusEnum.DRAFT:
             device_id = request.args.get("recordingDeviceId")
             if device_id is None and request.is_json and request.json:
                 device_id = request.json.get("recordingDeviceId")
@@ -166,16 +161,11 @@ class DeleteRockExplorerFeature(MethodView):
         return jsonify(None), 204
 
 
-_clone_args = {
-    "recordingDeviceId": fields.Str(required=True, validate=validate.Length(min=1, max=128)),
-}
-
-
 class CloneRockExplorerFeature(MethodView):
     @jwt_required()
     @check_auth_claims(member=True)
     def post(self, feature_id):
-        data = parser.parse(_clone_args, request)
+        data = parser.parse(rock_explorer_clone_args, request)
         feature = RockExplorerFeature.find_by_id(feature_id)
         user = _current_user()
         clone = clone_rock_explorer_feature(feature, user, data["recordingDeviceId"])

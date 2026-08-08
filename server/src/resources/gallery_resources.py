@@ -46,7 +46,7 @@ def set_image_tags(image, tag_data):
 
 
 def _assert_can_view_rock_explorer_tag_targets(tag_data, user) -> None:
-    """Reject gallery tags pointing at drafts the caller cannot view (T-10-05)."""
+    """Reject gallery tags pointing at drafts the caller cannot view."""
     for tag in tag_data or []:
         if tag.get("objectType") != "RockExplorerFeature":
             continue

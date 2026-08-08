@@ -16,6 +16,8 @@ export type PutSnapshotMeta = {
   syncStatus?: DraftSyncStatus;
   title?: string | null;
   recordingState?: RecordingState;
+  /** When set (e.g. remote pull), preserve server timestamp instead of now. */
+  updatedAt?: number;
 };
 
 /**
@@ -29,7 +31,7 @@ export class RockExplorerDraftStoreService {
   private readonly db = rockExplorerDraftDb;
 
   /**
-   * Probe IndexedDB open; false on quota / open failures (D-19).
+   * Probe IndexedDB open; false on quota / open failures.
    */
   async probeOpen(): Promise<boolean> {
     try {
@@ -76,7 +78,7 @@ export class RockExplorerDraftStoreService {
         // Keep error sticky until a successful flush clears it — otherwise every
         // GPS persist would paint the sync button back to pending after a failure.
         (existing?.syncStatus === 'error' ? 'error' : 'pending'),
-      updatedAt: Date.now(),
+      updatedAt: meta.updatedAt ?? Date.now(),
       snapshot,
     };
     // Avoid treating empty string id from new feature as serverId
@@ -89,6 +91,17 @@ export class RockExplorerDraftStoreService {
 
   async get(localId: string): Promise<RockExplorerDraftRecord | undefined> {
     return this.db.drafts.get(localId);
+  }
+
+  async getByServerId(
+    serverId: string,
+  ): Promise<RockExplorerDraftRecord | undefined> {
+    return this.db.drafts.where('serverId').equals(serverId).first();
+  }
+
+  async hasPendingOps(localId: string): Promise<boolean> {
+    const op = await this.db.ops.where('localId').equals(localId).first();
+    return op != null;
   }
 
   async listByUpdatedAtDesc(): Promise<RockExplorerDraftRecord[]> {

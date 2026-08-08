@@ -99,6 +99,19 @@ describe('RockExplorerDraftStoreService', () => {
     expect(cleared.syncStatus).toBe('pending');
   });
 
+  it('getByServerId finds draft and putSnapshot can preserve updatedAt', async () => {
+    const session = new RockExplorerRecordingSession('d');
+    const updatedAt = 1_700_000_000_000;
+    await store.putSnapshot('by-srv', session, {
+      serverId: 'server-42',
+      syncStatus: 'synced',
+      updatedAt,
+    });
+    const found = await store.getByServerId('server-42');
+    expect(found?.localId).toBe('by-srv');
+    expect(found?.updatedAt).toBe(updatedAt);
+  });
+
   it('uses DB name localcrag.rockExplorer', () => {
     expect(ROCK_EXPLORER_DB_NAME).toBe('localcrag.rockExplorer');
   });

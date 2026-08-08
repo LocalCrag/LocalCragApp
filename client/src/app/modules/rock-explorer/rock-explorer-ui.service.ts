@@ -117,11 +117,11 @@ export class RockExplorerUiService {
   readonly syncStatus = signal<DraftSyncStatus | null>(null);
   /** True when Publish/sync should treat the app as reachable (not just navigator.onLine). */
   readonly online = signal(true);
-  /** False when IndexedDB probe/open fails (D-19) — Record disabled. */
+  /** False when IndexedDB probe/open fails — Record disabled. */
   readonly storageOk = signal(true);
   /** Active local draft id while a recording session is bound. */
   readonly activeLocalDraftId = signal<string | null>(null);
-  /** Floating sessions panel open state (D-09). */
+  /** Floating sessions panel open state. */
   readonly sessionsPanelOpen = signal(false);
 
   /** Record allowed when IndexedDB is available. */

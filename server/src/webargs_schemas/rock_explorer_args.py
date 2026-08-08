@@ -51,7 +51,7 @@ _parking_site_item = {
 
 
 def validate_path_linestring(geometry):
-    """Validate LineString; Position is [lng, lat, …] with optional trailing numerics (D-07)."""
+    """Validate LineString; each Position is `[lng, lat]` (extras ignored if present)."""
     if not isinstance(geometry, dict):
         raise ValidationError("path geometry must be an object.")
     if geometry.get("type") != "LineString":
@@ -61,12 +61,10 @@ def validate_path_linestring(geometry):
         raise ValidationError("path LineString requires at least 2 positions.")
     for position in coordinates:
         if not isinstance(position, (list, tuple)) or len(position) < 2:
-            raise ValidationError("Each LineString position must start with [lng, lat].")
+            raise ValidationError("Each LineString position must be [lng, lat].")
         try:
             lng = float(position[0])
             lat = float(position[1])
-            for extra in position[2:]:
-                float(extra)  # elev / timestampMs / accuracyM must be numeric
         except (TypeError, ValueError) as exc:
             raise ValidationError("LineString coordinates must be numbers.") from exc
         validate_longitude(lng)
@@ -108,11 +106,6 @@ rock_explorer_feature_args = {
         allow_none=True,
         validate=validate.Length(min=1, max=128),
     ),
-    "recordingState": fields.Str(
-        load_default=None,
-        allow_none=True,
-        validate=validate.OneOf(["recording", "paused"]),
-    ),
     "potential": _potential,
     "rockQuality": _rock_quality,
     "rockType": _rock_type,
@@ -148,16 +141,11 @@ def cross_validate_rock_explorer_feature_args(args):
             raise ValidationError({"geometry": ["Geometry is required for published features."]})
         if args.get("potential") is None:
             raise ValidationError({"potential": ["Potential is required for published features."]})
-        # recordingDeviceId may be present for draft→published lock check (cleared on apply).
-        # recordingState must still be null on published payloads.
-        if args.get("recordingState") is not None:
-            raise ValidationError(
-                {
-                    "recordingState": ["Recording state must be null for published features."],
-                }
-            )
     elif status == "draft":
         if not args.get("recordingDeviceId"):
             raise ValidationError({"recordingDeviceId": ["Recording device id is required for drafts."]})
-        if not args.get("recordingState"):
-            raise ValidationError({"recordingState": ["Recording state is required for drafts."]})
+
+
+rock_explorer_clone_args = {
+    "recordingDeviceId": fields.Str(required=True, validate=validate.Length(min=1, max=128)),
+}

@@ -38,7 +38,7 @@ export class RockExplorerDraftSyncService {
 
   private flushInFlight = false;
 
-  /** Emitted when HTTP 409 device lock stops drain for a draft (D-08). */
+  /** Emitted when HTTP 409 device lock stops drain for a draft. */
   readonly deviceLockConflict$ = new Subject<DeviceLockConflictEvent>();
 
   /** Optional hook for host (same as Subject for convenience). */
@@ -53,7 +53,7 @@ export class RockExplorerDraftSyncService {
   }
 
   /**
-   * Ensure at most one upsert op per localId (D-03 coalesce).
+   * Ensure at most one upsert op per localId (coalesce).
    */
   async enqueueUpsert(localId: string): Promise<void> {
     const existing = await this.db.ops.where('localId').equals(localId).first();
@@ -177,7 +177,6 @@ export class RockExplorerDraftSyncService {
     feature.paths = session.pathsForSerialize();
     feature.status = 'draft';
     feature.recordingDeviceId = draft.deviceId;
-    feature.recordingState = draft.recordingState;
 
     if (!draft.serverId) {
       const created = await firstValueFrom(this.api.createFeature(feature));

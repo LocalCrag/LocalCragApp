@@ -79,6 +79,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.ts",
+                  "with": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -98,6 +102,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.e2e.ts"
+                },
+                {
+                  "replace": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.ts",
+                  "with": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.prod.ts"
                 }
               ]
             }

@@ -28,7 +28,7 @@ export class RockExplorerService {
     );
   }
 
-  /** Owner-only draft list (Phase 10: GET /features?status=draft). */
+  /** Owner-only draft list (GET /features?status=draft). */
   public listDrafts(): Observable<RockExplorerFeature[]> {
     const params = new HttpParams().set('status', 'draft');
     return this.http
@@ -65,7 +65,7 @@ export class RockExplorerService {
   }
 
   /**
-   * Draft → published PUT. Device lock via body + query recordingDeviceId
+   * Draft → published PUT. Device lock via body recordingDeviceId
    * (apply clears recording columns for published).
    */
   public publishFeature(
@@ -75,20 +75,14 @@ export class RockExplorerService {
     const deviceId = (recordingDeviceId ?? '').trim();
     feature.status = 'published';
     feature.recordingDeviceId = null;
-    feature.recordingState = null;
     const body = RockExplorerFeature.serialize(feature) as Record<
       string,
       unknown
     >;
     // serialize() nulls recordingDeviceId for published — restore for lock check
     body['recordingDeviceId'] = deviceId || null;
-    body['recordingState'] = null;
-    let params = new HttpParams();
-    if (deviceId) {
-      params = params.set('recordingDeviceId', deviceId);
-    }
     return this.http
-      .put(this.api.rockExplorer.updateFeature(feature.id), body, { params })
+      .put(this.api.rockExplorer.updateFeature(feature.id), body)
       .pipe(map(RockExplorerFeature.deserialize));
   }
 

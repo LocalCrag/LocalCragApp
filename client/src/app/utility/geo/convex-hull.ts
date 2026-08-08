@@ -96,7 +96,7 @@ export function pointAtCentroid(points: Position[]): Geometry | null {
 }
 
 /**
- * Geometry for publish (RE-TRACK-13): Polygon if ≥3 distinct anchors,
+ * Geometry for publish: Polygon if ≥3 distinct anchors,
  * Point at centroid if 1–2, null if empty.
  */
 export function geometryForPublishFromOverlays(

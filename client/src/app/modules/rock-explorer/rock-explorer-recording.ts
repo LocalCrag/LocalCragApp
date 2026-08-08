@@ -8,10 +8,10 @@ import {
 } from '../../models/rock-explorer-misc';
 import type { RockExplorerDraftSnapshot } from './offline/rock-explorer-draft.types';
 
-/** localStorage key for stable hard-lock device id (Phase 10). */
+/** localStorage key for stable hard-lock device id. */
 export const RECORDING_DEVICE_ID_KEY = 'rockExplorer.recordingDeviceId';
 
-/** Keep GPS point only after this many meters (CONTEXT D-06). */
+/** Keep GPS point only after this many meters. */
 export const MIN_PATH_POINT_DISTANCE_M = 5;
 
 /** Sync after this many newly kept points (discretion). */
@@ -25,9 +25,6 @@ export type RecordingState = 'recording' | 'paused';
 export type GpsFix = {
   lng: number;
   lat: number;
-  accuracyM?: number | null;
-  timestampMs?: number | null;
-  altitudeM?: number | null;
 };
 
 /**
@@ -77,42 +74,15 @@ export function shouldKeepGpsPoint(
   return distanceMeters(lastKept, next) >= minDistanceM;
 }
 
-/** Encode GPS fix as GeoJSON Position [lng, lat, …optional numerics]. */
+/** Encode GPS fix as GeoJSON Position `[lng, lat]`. */
 export function gpsFixToPosition(fix: GpsFix): Position {
-  const coords: number[] = [fix.lng, fix.lat];
-  if (fix.altitudeM != null && Number.isFinite(fix.altitudeM)) {
-    coords.push(fix.altitudeM);
-  }
-  if (fix.timestampMs != null && Number.isFinite(fix.timestampMs)) {
-    coords.push(fix.timestampMs);
-  }
-  if (fix.accuracyM != null && Number.isFinite(fix.accuracyM)) {
-    coords.push(fix.accuracyM);
-  }
-  return coords as Position;
+  return [fix.lng, fix.lat];
 }
 
 function emptyDraftFeature(deviceId: string): RockExplorerFeature {
   const feature = new RockExplorerFeature();
-  feature.title = null;
-  feature.description = null;
-  feature.potential = null;
-  feature.rockQuality = null;
-  feature.rockType = null;
-  feature.gradeLineType = null;
-  feature.gradeScale = null;
-  feature.gradeValueMin = null;
-  feature.gradeValueMax = null;
-  feature.accessIssues = [];
-  feature.geometry = null;
-  feature.parkingSites = [];
-  feature.paths = [];
-  feature.topoLinks = [];
-  feature.createdBy = null;
   feature.status = 'draft';
   feature.recordingDeviceId = deviceId;
-  feature.recordingState = 'recording';
-  feature.recordingUpdatedAt = null;
   return feature;
 }
 
@@ -128,6 +98,7 @@ function newGpsPath(): RockExplorerPath {
 
 /**
  * In-memory live-tracking session (local-first). Map host owns geolocation watch.
+ * Pause/resume is session-only UI state — not persisted on the server feature.
  */
 export class RockExplorerRecordingSession {
   feature: RockExplorerFeature;
@@ -137,6 +108,7 @@ export class RockExplorerRecordingSession {
   keptSinceSync = 0;
   lastSyncAtMs = 0;
   private lastKept: { lng: number; lat: number } | null = null;
+  private _recordingState: RecordingState = 'recording';
 
   constructor(deviceId: string = getOrCreateRecordingDeviceId()) {
     this.feature = emptyDraftFeature(deviceId);
@@ -144,11 +116,11 @@ export class RockExplorerRecordingSession {
   }
 
   get recordingState(): RecordingState {
-    return this.feature.recordingState ?? 'paused';
+    return this._recordingState;
   }
 
   get isRecording(): boolean {
-    return this.recordingState === 'recording';
+    return this._recordingState === 'recording';
   }
 
   get activePath(): RockExplorerPath | null {
@@ -159,7 +131,7 @@ export class RockExplorerRecordingSession {
   }
 
   pause(): void {
-    this.feature.recordingState = 'paused';
+    this._recordingState = 'paused';
     this.touchRecording();
   }
 
@@ -167,7 +139,7 @@ export class RockExplorerRecordingSession {
     if (!this.activePathId) {
       this.startNewPathInternal();
     }
-    this.feature.recordingState = 'recording';
+    this._recordingState = 'recording';
     this.touchRecording();
   }
 
@@ -182,7 +154,7 @@ export class RockExplorerRecordingSession {
     }
     this.activePathId = null;
     this.lastKept = null;
-    this.feature.recordingState = 'paused';
+    this._recordingState = 'paused';
     this.touchRecording();
     return true;
   }
@@ -190,7 +162,7 @@ export class RockExplorerRecordingSession {
   /** Start a new GPS LineString and set recording. */
   newPath(): void {
     this.startNewPathInternal();
-    this.feature.recordingState = 'recording';
+    this._recordingState = 'recording';
     this.touchRecording();
   }
 
@@ -266,7 +238,6 @@ export class RockExplorerRecordingSession {
         description: f.description,
         status: f.status,
         recordingDeviceId: f.recordingDeviceId,
-        recordingState: f.recordingState,
         recordingUpdatedAt: f.recordingUpdatedAt,
         potential: f.potential,
         rockQuality: f.rockQuality,
@@ -282,6 +253,7 @@ export class RockExplorerRecordingSession {
         topoLinks: [],
         createdBy: null,
       },
+      recordingState: this._recordingState,
       activePathId: this.activePathId,
       keptSinceSync: this.keptSinceSync,
       lastSyncAtMs: this.lastSyncAtMs,
@@ -311,6 +283,13 @@ export class RockExplorerRecordingSession {
     if (deviceId) {
       session.feature.recordingDeviceId = deviceId;
     }
+    const legacyState = snapshot.feature['recordingState'];
+    const state =
+      snapshot.recordingState ??
+      (legacyState === 'recording' || legacyState === 'paused'
+        ? legacyState
+        : 'paused');
+    session._recordingState = state;
     session.activePathId = snapshot.activePathId;
     session.keptSinceSync = snapshot.keptSinceSync;
     session.lastSyncAtMs = snapshot.lastSyncAtMs;

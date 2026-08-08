@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-
-/** Default walk speed for Record-mode GPS simulation. */
+/** Default walk speed for Record-mode GPS simulation (meters per second). */
 export const MOCK_GPS_SPEED_MPS = 5;
 
-/** Position tick interval (5 m/s × 1 s ≈ one kept path point per tick). */
+/**
+ * Position tick interval. At {@link MOCK_GPS_SPEED_MPS} ≈ 5 m per tick, which
+ * matches Rock Explorer’s “keep point every ~5 m” path sampling.
+ */
 export const MOCK_GPS_TICK_MS = 1000;
 
-/** Offset mock start from the real fix (meters) — within ~50 km. */
+/** Offset mock start from the real fix (meters) — far enough to explore freely. */
 const START_OFFSET_M_MIN = 5_000;
 const START_OFFSET_M_MAX = 50_000;
 
@@ -36,12 +37,28 @@ type Watcher = {
 type LatLng = { lat: number; lng: number };
 
 /**
- * Dev-only GPS simulator for Rock Explorer.
- * Seeds near a real (or fallback) fix, then walks ~5 m/s on a semi-random path.
- * When installed as a navigator.geolocation shim, MapLibre GeolocateControl
- * and Record-mode watches share the same simulated position.
+ * Dev-only GPS walker for Rock Explorer Record mode and map locate.
+ *
+ * ## Enabling
+ * Set top-level `mockGpsRecording = true` in `environments/environment.ts`
+ * (false in prod/e2e). Rock Explorer loads this class via
+ * `rock-explorer-mock-gps.loader.ts` → dynamic `import()`. Production builds
+ * replace that loader with a null stub (`*.loader.prod.ts`) so this module is
+ * not on the prod module graph.
+ *
+ * ## Behavior
+ * 1. **Seed** — once from a real device fix (or map-center fallback), offset
+ *    several km away so you are not standing on the start point; or
+ *    `seedNear()` when continuing a draft (tens of meters from the feature).
+ * 2. **Walk** — ~{@link MOCK_GPS_SPEED_MPS} m/s on a semi-random heading with
+ *    soft curves and occasional larger turns ({@link MOCK_GPS_TICK_MS} ticks).
+ * 3. **Shim** — `installNavigatorShim()` patches `navigator.geolocation` so
+ *    MapLibre `GeolocateControl`, Record `watchPosition`, and one-shot image
+ *    geotags all share the same simulated position.
+ *
+ * Instantiate with `new` after dynamic import (not Angular `providedIn`).
+ * Call `uninstallNavigatorShim()` when leaving Rock Explorer.
  */
-@Injectable({ providedIn: 'root' })
 export class RockExplorerMockGpsService {
   private lat = 0;
   private lng = 0;
@@ -58,27 +75,34 @@ export class RockExplorerMockGpsService {
   private timerId: ReturnType<typeof setInterval> | null = null;
 
   private shimInstalled = false;
+  /** Used when device GPS is unavailable during first seed (e.g. map center). */
   private fallbackProvider: (() => LatLng | undefined) | null = null;
   private nativeGetCurrentPosition: Geolocation['getCurrentPosition'] | null =
     null;
   private nativeWatchPosition: Geolocation['watchPosition'] | null = null;
   private nativeClearWatch: Geolocation['clearWatch'] | null = null;
 
+  /** True after the first successful seed (device, fallback, or seedNear). */
   get isSeeded(): boolean {
     return this.seeded;
   }
 
+  /** True while `navigator.geolocation` methods are patched. */
   get isShimInstalled(): boolean {
     return this.shimInstalled;
   }
 
+  /** Current simulated WGS84 position. */
   get currentLatLng(): LatLng {
     return { lat: this.lat, lng: this.lng };
   }
 
   /**
-   * Patch navigator.geolocation so locate control + any getCurrent/watch
-   * callers receive the simulated walker (after seeding from real GPS).
+   * Patch `navigator.geolocation` so locate + watch callers use this walker.
+   * Seeding still uses the **native** getCurrentPosition once (saved below)
+   * so the walk can start near a real fix. Idempotent.
+   *
+   * @param fallbackProvider Optional lat/lng when device GPS fails (map center).
    */
   installNavigatorShim(fallbackProvider?: () => LatLng | undefined): void {
     if (this.shimInstalled || typeof navigator === 'undefined') {
@@ -113,7 +137,7 @@ export class RockExplorerMockGpsService {
     this.shimInstalled = true;
   }
 
-  /** Restore real navigator.geolocation (e.g. when leaving Rock Explorer). */
+  /** Restore real `navigator.geolocation` (leave Rock Explorer / tear-down). */
   uninstallNavigatorShim(): void {
     if (!this.shimInstalled || typeof navigator === 'undefined') {
       return;
@@ -136,44 +160,66 @@ export class RockExplorerMockGpsService {
   }
 
   /**
-   * Seed from device GPS once, offset into a nearby region, then ready to walk.
-   * Falls back to `fallback` (e.g. map center) when geolocation is unavailable.
+   * Ensure a seed exists (no-op if already seeded). Concurrent callers share
+   * one in-flight promise. Prefer {@link seedNear} when resuming a draft.
+   *
+   * If {@link resetSeed} / {@link seedNear} bumps the generation while a
+   * seed is in flight, that attempt no-ops — this loops until a current
+   * generation actually seeds (so callers never resolve against lat/lng 0,0).
    */
   async ensureSeeded(fallback?: LatLng): Promise<void> {
-    if (this.seeded) {
-      return;
-    }
-    if (this.seedPromise) {
-      return this.seedPromise;
-    }
-    const generation = this.seedGeneration;
-    this.seedPromise = this.seedOnce(fallback, generation).finally(() => {
-      if (this.seedGeneration === generation) {
-        this.seedPromise = null;
+    while (!this.seeded) {
+      if (this.seedPromise) {
+        await this.seedPromise;
+        continue;
       }
-    });
-    return this.seedPromise;
-  }
-
-  /** Force a re-seed on the next ensureSeeded call (e.g. new Record session). */
-  resetSeed(): void {
-    this.seedGeneration += 1;
-    this.seeded = false;
-    this.seedPromise = null;
-    if (this.watchers.size > 0) {
-      void this.ensureSeeded(this.fallbackProvider?.()).then(() => {
-        const pos = this.buildPosition();
-        for (const watcher of this.watchers.values()) {
-          watcher.success(pos);
+      const generation = this.seedGeneration;
+      this.seedPromise = this.seedOnce(
+        fallback ?? this.fallbackProvider?.(),
+        generation,
+      ).finally(() => {
+        if (this.seedGeneration === generation) {
+          this.seedPromise = null;
         }
-        this.ensureTimer();
       });
+      await this.seedPromise;
+      if (!this.seeded && generation === this.seedGeneration) {
+        throw new Error('Mock GPS seed failed');
+      }
     }
   }
 
   /**
-   * Place the walker near `origin` (small random offset). Used when continuing
-   * an existing draft so Record resumes close to the feature polygon.
+   * Drop the current seed so the next {@link ensureSeeded} picks a new far
+   * offset (e.g. starting a brand-new Record session). Active watchers are
+   * notified once the new seed completes.
+   *
+   * @returns Promise that resolves when reseed (if any watchers) finishes, or
+   *   immediately when there are no watchers yet.
+   */
+  resetSeed(): Promise<void> {
+    this.seedGeneration += 1;
+    this.seeded = false;
+    this.seedPromise = null;
+    if (this.watchers.size === 0) {
+      return Promise.resolve();
+    }
+    return this.ensureSeeded(this.fallbackProvider?.()).then(() => {
+      if (!this.seeded) {
+        return;
+      }
+      const pos = this.buildPosition();
+      for (const watcher of this.watchers.values()) {
+        watcher.success(pos);
+      }
+      this.ensureTimer();
+    });
+  }
+
+  /**
+   * Place the walker near `origin` immediately (small random offset).
+   * Used when continuing / resuming a draft so Record starts on the feature
+   * instead of kilometers away. Cancels any in-flight far {@link ensureSeeded}.
    */
   seedNear(
     origin: LatLng,
@@ -194,6 +240,10 @@ export class RockExplorerMockGpsService {
     }
   }
 
+  /**
+   * Subscribe to simulated positions (same contract as
+   * `navigator.geolocation.watchPosition`). Starts the tick timer.
+   */
   watchPosition(
     success: PositionCallback,
     error?: PositionErrorCallback | null,
@@ -210,6 +260,7 @@ export class RockExplorerMockGpsService {
     return id;
   }
 
+  /** Stop a {@link watchPosition} subscription; stops the timer when none remain. */
   clearWatch(watchId: number): void {
     this.watchers.delete(watchId);
     if (this.watchers.size === 0) {
@@ -217,6 +268,10 @@ export class RockExplorerMockGpsService {
     }
   }
 
+  /**
+   * One-shot simulated fix. Errors if not yet seeded (callers that go through
+   * the shim wait on {@link ensureSeeded} first).
+   */
   getCurrentPosition(
     success: PositionCallback,
     error?: PositionErrorCallback | null,
@@ -229,17 +284,31 @@ export class RockExplorerMockGpsService {
     queueMicrotask(() => success(this.buildPosition()));
   }
 
+  /**
+   * Shimmed getCurrentPosition: wait for seed, then return one simulated fix.
+   * Used after {@link installNavigatorShim} patches the global API.
+   */
   private shimGetCurrentPosition(
     success: PositionCallback,
     error?: PositionErrorCallback | null,
     _options?: PositionOptions,
   ): void {
     void this.ensureSeeded(this.fallbackProvider?.()).then(
-      () => success(this.buildPosition()),
+      () => {
+        if (!this.seeded) {
+          error?.(makePositionError(2, 'Mock GPS seed failed'));
+          return;
+        }
+        success(this.buildPosition());
+      },
       () => error?.(makePositionError(2, 'Mock GPS seed failed')),
     );
   }
 
+  /**
+   * Shimmed watchPosition: register watcher, seed if needed, emit first fix,
+   * then let {@link tick} push updates. Drops the watcher if seed fails.
+   */
   private shimWatchPosition(
     success: PositionCallback,
     error?: PositionErrorCallback | null,
@@ -249,7 +318,7 @@ export class RockExplorerMockGpsService {
     this.watchers.set(id, { success, error });
     void this.ensureSeeded(this.fallbackProvider?.()).then(
       () => {
-        if (!this.watchers.has(id)) {
+        if (!this.watchers.has(id) || !this.seeded) {
           return;
         }
         success(this.buildPosition());
@@ -263,6 +332,12 @@ export class RockExplorerMockGpsService {
     return id;
   }
 
+  /**
+   * One-shot far seed: native device fix → random offset
+   * [{@link START_OFFSET_M_MIN}, {@link START_OFFSET_M_MAX}] m, else fallback.
+   * Aborts if `generation` no longer matches {@link seedGeneration} (superseded
+   * by {@link seedNear} / {@link resetSeed}).
+   */
   private async seedOnce(
     fallback: LatLng | undefined,
     generation: number,
@@ -291,6 +366,10 @@ export class RockExplorerMockGpsService {
     this.applySeedOrigin(origin, START_OFFSET_M_MIN, START_OFFSET_M_MAX);
   }
 
+  /**
+   * Set lat/lng to a random point within [minOffsetM, maxOffsetM] of `origin`,
+   * pick initial heading + curve bias, and mark seeded.
+   */
   private applySeedOrigin(
     origin: LatLng,
     minOffsetM: number,
@@ -307,6 +386,10 @@ export class RockExplorerMockGpsService {
     this.seeded = true;
   }
 
+  /**
+   * Read one real device fix via the **native** getCurrentPosition (saved before
+   * the shim), so seeding is not circular through the mock.
+   */
   private readDevicePosition(): Promise<GeolocationPosition> {
     return new Promise((resolve, reject) => {
       const getCurrent =
@@ -324,6 +407,7 @@ export class RockExplorerMockGpsService {
     });
   }
 
+  /** Start the walk interval if not already running (no-op when already on). */
   private ensureTimer(): void {
     if (this.timerId != null) {
       return;
@@ -331,6 +415,7 @@ export class RockExplorerMockGpsService {
     this.timerId = setInterval(() => this.tick(), MOCK_GPS_TICK_MS);
   }
 
+  /** Clear the walk interval when no watchers remain. */
   private stopTimer(): void {
     if (this.timerId != null) {
       clearInterval(this.timerId);
@@ -338,6 +423,11 @@ export class RockExplorerMockGpsService {
     }
   }
 
+  /**
+   * Advance the walker one step and notify all watchers.
+   * Soft heading drift most ticks; larger turns on a schedule
+   * ({@link scheduleNextTurn}) with occasional curve-bias flips.
+   */
   private tick(): void {
     if (!this.seeded || this.watchers.size === 0) {
       return;
@@ -375,6 +465,7 @@ export class RockExplorerMockGpsService {
     }
   }
 
+  /** Pick a random tick count until the next larger heading change. */
   private scheduleNextTurn(): void {
     this.ticksUntilTurn =
       HEADING_CHANGE_EVERY_TICKS_MIN +
@@ -384,6 +475,7 @@ export class RockExplorerMockGpsService {
       );
   }
 
+  /** Build a GeolocationPosition for the current lat/lng/heading/speed. */
   private buildPosition(): GeolocationPosition {
     return makeGeolocationPosition(
       this.lat,
@@ -394,7 +486,10 @@ export class RockExplorerMockGpsService {
   }
 }
 
-/** Move `distanceM` along `bearingRad` from a WGS84 point. */
+/**
+ * Move `distanceM` along `bearingRad` from a WGS84 point (spherical earth).
+ * Used for seed offsets and each walk step.
+ */
 export function offsetLatLng(
   lat: number,
   lng: number,
@@ -418,10 +513,15 @@ export function offsetLatLng(
 
   return {
     lat: (lat2 * 180) / Math.PI,
+    // Normalize longitude to (−180, 180].
     lng: (((lng2 * 180) / Math.PI + 540) % 360) - 180,
   };
 }
 
+/**
+ * Minimal GeolocationPosition / Coordinates for MapLibre and Record watches.
+ * Includes `toJSON` so structured clones / logging behave like the browser API.
+ */
 function makeGeolocationPosition(
   lat: number,
   lng: number,
@@ -458,6 +558,7 @@ function makeGeolocationPosition(
   };
 }
 
+/** Build a GeolocationPositionError-shaped object (code 2 = POSITION_UNAVAILABLE). */
 function makePositionError(
   code: number,
   message: string,

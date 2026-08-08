@@ -37,6 +37,7 @@ import {
   selectDarkLogoImage,
   selectLogoImage,
   selectSkippedHierarchyLayers,
+  selectGymMode,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { effectiveLogoImage } from '../../../utility/instance-settings-theme';
 import { ThemeService } from '../../../services/core/theme.service';
@@ -263,10 +264,12 @@ export class MenuComponent implements OnInit, AfterViewInit {
   }
 
   buildUserMenu() {
-    this.store
-      .select(selectAuthState)
+    combineLatest([
+      this.store.select(selectAuthState),
+      this.store.select(selectGymMode),
+    ])
       .pipe(take(1))
-      .subscribe((authState) => {
+      .subscribe(([authState, gymMode]) => {
         if (authState.user) {
           const items: MenuItem[] = [];
 
@@ -351,7 +354,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
             items: accountItems,
           });
 
-          if (authState.user.member) {
+          if (authState.user.member && !gymMode) {
             items.push({
               label: this.translocoService.translate(
                 marker('menu.toolsCategory'),

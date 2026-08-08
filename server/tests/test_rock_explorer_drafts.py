@@ -1,4 +1,4 @@
-"""Rock Explorer live-tracking drafts API tests (Phase 10)."""
+"""Rock Explorer live-tracking drafts API tests ."""
 
 from models.file import File
 
@@ -11,7 +11,6 @@ def _draft_payload(**overrides):
         "potential": None,
         "geometry": None,
         "recordingDeviceId": "device-a",
-        "recordingState": "recording",
         "paths": [],
         "parkingSites": [],
         "accessIssues": [],
@@ -66,7 +65,6 @@ def test_draft_payload_helper_shape():
         "potential",
         "geometry",
         "recordingDeviceId",
-        "recordingState",
         "paths",
         "parkingSites",
         "accessIssues",
@@ -76,7 +74,7 @@ def test_draft_payload_helper_shape():
 
 
 def test_draft_excluded_from_geojson(client, member_token):
-    """RE-TRACK-01, T-10-04: drafts omitted from GeoJSON; published included."""
+    """Drafts omitted from GeoJSON; published included."""
     draft = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
     published = client.post(
         "/api/rock-explorer/features",
@@ -92,7 +90,7 @@ def test_draft_excluded_from_geojson(client, member_token):
 
 
 def test_draft_idor_get_denied_for_non_owner(client, member_token, admin_token):
-    """RE-TRACK-01, T-10-01: non-owner GET draft by id → 401."""
+    """Non-owner GET draft by id → 401."""
     draft = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
 
     owner_get = client.get(f"/api/rock-explorer/features/{draft['id']}", token=member_token)
@@ -103,7 +101,7 @@ def test_draft_idor_get_denied_for_non_owner(client, member_token, admin_token):
 
 
 def test_draft_recording_metadata_persisted(client, member_token):
-    """RE-TRACK-02: draft stores device/state and multi-path source:gps."""
+    """Draft stores device id and multi-path source:gps."""
     paths = [
         _gps_path("p1", source="gps"),
         _gps_path("p2", [[8.12, 50.22], [8.13, 50.23]], source="manual"),
@@ -111,13 +109,12 @@ def test_draft_recording_metadata_persisted(client, member_token):
     rv = client.post(
         "/api/rock-explorer/features",
         token=member_token,
-        json=_draft_payload(paths=paths, recordingState="paused"),
+        json=_draft_payload(paths=paths),
     )
     assert rv.status_code == 201
     body = rv.json
     assert body["status"] == "draft"
     assert body["recordingDeviceId"] == "device-a"
-    assert body["recordingState"] == "paused"
     assert body["recordingUpdatedAt"] is not None
     assert len(body["paths"]) == 2
     assert body["paths"][0]["source"] == "gps"
@@ -125,7 +122,7 @@ def test_draft_recording_metadata_persisted(client, member_token):
 
 
 def test_path_rich_coords_accepted(client, member_token):
-    """RE-TRACK-02: rich Position arrays and plain [lng,lat] both accepted."""
+    """Rich Position arrays and plain [lng,lat] both accepted."""
     rich = _gps_path(
         "rich",
         coords=[
@@ -147,7 +144,7 @@ def test_path_rich_coords_accepted(client, member_token):
 
 
 def test_draft_put_replaces_paths_no_append_route(client, member_token):
-    """RE-TRACK-03, D-08: PUT grows paths; invented /append route → 404."""
+    """PUT grows paths; invented /append route → 404."""
     created = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
     feature_id = created["id"]
 
@@ -170,7 +167,7 @@ def test_draft_put_replaces_paths_no_append_route(client, member_token):
 
 
 def test_device_lock_wrong_device_conflict(client, member_token):
-    """RE-TRACK-04, T-10-02: wrong recordingDeviceId → 409; matching → 200/204."""
+    """Wrong recordingDeviceId → 409; matching → 200/204."""
     created = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
     feature_id = created["id"]
 
@@ -204,7 +201,7 @@ def test_device_lock_wrong_device_conflict(client, member_token):
 
 
 def test_clone_draft_copies_paths_and_images(client, member_token, admin_token):
-    """RE-TRACK-04, T-10-03/T-10-05: clone new id, paths, device; duplicate gallery tags."""
+    """Clone new id, paths, device; duplicate gallery tags."""
     paths = [_gps_path("p1"), _gps_path("p2", [[8.14, 50.24], [8.15, 50.25]])]
     created = client.post(
         "/api/rock-explorer/features",
@@ -277,7 +274,7 @@ def test_clone_draft_copies_paths_and_images(client, member_token, admin_token):
 
 
 def test_published_create_still_geojson_visible(client, member_token):
-    """D-15: omit status (default published); appears in GeoJSON."""
+    """Omit status (default published); appears in GeoJSON."""
     created = client.post(
         "/api/rock-explorer/features",
         token=member_token,
@@ -292,7 +289,7 @@ def test_published_create_still_geojson_visible(client, member_token):
 
 
 def test_gallery_list_draft_tag_denied_for_non_owner(client, member_token, admin_token):
-    """T-10-05: non-owner gallery list by draft tag-object-id → 401."""
+    """Non-owner gallery list by draft tag-object-id → 401."""
     draft = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
 
     owner_list = client.get(
@@ -309,7 +306,7 @@ def test_gallery_list_draft_tag_denied_for_non_owner(client, member_token, admin
 
 
 def test_comment_on_others_draft_denied(client, member_token, admin_token):
-    """T-10-05: non-owner POST comment targeting draft → 401."""
+    """Non-owner POST comment targeting draft → 401."""
     draft = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
 
     owner_comment = client.post(
@@ -336,7 +333,7 @@ def test_comment_on_others_draft_denied(client, member_token, admin_token):
 
 
 def test_owner_draft_list_status_filter(client, member_token, admin_token):
-    """RE-TRACK-01: owner GET ?status=draft returns own drafts only."""
+    """Owner GET ?status=draft returns own drafts only."""
     mine = client.post(
         "/api/rock-explorer/features",
         token=member_token,
@@ -365,7 +362,7 @@ def test_owner_draft_list_status_filter(client, member_token, admin_token):
 
 
 def test_gallery_create_draft_tag_denied_for_non_owner(client, member_token, admin_token):
-    """T-10-05: non-owner POST gallery image tagged to others' draft → 401."""
+    """Non-owner POST gallery image tagged to others' draft → 401."""
     draft = client.post("/api/rock-explorer/features", token=member_token, json=_draft_payload()).json
     tag = {"objectType": "RockExplorerFeature", "objectId": draft["id"]}
 
@@ -385,7 +382,7 @@ def test_gallery_create_draft_tag_denied_for_non_owner(client, member_token, adm
 
 
 def test_published_requires_geometry_and_potential(client, member_token):
-    """T-10-06 / D-04: published with null geometry or potential → 400."""
+    """Published with null geometry or potential → 400."""
     no_geom = client.post(
         "/api/rock-explorer/features",
         token=member_token,
@@ -405,13 +402,13 @@ def test_published_requires_geometry_and_potential(client, member_token):
     flip = client.put(
         f"/api/rock-explorer/features/{draft['id']}",
         token=member_token,
-        json=_draft_payload(status="published", recordingDeviceId=None, recordingState=None),
+        json=_draft_payload(status="published", recordingDeviceId=None),
     )
     assert flip.status_code == 400
 
 
-def test_publish_draft_with_query_device_id(client, member_token):
-    """RE-TRACK-11: draft→published PUT with ?recordingDeviceId= succeeds."""
+def test_publish_draft_with_body_device_id(client, member_token):
+    """Draft→published PUT sends recordingDeviceId in body for lock check."""
     draft = client.post(
         "/api/rock-explorer/features",
         token=member_token,
@@ -420,25 +417,23 @@ def test_publish_draft_with_query_device_id(client, member_token):
     feature_id = draft["id"]
 
     wrong = client.put(
-        f"/api/rock-explorer/features/{feature_id}?recordingDeviceId=other-device",
+        f"/api/rock-explorer/features/{feature_id}",
         token=member_token,
         json=_published_payload(
             status="published",
             title="Published from draft",
-            recordingDeviceId=None,
-            recordingState=None,
+            recordingDeviceId="other-device",
         ),
     )
     assert wrong.status_code == 409
 
     ok = client.put(
-        f"/api/rock-explorer/features/{feature_id}?recordingDeviceId=device-a",
+        f"/api/rock-explorer/features/{feature_id}",
         token=member_token,
         json=_published_payload(
             status="published",
             title="Published from draft",
-            recordingDeviceId=None,
-            recordingState=None,
+            recordingDeviceId="device-a",
         ),
     )
     assert ok.status_code == 200
@@ -447,32 +442,7 @@ def test_publish_draft_with_query_device_id(client, member_token):
     assert body["potential"] == "HIGH"
     assert body["geometry"]["type"] == "Point"
     assert body.get("recordingDeviceId") in (None, "")
-    assert body.get("recordingState") in (None, "")
 
     geo = client.get("/api/rock-explorer/features.geojson", token=member_token).json
     ids = {f["id"] for f in geo["features"]}
     assert feature_id in ids
-
-
-def test_publish_draft_with_body_device_id(client, member_token):
-    """RE-TRACK-11: draft→published may send recordingDeviceId in body for lock."""
-    draft = client.post(
-        "/api/rock-explorer/features",
-        token=member_token,
-        json=_draft_payload(paths=[_gps_path()]),
-    ).json
-    feature_id = draft["id"]
-
-    ok = client.put(
-        f"/api/rock-explorer/features/{feature_id}",
-        token=member_token,
-        json=_published_payload(
-            status="published",
-            title="Published via body device",
-            recordingDeviceId="device-a",
-            recordingState=None,
-        ),
-    )
-    assert ok.status_code == 200
-    assert ok.json["status"] == "published"
-    assert ok.json.get("recordingDeviceId") in (None, "")

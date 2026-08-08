@@ -10,9 +10,6 @@ from extensions import db
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
-from models.enums.rock_explorer_recording_state_enum import (
-    RockExplorerRecordingStateEnum,
-)
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from models.gallery_image import GalleryImage
@@ -23,16 +20,9 @@ from util.tags import set_tags
 TOPO_LINK_OBJECT_TYPES = {"Line", "Area", "Sector", "Crag"}
 
 
-def is_draft(feature) -> bool:
-    status = feature.status
-    if status == RockExplorerFeatureStatusEnum.DRAFT:
-        return True
-    return getattr(status, "value", status) == "draft"
-
-
 def assert_can_view_feature(feature, user) -> None:
     """Published: any member (caller already member-gated). Draft: owner only."""
-    if not is_draft(feature):
+    if feature.status != RockExplorerFeatureStatusEnum.DRAFT:
         return
     if feature.created_by_id != user.id:
         raise Unauthorized("Only the creator can view this draft.")
@@ -40,7 +30,7 @@ def assert_can_view_feature(feature, user) -> None:
 
 def assert_draft_mutable(feature, user, device_id: str | None) -> None:
     """No-op for published. Draft: owner + matching recordingDeviceId required."""
-    if not is_draft(feature):
+    if feature.status != RockExplorerFeatureStatusEnum.DRAFT:
         return
     if feature.created_by_id != user.id:
         raise Unauthorized("Only the creator can modify this draft.")
@@ -70,15 +60,11 @@ def apply_rock_explorer_metadata(entity, data: dict) -> None:
 
     if entity.status == RockExplorerFeatureStatusEnum.PUBLISHED:
         entity.recording_device_id = None
-        entity.recording_state = None
         entity.recording_updated_at = None
     else:
         # Preserve existing device lock on update; only set from payload when unset (create).
         if entity.recording_device_id is None:
             entity.recording_device_id = data.get("recordingDeviceId")
-        entity.recording_state = (
-            RockExplorerRecordingStateEnum(data["recordingState"]) if data.get("recordingState") else None
-        )
         entity.recording_updated_at = datetime.datetime.now(pytz.utc)
 
     set_tags(
@@ -108,7 +94,7 @@ def clone_rock_explorer_feature(
     recording_device_id: str,
 ) -> RockExplorerFeature:
     """
-    Deep-copy a draft for multi-device continue (D-11/D-12).
+    Deep-copy a draft for multi-device continue.
 
     Creates a new draft with the cloning device's lock and duplicates gallery
     associations via a new Tag linked to the same GalleryImage rows.
@@ -117,7 +103,7 @@ def clone_rock_explorer_feature(
     """
     if source.created_by_id != user.id:
         raise Unauthorized("Only the creator can clone this draft.")
-    if not is_draft(source):
+    if source.status != RockExplorerFeatureStatusEnum.DRAFT:
         raise BadRequest("Only drafts can be cloned.")
     if recording_device_id is None or str(recording_device_id).strip() == "":
         raise BadRequest("recordingDeviceId is required to clone a draft.")
@@ -138,7 +124,6 @@ def clone_rock_explorer_feature(
     clone.paths = copy.deepcopy(source.paths or [])
     clone.status = RockExplorerFeatureStatusEnum.DRAFT
     clone.recording_device_id = recording_device_id
-    clone.recording_state = source.recording_state or RockExplorerRecordingStateEnum.PAUSED
     clone.recording_updated_at = datetime.datetime.now(pytz.utc)
     clone.created_by_id = user.id
 

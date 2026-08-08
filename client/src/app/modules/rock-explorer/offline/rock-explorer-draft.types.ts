@@ -1,4 +1,4 @@
-/** Sync chrome / sessions list status (D-07). */
+/** Sync chrome / sessions list status. */
 export type DraftSyncStatus = 'pending' | 'syncing' | 'synced' | 'error';
 
 /**
@@ -8,6 +8,8 @@ export type DraftSyncStatus = 'pending' | 'syncing' | 'synced' | 'error';
 export interface RockExplorerDraftSnapshot {
   /** Plain JSON clone of the feature including all paths. */
   feature: Record<string, unknown>;
+  /** Client-only pause/resume — not synced to the API. */
+  recordingState: 'recording' | 'paused';
   activePathId: string | null;
   keptSinceSync: number;
   lastSyncAtMs: number;
@@ -37,7 +39,7 @@ export interface RockExplorerOpRecord {
   createdAt: number;
 }
 
-/** Queued geotagged image waiting for draft serverId (RE-TRACK-12). */
+/** Queued geotagged image waiting for draft serverId. */
 export interface RockExplorerPendingImageRecord {
   id: string;
   localId: string;

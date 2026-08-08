@@ -45,7 +45,7 @@ def require_rock_explorer_membership(object_type: str) -> None:
 
 
 def _assert_can_view_rock_explorer_comment_target(obj_type: str, target) -> None:
-    """Draft rock-explorer features are owner-only for comments (T-10-05)."""
+    """Draft rock-explorer features are owner-only for comments."""
     if obj_type != "RockExplorerFeature":
         return
     user = User.find_by_email(get_jwt_identity())

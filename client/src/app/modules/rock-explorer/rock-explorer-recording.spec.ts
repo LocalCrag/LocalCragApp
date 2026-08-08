@@ -51,17 +51,8 @@ describe('rock-explorer-recording', () => {
   });
 
   describe('gpsFixToPosition', () => {
-    it('encodes lng/lat and optional numerics', () => {
+    it('encodes lng/lat only', () => {
       expect(gpsFixToPosition({ lng: 1, lat: 2 })).toEqual([1, 2]);
-      expect(
-        gpsFixToPosition({
-          lng: 1,
-          lat: 2,
-          altitudeM: 10,
-          timestampMs: 100,
-          accuracyM: 5,
-        }),
-      ).toEqual([1, 2, 10, 100, 5]);
     });
   });
 
@@ -81,13 +72,9 @@ describe('rock-explorer-recording', () => {
     });
 
     it('appends fixes with distance filter and pauses without appending', () => {
-      expect(
-        session.tryAppendFix({ lng: 8, lat: 50, timestampMs: 1, accuracyM: 4 }),
-      ).toBeTrue();
+      expect(session.tryAppendFix({ lng: 8, lat: 50 })).toBeTrue();
       expect(session.tryAppendFix({ lng: 8.00001, lat: 50 })).toBeFalse();
-      expect(
-        session.tryAppendFix({ lng: 8.00015, lat: 50, timestampMs: 2 }),
-      ).toBeTrue();
+      expect(session.tryAppendFix({ lng: 8.00015, lat: 50 })).toBeTrue();
       expect(session.activePath!.geometry.coordinates.length).toBe(2);
 
       session.pause();
@@ -123,15 +110,14 @@ describe('rock-explorer-recording', () => {
     });
 
     it('toSnapshot / hydrateFromSnapshot round-trips open 1-vertex path', () => {
-      expect(
-        session.tryAppendFix({ lng: 8.1, lat: 50.2, timestampMs: 42 }),
-      ).toBeTrue();
+      expect(session.tryAppendFix({ lng: 8.1, lat: 50.2 })).toBeTrue();
       expect(session.activePath!.geometry.coordinates.length).toBe(1);
       session.keptSinceSync = 3;
       session.lastSyncAtMs = 99;
 
       const snapshot = session.toSnapshot();
       expect(snapshot.activePathId).toBe(session.activePathId);
+      expect(snapshot.recordingState).toBe('recording');
       expect(snapshot.keptSinceSync).toBe(3);
       expect(snapshot.lastSyncAtMs).toBe(99);
       expect(snapshot.lastKept).toEqual({ lng: 8.1, lat: 50.2 });

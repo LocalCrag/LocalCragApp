@@ -6,9 +6,6 @@ from models.base_entity import BaseEntity
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
-from models.enums.rock_explorer_recording_state_enum import (
-    RockExplorerRecordingStateEnum,
-)
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from models.tag import Tag
@@ -52,13 +49,6 @@ class RockExplorerFeature(BaseEntity):
         default=RockExplorerFeatureStatusEnum.PUBLISHED,
     )
     recording_device_id = db.Column(db.String(128), nullable=True)
-    recording_state = db.Column(
-        db.Enum(
-            RockExplorerRecordingStateEnum,
-            values_callable=lambda enum_cls: [member.value for member in enum_cls],
-        ),
-        nullable=True,
-    )
     recording_updated_at = db.Column(db.DateTime(), nullable=True)
 
     # Same Tag association pattern as GalleryImage.tags (topo links).

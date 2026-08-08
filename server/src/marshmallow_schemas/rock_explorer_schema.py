@@ -7,9 +7,6 @@ from marshmallow_schemas.tag_schema import TagSchema
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
-from models.enums.rock_explorer_recording_state_enum import (
-    RockExplorerRecordingStateEnum,
-)
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 
@@ -19,12 +16,6 @@ class RockExplorerFeatureSchema(BaseEntitySchema):
     description = fields.String(allow_none=True)
     status = EnumField(RockExplorerFeatureStatusEnum, by_value=True)
     recordingDeviceId = fields.String(attribute="recording_device_id", allow_none=True)
-    recordingState = EnumField(
-        RockExplorerRecordingStateEnum,
-        by_value=True,
-        attribute="recording_state",
-        allow_none=True,
-    )
     recordingUpdatedAt = fields.DateTime(attribute="recording_updated_at", allow_none=True)
     potential = EnumField(RockExplorerPotentialEnum, by_value=True, allow_none=True)
     rockQuality = EnumField(RockExplorerRockQualityEnum, by_value=True, attribute="rock_quality", allow_none=True)

@@ -10,7 +10,7 @@ import { rockExplorerDraftDb } from './rock-explorer-draft.db';
 import type { RockExplorerPendingImageRecord } from './rock-explorer-draft.types';
 
 /**
- * Offline geotagged image queue for Record mode (RE-TRACK-12).
+ * Offline geotagged image queue for Record mode.
  * Blobs stay in IndexedDB until the draft has a serverId, then upload.
  */
 @Injectable({
