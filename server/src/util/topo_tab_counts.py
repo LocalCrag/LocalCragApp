@@ -6,7 +6,8 @@ can expose ``commentCount`` and ``imageCount`` for page-title tab pills.
 - Comments: all non-deleted comments on the entity itself, including replies
   (matches post commentCount semantics; scoped to ``object_type`` + ``object_id``).
 - Images: entity tag plus child tags (matches ``GetGalleryImages`` + ``get_child_tags``),
-  with secret-gallery filtering via ``SecretService``.
+  with secret-gallery filtering via ``SecretService``. Region gallery counts exclude
+  rock explorer images (matches unfiltered ``GetGalleryImages``).
 
 Model imports are deferred inside the helpers to avoid circular imports
 (``Comment`` → ``Region``/``Area`` → this module).
@@ -59,10 +60,13 @@ def count_gallery_images(object_type: str, object_id) -> int:
 
 
 def count_all_gallery_images() -> int:
-    """Count all gallery images visible to the current user (region gallery)."""
+    """Count gallery images for the region gallery (excludes rock explorer images)."""
     from models.gallery_image import GalleryImage
+    from util.rock_explorer import rock_explorer_gallery_image_ids_subquery
 
-    query = db.session.query(func.count(GalleryImage.id))
+    query = db.session.query(func.count(GalleryImage.id)).filter(
+        ~GalleryImage.id.in_(rock_explorer_gallery_image_ids_subquery())
+    )
     if not SecretService.can_view_secrets():
         query = query.filter(~GalleryImage.id.in_(SecretService.secret_gallery_image_ids_subquery()))
     return int(query.scalar() or 0)
