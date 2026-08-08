@@ -68,6 +68,14 @@ class UserSearchSchema(ma.SQLAlchemySchema):
 user_search_schema = UserSearchSchema()
 
 
+class RockExplorerFeatureSearchSchema(ma.SQLAlchemySchema):
+    id = fields.String()
+    title = fields.String(allow_none=True)
+
+
+rock_explorer_feature_search_schema = RockExplorerFeatureSearchSchema()
+
+
 class TopoImageSearchSchema(TopoImageSchema):
     area = fields.Nested(area_search_schema)
 

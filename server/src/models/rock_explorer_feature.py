@@ -8,6 +8,8 @@ from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureSt
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
+from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
+from models.mixins.is_searchable import IsSearchable
 from models.tag import Tag
 
 rock_explorer_feature_tags = Table(
@@ -18,12 +20,15 @@ rock_explorer_feature_tags = Table(
 )
 
 
-class RockExplorerFeature(BaseEntity):
+class RockExplorerFeature(IsSearchable, BaseEntity):
     """
     A mapped exploration feature (Point or Polygon GeoJSON geometry).
     """
 
     __tablename__ = "rock_explorer_features"
+
+    search_name_target_columns = ["title"]
+    searchable_type = SearchableItemTypeEnum.ROCK_EXPLORER_FEATURE
 
     geometry = db.Column(JSON, nullable=True)
     parking_sites = db.Column(JSON, nullable=False, default=lambda: [])
@@ -53,3 +58,6 @@ class RockExplorerFeature(BaseEntity):
 
     # Same Tag association pattern as GalleryImage.tags (topo links).
     topo_links = db.relationship(Tag, secondary=rock_explorer_feature_tags)
+
+    def should_be_searchable(self) -> bool:
+        return self.status == RockExplorerFeatureStatusEnum.PUBLISHED and self.get_search_name() is not None

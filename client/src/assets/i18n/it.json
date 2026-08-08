@@ -251,6 +251,7 @@
   "searchDialog.sector": "Settore",
   "searchDialog.crag": "Zona",
   "searchDialog.user": "Utente",
+  "searchDialog.rockExplorerFeature": "Rock explorer",
   "searchDialog.searchInputPlaceholder": "Ricerca problemi, aree, utenti...",
   "searchDialog.recentSearches": "Recenti",
   "validation.minLength": "Lunghezza minima: {{min}} caratteri",

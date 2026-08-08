@@ -4,7 +4,7 @@ from webargs import fields
 recent_search_create_args = {
     "objectType": fields.Str(
         required=True,
-        validate=validate.OneOf(["Line", "Area", "Sector", "Crag", "User"]),
+        validate=validate.OneOf(["Line", "Area", "Sector", "Crag", "User", "RockExplorerFeature"]),
     ),
     "objectId": fields.UUID(required=True),
 }

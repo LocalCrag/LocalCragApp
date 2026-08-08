@@ -251,6 +251,7 @@
   "searchDialog.sector": "Sector",
   "searchDialog.crag": "Gebied",
   "searchDialog.user": "Gebruiker",
+  "searchDialog.rockExplorerFeature": "Rock explorer",
   "searchDialog.searchInputPlaceholder": "Zoek naar routes, gebieden, gebruikers...",
   "searchDialog.recentSearches": "Recent",
   "validation.minLength": "Minimale lengte: {{min}} tekens",
