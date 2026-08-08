@@ -1,5 +1,5 @@
 import { Coordinates } from '../interfaces/coordinates.interface';
-import { LineString } from 'geojson';
+import { LineString, Position } from 'geojson';
 
 /** Parking spot attached to a rock explorer feature. */
 export interface RockExplorerParkingSite {
@@ -11,9 +11,13 @@ export interface RockExplorerParkingSite {
   description: string | null;
 }
 
-/** Approach / access path (LineString) on a rock explorer feature. */
+export type RockExplorerPathSource = 'gps' | 'manual';
+
+/** Approach / access / GPS track path (LineString) on a rock explorer feature. */
 export interface RockExplorerPath {
   id: string;
+  /** gps = live tracking; manual = hand-drawn (default). */
+  source?: RockExplorerPathSource;
   title: string | null;
   description: string | null;
   geometry: LineString;
@@ -40,18 +44,21 @@ export function cloneParkingSites(
   }));
 }
 
+function clonePosition(c: Position): Position {
+  return [...c] as Position;
+}
+
 export function clonePaths(
   paths: RockExplorerPath[] | null | undefined,
 ): RockExplorerPath[] {
   return (paths ?? []).map((path) => ({
     id: path.id,
+    source: path.source ?? 'manual',
     title: path.title ?? null,
     description: path.description ?? null,
     geometry: {
       type: 'LineString',
-      coordinates: path.geometry.coordinates.map(
-        (c) => [...c] as [number, number],
-      ),
+      coordinates: path.geometry.coordinates.map(clonePosition),
     },
   }));
 }

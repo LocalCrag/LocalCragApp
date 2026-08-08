@@ -5,6 +5,8 @@ import { RockExplorerFeature } from '../../models/rock-explorer-feature';
 import { Coordinates } from '../../interfaces/coordinates.interface';
 import { Position } from 'geojson';
 import { POTENTIAL_FILL_COLORS } from './map/rock-explorer-map.constants';
+import { RecordingState } from './rock-explorer-recording';
+import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
@@ -52,7 +54,22 @@ export type RockExplorerCommand =
   | { type: 'pathDraftChange' }
   | { type: 'miscPreviewChange' }
   | { type: 'miscSaved'; feature: RockExplorerFeature }
-  | { type: 'focusPathGeometry'; positions: Position[] };
+  | { type: 'focusPathGeometry'; positions: Position[] }
+  | { type: 'enterRecord' }
+  | { type: 'exitRecord' }
+  | { type: 'pauseRecording' }
+  | { type: 'resumeRecording' }
+  | { type: 'finishRecordPath' }
+  | { type: 'newRecordPath' }
+  | { type: 'syncNow' }
+  | { type: 'openSessionsPanel' }
+  | { type: 'closeSessionsPanel' }
+  | { type: 'continueDraft'; localId: string }
+  | { type: 'publishDraft'; localId?: string }
+  | { type: 'showDraftOnMap'; localId: string }
+  | { type: 'addRecordImage' }
+  | { type: 'editRecordInfo' }
+  | { type: 'deleteDraft'; localId: string; event?: Event };
 
 /**
  * Session state + command bus for rock explorer.
@@ -86,6 +103,30 @@ export class RockExplorerUiService {
   readonly selectedPathVertexIndex = signal<number | null>(null);
   readonly showFilters = signal(false);
 
+  /** True while Record mode chrome is active (exclusive vs point/polygon). */
+  readonly recordModeActive = signal(false);
+  /** Mirrors session recordingState for toolbar Pause/Resume. */
+  readonly recordingState = signal<RecordingState | null>(null);
+  /** Active open GPS path vertex count (for Finish path enablement). */
+  readonly recordPathVertexCount = signal(0);
+  /** True while a GPS path is open (not yet finished) — hides New Path. */
+  readonly hasActiveRecordPath = signal(false);
+  /** True while an in-memory draft session exists (survives exit Record). */
+  readonly hasRecordingSession = signal(false);
+  /** Draft sync chrome status (pending|syncing|synced|error). */
+  readonly syncStatus = signal<DraftSyncStatus | null>(null);
+  /** True when Publish/sync should treat the app as reachable (not just navigator.onLine). */
+  readonly online = signal(true);
+  /** False when IndexedDB probe/open fails — Record disabled. */
+  readonly storageOk = signal(true);
+  /** Active local draft id while a recording session is bound. */
+  readonly activeLocalDraftId = signal<string | null>(null);
+  /** Floating sessions panel open state. */
+  readonly sessionsPanelOpen = signal(false);
+
+  /** Record allowed when IndexedDB is available. */
+  readonly canStartRecord = computed(() => this.storageOk());
+
   readonly isPolygonToolActive = computed(() => {
     const mode = this.drawMode();
     return mode === 'polygon' || mode === 'editPolygon';
@@ -93,6 +134,8 @@ export class RockExplorerUiService {
   readonly isDrawToolActive = computed(
     () => this.drawMode() === 'point' || this.isPolygonToolActive(),
   );
+  /** Point/polygon tools available only when not in Record mode. */
+  readonly canUseGeometryTools = computed(() => !this.recordModeActive());
 
   private readonly commandsSubject = new Subject<RockExplorerCommand>();
   readonly commands$ = this.commandsSubject.asObservable();
@@ -113,6 +156,9 @@ export class RockExplorerUiService {
   }
 
   setDrawMode(mode: RockExplorerDrawMode): void {
+    if (this.recordModeActive()) {
+      return;
+    }
     this.drawMode.set(mode);
   }
 

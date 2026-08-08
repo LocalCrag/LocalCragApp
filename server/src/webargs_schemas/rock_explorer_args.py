@@ -9,8 +9,8 @@ from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from webargs_schemas.map_marker_args import validate_latitude, validate_longitude
 
 _potential = fields.Str(
-    required=True,
-    allow_none=False,
+    load_default=None,
+    allow_none=True,
     validate=validate.OneOf([e.value for e in RockExplorerPotentialEnum]),
 )
 _rock_quality = fields.Str(
@@ -51,6 +51,7 @@ _parking_site_item = {
 
 
 def validate_path_linestring(geometry):
+    """Validate LineString; each Position is `[lng, lat]` (extras ignored if present)."""
     if not isinstance(geometry, dict):
         raise ValidationError("path geometry must be an object.")
     if geometry.get("type") != "LineString":
@@ -72,6 +73,10 @@ def validate_path_linestring(geometry):
 
 _path_item = {
     "id": fields.Str(required=True, validate=validate.Length(min=1, max=64)),
+    "source": fields.Str(
+        load_default="manual",
+        validate=validate.OneOf(["gps", "manual"]),
+    ),
     "title": fields.Str(load_default=None, allow_none=True, validate=validate.Length(max=120)),
     "description": fields.Str(load_default=None, allow_none=True),
     "geometry": fields.Dict(required=True, validate=validate_path_linestring),
@@ -92,6 +97,15 @@ def validate_unique_item_ids(items):
 rock_explorer_feature_args = {
     "title": fields.Str(load_default=None, allow_none=True, validate=validate.Length(max=120)),
     "description": fields.Str(load_default=None, allow_none=True),
+    "status": fields.Str(
+        load_default="published",
+        validate=validate.OneOf(["draft", "published"]),
+    ),
+    "recordingDeviceId": fields.Str(
+        load_default=None,
+        allow_none=True,
+        validate=validate.Length(min=1, max=128),
+    ),
     "potential": _potential,
     "rockQuality": _rock_quality,
     "rockType": _rock_type,
@@ -111,7 +125,7 @@ rock_explorer_feature_args = {
         load_default=list,
         validate=validate_unique_item_ids,
     ),
-    "geometry": fields.Nested(_feature_geometry, required=True),
+    "geometry": fields.Nested(_feature_geometry, required=False, allow_none=True, load_default=None),
 }
 
 
@@ -120,3 +134,18 @@ def cross_validate_rock_explorer_feature_args(args):
     grade_max = args.get("gradeValueMax")
     if grade_min is not None and grade_max is not None and grade_max < grade_min:
         raise ValidationError({"gradeValueMax": ["gradeValueMax must be greater than or equal to gradeValueMin."]})
+
+    status = args.get("status") or "published"
+    if status == "published":
+        if args.get("geometry") is None:
+            raise ValidationError({"geometry": ["Geometry is required for published features."]})
+        if args.get("potential") is None:
+            raise ValidationError({"potential": ["Potential is required for published features."]})
+    elif status == "draft":
+        if not args.get("recordingDeviceId"):
+            raise ValidationError({"recordingDeviceId": ["Recording device id is required for drafts."]})
+
+
+rock_explorer_clone_args = {
+    "recordingDeviceId": fields.Str(required=True, validate=validate.Length(min=1, max=128)),
+}

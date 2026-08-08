@@ -28,6 +28,14 @@ export class RockExplorerService {
     );
   }
 
+  /** Owner-only draft list (GET /features?status=draft). */
+  public listDrafts(): Observable<RockExplorerFeature[]> {
+    const params = new HttpParams().set('status', 'draft');
+    return this.http
+      .get<any[]>(this.api.rockExplorer.getFeatures(), { params })
+      .pipe(map((rows) => (rows ?? []).map(RockExplorerFeature.deserialize)));
+  }
+
   public getFeature(id: string): Observable<RockExplorerFeature> {
     return this.http
       .get(this.api.rockExplorer.getFeature(id))
@@ -56,9 +64,46 @@ export class RockExplorerService {
       .pipe(map(RockExplorerFeature.deserialize));
   }
 
-  public deleteFeature(feature: RockExplorerFeature): Observable<null> {
+  /**
+   * Draft → published PUT. Device lock via body recordingDeviceId
+   * (apply clears recording columns for published).
+   */
+  public publishFeature(
+    feature: RockExplorerFeature,
+    recordingDeviceId: string,
+  ): Observable<RockExplorerFeature> {
+    const deviceId = (recordingDeviceId ?? '').trim();
+    feature.status = 'published';
+    feature.recordingDeviceId = null;
+    const body = RockExplorerFeature.serialize(feature) as Record<
+      string,
+      unknown
+    >;
+    // serialize() nulls recordingDeviceId for published — restore for lock check
+    body['recordingDeviceId'] = deviceId || null;
     return this.http
-      .delete(this.api.rockExplorer.deleteFeature(feature.id))
+      .put(this.api.rockExplorer.updateFeature(feature.id), body)
+      .pipe(map(RockExplorerFeature.deserialize));
+  }
+
+  public cloneFeature(
+    featureId: string,
+    recordingDeviceId: string,
+  ): Observable<RockExplorerFeature> {
+    return this.http
+      .post(this.api.rockExplorer.cloneFeature(featureId), {
+        recordingDeviceId,
+      })
+      .pipe(map(RockExplorerFeature.deserialize));
+  }
+
+  public deleteFeature(feature: RockExplorerFeature): Observable<null> {
+    let params = new HttpParams();
+    if (feature.status === 'draft' && feature.recordingDeviceId) {
+      params = params.set('recordingDeviceId', feature.recordingDeviceId);
+    }
+    return this.http
+      .delete(this.api.rockExplorer.deleteFeature(feature.id), { params })
       .pipe(map(() => null));
   }
 
