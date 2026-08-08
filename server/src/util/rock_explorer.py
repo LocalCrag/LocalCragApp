@@ -76,7 +76,11 @@ def apply_rock_explorer_metadata(entity, data: dict) -> None:
 
 
 def rock_explorer_gallery_image_ids_subquery():
-    """Gallery image IDs carrying at least one rock explorer tag (member-only content)."""
+    """Gallery image IDs carrying at least one rock explorer tag.
+
+    Used to keep rock explorer images out of the region gallery and other
+    non–rock-explorer listings while still allowing feature-tagged listings.
+    """
     from sqlalchemy import select
 
     from models.gallery_image import gallery_image_tags

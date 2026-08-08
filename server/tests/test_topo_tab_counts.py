@@ -285,6 +285,31 @@ def test_secret_gallery_image_excluded_from_image_counts_for_anonymous(client, m
     assert client.get("/api/region", token=member_token).json["imageCount"] == baseline_region + 1
 
 
+def test_rock_explorer_images_excluded_from_region_image_count(client, member_token):
+    """Region imageCount must not include rock explorer gallery images (issue #1246)."""
+    from models.rock_explorer_feature import RockExplorerFeature
+
+    baseline_anon = client.get("/api/region").json["imageCount"]
+    baseline_member = client.get("/api/region", token=member_token).json["imageCount"]
+
+    feature = RockExplorerFeature()
+    feature.title = "Region count feature"
+    feature.geometry = {"type": "Point", "coordinates": [8.1, 50.2]}
+    db.session.add(feature)
+    db.session.commit()
+
+    file_id = File.query.filter_by(original_filename="Hate it or love it.JPG").first().id
+    rv = client.post(
+        "/api/gallery",
+        token=member_token,
+        json={"fileId": file_id, "tags": [{"objectType": "RockExplorerFeature", "objectId": str(feature.id)}]},
+    )
+    assert rv.status_code == 201
+
+    assert client.get("/api/region").json["imageCount"] == baseline_anon
+    assert client.get("/api/region", token=member_token).json["imageCount"] == baseline_member
+
+
 def test_secret_sector_excluded_from_crag_sector_count(client, member_token):
     baseline = client.get("/api/crags/brione").json["sectorCount"]
     assert baseline == 2
