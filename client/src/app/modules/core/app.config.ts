@@ -29,6 +29,7 @@ import * as Sentry from '@sentry/angular';
 import { providePrimeNG } from 'primeng/config';
 import { LocalCragTheme } from './theme/theme';
 import { ThemeService } from '../../services/core/theme.service';
+import { HardwareBackButtonService } from '../../services/core/hardware-back-button.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideTransloco,
@@ -173,6 +174,10 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => {
       inject(ThemeService).init();
+      return Promise.resolve();
+    }),
+    provideAppInitializer(() => {
+      inject(HardwareBackButtonService).register();
       return Promise.resolve();
     }),
     provideRouter(
