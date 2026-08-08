@@ -6,7 +6,10 @@
     [attr.aria-label]="t('rockExplorer.sessionsTitle')"
   >
     <header class="rock-explorer__panel-header">
-      <h2>{{ t("rockExplorer.sessionsTitle") }}</h2>
+      <div class="rock-explorer-sessions__title">
+        <h2>{{ t("rockExplorer.sessionsTitle") }}</h2>
+        <p-tag [value]="t('rockExplorer.beta')" severity="warn" />
+      </div>
       <div class="rock-explorer__panel-header-actions">
         <p-button
           icon="pi pi-times"

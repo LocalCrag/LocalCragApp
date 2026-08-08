@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
@@ -11,7 +12,7 @@ import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.typ
 
 @Component({
   selector: 'lc-rock-explorer-sessions',
-  imports: [Button, TranslocoDirective, TimeAgoPipe],
+  imports: [Button, Tag, TranslocoDirective, TimeAgoPipe],
   templateUrl: './rock-explorer-sessions.component.html',
   styleUrl: './rock-explorer-sessions.component.scss',
 })

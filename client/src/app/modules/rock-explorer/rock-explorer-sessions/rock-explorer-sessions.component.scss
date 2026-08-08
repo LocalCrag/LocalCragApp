@@ -30,6 +30,13 @@
   gap: 0.5rem;
   padding: 1rem 1rem 0.75rem;
   background: var(--p-content-hover-background);
+}
+
+.rock-explorer-sessions__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
 
   h2 {
     margin: 0;
