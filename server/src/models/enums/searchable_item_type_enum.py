@@ -7,3 +7,4 @@ class SearchableItemTypeEnum(Enum):
     AREA = "AREA"
     LINE = "LINE"
     USER = "USER"
+    ROCK_EXPLORER_FEATURE = "ROCK_EXPLORER_FEATURE"

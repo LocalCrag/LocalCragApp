@@ -146,4 +146,29 @@
       </div>
     </div>
   }
+  @if (searchable.rockExplorerFeature) {
+    <div
+      class="search-result"
+      tabindex="0"
+      [routerLink]="
+        disableNavigation ? null : searchable.rockExplorerFeature.routerLink
+      "
+      (click)="onSearchResultClick()"
+    >
+      <p-avatar
+        icon="pi pi-map"
+        styleClass="mr-2"
+        size="normal"
+        shape="circle"
+      ></p-avatar>
+      <div class="search-result-description">
+        <div class="search-result-name">
+          {{ searchable.rockExplorerFeature.title }}
+        </div>
+        <div class="search-result-meta">
+          <b>{{ t("rockExplorerFeature") }}</b>
+        </div>
+      </div>
+    </div>
+  }
 </ng-container>

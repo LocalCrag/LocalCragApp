@@ -42,5 +42,10 @@ function toRecentSearchPayload(
     return { objectType: 'Crag', objectId: searchable.crag.id };
   if (searchable.user)
     return { objectType: 'User', objectId: searchable.user.id };
+  if (searchable.rockExplorerFeature)
+    return {
+      objectType: 'RockExplorerFeature',
+      objectId: searchable.rockExplorerFeature.id,
+    };
   return null;
 }

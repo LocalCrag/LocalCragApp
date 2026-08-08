@@ -3,8 +3,10 @@ import { Area } from './area';
 import { Sector } from './sector';
 import { Crag } from './crag';
 import { User } from './user';
+import { RockExplorerFeature } from './rock-explorer-feature';
 
-export type SearchableObject = Line | Area | Sector | Crag | User;
+export type SearchableObject =
+  Line | Area | Sector | Crag | User | RockExplorerFeature;
 
 export class Searchable {
   name: string;
@@ -14,6 +16,7 @@ export class Searchable {
   sector: Sector;
   crag: Crag;
   user: User;
+  rockExplorerFeature: RockExplorerFeature;
 
   public static deserialize(payload: any): Searchable {
     const searchable = new Searchable();
@@ -42,6 +45,13 @@ export class Searchable {
         searchable.user = User.deserialize(payload.item);
         searchable.name = searchable.user.fullname;
         searchable.id = searchable.user.id;
+        break;
+      case 'ROCK_EXPLORER_FEATURE':
+        searchable.rockExplorerFeature = RockExplorerFeature.deserialize(
+          payload.item,
+        );
+        searchable.name = searchable.rockExplorerFeature.title ?? '';
+        searchable.id = searchable.rockExplorerFeature.id;
         break;
     }
     return searchable;
@@ -72,6 +82,11 @@ export class Searchable {
     if (object instanceof User) {
       searchable.user = object;
       searchable.name = object.fullname;
+      searchable.id = object.id;
+    }
+    if (object instanceof RockExplorerFeature) {
+      searchable.rockExplorerFeature = object;
+      searchable.name = object.title ?? '';
       searchable.id = object.id;
     }
     return searchable;

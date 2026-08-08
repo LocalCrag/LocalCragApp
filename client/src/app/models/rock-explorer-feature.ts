@@ -40,6 +40,7 @@ export class RockExplorerFeature extends AbstractModel {
   /** Topo targets stored as Tag associations (same shape as gallery tags). */
   topoLinks: Tag[] = [];
   createdBy: User | null;
+  routerLink: string | null;
 
   public static deserialize(payload: any): RockExplorerFeature {
     const feature = new RockExplorerFeature();
@@ -70,6 +71,7 @@ export class RockExplorerFeature extends AbstractModel {
     feature.createdBy = payload.createdBy
       ? User.deserialize(payload.createdBy)
       : null;
+    feature.routerLink = feature.id ? `/rock-explorer/${feature.id}` : null;
     return feature;
   }
 

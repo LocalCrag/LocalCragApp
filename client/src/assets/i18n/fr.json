@@ -251,6 +251,7 @@
   "searchDialog.sector": "Secteur",
   "searchDialog.crag": "Escarpé",
   "searchDialog.user": "Utilisateur",
+  "searchDialog.rockExplorerFeature": "Rock explorer",
   "searchDialog.searchInputPlaceholder": "Rechercher des lignes, des falaises, des utilisateurs...",
   "searchDialog.recentSearches": "Récent",
   "validation.minLength": "Longueur minimale : {{min}} caractères",
