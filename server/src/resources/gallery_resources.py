@@ -112,7 +112,9 @@ class GetGalleryImages(MethodView):
             secret_images_subquery = SecretService.secret_gallery_image_ids_subquery()
             images_query = images_query.filter(~GalleryImage.id.in_(secret_images_subquery))
 
-        if not current_user_is_member():
+        # Region (unfiltered) gallery never includes rock explorer images.
+        # Explicit RockExplorerFeature tag listings keep them for members.
+        if tag_object_id is None or not current_user_is_member():
             images_query = images_query.filter(~GalleryImage.id.in_(rock_explorer_gallery_image_ids_subquery()))
 
         images_query = images_query.options(

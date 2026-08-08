@@ -72,7 +72,7 @@ export type RockExplorerMapInteractionHost = {
   getPanelGallery: () => MapInteractionGalleryHandle | null | undefined;
   /** Open the panel's blank "create feature" form (used after point/polygon finish). */
   showCreateForm: () => void;
-  openEditPanel: (id: string) => void;
+  openEditPanel: (id: string, options?: { focus?: boolean }) => void;
   continueDraft: (localId: string) => void;
   closePanel: () => void;
   syncFeatureUrl: (featureId: string | null) => void;
@@ -473,7 +473,7 @@ export class RockExplorerMapInteraction {
     if (!id || this.host.ui.drawMode() !== 'select') {
       return;
     }
-    this.host.openEditPanel(String(id));
+    this.host.openEditPanel(String(id), { focus: true });
   }
 
   /** Click a grey local-draft polygon → reopen Record toolbar + show paths. */
