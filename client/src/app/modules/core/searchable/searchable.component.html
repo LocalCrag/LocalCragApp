@@ -151,9 +151,7 @@
       class="search-result"
       tabindex="0"
       [routerLink]="
-        disableNavigation
-          ? null
-          : searchable.rockExplorerFeature.routerLink
+        disableNavigation ? null : searchable.rockExplorerFeature.routerLink
       "
       (click)="onSearchResultClick()"
     >
