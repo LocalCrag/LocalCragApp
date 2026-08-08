@@ -1,3 +1,12 @@
+# [1.51.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.50.0...v1.51.0) (2026-08-08)
+
+
+### Features
+
+* **rock-explorer:** focus on feature after clicking on it ([#1248](https://github.com/LocalCrag/LocalCragApp/issues/1248)) ([d3c0bb7](https://github.com/LocalCrag/LocalCragApp/commit/d3c0bb7a2e9d218b37452d78c92574121ad9b0a5)), closes [#1245](https://github.com/LocalCrag/LocalCragApp/issues/1245)
+* **rock-explorer:** live tracking ([#1243](https://github.com/LocalCrag/LocalCragApp/issues/1243)) ([d286d6f](https://github.com/LocalCrag/LocalCragApp/commit/d286d6fc87d3283a2de9dbf6fcb7276de3359c3f)), closes [#1228](https://github.com/LocalCrag/LocalCragApp/issues/1228)
+* **rock-explorer:** update unexplored potential to graded variants ([4b87d65](https://github.com/LocalCrag/LocalCragApp/commit/4b87d656af3df1dfa54c87f5033d1fba3d542e50))
+
 # [1.50.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.49.0...v1.50.0) (2026-08-04)
 
 

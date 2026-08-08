@@ -226,7 +226,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       showCreateForm: () => {
         c.panel?.showCreateForm();
       },
-      openEditPanel: (id: string) => c.openEditPanel(id),
+      openEditPanel: (id, options) => c.openEditPanel(id, options),
       continueDraft: (localId: string) => {
         void c.recording.continueDraft(localId);
       },
