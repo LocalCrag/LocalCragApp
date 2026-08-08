@@ -108,6 +108,18 @@
                   "with": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.prod.ts"
                 }
               ]
+            },
+            "android": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.android.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
