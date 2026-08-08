@@ -8,6 +8,7 @@
     "start": "npm run tw:build && ng serve",
     "dev": "npm run tw:build && concurrently -k -n tw,ng \"npm run tw:watch\" \"ng serve\"",
     "build": "npm run tw:build && ng build",
+    "verify:webdir": "test -f dist/client/browser/index.html",
     "watch": "npm run tw:build && concurrently -k -n tw,ng \"npm run tw:watch\" \"ng build --watch --configuration development\"",
     "test": "npm run tw:build && ng test",
     "test:ci": "npm run tw:build && ng test --no-watch --no-progress --code-coverage --browsers=ChromeHeadless",
