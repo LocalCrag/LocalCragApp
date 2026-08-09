@@ -113,8 +113,8 @@ export class InstancePickerComponent implements OnInit {
     if (
       normalizeApiHostUrl(instance.url) === normalizeApiHostUrl(this.activeHost)
     ) {
-      // Already on this host — leave the picker for instance home.
-      window.location.assign('/');
+      // Already on this host — leave the picker for instance home (D-08).
+      this.enterInstanceHome();
       return;
     }
     this.confirmation.confirm({
