@@ -32,6 +32,7 @@ def overwrite_config_by_env_vars(app):
         "S3_ACCESS_ENDPOINT",
         "S3_ADDRESSING",
         "FRONTEND_HOST",
+        "ADDITIONAL_CORS_ORIGINS",
         "SENTRY_DSN",
         "SENTRY_ENABLED",
         "SUPERADMIN_EMAIL",

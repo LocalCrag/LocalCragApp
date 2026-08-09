@@ -7,8 +7,9 @@ import { Tag } from 'primeng/tag';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
-import { rockExplorerDraftDb } from '../offline/rock-explorer-draft.db';
+import { openRockExplorerDraftDb } from '../offline/rock-explorer-draft.db';
 import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.types';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 @Component({
   selector: 'lc-rock-explorer-sessions',
@@ -18,12 +19,11 @@ import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.typ
 })
 export class RockExplorerSessionsComponent {
   readonly ui = inject(RockExplorerUiService);
+  private readonly db = openRockExplorerDraftDb(inject(RUNTIME_API_HOST));
 
   readonly drafts = toSignal(
     from(
-      liveQuery(() =>
-        rockExplorerDraftDb.drafts.orderBy('updatedAt').reverse().toArray(),
-      ),
+      liveQuery(() => this.db.drafts.orderBy('updatedAt').reverse().toArray()),
     ),
     { initialValue: [] as RockExplorerDraftRecord[] },
   );

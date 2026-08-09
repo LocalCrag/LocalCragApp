@@ -20,6 +20,7 @@ import { FeatureCollection, Geometry } from 'geojson';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
@@ -53,7 +54,9 @@ import {
   RockExplorerRecordingFacade,
   RockExplorerRecordingFacadeHost,
 } from '../rock-explorer-recording.facade';
+import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../../environments/environment';
+import { installNativeGpsShim } from '../native-gps/rock-explorer-native-gps.shim';
 import { RockExplorerPendingImageService } from '../offline/rock-explorer-pending-image.service';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
 import { fitMapToFeatureCollection } from '../../../utility/map/map-bounds';
@@ -75,6 +78,7 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
     FormsModule,
     Toast,
     ConfirmPopup,
+    ConfirmDialog,
     Dialog,
     Button,
     Select,
@@ -716,7 +720,11 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         fitBoundsOptions: { maxZoom: 30 },
       });
       this.map.addControl(this.geolocateControl, 'top-right');
-      if (mockGpsRecording) {
+      // Native: GpsBridge geolocation shim (no permission yet — D-06).
+      // Web/dev: mock walker when enabled. Compose per D-05.
+      if (Capacitor.isNativePlatform()) {
+        installNativeGpsShim();
+      } else if (mockGpsRecording) {
         void this.recording.ensureMockGps().then((mock) => {
           mock?.installNavigatorShim(() => {
             const c = this.map?.getCenter();

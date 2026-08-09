@@ -105,6 +105,11 @@ export class RockExplorerUiService {
 
   /** True while Record mode chrome is active (exclusive vs point/polygon). */
   readonly recordModeActive = signal(false);
+  /**
+   * True while native GpsBridge / FGS tracking is live (GPS-F01).
+   * Wired true/false by the recording facade in plan 03.
+   */
+  readonly nativeGpsTrackingActive = signal(false);
   /** Mirrors session recordingState for toolbar Pause/Resume. */
   readonly recordingState = signal<RecordingState | null>(null);
   /** Active open GPS path vertex count (for Finish path enablement). */

@@ -14,6 +14,14 @@ export const rootRedirectRoutes: Routes = [
 
 export const miscRoutes: Routes = [
   {
+    path: 'instances',
+    loadComponent: () =>
+      import('../instance-picker/instance-picker.component').then(
+        (m) => m.InstancePickerComponent,
+      ),
+    data: { hideAppChrome: true },
+  },
+  {
     path: 'sentry-test',
     loadComponent: () =>
       import('../sentry-test/sentry-test.component').then(

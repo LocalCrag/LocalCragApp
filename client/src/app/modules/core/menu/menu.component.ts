@@ -48,7 +48,7 @@ import { SearchDialogComponent } from '../search-dialog/search-dialog.component'
 import { environment } from '../../../../environments/environment';
 import { HeaderMenuComponent } from '../../shared/components/header-menu/header-menu.component';
 import { AsyncPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -63,6 +63,8 @@ import {
   MAX_NAVBAR_COLLAPSE_LEVEL,
   NAVBAR_COLLAPSE_LEVELS,
 } from './navbar-collapse';
+import { Capacitor } from '@capacitor/core';
+import { RockExplorerLiveSessionGuard } from '../../../services/core/rock-explorer-live-session.guard';
 
 @Component({
   selector: 'lc-menu',
@@ -116,7 +118,11 @@ export class MenuComponent implements OnInit, AfterViewInit {
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+  private liveSessionGuard = inject(RockExplorerLiveSessionGuard);
   readonly themeService = inject(ThemeService);
+  /** Native-only: Switch instance entry for guests (logged-in uses account menu). */
+  readonly isNativePlatform = Capacitor.isNativePlatform();
   private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
   private navbarResizeObserver?: ResizeObserver;
   private isReconcilingNavbarOverflow = false;
@@ -340,13 +346,22 @@ export class MenuComponent implements OnInit, AfterViewInit {
               ),
               routerLink: '/change-password',
             },
-            {
-              id: 'auth-menu-logout',
-              label: this.translocoService.translate(marker('menu.logout')),
-              icon: 'pi pi-fw pi-sign-out',
-              command: this.logout.bind(this),
-            },
           ];
+          if (Capacitor.isNativePlatform()) {
+            accountItems.push({
+              icon: 'pi pi-fw pi-server',
+              label: this.translocoService.translate(
+                marker('menu.switchInstance'),
+              ),
+              command: () => void this.switchInstance(),
+            });
+          }
+          accountItems.push({
+            id: 'auth-menu-logout',
+            label: this.translocoService.translate(marker('menu.logout')),
+            icon: 'pi pi-fw pi-sign-out',
+            command: () => void this.logout(),
+          });
           items.push({
             label: this.translocoService.translate(
               marker('menu.accountCategory'),
@@ -497,10 +512,23 @@ export class MenuComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Logs out the user.
+   * Navigates to the instance picker after resolving any live Record session (D-06).
+   * Intercepts before router navigation so Rock Explorer destroy cannot race the guard.
    */
-  logout() {
-    this.store.dispatch(logout({ isAutoLogout: false, silent: false }));
+  async switchInstance(): Promise<void> {
+    await this.liveSessionGuard.runGuardedAction(async () => {
+      await this.router.navigateByUrl('/instances');
+    });
+  }
+
+  /**
+   * Logs out the user after resolving any live Record session (D-07).
+   * User-initiated only — do not wrap AuthEffects auto-logout.
+   */
+  async logout(): Promise<void> {
+    await this.liveSessionGuard.runGuardedAction(() => {
+      this.store.dispatch(logout({ isAutoLogout: false, silent: false }));
+    });
   }
 
   openSearch() {

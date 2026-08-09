@@ -6,8 +6,9 @@ import { GalleryImage } from '../../../models/gallery-image';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { Tag } from '../../../models/tag';
 import { ObjectType } from '../../../models/object';
-import { rockExplorerDraftDb } from './rock-explorer-draft.db';
+import { openRockExplorerDraftDb } from './rock-explorer-draft.db';
 import type { RockExplorerPendingImageRecord } from './rock-explorer-draft.types';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 /**
  * Offline geotagged image queue for Record mode.
@@ -17,7 +18,7 @@ import type { RockExplorerPendingImageRecord } from './rock-explorer-draft.types
   providedIn: 'root',
 })
 export class RockExplorerPendingImageService {
-  private readonly db = rockExplorerDraftDb;
+  private readonly db = openRockExplorerDraftDb(inject(RUNTIME_API_HOST));
   private readonly uploadService = inject(UploadService);
   private readonly galleryService = inject(GalleryService);
 

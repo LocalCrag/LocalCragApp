@@ -4,7 +4,12 @@ import {
   RockExplorerDraftStoreService,
   deleteRockExplorerDraftDb,
 } from './rock-explorer-draft-store.service';
-import { ROCK_EXPLORER_DB_NAME } from './rock-explorer-draft.db';
+import {
+  LEGACY_ROCK_EXPLORER_DB_NAME,
+  ROCK_EXPLORER_TEST_HOST,
+  rockExplorerDbName,
+} from './rock-explorer-draft.db';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 describe('RockExplorerDraftStoreService', () => {
   let store: RockExplorerDraftStoreService;
@@ -12,7 +17,10 @@ describe('RockExplorerDraftStoreService', () => {
   beforeEach(async () => {
     await deleteRockExplorerDraftDb();
     TestBed.configureTestingModule({
-      providers: [RockExplorerDraftStoreService],
+      providers: [
+        RockExplorerDraftStoreService,
+        { provide: RUNTIME_API_HOST, useValue: ROCK_EXPLORER_TEST_HOST },
+      ],
     });
     store = TestBed.inject(RockExplorerDraftStoreService);
     await store.probeOpen();
@@ -112,7 +120,9 @@ describe('RockExplorerDraftStoreService', () => {
     expect(found?.updatedAt).toBe(updatedAt);
   });
 
-  it('uses DB name localcrag.rockExplorer', () => {
-    expect(ROCK_EXPLORER_DB_NAME).toBe('localcrag.rockExplorer');
+  it('uses host-scoped DB name derived from RUNTIME_API_HOST', () => {
+    expect(rockExplorerDbName(ROCK_EXPLORER_TEST_HOST)).toBe(
+      `${LEGACY_ROCK_EXPLORER_DB_NAME}:${ROCK_EXPLORER_TEST_HOST}`,
+    );
   });
 });

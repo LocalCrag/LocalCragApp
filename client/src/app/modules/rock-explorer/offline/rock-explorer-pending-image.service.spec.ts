@@ -7,7 +7,11 @@ import {
 } from './rock-explorer-draft-store.service';
 import { RockExplorerPendingImageService } from './rock-explorer-pending-image.service';
 import { RockExplorerRecordingSession } from '../rock-explorer-recording';
-import { rockExplorerDraftDb } from './rock-explorer-draft.db';
+import {
+  rockExplorerDraftDb,
+  ROCK_EXPLORER_TEST_HOST,
+} from './rock-explorer-draft.db';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 describe('RockExplorerPendingImageService', () => {
   let pending: RockExplorerPendingImageService;
@@ -21,6 +25,7 @@ describe('RockExplorerPendingImageService', () => {
         provideHttpClientTesting(),
         RockExplorerPendingImageService,
         RockExplorerDraftStoreService,
+        { provide: RUNTIME_API_HOST, useValue: ROCK_EXPLORER_TEST_HOST },
       ],
     });
     pending = TestBed.inject(RockExplorerPendingImageService);

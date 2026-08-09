@@ -3,10 +3,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, firstValueFrom } from 'rxjs';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { RockExplorerRecordingSession } from '../rock-explorer-recording';
-import { rockExplorerDraftDb } from './rock-explorer-draft.db';
+import { openRockExplorerDraftDb } from './rock-explorer-draft.db';
 import { RockExplorerDraftStoreService } from './rock-explorer-draft-store.service';
 import { RockExplorerPendingImageService } from './rock-explorer-pending-image.service';
 import type { RockExplorerOpRecord } from './rock-explorer-draft.types';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 export type DeviceLockConflictEvent = {
   localId: string;
@@ -34,7 +35,7 @@ export class RockExplorerDraftSyncService {
   private readonly store = inject(RockExplorerDraftStoreService);
   private readonly api = inject(RockExplorerService);
   private readonly pendingImages = inject(RockExplorerPendingImageService);
-  private readonly db = rockExplorerDraftDb;
+  private readonly db = openRockExplorerDraftDb(inject(RUNTIME_API_HOST));
 
   private flushInFlight = false;
 

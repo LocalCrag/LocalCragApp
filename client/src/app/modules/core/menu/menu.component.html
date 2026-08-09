@@ -72,15 +72,27 @@
             />
           }
         </ng-container>
-        <p-button
-          icon="pi pi-user"
-          routerLink="login"
-          severity="secondary"
-          variant="text"
-          styleClass="navbar-icon-button"
-          *isLoggedOut="true"
-          data-cy="navbar-login"
-        ></p-button>
+        <ng-container *isLoggedOut="true">
+          @if (isNativePlatform) {
+            <p-button
+              icon="pi pi-server"
+              (onClick)="switchInstance()"
+              severity="secondary"
+              variant="text"
+              styleClass="navbar-icon-button"
+              [attr.aria-label]="t('switchInstance')"
+              data-cy="navbar-switch-instance"
+            ></p-button>
+          }
+          <p-button
+            icon="pi pi-user"
+            routerLink="login"
+            severity="secondary"
+            variant="text"
+            styleClass="navbar-icon-button"
+            data-cy="navbar-login"
+          ></p-button>
+        </ng-container>
       </div>
     </ng-template>
   </lc-header-menu>

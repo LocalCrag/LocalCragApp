@@ -27,6 +27,27 @@
   max-width: min(100%, 28rem);
 }
 
+.rock-explorer__gps-tracking-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--p-green-700, #15803d);
+  background: color-mix(in srgb, var(--p-green-500, #22c55e) 14%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--p-green-500, #22c55e) 35%, transparent);
+  border-radius: var(--p-content-border-radius);
+  line-height: 1.2;
+
+  .pi {
+    font-size: 0.8rem;
+  }
+}
+
 .rock-explorer__record-group {
   display: flex;
   flex-direction: column;

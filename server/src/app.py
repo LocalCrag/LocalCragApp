@@ -21,7 +21,13 @@ def register_extensions(application):
     jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
-    cors.init_app(application, origins=[application.config["FRONTEND_HOST"]])
+    origins = [application.config["FRONTEND_HOST"]]
+    origins.extend(
+        origin.strip()
+        for origin in (application.config.get("ADDITIONAL_CORS_ORIGINS") or "").split(",")
+        if origin.strip()
+    )
+    cors.init_app(application, origins=origins)
 
 
 def configure_extensions(application):

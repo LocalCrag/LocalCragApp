@@ -1,0 +1,56 @@
+.instance-picker {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}
+
+.hint,
+.empty {
+  opacity: 0.85;
+  margin-bottom: 1rem;
+}
+
+.add-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.add-row input {
+  flex: 1;
+}
+
+.instance-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instance-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--p-content-border-color, #ddd);
+  padding: 0.5rem 0;
+}
+
+.instance-list li.active .name {
+  font-weight: 700;
+}
+
+.pick {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.pick .url {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}

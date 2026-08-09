@@ -31,6 +31,16 @@
     }
     @if (ui.recordModeActive()) {
       <div class="rock-explorer__record-groups">
+        @if (ui.nativeGpsTrackingActive()) {
+          <div
+            class="rock-explorer__gps-tracking-active"
+            role="status"
+            aria-live="polite"
+          >
+            <i class="pi pi-map-marker" aria-hidden="true"></i>
+            <span>{{ t("rockExplorer.gpsTrackingActive") }}</span>
+          </div>
+        }
         <div class="rock-explorer__record-group">
           <span class="rock-explorer__record-group-label">{{
             t("rockExplorer.recordGroupPath")

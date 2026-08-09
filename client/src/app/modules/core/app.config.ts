@@ -29,6 +29,7 @@ import * as Sentry from '@sentry/angular';
 import { providePrimeNG } from 'primeng/config';
 import { LocalCragTheme } from './theme/theme';
 import { ThemeService } from '../../services/core/theme.service';
+import { HardwareBackButtonService } from '../../services/core/hardware-back-button.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideTransloco,
@@ -38,10 +39,13 @@ import {
 import { provideStore, Store } from '@ngrx/store';
 import { InstanceSettingsService } from '../../services/crud/instance-settings.service';
 import { MenuItemsService } from '../../services/crud/menu-items.service';
-import { concatMap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { concatMap, from, of, timeout } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { hasCompletedInstanceOnboarding } from '../../services/core/instance-registry';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
 import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { metaReducers, reducers } from '../../ngrx/reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { Actions, ofType, provideEffects } from '@ngrx/effects';
@@ -90,20 +94,52 @@ const initInstanceSettingsAndLanguage = (
   store: Store,
 ) => {
   return () => {
-    return instanceSettingsService.getInstanceSettings().pipe(
-      map((instanceSettings) => {
-        store.dispatch(updateInstanceSettings({ settings: instanceSettings }));
-        initSentryFromSettings(instanceSettings);
-        return instanceSettings.language;
+    return from(hasCompletedInstanceOnboarding()).pipe(
+      switchMap((onboardingDone) => {
+        // Native onboarding: skip the API round-trip until an instance is saved.
+        // Otherwise a seeded emulator host (10.0.2.2) hangs CapacitorHttp on phones.
+        if (Capacitor.isNativePlatform() && !onboardingDone) {
+          return languageService.initApp(undefined);
+        }
+        return instanceSettingsService.getInstanceSettings().pipe(
+          timeout({ first: 8000 }),
+          map((instanceSettings) => {
+            store.dispatch(
+              updateInstanceSettings({ settings: instanceSettings }),
+            );
+            initSentryFromSettings(instanceSettings);
+            return instanceSettings.language;
+          }),
+          concatMap(languageService.initApp.bind(languageService)),
+          // A failed API call here (offline, unreachable backend) must not block app bootstrap
+          // forever — the native shell still needs to render and hide its splash screen (D-07)
+          // even with no connectivity, falling back to the browser/default language.
+          catchError((err) => {
+            console.error('Failed to load instance settings on startup', err);
+            return languageService.initApp(undefined);
+          }),
+        );
       }),
-      concatMap(languageService.initApp.bind(languageService)),
     );
   };
 };
 
 const preloadMenus = (menuItemsService: MenuItemsService) => {
   return () => {
-    return menuItemsService.getMenuItems();
+    return from(hasCompletedInstanceOnboarding()).pipe(
+      switchMap((onboardingDone) => {
+        if (Capacitor.isNativePlatform() && !onboardingDone) {
+          return of(null);
+        }
+        return menuItemsService.getMenuItems().pipe(
+          timeout({ first: 8000 }),
+          catchError((err) => {
+            console.error('Failed to preload menu items on startup', err);
+            return of(null);
+          }),
+        );
+      }),
+    );
   };
 };
 
@@ -175,6 +211,10 @@ export const appConfig: ApplicationConfig = {
       inject(ThemeService).init();
       return Promise.resolve();
     }),
+    provideAppInitializer(() => {
+      inject(HardwareBackButtonService).register();
+      return Promise.resolve();
+    }),
     provideRouter(
       appRoutes,
       withNavigationErrorHandler((navigationError) => {
@@ -223,6 +263,9 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     MessageService,
+    // Root DialogService so RockExplorerLiveSessionGuard can open Finish/Discard/Cancel
+    // from menu + picker even when local component DialogService trees are out of scope.
+    DialogService,
     provideAnimationsAsync(),
     provideTransloco({
       config: {

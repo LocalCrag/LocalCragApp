@@ -1,6 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import Dexie from 'dexie';
-import { rockExplorerDraftDb } from './rock-explorer-draft.db';
+import {
+  migrateLegacyRockExplorerDbIfNeeded,
+  openRockExplorerDraftDb,
+  ROCK_EXPLORER_TEST_HOST,
+} from './rock-explorer-draft.db';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 import type {
   DraftSyncStatus,
   RockExplorerDraftRecord,
@@ -22,19 +27,22 @@ export type PutSnapshotMeta = {
 
 /**
  * IndexedDB CRUD for Rock Explorer offline drafts.
- * providedIn root so Dexie singleton is shared app-wide.
+ * providedIn root; DB is scoped to RUNTIME_API_HOST (INST-05).
  */
 @Injectable({
   providedIn: 'root',
 })
 export class RockExplorerDraftStoreService {
-  private readonly db = rockExplorerDraftDb;
+  private readonly db = openRockExplorerDraftDb(inject(RUNTIME_API_HOST));
+  private readonly apiHost = inject(RUNTIME_API_HOST);
+  private legacyMigrated = false;
 
   /**
    * Probe IndexedDB open; false on quota / open failures.
    */
   async probeOpen(): Promise<boolean> {
     try {
+      await this.ensureLegacyMigrated();
       await this.db.open();
       return true;
     } catch (error) {
@@ -45,11 +53,20 @@ export class RockExplorerDraftStoreService {
     }
   }
 
+  private async ensureLegacyMigrated(): Promise<void> {
+    if (this.legacyMigrated) {
+      return;
+    }
+    await migrateLegacyRockExplorerDbIfNeeded(this.apiHost);
+    this.legacyMigrated = true;
+  }
+
   async putSnapshot(
     localId: string,
     session: RockExplorerRecordingSession,
     meta: PutSnapshotMeta = {},
   ): Promise<RockExplorerDraftRecord> {
+    await this.ensureLegacyMigrated();
     const existing = await this.db.drafts.get(localId);
     const snapshot = session.toSnapshot();
     const deviceId =
@@ -162,7 +179,10 @@ export class RockExplorerDraftStoreService {
   }
 }
 
-/** Delete the Rock Explorer draft DB (tests / recovery). Next access reopens. */
-export async function deleteRockExplorerDraftDb(): Promise<void> {
-  await rockExplorerDraftDb.delete();
+/** Delete the Rock Explorer draft DB for a host (tests / recovery). */
+export async function deleteRockExplorerDraftDb(
+  apiHost: string = ROCK_EXPLORER_TEST_HOST,
+): Promise<void> {
+  const db = openRockExplorerDraftDb(apiHost);
+  await db.delete();
 }
