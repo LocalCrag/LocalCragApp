@@ -22,6 +22,7 @@ import {
   normalizeApiHostUrl,
   RUNTIME_API_HOST,
 } from '../../../services/core/runtime-api-host';
+import { RockExplorerLiveSessionGuard } from '../../../services/core/rock-explorer-live-session.guard';
 
 @Component({
   selector: 'lc-instance-picker',
@@ -48,6 +49,7 @@ export class InstancePickerComponent implements OnInit {
 
   private http = inject(HttpClient);
   private confirmation = inject(ConfirmationService);
+  private liveSessionGuard = inject(RockExplorerLiveSessionGuard);
 
   async ngOnInit(): Promise<void> {
     this.instances = await listInstances();
@@ -109,7 +111,7 @@ export class InstancePickerComponent implements OnInit {
     this.instances = await removeInstance(instance.url);
   }
 
-  switchTo(instance: SavedInstance): void {
+  async switchTo(instance: SavedInstance): Promise<void> {
     if (
       normalizeApiHostUrl(instance.url) === normalizeApiHostUrl(this.activeHost)
     ) {
@@ -117,17 +119,20 @@ export class InstancePickerComponent implements OnInit {
       this.enterInstanceHome();
       return;
     }
-    this.confirmation.confirm({
-      message: instance.instanceName
-        ? `${instance.instanceName} (${instance.url})`
-        : instance.url,
-      header: 'Switch instance?',
-      acceptLabel: 'Switch',
-      rejectLabel: 'Cancel',
-      accept: async () => {
-        await setActiveHost(instance.url);
-        this.enterInstanceHome();
-      },
+    // Resolve live Record first (D-06), then existing Switch confirm + setActiveHost.
+    await this.liveSessionGuard.runGuardedAction(() => {
+      this.confirmation.confirm({
+        message: instance.instanceName
+          ? `${instance.instanceName} (${instance.url})`
+          : instance.url,
+        header: 'Switch instance?',
+        acceptLabel: 'Switch',
+        rejectLabel: 'Cancel',
+        accept: async () => {
+          await setActiveHost(instance.url);
+          this.enterInstanceHome();
+        },
+      });
     });
   }
 

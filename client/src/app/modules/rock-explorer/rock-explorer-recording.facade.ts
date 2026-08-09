@@ -50,6 +50,7 @@ import {
 } from './offline/rock-explorer-draft-sync.service';
 import { RockExplorerDraftReconcileService } from './offline/rock-explorer-draft-reconcile.service';
 import { RockExplorerPendingImageService } from './offline/rock-explorer-pending-image.service';
+import { RockExplorerLiveSessionGuard } from '../../services/core/rock-explorer-live-session.guard';
 
 /**
  * Component behaviors the facade calls back into. Kept intentionally small —
@@ -118,6 +119,7 @@ export class RockExplorerRecordingFacade {
   private readonly galleryService = inject(GalleryService);
   private readonly uploadService = inject(UploadService);
   private readonly transloco = inject(TranslocoService);
+  private readonly liveSessionGuard = inject(RockExplorerLiveSessionGuard);
   private readonly store = inject(Store);
   private readonly capacitorApp = inject(CAPACITOR_APP);
 
@@ -249,6 +251,7 @@ export class RockExplorerRecordingFacade {
     this.releaseSyncUiHold();
     this.stopGeoWatch();
     this.host.ui.nativeGpsTrackingActive.set(false);
+    this.liveSessionGuard.setLiveSession(false);
     this.uninstallMockGpsShim();
     uninstallNativeGpsShim();
   }
@@ -343,6 +346,7 @@ export class RockExplorerRecordingFacade {
       );
     }
     this.host.ui.recordModeActive.set(false);
+    this.liveSessionGuard.setLiveSession(false);
     this.syncRecordUiSignals();
     this.host.layers?.setPaths(emptyFeatureCollection());
     this.host.layers?.clearDraft();
@@ -460,6 +464,10 @@ export class RockExplorerRecordingFacade {
 
     this.host.ui.recordModeActive.set(true);
     this.host.ui.hasRecordingSession.set(true);
+    this.liveSessionGuard.setLiveSession(true, {
+      finish: () => this.exitRecordModeAsync(),
+      discard: () => this.discardActiveLiveSession(),
+    });
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
     if (options.resume && this.recordingSession.isRecording) {
@@ -888,6 +896,7 @@ export class RockExplorerRecordingFacade {
       if (this.activeLocalId === localId) {
         this.stopGeoWatch();
         this.host.ui.recordModeActive.set(false);
+        this.liveSessionGuard.setLiveSession(false);
         this.recordingSession = null;
         this.activeLocalId = null;
         this.host.ui.activeLocalDraftId.set(null);
@@ -1170,6 +1179,23 @@ export class RockExplorerRecordingFacade {
     });
   }
 
+  /**
+   * Discard the active live draft without a nested confirm (D-04).
+   * Used by RockExplorerLiveSessionGuard after the user picks Discard.
+   */
+  async discardActiveLiveSession(): Promise<void> {
+    if (this.activeLocalId) {
+      await this.deleteDraft(this.activeLocalId);
+      return;
+    }
+    this.stopGeoWatch();
+    this.host.ui.recordModeActive.set(false);
+    this.host.ui.hasRecordingSession.set(false);
+    this.syncRecordUiSignals();
+    this.liveSessionGuard.setLiveSession(false);
+    this.host.cdr.detectChanges();
+  }
+
   private async deleteDraft(localId: string): Promise<void> {
     const draft = await this.draftStore.get(localId);
     const wasActive = this.activeLocalId === localId;
@@ -1188,6 +1214,7 @@ export class RockExplorerRecordingFacade {
       this.host.ui.hasRecordingSession.set(false);
       this.syncRecordUiSignals();
       this.host.layers?.setPaths(emptyFeatureCollection());
+      this.liveSessionGuard.setLiveSession(false);
     }
 
     if (draft?.serverId && this.draftSync.isOnline()) {

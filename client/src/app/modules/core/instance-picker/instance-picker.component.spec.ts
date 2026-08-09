@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { InstancePickerComponent } from './instance-picker.component';
 import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 import {
@@ -25,6 +26,7 @@ describe('InstancePickerComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         RockExplorerLiveSessionGuard,
+        DialogService,
         { provide: RUNTIME_API_HOST, useValue: activeHost },
         provideTransloco({
           config: {
