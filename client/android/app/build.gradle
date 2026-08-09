@@ -23,6 +23,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        // Needed for the BuildConfig.DEBUG guard around MainActivity's debug-only mixed-content
+        // relaxation (D-09/D-10) — AGP 8 no longer generates BuildConfig by default.
+        buildConfig true
+    }
 }
 
 repositories {
