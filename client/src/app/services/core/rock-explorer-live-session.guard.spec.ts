@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslocoService } from '@jsverse/transloco';
 import {
   LiveSessionEndHandlers,
   RockExplorerLiveSessionGuard,
@@ -45,6 +46,10 @@ describe('RockExplorerLiveSessionGuard', () => {
       providers: [
         RockExplorerLiveSessionGuard,
         { provide: DialogService, useValue: dialogService },
+        {
+          provide: TranslocoService,
+          useValue: { translate: (key: string) => key },
+        },
       ],
     });
     guard = TestBed.inject(RockExplorerLiveSessionGuard);

@@ -45,6 +45,7 @@ import { Capacitor } from '@capacitor/core';
 import { hasCompletedInstanceOnboarding } from '../../services/core/instance-registry';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
 import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { metaReducers, reducers } from '../../ngrx/reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { Actions, ofType, provideEffects } from '@ngrx/effects';
@@ -262,6 +263,9 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     MessageService,
+    // Root DialogService so RockExplorerLiveSessionGuard can open Finish/Discard/Cancel
+    // from menu + picker even when local component DialogService trees are out of scope.
+    DialogService,
     provideAnimationsAsync(),
     provideTransloco({
       config: {

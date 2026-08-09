@@ -1,0 +1,21 @@
+<ng-container *transloco="let t">
+  <p class="mb-6">{{ t("rockExplorer.liveSessionGuardMessage") }}</p>
+
+  <div class="form-actions justify-end flex-wrap gap-2">
+    <p-button
+      [label]="t('rockExplorer.liveSessionGuardCancel')"
+      styleClass="p-button-outlined p-button-secondary"
+      (onClick)="cancel()"
+    />
+    <p-button
+      [label]="t('rockExplorer.liveSessionGuardDiscard')"
+      severity="danger"
+      styleClass="p-button-outlined"
+      (onClick)="discard()"
+    />
+    <p-button
+      [label]="t('rockExplorer.liveSessionGuardFinish')"
+      (onClick)="finish()"
+    />
+  </div>
+</ng-container>
