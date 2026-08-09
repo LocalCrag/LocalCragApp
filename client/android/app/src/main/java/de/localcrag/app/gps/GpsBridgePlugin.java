@@ -1,8 +1,9 @@
 package de.localcrag.app.gps;
 
 import android.Manifest;
+import android.content.Intent;
 import android.location.Location;
-import android.os.Looper;
+import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.getcapacitor.JSObject;
@@ -14,16 +15,18 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 
 /**
- * Thin Capacitor plugin wrapping Fused Location for foreground Rock Explorer GPS (Phase 17).
- * No foreground service / notification — Phase 18 extends this class for background survival.
+ * Capacitor GpsBridge: starts/stops {@link GpsForegroundService} for Rock Explorer GPS.
+ *
+ * <p>Location updates are owned by the FGS (not Activity-only FLP) so tracking survives
+ * screen-off / backgrounding (Phase 18 / GPS-01). Pause must not call {@link #stop} — JS
+ * keeps the service running and gates path appends with {@code isRecording} (D-07).
+ *
+ * <p>Do not auto-start the FGS from {@link #load()} (D-05 / T-18-06). No native HTTP (D-15).
  */
 @CapacitorPlugin(
   name = "GpsBridge",
@@ -34,33 +37,43 @@ import com.google.android.gms.tasks.CancellationTokenSource;
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
       }
+    ),
+    @Permission(
+      alias = "background",
+      strings = { Manifest.permission.ACCESS_BACKGROUND_LOCATION }
+    ),
+    @Permission(
+      alias = "notifications",
+      strings = { Manifest.permission.POST_NOTIFICATIONS }
     )
   }
 )
 public class GpsBridgePlugin extends Plugin {
 
   private static final long DEFAULT_INTERVAL_MS = 1000L;
-  private static final long MIN_UPDATE_INTERVAL_MS = 500L;
 
   private FusedLocationProviderClient fusedClient;
-  private LocationCallback locationCallback;
-  private boolean updatesActive = false;
+  private boolean serviceStarted = false;
+
+  private final GpsForegroundService.FixListener fixListener =
+    new GpsForegroundService.FixListener() {
+      @Override
+      public void onFix(@NonNull Location location) {
+        notifyListeners("locationUpdate", toFixPayload(location));
+      }
+    };
 
   @Override
   public void load() {
     fusedClient = LocationServices.getFusedLocationProviderClient(getContext());
-    locationCallback =
-      new LocationCallback() {
-        @Override
-        public void onLocationResult(@NonNull LocationResult result) {
-          Location location = result.getLastLocation();
-          if (location != null) {
-            notifyListeners("locationUpdate", toFixPayload(location));
-          }
-        }
-      };
+    GpsForegroundService.setFixListener(fixListener);
+    // Intentionally do not start FGS here — JS calls start() after staged perms (D-05).
   }
 
+  /**
+   * Starts the location FGS while the Activity is foreground. Does not request permissions —
+   * the JS orchestrator owns staging (D-08). Pause must not invoke stop (D-07).
+   */
   @PluginMethod
   public void start(PluginCall call) {
     if (!hasLocationPermission()) {
@@ -76,32 +89,21 @@ public class GpsBridgePlugin extends Plugin {
       }
     }
 
-    LocationRequest request =
-      new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, intervalMs)
-        .setMinUpdateIntervalMillis(MIN_UPDATE_INTERVAL_MS)
-        .setWaitForAccurateLocation(false)
-        .build();
+    GpsForegroundService.setFixListener(fixListener);
 
-    try {
-      // Idempotent restart: drop prior callback before requesting again.
-      if (updatesActive) {
-        fusedClient.removeLocationUpdates(locationCallback);
-        updatesActive = false;
-      }
-      fusedClient.requestLocationUpdates(request, locationCallback, Looper.getMainLooper());
-      updatesActive = true;
-      call.resolve();
-    } catch (SecurityException e) {
-      call.reject("Location permission not granted", "PERMISSION_DENIED", e);
-    }
+    Intent intent = new Intent(getContext(), GpsForegroundService.class);
+    intent.putExtra(GpsForegroundService.EXTRA_INTERVAL_MS, intervalMs);
+    ContextCompat.startForegroundService(getContext(), intent);
+    serviceStarted = true;
+    call.resolve();
   }
 
+  /** Stops the FGS and clears updates. Idempotent (D-06). */
   @PluginMethod
   public void stop(PluginCall call) {
-    if (updatesActive && locationCallback != null && fusedClient != null) {
-      fusedClient.removeLocationUpdates(locationCallback);
-      updatesActive = false;
-    }
+    Intent intent = new Intent(getContext(), GpsForegroundService.class);
+    getContext().stopService(intent);
+    serviceStarted = false;
     call.resolve();
   }
 
@@ -150,6 +152,8 @@ public class GpsBridgePlugin extends Plugin {
   public void checkPermissions(PluginCall call) {
     JSObject result = new JSObject();
     result.put("location", getPermissionState("location").toString());
+    result.put("background", getPermissionState("background").toString());
+    result.put("notifications", notificationPermissionState().toString());
     call.resolve(result);
   }
 
@@ -164,11 +168,60 @@ public class GpsBridgePlugin extends Plugin {
     requestPermissionForAlias("location", call, "locationPermissionCallback");
   }
 
+  @PluginMethod
+  public void requestBackgroundPermission(PluginCall call) {
+    if (getPermissionState("background") == PermissionState.GRANTED) {
+      JSObject result = new JSObject();
+      result.put("background", PermissionState.GRANTED.toString());
+      call.resolve(result);
+      return;
+    }
+    requestPermissionForAlias("background", call, "backgroundPermissionCallback");
+  }
+
+  @PluginMethod
+  public void requestNotificationPermission(PluginCall call) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      JSObject result = new JSObject();
+      result.put("notifications", PermissionState.GRANTED.toString());
+      call.resolve(result);
+      return;
+    }
+    if (getPermissionState("notifications") == PermissionState.GRANTED) {
+      JSObject result = new JSObject();
+      result.put("notifications", PermissionState.GRANTED.toString());
+      call.resolve(result);
+      return;
+    }
+    requestPermissionForAlias("notifications", call, "notificationsPermissionCallback");
+  }
+
   @PermissionCallback
   private void locationPermissionCallback(PluginCall call) {
     JSObject result = new JSObject();
     result.put("location", getPermissionState("location").toString());
     call.resolve(result);
+  }
+
+  @PermissionCallback
+  private void backgroundPermissionCallback(PluginCall call) {
+    JSObject result = new JSObject();
+    result.put("background", getPermissionState("background").toString());
+    call.resolve(result);
+  }
+
+  @PermissionCallback
+  private void notificationsPermissionCallback(PluginCall call) {
+    JSObject result = new JSObject();
+    result.put("notifications", notificationPermissionState().toString());
+    call.resolve(result);
+  }
+
+  private PermissionState notificationPermissionState() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      return PermissionState.GRANTED;
+    }
+    return getPermissionState("notifications");
   }
 
   private boolean hasLocationPermission() {
@@ -206,10 +259,12 @@ public class GpsBridgePlugin extends Plugin {
 
   @Override
   protected void handleOnDestroy() {
-    if (updatesActive && locationCallback != null && fusedClient != null) {
-      fusedClient.removeLocationUpdates(locationCallback);
-      updatesActive = false;
+    if (serviceStarted) {
+      Intent intent = new Intent(getContext(), GpsForegroundService.class);
+      getContext().stopService(intent);
+      serviceStarted = false;
     }
+    GpsForegroundService.setFixListener(null);
     super.handleOnDestroy();
   }
 }

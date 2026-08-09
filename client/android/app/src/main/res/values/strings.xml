@@ -4,4 +4,8 @@
     <string name="title_activity_main">LocalCrag</string>
     <string name="package_name">de.localcrag.app</string>
     <string name="custom_url_scheme">de.localcrag.app</string>
+    <string name="gps_tracking_channel_name">Path recording</string>
+    <string name="gps_tracking_channel_description">Shows while Rock Explorer is recording your path</string>
+    <string name="gps_tracking_notification_title">Recording path</string>
+    <string name="gps_tracking_notification_text">Rock Explorer GPS tracking is active</string>
 </resources>
