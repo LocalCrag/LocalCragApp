@@ -18,6 +18,7 @@ class DefaultConfig(object):
     SMTP_PORT = "YOUR_SMTP_PORT"
     SMTP_TYPE = None  # smtps, starttls, plain, disabled
     FRONTEND_HOST = None  # Base URL of the SPA
+    ADDITIONAL_CORS_ORIGINS = ""  # Comma-separated extra allowed CORS origins, e.g. native app WebView origins
     SUPERADMIN_FIRSTNAME = ""
     SUPERADMIN_LASTNAME = ""
     SUPERADMIN_EMAIL = ""
