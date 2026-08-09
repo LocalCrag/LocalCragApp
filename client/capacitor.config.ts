@@ -19,6 +19,11 @@ const config: CapacitorConfig = {
       splashFullScreen: false,
       splashImmersive: false,
     },
+    // D-05 / SHELL-03: patch XHR/fetch through native HttpURLConnection so
+    // Angular HttpClient bypasses WebView CORS against arbitrary operator APIs.
+    CapacitorHttp: {
+      enabled: true,
+    },
   },
 };
 
