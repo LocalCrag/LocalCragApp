@@ -3,13 +3,17 @@ import { of } from 'rxjs';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { RockExplorerRecordingSession } from '../rock-explorer-recording';
-import { rockExplorerDraftDb } from './rock-explorer-draft.db';
+import {
+  rockExplorerDraftDb,
+  ROCK_EXPLORER_TEST_HOST,
+} from './rock-explorer-draft.db';
 import { RockExplorerDraftReconcileService } from './rock-explorer-draft-reconcile.service';
 import {
   RockExplorerDraftStoreService,
   deleteRockExplorerDraftDb,
 } from './rock-explorer-draft-store.service';
 import { RockExplorerDraftSyncService } from './rock-explorer-draft-sync.service';
+import { RUNTIME_API_HOST } from '../../../services/core/runtime-api-host';
 
 function remoteDraft(opts: {
   id: string;
@@ -47,6 +51,7 @@ describe('RockExplorerDraftReconcileService', () => {
         RockExplorerDraftStoreService,
         RockExplorerDraftSyncService,
         RockExplorerDraftReconcileService,
+        { provide: RUNTIME_API_HOST, useValue: ROCK_EXPLORER_TEST_HOST },
         {
           provide: RockExplorerService,
           useValue: { listDrafts },

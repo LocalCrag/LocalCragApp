@@ -38,6 +38,12 @@ import { unixToDate } from '../../utility/operators/unix-to-date';
 import { toastNotification } from '../actions/notifications.actions';
 import { LoginResponse } from '../../models/login-response';
 import { differenceInMilliseconds, isAfter, subMilliseconds } from 'date-fns';
+import {
+  clearAuthStorage,
+  readAuthStorage,
+  writeAuthStorage,
+} from '../../services/core/auth-storage';
+import { RUNTIME_API_HOST } from '../../services/core/runtime-api-host';
 
 /**
  * Time before expiry before an access token gets refreshed. Accounts for an approximate server response delay of the refresh request
@@ -59,6 +65,7 @@ export class AuthEffects {
   private actions$ = inject(Actions);
   private router = inject(Router);
   private store = inject<Store<AppState>>(Store);
+  private apiHost = inject(RUNTIME_API_HOST);
 
   /**
    * Calls the password forgotten route to send a reset password mail and notifies the app about success or failure.
@@ -202,10 +209,7 @@ export class AuthEffects {
             user: action.user,
             message: '',
           };
-          localStorage.setItem(
-            'LocalCragAuth',
-            JSON.stringify(autoLoginObject),
-          );
+          writeAuthStorage(this.apiHost, JSON.stringify(autoLoginObject));
         }),
       ),
     { dispatch: false },
@@ -233,10 +237,7 @@ export class AuthEffects {
             user: authState.user,
             message: '',
           };
-          localStorage.setItem(
-            'LocalCragAuth',
-            JSON.stringify(autoLoginObject),
-          );
+          writeAuthStorage(this.apiHost, JSON.stringify(autoLoginObject));
           // Start a timer for refreshing the access token
           if (action.loginResponse.accessToken !== null) {
             this.store.dispatch(startAccessTokenRefreshTimer());
@@ -386,10 +387,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(tryAutoLogin),
         tap(() => {
-          if (localStorage.getItem('LocalCragAuth') !== null) {
-            const autoLoginObject: LoginResponse = JSON.parse(
-              localStorage.getItem('LocalCragAuth') as string,
-            );
+          const stored = readAuthStorage(this.apiHost);
+          if (stored !== null) {
+            const autoLoginObject: LoginResponse = JSON.parse(stored);
             this.store.dispatch(
               newAuthCredentials({
                 loginResponse: autoLoginObject,
@@ -487,7 +487,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.cleanupCredentials),
         tap((action) => {
-          localStorage.removeItem('LocalCragAuth');
+          clearAuthStorage(this.apiHost);
           if (action.navigateToLogin) {
             this.router.navigate(['login']);
           }
