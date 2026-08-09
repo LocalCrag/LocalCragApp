@@ -55,6 +55,7 @@ import {
 } from '../rock-explorer-recording.facade';
 import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../../environments/environment';
+import { installNativeGpsShim } from '../native-gps/rock-explorer-native-gps.shim';
 import { RockExplorerPendingImageService } from '../offline/rock-explorer-pending-image.service';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
 import { fitMapToFeatureCollection } from '../../../utility/map/map-bounds';
@@ -717,8 +718,11 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         fitBoundsOptions: { maxZoom: 30 },
       });
       this.map.addControl(this.geolocateControl, 'top-right');
-      // Mock walker is web/dev only — never install on Capacitor native (D-05).
-      if (mockGpsRecording && !Capacitor.isNativePlatform()) {
+      // Native: GpsBridge geolocation shim (no permission yet — D-06).
+      // Web/dev: mock walker when enabled. Compose per D-05.
+      if (Capacitor.isNativePlatform()) {
+        installNativeGpsShim();
+      } else if (mockGpsRecording) {
         void this.recording.ensureMockGps().then((mock) => {
           mock?.installNavigatorShim(() => {
             const c = this.map?.getCenter();

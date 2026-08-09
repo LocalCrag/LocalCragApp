@@ -38,6 +38,7 @@ import type { RockExplorerMockGpsService } from './rock-explorer-mock-gps.servic
 import { loadMockGps } from './rock-explorer-mock-gps.loader';
 import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../environments/environment';
+import { uninstallNativeGpsShim } from './native-gps/rock-explorer-native-gps.shim';
 import { GpsBridge } from './native-gps/gps-bridge';
 import type { RockExplorerDraftRecord } from './offline/rock-explorer-draft.types';
 import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
@@ -226,6 +227,7 @@ export class RockExplorerRecordingFacade {
     this.releaseSyncUiHold();
     this.stopGeoWatch();
     this.uninstallMockGpsShim();
+    uninstallNativeGpsShim();
   }
 
   // ---------------------------------------------------------------------
