@@ -35,6 +35,31 @@ function defaultResolveApiHostDeps(): ResolveApiHostDeps {
 }
 
 /**
+ * Trim and strip a trailing slash for consistency with environment.apiHost.
+ */
+export function normalizeApiHostUrl(raw: string): string {
+  return raw.trim().replace(/\/+$/, '');
+}
+
+/**
+ * D-10 / D-11: HTTPS required for real instances; emulator loopback http://10.0.2.2 only.
+ */
+export function isAllowedApiHostUrl(url: string): boolean {
+  if (!url) {
+    return false;
+  }
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'https:') {
+      return true;
+    }
+    return parsed.protocol === 'http:' && parsed.hostname === '10.0.2.2';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Resolve the API base host for this process.
  * - Web: synchronous environment.apiHost (D-07), no Preferences.
  * - Native: Preferences-backed; seed from environment.apiHost when unset (D-01, D-02).

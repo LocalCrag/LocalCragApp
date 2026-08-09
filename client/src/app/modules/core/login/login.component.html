@@ -61,6 +61,44 @@
         class="link-button"
         [routerLink]="'/register'"
       ></p-button>
+
+      @if (isNativePlatform) {
+        <details class="debug-api-host" data-cy="login-debug-api-host">
+          <summary>{{ t("debugApiHostSummary") }}</summary>
+          <p class="debug-api-host-hint">{{ t("debugApiHostHint") }}</p>
+          <div class="card-container block">
+            <input
+              type="url"
+              pInputText
+              [(ngModel)]="debugApiHost"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="{{ t('debugApiHostPlaceholder') }}"
+              data-cy="login-debug-api-host-input"
+            />
+          </div>
+          @if (debugApiHostError === "invalid") {
+            <p-message
+              severity="error"
+              [text]="t('debugApiHostInvalid')"
+              styleClass="mt-2 w-full"
+            />
+          }
+          @if (debugApiHostError === "saveFailed") {
+            <p-message
+              severity="error"
+              [text]="t('debugApiHostSaveFailed')"
+              styleClass="mt-2 w-full"
+            />
+          }
+          <p-button
+            label="{{ t('debugApiHostSaveLabel') }}"
+            styleClass="p-button-secondary mt-2"
+            (click)="saveDebugApiHost()"
+            [loading]="debugApiHostSaving"
+            data-cy="login-debug-api-host-save"
+          ></p-button>
+        </details>
+      }
     </div>
   </div>
 </ng-container>

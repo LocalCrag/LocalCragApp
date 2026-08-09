@@ -1,4 +1,9 @@
-import { API_HOST_PREFERENCE_KEY, resolveApiHost } from './runtime-api-host';
+import {
+  API_HOST_PREFERENCE_KEY,
+  isAllowedApiHostUrl,
+  normalizeApiHostUrl,
+  resolveApiHost,
+} from './runtime-api-host';
 
 describe('resolveApiHost', () => {
   it('returns defaultHost on web without touching Preferences', async () => {
@@ -63,5 +68,32 @@ describe('resolveApiHost', () => {
 describe('API_HOST_PREFERENCE_KEY', () => {
   it('is the literal apiHost key Phase 16 must reuse (D-03)', () => {
     expect(API_HOST_PREFERENCE_KEY).toBe('apiHost');
+  });
+});
+
+describe('normalizeApiHostUrl', () => {
+  it('trims whitespace and strips trailing slashes', () => {
+    expect(normalizeApiHostUrl('  https://example.com/  ')).toBe(
+      'https://example.com',
+    );
+  });
+});
+
+describe('isAllowedApiHostUrl', () => {
+  it('allows https hosts', () => {
+    expect(isAllowedApiHostUrl('https://example.com')).toBeTrue();
+  });
+
+  it('allows emulator loopback http://10.0.2.2', () => {
+    expect(isAllowedApiHostUrl('http://10.0.2.2:5000')).toBeTrue();
+  });
+
+  it('rejects non-loopback http hosts (D-10)', () => {
+    expect(isAllowedApiHostUrl('http://evil.example')).toBeFalse();
+  });
+
+  it('rejects empty or invalid URLs', () => {
+    expect(isAllowedApiHostUrl('')).toBeFalse();
+    expect(isAllowedApiHostUrl('not-a-url')).toBeFalse();
   });
 });

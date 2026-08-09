@@ -1,0 +1,16 @@
+.debug-api-host {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--p-content-border-color, #ccc);
+  font-size: 0.875rem;
+}
+
+.debug-api-host summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.debug-api-host-hint {
+  margin: 0.5rem 0;
+  opacity: 0.8;
+}
