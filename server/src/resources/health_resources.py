@@ -4,6 +4,7 @@ from sqlalchemy import text
 
 from extensions import db
 from uploader.do_s3 import get_s3_client
+from util.localcrag_product import LOCALCRAG_PRODUCT, LOCALCRAG_VERSION
 
 
 class Health(MethodView):
@@ -11,9 +12,16 @@ class Health(MethodView):
     def get(self):
         """
         Health route to check if the server, database and s3 datastorage are healthy.
+        Always includes LocalCrag product identity + version (Phase 16 D-05).
         """
         status = 200
-        response = {"server": "healthy", "database": None, "s3": None}
+        response = {
+            "server": "healthy",
+            "database": None,
+            "s3": None,
+            "product": LOCALCRAG_PRODUCT,
+            "version": LOCALCRAG_VERSION,
+        }
 
         # Test database connection
         try:
