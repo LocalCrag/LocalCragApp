@@ -1,6 +1,6 @@
 import packageInfo from '../../package.json';
 
-export const mockGpsRecording = true;
+export const mockGpsRecording = false;
 
 export const environment = {
   production: false,

@@ -53,6 +53,7 @@ import {
   RockExplorerRecordingFacade,
   RockExplorerRecordingFacadeHost,
 } from '../rock-explorer-recording.facade';
+import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../../environments/environment';
 import { RockExplorerPendingImageService } from '../offline/rock-explorer-pending-image.service';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
@@ -716,7 +717,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         fitBoundsOptions: { maxZoom: 30 },
       });
       this.map.addControl(this.geolocateControl, 'top-right');
-      if (mockGpsRecording) {
+      // Mock walker is web/dev only — never install on Capacitor native (D-05).
+      if (mockGpsRecording && !Capacitor.isNativePlatform()) {
         void this.recording.ensureMockGps().then((mock) => {
           mock?.installNavigatorShim(() => {
             const c = this.map?.getCenter();

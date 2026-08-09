@@ -36,6 +36,7 @@ import {
 } from './rock-explorer-recording';
 import type { RockExplorerMockGpsService } from './rock-explorer-mock-gps.service';
 import { loadMockGps } from './rock-explorer-mock-gps.loader';
+import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../environments/environment';
 import type { RockExplorerDraftRecord } from './offline/rock-explorer-draft.types';
 import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
@@ -115,9 +116,14 @@ export class RockExplorerRecordingFacade {
   private readonly transloco = inject(TranslocoService);
   private readonly store = inject(Store);
 
-  /** Lazily loaded only when `mockGpsRecording` (stripped from prod). */
+  /** Lazily loaded only when mock GPS is allowed (web/dev; never on native). */
   private mockGps: RockExplorerMockGpsService | null = null;
   private mockGpsLoad: Promise<RockExplorerMockGpsService | null> | null = null;
+
+  /** Web/dev mock walker only — gated off Capacitor native (D-05). */
+  private isMockGpsEnabled(): boolean {
+    return mockGpsRecording && !Capacitor.isNativePlatform();
+  }
 
   /** Live-tracking session (survives exit Record until component destroy). */
   private recordingSession: RockExplorerRecordingSession | null = null;
@@ -243,7 +249,7 @@ export class RockExplorerRecordingFacade {
     if (!this.recordingSession || !this.host.ui.recordModeActive()) {
       return;
     }
-    if (mockGpsRecording) {
+    if (this.isMockGpsEnabled()) {
       this.seedMockGpsNearActiveSession();
     }
     this.recordingSession.resume();
@@ -413,13 +419,13 @@ export class RockExplorerRecordingFacade {
       this.host.ui.syncStatus.set('pending');
       // Await reset before watchPosition — a fire-and-forget reset raced the
       // shim seed and could emit the default [0,0] (Gulf of Guinea) first.
-      if (mockGpsRecording) {
+      if (this.isMockGpsEnabled()) {
         const mock = await this.ensureMockGps();
         await mock?.resetSeed();
       }
     } else if (options.resume) {
       this.recordingSession.resume();
-      if (mockGpsRecording) {
+      if (this.isMockGpsEnabled()) {
         this.seedMockGpsNearActiveSession();
       }
     } else {
@@ -490,7 +496,7 @@ export class RockExplorerRecordingFacade {
     this.host.ui.syncStatus.set(draft.syncStatus);
     this.host.ui.hasRecordingSession.set(true);
 
-    if (mockGpsRecording) {
+    if (this.isMockGpsEnabled()) {
       this.seedMockGpsNearDraft(session, draft);
     }
 
@@ -587,7 +593,7 @@ export class RockExplorerRecordingFacade {
    * `facade.ensureMockGps().then((mock) => mock?.installNavigatorShim(fallback))`.
    */
   ensureMockGps(): Promise<RockExplorerMockGpsService | null> {
-    if (!mockGpsRecording) {
+    if (!this.isMockGpsEnabled()) {
       return Promise.resolve(null);
     }
     if (this.mockGps) {
@@ -1008,7 +1014,7 @@ export class RockExplorerRecordingFacade {
     if (!localId) {
       return;
     }
-    if (!mockGpsRecording && !navigator.geolocation) {
+    if (!this.isMockGpsEnabled() && !navigator.geolocation) {
       this.host.messageService.add({
         severity: 'error',
         summary: this.transloco.translate(
@@ -1385,7 +1391,7 @@ export class RockExplorerRecordingFacade {
       this.onGeoPermissionDenied();
       return;
     }
-    if (mockGpsRecording && !this.mockGps?.isSeeded) {
+    if (this.isMockGpsEnabled() && !this.mockGps?.isSeeded) {
       this.host.messageService.add({
         severity: 'info',
         summary: 'Mock GPS',
