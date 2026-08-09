@@ -38,6 +38,7 @@ import type { RockExplorerMockGpsService } from './rock-explorer-mock-gps.servic
 import { loadMockGps } from './rock-explorer-mock-gps.loader';
 import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../environments/environment';
+import { GpsBridge } from './native-gps/gps-bridge';
 import type { RockExplorerDraftRecord } from './offline/rock-explorer-draft.types';
 import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
 import {
@@ -255,7 +256,7 @@ export class RockExplorerRecordingFacade {
     this.recordingSession.resume();
     this.syncRecordUiSignals();
     this.zoomCloseOnNextFix = true;
-    this.startGeoWatch();
+    void this.startGeoWatch();
     this.host.cdr.detectChanges();
   }
 
@@ -288,7 +289,7 @@ export class RockExplorerRecordingFacade {
     this.recordingSession.newPath();
     this.syncRecordUiSignals();
     this.refreshRecordingPathsOnMap();
-    this.startGeoWatch();
+    void this.startGeoWatch();
     void this.persistAndSync(true);
     this.host.cdr.detectChanges();
   }
@@ -438,7 +439,7 @@ export class RockExplorerRecordingFacade {
     this.refreshRecordingPathsOnMap();
     if (options.resume && this.recordingSession.isRecording) {
       this.zoomCloseOnNextFix = true;
-      this.startGeoWatch();
+      void this.startGeoWatch();
       try {
         this.host.triggerGeolocate();
       } catch {
@@ -1383,13 +1384,34 @@ export class RockExplorerRecordingFacade {
     this.host.ui.activeLocalDraftId.set(this.activeLocalId);
   }
 
-  private startGeoWatch(): void {
+  /**
+   * Start the geo watch for Record. On native, request foreground location
+   * permission first (D-06) — never silently track if denied (T-17-07).
+   * Call sites may fire-and-forget with `void this.startGeoWatch()`.
+   */
+  private async startGeoWatch(): Promise<void> {
     if (this.geoWatchId != null) {
       return;
     }
     if (!navigator.geolocation) {
       this.onGeoPermissionDenied();
       return;
+    }
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const perm = await GpsBridge.requestPermissions();
+        if (perm.location !== 'granted') {
+          this.onGeoPermissionDenied();
+          return;
+        }
+      } catch {
+        this.onGeoPermissionDenied();
+        return;
+      }
+      // Bail if a concurrent call already started the watch while we awaited.
+      if (this.geoWatchId != null) {
+        return;
+      }
     }
     if (this.isMockGpsEnabled() && !this.mockGps?.isSeeded) {
       this.host.messageService.add({
