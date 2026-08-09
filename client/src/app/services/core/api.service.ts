@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { LineType } from '../../enums/line-type';
+import { RUNTIME_API_HOST } from './runtime-api-host';
 
 /**
  * Simple container service holding api route definitions.
@@ -316,5 +316,5 @@ export class ApiService {
       `${this.apiHost}rock-explorer/features/${id}/clone`,
   };
 
-  private apiHost = `${environment.apiHost}/api/`;
+  private apiHost = `${inject(RUNTIME_API_HOST)}/api/`;
 }
