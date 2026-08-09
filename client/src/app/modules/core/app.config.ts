@@ -39,8 +39,8 @@ import {
 import { provideStore, Store } from '@ngrx/store';
 import { InstanceSettingsService } from '../../services/crud/instance-settings.service';
 import { MenuItemsService } from '../../services/crud/menu-items.service';
-import { concatMap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { concatMap, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
 import { MessageService } from 'primeng/api';
 import { metaReducers, reducers } from '../../ngrx/reducers';
@@ -98,13 +98,25 @@ const initInstanceSettingsAndLanguage = (
         return instanceSettings.language;
       }),
       concatMap(languageService.initApp.bind(languageService)),
+      // A failed API call here (offline, unreachable backend) must not block app bootstrap
+      // forever — the native shell still needs to render and hide its splash screen (D-07)
+      // even with no connectivity, falling back to the browser/default language.
+      catchError((err) => {
+        console.error('Failed to load instance settings on startup', err);
+        return languageService.initApp(undefined);
+      }),
     );
   };
 };
 
 const preloadMenus = (menuItemsService: MenuItemsService) => {
   return () => {
-    return menuItemsService.getMenuItems();
+    return menuItemsService.getMenuItems().pipe(
+      catchError((err) => {
+        console.error('Failed to preload menu items on startup', err);
+        return of(null);
+      }),
+    );
   };
 };
 
