@@ -1230,8 +1230,7 @@
   "instancePicker.emptyList": "Nessuna istanza salvata.",
   "instancePicker.deleteButton": "Rimuovi",
   "instancePicker.errorInvalidUrl": "Usa solo https://… o http://10.0.2.2….",
-  "instancePicker.errorNotLocalCrag": "Non è un’API LocalCrag (identità health mancante). Aggiorna il server o controlla l’URL.",
+  "instancePicker.errorNotLocalCrag": "Questo URL non ha restituito una risposta API LocalCrag sana. Controlla l’URL.",
   "instancePicker.errorUnreachable": "Impossibile raggiungere l’URL.",
-  "instancePicker.versionWarn": "Questa istanza segnala una versione API più vecchia di quella prevista. Alcune funzioni potrebbero fallire.",
   "menu.switchInstance": "Cambia istanza"
 }

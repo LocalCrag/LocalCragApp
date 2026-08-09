@@ -6,6 +6,16 @@ import {
 } from './localcrag-health';
 
 describe('isLocalCragHealthResponse', () => {
+  it('accepts legacy health with server healthy (no product/version)', () => {
+    expect(
+      isLocalCragHealthResponse({
+        server: 'healthy',
+        database: 'healthy',
+        s3: 'healthy',
+      }),
+    ).toBeTrue();
+  });
+
   it('accepts health with product constant and version', () => {
     expect(
       isLocalCragHealthResponse({
@@ -16,41 +26,31 @@ describe('isLocalCragHealthResponse', () => {
     ).toBeTrue();
   });
 
-  it('rejects missing product (strict D-05 / legacy servers)', () => {
+  it('rejects wrong product constant when present', () => {
     expect(
       isLocalCragHealthResponse({
         server: 'healthy',
-        database: 'healthy',
-        s3: 'healthy',
-      }),
-    ).toBeFalse();
-  });
-
-  it('rejects wrong product constant', () => {
-    expect(
-      isLocalCragHealthResponse({
         product: 'other',
         version: '1.51.0',
       }),
     ).toBeFalse();
   });
 
-  it('rejects empty version', () => {
+  it('rejects when server is not healthy', () => {
     expect(
       isLocalCragHealthResponse({
-        product: LOCALCRAG_HEALTH_PRODUCT,
-        version: '',
+        server: 'down',
       }),
     ).toBeFalse();
   });
 });
 
 describe('isBelowMinApiVersion', () => {
-  it('warns when remote is below min', () => {
+  it('detects when remote is below min (helper reserved for follow-up)', () => {
     expect(isBelowMinApiVersion('1.50.0', '1.51.0')).toBeTrue();
   });
 
-  it('does not warn when remote equals or exceeds min', () => {
+  it('does not flag when remote equals or exceeds min', () => {
     expect(
       isBelowMinApiVersion('1.51.0', LOCALCRAG_MIN_API_VERSION),
     ).toBeFalse();

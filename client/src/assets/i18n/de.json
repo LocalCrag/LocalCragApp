@@ -1230,8 +1230,7 @@
   "instancePicker.emptyList": "Noch keine Instanzen gespeichert.",
   "instancePicker.deleteButton": "Entfernen",
   "instancePicker.errorInvalidUrl": "Nur https://… oder http://10.0.2.2… erlaubt.",
-  "instancePicker.errorNotLocalCrag": "Keine LocalCrag-API (Health-Identität fehlt). Server aktualisieren oder URL prüfen.",
+  "instancePicker.errorNotLocalCrag": "Diese URL lieferte keine gesunde LocalCrag-API-Antwort. URL prüfen.",
   "instancePicker.errorUnreachable": "URL nicht erreichbar.",
-  "instancePicker.versionWarn": "Diese Instanz meldet eine ältere API-Version als die App erwartet. Manche Funktionen können fehlschlagen.",
   "menu.switchInstance": "Instanz wechseln"
 }

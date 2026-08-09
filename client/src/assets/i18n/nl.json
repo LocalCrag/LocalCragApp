@@ -1230,8 +1230,7 @@
   "instancePicker.emptyList": "Nog geen instanties opgeslagen.",
   "instancePicker.deleteButton": "Verwijderen",
   "instancePicker.errorInvalidUrl": "Gebruik alleen https://… of http://10.0.2.2….",
-  "instancePicker.errorNotLocalCrag": "Dit is geen LocalCrag-API (health-identiteit ontbreekt). Werk de server bij of controleer de URL.",
+  "instancePicker.errorNotLocalCrag": "Deze URL gaf geen gezonde LocalCrag-API-respons. Controleer de URL.",
   "instancePicker.errorUnreachable": "URL niet bereikbaar.",
-  "instancePicker.versionWarn": "Deze instantie meldt een oudere API-versie dan de app verwacht. Sommige functies kunnen falen.",
   "menu.switchInstance": "Instantie wisselen"
 }

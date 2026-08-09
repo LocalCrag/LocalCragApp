@@ -16,11 +16,7 @@ import {
   setActiveHost,
   type SavedInstance,
 } from '../../../services/core/instance-registry';
-import {
-  isBelowMinApiVersion,
-  isLocalCragHealthResponse,
-  LOCALCRAG_MIN_API_VERSION,
-} from '../../../services/core/localcrag-health';
+import { isLocalCragHealthResponse } from '../../../services/core/localcrag-health';
 import {
   isAllowedApiHostUrl,
   normalizeApiHostUrl,
@@ -47,7 +43,6 @@ export class InstancePickerComponent implements OnInit {
   public instances: SavedInstance[] = [];
   public busy = false;
   public errorKey: string | null = null;
-  public versionWarn = false;
   public readonly isNative = Capacitor.isNativePlatform();
   public readonly activeHost = inject(RUNTIME_API_HOST);
 
@@ -60,7 +55,6 @@ export class InstancePickerComponent implements OnInit {
 
   async validateAndSave(): Promise<void> {
     this.errorKey = null;
-    this.versionWarn = false;
     const url = normalizeApiHostUrl(this.urlInput);
     if (!isAllowedApiHostUrl(url)) {
       this.errorKey = 'invalidUrl';
@@ -75,9 +69,6 @@ export class InstancePickerComponent implements OnInit {
         this.errorKey = 'notLocalCrag';
         return;
       }
-      if (isBelowMinApiVersion(health.version, LOCALCRAG_MIN_API_VERSION)) {
-        this.versionWarn = true;
-      }
       let instanceName: string | null = null;
       try {
         const settings = await firstValueFrom(
@@ -90,10 +81,16 @@ export class InstancePickerComponent implements OnInit {
         instanceName = null;
       }
       const wasEmpty = this.instances.length === 0;
+      const apiVersion =
+        health &&
+        typeof health === 'object' &&
+        typeof (health as { version?: unknown }).version === 'string'
+          ? ((health as { version: string }).version as string)
+          : null;
       await addInstance({
         url,
         instanceName,
-        apiVersion: health.version,
+        apiVersion,
       });
       this.instances = await listInstances();
       this.urlInput = '';

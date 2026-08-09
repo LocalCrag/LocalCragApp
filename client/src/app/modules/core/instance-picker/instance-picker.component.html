@@ -32,9 +32,6 @@
       @if (errorKey === "unreachable") {
         <p-message severity="error" [text]="t('errorUnreachable')" />
       }
-      @if (versionWarn) {
-        <p-message severity="warn" [text]="t('versionWarn')" />
-      }
 
       <h3>{{ t("savedHeading") }}</h3>
       @if (instances.length === 0) {
@@ -46,11 +43,7 @@
               [class.active]="instance.url === activeHost"
               data-cy="instance-picker-item"
             >
-              <button
-                type="button"
-                class="pick"
-                (click)="switchTo(instance)"
-              >
+              <button type="button" class="pick" (click)="switchTo(instance)">
                 <span class="name">{{
                   instance.instanceName || instance.url
                 }}</span>
