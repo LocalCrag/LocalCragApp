@@ -1,6 +1,7 @@
 import { AbstractModel } from './abstract-model';
 import { ThumbnailWidths } from '../enums/thumbnail-widths';
 import { normalizeImageFocusY } from '../utility/image-focus';
+import { rewriteLoopbackMediaUrlForAndroid } from '../utility/rewrite-loopback-media-url';
 
 /**
  * Model of a file object.
@@ -30,11 +31,14 @@ export class File extends AbstractModel {
   public static deserialize(payload: any): File {
     const media = new File();
     AbstractModel.deserializeAbstractAttributes(media, payload);
-    media.filename = payload.filename;
+    // On Android (emulator), rewrite loopback MinIO/S3 access hosts to 10.0.2.2
+    // so <img> URLs that the API serializes as http://127.0.0.1:9000/... are
+    // reachable. Web browser builds are unchanged.
+    media.filename = rewriteLoopbackMediaUrlForAndroid(payload.filename);
     media.originalFilename = payload.originalFilename;
     media.width = payload.width;
     media.height = payload.height;
-    media.path = payload.filename;
+    media.path = media.filename;
     media.thumbnailXS = payload.thumbnailXS
       ? media.path.replace(/.([^.]*)$/, '_xs.' + '$1')
       : null;

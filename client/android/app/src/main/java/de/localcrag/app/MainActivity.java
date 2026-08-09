@@ -10,13 +10,10 @@ public class MainActivity extends BridgeActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if (BuildConfig.DEBUG) {
-      // The WebView serves the bundled app from the HTTPS-treated https://localhost origin
-      // (Capacitor's default androidScheme), so its mixed-content policy blocks the debug-only
-      // cleartext calls to http://10.0.2.2:5000 (D-09/D-10) even though the network security
-      // config already permits them at the OS level. BuildConfig.DEBUG is a per-build-type
-      // generated constant (false in the release variant), so this relaxation can never
-      // activate in a release build, matching the debug/release isolation already established
-      // for the network security config in plan 02.
+      // Belt-and-suspenders for cleartext API XHR to http://10.0.2.2:5000 (D-09/D-10).
+      // Primary fix for media is capacitor.config server.androidScheme = 'http' (avoids
+      // https://localhost mixed-content blocks on <img>). BuildConfig.DEBUG is false in
+      // release, matching the debug-only network security config in plan 02.
       getBridge().getWebView().getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
   }
