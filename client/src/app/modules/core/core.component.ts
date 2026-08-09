@@ -37,6 +37,8 @@ import { FooterComponent } from './footer/footer.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
 import { Toast } from 'primeng/toast';
 import { Subscription } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
+import { hasCompletedInstanceOnboarding } from '../../services/core/instance-registry';
 
 /**
  * Application shell: fixed site header, main layout, and global chrome.
@@ -164,9 +166,29 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());
     this.syncFullscreenMapFromRoute();
+    void this.enforceNativeInstanceGate();
     this.routerSub = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => this.syncFullscreenMapFromRoute());
+      .subscribe(() => {
+        this.syncFullscreenMapFromRoute();
+        void this.enforceNativeInstanceGate();
+      });
+  }
+
+  /**
+   * Phase 16 D-01/D-02: native apps without a saved instance stay on /instances.
+   */
+  private async enforceNativeInstanceGate(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    if (this.router.url.startsWith('/instances')) {
+      return;
+    }
+    if (await hasCompletedInstanceOnboarding()) {
+      return;
+    }
+    await this.router.navigateByUrl('/instances');
   }
 
   ngAfterViewInit() {

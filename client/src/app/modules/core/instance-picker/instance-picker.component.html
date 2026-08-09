@@ -1,0 +1,73 @@
+<ng-container *transloco="let t; read: 'instancePicker'">
+  <p-confirmDialog />
+  <div class="instance-picker">
+    <h2>{{ t("title") }}</h2>
+    <p class="hint">{{ t("description") }}</p>
+
+    @if (!isNative) {
+      <p-message severity="info" [text]="t('webOnlyHint')" />
+    } @else {
+      <div class="add-row">
+        <input
+          type="url"
+          pInputText
+          [(ngModel)]="urlInput"
+          [placeholder]="t('urlPlaceholder')"
+          data-cy="instance-picker-url"
+        />
+        <p-button
+          [label]="t('saveButton')"
+          (click)="validateAndSave()"
+          [loading]="busy"
+          data-cy="instance-picker-save"
+        />
+      </div>
+
+      @if (errorKey === "invalidUrl") {
+        <p-message severity="error" [text]="t('errorInvalidUrl')" />
+      }
+      @if (errorKey === "notLocalCrag") {
+        <p-message severity="error" [text]="t('errorNotLocalCrag')" />
+      }
+      @if (errorKey === "unreachable") {
+        <p-message severity="error" [text]="t('errorUnreachable')" />
+      }
+      @if (versionWarn) {
+        <p-message severity="warn" [text]="t('versionWarn')" />
+      }
+
+      <h3>{{ t("savedHeading") }}</h3>
+      @if (instances.length === 0) {
+        <p class="empty">{{ t("emptyList") }}</p>
+      } @else {
+        <ul class="instance-list">
+          @for (instance of instances; track instance.url) {
+            <li
+              [class.active]="instance.url === activeHost"
+              data-cy="instance-picker-item"
+            >
+              <button
+                type="button"
+                class="pick"
+                (click)="switchTo(instance)"
+              >
+                <span class="name">{{
+                  instance.instanceName || instance.url
+                }}</span>
+                @if (instance.instanceName) {
+                  <span class="url">{{ instance.url }}</span>
+                }
+              </button>
+              <p-button
+                icon="pi pi-trash"
+                styleClass="p-button-text p-button-danger"
+                (click)="deleteInstance(instance)"
+                [attr.aria-label]="t('deleteButton')"
+              />
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+</ng-container>

@@ -63,6 +63,7 @@ import {
   MAX_NAVBAR_COLLAPSE_LEVEL,
   NAVBAR_COLLAPSE_LEVELS,
 } from './navbar-collapse';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'lc-menu',
@@ -340,13 +341,22 @@ export class MenuComponent implements OnInit, AfterViewInit {
               ),
               routerLink: '/change-password',
             },
-            {
-              id: 'auth-menu-logout',
-              label: this.translocoService.translate(marker('menu.logout')),
-              icon: 'pi pi-fw pi-sign-out',
-              command: this.logout.bind(this),
-            },
           ];
+          if (Capacitor.isNativePlatform()) {
+            accountItems.push({
+              icon: 'pi pi-fw pi-server',
+              label: this.translocoService.translate(
+                marker('menu.switchInstance'),
+              ),
+              routerLink: '/instances',
+            });
+          }
+          accountItems.push({
+            id: 'auth-menu-logout',
+            label: this.translocoService.translate(marker('menu.logout')),
+            icon: 'pi pi-fw pi-sign-out',
+            command: this.logout.bind(this),
+          });
           items.push({
             label: this.translocoService.translate(
               marker('menu.accountCategory'),
