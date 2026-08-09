@@ -27,12 +27,20 @@ describe('RockExplorerNativeGpsShim (Wave 0)', () => {
       'getCurrentPosition',
       'checkPermissions',
       'requestPermissions',
+      'requestBackgroundPermission',
+      'requestNotificationPermission',
       'addListener',
     ]);
     fakeBridge.start.and.resolveTo();
     fakeBridge.stop.and.resolveTo();
     fakeBridge.checkPermissions.and.resolveTo({ location: 'granted' });
     fakeBridge.requestPermissions.and.resolveTo({ location: 'granted' });
+    fakeBridge.requestBackgroundPermission.and.resolveTo({
+      background: 'granted',
+    });
+    fakeBridge.requestNotificationPermission.and.resolveTo({
+      notifications: 'granted',
+    });
     fakeBridge.getCurrentPosition.and.resolveTo({
       latitude: 48.1,
       longitude: 11.5,

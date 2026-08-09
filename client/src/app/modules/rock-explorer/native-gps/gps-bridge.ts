@@ -16,15 +16,28 @@ export type LocationPermissionState =
   'prompt' | 'prompt-with-rationale' | 'granted' | 'denied';
 
 /**
- * Thin Capacitor plugin wrapping Android Fused Location (foreground).
- * Implemented natively in plan 02; consumed by the navigator.geolocation shim.
+ * Thin Capacitor plugin wrapping Android Fused Location (Phase 17+) /
+ * location foreground service (Phase 18). Consumed by the navigator.geolocation shim.
  */
 export interface GpsBridgePlugin {
   start(options?: { intervalMs?: number }): Promise<void>;
   stop(): Promise<void>;
   getCurrentPosition(): Promise<GpsFixPayload>;
-  checkPermissions(): Promise<{ location: LocationPermissionState }>;
+  /** FG location alias — Phase 17; optional BG/notifications state for Phase 18 staging. */
+  checkPermissions(): Promise<{
+    location: LocationPermissionState;
+    background?: LocationPermissionState;
+    notifications?: LocationPermissionState;
+  }>;
   requestPermissions(): Promise<{ location: LocationPermissionState }>;
+  /** Capacitor alias "background" → ACCESS_BACKGROUND_LOCATION (D-03, D-08). */
+  requestBackgroundPermission(): Promise<{
+    background: LocationPermissionState;
+  }>;
+  /** Capacitor alias "notifications" → POST_NOTIFICATIONS on API 33+ (D-08). */
+  requestNotificationPermission(): Promise<{
+    notifications: LocationPermissionState;
+  }>;
   addListener(
     eventName: 'locationUpdate',
     listenerFunc: (fix: GpsFixPayload) => void,
