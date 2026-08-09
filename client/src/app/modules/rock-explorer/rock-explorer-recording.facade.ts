@@ -36,9 +36,10 @@ import {
 } from './rock-explorer-recording';
 import type { RockExplorerMockGpsService } from './rock-explorer-mock-gps.service';
 import { loadMockGps } from './rock-explorer-mock-gps.loader';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, type PluginListenerHandle } from '@capacitor/core';
 import { mockGpsRecording } from '../../../environments/environment';
 import { uninstallNativeGpsShim } from './native-gps/rock-explorer-native-gps.shim';
+import { CAPACITOR_APP } from './native-gps/capacitor-app.token';
 import { GpsBridge } from './native-gps/gps-bridge';
 import { ensureRockExplorerTrackingPermissions } from './native-gps/rock-explorer-gps-permissions';
 import type { RockExplorerDraftRecord } from './offline/rock-explorer-draft.types';
@@ -118,6 +119,10 @@ export class RockExplorerRecordingFacade {
   private readonly uploadService = inject(UploadService);
   private readonly transloco = inject(TranslocoService);
   private readonly store = inject(Store);
+  private readonly capacitorApp = inject(CAPACITOR_APP);
+
+  /** Cap App `appStateChange` handle — removed in {@link destroy} (D-15). */
+  private appStateHandle: PluginListenerHandle | null = null;
 
   /** Lazily loaded only when mock GPS is allowed (web/dev; never on native). */
   private mockGps: RockExplorerMockGpsService | null = null;
@@ -210,6 +215,17 @@ export class RockExplorerRecordingFacade {
     window.addEventListener('online', this.onWindowOnline);
     window.addEventListener('offline', this.onWindowOffline);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
+    if (Capacitor.isNativePlatform()) {
+      void this.capacitorApp
+        .addListener('appStateChange', ({ isActive }) => {
+          if (isActive) {
+            void this.flushDraftQueue();
+          }
+        })
+        .then((handle) => {
+          this.appStateHandle = handle;
+        });
+    }
     this.store
       .select(selectShowOfflineAlert)
       .pipe(takeUntilDestroyed(this.host.destroyRef))
@@ -225,6 +241,11 @@ export class RockExplorerRecordingFacade {
     window.removeEventListener('online', this.onWindowOnline);
     window.removeEventListener('offline', this.onWindowOffline);
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    const appStateHandle = this.appStateHandle;
+    this.appStateHandle = null;
+    if (appStateHandle) {
+      void appStateHandle.remove();
+    }
     this.releaseSyncUiHold();
     this.stopGeoWatch();
     this.host.ui.nativeGpsTrackingActive.set(false);

@@ -15,6 +15,7 @@ import {
   RockExplorerRecordingFacade,
   type RockExplorerRecordingFacadeHost,
 } from './rock-explorer-recording.facade';
+import { RockExplorerRecordingSession } from './rock-explorer-recording';
 import { RockExplorerUiService } from './rock-explorer-ui.service';
 import { RockExplorerDraftReconcileService } from './offline/rock-explorer-draft-reconcile.service';
 import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
@@ -148,9 +149,31 @@ describe('RockExplorerRecordingFacade (Wave 0 / GPS-05 + GPS-F01)', () => {
       facade.destroy();
       expect(ui.nativeGpsTrackingActive()).toBeFalse();
     });
+
+    it('pauseRecording does not clear nativeGpsTrackingActive (D-07)', () => {
+      const session = new RockExplorerRecordingSession('test-device');
+      (
+        facade as unknown as {
+          recordingSession: RockExplorerRecordingSession | null;
+        }
+      ).recordingSession = session;
+      ui.recordModeActive.set(true);
+      ui.nativeGpsTrackingActive.set(true);
+      spyOn(
+        facade as unknown as {
+          persistAndSync: (force: boolean) => Promise<void>;
+        },
+        'persistAndSync',
+      ).and.resolveTo();
+
+      facade.pauseRecording();
+
+      expect(session.recordingState).toBe('paused');
+      expect(ui.nativeGpsTrackingActive()).toBeTrue();
+    });
   });
 
-  describe('GPS-05 Cap App resume flush (RED until plan 03)', () => {
+  describe('GPS-05 Cap App resume flush', () => {
     it('registers appStateChange on native init and flushes when isActive', async () => {
       const flushSpy = spyOn(facade, 'flushDraftQueue').and.resolveTo();
 
