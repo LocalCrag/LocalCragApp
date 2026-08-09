@@ -39,8 +39,10 @@ import {
 import { provideStore, Store } from '@ngrx/store';
 import { InstanceSettingsService } from '../../services/crud/instance-settings.service';
 import { MenuItemsService } from '../../services/crud/menu-items.service';
-import { concatMap, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { concatMap, from, of, timeout } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { hasCompletedInstanceOnboarding } from '../../services/core/instance-registry';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
 import { MessageService } from 'primeng/api';
 import { metaReducers, reducers } from '../../ngrx/reducers';
@@ -91,19 +93,31 @@ const initInstanceSettingsAndLanguage = (
   store: Store,
 ) => {
   return () => {
-    return instanceSettingsService.getInstanceSettings().pipe(
-      map((instanceSettings) => {
-        store.dispatch(updateInstanceSettings({ settings: instanceSettings }));
-        initSentryFromSettings(instanceSettings);
-        return instanceSettings.language;
-      }),
-      concatMap(languageService.initApp.bind(languageService)),
-      // A failed API call here (offline, unreachable backend) must not block app bootstrap
-      // forever — the native shell still needs to render and hide its splash screen (D-07)
-      // even with no connectivity, falling back to the browser/default language.
-      catchError((err) => {
-        console.error('Failed to load instance settings on startup', err);
-        return languageService.initApp(undefined);
+    return from(hasCompletedInstanceOnboarding()).pipe(
+      switchMap((onboardingDone) => {
+        // Native onboarding: skip the API round-trip until an instance is saved.
+        // Otherwise a seeded emulator host (10.0.2.2) hangs CapacitorHttp on phones.
+        if (Capacitor.isNativePlatform() && !onboardingDone) {
+          return languageService.initApp(undefined);
+        }
+        return instanceSettingsService.getInstanceSettings().pipe(
+          timeout({ first: 8000 }),
+          map((instanceSettings) => {
+            store.dispatch(
+              updateInstanceSettings({ settings: instanceSettings }),
+            );
+            initSentryFromSettings(instanceSettings);
+            return instanceSettings.language;
+          }),
+          concatMap(languageService.initApp.bind(languageService)),
+          // A failed API call here (offline, unreachable backend) must not block app bootstrap
+          // forever — the native shell still needs to render and hide its splash screen (D-07)
+          // even with no connectivity, falling back to the browser/default language.
+          catchError((err) => {
+            console.error('Failed to load instance settings on startup', err);
+            return languageService.initApp(undefined);
+          }),
+        );
       }),
     );
   };
@@ -111,10 +125,18 @@ const initInstanceSettingsAndLanguage = (
 
 const preloadMenus = (menuItemsService: MenuItemsService) => {
   return () => {
-    return menuItemsService.getMenuItems().pipe(
-      catchError((err) => {
-        console.error('Failed to preload menu items on startup', err);
-        return of(null);
+    return from(hasCompletedInstanceOnboarding()).pipe(
+      switchMap((onboardingDone) => {
+        if (Capacitor.isNativePlatform() && !onboardingDone) {
+          return of(null);
+        }
+        return menuItemsService.getMenuItems().pipe(
+          timeout({ first: 8000 }),
+          catchError((err) => {
+            console.error('Failed to preload menu items on startup', err);
+            return of(null);
+          }),
+        );
       }),
     );
   };

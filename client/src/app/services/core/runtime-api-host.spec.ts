@@ -88,8 +88,16 @@ describe('isAllowedApiHostUrl', () => {
     expect(isAllowedApiHostUrl('http://10.0.2.2:5000')).toBeTrue();
   });
 
-  it('rejects non-loopback http hosts (D-10)', () => {
+  it('allows private LAN http hosts for physical-device debug', () => {
+    expect(isAllowedApiHostUrl('http://192.168.178.20:5000')).toBeTrue();
+    expect(isAllowedApiHostUrl('http://10.0.0.5:5000')).toBeTrue();
+    expect(isAllowedApiHostUrl('http://172.16.1.2:5000')).toBeTrue();
+    expect(isAllowedApiHostUrl('http://127.0.0.1:5000')).toBeTrue();
+  });
+
+  it('rejects public cleartext http hosts', () => {
     expect(isAllowedApiHostUrl('http://evil.example')).toBeFalse();
+    expect(isAllowedApiHostUrl('http://8.8.8.8:5000')).toBeFalse();
   });
 
   it('rejects empty or invalid URLs', () => {

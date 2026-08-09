@@ -1234,7 +1234,7 @@
   "instancePicker.savedHeading": "Gespeicherte Instanzen",
   "instancePicker.emptyList": "Noch keine Instanzen gespeichert.",
   "instancePicker.deleteButton": "Entfernen",
-  "instancePicker.errorInvalidUrl": "Nur https://… oder http://10.0.2.2… erlaubt.",
+  "instancePicker.errorInvalidUrl": "Nur https://… oder http:// für lokales LAN / Emulator (z. B. 192.168.… oder 10.0.2.2).",
   "instancePicker.errorNotLocalCrag": "Diese URL lieferte keine gesunde LocalCrag-API-Antwort. URL prüfen.",
   "instancePicker.errorUnreachable": "URL nicht erreichbar.",
   "menu.switchInstance": "Instanz wechseln"

@@ -16,6 +16,7 @@ import {
   resolveApiHost,
   RUNTIME_API_HOST,
 } from './app/services/core/runtime-api-host';
+import { configureAndroidMediaHostRewrite } from './app/utility/rewrite-loopback-media-url';
 
 if (environment.production) {
   enableProdMode();
@@ -30,16 +31,33 @@ async function main(): Promise<void> {
   // Resolve Preferences-backed host before any Angular initializer can construct
   // ApiService (INST-01 / D-01 — avoids APP_INITIALIZER race with instance-settings).
   const apiHost = await resolveApiHost();
-  await bootstrapApplication(CoreComponent, {
-    ...appConfig,
-    providers: [
-      provideZoneChangeDetection(),
-      { provide: RUNTIME_API_HOST, useValue: apiHost },
-      ...appConfig.providers,
-    ],
-  });
+  configureAndroidMediaHostRewrite(apiHost);
+
+  // Never leave the native splash up for the full CapacitorHttp timeout when the
+  // API host is unreachable (e.g. leftover emulator 10.0.2.2 on a physical device).
+  let splashWatchdog: ReturnType<typeof setTimeout> | undefined;
   if (Capacitor.isNativePlatform()) {
-    void SplashScreen.hide();
+    splashWatchdog = setTimeout(() => {
+      void SplashScreen.hide();
+    }, 4000);
+  }
+
+  try {
+    await bootstrapApplication(CoreComponent, {
+      ...appConfig,
+      providers: [
+        provideZoneChangeDetection(),
+        { provide: RUNTIME_API_HOST, useValue: apiHost },
+        ...appConfig.providers,
+      ],
+    });
+  } finally {
+    if (splashWatchdog !== undefined) {
+      clearTimeout(splashWatchdog);
+    }
+    if (Capacitor.isNativePlatform()) {
+      void SplashScreen.hide();
+    }
   }
 }
 

@@ -1234,7 +1234,7 @@
   "instancePicker.savedHeading": "Opgeslagen instanties",
   "instancePicker.emptyList": "Nog geen instanties opgeslagen.",
   "instancePicker.deleteButton": "Verwijderen",
-  "instancePicker.errorInvalidUrl": "Gebruik alleen https://… of http://10.0.2.2….",
+  "instancePicker.errorInvalidUrl": "Gebruik https://…, of http:// voor een lokaal LAN-/emulatorhost (bijv. 192.168.… of 10.0.2.2).",
   "instancePicker.errorNotLocalCrag": "Deze URL gaf geen gezonde LocalCrag-API-respons. Controleer de URL.",
   "instancePicker.errorUnreachable": "URL niet bereikbaar.",
   "menu.switchInstance": "Instantie wisselen"

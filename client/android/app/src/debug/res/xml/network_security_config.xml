@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only cleartext policy (src/debug). Release has no networkSecurityConfig
+  override and does not permit LAN/emulator HTTP.
+
+  Allow all cleartext in debug so:
+  - emulator can reach http://10.0.2.2:5000
+  - physical devices can reach http://192.168.x.x:5000 (CapacitorHttp respects this;
+    Chrome can still open cleartext URLs the app cannot without this)
+  - MinIO/S3 media on LAN/loopback hosts can load
+-->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">10.0.2.2</domain>
-    </domain-config>
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

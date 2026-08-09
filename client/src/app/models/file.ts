@@ -31,9 +31,9 @@ export class File extends AbstractModel {
   public static deserialize(payload: any): File {
     const media = new File();
     AbstractModel.deserializeAbstractAttributes(media, payload);
-    // On Android (emulator), rewrite loopback MinIO/S3 access hosts to 10.0.2.2
-    // so <img> URLs that the API serializes as http://127.0.0.1:9000/... are
-    // reachable. Web browser builds are unchanged.
+    // On Android, rewrite loopback MinIO/S3 access hosts to the same machine as
+    // the runtime API host (emulator 10.0.2.2, LAN IP, or adb-reversed 127.0.0.1)
+    // so <img> URLs the API serializes as http://127.0.0.1:9000/... are reachable.
     media.filename = rewriteLoopbackMediaUrlForAndroid(payload.filename);
     media.originalFilename = payload.originalFilename;
     media.width = payload.width;

@@ -1234,7 +1234,7 @@
   "instancePicker.savedHeading": "Istanze salvate",
   "instancePicker.emptyList": "Nessuna istanza salvata.",
   "instancePicker.deleteButton": "Rimuovi",
-  "instancePicker.errorInvalidUrl": "Usa solo https://… o http://10.0.2.2….",
+  "instancePicker.errorInvalidUrl": "Usa https://…, oppure http:// per host LAN / emulatore (es. 192.168.… o 10.0.2.2).",
   "instancePicker.errorNotLocalCrag": "Questo URL non ha restituito una risposta API LocalCrag sana. Controlla l’URL.",
   "instancePicker.errorUnreachable": "Impossibile raggiungere l’URL.",
   "menu.switchInstance": "Cambia istanza"

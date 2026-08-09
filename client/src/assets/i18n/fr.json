@@ -1234,7 +1234,7 @@
   "instancePicker.savedHeading": "Instances enregistrées",
   "instancePicker.emptyList": "Aucune instance enregistrée.",
   "instancePicker.deleteButton": "Supprimer",
-  "instancePicker.errorInvalidUrl": "Utilisez uniquement https://… ou http://10.0.2.2….",
+  "instancePicker.errorInvalidUrl": "Utilisez https://…, ou http:// pour un hôte LAN / émulateur (ex. 192.168.… ou 10.0.2.2).",
   "instancePicker.errorNotLocalCrag": "Cette URL n’a pas renvoyé une réponse API LocalCrag saine. Vérifiez l’URL.",
   "instancePicker.errorUnreachable": "Impossible d’atteindre cette URL.",
   "menu.switchInstance": "Changer d’instance"

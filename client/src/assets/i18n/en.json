@@ -302,7 +302,7 @@
   "instancePicker.savedHeading": "Saved instances",
   "instancePicker.emptyList": "No instances saved yet.",
   "instancePicker.deleteButton": "Remove",
-  "instancePicker.errorInvalidUrl": "Use https://… or http://10.0.2.2… only.",
+  "instancePicker.errorInvalidUrl": "Use https://…, or http:// for a local LAN / emulator host (e.g. 192.168.… or 10.0.2.2).",
   "instancePicker.errorNotLocalCrag": "That URL did not return a healthy LocalCrag API response. Check the URL.",
   "instancePicker.errorUnreachable": "Could not reach that URL.",
   "menu.logout": "Log out",

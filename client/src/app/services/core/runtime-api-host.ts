@@ -42,7 +42,34 @@ export function normalizeApiHostUrl(raw: string): string {
 }
 
 /**
- * D-10 / D-11: HTTPS required for real instances; emulator loopback http://10.0.2.2 only.
+ * True for RFC1918 / link-local IPv4 hosts used for local LAN debug
+ * (physical device → Mac) and the Android emulator alias 10.0.2.2.
+ */
+function isPrivateOrEmulatorHttpHostname(hostname: string): boolean {
+  if (hostname === '10.0.2.2' || hostname === 'localhost') {
+    return true;
+  }
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(hostname);
+  if (!m) {
+    return false;
+  }
+  const oct = m.slice(1).map((p) => Number(p));
+  if (oct.some((n) => n > 255)) {
+    return false;
+  }
+  const [a, b] = oct;
+  // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8
+  return (
+    a === 10 ||
+    a === 127 ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168)
+  );
+}
+
+/**
+ * HTTPS for real instances; cleartext HTTP only for emulator loopback (10.0.2.2)
+ * and private LAN / localhost hosts (physical-device → local Flask).
  */
 export function isAllowedApiHostUrl(url: string): boolean {
   if (!url) {
@@ -53,7 +80,10 @@ export function isAllowedApiHostUrl(url: string): boolean {
     if (parsed.protocol === 'https:') {
       return true;
     }
-    return parsed.protocol === 'http:' && parsed.hostname === '10.0.2.2';
+    return (
+      parsed.protocol === 'http:' &&
+      isPrivateOrEmulatorHttpHostname(parsed.hostname)
+    );
   } catch {
     return false;
   }
