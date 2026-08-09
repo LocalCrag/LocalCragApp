@@ -20,6 +20,7 @@ import { FeatureCollection, Geometry } from 'geojson';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
@@ -77,6 +78,7 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
     FormsModule,
     Toast,
     ConfirmPopup,
+    ConfirmDialog,
     Dialog,
     Button,
     Select,

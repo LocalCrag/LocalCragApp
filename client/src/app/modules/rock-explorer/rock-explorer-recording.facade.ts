@@ -40,6 +40,7 @@ import { Capacitor } from '@capacitor/core';
 import { mockGpsRecording } from '../../../environments/environment';
 import { uninstallNativeGpsShim } from './native-gps/rock-explorer-native-gps.shim';
 import { GpsBridge } from './native-gps/gps-bridge';
+import { ensureRockExplorerTrackingPermissions } from './native-gps/rock-explorer-gps-permissions';
 import type { RockExplorerDraftRecord } from './offline/rock-explorer-draft.types';
 import { RockExplorerDraftStoreService } from './offline/rock-explorer-draft-store.service';
 import {
@@ -226,6 +227,7 @@ export class RockExplorerRecordingFacade {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     this.releaseSyncUiHold();
     this.stopGeoWatch();
+    this.host.ui.nativeGpsTrackingActive.set(false);
     this.uninstallMockGpsShim();
     uninstallNativeGpsShim();
   }
@@ -1387,8 +1389,8 @@ export class RockExplorerRecordingFacade {
   }
 
   /**
-   * Start the geo watch for Record. On native, request foreground location
-   * permission first (D-06) — never silently track if denied (T-17-07).
+   * Start the geo watch for Record. On native, run staged GPS-04 permissions
+   * (FG → disclosure → BG → POST_NOTIFICATIONS) before watch/FGS start (D-08).
    * Call sites may fire-and-forget with `void this.startGeoWatch()`.
    */
   private async startGeoWatch(): Promise<void> {
@@ -1401,8 +1403,18 @@ export class RockExplorerRecordingFacade {
     }
     if (Capacitor.isNativePlatform()) {
       try {
-        const perm = await GpsBridge.requestPermissions();
-        if (perm.location !== 'granted') {
+        const ok = await ensureRockExplorerTrackingPermissions({
+          bridge: GpsBridge,
+          showBackgroundDisclosure: () =>
+            this.showBackgroundLocationDisclosure(),
+          needsPostNotifications: () => Capacitor.getPlatform() === 'android',
+        });
+        if (!ok) {
+          this.onGeoPermissionDenied();
+          return;
+        }
+        // Pitfall 2: user backgrounded mid-staging — do not start FGS silently.
+        if (document.visibilityState === 'hidden') {
           this.onGeoPermissionDenied();
           return;
         }
@@ -1433,6 +1445,44 @@ export class RockExplorerRecordingFacade {
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 20000 },
     );
+    if (Capacitor.isNativePlatform()) {
+      this.host.ui.nativeGpsTrackingActive.set(true);
+    }
+  }
+
+  /**
+   * Play-prominent ConfirmDialog before ACCESS_BACKGROUND_LOCATION (D-04).
+   * Resolves true on accept, false on reject / dismiss.
+   */
+  private showBackgroundLocationDisclosure(): Promise<boolean> {
+    return new Promise((resolve) => {
+      let settled = false;
+      const settle = (value: boolean) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        resolve(value);
+      };
+      this.host.confirmationService.confirm({
+        message: this.transloco.translate(
+          marker('rockExplorer.gpsBackgroundDisclosureMessage'),
+        ),
+        header: this.transloco.translate(
+          marker('rockExplorer.gpsBackgroundDisclosureHeader'),
+        ),
+        acceptLabel: this.transloco.translate(
+          marker('rockExplorer.gpsBackgroundDisclosureAccept'),
+        ),
+        rejectLabel: this.transloco.translate(
+          marker('rockExplorer.gpsBackgroundDisclosureReject'),
+        ),
+        icon: 'pi pi-map-marker',
+        rejectButtonStyleClass: 'p-button-secondary',
+        accept: () => settle(true),
+        reject: () => settle(false),
+      });
+    });
   }
 
   private stopGeoWatch(): void {
@@ -1441,6 +1491,7 @@ export class RockExplorerRecordingFacade {
     }
     navigator.geolocation.clearWatch(this.geoWatchId);
     this.geoWatchId = null;
+    this.host.ui.nativeGpsTrackingActive.set(false);
   }
 
   /** One-shot fix for geotagged images (mocked via navigator shim when enabled). */

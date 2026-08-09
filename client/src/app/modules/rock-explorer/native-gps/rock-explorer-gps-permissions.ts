@@ -17,11 +17,42 @@ export type EnsureTrackingPermissionsDeps = {
  * Staged GPS-04 order (D-08): FG location → disclosure → BG → POST_NOTIFICATIONS (13+) → true.
  * Any required deny / disclosure reject → false (caller runs onGeoPermissionDenied — D-09).
  * POST_NOTIFICATIONS deny = hard stop.
- *
- * Wave 0 stub — real orchestration lands in plan 03.
+ * Never calls `bridge.start()` — FGS starts after the gate via shim watch (D-05).
  */
 export async function ensureRockExplorerTrackingPermissions(
-  _deps: EnsureTrackingPermissionsDeps,
+  deps: EnsureTrackingPermissionsDeps,
 ): Promise<boolean> {
-  return false;
+  const { bridge, showBackgroundDisclosure } = deps;
+  const needsPostNotifications = deps.needsPostNotifications ?? (() => false);
+
+  let state = await bridge.checkPermissions();
+
+  if (state.location !== 'granted') {
+    const fg = await bridge.requestPermissions();
+    if (fg.location !== 'granted') {
+      return false;
+    }
+    state = await bridge.checkPermissions();
+  }
+
+  if (state.background !== 'granted') {
+    const accepted = await showBackgroundDisclosure();
+    if (!accepted) {
+      return false;
+    }
+    const bg = await bridge.requestBackgroundPermission();
+    if (bg.background !== 'granted') {
+      return false;
+    }
+    state = await bridge.checkPermissions();
+  }
+
+  if (needsPostNotifications() && state.notifications !== 'granted') {
+    const notif = await bridge.requestNotificationPermission();
+    if (notif.notifications !== 'granted') {
+      return false;
+    }
+  }
+
+  return true;
 }
