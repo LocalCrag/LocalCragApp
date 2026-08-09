@@ -1,23 +1,31 @@
-<lc-offline-alert></lc-offline-alert>
-<header
-  #siteHeader
-  class="site-header"
-  [class.site-header--hidden]="headerHidden && !fullscreenMap"
+@if (!hideAppChrome) {
+  <lc-offline-alert></lc-offline-alert>
+  <header
+    #siteHeader
+    class="site-header"
+    [class.site-header--hidden]="headerHidden && !fullscreenMap"
+  >
+    <lc-app-level-alerts></lc-app-level-alerts>
+    <lc-menu></lc-menu>
+  </header>
+  <div class="site-header-spacer"></div>
+}
+<div
+  class="body-row"
+  [class.body-row--fullscreen-map]="fullscreenMap || hideAppChrome"
 >
-  <lc-app-level-alerts></lc-app-level-alerts>
-  <lc-menu></lc-menu>
-</header>
-<div class="site-header-spacer"></div>
-<div class="body-row" [class.body-row--fullscreen-map]="fullscreenMap">
   <div
     class="layout-columns"
-    [class.layout-columns--fullscreen-map]="fullscreenMap"
+    [class.layout-columns--fullscreen-map]="fullscreenMap || hideAppChrome"
   >
-    @if (!fullscreenMap) {
+    @if (!fullscreenMap && !hideAppChrome) {
       <lc-sidebar></lc-sidebar>
     }
-    <div class="main" [class.main--fullscreen-map]="fullscreenMap">
-      @if (!fullscreenMap) {
+    <div
+      class="main"
+      [class.main--fullscreen-map]="fullscreenMap || hideAppChrome"
+    >
+      @if (!fullscreenMap && !hideAppChrome) {
         <lc-page-title></lc-page-title>
         <lc-rules-alert></lc-rules-alert>
       }
@@ -25,7 +33,7 @@
     </div>
   </div>
 </div>
-@if (!fullscreenMap) {
+@if (!fullscreenMap && !hideAppChrome) {
   <lc-footer></lc-footer>
 }
 <lc-refresh-login-modal></lc-refresh-login-modal>

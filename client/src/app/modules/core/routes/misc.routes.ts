@@ -19,6 +19,7 @@ export const miscRoutes: Routes = [
       import('../instance-picker/instance-picker.component').then(
         (m) => m.InstancePickerComponent,
       ),
+    data: { hideAppChrome: true },
   },
   {
     path: 'sentry-test',

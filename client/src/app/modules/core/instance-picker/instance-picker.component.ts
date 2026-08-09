@@ -96,7 +96,7 @@ export class InstancePickerComponent implements OnInit {
       this.urlInput = '';
       if (wasEmpty) {
         await setActiveHost(url);
-        window.location.reload();
+        this.enterInstanceHome();
       }
     } catch {
       this.errorKey = 'unreachable';
@@ -113,6 +113,8 @@ export class InstancePickerComponent implements OnInit {
     if (
       normalizeApiHostUrl(instance.url) === normalizeApiHostUrl(this.activeHost)
     ) {
+      // Already on this host — leave the picker for instance home.
+      window.location.assign('/');
       return;
     }
     this.confirmation.confirm({
@@ -124,8 +126,13 @@ export class InstancePickerComponent implements OnInit {
       rejectLabel: 'Cancel',
       accept: async () => {
         await setActiveHost(instance.url);
-        window.location.reload();
+        this.enterInstanceHome();
       },
     });
+  }
+
+  /** Full navigation so bootstrap picks up the new host and leaves /instances. */
+  private enterInstanceHome(): void {
+    window.location.assign('/');
   }
 }

@@ -118,6 +118,8 @@ export class MenuComponent implements OnInit, AfterViewInit {
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
   readonly themeService = inject(ThemeService);
+  /** Native-only: Switch instance entry for guests (logged-in uses account menu). */
+  readonly isNativePlatform = Capacitor.isNativePlatform();
   private readonly isDarkMode$ = toObservable(this.themeService.isDarkMode);
   private navbarResizeObserver?: ResizeObserver;
   private isReconcilingNavbarOverflow = false;

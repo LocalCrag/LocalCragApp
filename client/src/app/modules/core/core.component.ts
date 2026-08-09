@@ -79,6 +79,9 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Full-bleed map pages (e.g. Rock Explorer): header only, no chrome. */
   fullscreenMap = false;
 
+  /** Instance picker: no site header/footer/sidebar (native gate / switch). */
+  hideAppChrome = false;
+
   private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);
   private router = inject(Router);
@@ -165,12 +168,12 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     this.store.dispatch(tryAutoLogin());
     this.store.dispatch(checkShowCookieAlert());
     this.store.dispatch(checkIsMobile());
-    this.syncFullscreenMapFromRoute();
+    this.syncShellFlagsFromRoute();
     void this.enforceNativeInstanceGate();
     this.routerSub = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.syncFullscreenMapFromRoute();
+        this.syncShellFlagsFromRoute();
         void this.enforceNativeInstanceGate();
       });
   }
@@ -192,14 +195,7 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    const headerElement = this.siteHeader?.nativeElement;
-    if (!headerElement || typeof ResizeObserver === 'undefined') {
-      return;
-    }
-
-    // Re-measure when alerts or menu content change the header height.
-    this.resizeObserver = new ResizeObserver(() => this.updateHeaderHeight());
-    this.resizeObserver.observe(headerElement);
+    this.observeSiteHeader();
   }
 
   ngOnDestroy() {
@@ -207,16 +203,37 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routerSub?.unsubscribe();
   }
 
-  private syncFullscreenMapFromRoute() {
+  private syncShellFlagsFromRoute() {
     let route = this.activatedRoute;
     while (route.firstChild) {
       route = route.firstChild;
     }
     this.fullscreenMap = !!route.snapshot.data?.['fullscreenMap'];
+    this.hideAppChrome = !!route.snapshot.data?.['hideAppChrome'];
     this.hostEl.nativeElement.classList.toggle(
       'lc-fullscreen-map',
       this.fullscreenMap,
     );
+    this.hostEl.nativeElement.classList.toggle(
+      'lc-hide-app-chrome',
+      this.hideAppChrome,
+    );
+    // Header may appear/disappear when leaving/entering the instance picker.
+    queueMicrotask(() => {
+      this.observeSiteHeader();
+      this.updateHeaderHeight();
+    });
+  }
+
+  private observeSiteHeader() {
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = undefined;
+    const headerElement = this.siteHeader?.nativeElement;
+    if (!headerElement || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    this.resizeObserver = new ResizeObserver(() => this.updateHeaderHeight());
+    this.resizeObserver.observe(headerElement);
   }
 
   /**
@@ -224,7 +241,9 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
    * layout (e.g. full-page views that subtract menu height from viewport).
    */
   private updateHeaderHeight() {
-    this.headerHeight = this.siteHeader?.nativeElement.offsetHeight ?? 0;
+    this.headerHeight = this.hideAppChrome
+      ? 0
+      : (this.siteHeader?.nativeElement.offsetHeight ?? 0);
     const heightValue = `${this.headerHeight}px`;
     document.documentElement.style.setProperty('--lc-menu-height', heightValue);
     this.hostEl.nativeElement.style.setProperty(
