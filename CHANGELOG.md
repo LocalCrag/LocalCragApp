@@ -1,3 +1,16 @@
+# [1.52.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.51.0...v1.52.0) (2026-08-10)
+
+
+### Bug Fixes
+
+* **gallery:** explude rock explorer images from region gallery ([#1249](https://github.com/LocalCrag/LocalCragApp/issues/1249)) ([d87025e](https://github.com/LocalCrag/LocalCragApp/commit/d87025ec4a6c69b76c2c87ac42c95e91887c931c)), closes [#1246](https://github.com/LocalCrag/LocalCragApp/issues/1246)
+
+
+### Features
+
+* **rock-explorer:** add possibility to add custom map overlay layers ([#1259](https://github.com/LocalCrag/LocalCragApp/issues/1259)) ([bf1ba9a](https://github.com/LocalCrag/LocalCragApp/commit/bf1ba9a377bb011573aa9d8b98f4363698ba5b54)), closes [#1258](https://github.com/LocalCrag/LocalCragApp/issues/1258)
+* **rock-explorer:** rock explorer features are now searchable ([#1250](https://github.com/LocalCrag/LocalCragApp/issues/1250)) ([a1659e2](https://github.com/LocalCrag/LocalCragApp/commit/a1659e2a0a2301df20f14af33f24bc07c719dd0e)), closes [#1247](https://github.com/LocalCrag/LocalCragApp/issues/1247)
+
 # [1.51.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.50.0...v1.51.0) (2026-08-08)
 
 
