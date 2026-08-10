@@ -4,6 +4,7 @@ import { updateInstanceSettings } from '../actions/instance-settings.actions';
 import { FaDefaultFormat } from '../../enums/fa-default-format';
 import { StartingPosition } from '../../enums/starting-position';
 import { LanguageCode } from '../../utility/types/language';
+import { RockExplorerMapLayer } from '../../models/rock-explorer-map-layer';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -21,6 +22,7 @@ export interface InstanceSettingsState {
   darkBarChartColor: string;
   darkBarChartAccentColor: string;
   maptilerApiKey: string;
+  rockExplorerMapLayers: RockExplorerMapLayer[];
   maxFileSize: number;
   maxImageSize: number;
   sentryEnabled: boolean;
@@ -52,6 +54,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   darkBarChartColor: null,
   darkBarChartAccentColor: null,
   maptilerApiKey: null,
+  rockExplorerMapLayers: [],
   maxFileSize: 0,
   maxImageSize: 0,
   sentryEnabled: false,
@@ -86,6 +89,7 @@ const instanceSettingsReducer = createReducer(
     darkBarChartColor: action.settings.darkBarChartColor,
     darkBarChartAccentColor: action.settings.darkBarChartAccentColor,
     maptilerApiKey: action.settings.maptilerApiKey,
+    rockExplorerMapLayers: action.settings.rockExplorerMapLayers ?? [],
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,
     sentryEnabled: action.settings.sentryEnabled,

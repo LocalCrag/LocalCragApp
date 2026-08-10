@@ -65,6 +65,7 @@ class UpdateInstanceSettings(MethodView):
         instance_settings.matomo_tracker_url = instance_settings_data["matomoTrackerUrl"]
         instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]
         instance_settings.maptiler_api_key = instance_settings_data["maptilerApiKey"]
+        instance_settings.rock_explorer_map_layers = list(instance_settings_data["rockExplorerMapLayers"])
         instance_settings.gym_mode = instance_settings_data["gymMode"]
         instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
         instance_settings.display_user_ratings = instance_settings_data["displayUserRatings"]

@@ -28,6 +28,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
     maptilerApiKey = fields.String(attribute="maptiler_api_key")
+    rockExplorerMapLayers = fields.List(fields.Dict(), attribute="rock_explorer_map_layers", dump_default=list)
     gymMode = fields.Boolean(attribute="gym_mode")
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
     displayUserGrades = fields.Boolean(attribute="display_user_grades")
