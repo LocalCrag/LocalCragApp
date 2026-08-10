@@ -1,9 +1,11 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { Popover } from 'primeng/popover';
+import { Slider } from 'primeng/slider';
+import { Checkbox } from 'primeng/checkbox';
 import { Tooltip } from 'primeng/tooltip';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MapStyles } from '../../../enums/map-styles';
@@ -13,9 +15,12 @@ import { RockExplorerUiService } from '../rock-explorer-ui.service';
   selector: 'lc-rock-explorer-toolbar',
   imports: [
     ReactiveFormsModule,
+    FormsModule,
     Button,
     Select,
     Popover,
+    Slider,
+    Checkbox,
     Tooltip,
     TranslocoDirective,
   ],
@@ -66,6 +71,33 @@ export class RockExplorerToolbarComponent implements OnInit {
       potential: null,
       rockQuality: null,
       rockType: null,
+    });
+  }
+
+  /** Slider UI uses 0–100; MapLibre / settings use 0–1. */
+  public opacityPercent(layerId: string): number {
+    const value = this.ui.customMapLayerOpacities()[layerId];
+    return Math.round((value ?? 0.5) * 100);
+  }
+
+  public onOpacityPercentChange(layerId: string, percent: number): void {
+    const clamped = Math.min(100, Math.max(0, percent));
+    this.ui.dispatch({
+      type: 'setCustomMapLayerOpacity',
+      layerId,
+      opacity: clamped / 100,
+    });
+  }
+
+  public isLayerVisible(layerId: string): boolean {
+    return this.ui.customMapLayerVisibility()[layerId] !== false;
+  }
+
+  public onLayerVisibleChange(layerId: string, visible: boolean): void {
+    this.ui.dispatch({
+      type: 'setCustomMapLayerVisible',
+      layerId,
+      visible: !!visible,
     });
   }
 }

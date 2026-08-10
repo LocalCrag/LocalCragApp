@@ -8,9 +8,13 @@ import {
 import { FormDirective } from '../../shared/forms/form.directive';
 import { EditorModule } from 'primeng/editor';
 import {
+  AbstractControl,
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { LoadingState } from '../../../enums/loading-state';
@@ -26,11 +30,17 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
+import {
+  RockExplorerMapLayer,
+  RockExplorerMapLayerSourceKind,
+  RockExplorerMapLayerTileSize,
+} from '../../../models/rock-explorer-map-layer';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { UploadService } from '../../../services/crud/upload.service';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { PaginatorModule } from 'primeng/paginator';
 import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
 import { ColorPickerModule } from 'primeng/colorpicker';
@@ -39,6 +49,7 @@ import { getRgbObject } from '../../../utility/misc/color';
 import { PasswordModule } from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -49,6 +60,22 @@ import { StartingPosition } from '../../../enums/starting-position';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
+
+const tilesUrlTemplateValidator: ValidatorFn = (
+  group: AbstractControl,
+): ValidationErrors | null => {
+  const sourceKind = group.get('sourceKind')?.value;
+  const url = group.get('url')?.value as string | null;
+  if (sourceKind !== 'tiles' || !url) {
+    return null;
+  }
+  if (!url.includes('{z}') || !url.includes('{x}') || !url.includes('{y}')) {
+    return { tilesUrlMissingPlaceholders: true };
+  }
+  return null;
+};
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -57,6 +84,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     ConfirmPopupModule,
     EditorModule,
     InputTextModule,
+    InputNumberModule,
     PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,
@@ -67,6 +95,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     DividerModule,
     TooltipModule,
     ToggleSwitch,
+    Checkbox,
     Select,
     FormDirective,
     ControlGroupDirective,
@@ -74,6 +103,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     IfErrorDirective,
     SingleImageUploadComponent,
     LanguageSelectComponent,
+    FormEntryRowComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -102,6 +132,18 @@ export class InstanceSettingsFormComponent implements OnInit {
   public rankingPastWeeksOptions: { label: string; value: number | null }[] =
     [];
   public timezoneOptions = getInstanceTimezoneOptions();
+  public sourceKindOptions: {
+    label: string;
+    value: RockExplorerMapLayerSourceKind;
+  }[] = [];
+  public tileSizeOptions: {
+    label: string;
+    value: RockExplorerMapLayerTileSize;
+  }[] = [
+    { label: '256', value: 256 },
+    { label: '512', value: 512 },
+  ];
+  public readonly maxMapLayers = 10;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -123,6 +165,24 @@ export class InstanceSettingsFormComponent implements OnInit {
       label: this.translocoService.translate(sp),
       value: sp,
     }));
+    this.sourceKindOptions = [
+      {
+        label: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerSourceKindTilejson',
+          ),
+        ),
+        value: 'tilejson',
+      },
+      {
+        label: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerSourceKindTiles',
+          ),
+        ),
+        value: 'tiles',
+      },
+    ];
 
     // build options for rankingPastWeeks
     this.rankingPastWeeksOptions = [
@@ -165,6 +225,59 @@ export class InstanceSettingsFormComponent implements OnInit {
       });
   }
 
+  rockExplorerMapLayersControls(): FormArray {
+    return this.instanceSettingsForm.get('rockExplorerMapLayers') as FormArray;
+  }
+
+  private createMapLayerGroup(
+    layer?: Partial<RockExplorerMapLayer>,
+  ): FormGroup {
+    return this.fb.group(
+      {
+        id: [layer?.id ?? crypto.randomUUID()],
+        name: [
+          layer?.name ?? '',
+          [Validators.required, Validators.maxLength(120)],
+        ],
+        sourceKind: [layer?.sourceKind ?? 'tilejson', [Validators.required]],
+        url: [
+          layer?.url ?? '',
+          [Validators.required, Validators.maxLength(2048), httpUrlValidator()],
+        ],
+        type: [{ value: 'raster', disabled: true }],
+        opacity: [
+          layer?.opacity ?? 0.5,
+          [Validators.required, Validators.min(0), Validators.max(1)],
+        ],
+        tileSize: [layer?.tileSize ?? 256, [Validators.required]],
+        defaultOn: [layer?.defaultOn !== false],
+      },
+      { validators: [tilesUrlTemplateValidator] },
+    );
+  }
+
+  addMapLayer(): void {
+    if (this.rockExplorerMapLayersControls().length >= this.maxMapLayers) {
+      return;
+    }
+    this.rockExplorerMapLayersControls().push(this.createMapLayerGroup());
+  }
+
+  removeMapLayer(index: number): void {
+    this.rockExplorerMapLayersControls().removeAt(index);
+  }
+
+  moveMapLayer(index: number, direction: 'up' | 'down'): void {
+    const layers = this.rockExplorerMapLayersControls();
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= layers.length) {
+      return;
+    }
+    const control = layers.at(index);
+    layers.removeAt(index);
+    layers.insert(target, control);
+  }
+
   private buildForm() {
     this.instanceSettingsForm = this.fb.group({
       instanceName: [null, [Validators.required, Validators.maxLength(120)]],
@@ -189,6 +302,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       matomoTrackerUrl: [null, [Validators.maxLength(120)]],
       matomoSiteId: [null, [Validators.maxLength(120)]],
       maptilerApiKey: [null, [Validators.maxLength(120)]],
+      rockExplorerMapLayers: this.fb.array([]),
       faDefaultFormat: [null],
       defaultStartingPosition: [null, [Validators.required]],
       rankingPastWeeks: [null],
@@ -199,6 +313,11 @@ export class InstanceSettingsFormComponent implements OnInit {
 
   private setFormValue() {
     this.instanceSettingsForm.enable();
+    const layersArray = this.rockExplorerMapLayersControls();
+    layersArray.clear();
+    (this.instanceSettings.rockExplorerMapLayers ?? []).forEach((layer) => {
+      layersArray.push(this.createMapLayerGroup(layer));
+    });
     this.instanceSettingsForm.patchValue({
       instanceName: this.instanceSettings.instanceName,
       copyrightOwner: this.instanceSettings.copyrightOwner,
@@ -233,6 +352,10 @@ export class InstanceSettingsFormComponent implements OnInit {
       language: this.instanceSettings.language,
       timezone: this.instanceSettings.timezone,
     });
+    // Keep type fixed to raster (form.enable() would otherwise unlock it).
+    for (const group of layersArray.controls) {
+      group.get('type')?.disable({ emitEvent: false });
+    }
   }
 
   public saveInstanceSettings() {
@@ -287,6 +410,14 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('matomoTrackerUrl').value;
       instanceSettings.maptilerApiKey =
         this.instanceSettingsForm.get('maptilerApiKey').value;
+      instanceSettings.rockExplorerMapLayers = (
+        this.rockExplorerMapLayersControls().getRawValue() ?? []
+      ).map((layer) =>
+        RockExplorerMapLayer.deserialize({
+          ...layer,
+          type: 'raster',
+        }),
+      );
       instanceSettings.faDefaultFormat =
         this.instanceSettingsForm.get('faDefaultFormat').value;
       instanceSettings.defaultStartingPosition = this.instanceSettingsForm.get(

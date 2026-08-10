@@ -6,6 +6,43 @@ from models.instance_settings import InstanceSettings
 from models.sector import Sector
 
 
+def _base_post_data(instance_settings=None, **overrides):
+    if instance_settings is None:
+        instance_settings = InstanceSettings.return_it()
+    post_data = {
+        "instanceName": "Gleesbouldering",
+        "copyrightOwner": "Die Gleesards e.V.",
+        "mailGreeting": "Best regards",
+        "logoImage": None,
+        "darkLogoImage": None,
+        "faviconImage": None,
+        "bgImage": None,
+        "arrowColor": "#AAAAAA",
+        "arrowTextColor": "#BBBBBB",
+        "arrowHighlightColor": "#CCCCCC",
+        "arrowHighlightTextColor": "#DDDDDD",
+        "barChartColor": "rgb(213, 30, 39)",
+        "barChartAccentColor": "rgb(250, 204, 21)",
+        "darkBarChartColor": "rgb(248, 113, 113)",
+        "darkBarChartAccentColor": "rgb(253, 224, 71)",
+        "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
+        "matomoSiteId": "2",
+        "maptilerApiKey": "maptiler",
+        "rockExplorerMapLayers": [],
+        "gymMode": True,
+        "displayUserGrades": True,
+        "displayUserRatings": True,
+        "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
+        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
+        "defaultStartingPosition": StartingPositionEnum.SIT.value,
+        "rankingPastWeeks": 12,
+        "language": "de",
+        "timezone": "Europe/Berlin",
+    }
+    post_data.update(overrides)
+    return post_data
+
+
 def test_successful_get_instance_settings(client):
     instance_settings = InstanceSettings.return_it()
 
@@ -29,6 +66,7 @@ def test_successful_get_instance_settings(client):
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
     assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
+    assert res["rockExplorerMapLayers"] == []
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
     assert res["sentryEnabled"] is False
@@ -45,36 +83,12 @@ def test_successful_get_instance_settings(client):
 
 def test_successful_edit_instance_settings(client, moderator_token, any_file):
     instance_settings = InstanceSettings.return_it()
-    post_data = {
-        "instanceName": "Gleesbouldering",
-        "copyrightOwner": "Die Gleesards e.V.",
-        "mailGreeting": "Best regards",
-        "logoImage": str(any_file.id),
-        "darkLogoImage": None,
-        "faviconImage": str(any_file.id),
-        "bgImage": str(any_file.id),
-        "arrowColor": "#AAAAAA",
-        "arrowTextColor": "#BBBBBB",
-        "arrowHighlightColor": "#CCCCCC",
-        "arrowHighlightTextColor": "#DDDDDD",
-        "barChartColor": "rgb(213, 30, 39)",
-        "barChartAccentColor": "rgb(250, 204, 21)",
-        "darkBarChartColor": "rgb(248, 113, 113)",
-        "darkBarChartAccentColor": "rgb(253, 224, 71)",
-        "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
-        "matomoSiteId": "2",
-        "maptilerApiKey": "maptiler",
-        "gymMode": True,
-        "displayUserGrades": True,
-        "displayUserRatings": True,
-        # Can only change the value with a "clean" database
-        "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
-        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
-        "defaultStartingPosition": StartingPositionEnum.SIT.value,
-        "rankingPastWeeks": 12,
-        "language": "de",
-        "timezone": "Europe/Berlin",
-    }
+    post_data = _base_post_data(
+        instance_settings,
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+    )
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
     res = rv.json
@@ -95,6 +109,7 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
     assert res["maptilerApiKey"] == "maptiler"
+    assert res["rockExplorerMapLayers"] == []
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
     assert res["sentryEnabled"] is False
@@ -110,42 +125,104 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["timezone"] == "Europe/Berlin"
 
 
+def test_successful_put_rock_explorer_map_layers(client, moderator_token, any_file):
+    layers = [
+        {
+            "id": "dgm-hillshade",
+            "name": "DGM Hillshade",
+            "sourceKind": "tilejson",
+            "url": "https://tiles.example.org/dgm/tiles.json",
+            "type": "raster",
+            "opacity": 0.45,
+            "tileSize": 256,
+            "defaultOn": True,
+        },
+        {
+            "id": "xyz-overlay",
+            "name": "XYZ Overlay",
+            "sourceKind": "tiles",
+            "url": "https://tiles.example.org/{z}/{x}/{y}.png",
+            "type": "raster",
+            "opacity": 0.5,
+            "tileSize": 512,
+            "defaultOn": False,
+        },
+    ]
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        rockExplorerMapLayers=layers,
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 200, rv.json
+    assert rv.json["rockExplorerMapLayers"] == layers
+
+    rv = client.get("/api/instance-settings")
+    assert rv.status_code == 200
+    assert rv.json["rockExplorerMapLayers"] == layers
+
+
+def test_reject_invalid_rock_explorer_map_layer_url(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        rockExplorerMapLayers=[
+            {
+                "id": "bad",
+                "name": "Bad",
+                "sourceKind": "tilejson",
+                "url": "ftp://tiles.example.org/tiles.json",
+                "type": "raster",
+                "opacity": 0.5,
+                "tileSize": 256,
+                "defaultOn": True,
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400, rv.json
+
+
+def test_reject_tiles_url_missing_xyz(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        rockExplorerMapLayers=[
+            {
+                "id": "bad-tiles",
+                "name": "Bad Tiles",
+                "sourceKind": "tiles",
+                "url": "https://tiles.example.org/no-tokens.png",
+                "type": "raster",
+                "opacity": 0.5,
+                "tileSize": 256,
+                "defaultOn": True,
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400, rv.json
+
+
 def test_successful_change_skipped_hierarchical_layers(client, moderator_token, any_file):
     # Clean database
     crags = Crag.query.all()
     for crag in crags:
         db.session.delete(crag)
 
-    post_data = {
-        "instanceName": "Gleesbouldering",
-        "copyrightOwner": "Die Gleesards e.V.",
-        "mailGreeting": "Best regards",
-        "logoImage": str(any_file.id),
-        "darkLogoImage": None,
-        "faviconImage": str(any_file.id),
-        "bgImage": str(any_file.id),
-        "arrowColor": "#AAAAAA",
-        "arrowTextColor": "#BBBBBB",
-        "arrowHighlightColor": "#CCCCCC",
-        "arrowHighlightTextColor": "#DDDDDD",
-        "barChartColor": "rgb(213, 30, 39)",
-        "barChartAccentColor": "rgb(250, 204, 21)",
-        "darkBarChartColor": "rgb(248, 113, 113)",
-        "darkBarChartAccentColor": "rgb(253, 224, 71)",
-        "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
-        "matomoSiteId": "2",
-        "maptilerApiKey": "maptiler",
-        "gymMode": True,
-        "displayUserRatings": True,
-        "displayUserGrades": True,
-        # Can only change the value with a "clean" database
-        "skippedHierarchicalLayers": 2,
-        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
-        "defaultStartingPosition": StartingPositionEnum.STAND.value,
-        "rankingPastWeeks": None,
-        "language": "en",
-        "timezone": "UTC",
-    }
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        skippedHierarchicalLayers=2,
+        defaultStartingPosition=StartingPositionEnum.STAND.value,
+        rankingPastWeeks=None,
+        language="en",
+        timezone="UTC",
+    )
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
 
@@ -157,34 +234,15 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token, 
 
 
 def test_error_conflict_skipped_hierarchical_layers(client, moderator_token, any_file):
-    post_data = {
-        "instanceName": "Gleesbouldering",
-        "copyrightOwner": "Die Gleesards e.V.",
-        "mailGreeting": "Best regards",
-        "logoImage": str(any_file.id),
-        "darkLogoImage": None,
-        "faviconImage": str(any_file.id),
-        "bgImage": str(any_file.id),
-        "arrowColor": "#AAAAAA",
-        "arrowTextColor": "#BBBBBB",
-        "arrowHighlightColor": "#CCCCCC",
-        "arrowHighlightTextColor": "#DDDDDD",
-        "barChartColor": "rgb(213, 30, 39)",
-        "barChartAccentColor": "rgb(250, 204, 21)",
-        "darkBarChartColor": "rgb(248, 113, 113)",
-        "darkBarChartAccentColor": "rgb(253, 224, 71)",
-        "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
-        "matomoSiteId": "2",
-        "maptilerApiKey": "maptiler",
-        "gymMode": True,
-        "displayUserRatings": True,
-        "displayUserGrades": True,
-        "skippedHierarchicalLayers": 2,
-        "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
-        "defaultStartingPosition": StartingPositionEnum.STAND.value,
-        "rankingPastWeeks": 4,
-        "language": "en",
-        "timezone": "UTC",
-    }
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        skippedHierarchicalLayers=2,
+        defaultStartingPosition=StartingPositionEnum.STAND.value,
+        rankingPastWeeks=4,
+        language="en",
+        timezone="UTC",
+    )
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json

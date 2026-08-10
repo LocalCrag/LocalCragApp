@@ -212,6 +212,72 @@
   margin-top: 0.25rem;
 }
 
+.rock-explorer__overlays-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 14rem;
+  max-width: 20rem;
+  padding: 0.15rem;
+}
+
+.rock-explorer__overlays-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.rock-explorer__overlays-panel-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--p-text-muted-color, var(--p-text-color));
+}
+
+.rock-explorer__overlays-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rock-explorer__overlays-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.rock-explorer__overlays-row-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  min-width: 0;
+
+  label {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.rock-explorer__overlays-order {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rock-explorer__overlays-opacity-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--p-text-muted-color, var(--p-text-color));
+  font-size: 0.8rem;
+}
+
+:host ::ng-deep .rock-explorer__overlays-slider {
+  width: 100%;
+}
+
 @media (max-width: 640px) {
   .rock-explorer__layer-toggle {
     margin-left: 0;

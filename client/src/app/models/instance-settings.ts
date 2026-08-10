@@ -3,6 +3,7 @@ import { FaDefaultFormat } from '../enums/fa-default-format';
 import { StartingPosition } from '../enums/starting-position';
 import { LanguageCode } from '../utility/types/language';
 import { parseServerUtcDate } from '../utility/parse-server-utc-date';
+import { RockExplorerMapLayer } from './rock-explorer-map-layer';
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -24,6 +25,7 @@ export class InstanceSettings {
   matomoTrackerUrl: string;
   matomoSiteId: string;
   maptilerApiKey: string;
+  rockExplorerMapLayers: RockExplorerMapLayer[];
   maxFileSize: number;
   maxImageSize: number;
   sentryEnabled: boolean;
@@ -67,6 +69,11 @@ export class InstanceSettings {
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
     instanceSettings.maptilerApiKey = payload.maptilerApiKey;
+    instanceSettings.rockExplorerMapLayers = (
+      payload.rockExplorerMapLayers ?? []
+    )
+      .map(RockExplorerMapLayer.deserialize)
+      .filter((layer: RockExplorerMapLayer) => layer.id.length > 0);
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.sentryEnabled = payload.sentryEnabled;
@@ -110,6 +117,9 @@ export class InstanceSettings {
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
       maptilerApiKey: instanceSettings.maptilerApiKey,
+      rockExplorerMapLayers: (instanceSettings.rockExplorerMapLayers ?? []).map(
+        RockExplorerMapLayer.serialize,
+      ),
       gymMode: instanceSettings.gymMode,
       displayUserGrades: instanceSettings.displayUserGrades,
       displayUserRatings: instanceSettings.displayUserRatings,

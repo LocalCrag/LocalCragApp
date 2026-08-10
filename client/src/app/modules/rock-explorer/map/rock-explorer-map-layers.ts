@@ -618,7 +618,8 @@ export class RockExplorerMapLayers {
     });
   }
 
-  private bringOverlaysToFront(): void {
+  /** Keep domain overlays above basemap/custom rasters after custom reorder. */
+  bringOverlaysToFront(): void {
     for (const layerId of [
       L.localDraftsFill,
       L.localDraftsOutline,

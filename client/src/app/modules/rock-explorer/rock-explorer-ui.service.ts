@@ -10,6 +10,16 @@ import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
+/** Overlay row shown in the Rock Explorer layers panel (session UI). */
+export type RockExplorerCustomMapLayerInfo = {
+  id: string;
+  name: string;
+  /** Instance-settings default; used when seeding session opacities. */
+  defaultOpacity: number;
+  /** Instance-settings default visibility. */
+  defaultOn: boolean;
+};
+
 export type RockExplorerDrawMode =
   'select' | 'point' | 'polygon' | 'editPolygon';
 
@@ -27,6 +37,10 @@ export type RockExplorerCommand =
   | { type: 'finishPolygon' }
   | { type: 'cancelPolygonDraw' }
   | { type: 'switchMapStyle'; style: MapStyles }
+  | { type: 'toggleCustomMapLayers' }
+  | { type: 'setCustomMapLayerOpacity'; layerId: string; opacity: number }
+  | { type: 'setCustomMapLayerVisible'; layerId: string; visible: boolean }
+  | { type: 'moveCustomMapLayer'; layerId: string; direction: 'up' | 'down' }
   | { type: 'filtersChange'; filters: RockExplorerFilters }
   | { type: 'cancelImageCoordinatePick' }
   | { type: 'cancelParkingCoordinatePick' }
@@ -95,6 +109,22 @@ export class RockExplorerUiService {
   readonly polygonSelfIntersecting = signal(false);
   readonly geometryEditActive = signal(false);
   readonly mapStyle = signal<MapStyles>(MapStyles.TOPO);
+  /** Master switch for instance-configured Rock Explorer raster overlays (session-only). */
+  readonly customMapLayersVisible = signal(true);
+  /** True when instance settings include at least one custom map overlay. */
+  readonly hasCustomMapLayers = signal(false);
+  /** Overlay metadata for the layers panel (from instance settings / session order). */
+  readonly customMapLayerInfos = signal<RockExplorerCustomMapLayerInfo[]>([]);
+  /**
+   * Per-overlay opacity for this Rock Explorer visit (session-only).
+   * Seeded from instance-settings defaults; not written back to settings.
+   */
+  readonly customMapLayerOpacities = signal<Record<string, number>>({});
+  /**
+   * Per-overlay on/off for this Rock Explorer visit (session-only).
+   * Seeded from instance-settings `defaultOn`.
+   */
+  readonly customMapLayerVisibility = signal<Record<string, boolean>>({});
   readonly isMobileViewport = signal(false);
   readonly pickingImageCoordinates = signal(false);
   readonly pickingParkingCoordinates = signal(false);
@@ -166,10 +196,105 @@ export class RockExplorerUiService {
     this.showFilters.update((open) => !open);
   }
 
+  /**
+   * Seeds the layers panel from instance settings.
+   * Existing session opacities/visibility for known ids are kept; new ids get settings defaults.
+   * Array order is the paint/stack order (first = bottom).
+   */
+  initCustomMapLayers(
+    configs: {
+      id: string;
+      name?: string;
+      opacity: number;
+      defaultOn?: boolean;
+    }[],
+  ): void {
+    const list = Array.isArray(configs) ? configs : [];
+    this.hasCustomMapLayers.set(list.length > 0);
+    this.customMapLayerInfos.set(
+      list
+        .filter((c) => !!c?.id)
+        .map((c) => ({
+          id: c.id,
+          name: (c.name && c.name.trim()) || c.id,
+          defaultOpacity: clampOpacity(c.opacity),
+          defaultOn: c.defaultOn !== false,
+        })),
+    );
+    const nextOpacity = { ...this.customMapLayerOpacities() };
+    const nextVisibility = { ...this.customMapLayerVisibility() };
+    const keep = new Set(list.map((c) => c.id));
+    for (const id of Object.keys(nextOpacity)) {
+      if (!keep.has(id)) {
+        delete nextOpacity[id];
+      }
+    }
+    for (const id of Object.keys(nextVisibility)) {
+      if (!keep.has(id)) {
+        delete nextVisibility[id];
+      }
+    }
+    for (const c of list) {
+      if (nextOpacity[c.id] === undefined) {
+        nextOpacity[c.id] = clampOpacity(c.opacity);
+      }
+      if (nextVisibility[c.id] === undefined) {
+        nextVisibility[c.id] = c.defaultOn !== false;
+      }
+    }
+    this.customMapLayerOpacities.set(nextOpacity);
+    this.customMapLayerVisibility.set(nextVisibility);
+  }
+
+  setCustomMapLayerOpacity(layerId: string, opacity: number): void {
+    this.customMapLayerOpacities.update((current) => ({
+      ...current,
+      [layerId]: clampOpacity(opacity),
+    }));
+  }
+
+  setCustomMapLayerVisible(layerId: string, visible: boolean): void {
+    this.customMapLayerVisibility.update((current) => ({
+      ...current,
+      [layerId]: visible,
+    }));
+  }
+
+  /**
+   * Reorders session overlay list. `up` moves earlier in the list (toward the
+   * basemap / bottom of the stack); `down` moves later (toward the top).
+   * Returns the new ordered ids, or null if no change.
+   */
+  moveCustomMapLayer(
+    layerId: string,
+    direction: 'up' | 'down',
+  ): string[] | null {
+    const list = [...this.customMapLayerInfos()];
+    const index = list.findIndex((layer) => layer.id === layerId);
+    if (index < 0) {
+      return null;
+    }
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= list.length) {
+      return null;
+    }
+    const [item] = list.splice(index, 1);
+    list.splice(target, 0, item);
+    this.customMapLayerInfos.set(list);
+    return list.map((layer) => layer.id);
+  }
+
   resetPanelSession(): void {
     this.featureFormActive.set(false);
     this.mapPickHidesPanel.set(false);
     this.editingFeature.set(null);
     this.panelOpen.set(false);
   }
+}
+
+function clampOpacity(opacity: number): number {
+  if (!Number.isFinite(opacity)) {
+    return 0.5;
+  }
+  return Math.min(1, Math.max(0, opacity));
 }
