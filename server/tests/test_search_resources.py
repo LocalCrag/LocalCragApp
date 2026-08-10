@@ -179,3 +179,103 @@ def test_get_recent_searches_includes_secret_line_for_member(client, member_toke
     assert rv.status_code == 200, rv.text
     line_ids = [item["item"]["id"] for item in rv.json if item["type"] == "LINE"]
     assert str(line.id) in line_ids
+
+
+def test_rock_explorer_feature_searchable_for_member(client, member_token, user_token):
+    _enable_fuzzystrmatch()
+    rv = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json={
+            "title": "Searchable Prospect Ridge",
+            "description": None,
+            "potential": "HIGH",
+            "geometry": {"type": "Point", "coordinates": [8.1, 50.2]},
+            "topoLinks": [],
+        },
+    )
+    assert rv.status_code == 201, rv.text
+    feature_id = rv.json["id"]
+
+    rv = client.get("/api/search/Prospect%20Ridge?objectType=RockExplorerFeature", token=member_token)
+    assert rv.status_code == 200, rv.text
+    assert any(
+        item["type"] == "ROCK_EXPLORER_FEATURE"
+        and item["item"]["id"] == feature_id
+        and item["item"]["title"] == "Searchable Prospect Ridge"
+        for item in rv.json
+    )
+
+    rv = client.get("/api/search/Prospect%20Ridge?objectType=RockExplorerFeature", token=user_token)
+    assert rv.status_code == 200, rv.text
+    assert all(item["type"] != "ROCK_EXPLORER_FEATURE" for item in rv.json)
+
+    rv = client.get("/api/search/Prospect%20Ridge?objectType=RockExplorerFeature")
+    assert rv.status_code == 200, rv.text
+    assert all(item["type"] != "ROCK_EXPLORER_FEATURE" for item in rv.json)
+
+
+def test_rock_explorer_draft_and_untitled_not_searchable(client, member_token):
+    _enable_fuzzystrmatch()
+    draft = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json={
+            "title": "Hidden Draft Ridge",
+            "status": "draft",
+            "recordingDeviceId": "device-search-test",
+            "geometry": {"type": "Point", "coordinates": [8.2, 50.3]},
+            "topoLinks": [],
+        },
+    )
+    assert draft.status_code == 201, draft.text
+
+    untitled = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json={
+            "title": None,
+            "potential": "LOW",
+            "geometry": {"type": "Point", "coordinates": [8.3, 50.4]},
+            "topoLinks": [],
+        },
+    )
+    assert untitled.status_code == 201, untitled.text
+
+    rv = client.get("/api/search/Hidden%20Draft%20Ridge?objectType=RockExplorerFeature", token=member_token)
+    assert rv.status_code == 200, rv.text
+    assert all(item["item"]["id"] != draft.json["id"] for item in rv.json)
+
+
+def test_create_recent_search_rock_explorer_feature(client, member_token, user_token):
+    rv = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json={
+            "title": "Recent Search Feature",
+            "potential": "MEDIUM",
+            "geometry": {"type": "Point", "coordinates": [8.4, 50.5]},
+            "topoLinks": [],
+        },
+    )
+    assert rv.status_code == 201, rv.text
+    feature_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/account/recent-searches",
+        token=member_token,
+        json={"objectType": "RockExplorerFeature", "objectId": feature_id},
+    )
+    assert rv.status_code == 204, rv.text
+
+    rv = client.get("/api/account/recent-searches", token=member_token)
+    assert rv.status_code == 200, rv.text
+    assert rv.json[0]["type"] == "ROCK_EXPLORER_FEATURE"
+    assert rv.json[0]["item"]["id"] == feature_id
+
+    rv = client.post(
+        "/api/account/recent-searches",
+        token=user_token,
+        json={"objectType": "RockExplorerFeature", "objectId": feature_id},
+    )
+    assert rv.status_code == 400, rv.text

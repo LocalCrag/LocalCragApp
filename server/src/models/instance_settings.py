@@ -4,7 +4,7 @@ from typing import Self
 
 import pytz
 from flask import current_app
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
@@ -41,6 +41,7 @@ class InstanceSettings(db.Model):
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
     maptiler_api_key = db.Column(db.String(120), nullable=True)
+    rock_explorer_map_layers = db.Column(JSON, nullable=False, default=lambda: [], server_default="[]")
     gym_mode = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     skipped_hierarchical_layers = db.Column(db.Integer, nullable=False, server_default="0")
     display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")

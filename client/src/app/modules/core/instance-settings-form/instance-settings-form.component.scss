@@ -25,6 +25,17 @@ lc-instance-settings-form {
   p-toggleswitch {
     margin-top: 0.25em;
   }
+
+  .map-layer-first-label {
+    margin-top: 0;
+  }
+
+  .map-layer-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
 }
 
 .blue-green-switch {

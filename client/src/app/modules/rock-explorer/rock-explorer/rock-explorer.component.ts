@@ -67,6 +67,8 @@ import {
   RockExplorerMapInteractionHost,
 } from '../map/rock-explorer-map-interaction';
 import { RockExplorerMapLayers } from '../map/rock-explorer-map-layers';
+import { RockExplorerCustomMapLayers } from '../map/rock-explorer-custom-map-layers';
+import { RockExplorerMapLayer } from '../../../models/rock-explorer-map-layer';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 
 @Component({
@@ -115,6 +117,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
 
   private map?: MaplibreMap;
   private layers?: RockExplorerMapLayers;
+  private customLayers?: RockExplorerCustomMapLayers;
+  private rockExplorerMapLayers: RockExplorerMapLayer[] = [];
   private apiKey = '';
   private features: FeatureCollection<Geometry> = emptyFeatureCollection();
   private draftGeometry: Geometry | null = null;
@@ -295,6 +299,18 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       case 'switchMapStyle':
         this.switchMapStyle(cmd.style);
         break;
+      case 'toggleCustomMapLayers':
+        this.toggleCustomMapLayers();
+        break;
+      case 'setCustomMapLayerOpacity':
+        this.setCustomMapLayerOpacity(cmd.layerId, cmd.opacity);
+        break;
+      case 'setCustomMapLayerVisible':
+        this.setCustomMapLayerVisible(cmd.layerId, cmd.visible);
+        break;
+      case 'moveCustomMapLayer':
+        this.moveCustomMapLayer(cmd.layerId, cmd.direction);
+        break;
       case 'filtersChange':
         this.onFiltersChange(cmd.filters);
         break;
@@ -448,6 +464,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       .subscribe({
         next: ([settings, collection]) => {
           this.apiKey = settings.maptilerApiKey;
+          this.rockExplorerMapLayers = settings.rockExplorerMapLayers ?? [];
+          this.ui.initCustomMapLayers(this.rockExplorerMapLayers);
           this.features = collection;
           this.loading = false;
           if (!this.apiKey) {
@@ -518,6 +536,43 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         }
       });
     });
+  }
+
+  private toggleCustomMapLayers(): void {
+    const next = !this.ui.customMapLayersVisible();
+    this.ui.customMapLayersVisible.set(next);
+    this.customLayers?.setVisibility(next, this.ui.customMapLayerVisibility());
+  }
+
+  private setCustomMapLayerOpacity(layerId: string, opacity: number): void {
+    this.ui.setCustomMapLayerOpacity(layerId, opacity);
+    this.customLayers?.setOpacity(
+      layerId,
+      this.ui.customMapLayerOpacities()[layerId] ?? opacity,
+    );
+  }
+
+  private setCustomMapLayerVisible(layerId: string, visible: boolean): void {
+    this.ui.setCustomMapLayerVisible(layerId, visible);
+    this.customLayers?.setVisibility(
+      this.ui.customMapLayersVisible(),
+      this.ui.customMapLayerVisibility(),
+    );
+  }
+
+  private moveCustomMapLayer(layerId: string, direction: 'up' | 'down'): void {
+    const orderedIds = this.ui.moveCustomMapLayer(layerId, direction);
+    if (!orderedIds) {
+      return;
+    }
+    const byId = new Map(
+      this.rockExplorerMapLayers.map((layer) => [layer.id, layer]),
+    );
+    this.rockExplorerMapLayers = orderedIds
+      .map((id) => byId.get(id))
+      .filter((layer): layer is RockExplorerMapLayer => !!layer);
+    this.customLayers?.reorder(orderedIds);
+    this.layers?.bringOverlaysToFront();
   }
 
   public onPanelSaveFeature(feature: RockExplorerFeature) {
@@ -829,6 +884,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!this.map) {
       return;
     }
+    // Custom rasters first so feature overlays stay above them.
+    this.customLayers = new RockExplorerCustomMapLayers(this.map);
+    this.customLayers.apply(
+      this.rockExplorerMapLayers,
+      this.ui.customMapLayersVisible(),
+      this.ui.customMapLayerOpacities(),
+      this.ui.customMapLayerVisibility(),
+    );
     this.layers = new RockExplorerMapLayers(this.map);
     this.applyUntitledMapLabels();
     await this.layers.addAll(this.features);

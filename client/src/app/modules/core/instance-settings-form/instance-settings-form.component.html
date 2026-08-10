@@ -449,6 +449,202 @@
           "validation.maxLength" | transloco: { max: 120 }
         }}</small>
       </div>
+
+      <div class="mt-2 mb-2">
+        <div class="form-label flex items-center">
+          <h4 class="m-0">{{ t("mapLayersLabel") }}</h4>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('mapLayersDescription')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+      </div>
+
+      <div formArrayName="rockExplorerMapLayers">
+        @for (
+          _ of rockExplorerMapLayersControls().controls;
+          track _;
+          let i = $index
+        ) {
+          <div [formGroupName]="i" class="mb-4">
+            <lc-form-entry-row>
+              <div class="flex flex-col gap-3 w-full">
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label map-layer-first-label"
+                    [for]="'map-layer-name-' + i"
+                    >{{ t("mapLayerNameLabel") }}</label
+                  >
+                  <input
+                    pInputText
+                    [id]="'map-layer-name-' + i"
+                    formControlName="name"
+                    placeholder="{{ t('mapLayerNamePlaceholder') }}"
+                    lcFormControl
+                  />
+                  <small class="lc-error" *lcIfError="'required'">{{
+                    "validation.required" | transloco
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'maxlength'">{{
+                    "validation.maxLength" | transloco: { max: 120 }
+                  }}</small>
+                </div>
+
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label"
+                    [for]="'map-layer-source-kind-' + i"
+                    >{{ t("mapLayerSourceKindLabel") }}</label
+                  >
+                  <p-select
+                    [id]="'map-layer-source-kind-' + i"
+                    formControlName="sourceKind"
+                    [options]="sourceKindOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    appendTo="body"
+                    lcFormControl
+                    class="w-full"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label class="form-label" [for]="'map-layer-url-' + i">{{
+                    t("mapLayerUrlLabel")
+                  }}</label>
+                  <input
+                    pInputText
+                    [id]="'map-layer-url-' + i"
+                    formControlName="url"
+                    placeholder="{{ t('mapLayerUrlPlaceholder') }}"
+                    lcFormControl
+                  />
+                  <small class="lc-error" *lcIfError="'required'">{{
+                    "validation.required" | transloco
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'maxlength'">{{
+                    "validation.maxLength" | transloco: { max: 2048 }
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
+                    t("mapLayerUrlInvalid")
+                  }}</small>
+                </div>
+
+                @if (
+                  rockExplorerMapLayersControls()
+                    .at(i)
+                    .hasError("tilesUrlMissingPlaceholders")
+                ) {
+                  <small class="lc-error">{{
+                    t("mapLayerTilesUrlPlaceholders")
+                  }}</small>
+                }
+
+                <div class="flex flex-wrap gap-4">
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label
+                      class="form-label"
+                      [for]="'map-layer-opacity-' + i"
+                      >{{ t("mapLayerOpacityLabel") }}</label
+                    >
+                    <p-inputNumber
+                      [id]="'map-layer-opacity-' + i"
+                      formControlName="opacity"
+                      [min]="0"
+                      [max]="1"
+                      [step]="0.05"
+                      [minFractionDigits]="2"
+                      [maxFractionDigits]="2"
+                      lcFormControl
+                    />
+                    <small class="lc-error" *lcIfError="'required'">{{
+                      "validation.required" | transloco
+                    }}</small>
+                    <small class="lc-error" *lcIfError="'min'">{{
+                      t("mapLayerOpacityRange")
+                    }}</small>
+                    <small class="lc-error" *lcIfError="'max'">{{
+                      t("mapLayerOpacityRange")
+                    }}</small>
+                  </div>
+
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label
+                      class="form-label"
+                      [for]="'map-layer-tile-size-' + i"
+                      >{{ t("mapLayerTileSizeLabel") }}</label
+                    >
+                    <p-select
+                      [id]="'map-layer-tile-size-' + i"
+                      formControlName="tileSize"
+                      [options]="tileSizeOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      appendTo="body"
+                      lcFormControl
+                    />
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2" lcControlGroup>
+                  <p-checkbox
+                    [inputId]="'map-layer-default-on-' + i"
+                    formControlName="defaultOn"
+                    [binary]="true"
+                    lcFormControl
+                  />
+                  <label [for]="'map-layer-default-on-' + i">{{
+                    t("mapLayerDefaultOnLabel")
+                  }}</label>
+                </div>
+              </div>
+              <div actions class="map-layer-actions">
+                <p-button
+                  [disabled]="loadingState === loadingStates.LOADING || i === 0"
+                  icon="pi pi-arrow-up"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  (click)="moveMapLayer(i, 'up')"
+                  [attr.aria-label]="t('mapLayerMoveUp')"
+                />
+                <p-button
+                  [disabled]="
+                    loadingState === loadingStates.LOADING ||
+                    i === rockExplorerMapLayersControls().length - 1
+                  "
+                  icon="pi pi-arrow-down"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  (click)="moveMapLayer(i, 'down')"
+                  [attr.aria-label]="t('mapLayerMoveDown')"
+                />
+                <p-button
+                  [disabled]="loadingState === loadingStates.LOADING"
+                  icon="pi pi-trash"
+                  styleClass="p-button-danger"
+                  (click)="removeMapLayer(i)"
+                />
+              </div>
+            </lc-form-entry-row>
+          </div>
+        }
+      </div>
+
+      <div class="lc-button-group mt-2">
+        <p-button
+          label="{{ t('addMapLayer') }}"
+          (click)="addMapLayer()"
+          icon="pi pi-plus-circle"
+          class="responsive-button"
+          [disabled]="
+            loadingState === loadingStates.LOADING ||
+            rockExplorerMapLayersControls().length >= maxMapLayers
+          "
+        />
+      </div>
     </form>
 
     <div class="form-actions">

@@ -344,7 +344,8 @@ def test_rock_explorer_tag_listing_requires_tag_object_id(client, member_token):
     assert rv.status_code == 400
 
 
-def test_rock_explorer_images_excluded_from_unfiltered_gallery_for_non_members(client, member_token, user_token):
+def test_rock_explorer_images_excluded_from_unfiltered_gallery(client, member_token, user_token):
+    """Region gallery never lists rock explorer images (issue #1246), including for members."""
     feature = _create_rock_explorer_feature()
 
     rv = client.get("/api/gallery")
@@ -359,17 +360,16 @@ def test_rock_explorer_images_excluded_from_unfiltered_gallery_for_non_members(c
     assert rv.status_code == 201
     new_image_id = rv.json["id"]
 
-    rv = client.get("/api/gallery")
-    assert rv.status_code == 200
-    assert len(rv.json["items"]) == baseline_count
-    assert new_image_id not in {item["id"] for item in rv.json["items"]}
+    for token in (None, user_token, member_token):
+        rv = client.get("/api/gallery", token=token) if token else client.get("/api/gallery")
+        assert rv.status_code == 200
+        assert len(rv.json["items"]) == baseline_count
+        assert new_image_id not in {item["id"] for item in rv.json["items"]}
 
-    rv = client.get("/api/gallery", token=user_token)
-    assert rv.status_code == 200
-    assert len(rv.json["items"]) == baseline_count
-    assert new_image_id not in {item["id"] for item in rv.json["items"]}
-
-    rv = client.get("/api/gallery", token=member_token)
+    rv = client.get(
+        f"/api/gallery?page=1&tag-object-type=RockExplorerFeature&tag-object-id={feature.id}",
+        token=member_token,
+    )
     assert rv.status_code == 200
     assert new_image_id in {item["id"] for item in rv.json["items"]}
 
