@@ -236,9 +236,7 @@
         />
         @if (ui.hasCustomMapLayers()) {
           <p-button
-            [severity]="
-              ui.customMapLayersVisible() ? 'primary' : 'secondary'
-            "
+            [severity]="ui.customMapLayersVisible() ? 'primary' : 'secondary'"
             [label]="t('rockExplorer.mapStyle.customLayers')"
             icon="pi pi-sliders-h"
             (onClick)="overlaysPopover.toggle($event)"
@@ -260,9 +258,7 @@
                       : t('rockExplorer.mapStyle.overlaysShow')
                   "
                   size="small"
-                  (onClick)="
-                    ui.dispatch({ type: 'toggleCustomMapLayers' })
-                  "
+                  (onClick)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
                 />
               </div>
               @for (
@@ -278,9 +274,7 @@
                         [inputId]="'re-overlay-visible-' + layer.id"
                         [binary]="true"
                         [ngModel]="isLayerVisible(layer.id)"
-                        (ngModelChange)="
-                          onLayerVisibleChange(layer.id, $event)
-                        "
+                        (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
                         [disabled]="!ui.customMapLayersVisible()"
                       />
                       <label [for]="'re-overlay-visible-' + layer.id">{{
@@ -327,15 +321,12 @@
                   </div>
                   <p-slider
                     [ngModel]="opacityPercent(layer.id)"
-                    (ngModelChange)="
-                      onOpacityPercentChange(layer.id, $event)
-                    "
+                    (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
                     [min]="0"
                     [max]="100"
                     [step]="1"
                     [disabled]="
-                      !ui.customMapLayersVisible() ||
-                      !isLayerVisible(layer.id)
+                      !ui.customMapLayersVisible() || !isLayerVisible(layer.id)
                     "
                     styleClass="rock-explorer__overlays-slider"
                   />
@@ -467,9 +458,7 @@
                       : t('rockExplorer.mapStyle.overlaysShow')
                   "
                   size="small"
-                  (onClick)="
-                    ui.dispatch({ type: 'toggleCustomMapLayers' })
-                  "
+                  (onClick)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
                 />
               </div>
               @for (
@@ -485,9 +474,7 @@
                         [inputId]="'re-overlay-visible-m-' + layer.id"
                         [binary]="true"
                         [ngModel]="isLayerVisible(layer.id)"
-                        (ngModelChange)="
-                          onLayerVisibleChange(layer.id, $event)
-                        "
+                        (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
                         [disabled]="!ui.customMapLayersVisible()"
                       />
                       <label [for]="'re-overlay-visible-m-' + layer.id">{{
@@ -534,15 +521,12 @@
                   </div>
                   <p-slider
                     [ngModel]="opacityPercent(layer.id)"
-                    (ngModelChange)="
-                      onOpacityPercentChange(layer.id, $event)
-                    "
+                    (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
                     [min]="0"
                     [max]="100"
                     [step]="1"
                     [disabled]="
-                      !ui.customMapLayersVisible() ||
-                      !isLayerVisible(layer.id)
+                      !ui.customMapLayersVisible() || !isLayerVisible(layer.id)
                     "
                     styleClass="rock-explorer__overlays-slider"
                   />
