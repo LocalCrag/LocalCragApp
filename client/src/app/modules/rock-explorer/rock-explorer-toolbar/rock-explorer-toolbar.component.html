@@ -275,6 +275,7 @@
                         [binary]="true"
                         [ngModel]="isLayerVisible(layer.id)"
                         (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
+                        [ngModelOptions]="{ standalone: true }"
                         [disabled]="!ui.customMapLayersVisible()"
                       />
                       <label [for]="'re-overlay-visible-' + layer.id">{{
@@ -322,6 +323,7 @@
                   <p-slider
                     [ngModel]="opacityPercent(layer.id)"
                     (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
+                    [ngModelOptions]="{ standalone: true }"
                     [min]="0"
                     [max]="100"
                     [step]="1"
@@ -359,61 +361,63 @@
         </ng-template>
       </p-button>
       <p-popover #overflowPopover>
-        <div class="rock-explorer__overflow" [formGroup]="filterForm">
-          <p-select
-            formControlName="potential"
-            [options]="ui.potentialOptions()"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="t('rockExplorer.fields.potential')"
-            [showClear]="true"
-            appendTo="body"
-          >
-            <ng-template let-option #item>
-              <span class="rock-explorer__potential-option">
-                <span
-                  class="rock-explorer__potential-swatch"
-                  [style.background]="ui.potentialColor(option.value)"
-                ></span>
-                {{ option.label }}
-              </span>
-            </ng-template>
-            <ng-template let-option #selectedItem>
-              <span class="rock-explorer__potential-option">
-                <span
-                  class="rock-explorer__potential-swatch"
-                  [style.background]="ui.potentialColor(option.value)"
-                ></span>
-                {{ option.label }}
-              </span>
-            </ng-template>
-          </p-select>
-          <p-select
-            formControlName="rockQuality"
-            [options]="ui.rockQualityOptions()"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="t('rockExplorer.fields.rockQuality')"
-            [showClear]="true"
-            appendTo="body"
-          />
-          <p-select
-            formControlName="rockType"
-            [options]="ui.rockTypeOptions()"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="t('rockExplorer.fields.rockType')"
-            [showClear]="true"
-            appendTo="body"
-          />
-          <div class="rock-explorer__overflow-actions">
-            <p-button
-              [label]="t('rockExplorer.clearFilters')"
-              (onClick)="clearFilters(); overflowPopover.hide()"
-              severity="secondary"
-              [outlined]="true"
-              [disabled]="!hasActiveFilters"
+        <div class="rock-explorer__overflow">
+          <div [formGroup]="filterForm">
+            <p-select
+              formControlName="potential"
+              [options]="ui.potentialOptions()"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="t('rockExplorer.fields.potential')"
+              [showClear]="true"
+              appendTo="body"
+            >
+              <ng-template let-option #item>
+                <span class="rock-explorer__potential-option">
+                  <span
+                    class="rock-explorer__potential-swatch"
+                    [style.background]="ui.potentialColor(option.value)"
+                  ></span>
+                  {{ option.label }}
+                </span>
+              </ng-template>
+              <ng-template let-option #selectedItem>
+                <span class="rock-explorer__potential-option">
+                  <span
+                    class="rock-explorer__potential-swatch"
+                    [style.background]="ui.potentialColor(option.value)"
+                  ></span>
+                  {{ option.label }}
+                </span>
+              </ng-template>
+            </p-select>
+            <p-select
+              formControlName="rockQuality"
+              [options]="ui.rockQualityOptions()"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="t('rockExplorer.fields.rockQuality')"
+              [showClear]="true"
+              appendTo="body"
             />
+            <p-select
+              formControlName="rockType"
+              [options]="ui.rockTypeOptions()"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="t('rockExplorer.fields.rockType')"
+              [showClear]="true"
+              appendTo="body"
+            />
+            <div class="rock-explorer__overflow-actions">
+              <p-button
+                [label]="t('rockExplorer.clearFilters')"
+                (onClick)="clearFilters(); overflowPopover.hide()"
+                severity="secondary"
+                [outlined]="true"
+                [disabled]="!hasActiveFilters"
+              />
+            </div>
           </div>
           <div
             class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
@@ -475,6 +479,7 @@
                         [binary]="true"
                         [ngModel]="isLayerVisible(layer.id)"
                         (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
+                        [ngModelOptions]="{ standalone: true }"
                         [disabled]="!ui.customMapLayersVisible()"
                       />
                       <label [for]="'re-overlay-visible-m-' + layer.id">{{
@@ -522,6 +527,7 @@
                   <p-slider
                     [ngModel]="opacityPercent(layer.id)"
                     (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
+                    [ngModelOptions]="{ standalone: true }"
                     [min]="0"
                     [max]="100"
                     [step]="1"
