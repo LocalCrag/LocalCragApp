@@ -478,9 +478,7 @@
                         [inputId]="'re-overlay-visible-m-' + layer.id"
                         [binary]="true"
                         [ngModel]="isLayerVisible(layer.id)"
-                        (ngModelChange)="
-                          onLayerVisibleChange(layer.id, $event)
-                        "
+                        (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
                         [ngModelOptions]="{ standalone: true }"
                         [disabled]="!ui.customMapLayersVisible()"
                       />
