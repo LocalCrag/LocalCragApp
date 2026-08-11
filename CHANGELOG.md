@@ -1,3 +1,10 @@
+## [1.52.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.52.0...v1.52.1) (2026-08-11)
+
+
+### Bug Fixes
+
+* **rock-explorer:** fix map crash on small devices ([#1260](https://github.com/LocalCrag/LocalCragApp/issues/1260)) ([8a79813](https://github.com/LocalCrag/LocalCragApp/commit/8a79813f7ca7b9e105db9479528e5713001b7d57))
+
 # [1.52.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.51.0...v1.52.0) (2026-08-10)
 
 
