@@ -98,8 +98,8 @@
 
   @if (loading) {
     <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
-  } @else if (noApiKey) {
-    <div class="rock-explorer__status">{{ t("rockExplorer.noApiKey") }}</div>
+  } @else if (noBaseLayer) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.noBaseLayer") }}</div>
   } @else {
     <lc-rock-explorer-toolbar />
 

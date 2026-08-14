@@ -4,7 +4,8 @@ import { updateInstanceSettings } from '../actions/instance-settings.actions';
 import { FaDefaultFormat } from '../../enums/fa-default-format';
 import { StartingPosition } from '../../enums/starting-position';
 import { LanguageCode } from '../../utility/types/language';
-import { RockExplorerMapLayer } from '../../models/rock-explorer-map-layer';
+import { MapBaseLayer } from '../../models/map-base-layer';
+import { MapOverlay } from '../../models/map-overlay';
 
 export interface InstanceSettingsState {
   instanceName: string;
@@ -21,8 +22,8 @@ export interface InstanceSettingsState {
   barChartAccentColor: string;
   darkBarChartColor: string;
   darkBarChartAccentColor: string;
-  maptilerApiKey: string;
-  rockExplorerMapLayers: RockExplorerMapLayer[];
+  mapBaseLayers: MapBaseLayer[];
+  mapOverlays: MapOverlay[];
   maxFileSize: number;
   maxImageSize: number;
   sentryEnabled: boolean;
@@ -53,8 +54,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   barChartAccentColor: null,
   darkBarChartColor: null,
   darkBarChartAccentColor: null,
-  maptilerApiKey: null,
-  rockExplorerMapLayers: [],
+  mapBaseLayers: [],
+  mapOverlays: [],
   maxFileSize: 0,
   maxImageSize: 0,
   sentryEnabled: false,
@@ -88,8 +89,8 @@ const instanceSettingsReducer = createReducer(
     barChartAccentColor: action.settings.barChartAccentColor,
     darkBarChartColor: action.settings.darkBarChartColor,
     darkBarChartAccentColor: action.settings.darkBarChartAccentColor,
-    maptilerApiKey: action.settings.maptilerApiKey,
-    rockExplorerMapLayers: action.settings.rockExplorerMapLayers ?? [],
+    mapBaseLayers: action.settings.mapBaseLayers ?? [],
+    mapOverlays: action.settings.mapOverlays ?? [],
     maxFileSize: action.settings.maxFileSize,
     maxImageSize: action.settings.maxImageSize,
     sentryEnabled: action.settings.sentryEnabled,

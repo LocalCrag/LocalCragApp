@@ -30,11 +30,12 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { InstanceSettings } from '../../../models/instance-settings';
+import { MapBaseLayer } from '../../../models/map-base-layer';
 import {
-  RockExplorerMapLayer,
-  RockExplorerMapLayerSourceKind,
-  RockExplorerMapLayerTileSize,
-} from '../../../models/rock-explorer-map-layer';
+  MapOverlay,
+  MapOverlaySourceKind,
+  MapOverlayTileSize,
+} from '../../../models/map-overlay';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { UploadService } from '../../../services/crud/upload.service';
 import { ButtonModule } from 'primeng/button';
@@ -46,11 +47,11 @@ import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
-import { PasswordModule } from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
+import { MultiSelect } from 'primeng/multiselect';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
@@ -77,6 +78,32 @@ const tilesUrlTemplateValidator: ValidatorFn = (
   return null;
 };
 
+/** Non-empty base-layer lists must mark one topo and one Rock Explorer default. */
+const baseLayersDefaultValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  const layers = control as FormArray;
+  if (!layers?.length) {
+    return null;
+  }
+  const hasTopo = layers.controls.some(
+    (group) => group.get('topoDefault')?.value === true,
+  );
+  const hasRockExplorer = layers.controls.some(
+    (group) => group.get('rockExplorerDefault')?.value === true,
+  );
+  if (!hasTopo && !hasRockExplorer) {
+    return { baseLayerDefaultsRequired: true };
+  }
+  if (!hasTopo) {
+    return { baseLayerTopoDefaultRequired: true };
+  }
+  if (!hasRockExplorer) {
+    return { baseLayerRockExplorerDefaultRequired: true };
+  }
+  return null;
+};
+
 @Component({
   selector: 'lc-instance-settings-form',
   imports: [
@@ -91,12 +118,11 @@ const tilesUrlTemplateValidator: ValidatorFn = (
     TranslocoPipe,
     ColorPickerModule,
     DividerModule,
-    PasswordModule,
-    DividerModule,
     TooltipModule,
     ToggleSwitch,
     Checkbox,
     Select,
+    MultiSelect,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -134,16 +160,17 @@ export class InstanceSettingsFormComponent implements OnInit {
   public timezoneOptions = getInstanceTimezoneOptions();
   public sourceKindOptions: {
     label: string;
-    value: RockExplorerMapLayerSourceKind;
+    value: MapOverlaySourceKind;
   }[] = [];
   public tileSizeOptions: {
     label: string;
-    value: RockExplorerMapLayerTileSize;
+    value: MapOverlayTileSize;
   }[] = [
     { label: '256', value: 256 },
     { label: '512', value: 512 },
   ];
   public readonly maxMapLayers = 10;
+  public readonly maxBaseLayers = 10;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -225,13 +252,135 @@ export class InstanceSettingsFormComponent implements OnInit {
       });
   }
 
-  rockExplorerMapLayersControls(): FormArray {
-    return this.instanceSettingsForm.get('rockExplorerMapLayers') as FormArray;
+  mapBaseLayersControls(): FormArray {
+    return this.instanceSettingsForm.get('mapBaseLayers') as FormArray;
   }
 
-  private createMapLayerGroup(
-    layer?: Partial<RockExplorerMapLayer>,
-  ): FormGroup {
+  mapOverlaysControls(): FormArray {
+    return this.instanceSettingsForm.get('mapOverlays') as FormArray;
+  }
+
+  /** Overlay options for the base-layer default-overlays MultiSelect. */
+  overlaySelectOptions(): { label: string; value: string }[] {
+    return (this.mapOverlaysControls().getRawValue() ?? [])
+      .filter((layer: { id?: string }) => !!layer?.id)
+      .map((layer: { id: string; name?: string }) => ({
+        value: layer.id,
+        label: (layer.name && String(layer.name).trim()) || layer.id,
+      }));
+  }
+
+  private createBaseLayerGroup(layer?: Partial<MapBaseLayer>): FormGroup {
+    return this.fb.group({
+      id: [layer?.id ?? crypto.randomUUID()],
+      name: [
+        layer?.name ?? '',
+        [Validators.required, Validators.maxLength(120)],
+      ],
+      styleUrl: [
+        layer?.styleUrl ?? '',
+        [Validators.required, Validators.maxLength(2048), httpUrlValidator()],
+      ],
+      topoDefault: [layer?.topoDefault === true],
+      rockExplorerDefault: [layer?.rockExplorerDefault === true],
+      defaultOverlayIds: [layer?.defaultOverlayIds ?? []],
+    });
+  }
+
+  addBaseLayer(): void {
+    if (this.mapBaseLayersControls().length >= this.maxBaseLayers) {
+      return;
+    }
+    const layers = this.mapBaseLayersControls();
+    const isFirst = layers.length === 0;
+    layers.push(
+      this.createBaseLayerGroup({
+        topoDefault: isFirst,
+        rockExplorerDefault: isFirst,
+      }),
+    );
+    this.ensureBaseLayerRoleDefaults();
+  }
+
+  removeBaseLayer(index: number): void {
+    this.mapBaseLayersControls().removeAt(index);
+    this.ensureBaseLayerRoleDefaults();
+  }
+
+  moveBaseLayer(index: number, direction: 'up' | 'down'): void {
+    const layers = this.mapBaseLayersControls();
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= layers.length) {
+      return;
+    }
+    const control = layers.at(index);
+    layers.removeAt(index);
+    layers.insert(target, control);
+  }
+
+  /**
+   * Exclusive checkbox for a role (`topoDefault` / `rockExplorerDefault`).
+   * Refuses to clear the last checked layer for that role.
+   */
+  onBaseLayerRoleDefaultChange(
+    index: number,
+    role: 'topoDefault' | 'rockExplorerDefault',
+    checked: boolean,
+  ): void {
+    const layers = this.mapBaseLayersControls();
+    if (!checked) {
+      const otherDefault = layers.controls.some(
+        (group, i) => i !== index && group.get(role)?.value === true,
+      );
+      if (!otherDefault) {
+        layers.at(index).get(role)?.setValue(true, { emitEvent: false });
+        layers.updateValueAndValidity();
+        return;
+      }
+      layers.at(index).get(role)?.setValue(false, { emitEvent: false });
+      layers.updateValueAndValidity();
+      return;
+    }
+    layers.controls.forEach((group, i) => {
+      group.get(role)?.setValue(i === index, { emitEvent: false });
+    });
+    layers.updateValueAndValidity();
+  }
+
+  /** Ensures each role has a selected base layer when the list is non-empty. */
+  private ensureBaseLayerRoleDefaults(): void {
+    const layers = this.mapBaseLayersControls();
+    if (!layers.length) {
+      layers.updateValueAndValidity();
+      return;
+    }
+    for (const role of ['topoDefault', 'rockExplorerDefault'] as const) {
+      const hasRole = layers.controls.some(
+        (group) => group.get(role)?.value === true,
+      );
+      if (!hasRole) {
+        layers.at(0).get(role)?.setValue(true, { emitEvent: false });
+      }
+    }
+    layers.updateValueAndValidity();
+  }
+
+  /** Drops overlay ids from base-layer defaults when the overlay was removed. */
+  private pruneBaseLayerOverlaySelections(): void {
+    const validIds = new Set(
+      this.overlaySelectOptions().map((option) => option.value),
+    );
+    for (const group of this.mapBaseLayersControls().controls) {
+      const control = group.get('defaultOverlayIds');
+      const current = (control?.value ?? []) as string[];
+      const next = current.filter((id) => validIds.has(id));
+      if (next.length !== current.length) {
+        control?.setValue(next, { emitEvent: false });
+      }
+    }
+  }
+
+  private createMapLayerGroup(layer?: Partial<MapOverlay>): FormGroup {
     return this.fb.group(
       {
         id: [layer?.id ?? crypto.randomUUID()],
@@ -250,25 +399,25 @@ export class InstanceSettingsFormComponent implements OnInit {
           [Validators.required, Validators.min(0), Validators.max(1)],
         ],
         tileSize: [layer?.tileSize ?? 256, [Validators.required]],
-        defaultOn: [layer?.defaultOn !== false],
       },
       { validators: [tilesUrlTemplateValidator] },
     );
   }
 
   addMapLayer(): void {
-    if (this.rockExplorerMapLayersControls().length >= this.maxMapLayers) {
+    if (this.mapOverlaysControls().length >= this.maxMapLayers) {
       return;
     }
-    this.rockExplorerMapLayersControls().push(this.createMapLayerGroup());
+    this.mapOverlaysControls().push(this.createMapLayerGroup());
   }
 
   removeMapLayer(index: number): void {
-    this.rockExplorerMapLayersControls().removeAt(index);
+    this.mapOverlaysControls().removeAt(index);
+    this.pruneBaseLayerOverlaySelections();
   }
 
   moveMapLayer(index: number, direction: 'up' | 'down'): void {
-    const layers = this.rockExplorerMapLayersControls();
+    const layers = this.mapOverlaysControls();
     const target = direction === 'up' ? index - 1 : index + 1;
     if (target < 0 || target >= layers.length) {
       return;
@@ -301,8 +450,10 @@ export class InstanceSettingsFormComponent implements OnInit {
       darkBarChartAccentColor: [null],
       matomoTrackerUrl: [null, [Validators.maxLength(120)]],
       matomoSiteId: [null, [Validators.maxLength(120)]],
-      maptilerApiKey: [null, [Validators.maxLength(120)]],
-      rockExplorerMapLayers: this.fb.array([]),
+      mapBaseLayers: this.fb.array([], {
+        validators: [baseLayersDefaultValidator],
+      }),
+      mapOverlays: this.fb.array([]),
       faDefaultFormat: [null],
       defaultStartingPosition: [null, [Validators.required]],
       rankingPastWeeks: [null],
@@ -313,9 +464,15 @@ export class InstanceSettingsFormComponent implements OnInit {
 
   private setFormValue() {
     this.instanceSettingsForm.enable();
-    const layersArray = this.rockExplorerMapLayersControls();
+    const baseLayersArray = this.mapBaseLayersControls();
+    baseLayersArray.clear();
+    (this.instanceSettings.mapBaseLayers ?? []).forEach((layer) => {
+      baseLayersArray.push(this.createBaseLayerGroup(layer));
+    });
+    this.ensureBaseLayerRoleDefaults();
+    const layersArray = this.mapOverlaysControls();
     layersArray.clear();
-    (this.instanceSettings.rockExplorerMapLayers ?? []).forEach((layer) => {
+    (this.instanceSettings.mapOverlays ?? []).forEach((layer) => {
       layersArray.push(this.createMapLayerGroup(layer));
     });
     this.instanceSettingsForm.patchValue({
@@ -345,7 +502,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       ),
       matomoSiteId: this.instanceSettings.matomoSiteId,
       matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
-      maptilerApiKey: this.instanceSettings.maptilerApiKey,
       faDefaultFormat: this.instanceSettings.faDefaultFormat,
       defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
       rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
@@ -408,12 +564,23 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.instanceSettingsForm.get('matomoSiteId').value;
       instanceSettings.matomoTrackerUrl =
         this.instanceSettingsForm.get('matomoTrackerUrl').value;
-      instanceSettings.maptilerApiKey =
-        this.instanceSettingsForm.get('maptilerApiKey').value;
-      instanceSettings.rockExplorerMapLayers = (
-        this.rockExplorerMapLayersControls().getRawValue() ?? []
+      instanceSettings.mapBaseLayers = (
+        this.mapBaseLayersControls().getRawValue() ?? []
+      ).map((layer) => {
+        const validOverlayIds = new Set(
+          this.overlaySelectOptions().map((option) => option.value),
+        );
+        return MapBaseLayer.deserialize({
+          ...layer,
+          defaultOverlayIds: (layer.defaultOverlayIds ?? []).filter(
+            (id: string) => validOverlayIds.has(id),
+          ),
+        });
+      });
+      instanceSettings.mapOverlays = (
+        this.mapOverlaysControls().getRawValue() ?? []
       ).map((layer) =>
-        RockExplorerMapLayer.deserialize({
+        MapOverlay.deserialize({
           ...layer,
           type: 'raster',
         }),

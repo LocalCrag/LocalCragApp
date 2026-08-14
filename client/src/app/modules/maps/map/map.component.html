@@ -1,13 +1,13 @@
 <ng-container *transloco="let t; read: 'map'">
-  @if (markersSource?.features?.length > 0 && apiKey) {
+  @if (markersSource?.features?.length > 0 && hasMapStyle) {
     <h4>{{ t("map") }}:</h4>
   }
 </ng-container>
 <div
   class="map"
   #map
-  [hidden]="!(markersSource?.features?.length > 0 && apiKey)"
+  [hidden]="!(markersSource?.features?.length > 0 && hasMapStyle)"
 ></div>
-@if (markersSource?.features?.length > 0 && apiKey) {
+@if (markersSource?.features?.length > 0 && hasMapStyle) {
   <lc-map-item-info-dialog></lc-map-item-info-dialog>
 }

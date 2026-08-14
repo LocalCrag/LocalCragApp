@@ -8,7 +8,6 @@ import { Slider } from 'primeng/slider';
 import { Checkbox } from 'primeng/checkbox';
 import { Tooltip } from 'primeng/tooltip';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
 
 @Component({
@@ -29,7 +28,6 @@ import { RockExplorerUiService } from '../rock-explorer-ui.service';
 })
 export class RockExplorerToolbarComponent implements OnInit {
   readonly ui = inject(RockExplorerUiService);
-  readonly MapStyles = MapStyles;
 
   public filterForm = inject(FormBuilder).group({
     potential: [null as string | null],

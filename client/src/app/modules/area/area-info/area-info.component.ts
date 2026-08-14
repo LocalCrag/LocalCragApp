@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Observable } from 'rxjs';
-import { MapStyles } from '../../../enums/map-styles';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { GradeDistribution } from '../../../models/scale';
@@ -56,6 +55,4 @@ export class AreaInfoComponent implements OnInit {
     });
     this.fetchAreaGrades = this.areasService.getAreaGrades(areaSlug);
   }
-
-  protected readonly MapStyles = MapStyles;
 }
