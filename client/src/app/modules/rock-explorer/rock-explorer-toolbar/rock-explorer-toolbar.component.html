@@ -216,9 +216,7 @@
       <div class="rock-explorer__layer-toggle">
         @for (layer of ui.baseLayers(); track layer.id) {
           <p-button
-            [severity]="
-              ui.mapStyle() === layer.id ? 'primary' : 'secondary'
-            "
+            [severity]="ui.mapStyle() === layer.id ? 'primary' : 'secondary'"
             [label]="layer.name"
             (onClick)="
               ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })

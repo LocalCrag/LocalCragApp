@@ -443,20 +443,14 @@
           ></span>
         </div>
         @if (
-          mapBaseLayersControls().hasError(
-            "baseLayerDefaultsRequired"
-          ) ||
-          mapBaseLayersControls().hasError(
-            "baseLayerTopoDefaultRequired"
-          ) ||
+          mapBaseLayersControls().hasError("baseLayerDefaultsRequired") ||
+          mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") ||
           mapBaseLayersControls().hasError(
             "baseLayerRockExplorerDefaultRequired"
           )
         ) {
           <small class="lc-error">{{
-            mapBaseLayersControls().hasError(
-              "baseLayerTopoDefaultRequired"
-            ) &&
+            mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") &&
             !mapBaseLayersControls().hasError(
               "baseLayerRockExplorerDefaultRequired"
             )
@@ -474,11 +468,7 @@
       </div>
 
       <div formArrayName="mapBaseLayers">
-        @for (
-          _ of mapBaseLayersControls().controls;
-          track _;
-          let i = $index
-        ) {
+        @for (_ of mapBaseLayersControls().controls; track _; let i = $index) {
           <div [formGroupName]="i" class="mb-4">
             <lc-form-entry-row>
               <div class="flex flex-col gap-3 w-full">
@@ -504,9 +494,11 @@
                 </div>
 
                 <div class="flex flex-col gap-2" lcControlGroup>
-                  <label class="form-label" [for]="'base-layer-style-url-' + i">{{
-                    t("baseLayerStyleUrlLabel")
-                  }}</label>
+                  <label
+                    class="form-label"
+                    [for]="'base-layer-style-url-' + i"
+                    >{{ t("baseLayerStyleUrlLabel") }}</label
+                  >
                   <input
                     pInputText
                     [id]="'base-layer-style-url-' + i"
@@ -647,11 +639,7 @@
       </div>
 
       <div formArrayName="mapOverlays">
-        @for (
-          _ of mapOverlaysControls().controls;
-          track _;
-          let i = $index
-        ) {
+        @for (_ of mapOverlaysControls().controls; track _; let i = $index) {
           <div [formGroupName]="i" class="mb-4">
             <lc-form-entry-row>
               <div class="flex flex-col gap-3 w-full">
