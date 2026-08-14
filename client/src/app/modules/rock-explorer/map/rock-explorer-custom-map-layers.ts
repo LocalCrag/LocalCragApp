@@ -1,5 +1,5 @@
 import { Map as MaplibreMap, RasterSourceSpecification } from 'maplibre-gl';
-import { RockExplorerMapLayer } from '../../../models/rock-explorer-map-layer';
+import { MapOverlay } from '../../../models/map-overlay';
 
 /**
  * Applies instance-configured raster overlays on Rock Explorer maps only.
@@ -11,7 +11,7 @@ export class RockExplorerCustomMapLayers {
   constructor(private readonly map: MaplibreMap) {}
 
   apply(
-    configs: RockExplorerMapLayer[] | null | undefined,
+    configs: MapOverlay[] | null | undefined,
     masterVisible: boolean,
     opacityOverrides?: Record<string, number> | null,
     layerVisibility?: Record<string, boolean> | null,
@@ -135,7 +135,7 @@ export class RockExplorerCustomMapLayers {
   }
 
   static resolveOpacity(
-    cfg: RockExplorerMapLayer,
+    cfg: MapOverlay,
     opacityOverrides?: Record<string, number> | null,
   ): number {
     const override = opacityOverrides?.[cfg.id];

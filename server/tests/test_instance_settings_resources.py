@@ -27,8 +27,8 @@ def _base_post_data(instance_settings=None, **overrides):
         "darkBarChartAccentColor": "rgb(253, 224, 71)",
         "matomoTrackerUrl": "https://matomo-example-2.localcrag.cloud",
         "matomoSiteId": "2",
-        "maptilerApiKey": "maptiler",
-        "rockExplorerMapLayers": [],
+        "mapBaseLayers": [],
+        "mapOverlays": [],
         "gymMode": True,
         "displayUserGrades": True,
         "displayUserRatings": True,
@@ -65,8 +65,8 @@ def test_successful_get_instance_settings(client):
     assert res["darkBarChartAccentColor"] == instance_settings.dark_bar_chart_accent_color
     assert res["matomoTrackerUrl"] == instance_settings.matomo_tracker_url
     assert res["matomoSiteId"] == instance_settings.matomo_site_id
-    assert res["maptilerApiKey"] == instance_settings.maptiler_api_key
-    assert res["rockExplorerMapLayers"] == []
+    assert res["mapBaseLayers"] == []
+    assert res["mapOverlays"] == []
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
     assert res["sentryEnabled"] is False
@@ -108,8 +108,8 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["darkBarChartAccentColor"] == "rgb(253, 224, 71)"
     assert res["matomoTrackerUrl"] == "https://matomo-example-2.localcrag.cloud"
     assert res["matomoSiteId"] == "2"
-    assert res["maptilerApiKey"] == "maptiler"
-    assert res["rockExplorerMapLayers"] == []
+    assert res["mapBaseLayers"] == []
+    assert res["mapOverlays"] == []
     assert res["maxFileSize"] == 5
     assert res["maxImageSize"] == 4
     assert res["sentryEnabled"] is False
@@ -125,7 +125,7 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["timezone"] == "Europe/Berlin"
 
 
-def test_successful_put_rock_explorer_map_layers(client, moderator_token, any_file):
+def test_successful_put_map_overlays(client, moderator_token, any_file):
     layers = [
         {
             "id": "dgm-hillshade",
@@ -135,7 +135,6 @@ def test_successful_put_rock_explorer_map_layers(client, moderator_token, any_fi
             "type": "raster",
             "opacity": 0.45,
             "tileSize": 256,
-            "defaultOn": True,
         },
         {
             "id": "xyz-overlay",
@@ -145,30 +144,123 @@ def test_successful_put_rock_explorer_map_layers(client, moderator_token, any_fi
             "type": "raster",
             "opacity": 0.5,
             "tileSize": 512,
-            "defaultOn": False,
         },
     ]
     post_data = _base_post_data(
         logoImage=str(any_file.id),
         faviconImage=str(any_file.id),
         bgImage=str(any_file.id),
-        rockExplorerMapLayers=layers,
+        mapOverlays=layers,
     )
     rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200, rv.json
-    assert rv.json["rockExplorerMapLayers"] == layers
+    assert rv.json["mapOverlays"] == layers
 
     rv = client.get("/api/instance-settings")
     assert rv.status_code == 200
-    assert rv.json["rockExplorerMapLayers"] == layers
+    assert rv.json["mapOverlays"] == layers
 
 
-def test_reject_invalid_rock_explorer_map_layer_url(client, moderator_token, any_file):
+def test_successful_put_map_base_layers(client, moderator_token, any_file):
+    layers = [
+        {
+            "id": "basemap-col",
+            "name": "basemap.de Farbe",
+            "styleUrl": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
+            "topoDefault": True,
+            "rockExplorerDefault": True,
+            "defaultOverlayIds": ["dgm-hillshade"],
+        },
+        {
+            "id": "maptiler-topo",
+            "name": "Topo",
+            "styleUrl": "https://api.maptiler.com/maps/topo-v2/style.json?key=abc",
+            "topoDefault": False,
+            "rockExplorerDefault": False,
+            "defaultOverlayIds": [],
+        },
+    ]
     post_data = _base_post_data(
         logoImage=str(any_file.id),
         faviconImage=str(any_file.id),
         bgImage=str(any_file.id),
-        rockExplorerMapLayers=[
+        mapBaseLayers=layers,
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 200, rv.json
+    assert rv.json["mapBaseLayers"] == layers
+
+    rv = client.get("/api/instance-settings")
+    assert rv.status_code == 200
+    assert rv.json["mapBaseLayers"] == layers
+
+
+def test_reject_map_base_layers_without_topo_default(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapBaseLayers=[
+            {
+                "id": "basemap-col",
+                "name": "basemap.de Farbe",
+                "styleUrl": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
+                "topoDefault": False,
+                "rockExplorerDefault": True,
+                "defaultOverlayIds": [],
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400, rv.json
+
+
+def test_reject_map_base_layers_without_rock_explorer_default(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapBaseLayers=[
+            {
+                "id": "basemap-col",
+                "name": "basemap.de Farbe",
+                "styleUrl": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
+                "topoDefault": True,
+                "rockExplorerDefault": False,
+                "defaultOverlayIds": [],
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400, rv.json
+
+
+def test_reject_invalid_map_base_layer_url(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapBaseLayers=[
+            {
+                "id": "bad",
+                "name": "Bad",
+                "styleUrl": "ftp://example.org/style.json",
+                "topoDefault": True,
+                "rockExplorerDefault": True,
+                "defaultOverlayIds": [],
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400, rv.json
+
+
+def test_reject_invalid_map_overlay_url(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapOverlays=[
             {
                 "id": "bad",
                 "name": "Bad",
@@ -177,7 +269,6 @@ def test_reject_invalid_rock_explorer_map_layer_url(client, moderator_token, any
                 "type": "raster",
                 "opacity": 0.5,
                 "tileSize": 256,
-                "defaultOn": True,
             }
         ],
     )
@@ -190,7 +281,7 @@ def test_reject_tiles_url_missing_xyz(client, moderator_token, any_file):
         logoImage=str(any_file.id),
         faviconImage=str(any_file.id),
         bgImage=str(any_file.id),
-        rockExplorerMapLayers=[
+        mapOverlays=[
             {
                 "id": "bad-tiles",
                 "name": "Bad Tiles",
@@ -199,7 +290,6 @@ def test_reject_tiles_url_missing_xyz(client, moderator_token, any_file):
                 "type": "raster",
                 "opacity": 0.5,
                 "tileSize": 256,
-                "defaultOn": True,
             }
         ],
     )

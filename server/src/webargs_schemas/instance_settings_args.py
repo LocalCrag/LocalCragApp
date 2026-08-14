@@ -20,7 +20,35 @@ def _validate_map_layer_item(item: dict) -> None:
             raise ValidationError("tiles url must contain {z}, {x}, and {y} placeholders")
 
 
-_rock_explorer_map_layer_item = {
+def _validate_base_layer_item(item: dict) -> None:
+    style_url = item.get("styleUrl") or ""
+    _validate_map_layer_url(style_url)
+
+
+def _validate_base_layers(layers: list) -> None:
+    if not layers:
+        return
+    if not any(bool(item.get("topoDefault")) for item in layers):
+        raise ValidationError("at least one base layer must be marked as topo default")
+    if not any(bool(item.get("rockExplorerDefault")) for item in layers):
+        raise ValidationError("at least one base layer must be marked as rock explorer default")
+
+
+_map_base_layer_item = {
+    "id": fields.Str(required=True, validate=validate.Length(min=1, max=64)),
+    "name": fields.Str(required=True, validate=validate.Length(min=1, max=120)),
+    "styleUrl": fields.Str(required=True, validate=validate.Length(max=2048)),
+    "topoDefault": fields.Bool(load_default=False),
+    "rockExplorerDefault": fields.Bool(load_default=False),
+    "defaultOverlayIds": fields.List(
+        fields.Str(validate=validate.Length(min=1, max=64)),
+        load_default=list,
+        validate=validate.Length(max=10),
+    ),
+}
+
+
+_map_overlay_item = {
     "id": fields.Str(required=True, validate=validate.Length(min=1, max=64)),
     "name": fields.Str(required=True, validate=validate.Length(min=1, max=120)),
     "sourceKind": fields.Str(required=True, validate=validate.OneOf(["tilejson", "tiles"])),
@@ -28,7 +56,6 @@ _rock_explorer_map_layer_item = {
     "type": fields.Str(required=True, validate=validate.OneOf(["raster"])),
     "opacity": fields.Float(required=True, validate=validate.Range(min=0, max=1)),
     "tileSize": fields.Integer(load_default=256, validate=validate.OneOf([256, 512])),
-    "defaultOn": fields.Bool(load_default=True),
 }
 
 
@@ -52,9 +79,13 @@ instance_settings_args = {
     "language": fields.Str(required=True, validate=validate_language),
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "matomoSiteId": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
-    "maptilerApiKey": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
-    "rockExplorerMapLayers": fields.List(
-        fields.Nested(_rock_explorer_map_layer_item, validate=_validate_map_layer_item),
+    "mapBaseLayers": fields.List(
+        fields.Nested(_map_base_layer_item, validate=_validate_base_layer_item),
+        required=True,
+        validate=[validate.Length(max=10), _validate_base_layers],
+    ),
+    "mapOverlays": fields.List(
+        fields.Nested(_map_overlay_item, validate=_validate_map_layer_item),
         required=True,
         validate=validate.Length(max=10),
     ),

@@ -433,21 +433,198 @@
         ><b>{{ t("mapSettings") }}</b></p-divider
       >
 
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="maptiler-api-key">{{
-          t("maptilerApiKeyLabel")
-        }}</label>
-        <p-password
-          [toggleMask]="true"
-          [feedback]="false"
-          id="maptiler-api-key"
-          formControlName="maptilerApiKey"
-          placeholder="{{ t('maptilerApiKeyPlaceholder') }}"
-          lcFormControl
+      <div class="mt-2 mb-2">
+        <div class="form-label flex items-center">
+          <h4 class="m-0">{{ t("baseLayersLabel") }}</h4>
+          <span
+            class="pi pi-question-circle ml-2"
+            [pTooltip]="t('baseLayersDescription')"
+            tooltipPosition="right"
+          ></span>
+        </div>
+        @if (
+          mapBaseLayersControls().hasError("baseLayerDefaultsRequired") ||
+          mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") ||
+          mapBaseLayersControls().hasError(
+            "baseLayerRockExplorerDefaultRequired"
+          )
+        ) {
+          <small class="lc-error">{{
+            mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") &&
+            !mapBaseLayersControls().hasError(
+              "baseLayerRockExplorerDefaultRequired"
+            )
+              ? t("baseLayerTopoDefaultRequired")
+              : mapBaseLayersControls().hasError(
+                    "baseLayerRockExplorerDefaultRequired"
+                  ) &&
+                  !mapBaseLayersControls().hasError(
+                    "baseLayerTopoDefaultRequired"
+                  )
+                ? t("baseLayerRockExplorerDefaultRequired")
+                : t("baseLayerDefaultsRequired")
+          }}</small>
+        }
+      </div>
+
+      <div formArrayName="mapBaseLayers">
+        @for (_ of mapBaseLayersControls().controls; track _; let i = $index) {
+          <div [formGroupName]="i" class="mb-4">
+            <lc-form-entry-row>
+              <div class="flex flex-col gap-3 w-full">
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label map-layer-first-label"
+                    [for]="'base-layer-name-' + i"
+                    >{{ t("baseLayerNameLabel") }}</label
+                  >
+                  <input
+                    pInputText
+                    [id]="'base-layer-name-' + i"
+                    formControlName="name"
+                    placeholder="{{ t('baseLayerNamePlaceholder') }}"
+                    lcFormControl
+                  />
+                  <small class="lc-error" *lcIfError="'required'">{{
+                    "validation.required" | transloco
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'maxlength'">{{
+                    "validation.maxLength" | transloco: { max: 120 }
+                  }}</small>
+                </div>
+
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label"
+                    [for]="'base-layer-style-url-' + i"
+                    >{{ t("baseLayerStyleUrlLabel") }}</label
+                  >
+                  <input
+                    pInputText
+                    [id]="'base-layer-style-url-' + i"
+                    formControlName="styleUrl"
+                    placeholder="{{ t('baseLayerStyleUrlPlaceholder') }}"
+                    lcFormControl
+                  />
+                  <small class="lc-error" *lcIfError="'required'">{{
+                    "validation.required" | transloco
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'maxlength'">{{
+                    "validation.maxLength" | transloco: { max: 2048 }
+                  }}</small>
+                  <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
+                    t("baseLayerStyleUrlInvalid")
+                  }}</small>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-2" lcControlGroup>
+                    <p-checkbox
+                      [inputId]="'base-layer-topo-default-' + i"
+                      formControlName="topoDefault"
+                      [binary]="true"
+                      (onChange)="
+                        onBaseLayerRoleDefaultChange(
+                          i,
+                          'topoDefault',
+                          $event.checked
+                        )
+                      "
+                      lcFormControl
+                    />
+                    <label [for]="'base-layer-topo-default-' + i">{{
+                      t("baseLayerTopoDefaultLabel")
+                    }}</label>
+                  </div>
+                  <div class="flex items-center gap-2" lcControlGroup>
+                    <p-checkbox
+                      [inputId]="'base-layer-re-default-' + i"
+                      formControlName="rockExplorerDefault"
+                      [binary]="true"
+                      (onChange)="
+                        onBaseLayerRoleDefaultChange(
+                          i,
+                          'rockExplorerDefault',
+                          $event.checked
+                        )
+                      "
+                      lcFormControl
+                    />
+                    <label [for]="'base-layer-re-default-' + i">{{
+                      t("baseLayerRockExplorerDefaultLabel")
+                    }}</label>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label"
+                    [for]="'base-layer-default-overlays-' + i"
+                    >{{ t("baseLayerDefaultOverlaysLabel") }}</label
+                  >
+                  <p-multiSelect
+                    [inputId]="'base-layer-default-overlays-' + i"
+                    formControlName="defaultOverlayIds"
+                    [options]="overlaySelectOptions()"
+                    optionLabel="label"
+                    optionValue="value"
+                    [placeholder]="t('baseLayerDefaultOverlaysPlaceholder')"
+                    [disabled]="overlaySelectOptions().length === 0"
+                    display="chip"
+                    appendTo="body"
+                    lcFormControl
+                    class="w-full"
+                  />
+                  <small class="text-muted-color">{{
+                    t("baseLayerDefaultOverlaysHelp")
+                  }}</small>
+                </div>
+              </div>
+              <div actions class="map-layer-actions">
+                <p-button
+                  [disabled]="loadingState === loadingStates.LOADING || i === 0"
+                  icon="pi pi-arrow-up"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  (click)="moveBaseLayer(i, 'up')"
+                  [attr.aria-label]="t('baseLayerMoveUp')"
+                />
+                <p-button
+                  [disabled]="
+                    loadingState === loadingStates.LOADING ||
+                    i === mapBaseLayersControls().length - 1
+                  "
+                  icon="pi pi-arrow-down"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  (click)="moveBaseLayer(i, 'down')"
+                  [attr.aria-label]="t('baseLayerMoveDown')"
+                />
+                <p-button
+                  [disabled]="loadingState === loadingStates.LOADING"
+                  icon="pi pi-trash"
+                  styleClass="p-button-danger"
+                  (click)="removeBaseLayer(i)"
+                />
+              </div>
+            </lc-form-entry-row>
+          </div>
+        }
+      </div>
+
+      <div class="lc-button-group mt-2 mb-3">
+        <p-button
+          label="{{ t('addBaseLayer') }}"
+          (click)="addBaseLayer()"
+          icon="pi pi-plus-circle"
+          class="responsive-button"
+          [disabled]="
+            loadingState === loadingStates.LOADING ||
+            mapBaseLayersControls().length >= maxBaseLayers
+          "
         />
-        <small class="lc-error" *lcIfError="'maxlength'">{{
-          "validation.maxLength" | transloco: { max: 120 }
-        }}</small>
       </div>
 
       <div class="mt-2 mb-2">
@@ -461,12 +638,8 @@
         </div>
       </div>
 
-      <div formArrayName="rockExplorerMapLayers">
-        @for (
-          _ of rockExplorerMapLayersControls().controls;
-          track _;
-          let i = $index
-        ) {
+      <div formArrayName="mapOverlays">
+        @for (_ of mapOverlaysControls().controls; track _; let i = $index) {
           <div [formGroupName]="i" class="mb-4">
             <lc-form-entry-row>
               <div class="flex flex-col gap-3 w-full">
@@ -532,7 +705,7 @@
                 </div>
 
                 @if (
-                  rockExplorerMapLayersControls()
+                  mapOverlaysControls()
                     .at(i)
                     .hasError("tilesUrlMissingPlaceholders")
                 ) {
@@ -586,18 +759,6 @@
                     />
                   </div>
                 </div>
-
-                <div class="flex items-center gap-2" lcControlGroup>
-                  <p-checkbox
-                    [inputId]="'map-layer-default-on-' + i"
-                    formControlName="defaultOn"
-                    [binary]="true"
-                    lcFormControl
-                  />
-                  <label [for]="'map-layer-default-on-' + i">{{
-                    t("mapLayerDefaultOnLabel")
-                  }}</label>
-                </div>
               </div>
               <div actions class="map-layer-actions">
                 <p-button
@@ -612,7 +773,7 @@
                 <p-button
                   [disabled]="
                     loadingState === loadingStates.LOADING ||
-                    i === rockExplorerMapLayersControls().length - 1
+                    i === mapOverlaysControls().length - 1
                   "
                   icon="pi pi-arrow-down"
                   [rounded]="true"
@@ -641,7 +802,7 @@
           class="responsive-button"
           [disabled]="
             loadingState === loadingStates.LOADING ||
-            rockExplorerMapLayersControls().length >= maxMapLayers
+            mapOverlaysControls().length >= maxMapLayers
           "
         />
       </div>

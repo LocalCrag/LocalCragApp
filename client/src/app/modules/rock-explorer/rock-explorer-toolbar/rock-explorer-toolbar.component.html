@@ -214,26 +214,16 @@
         </p-button>
       }
       <div class="rock-explorer__layer-toggle">
-        <p-button
-          [severity]="
-            ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
-          "
-          [label]="t('rockExplorer.mapStyle.topo')"
-          (onClick)="
-            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
-          "
-          size="small"
-        />
-        <p-button
-          [severity]="
-            ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
-          "
-          [label]="t('rockExplorer.mapStyle.satellite')"
-          (onClick)="
-            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.SATELLITE })
-          "
-          size="small"
-        />
+        @for (layer of ui.baseLayers(); track layer.id) {
+          <p-button
+            [severity]="ui.mapStyle() === layer.id ? 'primary' : 'secondary'"
+            [label]="layer.name"
+            (onClick)="
+              ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
+            "
+            size="small"
+          />
+        }
         @if (ui.hasCustomMapLayers()) {
           <p-button
             [severity]="ui.customMapLayersVisible() ? 'primary' : 'secondary'"
@@ -422,29 +412,18 @@
           <div
             class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
           >
-            <p-button
-              [severity]="
-                ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
-              "
-              [label]="t('rockExplorer.mapStyle.topo')"
-              (onClick)="
-                ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
-              "
-              size="small"
-            />
-            <p-button
-              [severity]="
-                ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
-              "
-              [label]="t('rockExplorer.mapStyle.satellite')"
-              (onClick)="
-                ui.dispatch({
-                  type: 'switchMapStyle',
-                  style: MapStyles.SATELLITE,
-                })
-              "
-              size="small"
-            />
+            @for (layer of ui.baseLayers(); track layer.id) {
+              <p-button
+                [severity]="
+                  ui.mapStyle() === layer.id ? 'primary' : 'secondary'
+                "
+                [label]="layer.name"
+                (onClick)="
+                  ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
+                "
+                size="small"
+              />
+            }
           </div>
           @if (ui.hasCustomMapLayers()) {
             <div class="rock-explorer__overlays-panel">

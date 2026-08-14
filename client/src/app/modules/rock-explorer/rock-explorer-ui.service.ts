@@ -1,6 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Subject } from 'rxjs';
-import { MapStyles } from '../../enums/map-styles';
 import { RockExplorerFeature } from '../../models/rock-explorer-feature';
 import { Coordinates } from '../../interfaces/coordinates.interface';
 import { Position } from 'geojson';
@@ -10,14 +9,18 @@ import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
+/** Base-map row shown in the Rock Explorer style toggle. */
+export type MapBaseLayerInfo = {
+  id: string;
+  name: string;
+};
+
 /** Overlay row shown in the Rock Explorer layers panel (session UI). */
 export type RockExplorerCustomMapLayerInfo = {
   id: string;
   name: string;
   /** Instance-settings default; used when seeding session opacities. */
   defaultOpacity: number;
-  /** Instance-settings default visibility. */
-  defaultOn: boolean;
 };
 
 export type RockExplorerDrawMode =
@@ -36,7 +39,7 @@ export type RockExplorerCommand =
   | { type: 'undoPolygonVertex' }
   | { type: 'finishPolygon' }
   | { type: 'cancelPolygonDraw' }
-  | { type: 'switchMapStyle'; style: MapStyles }
+  | { type: 'switchMapStyle'; styleId: string }
   | { type: 'toggleCustomMapLayers' }
   | { type: 'setCustomMapLayerOpacity'; layerId: string; opacity: number }
   | { type: 'setCustomMapLayerVisible'; layerId: string; visible: boolean }
@@ -108,7 +111,10 @@ export class RockExplorerUiService {
   /** True while the polygon draft ring has crossing edges. */
   readonly polygonSelfIntersecting = signal(false);
   readonly geometryEditActive = signal(false);
-  readonly mapStyle = signal<MapStyles>(MapStyles.TOPO);
+  /** Selected base-layer id (from instance settings / MapTiler fallback). */
+  readonly mapStyle = signal<string>('');
+  /** Base layers available in the style toggle. */
+  readonly baseLayers = signal<MapBaseLayerInfo[]>([]);
   /** Master switch for instance-configured Rock Explorer raster overlays (session-only). */
   readonly customMapLayersVisible = signal(true);
   /** True when instance settings include at least one custom map overlay. */
@@ -122,7 +128,7 @@ export class RockExplorerUiService {
   readonly customMapLayerOpacities = signal<Record<string, number>>({});
   /**
    * Per-overlay on/off for this Rock Explorer visit (session-only).
-   * Seeded from instance-settings `defaultOn`.
+   * Seeded from the selected base map's `defaultOverlayIds`.
    */
   readonly customMapLayerVisibility = signal<Record<string, boolean>>({});
   readonly isMobileViewport = signal(false);
@@ -196,18 +202,25 @@ export class RockExplorerUiService {
     this.showFilters.update((open) => !open);
   }
 
+  /** Seeds the base-layer toggle from resolved instance settings. */
+  initBaseLayers(layers: MapBaseLayerInfo[], selectedId: string | null): void {
+    this.baseLayers.set(layers);
+    this.mapStyle.set(selectedId ?? '');
+  }
+
   /**
    * Seeds the layers panel from instance settings.
-   * Existing session opacities/visibility for known ids are kept; new ids get settings defaults.
+   * Existing session opacities for known ids are kept; new ids get settings defaults.
    * Array order is the paint/stack order (first = bottom).
+   * Visibility is seeded from the selected base map's `defaultOverlayIds`.
    */
   initCustomMapLayers(
     configs: {
       id: string;
       name?: string;
       opacity: number;
-      defaultOn?: boolean;
     }[],
+    activeOverlayIds?: string[],
   ): void {
     const list = Array.isArray(configs) ? configs : [];
     this.hasCustomMapLayers.set(list.length > 0);
@@ -218,31 +231,32 @@ export class RockExplorerUiService {
           id: c.id,
           name: (c.name && c.name.trim()) || c.id,
           defaultOpacity: clampOpacity(c.opacity),
-          defaultOn: c.defaultOn !== false,
         })),
     );
     const nextOpacity = { ...this.customMapLayerOpacities() };
-    const nextVisibility = { ...this.customMapLayerVisibility() };
     const keep = new Set(list.map((c) => c.id));
     for (const id of Object.keys(nextOpacity)) {
       if (!keep.has(id)) {
         delete nextOpacity[id];
       }
     }
-    for (const id of Object.keys(nextVisibility)) {
-      if (!keep.has(id)) {
-        delete nextVisibility[id];
-      }
-    }
     for (const c of list) {
       if (nextOpacity[c.id] === undefined) {
         nextOpacity[c.id] = clampOpacity(c.opacity);
       }
-      if (nextVisibility[c.id] === undefined) {
-        nextVisibility[c.id] = c.defaultOn !== false;
-      }
     }
     this.customMapLayerOpacities.set(nextOpacity);
+    this.applyBaseLayerDefaultOverlays(activeOverlayIds);
+  }
+
+  /** Sets overlay visibility from a base map's `defaultOverlayIds`. */
+  applyBaseLayerDefaultOverlays(activeOverlayIds?: string[]): void {
+    const infos = this.customMapLayerInfos();
+    const active = new Set(activeOverlayIds ?? []);
+    const nextVisibility: Record<string, boolean> = {};
+    for (const info of infos) {
+      nextVisibility[info.id] = active.has(info.id);
+    }
     this.customMapLayerVisibility.set(nextVisibility);
   }
 

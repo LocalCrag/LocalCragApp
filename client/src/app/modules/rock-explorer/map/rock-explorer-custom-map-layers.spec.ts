@@ -1,5 +1,5 @@
 import { RockExplorerCustomMapLayers } from './rock-explorer-custom-map-layers';
-import { RockExplorerMapLayer } from '../../../models/rock-explorer-map-layer';
+import { MapOverlay } from '../../../models/map-overlay';
 
 describe('RockExplorerCustomMapLayers', () => {
   function createMapMock() {
@@ -32,7 +32,7 @@ describe('RockExplorerCustomMapLayers', () => {
     };
   }
 
-  const tilejsonLayer: RockExplorerMapLayer = {
+  const tilejsonLayer: MapOverlay = {
     id: 'dgm',
     name: 'DGM',
     sourceKind: 'tilejson',
@@ -40,10 +40,9 @@ describe('RockExplorerCustomMapLayers', () => {
     type: 'raster',
     opacity: 0.45,
     tileSize: 256,
-    defaultOn: true,
   };
 
-  const tilesLayer: RockExplorerMapLayer = {
+  const tilesLayer: MapOverlay = {
     id: 'xyz',
     name: 'XYZ',
     sourceKind: 'tiles',
@@ -51,7 +50,6 @@ describe('RockExplorerCustomMapLayers', () => {
     type: 'raster',
     opacity: 0.5,
     tileSize: 512,
-    defaultOn: false,
   };
 
   it('adds tilejson sources via url and tiles sources via tiles array', () => {
@@ -87,7 +85,7 @@ describe('RockExplorerCustomMapLayers', () => {
     const withoutTileSize = {
       ...tilejsonLayer,
       tileSize: undefined,
-    } as unknown as RockExplorerMapLayer;
+    } as unknown as MapOverlay;
 
     helper.apply([withoutTileSize], false);
 
