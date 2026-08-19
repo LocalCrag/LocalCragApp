@@ -83,6 +83,13 @@ def test_successful_get_instance_settings(client):
 
 def test_successful_patch_instance_settings(client, moderator_token, any_file):
     instance_settings = InstanceSettings.return_it()
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json=_base_post_data(),
+    )
+    assert rv.status_code == 200, rv.json
+
     patch_data = {
         "logoImage": str(any_file.id),
         "faviconImage": str(any_file.id),

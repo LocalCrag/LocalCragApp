@@ -3,6 +3,7 @@ from copy import deepcopy
 from flask import current_app, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
+from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.conflict import Conflict
 from extensions import db
@@ -17,9 +18,7 @@ from scheduler_jobs.closure_materialization import (
 )
 from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
-from webargs_schemas.instance_settings_args import (
-    instance_settings_schema_cls,
-)
+from webargs_schemas.instance_settings_args import instance_settings_args
 
 
 def add_fixed_instance_settings(payload):
@@ -169,14 +168,13 @@ class UpdateInstanceSettings(MethodView):
     @jwt_required()
     @check_auth_claims(moderator=True)
     def patch(self):
-        patch_payload = request.get_json(silent=True) or {}
-        patch_payload = instance_settings_schema_cls().load(patch_payload, partial=True)
+        patch_payload = parser.parse(instance_settings_args, request, partial=True)
         instance_settings: InstanceSettings = InstanceSettings.return_it()
         merged_payload = merge_instance_settings_patch(
             instance_settings_request_payload(instance_settings),
             patch_payload,
         )
-        instance_settings_data = instance_settings_schema_cls().load(merged_payload)
+        instance_settings_data = parser.parse(instance_settings_args, {"json": merged_payload})
         update_instance_settings_from_payload(instance_settings, instance_settings_data)
 
         instance_settings_response = instance_settings_schema.dump(instance_settings)

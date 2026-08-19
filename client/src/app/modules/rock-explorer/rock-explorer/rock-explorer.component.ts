@@ -101,6 +101,8 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
+  @ViewChild('vectorIdentifyPanel')
+  private vectorIdentifyPanel?: ElementRef<HTMLElement>;
   @ViewChild(RockExplorerPanelComponent) panel?: RockExplorerPanelComponent;
   @ViewChild('recordImageInput')
   private recordImageInput?: ElementRef<HTMLInputElement>;
@@ -700,6 +702,13 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClickCloseVectorIdentify(event: MouseEvent): void {
     if (this.ignoreVectorIdentifyDocumentClick || event.button !== 0) {
+      return;
+    }
+    const target = event.target;
+    if (
+      target instanceof Node &&
+      this.vectorIdentifyPanel?.nativeElement.contains(target)
+    ) {
       return;
     }
     this.closeVectorIdentify();
