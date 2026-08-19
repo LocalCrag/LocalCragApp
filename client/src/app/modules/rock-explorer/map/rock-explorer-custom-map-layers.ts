@@ -330,11 +330,6 @@ export class RockExplorerCustomMapLayers {
     return hits;
   }
 
-  /** @deprecated Prefer {@link queryVectorFeaturesAtPoint}. */
-  queryVectorFillLayerIdsAtPoint(point: { x: number; y: number }): string[] {
-    return this.queryVectorFeaturesAtPoint(point).map((hit) => hit.layerId);
-  }
-
   static sourceId(configId: string): string {
     return `re-custom-src-${configId}`;
   }

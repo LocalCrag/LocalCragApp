@@ -364,22 +364,25 @@ describe('RockExplorerCustomMapLayers', () => {
     );
   });
 
-  it('queries unique vector fill layer ids at a point (top-most first)', () => {
+  it('queries unique vector fill features at a point (top-most first)', () => {
     const map = createMapMock();
     const helper = new RockExplorerCustomMapLayers(map as any);
     helper.apply([vectorLayer], true);
     map.queryRenderedFeatures.and.returnValue([
-      { layer: { id: 're-custom-ns--0' } },
-      { layer: { id: 're-custom-ns--0' } },
-      { layer: { id: 're-custom-ns--1' } },
+      { layer: { id: 're-custom-ns--0' }, properties: { name: 'A' } },
+      { layer: { id: 're-custom-ns--0' }, properties: { name: 'A' } },
+      { layer: { id: 're-custom-ns--1' }, properties: { name: 'B' } },
     ]);
 
-    const hits = helper.queryVectorFillLayerIdsAtPoint({ x: 12, y: 34 });
+    const hits = helper.queryVectorFeaturesAtPoint({ x: 12, y: 34 });
 
     expect(map.queryRenderedFeatures).toHaveBeenCalledWith([12, 34], {
       layers: ['re-custom-ns--1', 're-custom-ns--0'],
     });
-    expect(hits).toEqual(['re-custom-ns--0', 're-custom-ns--1']);
+    expect(hits).toEqual([
+      { layerId: 're-custom-ns--0', properties: { name: 'A' } },
+      { layerId: 're-custom-ns--1', properties: { name: 'B' } },
+    ]);
   });
 
   it('is idempotent-safe when sources already absent on a fresh style', () => {
