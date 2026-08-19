@@ -613,7 +613,9 @@
                                 icon="pi pi-plus"
                                 [text]="true"
                                 size="small"
-                                [disabled]="loadingState === loadingStates.LOADING"
+                                [disabled]="
+                                  loadingState === loadingStates.LOADING
+                                "
                                 (click)="addCategoricalStop(i, j)"
                               />
                             </div>
