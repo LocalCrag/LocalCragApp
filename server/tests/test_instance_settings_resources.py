@@ -81,15 +81,15 @@ def test_successful_get_instance_settings(client):
     assert res["timezone"] == instance_settings.timezone
 
 
-def test_successful_edit_instance_settings(client, moderator_token, any_file):
+def test_successful_patch_instance_settings(client, moderator_token, any_file):
     instance_settings = InstanceSettings.return_it()
-    post_data = _base_post_data(
-        instance_settings,
-        logoImage=str(any_file.id),
-        faviconImage=str(any_file.id),
-        bgImage=str(any_file.id),
-    )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    patch_data = {
+        "logoImage": str(any_file.id),
+        "faviconImage": str(any_file.id),
+        "bgImage": str(any_file.id),
+        "mailGreeting": "Best regards",
+    }
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=patch_data)
     assert rv.status_code == 200
     res = rv.json
     assert res["instanceName"] == "Gleesbouldering"
@@ -125,7 +125,39 @@ def test_successful_edit_instance_settings(client, moderator_token, any_file):
     assert res["timezone"] == "Europe/Berlin"
 
 
-def test_successful_put_map_overlays(client, moderator_token, any_file):
+def test_successful_patch_nullable_instance_settings_fields(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        darkLogoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        matomoTrackerUrl="https://matomo.localcrag.example",
+        matomoSiteId="42",
+        rankingPastWeeks=8,
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 200, rv.json
+
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={
+            "darkLogoImage": None,
+            "bgImage": None,
+            "matomoTrackerUrl": None,
+            "matomoSiteId": None,
+            "rankingPastWeeks": None,
+        },
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["darkLogoImage"] is None
+    assert rv.json["bgImage"] is None
+    assert rv.json["matomoTrackerUrl"] is None
+    assert rv.json["matomoSiteId"] is None
+    assert rv.json["rankingPastWeeks"] is None
+
+
+def test_successful_patch_map_overlays(client, moderator_token, any_file):
     layers = [
         {
             "id": "dgm-hillshade",
@@ -177,13 +209,7 @@ def test_successful_put_map_overlays(client, moderator_token, any_file):
             ],
         },
     ]
-    post_data = _base_post_data(
-        logoImage=str(any_file.id),
-        faviconImage=str(any_file.id),
-        bgImage=str(any_file.id),
-        mapOverlays=layers,
-    )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapOverlays": layers})
     assert rv.status_code == 200, rv.json
     assert rv.json["mapOverlays"] == layers
 
@@ -192,7 +218,48 @@ def test_successful_put_map_overlays(client, moderator_token, any_file):
     assert rv.json["mapOverlays"] == layers
 
 
-def test_successful_put_categorical_vector_overlay(client, moderator_token, any_file):
+def test_patch_map_overlays_preserves_existing_base_layers(client, moderator_token, any_file):
+    base_layers = [
+        {
+            "id": "basemap-col",
+            "name": "basemap.de Farbe",
+            "styleUrl": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
+            "topoDefault": True,
+            "rockExplorerDefault": True,
+            "defaultOverlayIds": [],
+        }
+    ]
+    rv = client.put(
+        "/api/instance-settings",
+        token=moderator_token,
+        json=_base_post_data(
+            logoImage=str(any_file.id),
+            faviconImage=str(any_file.id),
+            bgImage=str(any_file.id),
+            mapBaseLayers=base_layers,
+        ),
+    )
+    assert rv.status_code == 200, rv.json
+
+    overlays = [
+        {
+            "id": "dgm-hillshade",
+            "name": "DGM Hillshade",
+            "sourceKind": "tilejson",
+            "url": "https://tiles.example.org/dgm/tiles.json",
+            "type": "raster",
+            "opacity": 0.45,
+            "tileSize": 256,
+            "layers": [],
+        }
+    ]
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapOverlays": overlays})
+    assert rv.status_code == 200, rv.json
+    assert rv.json["mapBaseLayers"] == base_layers
+    assert rv.json["mapOverlays"] == overlays
+
+
+def test_successful_patch_categorical_vector_overlay(client, moderator_token, any_file):
     layers = [
         {
             "id": "guek300",
@@ -218,13 +285,7 @@ def test_successful_put_categorical_vector_overlay(client, moderator_token, any_
             ],
         }
     ]
-    post_data = _base_post_data(
-        logoImage=str(any_file.id),
-        faviconImage=str(any_file.id),
-        bgImage=str(any_file.id),
-        mapOverlays=layers,
-    )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapOverlays": layers})
     assert rv.status_code == 200, rv.json
     assert rv.json["mapOverlays"] == layers
 
@@ -256,7 +317,7 @@ def test_reject_categorical_vector_overlay_without_property(client, moderator_to
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapOverlays": post_data["mapOverlays"]})
     assert rv.status_code == 400
 
 
@@ -281,7 +342,7 @@ def test_reject_vector_overlay_without_source_layer(client, moderator_token, any
     assert rv.status_code == 400
 
 
-def test_successful_put_map_base_layers(client, moderator_token, any_file):
+def test_successful_patch_map_base_layers(client, moderator_token, any_file):
     layers = [
         {
             "id": "basemap-col",
@@ -300,19 +361,54 @@ def test_successful_put_map_base_layers(client, moderator_token, any_file):
             "defaultOverlayIds": [],
         },
     ]
-    post_data = _base_post_data(
-        logoImage=str(any_file.id),
-        faviconImage=str(any_file.id),
-        bgImage=str(any_file.id),
-        mapBaseLayers=layers,
-    )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapBaseLayers": layers})
     assert rv.status_code == 200, rv.json
     assert rv.json["mapBaseLayers"] == layers
 
     rv = client.get("/api/instance-settings")
     assert rv.status_code == 200
     assert rv.json["mapBaseLayers"] == layers
+
+
+def test_patch_map_base_layers_preserves_existing_overlays(client, moderator_token, any_file):
+    overlays = [
+        {
+            "id": "dgm-hillshade",
+            "name": "DGM Hillshade",
+            "sourceKind": "tilejson",
+            "url": "https://tiles.example.org/dgm/tiles.json",
+            "type": "raster",
+            "opacity": 0.45,
+            "tileSize": 256,
+            "layers": [],
+        }
+    ]
+    rv = client.put(
+        "/api/instance-settings",
+        token=moderator_token,
+        json=_base_post_data(
+            logoImage=str(any_file.id),
+            faviconImage=str(any_file.id),
+            bgImage=str(any_file.id),
+            mapOverlays=overlays,
+        ),
+    )
+    assert rv.status_code == 200, rv.json
+
+    base_layers = [
+        {
+            "id": "basemap-col",
+            "name": "basemap.de Farbe",
+            "styleUrl": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
+            "topoDefault": True,
+            "rockExplorerDefault": True,
+            "defaultOverlayIds": ["dgm-hillshade"],
+        }
+    ]
+    rv = client.patch("/api/instance-settings", token=moderator_token, json={"mapBaseLayers": base_layers})
+    assert rv.status_code == 200, rv.json
+    assert rv.json["mapOverlays"] == overlays
+    assert rv.json["mapBaseLayers"] == base_layers
 
 
 def test_reject_map_base_layers_without_topo_default(client, moderator_token, any_file):
@@ -331,7 +427,9 @@ def test_reject_map_base_layers_without_topo_default(client, moderator_token, an
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch(
+        "/api/instance-settings", token=moderator_token, json={"mapBaseLayers": post_data["mapBaseLayers"]}
+    )
     assert rv.status_code == 400, rv.json
 
 
@@ -351,7 +449,9 @@ def test_reject_map_base_layers_without_rock_explorer_default(client, moderator_
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch(
+        "/api/instance-settings", token=moderator_token, json={"mapBaseLayers": post_data["mapBaseLayers"]}
+    )
     assert rv.status_code == 400, rv.json
 
 
@@ -441,6 +541,16 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token, 
 
     sector = Sector.find_by_slug("_default")
     assert sector is not None
+
+
+def test_successful_patch_timezone(client, moderator_token, any_file):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"timezone": "UTC"},
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["timezone"] == "UTC"
 
 
 def test_error_conflict_skipped_hierarchical_layers(client, moderator_token, any_file):

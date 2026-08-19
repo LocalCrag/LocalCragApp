@@ -1,4 +1,4 @@
-from marshmallow import ValidationError, validate
+from marshmallow import Schema, ValidationError, validate
 from webargs import fields
 
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
@@ -168,3 +168,6 @@ instance_settings_args = {
     ),
     "timezone": fields.Str(required=True, validate=validate_timezone),
 }
+
+
+instance_settings_schema_cls = Schema.from_dict(instance_settings_args)

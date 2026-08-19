@@ -6,6 +6,8 @@ import { parseServerUtcDate } from '../utility/parse-server-utc-date';
 import { MapBaseLayer } from './map-base-layer';
 import { MapOverlay } from './map-overlay';
 
+export type InstanceSettingsPatch = Record<string, unknown>;
+
 export class InstanceSettings {
   timeUpdated: Date;
   instanceName: string;
@@ -132,6 +134,70 @@ export class InstanceSettings {
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
       language: instanceSettings.language,
       timezone: instanceSettings.timezone,
+    };
+  }
+
+  public static serializeGeneralPatch(payload: {
+    instanceName: string;
+    copyrightOwner: string;
+    mailGreeting: string;
+    gymMode: boolean;
+    skippedHierarchicalLayers: number;
+    displayUserGrades: boolean;
+    displayUserRatings: boolean;
+    faDefaultFormat: FaDefaultFormat;
+    defaultStartingPosition: StartingPosition;
+    rankingPastWeeks: number | null;
+    language: LanguageCode;
+    timezone: string;
+  }): InstanceSettingsPatch {
+    return { ...payload };
+  }
+
+  public static serializeAppearancePatch(payload: {
+    logoImage: File | null;
+    darkLogoImage: File | null;
+    faviconImage: File | null;
+    bgImage: File | null;
+    arrowColor: string;
+    arrowTextColor: string;
+    arrowHighlightColor: string;
+    arrowHighlightTextColor: string;
+    barChartColor: string;
+    barChartAccentColor: string;
+    darkBarChartColor: string;
+    darkBarChartAccentColor: string;
+  }): InstanceSettingsPatch {
+    return {
+      logoImage: payload.logoImage ? payload.logoImage.id : null,
+      darkLogoImage: payload.darkLogoImage ? payload.darkLogoImage.id : null,
+      faviconImage: payload.faviconImage ? payload.faviconImage.id : null,
+      bgImage: payload.bgImage ? payload.bgImage.id : null,
+      arrowColor: payload.arrowColor,
+      arrowTextColor: payload.arrowTextColor,
+      arrowHighlightColor: payload.arrowHighlightColor,
+      arrowHighlightTextColor: payload.arrowHighlightTextColor,
+      barChartColor: payload.barChartColor,
+      barChartAccentColor: payload.barChartAccentColor,
+      darkBarChartColor: payload.darkBarChartColor,
+      darkBarChartAccentColor: payload.darkBarChartAccentColor,
+    };
+  }
+
+  public static serializeAnalyticsPatch(payload: {
+    matomoTrackerUrl: string | null;
+    matomoSiteId: string | null;
+  }): InstanceSettingsPatch {
+    return { ...payload };
+  }
+
+  public static serializeMapsPatch(payload: {
+    mapBaseLayers: MapBaseLayer[];
+    mapOverlays: MapOverlay[];
+  }): InstanceSettingsPatch {
+    return {
+      mapBaseLayers: (payload.mapBaseLayers ?? []).map(MapBaseLayer.serialize),
+      mapOverlays: (payload.mapOverlays ?? []).map(MapOverlay.serialize),
     };
   }
 }

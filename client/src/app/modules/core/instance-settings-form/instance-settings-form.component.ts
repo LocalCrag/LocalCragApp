@@ -20,16 +20,15 @@ import {
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import {
-  TranslocoDirective,
-  TranslocoPipe,
-  TranslocoService,
-} from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError, switchMap } from 'rxjs/operators';
-import { EMPTY, throwError } from 'rxjs';
+import { EMPTY, of, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { InstanceSettings } from '../../../models/instance-settings';
+import {
+  InstanceSettings,
+  type InstanceSettingsPatch,
+} from '../../../models/instance-settings';
 import { MapBaseLayer } from '../../../models/map-base-layer';
 import {
   MapOverlay,
@@ -52,22 +51,17 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
 import { getRgbObject } from '../../../utility/misc/color';
 import { TooltipModule } from 'primeng/tooltip';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
-import { MultiSelect } from 'primeng/multiselect';
-import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { FormControlDirective } from '../../shared/forms/form-control.directive';
-import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
-import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { StartingPosition } from '../../../enums/starting-position';
-import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
-import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
 import { HttpClient } from '@angular/common/http';
+import { InstanceSettingsGeneralTabComponent } from './instance-settings-general-tab.component';
+import { InstanceSettingsAppearanceTabComponent } from './instance-settings-appearance-tab.component';
+import { InstanceSettingsAnalyticsTabComponent } from './instance-settings-analytics-tab.component';
+import { InstanceSettingsMapsTabComponent } from './instance-settings-maps-tab.component';
 
 const tilesUrlTemplateValidator: ValidatorFn = (
   group: AbstractControl,
@@ -145,6 +139,8 @@ type TileJsonOverlayMeta = {
   attributesBySourceLayer: Record<string, TileJsonAttributeInfo[]>;
 };
 
+type SettingsTabId = 'general' | 'appearance' | 'analytics' | 'maps';
+
 const MAX_CATEGORICAL_STOPS = 200;
 
 /** Non-empty base-layer lists must mark one topo and one Rock Explorer default. */
@@ -184,21 +180,17 @@ const baseLayersDefaultValidator: ValidatorFn = (
     PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,
-    TranslocoPipe,
     ColorPickerModule,
     DividerModule,
     TooltipModule,
-    ToggleSwitch,
-    Checkbox,
-    Select,
-    MultiSelect,
+    Tabs,
+    TabList,
+    Tab,
     FormDirective,
-    ControlGroupDirective,
-    FormControlDirective,
-    IfErrorDirective,
-    SingleImageUploadComponent,
-    LanguageSelectComponent,
-    FormEntryRowComponent,
+    InstanceSettingsGeneralTabComponent,
+    InstanceSettingsAppearanceTabComponent,
+    InstanceSettingsAnalyticsTabComponent,
+    InstanceSettingsMapsTabComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -252,6 +244,11 @@ export class InstanceSettingsFormComponent implements OnInit {
   public readonly maxCategoricalStops = MAX_CATEGORICAL_STOPS;
   /** TileJSON attribute cache keyed by overlay form index. */
   public tileJsonMetaByOverlay: Record<number, TileJsonOverlayMeta> = {};
+  public activeTab: SettingsTabId = 'general';
+  public saveGeneralTab = () => this.saveTab('general');
+  public saveAppearanceTab = () => this.saveTab('appearance');
+  public saveAnalyticsTab = () => this.saveTab('analytics');
+  public saveMapsTab = () => this.saveTab('maps');
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -367,11 +364,27 @@ export class InstanceSettingsFormComponent implements OnInit {
   }
 
   mapBaseLayersControls(): FormArray {
-    return this.instanceSettingsForm.get('mapBaseLayers') as FormArray;
+    return this.instanceSettingsForm.get('maps.mapBaseLayers') as FormArray;
   }
 
   mapOverlaysControls(): FormArray {
-    return this.instanceSettingsForm.get('mapOverlays') as FormArray;
+    return this.instanceSettingsForm.get('maps.mapOverlays') as FormArray;
+  }
+
+  generalGroup(): FormGroup {
+    return this.instanceSettingsForm.get('general') as FormGroup;
+  }
+
+  appearanceGroup(): FormGroup {
+    return this.instanceSettingsForm.get('appearance') as FormGroup;
+  }
+
+  analyticsGroup(): FormGroup {
+    return this.instanceSettingsForm.get('analytics') as FormGroup;
+  }
+
+  mapsGroup(): FormGroup {
+    return this.instanceSettingsForm.get('maps') as FormGroup;
   }
 
   /** Overlay options for the base-layer default-overlays MultiSelect. */
@@ -903,36 +916,47 @@ export class InstanceSettingsFormComponent implements OnInit {
 
   private buildForm() {
     this.instanceSettingsForm = this.fb.group({
-      instanceName: [null, [Validators.required, Validators.maxLength(120)]],
-      copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
-      mailGreeting: [null, [Validators.required, Validators.maxLength(120)]],
-      gymMode: [null],
-      skippedHierarchicalLayers: [null],
-      displayUserGrades: [null],
-      displayUserRatings: [null],
-      logoImage: [null],
-      darkLogoImage: [null],
-      faviconImage: [null],
-      bgImage: [null],
-      arrowColor: [null],
-      arrowTextColor: [null],
-      arrowHighlightColor: [null],
-      arrowHighlightTextColor: [null],
-      barChartColor: [null],
-      barChartAccentColor: [null],
-      darkBarChartColor: [null],
-      darkBarChartAccentColor: [null],
-      matomoTrackerUrl: [null, [Validators.maxLength(120)]],
-      matomoSiteId: [null, [Validators.maxLength(120)]],
-      mapBaseLayers: this.fb.array([], {
-        validators: [baseLayersDefaultValidator],
+      general: this.fb.group({
+        instanceName: [null, [Validators.required, Validators.maxLength(120)]],
+        copyrightOwner: [
+          null,
+          [Validators.required, Validators.maxLength(120)],
+        ],
+        mailGreeting: [null, [Validators.required, Validators.maxLength(120)]],
+        gymMode: [null],
+        skippedHierarchicalLayers: [null],
+        displayUserGrades: [null],
+        displayUserRatings: [null],
+        faDefaultFormat: [null],
+        defaultStartingPosition: [null, [Validators.required]],
+        rankingPastWeeks: [null],
+        language: [null],
+        timezone: [null, [Validators.required]],
       }),
-      mapOverlays: this.fb.array([]),
-      faDefaultFormat: [null],
-      defaultStartingPosition: [null, [Validators.required]],
-      rankingPastWeeks: [null],
-      language: [null],
-      timezone: [null, [Validators.required]],
+      appearance: this.fb.group({
+        logoImage: [null],
+        darkLogoImage: [null],
+        faviconImage: [null],
+        bgImage: [null],
+        arrowColor: [null],
+        arrowTextColor: [null],
+        arrowHighlightColor: [null],
+        arrowHighlightTextColor: [null],
+        barChartColor: [null],
+        barChartAccentColor: [null],
+        darkBarChartColor: [null],
+        darkBarChartAccentColor: [null],
+      }),
+      analytics: this.fb.group({
+        matomoTrackerUrl: [null, [Validators.maxLength(120)]],
+        matomoSiteId: [null, [Validators.maxLength(120)]],
+      }),
+      maps: this.fb.group({
+        mapBaseLayers: this.fb.array([], {
+          validators: [baseLayersDefaultValidator],
+        }),
+        mapOverlays: this.fb.array([]),
+      }),
     });
   }
 
@@ -950,150 +974,136 @@ export class InstanceSettingsFormComponent implements OnInit {
       layersArray.push(this.createMapLayerGroup(layer));
     });
     this.instanceSettingsForm.patchValue({
-      instanceName: this.instanceSettings.instanceName,
-      copyrightOwner: this.instanceSettings.copyrightOwner,
-      mailGreeting: this.instanceSettings.mailGreeting,
-      gymMode: this.instanceSettings.gymMode,
-      skippedHierarchicalLayers:
-        this.instanceSettings.skippedHierarchicalLayers,
-      displayUserGrades: this.instanceSettings.displayUserGrades,
-      displayUserRatings: this.instanceSettings.displayUserRatings,
-      logoImage: this.instanceSettings.logoImage,
-      darkLogoImage: this.instanceSettings.darkLogoImage,
-      faviconImage: this.instanceSettings.faviconImage,
-      bgImage: this.instanceSettings.bgImage,
-      arrowColor: this.instanceSettings.arrowColor,
-      arrowTextColor: this.instanceSettings.arrowTextColor,
-      arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
-      arrowHighlightTextColor: this.instanceSettings.arrowHighlightTextColor,
-      barChartColor: getRgbObject(this.instanceSettings.barChartColor),
-      barChartAccentColor: getRgbObject(
-        this.instanceSettings.barChartAccentColor,
-      ),
-      darkBarChartColor: getRgbObject(this.instanceSettings.darkBarChartColor),
-      darkBarChartAccentColor: getRgbObject(
-        this.instanceSettings.darkBarChartAccentColor,
-      ),
-      matomoSiteId: this.instanceSettings.matomoSiteId,
-      matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
-      faDefaultFormat: this.instanceSettings.faDefaultFormat,
-      defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
-      rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
-      language: this.instanceSettings.language,
-      timezone: this.instanceSettings.timezone,
+      general: {
+        instanceName: this.instanceSettings.instanceName,
+        copyrightOwner: this.instanceSettings.copyrightOwner,
+        mailGreeting: this.instanceSettings.mailGreeting,
+        gymMode: this.instanceSettings.gymMode,
+        skippedHierarchicalLayers:
+          this.instanceSettings.skippedHierarchicalLayers,
+        displayUserGrades: this.instanceSettings.displayUserGrades,
+        displayUserRatings: this.instanceSettings.displayUserRatings,
+        faDefaultFormat: this.instanceSettings.faDefaultFormat,
+        defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
+        rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
+        language: this.instanceSettings.language,
+        timezone: this.instanceSettings.timezone,
+      },
+      appearance: {
+        logoImage: this.instanceSettings.logoImage,
+        darkLogoImage: this.instanceSettings.darkLogoImage,
+        faviconImage: this.instanceSettings.faviconImage,
+        bgImage: this.instanceSettings.bgImage,
+        arrowColor: this.instanceSettings.arrowColor,
+        arrowTextColor: this.instanceSettings.arrowTextColor,
+        arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
+        arrowHighlightTextColor: this.instanceSettings.arrowHighlightTextColor,
+        barChartColor: getRgbObject(this.instanceSettings.barChartColor),
+        barChartAccentColor: getRgbObject(
+          this.instanceSettings.barChartAccentColor,
+        ),
+        darkBarChartColor: getRgbObject(
+          this.instanceSettings.darkBarChartColor,
+        ),
+        darkBarChartAccentColor: getRgbObject(
+          this.instanceSettings.darkBarChartAccentColor,
+        ),
+      },
+      analytics: {
+        matomoSiteId: this.instanceSettings.matomoSiteId,
+        matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
+      },
     });
   }
 
-  public saveInstanceSettings() {
-    if (this.instanceSettingsForm.valid) {
-      this.loadingState = LoadingState.LOADING;
-      const instanceSettings = new InstanceSettings();
-      instanceSettings.instanceName =
-        this.instanceSettingsForm.get('instanceName').value;
-      instanceSettings.copyrightOwner =
-        this.instanceSettingsForm.get('copyrightOwner').value;
-      instanceSettings.mailGreeting =
-        this.instanceSettingsForm.get('mailGreeting').value;
-      instanceSettings.gymMode = this.instanceSettingsForm.get('gymMode').value;
-      instanceSettings.skippedHierarchicalLayers =
-        this.instanceSettingsForm.get('skippedHierarchicalLayers').value;
-      instanceSettings.displayUserGrades =
-        this.instanceSettingsForm.get('displayUserGrades').value;
-      instanceSettings.displayUserRatings =
-        this.instanceSettingsForm.get('displayUserRatings').value;
-      instanceSettings.logoImage =
-        this.instanceSettingsForm.get('logoImage').value;
-      instanceSettings.darkLogoImage =
-        this.instanceSettingsForm.get('darkLogoImage').value;
-      instanceSettings.faviconImage =
-        this.instanceSettingsForm.get('faviconImage').value;
-      instanceSettings.bgImage = this.instanceSettingsForm.get('bgImage').value;
-      instanceSettings.arrowColor =
-        this.instanceSettingsForm.get('arrowColor').value;
-      instanceSettings.arrowTextColor =
-        this.instanceSettingsForm.get('arrowTextColor').value;
-      instanceSettings.arrowHighlightColor = this.instanceSettingsForm.get(
-        'arrowHighlightColor',
-      ).value;
-      instanceSettings.arrowHighlightTextColor = this.instanceSettingsForm.get(
-        'arrowHighlightTextColor',
-      ).value;
-      instanceSettings.barChartColor = this.getCSSRgbValue(
-        this.instanceSettingsForm.get('barChartColor').value,
-      );
-      instanceSettings.barChartAccentColor = this.getCSSRgbValue(
-        this.instanceSettingsForm.get('barChartAccentColor').value,
-      );
-      instanceSettings.darkBarChartColor = this.getCSSRgbValue(
-        this.instanceSettingsForm.get('darkBarChartColor').value,
-      );
-      instanceSettings.darkBarChartAccentColor = this.getCSSRgbValue(
-        this.instanceSettingsForm.get('darkBarChartAccentColor').value,
-      );
-      instanceSettings.matomoSiteId =
-        this.instanceSettingsForm.get('matomoSiteId').value;
-      instanceSettings.matomoTrackerUrl =
-        this.instanceSettingsForm.get('matomoTrackerUrl').value;
-      instanceSettings.mapBaseLayers = (
-        this.mapBaseLayersControls().getRawValue() ?? []
-      ).map((layer) => {
-        const validOverlayIds = new Set(
-          this.overlaySelectOptions().map((option) => option.value),
-        );
-        return MapBaseLayer.deserialize({
-          ...layer,
-          defaultOverlayIds: (layer.defaultOverlayIds ?? []).filter(
-            (id: string) => validOverlayIds.has(id),
-          ),
-        });
-      });
-      instanceSettings.mapOverlays = (
-        this.mapOverlaysControls().getRawValue() ?? []
-      ).map((layer) => MapOverlay.deserialize(layer));
-      instanceSettings.faDefaultFormat =
-        this.instanceSettingsForm.get('faDefaultFormat').value;
-      instanceSettings.defaultStartingPosition = this.instanceSettingsForm.get(
-        'defaultStartingPosition',
-      ).value;
-      instanceSettings.rankingPastWeeks =
-        this.instanceSettingsForm.get('rankingPastWeeks').value;
-      instanceSettings.language =
-        this.instanceSettingsForm.get('language').value;
-      instanceSettings.timezone =
-        this.instanceSettingsForm.get('timezone').value;
-      this.uploadService
-        .saveFileFocusIfChanged(instanceSettings.bgImage)
-        .pipe(
-          switchMap(() =>
-            this.instanceSettingsService.updateInstanceSettings(
-              instanceSettings,
-            ),
-          ),
-        )
-        .subscribe({
-          next: (instanceSettings) => {
-            this.store.dispatch(toastNotification('INSTANCE_SETTINGS_UPDATED'));
-            this.loadingState = LoadingState.DEFAULT;
-            this.store.dispatch(
-              updateInstanceSettings({ settings: instanceSettings }),
-            );
-          },
-          error: (e) => {
-            this.loadingState = LoadingState.DEFAULT;
-            if (e.error?.message == 'MIGRATION_IMPOSSIBLE') {
-              this.store.dispatch(
-                toastNotification(
-                  'INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE',
-                ),
-              );
-            } else {
-              this.store.dispatch(toastNotification('UNKNOWN_ERROR'));
-            }
-          },
-        });
-    } else {
-      this.formDirective.markAsTouched();
+  public saveTab(tab: SettingsTabId) {
+    const group = this.instanceSettingsForm.get(tab) as FormGroup | null;
+    if (!group) {
+      return;
     }
+    if (!group.valid) {
+      group.markAllAsTouched();
+      return;
+    }
+
+    this.loadingState = LoadingState.LOADING;
+    const patch = this.buildPatchForTab(tab);
+    const appearance = this.appearanceGroup().getRawValue();
+    const preflight$ =
+      tab === 'appearance'
+        ? this.uploadService.saveFileFocusIfChanged(appearance.bgImage)
+        : of(null);
+
+    preflight$
+      .pipe(
+        switchMap(() =>
+          this.instanceSettingsService.patchInstanceSettings(patch),
+        ),
+      )
+      .subscribe({
+        next: (instanceSettings) => {
+          this.store.dispatch(toastNotification('INSTANCE_SETTINGS_UPDATED'));
+          this.loadingState = LoadingState.DEFAULT;
+          this.instanceSettings = instanceSettings;
+          this.setFormValue();
+          this.store.dispatch(
+            updateInstanceSettings({ settings: instanceSettings }),
+          );
+        },
+        error: (e) => {
+          this.loadingState = LoadingState.DEFAULT;
+          if (e.error?.message == 'MIGRATION_IMPOSSIBLE') {
+            this.store.dispatch(
+              toastNotification('INSTANCE_SETTINGS_ERROR_MIGRATION_IMPOSSIBLE'),
+            );
+          } else {
+            this.store.dispatch(toastNotification('UNKNOWN_ERROR'));
+          }
+        },
+      });
+  }
+
+  private buildPatchForTab(tab: SettingsTabId): InstanceSettingsPatch {
+    if (tab === 'general') {
+      return InstanceSettings.serializeGeneralPatch(
+        this.generalGroup().getRawValue(),
+      );
+    }
+    if (tab === 'appearance') {
+      const raw = this.appearanceGroup().getRawValue();
+      return InstanceSettings.serializeAppearancePatch({
+        ...raw,
+        barChartColor: this.getCSSRgbValue(raw.barChartColor),
+        barChartAccentColor: this.getCSSRgbValue(raw.barChartAccentColor),
+        darkBarChartColor: this.getCSSRgbValue(raw.darkBarChartColor),
+        darkBarChartAccentColor: this.getCSSRgbValue(
+          raw.darkBarChartAccentColor,
+        ),
+      });
+    }
+    if (tab === 'analytics') {
+      return InstanceSettings.serializeAnalyticsPatch(
+        this.analyticsGroup().getRawValue(),
+      );
+    }
+    return InstanceSettings.serializeMapsPatch({
+      mapBaseLayers: (this.mapBaseLayersControls().getRawValue() ?? []).map(
+        (layer) => {
+          const validOverlayIds = new Set(
+            this.overlaySelectOptions().map((option) => option.value),
+          );
+          return MapBaseLayer.deserialize({
+            ...layer,
+            defaultOverlayIds: (layer.defaultOverlayIds ?? []).filter(
+              (id: string) => validOverlayIds.has(id),
+            ),
+          });
+        },
+      ),
+      mapOverlays: (this.mapOverlaysControls().getRawValue() ?? []).map(
+        (layer) => MapOverlay.deserialize(layer),
+      ),
+    });
   }
 
   private getCSSRgbValue(raw: any): string {

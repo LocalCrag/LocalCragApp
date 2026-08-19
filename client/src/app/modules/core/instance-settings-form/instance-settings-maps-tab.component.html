@@ -1,0 +1,280 @@
+<ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
+  <div [formGroup]="group" class="flex flex-col gap-4 pt-4">
+    <div class="mt-2 mb-2">
+      <div class="form-label flex items-center">
+        <h4 class="m-0">{{ t("baseLayersLabel") }}</h4>
+        <span
+          class="pi pi-question-circle ml-2"
+          [pTooltip]="t('baseLayersDescription')"
+          tooltipPosition="right"
+        ></span>
+      </div>
+      @if (
+        mapBaseLayersControls().hasError("baseLayerDefaultsRequired") ||
+        mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") ||
+        mapBaseLayersControls().hasError("baseLayerRockExplorerDefaultRequired")
+      ) {
+        <small class="lc-error">{{
+          mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") &&
+          !mapBaseLayersControls().hasError("baseLayerRockExplorerDefaultRequired")
+            ? t("baseLayerTopoDefaultRequired")
+            : mapBaseLayersControls().hasError("baseLayerRockExplorerDefaultRequired") &&
+                !mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired")
+              ? t("baseLayerRockExplorerDefaultRequired")
+              : t("baseLayerDefaultsRequired")
+        }}</small>
+      }
+    </div>
+
+    <div formArrayName="mapBaseLayers">
+      @for (_ of mapBaseLayersControls().controls; track _; let i = $index) {
+        <div [formGroupName]="i" class="mb-4">
+          <lc-form-entry-row>
+            <div class="flex flex-col gap-3 w-full">
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label map-layer-first-label" [for]="'base-layer-name-' + i">{{ t("baseLayerNameLabel") }}</label>
+                <input pInputText [id]="'base-layer-name-' + i" formControlName="name" [placeholder]="t('baseLayerNamePlaceholder')" lcFormControl />
+                <small class="lc-error" *lcIfError="'required'">{{ "validation.required" | transloco }}</small>
+                <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 120 } }}</small>
+              </div>
+
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label" [for]="'base-layer-style-url-' + i">{{ t("baseLayerStyleUrlLabel") }}</label>
+                <input pInputText [id]="'base-layer-style-url-' + i" formControlName="styleUrl" [placeholder]="t('baseLayerStyleUrlPlaceholder')" lcFormControl />
+                <small class="lc-error" *lcIfError="'required'">{{ "validation.required" | transloco }}</small>
+                <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 2048 } }}</small>
+                <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{ t("baseLayerStyleUrlInvalid") }}</small>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2" lcControlGroup>
+                  <p-checkbox
+                    [inputId]="'base-layer-topo-default-' + i"
+                    formControlName="topoDefault"
+                    [binary]="true"
+                    (onChange)="onBaseLayerRoleDefaultChange(i, 'topoDefault', $event.checked)"
+                    lcFormControl
+                  />
+                  <label [for]="'base-layer-topo-default-' + i">{{ t("baseLayerTopoDefaultLabel") }}</label>
+                </div>
+                <div class="flex items-center gap-2" lcControlGroup>
+                  <p-checkbox
+                    [inputId]="'base-layer-re-default-' + i"
+                    formControlName="rockExplorerDefault"
+                    [binary]="true"
+                    (onChange)="onBaseLayerRoleDefaultChange(i, 'rockExplorerDefault', $event.checked)"
+                    lcFormControl
+                  />
+                  <label [for]="'base-layer-re-default-' + i">{{ t("baseLayerRockExplorerDefaultLabel") }}</label>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label" [for]="'base-layer-default-overlays-' + i">{{ t("baseLayerDefaultOverlaysLabel") }}</label>
+                <p-multiSelect
+                  [inputId]="'base-layer-default-overlays-' + i"
+                  formControlName="defaultOverlayIds"
+                  [options]="overlaySelectOptions()"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="t('baseLayerDefaultOverlaysPlaceholder')"
+                  [disabled]="overlaySelectOptions().length === 0"
+                  display="chip"
+                  appendTo="body"
+                  lcFormControl
+                  class="w-full"
+                />
+                <small class="text-muted-color">{{ t("baseLayerDefaultOverlaysHelp") }}</small>
+              </div>
+            </div>
+            <div actions class="map-layer-actions">
+              <p-button [disabled]="loadingState === loadingStates.LOADING || i === 0" icon="pi pi-arrow-up" [rounded]="true" [text]="true" severity="secondary" (click)="moveBaseLayer(i, 'up')" [attr.aria-label]="t('baseLayerMoveUp')" />
+              <p-button [disabled]="loadingState === loadingStates.LOADING || i === mapBaseLayersControls().length - 1" icon="pi pi-arrow-down" [rounded]="true" [text]="true" severity="secondary" (click)="moveBaseLayer(i, 'down')" [attr.aria-label]="t('baseLayerMoveDown')" />
+              <p-button [disabled]="loadingState === loadingStates.LOADING" icon="pi pi-trash" styleClass="p-button-danger" (click)="removeBaseLayer(i)" />
+            </div>
+          </lc-form-entry-row>
+        </div>
+      }
+    </div>
+
+    <div class="lc-button-group mt-2 mb-3">
+      <p-button
+        label="{{ t('addBaseLayer') }}"
+        (click)="addBaseLayer()"
+        icon="pi pi-plus-circle"
+        class="responsive-button"
+        [disabled]="loadingState === loadingStates.LOADING || mapBaseLayersControls().length >= maxBaseLayers"
+      />
+    </div>
+
+    <div class="mt-2 mb-2">
+      <div class="form-label flex items-center">
+        <h4 class="m-0">{{ t("mapLayersLabel") }}</h4>
+        <span class="pi pi-question-circle ml-2" [pTooltip]="t('mapLayersDescription')" tooltipPosition="right"></span>
+      </div>
+    </div>
+
+    <div formArrayName="mapOverlays">
+      @for (_ of mapOverlaysControls().controls; track _; let i = $index) {
+        <div [formGroupName]="i" class="mb-4">
+          <lc-form-entry-row>
+            <div class="flex flex-col gap-3 w-full">
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label map-layer-first-label" [for]="'map-layer-name-' + i">{{ t("mapLayerNameLabel") }}</label>
+                <input pInputText [id]="'map-layer-name-' + i" formControlName="name" [placeholder]="t('mapLayerNamePlaceholder')" lcFormControl />
+                <small class="lc-error" *lcIfError="'required'">{{ "validation.required" | transloco }}</small>
+                <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 120 } }}</small>
+              </div>
+
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label" [for]="'map-layer-type-' + i">{{ t("mapLayerTypeLabel") }}</label>
+                <p-select [id]="'map-layer-type-' + i" formControlName="type" [options]="overlayTypeOptions" optionLabel="label" optionValue="value" appendTo="body" lcFormControl class="w-full" (onChange)="onOverlayTypeChange(i)" />
+              </div>
+
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label" [for]="'map-layer-source-kind-' + i">{{ t("mapLayerSourceKindLabel") }}</label>
+                <p-select [id]="'map-layer-source-kind-' + i" formControlName="sourceKind" [options]="sourceKindOptions" optionLabel="label" optionValue="value" appendTo="body" lcFormControl class="w-full" />
+              </div>
+
+              <div class="flex flex-col gap-2" lcControlGroup>
+                <label class="form-label" [for]="'map-layer-url-' + i">{{ t("mapLayerUrlLabel") }}</label>
+                <input pInputText [id]="'map-layer-url-' + i" formControlName="url" [placeholder]="t('mapLayerUrlPlaceholder')" lcFormControl />
+                <small class="lc-error" *lcIfError="'required'">{{ "validation.required" | transloco }}</small>
+                <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 2048 } }}</small>
+                <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{ t("mapLayerUrlInvalid") }}</small>
+              </div>
+
+              @if (mapOverlaysControls().at(i).hasError("tilesUrlMissingPlaceholders")) {
+                <small class="lc-error">{{ t("mapLayerTilesUrlPlaceholders") }}</small>
+              }
+
+              @if (mapOverlaysControls().at(i).get("type")?.value === "vector") {
+                <div class="flex flex-col gap-2">
+                  <label class="form-label">{{ t("mapLayerVectorLayersLabel") }}</label>
+                  <div formArrayName="layers" class="flex flex-col gap-3">
+                    @for (_ of vectorLayersControls(i).controls; track _; let j = $index; let lastVector = $last) {
+                      <div [formGroupName]="j" class="flex flex-col gap-2 map-vector-layer-row">
+                        <div class="flex flex-wrap items-end gap-3">
+                          <div class="flex flex-col gap-2 flex-1 min-w-[10rem]" lcControlGroup>
+                            <label class="form-label" [for]="'map-layer-vector-name-' + i + '-' + j">{{ t("mapLayerVectorNameLabel") }}</label>
+                            <input pInputText [id]="'map-layer-vector-name-' + i + '-' + j" formControlName="name" [placeholder]="t('mapLayerVectorNamePlaceholder')" lcFormControl />
+                          </div>
+                          <div class="flex flex-col gap-2 flex-1 min-w-[10rem]" lcControlGroup>
+                            <label class="form-label" [for]="'map-layer-source-layer-' + i + '-' + j">{{ t("mapLayerSourceLayerLabel") }}</label>
+                            <input pInputText [id]="'map-layer-source-layer-' + i + '-' + j" formControlName="sourceLayer" [placeholder]="t('mapLayerSourceLayerPlaceholder')" lcFormControl />
+                          </div>
+                          <div class="flex flex-col gap-2 min-w-[10rem]" lcControlGroup>
+                            <label class="form-label" [for]="'map-layer-paint-mode-' + i + '-' + j">{{ t("mapLayerPaintModeLabel") }}</label>
+                            <p-select [inputId]="'map-layer-paint-mode-' + i + '-' + j" formControlName="paintMode" [options]="paintModeOptions" optionLabel="label" optionValue="value" (onChange)="onVectorPaintModeChange(i, j)" lcFormControl />
+                          </div>
+                          <div class="flex flex-col gap-2" lcControlGroup>
+                            <label class="form-label" [for]="'map-layer-color-' + i + '-' + j">{{
+                              vectorLayersControls(i).at(j).get("paintMode")?.value === "categorical"
+                                ? t("mapLayerDefaultColorLabel")
+                                : t("mapLayerColorLabel")
+                            }}</label>
+                            <p-colorPicker [inputId]="'map-layer-color-' + i + '-' + j" formControlName="color" lcFormControl></p-colorPicker>
+                          </div>
+                          <div class="map-layer-actions">
+                            <p-button [disabled]="loadingState === loadingStates.LOADING || j === 0" icon="pi pi-arrow-up" [rounded]="true" [text]="true" severity="secondary" (click)="moveVectorLayer(i, j, 'up')" [attr.aria-label]="t('mapLayerMoveVectorLayerUp')" />
+                            <p-button [disabled]="loadingState === loadingStates.LOADING || lastVector" icon="pi pi-arrow-down" [rounded]="true" [text]="true" severity="secondary" (click)="moveVectorLayer(i, j, 'down')" [attr.aria-label]="t('mapLayerMoveVectorLayerDown')" />
+                            <p-button [disabled]="loadingState === loadingStates.LOADING || vectorLayersControls(i).length <= 1" icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="removeVectorLayer(i, j)" [attr.aria-label]="t('mapLayerRemoveVectorLayer')" />
+                          </div>
+                        </div>
+
+                        @if (vectorLayersControls(i).at(j).get("paintMode")?.value === "categorical") {
+                          <div class="flex flex-col gap-2 map-vector-categorical">
+                            <div class="flex flex-wrap items-end gap-3">
+                              <div class="flex flex-col gap-2 flex-1 min-w-[10rem]" lcControlGroup>
+                                <label class="form-label" [for]="'map-layer-cat-prop-' + i + '-' + j">{{ t("mapLayerCategoricalPropertyLabel") }}</label>
+                                @if (tileJsonAttributeOptions(i, j).length > 0) {
+                                  <p-select [inputId]="'map-layer-cat-prop-' + i + '-' + j" formControlName="categoricalProperty" [options]="tileJsonAttributeOptions(i, j)" optionLabel="label" optionValue="value" [filter]="true" [placeholder]="t('mapLayerCategoricalPropertyPlaceholder')" lcFormControl />
+                                } @else {
+                                  <input pInputText [id]="'map-layer-cat-prop-' + i + '-' + j" formControlName="categoricalProperty" [placeholder]="t('mapLayerCategoricalPropertyPlaceholder')" lcFormControl />
+                                }
+                              </div>
+                              <div class="flex flex-wrap gap-2">
+                                <p-button label="{{ t('mapLayerLoadTileJson') }}" icon="pi pi-download" [text]="true" size="small" [disabled]="loadingState === loadingStates.LOADING || tileJsonMetaByOverlay[i]?.loading" (click)="loadTileJsonAttributes(i)" />
+                                <p-button label="{{ t('mapLayerSeedCategoricalStops') }}" icon="pi pi-palette" [text]="true" size="small" [disabled]="loadingState === loadingStates.LOADING || !vectorLayersControls(i).at(j).get('categoricalProperty')?.value" (click)="seedCategoricalStopsFromTileJson(i, j)" />
+                              </div>
+                            </div>
+                            @if (tileJsonMetaByOverlay[i]?.error) {
+                              <small class="lc-error">{{ tileJsonMetaByOverlay[i].error }}</small>
+                            }
+                            <div class="flex flex-col gap-2">
+                              <label class="form-label">{{ t("mapLayerCategoricalStopsLabel") }}</label>
+                              <div formArrayName="categoricalStops" class="flex flex-col gap-2">
+                                @for (_ of categoricalStopsControls(i, j).controls; track _; let k = $index) {
+                                  <div [formGroupName]="k" class="flex flex-wrap items-end gap-3">
+                                    <div class="flex flex-col gap-2 flex-1 min-w-[10rem]" lcControlGroup>
+                                      <label class="form-label" [for]="'map-layer-stop-value-' + i + '-' + j + '-' + k">{{ t("mapLayerCategoricalStopValueLabel") }}</label>
+                                      <input pInputText [id]="'map-layer-stop-value-' + i + '-' + j + '-' + k" formControlName="value" lcFormControl />
+                                    </div>
+                                    <div class="flex flex-col gap-2" lcControlGroup>
+                                      <label class="form-label" [for]="'map-layer-stop-color-' + i + '-' + j + '-' + k">{{ t("mapLayerCategoricalStopColorLabel") }}</label>
+                                      <p-colorPicker [inputId]="'map-layer-stop-color-' + i + '-' + j + '-' + k" formControlName="color" lcFormControl></p-colorPicker>
+                                    </div>
+                                    <p-button [disabled]="loadingState === loadingStates.LOADING" icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="removeCategoricalStop(i, j, k)" [attr.aria-label]="t('mapLayerRemoveCategoricalStop')" />
+                                  </div>
+                                }
+                              </div>
+                              <p-button label="{{ t('mapLayerAddCategoricalStop') }}" icon="pi pi-plus" [text]="true" size="small" [disabled]="loadingState === loadingStates.LOADING || categoricalStopsControls(i, j).length >= maxCategoricalStops" (click)="addCategoricalStop(i, j)" />
+                            </div>
+                          </div>
+                        }
+
+                        <div class="flex items-center gap-2" lcControlGroup>
+                          <p-checkbox [inputId]="'map-layer-default-active-' + i + '-' + j" formControlName="defaultActive" [binary]="true" lcFormControl />
+                          <label [for]="'map-layer-default-active-' + i + '-' + j">{{ t("mapLayerVectorDefaultActiveLabel") }}</label>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                  <p-button label="{{ t('mapLayerAddVectorLayer') }}" (click)="addVectorLayer(i)" icon="pi pi-plus" [text]="true" size="small" [disabled]="loadingState === loadingStates.LOADING || vectorLayersControls(i).length >= maxVectorLayersPerOverlay" />
+                </div>
+              }
+
+              <div class="flex flex-wrap gap-4">
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label class="form-label" [for]="'map-layer-opacity-' + i">{{ t("mapLayerOpacityLabel") }}</label>
+                  <p-inputNumber [id]="'map-layer-opacity-' + i" formControlName="opacity" [min]="0" [max]="1" [step]="0.05" [minFractionDigits]="2" [maxFractionDigits]="2" lcFormControl />
+                </div>
+                @if (mapOverlaysControls().at(i).get("type")?.value === "raster") {
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label class="form-label" [for]="'map-layer-tile-size-' + i">{{ t("mapLayerTileSizeLabel") }}</label>
+                    <p-select [id]="'map-layer-tile-size-' + i" formControlName="tileSize" [options]="tileSizeOptions" optionLabel="label" optionValue="value" appendTo="body" lcFormControl />
+                  </div>
+                }
+              </div>
+            </div>
+            <div actions class="map-layer-actions">
+              <p-button [disabled]="loadingState === loadingStates.LOADING || i === 0" icon="pi pi-arrow-up" [rounded]="true" [text]="true" severity="secondary" (click)="moveMapLayer(i, 'up')" [attr.aria-label]="t('mapLayerMoveUp')" />
+              <p-button [disabled]="loadingState === loadingStates.LOADING || i === mapOverlaysControls().length - 1" icon="pi pi-arrow-down" [rounded]="true" [text]="true" severity="secondary" (click)="moveMapLayer(i, 'down')" [attr.aria-label]="t('mapLayerMoveDown')" />
+              <p-button [disabled]="loadingState === loadingStates.LOADING" icon="pi pi-trash" styleClass="p-button-danger" (click)="removeMapLayer(i)" />
+            </div>
+          </lc-form-entry-row>
+        </div>
+      }
+    </div>
+
+    <div class="lc-button-group mt-2">
+      <p-button
+        label="{{ t('addMapLayer') }}"
+        (click)="addMapLayer()"
+        icon="pi pi-plus-circle"
+        class="responsive-button"
+        [disabled]="loadingState === loadingStates.LOADING || mapOverlaysControls().length >= maxMapLayers"
+      />
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="{{ t('editInstanceSettingsButtonLabel') }}"
+        (click)="save()"
+        icon="pi pi-save"
+        class="responsive-button"
+        [loading]="loadingState === loadingStates.LOADING"
+      ></p-button>
+    </div>
+  </div>
+</ng-container>
