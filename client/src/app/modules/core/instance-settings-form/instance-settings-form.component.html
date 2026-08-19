@@ -10,7 +10,7 @@
         </p-tablist>
       </p-tabs>
 
-      @if (activeTab === 'general') {
+      @if (activeTab === "general") {
         <lc-instance-settings-general-tab
           [group]="generalGroup()"
           [faDefaultFormats]="faDefaultFormats"
@@ -22,7 +22,7 @@
         />
       }
 
-      @if (activeTab === 'appearance') {
+      @if (activeTab === "appearance") {
         <lc-instance-settings-appearance-tab
           [group]="appearanceGroup()"
           [loading]="loadingState === loadingStates.LOADING"
@@ -30,7 +30,7 @@
         />
       }
 
-      @if (activeTab === 'analytics') {
+      @if (activeTab === "analytics") {
         <lc-instance-settings-analytics-tab
           [group]="analyticsGroup()"
           [loading]="loadingState === loadingStates.LOADING"
@@ -38,7 +38,7 @@
         />
       }
 
-      @if (activeTab === 'maps') {
+      @if (activeTab === "maps") {
         <lc-instance-settings-maps-tab
           [group]="mapsGroup()"
           [loadingState]="loadingState"
@@ -60,7 +60,9 @@
           [addBaseLayer]="addBaseLayer.bind(this)"
           [removeBaseLayer]="removeBaseLayer.bind(this)"
           [moveBaseLayer]="moveBaseLayer.bind(this)"
-          [onBaseLayerRoleDefaultChange]="onBaseLayerRoleDefaultChange.bind(this)"
+          [onBaseLayerRoleDefaultChange]="
+            onBaseLayerRoleDefaultChange.bind(this)
+          "
           [onOverlayTypeChange]="onOverlayTypeChange.bind(this)"
           [addVectorLayer]="addVectorLayer.bind(this)"
           [removeVectorLayer]="removeVectorLayer.bind(this)"
@@ -71,7 +73,9 @@
           [onVectorPaintModeChange]="onVectorPaintModeChange.bind(this)"
           [tileJsonAttributeOptions]="tileJsonAttributeOptions.bind(this)"
           [loadTileJsonAttributes]="loadTileJsonAttributes.bind(this)"
-          [seedCategoricalStopsFromTileJson]="seedCategoricalStopsFromTileJson.bind(this)"
+          [seedCategoricalStopsFromTileJson]="
+            seedCategoricalStopsFromTileJson.bind(this)
+          "
           [addCategoricalStop]="addCategoricalStop.bind(this)"
           [removeCategoricalStop]="removeCategoricalStop.bind(this)"
           [save]="saveMapsTab"
