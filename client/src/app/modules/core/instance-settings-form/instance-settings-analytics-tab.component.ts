@@ -19,57 +19,8 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     FormControlDirective,
     IfErrorDirective,
   ],
-  template: `
-    <ng-container
-      *transloco="let t; read: 'instanceSettings.instanceSettingsForm'"
-    >
-      <div [formGroup]="group" class="flex flex-col gap-4 pt-4">
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="matomo-tracker-url">{{
-            t('matomoTrackerUrlLabel')
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="matomo-tracker-url"
-            formControlName="matomoTrackerUrl"
-            [placeholder]="t('matomoTrackerUrlPlaceholder')"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            'validation.maxLength' | transloco: { max: 120 }
-          }}</small>
-        </div>
-
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="matomo-site-id">{{
-            t('matomoSiteIdLabel')
-          }}</label>
-          <input
-            type="text"
-            pInputText
-            id="matomo-site-id"
-            formControlName="matomoSiteId"
-            [placeholder]="t('matomoSiteIdPlaceholder')"
-            lcFormControl
-          />
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            'validation.maxLength' | transloco: { max: 120 }
-          }}</small>
-        </div>
-
-        <div class="form-actions">
-          <p-button
-            label="{{ t('editInstanceSettingsButtonLabel') }}"
-            (click)="save()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loading"
-          ></p-button>
-        </div>
-      </div>
-    </ng-container>
-  `,
+  templateUrl: './instance-settings-analytics-tab.component.html',
+  styleUrl: './instance-settings-analytics-tab.component.scss',
 })
 export class InstanceSettingsAnalyticsTabComponent {
   @Input({ required: true }) group!: FormGroup;
