@@ -323,9 +323,7 @@
                       />
                     </div>
                   </div>
-                  @if (
-                    layer.subLayers?.length && isOverlayExpanded(layer.id)
-                  ) {
+                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
                     <div class="rock-explorer__overlays-sublayers">
                       @for (sub of layer.subLayers; track sub.id) {
                         <div class="rock-explorer__overlays-row-label">
@@ -565,9 +563,7 @@
                       />
                     </div>
                   </div>
-                  @if (
-                    layer.subLayers?.length && isOverlayExpanded(layer.id)
-                  ) {
+                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
                     <div class="rock-explorer__overlays-sublayers">
                       @for (sub of layer.subLayers; track sub.id) {
                         <div class="rock-explorer__overlays-row-label">

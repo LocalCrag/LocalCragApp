@@ -665,11 +665,9 @@
                 </div>
 
                 <div class="flex flex-col gap-2" lcControlGroup>
-                  <label
-                    class="form-label"
-                    [for]="'map-layer-type-' + i"
-                    >{{ t("mapLayerTypeLabel") }}</label
-                  >
+                  <label class="form-label" [for]="'map-layer-type-' + i">{{
+                    t("mapLayerTypeLabel")
+                  }}</label>
                   <p-select
                     [id]="'map-layer-type-' + i"
                     formControlName="type"
@@ -788,9 +786,7 @@
                             >
                               <label
                                 class="form-label"
-                                [for]="
-                                  'map-layer-source-layer-' + i + '-' + j
-                                "
+                                [for]="'map-layer-source-layer-' + i + '-' + j"
                                 >{{ t("mapLayerSourceLayerLabel") }}</label
                               >
                               <input
@@ -824,7 +820,9 @@
                                 >{{ t("mapLayerPaintModeLabel") }}</label
                               >
                               <p-select
-                                [inputId]="'map-layer-paint-mode-' + i + '-' + j"
+                                [inputId]="
+                                  'map-layer-paint-mode-' + i + '-' + j
+                                "
                                 formControlName="paintMode"
                                 [options]="paintModeOptions"
                                 optionLabel="label"
@@ -838,9 +836,8 @@
                                 class="form-label"
                                 [for]="'map-layer-color-' + i + '-' + j"
                                 >{{
-                                  vectorLayersControls(i)
-                                    .at(j)
-                                    .get("paintMode")?.value === "categorical"
+                                  vectorLayersControls(i).at(j).get("paintMode")
+                                    ?.value === "categorical"
                                     ? t("mapLayerDefaultColorLabel")
                                     : t("mapLayerColorLabel")
                                 }}</label
@@ -911,9 +908,7 @@
                                 >
                                   <label
                                     class="form-label"
-                                    [for]="
-                                      'map-layer-cat-prop-' + i + '-' + j
-                                    "
+                                    [for]="'map-layer-cat-prop-' + i + '-' + j"
                                     >{{
                                       t("mapLayerCategoricalPropertyLabel")
                                     }}</label
@@ -940,9 +935,7 @@
                                   } @else {
                                     <input
                                       pInputText
-                                      [id]="
-                                        'map-layer-cat-prop-' + i + '-' + j
-                                      "
+                                      [id]="'map-layer-cat-prop-' + i + '-' + j"
                                       formControlName="categoricalProperty"
                                       placeholder="{{
                                         t(
@@ -958,9 +951,7 @@
                                       .hasError("categoricalPropertyRequired")
                                   ) {
                                     <small class="lc-error">{{
-                                      t(
-                                        "mapLayerCategoricalPropertyRequired"
-                                      )
+                                      t("mapLayerCategoricalPropertyRequired")
                                     }}</small>
                                   }
                                 </div>
@@ -1001,7 +992,9 @@
                                 }}</small>
                               }
                               @if (tileJsonMetaByOverlay[i]?.loading) {
-                                <small>{{ t("mapLayerTileJsonLoading") }}</small>
+                                <small>{{
+                                  t("mapLayerTileJsonLoading")
+                                }}</small>
                               }
 
                               <div class="flex flex-col gap-2">
@@ -1037,7 +1030,9 @@
                                             k
                                           "
                                           >{{
-                                            t("mapLayerCategoricalStopValueLabel")
+                                            t(
+                                              "mapLayerCategoricalStopValueLabel"
+                                            )
                                           }}</label
                                         >
                                         <input
@@ -1076,7 +1071,9 @@
                                             k
                                           "
                                           >{{
-                                            t("mapLayerCategoricalStopColorLabel")
+                                            t(
+                                              "mapLayerCategoricalStopColorLabel"
+                                            )
                                           }}</label
                                         >
                                         <p-colorPicker
@@ -1100,9 +1097,7 @@
                                         [rounded]="true"
                                         [text]="true"
                                         severity="danger"
-                                        (click)="
-                                          removeCategoricalStop(i, j, k)
-                                        "
+                                        (click)="removeCategoricalStop(i, j, k)"
                                         [attr.aria-label]="
                                           t('mapLayerRemoveCategoricalStop')
                                         "
@@ -1154,10 +1149,10 @@
                               lcFormControl
                             />
                             <label
-                              [for]="
-                                'map-layer-default-active-' + i + '-' + j
-                              "
-                              >{{ t("mapLayerVectorDefaultActiveLabel") }}</label
+                              [for]="'map-layer-default-active-' + i + '-' + j"
+                              >{{
+                                t("mapLayerVectorDefaultActiveLabel")
+                              }}</label
                             >
                           </div>
                         </div>

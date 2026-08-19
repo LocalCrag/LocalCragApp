@@ -147,10 +147,7 @@
                     {{ t("rockExplorer.mapStyle.vectorIdentifyLegend") }}
                   </div>
                   <ul class="rock-explorer__vector-identify-legend-list">
-                    @for (
-                      stop of hit.legend;
-                      track stop.value + stop.color
-                    ) {
+                    @for (stop of hit.legend; track stop.value + stop.color) {
                       <li
                         class="rock-explorer__vector-identify-legend-item"
                         [class.rock-explorer__vector-identify-legend-item--active]="
