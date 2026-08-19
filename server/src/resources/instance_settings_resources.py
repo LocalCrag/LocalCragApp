@@ -3,7 +3,6 @@ from copy import deepcopy
 from flask import current_app, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
-from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.conflict import Conflict
 from extensions import db
@@ -19,7 +18,6 @@ from scheduler_jobs.closure_materialization import (
 from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import (
-    instance_settings_args,
     instance_settings_schema_cls,
 )
 
@@ -168,17 +166,6 @@ class GetInstanceSettings(MethodView):
 
 
 class UpdateInstanceSettings(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
-    def put(self):
-        instance_settings_data = parser.parse(instance_settings_args, request)
-        instance_settings: InstanceSettings = InstanceSettings.return_it()
-        update_instance_settings_from_payload(instance_settings, instance_settings_data)
-
-        instance_settings_response = instance_settings_schema.dump(instance_settings)
-        instance_settings_response = add_fixed_instance_settings(instance_settings_response)
-        return instance_settings_response, 200
-
     @jwt_required()
     @check_auth_claims(moderator=True)
     def patch(self):

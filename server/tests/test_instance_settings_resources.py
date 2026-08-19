@@ -135,7 +135,7 @@ def test_successful_patch_nullable_instance_settings_fields(client, moderator_to
         matomoSiteId="42",
         rankingPastWeeks=8,
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200, rv.json
 
     rv = client.patch(
@@ -229,7 +229,7 @@ def test_patch_map_overlays_preserves_existing_base_layers(client, moderator_tok
             "defaultOverlayIds": [],
         }
     ]
-    rv = client.put(
+    rv = client.patch(
         "/api/instance-settings",
         token=moderator_token,
         json=_base_post_data(
@@ -338,7 +338,7 @@ def test_reject_vector_overlay_without_source_layer(client, moderator_token, any
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 400
 
 
@@ -383,7 +383,7 @@ def test_patch_map_base_layers_preserves_existing_overlays(client, moderator_tok
             "layers": [],
         }
     ]
-    rv = client.put(
+    rv = client.patch(
         "/api/instance-settings",
         token=moderator_token,
         json=_base_post_data(
@@ -471,7 +471,7 @@ def test_reject_invalid_map_base_layer_url(client, moderator_token, any_file):
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 400, rv.json
 
 
@@ -492,7 +492,7 @@ def test_reject_invalid_map_overlay_url(client, moderator_token, any_file):
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 400, rv.json
 
 
@@ -513,7 +513,7 @@ def test_reject_tiles_url_missing_xyz(client, moderator_token, any_file):
             }
         ],
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 400, rv.json
 
 
@@ -533,7 +533,7 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token, 
         language="en",
         timezone="UTC",
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 200
 
     crag = Crag.find_by_slug("_default")
@@ -564,5 +564,5 @@ def test_error_conflict_skipped_hierarchical_layers(client, moderator_token, any
         language="en",
         timezone="UTC",
     )
-    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    rv = client.patch("/api/instance-settings", token=moderator_token, json=post_data)
     assert rv.status_code == 409, rv.json
