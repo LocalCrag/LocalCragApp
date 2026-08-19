@@ -154,10 +154,7 @@
                 [attr.aria-label]="t('baseLayerMoveUp')"
               />
               <p-button
-                [disabled]="
-                  loading ||
-                  i === mapBaseLayersControls().length - 1
-                "
+                [disabled]="loading || i === mapBaseLayersControls().length - 1"
                 icon="pi pi-arrow-down"
                 [rounded]="true"
                 [text]="true"
@@ -384,10 +381,7 @@
                           </div>
                           <div class="map-layer-actions">
                             <p-button
-                              [disabled]="
-                                loading ||
-                                j === 0
-                              "
+                              [disabled]="loading || j === 0"
                               icon="pi pi-arrow-up"
                               [rounded]="true"
                               [text]="true"
@@ -396,10 +390,7 @@
                               [attr.aria-label]="t('mapLayerMoveVectorLayerUp')"
                             />
                             <p-button
-                              [disabled]="
-                                loading ||
-                                lastVector
-                              "
+                              [disabled]="loading || lastVector"
                               icon="pi pi-arrow-down"
                               [rounded]="true"
                               [text]="true"
@@ -411,8 +402,7 @@
                             />
                             <p-button
                               [disabled]="
-                                loading ||
-                                vectorLayersControls(i).length <= 1
+                                loading || vectorLayersControls(i).length <= 1
                               "
                               icon="pi pi-trash"
                               [rounded]="true"
@@ -483,8 +473,7 @@
                                   [text]="true"
                                   size="small"
                                   [disabled]="
-                                    loading ||
-                                    tileJsonMetaByOverlay[i]?.loading
+                                    loading || tileJsonMetaByOverlay[i]?.loading
                                   "
                                   (click)="loadTileJsonAttributes(i)"
                                 />
@@ -593,9 +582,7 @@
                                       ></p-colorPicker>
                                     </div>
                                     <p-button
-                                      [disabled]="
-                                        loading
-                                      "
+                                      [disabled]="loading"
                                       icon="pi pi-trash"
                                       [rounded]="true"
                                       [text]="true"
@@ -613,9 +600,7 @@
                                 icon="pi pi-plus"
                                 [text]="true"
                                 size="small"
-                                [disabled]="
-                                  loading
-                                "
+                                [disabled]="loading"
                                 (click)="addCategoricalStop(i, j)"
                               />
                             </div>
@@ -699,10 +684,7 @@
                 [attr.aria-label]="t('mapLayerMoveUp')"
               />
               <p-button
-                [disabled]="
-                  loading ||
-                  i === mapOverlaysControls().length - 1
-                "
+                [disabled]="loading || i === mapOverlaysControls().length - 1"
                 icon="pi pi-arrow-down"
                 [rounded]="true"
                 [text]="true"
