@@ -183,10 +183,7 @@
         (click)="addBaseLayer()"
         icon="pi pi-plus-circle"
         class="responsive-button"
-        [disabled]="
-          loadingState === loadingStates.LOADING ||
-          mapBaseLayersControls().length >= maxBaseLayers
-        "
+        [disabled]="loadingState === loadingStates.LOADING"
       />
     </div>
 
@@ -616,11 +613,7 @@
                                 icon="pi pi-plus"
                                 [text]="true"
                                 size="small"
-                                [disabled]="
-                                  loadingState === loadingStates.LOADING ||
-                                  categoricalStopsControls(i, j).length >=
-                                    maxCategoricalStops
-                                "
+                                [disabled]="loadingState === loadingStates.LOADING"
                                 (click)="addCategoricalStop(i, j)"
                               />
                             </div>
@@ -650,11 +643,7 @@
                     icon="pi pi-plus"
                     [text]="true"
                     size="small"
-                    [disabled]="
-                      loadingState === loadingStates.LOADING ||
-                      vectorLayersControls(i).length >=
-                        maxVectorLayersPerOverlay
-                    "
+                    [disabled]="loadingState === loadingStates.LOADING"
                   />
                 </div>
               }
@@ -737,10 +726,7 @@
         (click)="addMapLayer()"
         icon="pi pi-plus-circle"
         class="responsive-button"
-        [disabled]="
-          loadingState === loadingStates.LOADING ||
-          mapOverlaysControls().length >= maxMapLayers
-        "
+        [disabled]="loadingState === loadingStates.LOADING"
       />
     </div>
 

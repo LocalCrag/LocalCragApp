@@ -40,10 +40,6 @@ export class InstanceSettingsMapsTabComponent {
   @Input({ required: true }) group!: FormGroup;
   @Input({ required: true }) loadingState!: number;
   @Input({ required: true }) loadingStates!: any;
-  @Input({ required: true }) maxBaseLayers!: number;
-  @Input({ required: true }) maxMapLayers!: number;
-  @Input({ required: true }) maxVectorLayersPerOverlay!: number;
-  @Input({ required: true }) maxCategoricalStops!: number;
   @Input({ required: true }) sourceKindOptions!: any[];
   @Input({ required: true }) overlayTypeOptions!: any[];
   @Input({ required: true }) paintModeOptions!: any[];

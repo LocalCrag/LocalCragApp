@@ -102,7 +102,6 @@ _map_overlay_vector_layer_item = {
     "categoricalStops": fields.List(
         fields.Nested(_map_overlay_categorical_stop_item),
         load_default=list,
-        validate=validate.Length(max=200),
     ),
     "defaultActive": fields.Bool(load_default=True),
 }
@@ -119,7 +118,6 @@ _map_overlay_item = {
     "layers": fields.List(
         fields.Nested(_map_overlay_vector_layer_item),
         load_default=list,
-        validate=validate.Length(max=20),
     ),
 }
 
@@ -147,12 +145,11 @@ instance_settings_args = {
     "mapBaseLayers": fields.List(
         fields.Nested(_map_base_layer_item, validate=_validate_base_layer_item),
         required=True,
-        validate=[validate.Length(max=10), _validate_base_layers],
+        validate=_validate_base_layers,
     ),
     "mapOverlays": fields.List(
         fields.Nested(_map_overlay_item, validate=_validate_map_layer_item),
         required=True,
-        validate=validate.Length(max=10),
     ),
     "skippedHierarchicalLayers": fields.Integer(
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)

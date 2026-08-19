@@ -141,8 +141,6 @@ type TileJsonOverlayMeta = {
 
 type SettingsTabId = 'general' | 'appearance' | 'analytics' | 'maps';
 
-const MAX_CATEGORICAL_STOPS = 200;
-
 /** Non-empty base-layer lists must mark one topo and one Rock Explorer default. */
 const baseLayersDefaultValidator: ValidatorFn = (
   control: AbstractControl,
@@ -238,10 +236,6 @@ export class InstanceSettingsFormComponent implements OnInit {
     { label: '256', value: 256 },
     { label: '512', value: 512 },
   ];
-  public readonly maxMapLayers = 10;
-  public readonly maxBaseLayers = 10;
-  public readonly maxVectorLayersPerOverlay = 20;
-  public readonly maxCategoricalStops = MAX_CATEGORICAL_STOPS;
   /** TileJSON attribute cache keyed by overlay form index. */
   public tileJsonMetaByOverlay: Record<number, TileJsonOverlayMeta> = {};
   public activeTab: SettingsTabId = 'general';
@@ -415,9 +409,6 @@ export class InstanceSettingsFormComponent implements OnInit {
   }
 
   addBaseLayer(): void {
-    if (this.mapBaseLayersControls().length >= this.maxBaseLayers) {
-      return;
-    }
     const layers = this.mapBaseLayersControls();
     const isFirst = layers.length === 0;
     layers.push(
@@ -608,9 +599,6 @@ export class InstanceSettingsFormComponent implements OnInit {
 
   addCategoricalStop(overlayIndex: number, layerIndex: number): void {
     const stops = this.categoricalStopsControls(overlayIndex, layerIndex);
-    if (stops.length >= this.maxCategoricalStops) {
-      return;
-    }
     stops.push(
       this.createCategoricalStopGroup({
         color: this.paletteColor(stops.length, stops.length + 1),
@@ -726,14 +714,13 @@ export class InstanceSettingsFormComponent implements OnInit {
     if (values.length === 0) {
       return;
     }
-    const limited = values.slice(0, this.maxCategoricalStops);
     const stops = this.categoricalStopsControls(overlayIndex, layerIndex);
     stops.clear();
-    limited.forEach((value, index) => {
+    values.forEach((value, index) => {
       stops.push(
         this.createCategoricalStopGroup({
           value,
-          color: this.paletteColor(index, limited.length),
+          color: this.paletteColor(index, values.length),
         }),
       );
     });
@@ -862,9 +849,6 @@ export class InstanceSettingsFormComponent implements OnInit {
 
   addVectorLayer(overlayIndex: number): void {
     const layers = this.vectorLayersControls(overlayIndex);
-    if (layers.length >= this.maxVectorLayersPerOverlay) {
-      return;
-    }
     layers.push(this.createVectorLayerGroup());
     this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
   }
@@ -892,9 +876,6 @@ export class InstanceSettingsFormComponent implements OnInit {
   }
 
   addMapLayer(): void {
-    if (this.mapOverlaysControls().length >= this.maxMapLayers) {
-      return;
-    }
     this.mapOverlaysControls().push(this.createMapLayerGroup());
   }
 
