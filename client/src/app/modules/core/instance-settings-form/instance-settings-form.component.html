@@ -13,10 +13,6 @@
       @if (activeTab === "general") {
         <lc-instance-settings-general-tab
           [group]="generalGroup()"
-          [faDefaultFormats]="faDefaultFormats"
-          [startingPositionsOptions]="startingPositionsOptions"
-          [rankingPastWeeksOptions]="rankingPastWeeksOptions"
-          [timezoneOptions]="timezoneOptions"
           [loading]="loadingState === loadingStates.LOADING"
           [save]="saveGeneralTab"
         />
@@ -41,39 +37,7 @@
       @if (activeTab === "maps") {
         <lc-instance-settings-maps-tab
           [group]="mapsGroup()"
-          [loadingState]="loadingState"
-          [loadingStates]="loadingStates"
-          [sourceKindOptions]="sourceKindOptions"
-          [overlayTypeOptions]="overlayTypeOptions"
-          [paintModeOptions]="paintModeOptions"
-          [tileSizeOptions]="tileSizeOptions"
-          [tileJsonMetaByOverlay]="tileJsonMetaByOverlay"
-          [overlaySelectOptions]="overlaySelectOptions.bind(this)"
-          [mapBaseLayersControls]="mapBaseLayersControls.bind(this)"
-          [mapOverlaysControls]="mapOverlaysControls.bind(this)"
-          [vectorLayersControls]="vectorLayersControls.bind(this)"
-          [categoricalStopsControls]="categoricalStopsControls.bind(this)"
-          [addBaseLayer]="addBaseLayer.bind(this)"
-          [removeBaseLayer]="removeBaseLayer.bind(this)"
-          [moveBaseLayer]="moveBaseLayer.bind(this)"
-          [onBaseLayerRoleDefaultChange]="
-            onBaseLayerRoleDefaultChange.bind(this)
-          "
-          [onOverlayTypeChange]="onOverlayTypeChange.bind(this)"
-          [addVectorLayer]="addVectorLayer.bind(this)"
-          [removeVectorLayer]="removeVectorLayer.bind(this)"
-          [moveVectorLayer]="moveVectorLayer.bind(this)"
-          [addMapLayer]="addMapLayer.bind(this)"
-          [removeMapLayer]="removeMapLayer.bind(this)"
-          [moveMapLayer]="moveMapLayer.bind(this)"
-          [onVectorPaintModeChange]="onVectorPaintModeChange.bind(this)"
-          [tileJsonAttributeOptions]="tileJsonAttributeOptions.bind(this)"
-          [loadTileJsonAttributes]="loadTileJsonAttributes.bind(this)"
-          [seedCategoricalStopsFromTileJson]="
-            seedCategoricalStopsFromTileJson.bind(this)
-          "
-          [addCategoricalStop]="addCategoricalStop.bind(this)"
-          [removeCategoricalStop]="removeCategoricalStop.bind(this)"
+          [loading]="loadingState === loadingStates.LOADING"
           [save]="saveMapsTab"
         />
       }

@@ -145,7 +145,7 @@
             </div>
             <div actions class="map-layer-actions">
               <p-button
-                [disabled]="loadingState === loadingStates.LOADING || i === 0"
+                [disabled]="loading || i === 0"
                 icon="pi pi-arrow-up"
                 [rounded]="true"
                 [text]="true"
@@ -155,7 +155,7 @@
               />
               <p-button
                 [disabled]="
-                  loadingState === loadingStates.LOADING ||
+                  loading ||
                   i === mapBaseLayersControls().length - 1
                 "
                 icon="pi pi-arrow-down"
@@ -166,7 +166,7 @@
                 [attr.aria-label]="t('baseLayerMoveDown')"
               />
               <p-button
-                [disabled]="loadingState === loadingStates.LOADING"
+                [disabled]="loading"
                 icon="pi pi-trash"
                 styleClass="p-button-danger"
                 (click)="removeBaseLayer(i)"
@@ -183,7 +183,7 @@
         (click)="addBaseLayer()"
         icon="pi pi-plus-circle"
         class="responsive-button"
-        [disabled]="loadingState === loadingStates.LOADING"
+        [disabled]="loading"
       />
     </div>
 
@@ -385,7 +385,7 @@
                           <div class="map-layer-actions">
                             <p-button
                               [disabled]="
-                                loadingState === loadingStates.LOADING ||
+                                loading ||
                                 j === 0
                               "
                               icon="pi pi-arrow-up"
@@ -397,7 +397,7 @@
                             />
                             <p-button
                               [disabled]="
-                                loadingState === loadingStates.LOADING ||
+                                loading ||
                                 lastVector
                               "
                               icon="pi pi-arrow-down"
@@ -411,7 +411,7 @@
                             />
                             <p-button
                               [disabled]="
-                                loadingState === loadingStates.LOADING ||
+                                loading ||
                                 vectorLayersControls(i).length <= 1
                               "
                               icon="pi pi-trash"
@@ -483,7 +483,7 @@
                                   [text]="true"
                                   size="small"
                                   [disabled]="
-                                    loadingState === loadingStates.LOADING ||
+                                    loading ||
                                     tileJsonMetaByOverlay[i]?.loading
                                   "
                                   (click)="loadTileJsonAttributes(i)"
@@ -496,7 +496,7 @@
                                   [text]="true"
                                   size="small"
                                   [disabled]="
-                                    loadingState === loadingStates.LOADING ||
+                                    loading ||
                                     !vectorLayersControls(i)
                                       .at(j)
                                       .get('categoricalProperty')?.value
@@ -594,7 +594,7 @@
                                     </div>
                                     <p-button
                                       [disabled]="
-                                        loadingState === loadingStates.LOADING
+                                        loading
                                       "
                                       icon="pi pi-trash"
                                       [rounded]="true"
@@ -614,7 +614,7 @@
                                 [text]="true"
                                 size="small"
                                 [disabled]="
-                                  loadingState === loadingStates.LOADING
+                                  loading
                                 "
                                 (click)="addCategoricalStop(i, j)"
                               />
@@ -645,7 +645,7 @@
                     icon="pi pi-plus"
                     [text]="true"
                     size="small"
-                    [disabled]="loadingState === loadingStates.LOADING"
+                    [disabled]="loading"
                   />
                 </div>
               }
@@ -690,7 +690,7 @@
             </div>
             <div actions class="map-layer-actions">
               <p-button
-                [disabled]="loadingState === loadingStates.LOADING || i === 0"
+                [disabled]="loading || i === 0"
                 icon="pi pi-arrow-up"
                 [rounded]="true"
                 [text]="true"
@@ -700,7 +700,7 @@
               />
               <p-button
                 [disabled]="
-                  loadingState === loadingStates.LOADING ||
+                  loading ||
                   i === mapOverlaysControls().length - 1
                 "
                 icon="pi pi-arrow-down"
@@ -711,7 +711,7 @@
                 [attr.aria-label]="t('mapLayerMoveDown')"
               />
               <p-button
-                [disabled]="loadingState === loadingStates.LOADING"
+                [disabled]="loading"
                 icon="pi pi-trash"
                 styleClass="p-button-danger"
                 (click)="removeMapLayer(i)"
@@ -728,7 +728,7 @@
         (click)="addMapLayer()"
         icon="pi pi-plus-circle"
         class="responsive-button"
-        [disabled]="loadingState === loadingStates.LOADING"
+        [disabled]="loading"
       />
     </div>
 
@@ -738,7 +738,7 @@
         (click)="save()"
         icon="pi pi-save"
         class="responsive-button"
-        [loading]="loadingState === loadingStates.LOADING"
+        [loading]="loading"
       ></p-button>
     </div>
   </div>
