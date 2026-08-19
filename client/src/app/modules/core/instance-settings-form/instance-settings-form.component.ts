@@ -33,8 +33,12 @@ import { InstanceSettings } from '../../../models/instance-settings';
 import { MapBaseLayer } from '../../../models/map-base-layer';
 import {
   MapOverlay,
+  MapOverlayCategoricalStop,
+  MapOverlayPaintMode,
   MapOverlaySourceKind,
   MapOverlayTileSize,
+  MapOverlayType,
+  MapOverlayVectorLayer,
 } from '../../../models/map-overlay';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { UploadService } from '../../../services/crud/upload.service';
@@ -63,6 +67,7 @@ import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
 import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
+import { HttpClient } from '@angular/common/http';
 
 const tilesUrlTemplateValidator: ValidatorFn = (
   group: AbstractControl,
@@ -77,6 +82,70 @@ const tilesUrlTemplateValidator: ValidatorFn = (
   }
   return null;
 };
+
+const mapOverlayTypeValidator: ValidatorFn = (
+  group: AbstractControl,
+): ValidationErrors | null => {
+  if (group.get('type')?.value !== 'vector') {
+    return null;
+  }
+  const layers = group.get('layers') as FormArray | null;
+  const entries = layers?.controls ?? [];
+  if (entries.length === 0) {
+    return { vectorLayersRequired: true };
+  }
+  const names = entries
+    .map((control) => String(control.get('sourceLayer')?.value ?? '').trim())
+    .filter((name) => name.length > 0);
+  if (names.length === 0) {
+    return { vectorLayersRequired: true };
+  }
+  if (new Set(names).size !== names.length) {
+    return { vectorLayersDuplicate: true };
+  }
+  return null;
+};
+
+const vectorLayerPaintValidator: ValidatorFn = (
+  group: AbstractControl,
+): ValidationErrors | null => {
+  if (group.get('paintMode')?.value !== 'categorical') {
+    return null;
+  }
+  const property = String(group.get('categoricalProperty')?.value ?? '').trim();
+  if (!property) {
+    return { categoricalPropertyRequired: true };
+  }
+  const stops = group.get('categoricalStops') as FormArray | null;
+  if (!stops?.length) {
+    return { categoricalStopsRequired: true };
+  }
+  const values = stops.controls
+    .map((control) => String(control.get('value')?.value ?? '').trim())
+    .filter((value) => value.length > 0);
+  if (values.length === 0) {
+    return { categoricalStopsRequired: true };
+  }
+  if (new Set(values).size !== values.length) {
+    return { categoricalStopsDuplicate: true };
+  }
+  return null;
+};
+
+type TileJsonAttributeInfo = {
+  name: string;
+  type?: string;
+  values: string[];
+  distinctCount?: number;
+};
+
+type TileJsonOverlayMeta = {
+  loading: boolean;
+  error: string | null;
+  attributesBySourceLayer: Record<string, TileJsonAttributeInfo[]>;
+};
+
+const MAX_CATEGORICAL_STOPS = 200;
 
 /** Non-empty base-layer lists must mark one topo and one Rock Explorer default. */
 const baseLayersDefaultValidator: ValidatorFn = (
@@ -162,6 +231,14 @@ export class InstanceSettingsFormComponent implements OnInit {
     label: string;
     value: MapOverlaySourceKind;
   }[] = [];
+  public overlayTypeOptions: {
+    label: string;
+    value: MapOverlayType;
+  }[] = [];
+  public paintModeOptions: {
+    label: string;
+    value: MapOverlayPaintMode;
+  }[] = [];
   public tileSizeOptions: {
     label: string;
     value: MapOverlayTileSize;
@@ -171,6 +248,10 @@ export class InstanceSettingsFormComponent implements OnInit {
   ];
   public readonly maxMapLayers = 10;
   public readonly maxBaseLayers = 10;
+  public readonly maxVectorLayersPerOverlay = 20;
+  public readonly maxCategoricalStops = MAX_CATEGORICAL_STOPS;
+  /** TileJSON attribute cache keyed by overlay form index. */
+  public tileJsonMetaByOverlay: Record<number, TileJsonOverlayMeta> = {};
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -179,6 +260,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
+  private http = inject(HttpClient);
 
   ngOnInit() {
     this.pageTitleService.setTitle(
@@ -208,6 +290,38 @@ export class InstanceSettingsFormComponent implements OnInit {
           ),
         ),
         value: 'tiles',
+      },
+    ];
+    this.overlayTypeOptions = [
+      {
+        label: this.translocoService.translate(
+          marker('instanceSettings.instanceSettingsForm.mapLayerTypeRaster'),
+        ),
+        value: 'raster',
+      },
+      {
+        label: this.translocoService.translate(
+          marker('instanceSettings.instanceSettingsForm.mapLayerTypeVector'),
+        ),
+        value: 'vector',
+      },
+    ];
+    this.paintModeOptions = [
+      {
+        label: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerPaintModeSolid',
+          ),
+        ),
+        value: 'solid',
+      },
+      {
+        label: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerPaintModeCategorical',
+          ),
+        ),
+        value: 'categorical',
       },
     ];
 
@@ -381,6 +495,15 @@ export class InstanceSettingsFormComponent implements OnInit {
   }
 
   private createMapLayerGroup(layer?: Partial<MapOverlay>): FormGroup {
+    const type = layer?.type === 'vector' ? 'vector' : 'raster';
+    const vectorLayers = this.fb.array(
+      (layer?.layers?.length
+        ? layer.layers
+        : type === 'vector'
+          ? [MapOverlayVectorLayer.deserialize({})]
+          : []
+      ).map((item) => this.createVectorLayerGroup(item)),
+    );
     return this.fb.group(
       {
         id: [layer?.id ?? crypto.randomUUID()],
@@ -388,20 +511,371 @@ export class InstanceSettingsFormComponent implements OnInit {
           layer?.name ?? '',
           [Validators.required, Validators.maxLength(120)],
         ],
+        type: [type, [Validators.required]],
         sourceKind: [layer?.sourceKind ?? 'tilejson', [Validators.required]],
         url: [
           layer?.url ?? '',
           [Validators.required, Validators.maxLength(2048), httpUrlValidator()],
         ],
-        type: [{ value: 'raster', disabled: true }],
         opacity: [
           layer?.opacity ?? 0.5,
           [Validators.required, Validators.min(0), Validators.max(1)],
         ],
         tileSize: [layer?.tileSize ?? 256, [Validators.required]],
+        layers: vectorLayers,
       },
-      { validators: [tilesUrlTemplateValidator] },
+      { validators: [tilesUrlTemplateValidator, mapOverlayTypeValidator] },
     );
+  }
+
+  private createVectorLayerGroup(
+    layer?: Partial<MapOverlayVectorLayer>,
+  ): FormGroup {
+    const paintMode: MapOverlayPaintMode =
+      layer?.paintMode === 'categorical' ? 'categorical' : 'solid';
+    return this.fb.group(
+      {
+        name: [
+          layer?.name ?? '',
+          [Validators.required, Validators.maxLength(120)],
+        ],
+        sourceLayer: [
+          layer?.sourceLayer ?? '',
+          [Validators.required, Validators.maxLength(120)],
+        ],
+        paintMode: [paintMode, [Validators.required]],
+        color: [layer?.color ?? '#2d6a4f', [Validators.required]],
+        categoricalProperty: [
+          layer?.categoricalProperty ?? '',
+          [Validators.maxLength(120)],
+        ],
+        categoricalStops: this.fb.array(
+          (layer?.categoricalStops ?? []).map((stop) =>
+            this.createCategoricalStopGroup(stop),
+          ),
+        ),
+        defaultActive: [layer?.defaultActive !== false],
+      },
+      { validators: [vectorLayerPaintValidator] },
+    );
+  }
+
+  private createCategoricalStopGroup(
+    stop?: Partial<MapOverlayCategoricalStop>,
+  ): FormGroup {
+    return this.fb.group({
+      value: [
+        stop?.value ?? '',
+        [Validators.required, Validators.maxLength(500)],
+      ],
+      color: [stop?.color ?? '#2d6a4f', [Validators.required]],
+    });
+  }
+
+  vectorLayersControls(overlayIndex: number): FormArray {
+    return this.mapOverlaysControls()
+      .at(overlayIndex)
+      .get('layers') as FormArray;
+  }
+
+  categoricalStopsControls(
+    overlayIndex: number,
+    layerIndex: number,
+  ): FormArray {
+    return this.vectorLayersControls(overlayIndex)
+      .at(layerIndex)
+      .get('categoricalStops') as FormArray;
+  }
+
+  onVectorPaintModeChange(overlayIndex: number, layerIndex: number): void {
+    const group = this.vectorLayersControls(overlayIndex).at(layerIndex);
+    group.updateValueAndValidity();
+    this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
+  }
+
+  addCategoricalStop(overlayIndex: number, layerIndex: number): void {
+    const stops = this.categoricalStopsControls(overlayIndex, layerIndex);
+    if (stops.length >= this.maxCategoricalStops) {
+      return;
+    }
+    stops.push(
+      this.createCategoricalStopGroup({
+        color: this.paletteColor(stops.length, stops.length + 1),
+      }),
+    );
+    this.vectorLayersControls(overlayIndex)
+      .at(layerIndex)
+      .updateValueAndValidity();
+  }
+
+  removeCategoricalStop(
+    overlayIndex: number,
+    layerIndex: number,
+    stopIndex: number,
+  ): void {
+    const stops = this.categoricalStopsControls(overlayIndex, layerIndex);
+    stops.removeAt(stopIndex);
+    this.vectorLayersControls(overlayIndex)
+      .at(layerIndex)
+      .updateValueAndValidity();
+  }
+
+  tileJsonAttributeOptions(
+    overlayIndex: number,
+    layerIndex: number,
+  ): { label: string; value: string }[] {
+    const sourceLayer = String(
+      this.vectorLayersControls(overlayIndex).at(layerIndex).get('sourceLayer')
+        ?.value ?? '',
+    ).trim();
+    const meta = this.tileJsonMetaByOverlay[overlayIndex];
+    const attrs = meta?.attributesBySourceLayer?.[sourceLayer] ?? [];
+    return attrs.map((attr) => ({
+      label:
+        attr.distinctCount != null
+          ? `${attr.name} (${attr.distinctCount})`
+          : attr.name,
+      value: attr.name,
+    }));
+  }
+
+  loadTileJsonAttributes(overlayIndex: number): void {
+    const group = this.mapOverlaysControls().at(overlayIndex);
+    if (group.get('sourceKind')?.value !== 'tilejson') {
+      this.tileJsonMetaByOverlay[overlayIndex] = {
+        loading: false,
+        error: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerTileJsonRequiresTilejson',
+          ),
+        ),
+        attributesBySourceLayer: {},
+      };
+      return;
+    }
+    const url = String(group.get('url')?.value ?? '').trim();
+    if (!url) {
+      this.tileJsonMetaByOverlay[overlayIndex] = {
+        loading: false,
+        error: this.translocoService.translate(
+          marker(
+            'instanceSettings.instanceSettingsForm.mapLayerTileJsonUrlRequired',
+          ),
+        ),
+        attributesBySourceLayer: {},
+      };
+      return;
+    }
+    this.tileJsonMetaByOverlay[overlayIndex] = {
+      loading: true,
+      error: null,
+      attributesBySourceLayer: {},
+    };
+    this.http.get<Record<string, unknown>>(url).subscribe({
+      next: (tileJson) => {
+        this.tileJsonMetaByOverlay[overlayIndex] = {
+          loading: false,
+          error: null,
+          attributesBySourceLayer: this.parseTileJsonAttributes(tileJson),
+        };
+      },
+      error: () => {
+        this.tileJsonMetaByOverlay[overlayIndex] = {
+          loading: false,
+          error: this.translocoService.translate(
+            marker(
+              'instanceSettings.instanceSettingsForm.mapLayerTileJsonLoadError',
+            ),
+          ),
+          attributesBySourceLayer: {},
+        };
+      },
+    });
+  }
+
+  seedCategoricalStopsFromTileJson(
+    overlayIndex: number,
+    layerIndex: number,
+  ): void {
+    const group = this.vectorLayersControls(overlayIndex).at(layerIndex);
+    const sourceLayer = String(group.get('sourceLayer')?.value ?? '').trim();
+    const property = String(
+      group.get('categoricalProperty')?.value ?? '',
+    ).trim();
+    if (!sourceLayer || !property) {
+      return;
+    }
+    const meta = this.tileJsonMetaByOverlay[overlayIndex];
+    const attr = (meta?.attributesBySourceLayer?.[sourceLayer] ?? []).find(
+      (item) => item.name === property,
+    );
+    const values = attr?.values ?? [];
+    if (values.length === 0) {
+      return;
+    }
+    const limited = values.slice(0, this.maxCategoricalStops);
+    const stops = this.categoricalStopsControls(overlayIndex, layerIndex);
+    stops.clear();
+    limited.forEach((value, index) => {
+      stops.push(
+        this.createCategoricalStopGroup({
+          value,
+          color: this.paletteColor(index, limited.length),
+        }),
+      );
+    });
+    group.updateValueAndValidity();
+  }
+
+  private parseTileJsonAttributes(
+    tileJson: Record<string, unknown>,
+  ): Record<string, TileJsonAttributeInfo[]> {
+    const result: Record<string, TileJsonAttributeInfo[]> = {};
+    const vectorLayers = Array.isArray(tileJson?.['vector_layers'])
+      ? (tileJson['vector_layers'] as Record<string, unknown>[])
+      : [];
+    const tilestatsLayers = Array.isArray(
+      (tileJson?.['tilestats'] as Record<string, unknown> | undefined)?.[
+        'layers'
+      ],
+    )
+      ? ((tileJson['tilestats'] as Record<string, unknown>)['layers'] as Record<
+          string,
+          unknown
+        >[])
+      : [];
+    const statsByLayer = new Map<string, Record<string, unknown>[]>();
+    for (const layer of tilestatsLayers) {
+      const id = String(layer?.['layer'] ?? '').trim();
+      if (!id) {
+        continue;
+      }
+      const attrs = Array.isArray(layer?.['attributes'])
+        ? (layer['attributes'] as Record<string, unknown>[])
+        : [];
+      statsByLayer.set(id, attrs);
+    }
+    for (const layer of vectorLayers) {
+      const id = String(layer?.['id'] ?? '').trim();
+      if (!id) {
+        continue;
+      }
+      const fields =
+        layer?.['fields'] && typeof layer['fields'] === 'object'
+          ? (layer['fields'] as Record<string, unknown>)
+          : {};
+      const stats = statsByLayer.get(id) ?? [];
+      const attrs: TileJsonAttributeInfo[] = Object.keys(fields).map((name) => {
+        const stat = stats.find(
+          (item) => String(item?.['attribute'] ?? '') === name,
+        );
+        const rawValues = Array.isArray(stat?.['values'])
+          ? (stat['values'] as unknown[])
+          : [];
+        const values = rawValues
+          .map((value) => String(value ?? '').trim())
+          .filter((value) => value.length > 0);
+        const distinctCount =
+          typeof stat?.['count'] === 'number'
+            ? (stat['count'] as number)
+            : values.length || undefined;
+        return {
+          name,
+          type: String(fields[name] ?? stat?.['type'] ?? ''),
+          values,
+          distinctCount,
+        };
+      });
+      // Prefer lower-cardinality attributes first for the picker.
+      attrs.sort(
+        (a, b) => (a.distinctCount ?? 9999) - (b.distinctCount ?? 9999),
+      );
+      result[id] = attrs;
+    }
+    return result;
+  }
+
+  private paletteColor(index: number, total: number): string {
+    const n = Math.max(total, 1);
+    const hue = Math.round((360 * index) / n);
+    const saturation = 62;
+    const lightness = 42;
+    return this.hslToHex(hue, saturation, lightness);
+  }
+
+  private hslToHex(h: number, s: number, l: number): string {
+    const sat = s / 100;
+    const light = l / 100;
+    const c = (1 - Math.abs(2 * light - 1)) * sat;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = light - c / 2;
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    if (h < 60) {
+      r = c;
+      g = x;
+    } else if (h < 120) {
+      r = x;
+      g = c;
+    } else if (h < 180) {
+      g = c;
+      b = x;
+    } else if (h < 240) {
+      g = x;
+      b = c;
+    } else if (h < 300) {
+      r = x;
+      b = c;
+    } else {
+      r = c;
+      b = x;
+    }
+    const toHex = (channel: number) =>
+      Math.round((channel + m) * 255)
+        .toString(16)
+        .padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+
+  onOverlayTypeChange(overlayIndex: number): void {
+    const group = this.mapOverlaysControls().at(overlayIndex);
+    const layers = group.get('layers') as FormArray;
+    if (group.get('type')?.value === 'vector' && layers.length === 0) {
+      layers.push(this.createVectorLayerGroup());
+    }
+    group.updateValueAndValidity();
+  }
+
+  addVectorLayer(overlayIndex: number): void {
+    const layers = this.vectorLayersControls(overlayIndex);
+    if (layers.length >= this.maxVectorLayersPerOverlay) {
+      return;
+    }
+    layers.push(this.createVectorLayerGroup());
+    this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
+  }
+
+  removeVectorLayer(overlayIndex: number, layerIndex: number): void {
+    const layers = this.vectorLayersControls(overlayIndex);
+    layers.removeAt(layerIndex);
+    this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
+  }
+
+  moveVectorLayer(
+    overlayIndex: number,
+    layerIndex: number,
+    direction: 'up' | 'down',
+  ): void {
+    const layers = this.vectorLayersControls(overlayIndex);
+    const target = direction === 'up' ? layerIndex - 1 : layerIndex + 1;
+    if (target < 0 || target >= layers.length) {
+      return;
+    }
+    const control = layers.at(layerIndex);
+    layers.removeAt(layerIndex);
+    layers.insert(target, control);
+    this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
   }
 
   addMapLayer(): void {
@@ -508,10 +982,6 @@ export class InstanceSettingsFormComponent implements OnInit {
       language: this.instanceSettings.language,
       timezone: this.instanceSettings.timezone,
     });
-    // Keep type fixed to raster (form.enable() would otherwise unlock it).
-    for (const group of layersArray.controls) {
-      group.get('type')?.disable({ emitEvent: false });
-    }
   }
 
   public saveInstanceSettings() {
@@ -579,12 +1049,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       });
       instanceSettings.mapOverlays = (
         this.mapOverlaysControls().getRawValue() ?? []
-      ).map((layer) =>
-        MapOverlay.deserialize({
-          ...layer,
-          type: 'raster',
-        }),
-      );
+      ).map((layer) => MapOverlay.deserialize(layer));
       instanceSettings.faDefaultFormat =
         this.instanceSettingsForm.get('faDefaultFormat').value;
       instanceSettings.defaultStartingPosition = this.instanceSettingsForm.get(

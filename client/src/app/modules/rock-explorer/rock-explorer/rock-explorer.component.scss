@@ -48,6 +48,145 @@
   width: 100%;
 }
 
+.rock-explorer__vector-identify {
+  position: fixed;
+  z-index: 1200;
+  min-width: 10rem;
+  max-width: min(20rem, calc(100vw - 1.5rem));
+  max-height: min(70vh, 28rem);
+  overflow: auto;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--p-content-border-radius, 8px);
+  background: var(--p-content-background, #fff);
+  color: var(--p-text-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--p-content-border-color, rgba(0, 0, 0, 0.08));
+  transform: translate(0.35rem, 0.35rem);
+  pointer-events: auto;
+}
+
+.rock-explorer__vector-identify-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--p-text-muted-color, var(--p-text-color));
+  margin-bottom: 0.35rem;
+}
+
+.rock-explorer__vector-identify-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.rock-explorer__vector-identify-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.rock-explorer__vector-identify-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.rock-explorer__vector-identify-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.15rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.rock-explorer__vector-identify-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.05rem;
+}
+
+.rock-explorer__vector-identify-name {
+  font-size: 0.85rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rock-explorer__vector-identify-value {
+  font-size: 0.78rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.rock-explorer__vector-identify-overlay {
+  font-size: 0.7rem;
+  color: var(--p-text-muted-color, var(--p-text-color));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rock-explorer__vector-identify-legend {
+  margin-left: 1.2rem;
+  padding-left: 0.45rem;
+  border-left: 2px solid var(--p-content-border-color, rgba(0, 0, 0, 0.08));
+}
+
+.rock-explorer__vector-identify-legend-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--p-text-muted-color, var(--p-text-color));
+  margin-bottom: 0.25rem;
+}
+
+.rock-explorer__vector-identify-legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-height: 10rem;
+  overflow: auto;
+}
+
+.rock-explorer__vector-identify-legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  min-width: 0;
+
+  .rock-explorer__vector-identify-swatch {
+    margin-top: 0.12rem;
+  }
+
+  span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.rock-explorer__vector-identify-legend-item--active {
+  font-weight: 600;
+}
+
 :host ::ng-deep .rock-explorer-image-hover-popup {
   // MapLibre hardcodes tip/content to #fff — keep both on the theme surface.
   --rock-explorer-image-hover-popup-bg: var(--p-content-background);

@@ -135,6 +135,7 @@ def test_successful_put_map_overlays(client, moderator_token, any_file):
             "type": "raster",
             "opacity": 0.45,
             "tileSize": 256,
+            "layers": [],
         },
         {
             "id": "xyz-overlay",
@@ -144,6 +145,36 @@ def test_successful_put_map_overlays(client, moderator_token, any_file):
             "type": "raster",
             "opacity": 0.5,
             "tileSize": 512,
+            "layers": [],
+        },
+        {
+            "id": "naturschutz",
+            "name": "Naturschutzgebiete",
+            "sourceKind": "tiles",
+            "url": "https://tiles.example.org/ns/{z}/{x}/{y}.pbf",
+            "type": "vector",
+            "opacity": 0.35,
+            "tileSize": 256,
+            "layers": [
+                {
+                    "name": "Naturschutzgebiet",
+                    "sourceLayer": "nsg",
+                    "paintMode": "solid",
+                    "color": "#228B22",
+                    "categoricalProperty": "",
+                    "categoricalStops": [],
+                    "defaultActive": True,
+                },
+                {
+                    "name": "Landschaftsschutzgebiet",
+                    "sourceLayer": "lsg",
+                    "paintMode": "solid",
+                    "color": "#1d3557",
+                    "categoricalProperty": "",
+                    "categoricalStops": [],
+                    "defaultActive": False,
+                },
+            ],
         },
     ]
     post_data = _base_post_data(
@@ -159,6 +190,95 @@ def test_successful_put_map_overlays(client, moderator_token, any_file):
     rv = client.get("/api/instance-settings")
     assert rv.status_code == 200
     assert rv.json["mapOverlays"] == layers
+
+
+def test_successful_put_categorical_vector_overlay(client, moderator_token, any_file):
+    layers = [
+        {
+            "id": "guek300",
+            "name": "GÜK 300",
+            "sourceKind": "tilejson",
+            "url": "https://tiles.example.org/data/guek300.json",
+            "type": "vector",
+            "opacity": 0.4,
+            "tileSize": 256,
+            "layers": [
+                {
+                    "name": "Geologie",
+                    "sourceLayer": "guek300",
+                    "paintMode": "categorical",
+                    "color": "#888888",
+                    "categoricalProperty": "AERA",
+                    "categoricalStops": [
+                        {"value": "Känozoikum", "color": "#f4a261"},
+                        {"value": "Mesozoikum", "color": "#2a9d8f"},
+                    ],
+                    "defaultActive": True,
+                }
+            ],
+        }
+    ]
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapOverlays=layers,
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 200, rv.json
+    assert rv.json["mapOverlays"] == layers
+
+
+def test_reject_categorical_vector_overlay_without_property(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapOverlays=[
+            {
+                "id": "guek300",
+                "name": "GÜK 300",
+                "sourceKind": "tilejson",
+                "url": "https://tiles.example.org/data/guek300.json",
+                "type": "vector",
+                "opacity": 0.4,
+                "layers": [
+                    {
+                        "name": "Geologie",
+                        "sourceLayer": "guek300",
+                        "paintMode": "categorical",
+                        "color": "#888888",
+                        "categoricalProperty": "",
+                        "categoricalStops": [{"value": "A", "color": "#111111"}],
+                        "defaultActive": True,
+                    }
+                ],
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400
+
+
+def test_reject_vector_overlay_without_source_layer(client, moderator_token, any_file):
+    post_data = _base_post_data(
+        logoImage=str(any_file.id),
+        faviconImage=str(any_file.id),
+        bgImage=str(any_file.id),
+        mapOverlays=[
+            {
+                "id": "naturschutz",
+                "name": "Naturschutzgebiete",
+                "sourceKind": "tilejson",
+                "url": "https://tiles.example.org/ns/tiles.json",
+                "type": "vector",
+                "opacity": 0.35,
+                "layers": [],
+            }
+        ],
+    )
+    rv = client.put("/api/instance-settings", token=moderator_token, json=post_data)
+    assert rv.status_code == 400
 
 
 def test_successful_put_map_base_layers(client, moderator_token, any_file):

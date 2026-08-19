@@ -667,6 +667,25 @@
                 <div class="flex flex-col gap-2" lcControlGroup>
                   <label
                     class="form-label"
+                    [for]="'map-layer-type-' + i"
+                    >{{ t("mapLayerTypeLabel") }}</label
+                  >
+                  <p-select
+                    [id]="'map-layer-type-' + i"
+                    formControlName="type"
+                    [options]="overlayTypeOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    appendTo="body"
+                    lcFormControl
+                    class="w-full"
+                    (onChange)="onOverlayTypeChange(i)"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-2" lcControlGroup>
+                  <label
+                    class="form-label"
                     [for]="'map-layer-source-kind-' + i"
                     >{{ t("mapLayerSourceKindLabel") }}</label
                   >
@@ -714,6 +733,469 @@
                   }}</small>
                 }
 
+                @if (
+                  mapOverlaysControls().at(i).get("type")?.value === "vector"
+                ) {
+                  <div class="flex flex-col gap-2">
+                    <label class="form-label">{{
+                      t("mapLayerVectorLayersLabel")
+                    }}</label>
+                    <div formArrayName="layers" class="flex flex-col gap-3">
+                      @for (
+                        _ of vectorLayersControls(i).controls;
+                        track _;
+                        let j = $index;
+                        let lastVector = $last
+                      ) {
+                        <div
+                          [formGroupName]="j"
+                          class="flex flex-col gap-2 map-vector-layer-row"
+                        >
+                          <div class="flex flex-wrap items-end gap-3">
+                            <div
+                              class="flex flex-col gap-2 flex-1 min-w-[10rem]"
+                              lcControlGroup
+                            >
+                              <label
+                                class="form-label"
+                                [for]="'map-layer-vector-name-' + i + '-' + j"
+                                >{{ t("mapLayerVectorNameLabel") }}</label
+                              >
+                              <input
+                                pInputText
+                                [id]="'map-layer-vector-name-' + i + '-' + j"
+                                formControlName="name"
+                                placeholder="{{
+                                  t('mapLayerVectorNamePlaceholder')
+                                }}"
+                                lcFormControl
+                              />
+                              <small class="lc-error" *lcIfError="'required'">{{
+                                "validation.required" | transloco
+                              }}</small>
+                              <small
+                                class="lc-error"
+                                *lcIfError="'maxlength'"
+                                >{{
+                                  "validation.maxLength"
+                                    | transloco: { max: 120 }
+                                }}</small
+                              >
+                            </div>
+                            <div
+                              class="flex flex-col gap-2 flex-1 min-w-[10rem]"
+                              lcControlGroup
+                            >
+                              <label
+                                class="form-label"
+                                [for]="
+                                  'map-layer-source-layer-' + i + '-' + j
+                                "
+                                >{{ t("mapLayerSourceLayerLabel") }}</label
+                              >
+                              <input
+                                pInputText
+                                [id]="'map-layer-source-layer-' + i + '-' + j"
+                                formControlName="sourceLayer"
+                                placeholder="{{
+                                  t('mapLayerSourceLayerPlaceholder')
+                                }}"
+                                lcFormControl
+                              />
+                              <small class="lc-error" *lcIfError="'required'">{{
+                                "validation.required" | transloco
+                              }}</small>
+                              <small
+                                class="lc-error"
+                                *lcIfError="'maxlength'"
+                                >{{
+                                  "validation.maxLength"
+                                    | transloco: { max: 120 }
+                                }}</small
+                              >
+                            </div>
+                            <div
+                              class="flex flex-col gap-2 min-w-[10rem]"
+                              lcControlGroup
+                            >
+                              <label
+                                class="form-label"
+                                [for]="'map-layer-paint-mode-' + i + '-' + j"
+                                >{{ t("mapLayerPaintModeLabel") }}</label
+                              >
+                              <p-select
+                                [inputId]="'map-layer-paint-mode-' + i + '-' + j"
+                                formControlName="paintMode"
+                                [options]="paintModeOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                (onChange)="onVectorPaintModeChange(i, j)"
+                                lcFormControl
+                              />
+                            </div>
+                            <div class="flex flex-col gap-2" lcControlGroup>
+                              <label
+                                class="form-label"
+                                [for]="'map-layer-color-' + i + '-' + j"
+                                >{{
+                                  vectorLayersControls(i)
+                                    .at(j)
+                                    .get("paintMode")?.value === "categorical"
+                                    ? t("mapLayerDefaultColorLabel")
+                                    : t("mapLayerColorLabel")
+                                }}</label
+                              >
+                              <p-colorPicker
+                                [inputId]="'map-layer-color-' + i + '-' + j"
+                                formControlName="color"
+                                lcFormControl
+                              ></p-colorPicker>
+                            </div>
+                            <div class="map-layer-actions">
+                              <p-button
+                                [disabled]="
+                                  loadingState === loadingStates.LOADING ||
+                                  j === 0
+                                "
+                                icon="pi pi-arrow-up"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="secondary"
+                                (click)="moveVectorLayer(i, j, 'up')"
+                                [attr.aria-label]="
+                                  t('mapLayerMoveVectorLayerUp')
+                                "
+                              />
+                              <p-button
+                                [disabled]="
+                                  loadingState === loadingStates.LOADING ||
+                                  lastVector
+                                "
+                                icon="pi pi-arrow-down"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="secondary"
+                                (click)="moveVectorLayer(i, j, 'down')"
+                                [attr.aria-label]="
+                                  t('mapLayerMoveVectorLayerDown')
+                                "
+                              />
+                              <p-button
+                                [disabled]="
+                                  loadingState === loadingStates.LOADING ||
+                                  vectorLayersControls(i).length <= 1
+                                "
+                                icon="pi pi-trash"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="danger"
+                                (click)="removeVectorLayer(i, j)"
+                                [attr.aria-label]="
+                                  t('mapLayerRemoveVectorLayer')
+                                "
+                              />
+                            </div>
+                          </div>
+
+                          @if (
+                            vectorLayersControls(i).at(j).get("paintMode")
+                              ?.value === "categorical"
+                          ) {
+                            <div
+                              class="flex flex-col gap-2 map-vector-categorical"
+                            >
+                              <div class="flex flex-wrap items-end gap-3">
+                                <div
+                                  class="flex flex-col gap-2 flex-1 min-w-[10rem]"
+                                  lcControlGroup
+                                >
+                                  <label
+                                    class="form-label"
+                                    [for]="
+                                      'map-layer-cat-prop-' + i + '-' + j
+                                    "
+                                    >{{
+                                      t("mapLayerCategoricalPropertyLabel")
+                                    }}</label
+                                  >
+                                  @if (
+                                    tileJsonAttributeOptions(i, j).length > 0
+                                  ) {
+                                    <p-select
+                                      [inputId]="
+                                        'map-layer-cat-prop-' + i + '-' + j
+                                      "
+                                      formControlName="categoricalProperty"
+                                      [options]="tileJsonAttributeOptions(i, j)"
+                                      optionLabel="label"
+                                      optionValue="value"
+                                      [filter]="true"
+                                      placeholder="{{
+                                        t(
+                                          'mapLayerCategoricalPropertyPlaceholder'
+                                        )
+                                      }}"
+                                      lcFormControl
+                                    />
+                                  } @else {
+                                    <input
+                                      pInputText
+                                      [id]="
+                                        'map-layer-cat-prop-' + i + '-' + j
+                                      "
+                                      formControlName="categoricalProperty"
+                                      placeholder="{{
+                                        t(
+                                          'mapLayerCategoricalPropertyPlaceholder'
+                                        )
+                                      }}"
+                                      lcFormControl
+                                    />
+                                  }
+                                  @if (
+                                    vectorLayersControls(i)
+                                      .at(j)
+                                      .hasError("categoricalPropertyRequired")
+                                  ) {
+                                    <small class="lc-error">{{
+                                      t(
+                                        "mapLayerCategoricalPropertyRequired"
+                                      )
+                                    }}</small>
+                                  }
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                  <p-button
+                                    label="{{ t('mapLayerLoadTileJson') }}"
+                                    icon="pi pi-download"
+                                    [text]="true"
+                                    size="small"
+                                    [disabled]="
+                                      loadingState === loadingStates.LOADING ||
+                                      tileJsonMetaByOverlay[i]?.loading
+                                    "
+                                    (click)="loadTileJsonAttributes(i)"
+                                  />
+                                  <p-button
+                                    label="{{
+                                      t('mapLayerSeedCategoricalStops')
+                                    }}"
+                                    icon="pi pi-palette"
+                                    [text]="true"
+                                    size="small"
+                                    [disabled]="
+                                      loadingState === loadingStates.LOADING ||
+                                      !vectorLayersControls(i)
+                                        .at(j)
+                                        .get('categoricalProperty')?.value
+                                    "
+                                    (click)="
+                                      seedCategoricalStopsFromTileJson(i, j)
+                                    "
+                                  />
+                                </div>
+                              </div>
+                              @if (tileJsonMetaByOverlay[i]?.error) {
+                                <small class="lc-error">{{
+                                  tileJsonMetaByOverlay[i].error
+                                }}</small>
+                              }
+                              @if (tileJsonMetaByOverlay[i]?.loading) {
+                                <small>{{ t("mapLayerTileJsonLoading") }}</small>
+                              }
+
+                              <div class="flex flex-col gap-2">
+                                <label class="form-label">{{
+                                  t("mapLayerCategoricalStopsLabel")
+                                }}</label>
+                                <div
+                                  formArrayName="categoricalStops"
+                                  class="flex flex-col gap-2"
+                                >
+                                  @for (
+                                    _ of categoricalStopsControls(i, j)
+                                      .controls;
+                                    track _;
+                                    let k = $index
+                                  ) {
+                                    <div
+                                      [formGroupName]="k"
+                                      class="flex flex-wrap items-end gap-3"
+                                    >
+                                      <div
+                                        class="flex flex-col gap-2 flex-1 min-w-[10rem]"
+                                        lcControlGroup
+                                      >
+                                        <label
+                                          class="form-label"
+                                          [for]="
+                                            'map-layer-stop-value-' +
+                                            i +
+                                            '-' +
+                                            j +
+                                            '-' +
+                                            k
+                                          "
+                                          >{{
+                                            t("mapLayerCategoricalStopValueLabel")
+                                          }}</label
+                                        >
+                                        <input
+                                          pInputText
+                                          [id]="
+                                            'map-layer-stop-value-' +
+                                            i +
+                                            '-' +
+                                            j +
+                                            '-' +
+                                            k
+                                          "
+                                          formControlName="value"
+                                          lcFormControl
+                                        />
+                                        <small
+                                          class="lc-error"
+                                          *lcIfError="'required'"
+                                          >{{
+                                            "validation.required" | transloco
+                                          }}</small
+                                        >
+                                      </div>
+                                      <div
+                                        class="flex flex-col gap-2"
+                                        lcControlGroup
+                                      >
+                                        <label
+                                          class="form-label"
+                                          [for]="
+                                            'map-layer-stop-color-' +
+                                            i +
+                                            '-' +
+                                            j +
+                                            '-' +
+                                            k
+                                          "
+                                          >{{
+                                            t("mapLayerCategoricalStopColorLabel")
+                                          }}</label
+                                        >
+                                        <p-colorPicker
+                                          [inputId]="
+                                            'map-layer-stop-color-' +
+                                            i +
+                                            '-' +
+                                            j +
+                                            '-' +
+                                            k
+                                          "
+                                          formControlName="color"
+                                          lcFormControl
+                                        ></p-colorPicker>
+                                      </div>
+                                      <p-button
+                                        [disabled]="
+                                          loadingState === loadingStates.LOADING
+                                        "
+                                        icon="pi pi-trash"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="danger"
+                                        (click)="
+                                          removeCategoricalStop(i, j, k)
+                                        "
+                                        [attr.aria-label]="
+                                          t('mapLayerRemoveCategoricalStop')
+                                        "
+                                      />
+                                    </div>
+                                  }
+                                </div>
+                                @if (
+                                  vectorLayersControls(i)
+                                    .at(j)
+                                    .hasError("categoricalStopsRequired")
+                                ) {
+                                  <small class="lc-error">{{
+                                    t("mapLayerCategoricalStopsRequired")
+                                  }}</small>
+                                }
+                                @if (
+                                  vectorLayersControls(i)
+                                    .at(j)
+                                    .hasError("categoricalStopsDuplicate")
+                                ) {
+                                  <small class="lc-error">{{
+                                    t("mapLayerCategoricalStopsDuplicate")
+                                  }}</small>
+                                }
+                                <p-button
+                                  label="{{ t('mapLayerAddCategoricalStop') }}"
+                                  icon="pi pi-plus"
+                                  [text]="true"
+                                  size="small"
+                                  [disabled]="
+                                    loadingState === loadingStates.LOADING ||
+                                    categoricalStopsControls(i, j).length >=
+                                      maxCategoricalStops
+                                  "
+                                  (click)="addCategoricalStop(i, j)"
+                                />
+                              </div>
+                            </div>
+                          }
+
+                          <div class="flex items-center gap-2" lcControlGroup>
+                            <p-checkbox
+                              [inputId]="
+                                'map-layer-default-active-' + i + '-' + j
+                              "
+                              formControlName="defaultActive"
+                              [binary]="true"
+                              lcFormControl
+                            />
+                            <label
+                              [for]="
+                                'map-layer-default-active-' + i + '-' + j
+                              "
+                              >{{ t("mapLayerVectorDefaultActiveLabel") }}</label
+                            >
+                          </div>
+                        </div>
+                      }
+                    </div>
+                    @if (
+                      mapOverlaysControls()
+                        .at(i)
+                        .hasError("vectorLayersRequired")
+                    ) {
+                      <small class="lc-error">{{
+                        t("mapLayerVectorLayersRequired")
+                      }}</small>
+                    }
+                    @if (
+                      mapOverlaysControls()
+                        .at(i)
+                        .hasError("vectorLayersDuplicate")
+                    ) {
+                      <small class="lc-error">{{
+                        t("mapLayerVectorLayersDuplicate")
+                      }}</small>
+                    }
+                    <p-button
+                      label="{{ t('mapLayerAddVectorLayer') }}"
+                      (click)="addVectorLayer(i)"
+                      icon="pi pi-plus"
+                      [text]="true"
+                      size="small"
+                      [disabled]="
+                        loadingState === loadingStates.LOADING ||
+                        vectorLayersControls(i).length >=
+                          maxVectorLayersPerOverlay
+                      "
+                    />
+                  </div>
+                }
+
                 <div class="flex flex-wrap gap-4">
                   <div class="flex flex-col gap-2" lcControlGroup>
                     <label
@@ -742,22 +1224,26 @@
                     }}</small>
                   </div>
 
-                  <div class="flex flex-col gap-2" lcControlGroup>
-                    <label
-                      class="form-label"
-                      [for]="'map-layer-tile-size-' + i"
-                      >{{ t("mapLayerTileSizeLabel") }}</label
-                    >
-                    <p-select
-                      [id]="'map-layer-tile-size-' + i"
-                      formControlName="tileSize"
-                      [options]="tileSizeOptions"
-                      optionLabel="label"
-                      optionValue="value"
-                      appendTo="body"
-                      lcFormControl
-                    />
-                  </div>
+                  @if (
+                    mapOverlaysControls().at(i).get("type")?.value === "raster"
+                  ) {
+                    <div class="flex flex-col gap-2" lcControlGroup>
+                      <label
+                        class="form-label"
+                        [for]="'map-layer-tile-size-' + i"
+                        >{{ t("mapLayerTileSizeLabel") }}</label
+                      >
+                      <p-select
+                        [id]="'map-layer-tile-size-' + i"
+                        formControlName="tileSize"
+                        [options]="tileSizeOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        appendTo="body"
+                        lcFormControl
+                      />
+                    </div>
+                  }
                 </div>
               </div>
               <div actions class="map-layer-actions">

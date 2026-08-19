@@ -24,6 +24,26 @@ lc-instance-settings-form {
     align-items: center;
     gap: 0.25rem;
   }
+
+  .map-vector-layer-row {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--p-content-border-color, #e5e7eb);
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .map-vector-categorical {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--p-content-border-radius, 8px);
+    background: color-mix(
+      in srgb,
+      var(--p-content-border-color, #e5e7eb) 35%,
+      transparent
+    );
+  }
 }
 
 .blue-green-switch {
