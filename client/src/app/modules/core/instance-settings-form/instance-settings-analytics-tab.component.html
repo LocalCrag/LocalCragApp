@@ -1,7 +1,9 @@
 <ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
   <div [formGroup]="group" class="flex flex-col gap-4 pt-4">
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="matomo-tracker-url">{{ t("matomoTrackerUrlLabel") }}</label>
+      <label class="form-label" for="matomo-tracker-url">{{
+        t("matomoTrackerUrlLabel")
+      }}</label>
       <input
         type="text"
         pInputText
@@ -10,11 +12,15 @@
         [placeholder]="t('matomoTrackerUrlPlaceholder')"
         lcFormControl
       />
-      <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 120 } }}</small>
+      <small class="lc-error" *lcIfError="'maxlength'">{{
+        "validation.maxLength" | transloco: { max: 120 }
+      }}</small>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="matomo-site-id">{{ t("matomoSiteIdLabel") }}</label>
+      <label class="form-label" for="matomo-site-id">{{
+        t("matomoSiteIdLabel")
+      }}</label>
       <input
         type="text"
         pInputText
@@ -23,7 +29,9 @@
         [placeholder]="t('matomoSiteIdPlaceholder')"
         lcFormControl
       />
-      <small class="lc-error" *lcIfError="'maxlength'">{{ "validation.maxLength" | transloco: { max: 120 } }}</small>
+      <small class="lc-error" *lcIfError="'maxlength'">{{
+        "validation.maxLength" | transloco: { max: 120 }
+      }}</small>
     </div>
 
     <div class="form-actions">

@@ -2,68 +2,143 @@
   <div [formGroup]="group" class="flex flex-col gap-4 pt-4">
     <div class="lc-theme-variant-pair">
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="logo-upload">{{ t("logoImageLabel") }}</label>
-        <lc-single-image-upload lcFormControl id="logo-upload" formControlName="logoImage"></lc-single-image-upload>
+        <label class="form-label" for="logo-upload">{{
+          t("logoImageLabel")
+        }}</label>
+        <lc-single-image-upload
+          lcFormControl
+          id="logo-upload"
+          formControlName="logoImage"
+        ></lc-single-image-upload>
       </div>
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="dark-logo-upload">{{ t("darkLogoImageLabel") }}</label>
-        <lc-single-image-upload lcFormControl id="dark-logo-upload" formControlName="darkLogoImage"></lc-single-image-upload>
+        <label class="form-label" for="dark-logo-upload">{{
+          t("darkLogoImageLabel")
+        }}</label>
+        <lc-single-image-upload
+          lcFormControl
+          id="dark-logo-upload"
+          formControlName="darkLogoImage"
+        ></lc-single-image-upload>
       </div>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="favicon-image-upload">{{ t("faviconImageLabel") }}</label>
-      <lc-single-image-upload id="favicon-image-upload" lcFormControl formControlName="faviconImage"></lc-single-image-upload>
+      <label class="form-label" for="favicon-image-upload">{{
+        t("faviconImageLabel")
+      }}</label>
+      <lc-single-image-upload
+        id="favicon-image-upload"
+        lcFormControl
+        formControlName="faviconImage"
+      ></lc-single-image-upload>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="bg-image">{{ t("bgImageLabel") }}</label>
-        <span class="pi pi-question-circle ml-2" [pTooltip]="t('bgImageTooltip')" tooltipPosition="right"></span>
+        <span
+          class="pi pi-question-circle ml-2"
+          [pTooltip]="t('bgImageTooltip')"
+          tooltipPosition="right"
+        ></span>
       </div>
-      <lc-single-image-upload id="bg-image" lcFormControl formControlName="bgImage" [focusAdjustable]="true"></lc-single-image-upload>
+      <lc-single-image-upload
+        id="bg-image"
+        lcFormControl
+        formControlName="bgImage"
+        [focusAdjustable]="true"
+      ></lc-single-image-upload>
     </div>
 
-    <p-divider align="center" type="solid" class="mt-8 mb-2"><b>{{ t("arrowsSettings") }}</b></p-divider>
+    <p-divider align="center" type="solid" class="mt-8 mb-2"
+      ><b>{{ t("arrowsSettings") }}</b></p-divider
+    >
 
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="arrow-color">{{ t("arrowColorLabel") }}</label>
-      <p-colorPicker formControlName="arrowColor" id="arrow-color"></p-colorPicker>
+      <label class="form-label" for="arrow-color">{{
+        t("arrowColorLabel")
+      }}</label>
+      <p-colorPicker
+        formControlName="arrowColor"
+        id="arrow-color"
+      ></p-colorPicker>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="arrowTextColor">{{ t("arrowTextColorLabel") }}</label>
-      <p-colorPicker formControlName="arrowTextColor" id="arrowTextColor"></p-colorPicker>
+      <label class="form-label" for="arrowTextColor">{{
+        t("arrowTextColorLabel")
+      }}</label>
+      <p-colorPicker
+        formControlName="arrowTextColor"
+        id="arrowTextColor"
+      ></p-colorPicker>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="arrow-highlight-color">{{ t("arrowHighlightColorLabel") }}</label>
-      <p-colorPicker formControlName="arrowHighlightColor" id="arrow-highlight-color"></p-colorPicker>
+      <label class="form-label" for="arrow-highlight-color">{{
+        t("arrowHighlightColorLabel")
+      }}</label>
+      <p-colorPicker
+        formControlName="arrowHighlightColor"
+        id="arrow-highlight-color"
+      ></p-colorPicker>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
-      <label class="form-label" for="arrow-highlight-text-color">{{ t("arrowHighlightTextColorLabel") }}</label>
-      <p-colorPicker id="arrow-highlight-text-color" formControlName="arrowHighlightTextColor"></p-colorPicker>
+      <label class="form-label" for="arrow-highlight-text-color">{{
+        t("arrowHighlightTextColorLabel")
+      }}</label>
+      <p-colorPicker
+        id="arrow-highlight-text-color"
+        formControlName="arrowHighlightTextColor"
+      ></p-colorPicker>
     </div>
 
-    <p-divider align="center" type="solid" class="mt-8 mb-2"><b>{{ t("chartSettings") }}</b></p-divider>
+    <p-divider align="center" type="solid" class="mt-8 mb-2"
+      ><b>{{ t("chartSettings") }}</b></p-divider
+    >
 
     <div class="lc-theme-variant-pair">
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="bar-chart-color">{{ t("barChartColorLabel") }}</label>
-        <p-colorPicker id="bar-chart-color" formControlName="barChartColor" format="rgb"></p-colorPicker>
+        <label class="form-label" for="bar-chart-color">{{
+          t("barChartColorLabel")
+        }}</label>
+        <p-colorPicker
+          id="bar-chart-color"
+          formControlName="barChartColor"
+          format="rgb"
+        ></p-colorPicker>
       </div>
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="dark-bar-chart-color">{{ t("darkBarChartColorLabel") }}</label>
-        <p-colorPicker id="dark-bar-chart-color" formControlName="darkBarChartColor" format="rgb"></p-colorPicker>
+        <label class="form-label" for="dark-bar-chart-color">{{
+          t("darkBarChartColorLabel")
+        }}</label>
+        <p-colorPicker
+          id="dark-bar-chart-color"
+          formControlName="darkBarChartColor"
+          format="rgb"
+        ></p-colorPicker>
       </div>
     </div>
 
     <div class="lc-theme-variant-pair">
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="bar-chart-accent-color">{{ t("barChartAccentColorLabel") }}</label>
-        <p-colorPicker id="bar-chart-accent-color" formControlName="barChartAccentColor" format="rgb"></p-colorPicker>
+        <label class="form-label" for="bar-chart-accent-color">{{
+          t("barChartAccentColorLabel")
+        }}</label>
+        <p-colorPicker
+          id="bar-chart-accent-color"
+          formControlName="barChartAccentColor"
+          format="rgb"
+        ></p-colorPicker>
       </div>
       <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="dark-bar-chart-accent-color">{{ t("darkBarChartAccentColorLabel") }}</label>
-        <p-colorPicker id="dark-bar-chart-accent-color" formControlName="darkBarChartAccentColor" format="rgb"></p-colorPicker>
+        <label class="form-label" for="dark-bar-chart-accent-color">{{
+          t("darkBarChartAccentColorLabel")
+        }}</label>
+        <p-colorPicker
+          id="dark-bar-chart-accent-color"
+          formControlName="darkBarChartAccentColor"
+          format="rgb"
+        ></p-colorPicker>
       </div>
     </div>
 
