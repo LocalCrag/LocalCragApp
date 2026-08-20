@@ -3,7 +3,10 @@ import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InstanceSettings } from '../../models/instance-settings';
+import {
+  InstanceSettings,
+  type InstanceSettingsPatch,
+} from '../../models/instance-settings';
 
 @Injectable({
   providedIn: 'root',
@@ -18,14 +21,11 @@ export class InstanceSettingsService {
       .pipe(map(InstanceSettings.deserialize));
   }
 
-  public updateInstanceSettings(
-    instanceSettings: InstanceSettings,
+  public patchInstanceSettings(
+    patch: InstanceSettingsPatch,
   ): Observable<InstanceSettings> {
     return this.http
-      .put(
-        this.api.instanceSettings.update(),
-        InstanceSettings.serialize(instanceSettings),
-      )
+      .patch(this.api.instanceSettings.update(), patch)
       .pipe(map(InstanceSettings.deserialize));
   }
 }

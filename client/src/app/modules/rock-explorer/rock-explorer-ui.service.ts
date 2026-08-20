@@ -1,6 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Subject } from 'rxjs';
-import { MapStyles } from '../../enums/map-styles';
 import { RockExplorerFeature } from '../../models/rock-explorer-feature';
 import { Coordinates } from '../../interfaces/coordinates.interface';
 import { Position } from 'geojson';
@@ -10,14 +9,34 @@ import type { DraftSyncStatus } from './offline/rock-explorer-draft.types';
 
 export type RockExplorerSelectOption = { label: string; value: string };
 
+/** Base-map row shown in the Rock Explorer style toggle. */
+export type MapBaseLayerInfo = {
+  id: string;
+  name: string;
+};
+
 /** Overlay row shown in the Rock Explorer layers panel (session UI). */
 export type RockExplorerCustomMapLayerInfo = {
   id: string;
   name: string;
   /** Instance-settings default; used when seeding session opacities. */
   defaultOpacity: number;
-  /** Instance-settings default visibility. */
-  defaultOn: boolean;
+  /** Vector overlays: expandable source-layer toggles. */
+  subLayers?: RockExplorerCustomMapSubLayerInfo[];
+};
+
+export type RockExplorerCustomMapSubLayerInfo = {
+  /** Visibility key: `${parentId}--${index}`. */
+  id: string;
+  name: string;
+  index: number;
+  /** Solid fill, or categorical fallback color from instance settings. */
+  color: string;
+  paintMode?: 'solid' | 'categorical';
+  categoricalProperty?: string;
+  categoricalStops?: { value: string; color: string }[];
+  /** Applied only the first time the parent overlay is turned on this session. */
+  defaultActive: boolean;
 };
 
 export type RockExplorerDrawMode =
@@ -36,7 +55,7 @@ export type RockExplorerCommand =
   | { type: 'undoPolygonVertex' }
   | { type: 'finishPolygon' }
   | { type: 'cancelPolygonDraw' }
-  | { type: 'switchMapStyle'; style: MapStyles }
+  | { type: 'switchMapStyle'; styleId: string }
   | { type: 'toggleCustomMapLayers' }
   | { type: 'setCustomMapLayerOpacity'; layerId: string; opacity: number }
   | { type: 'setCustomMapLayerVisible'; layerId: string; visible: boolean }
@@ -108,7 +127,10 @@ export class RockExplorerUiService {
   /** True while the polygon draft ring has crossing edges. */
   readonly polygonSelfIntersecting = signal(false);
   readonly geometryEditActive = signal(false);
-  readonly mapStyle = signal<MapStyles>(MapStyles.TOPO);
+  /** Selected base-layer id (from instance settings / MapTiler fallback). */
+  readonly mapStyle = signal<string>('');
+  /** Base layers available in the style toggle. */
+  readonly baseLayers = signal<MapBaseLayerInfo[]>([]);
   /** Master switch for instance-configured Rock Explorer raster overlays (session-only). */
   readonly customMapLayersVisible = signal(true);
   /** True when instance settings include at least one custom map overlay. */
@@ -122,9 +144,14 @@ export class RockExplorerUiService {
   readonly customMapLayerOpacities = signal<Record<string, number>>({});
   /**
    * Per-overlay on/off for this Rock Explorer visit (session-only).
-   * Seeded from instance-settings `defaultOn`.
+   * Seeded from the selected base map's `defaultOverlayIds`.
    */
   readonly customMapLayerVisibility = signal<Record<string, boolean>>({});
+  /**
+   * Parent overlay ids that have already been activated once this session.
+   * Sub-layer `defaultActive` is applied only on that first activation.
+   */
+  readonly activatedCustomOverlayIds = signal<ReadonlySet<string>>(new Set());
   readonly isMobileViewport = signal(false);
   readonly pickingImageCoordinates = signal(false);
   readonly pickingParkingCoordinates = signal(false);
@@ -196,18 +223,35 @@ export class RockExplorerUiService {
     this.showFilters.update((open) => !open);
   }
 
+  /** Seeds the base-layer toggle from resolved instance settings. */
+  initBaseLayers(layers: MapBaseLayerInfo[], selectedId: string | null): void {
+    this.baseLayers.set(layers);
+    this.mapStyle.set(selectedId ?? '');
+  }
+
   /**
    * Seeds the layers panel from instance settings.
-   * Existing session opacities/visibility for known ids are kept; new ids get settings defaults.
-   * Array order is the paint/stack order (first = bottom).
+   * Existing session opacities for known ids are kept; new ids get settings defaults.
+   * Array order is the paint/stack order (first = top).
+   * Visibility is seeded from the selected base map's `defaultOverlayIds`.
    */
   initCustomMapLayers(
     configs: {
       id: string;
       name?: string;
       opacity: number;
-      defaultOn?: boolean;
+      type?: string;
+      layers?: {
+        name?: string;
+        sourceLayer?: string;
+        color?: string;
+        paintMode?: string;
+        categoricalProperty?: string;
+        categoricalStops?: { value?: string; color?: string }[];
+        defaultActive?: boolean;
+      }[];
     }[],
+    activeOverlayIds?: string[],
   ): void {
     const list = Array.isArray(configs) ? configs : [];
     this.hasCustomMapLayers.set(list.length > 0);
@@ -218,32 +262,92 @@ export class RockExplorerUiService {
           id: c.id,
           name: (c.name && c.name.trim()) || c.id,
           defaultOpacity: clampOpacity(c.opacity),
-          defaultOn: c.defaultOn !== false,
+          subLayers:
+            c.type === 'vector'
+              ? (c.layers ?? [])
+                  .map((layer, index) => {
+                    const sourceLayer = String(layer?.sourceLayer ?? '').trim();
+                    if (!sourceLayer) {
+                      return null;
+                    }
+                    const name =
+                      String(layer?.name ?? '').trim() || sourceLayer;
+                    const paintMode: 'solid' | 'categorical' =
+                      layer?.paintMode === 'categorical'
+                        ? 'categorical'
+                        : 'solid';
+                    const mapped: RockExplorerCustomMapSubLayerInfo = {
+                      id: `${c.id}--${index}`,
+                      name,
+                      index,
+                      color: String(layer?.color ?? '#2d6a4f'),
+                      paintMode,
+                      categoricalProperty: String(
+                        layer?.categoricalProperty ?? '',
+                      ).trim(),
+                      categoricalStops: Array.isArray(layer?.categoricalStops)
+                        ? layer.categoricalStops
+                            .map((stop) => ({
+                              value: String(stop?.value ?? '').trim(),
+                              color: String(stop?.color ?? '#2d6a4f'),
+                            }))
+                            .filter((stop) => stop.value.length > 0)
+                        : [],
+                      defaultActive: layer?.defaultActive !== false,
+                    };
+                    return mapped;
+                  })
+                  .filter(
+                    (layer): layer is RockExplorerCustomMapSubLayerInfo =>
+                      layer != null,
+                  )
+              : undefined,
         })),
     );
     const nextOpacity = { ...this.customMapLayerOpacities() };
-    const nextVisibility = { ...this.customMapLayerVisibility() };
     const keep = new Set(list.map((c) => c.id));
     for (const id of Object.keys(nextOpacity)) {
       if (!keep.has(id)) {
         delete nextOpacity[id];
       }
     }
-    for (const id of Object.keys(nextVisibility)) {
-      if (!keep.has(id)) {
-        delete nextVisibility[id];
-      }
-    }
     for (const c of list) {
       if (nextOpacity[c.id] === undefined) {
         nextOpacity[c.id] = clampOpacity(c.opacity);
       }
-      if (nextVisibility[c.id] === undefined) {
-        nextVisibility[c.id] = c.defaultOn !== false;
-      }
     }
     this.customMapLayerOpacities.set(nextOpacity);
+    this.activatedCustomOverlayIds.set(new Set());
+    this.applyBaseLayerDefaultOverlays(activeOverlayIds);
+  }
+
+  /** Sets overlay visibility from a base map's `defaultOverlayIds`. */
+  applyBaseLayerDefaultOverlays(activeOverlayIds?: string[]): void {
+    const infos = this.customMapLayerInfos();
+    const active = new Set(activeOverlayIds ?? []);
+    const previouslyActivated = this.activatedCustomOverlayIds();
+    const newlyActivated = new Set(previouslyActivated);
+    const current = this.customMapLayerVisibility();
+    const nextVisibility: Record<string, boolean> = {};
+    for (const info of infos) {
+      const parentOn = active.has(info.id);
+      nextVisibility[info.id] = parentOn;
+      const applyDefaults = parentOn && !previouslyActivated.has(info.id);
+      for (const sub of info.subLayers ?? []) {
+        if (applyDefaults) {
+          nextVisibility[sub.id] = sub.defaultActive !== false;
+        } else if (Object.prototype.hasOwnProperty.call(current, sub.id)) {
+          nextVisibility[sub.id] = current[sub.id] !== false;
+        } else {
+          nextVisibility[sub.id] = sub.defaultActive !== false;
+        }
+      }
+      if (parentOn) {
+        newlyActivated.add(info.id);
+      }
+    }
     this.customMapLayerVisibility.set(nextVisibility);
+    this.activatedCustomOverlayIds.set(newlyActivated);
   }
 
   setCustomMapLayerOpacity(layerId: string, opacity: number): void {
@@ -254,15 +358,33 @@ export class RockExplorerUiService {
   }
 
   setCustomMapLayerVisible(layerId: string, visible: boolean): void {
-    this.customMapLayerVisibility.update((current) => ({
-      ...current,
-      [layerId]: visible,
-    }));
+    const parent = this.customMapLayerInfos().find(
+      (layer) => layer.id === layerId,
+    );
+    this.customMapLayerVisibility.update((current) => {
+      const next = { ...current, [layerId]: visible };
+      if (parent && visible && !this.activatedCustomOverlayIds().has(layerId)) {
+        for (const sub of parent.subLayers ?? []) {
+          next[sub.id] = sub.defaultActive !== false;
+        }
+      }
+      return next;
+    });
+    if (parent && visible) {
+      this.activatedCustomOverlayIds.update((current) => {
+        if (current.has(layerId)) {
+          return current;
+        }
+        const next = new Set(current);
+        next.add(layerId);
+        return next;
+      });
+    }
   }
 
   /**
    * Reorders session overlay list. `up` moves earlier in the list (toward the
-   * basemap / bottom of the stack); `down` moves later (toward the top).
+   * top of the stack); `down` moves later (toward the basemap / bottom).
    * Returns the new ordered ids, or null if no change.
    */
   moveCustomMapLayer(

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
@@ -8,7 +8,6 @@ import { Slider } from 'primeng/slider';
 import { Checkbox } from 'primeng/checkbox';
 import { Tooltip } from 'primeng/tooltip';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
 
 @Component({
@@ -29,7 +28,8 @@ import { RockExplorerUiService } from '../rock-explorer-ui.service';
 })
 export class RockExplorerToolbarComponent implements OnInit {
   readonly ui = inject(RockExplorerUiService);
-  readonly MapStyles = MapStyles;
+  /** Overlay ids with expanded vector source-layer lists. */
+  readonly expandedOverlayIds = signal<ReadonlySet<string>>(new Set());
 
   public filterForm = inject(FormBuilder).group({
     potential: [null as string | null],
@@ -98,6 +98,22 @@ export class RockExplorerToolbarComponent implements OnInit {
       type: 'setCustomMapLayerVisible',
       layerId,
       visible: !!visible,
+    });
+  }
+
+  public isOverlayExpanded(layerId: string): boolean {
+    return this.expandedOverlayIds().has(layerId);
+  }
+
+  public toggleOverlayExpanded(layerId: string): void {
+    this.expandedOverlayIds.update((current) => {
+      const next = new Set(current);
+      if (next.has(layerId)) {
+        next.delete(layerId);
+      } else {
+        next.add(layerId);
+      }
+      return next;
     });
   }
 }

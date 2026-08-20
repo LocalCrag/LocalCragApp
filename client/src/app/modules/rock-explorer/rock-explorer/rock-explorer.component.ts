@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  HostListener,
   NgZone,
   OnDestroy,
   ViewChild,
@@ -32,7 +33,6 @@ import { Store } from '@ngrx/store';
 import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { MapStyles } from '../../../enums/map-styles';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { GalleryService } from '../../../services/crud/gallery.service';
 import { ClipboardService } from '../../../services/core/clipboard.service';
@@ -57,7 +57,11 @@ import { mockGpsRecording } from '../../../../environments/environment';
 import { RockExplorerPendingImageService } from '../offline/rock-explorer-pending-image.service';
 import { emptyFeatureCollection } from '../../../utility/map/geojson-source';
 import { fitMapToFeatureCollection } from '../../../utility/map/map-bounds';
-import { maptilerStyleUrl } from '../../../utility/map/maptiler-style';
+import {
+  pickRockExplorerDefaultBaseLayerId,
+  resolveMapBaseLayers,
+  styleUrlForBaseLayer,
+} from '../../../utility/map/resolve-map-style-url';
 import {
   RockExplorerImageLocations,
   RockExplorerImageLocationsHost,
@@ -68,7 +72,11 @@ import {
 } from '../map/rock-explorer-map-interaction';
 import { RockExplorerMapLayers } from '../map/rock-explorer-map-layers';
 import { RockExplorerCustomMapLayers } from '../map/rock-explorer-custom-map-layers';
-import { RockExplorerMapLayer } from '../../../models/rock-explorer-map-layer';
+import { MapBaseLayer } from '../../../models/map-base-layer';
+import {
+  MapOverlay,
+  resolveVectorLayerFeatureColor,
+} from '../../../models/map-overlay';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 
 @Component({
@@ -93,6 +101,8 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
+  @ViewChild('vectorIdentifyPanel')
+  private vectorIdentifyPanel?: ElementRef<HTMLElement>;
   @ViewChild(RockExplorerPanelComponent) panel?: RockExplorerPanelComponent;
   @ViewChild('recordImageInput')
   private recordImageInput?: ElementRef<HTMLInputElement>;
@@ -109,7 +119,21 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private lastFilters: RockExplorerFilters = {};
   private miscEditMode = false;
   public loading = true;
-  public noApiKey = false;
+  public noBaseLayer = false;
+  /** Right-click identify popover for vector overlays under the cursor. */
+  public vectorIdentify: {
+    x: number;
+    y: number;
+    hits: {
+      name: string;
+      color: string;
+      overlayName: string;
+      attributeLabel?: string;
+      legend?: { value: string; color: string }[];
+    }[];
+  } | null = null;
+  /** Ignore document click that can follow a contextmenu in the same gesture. */
+  private ignoreVectorIdentifyDocumentClick = false;
   /** Feature id from the route to open once the map is ready. */
   private pendingDeepLinkFeatureId: string | null = null;
   /** Skip paramMap reactions while we are writing the URL ourselves. */
@@ -118,8 +142,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private map?: MaplibreMap;
   private layers?: RockExplorerMapLayers;
   private customLayers?: RockExplorerCustomMapLayers;
-  private rockExplorerMapLayers: RockExplorerMapLayer[] = [];
-  private apiKey = '';
+  private mapBaseLayers: MapBaseLayer[] = [];
+  private mapOverlays: MapOverlay[] = [];
   private features: FeatureCollection<Geometry> = emptyFeatureCollection();
   private draftGeometry: Geometry | null = null;
   private geolocateControl: GeolocateControl | null = null;
@@ -297,7 +321,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.mapInteraction.cancelPolygonDraw();
         break;
       case 'switchMapStyle':
-        this.switchMapStyle(cmd.style);
+        this.switchMapStyle(cmd.styleId);
         break;
       case 'toggleCustomMapLayers':
         this.toggleCustomMapLayers();
@@ -463,18 +487,32 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ([settings, collection]) => {
-          this.apiKey = settings.maptilerApiKey;
-          this.rockExplorerMapLayers = settings.rockExplorerMapLayers ?? [];
-          this.ui.initCustomMapLayers(this.rockExplorerMapLayers);
+          this.mapBaseLayers = resolveMapBaseLayers(settings.mapBaseLayers);
+          this.mapOverlays = settings.mapOverlays ?? [];
+          const defaultId = pickRockExplorerDefaultBaseLayerId(
+            this.mapBaseLayers,
+          );
+          this.ui.initBaseLayers(this.mapBaseLayers, defaultId);
+          const defaultBase = this.mapBaseLayers.find(
+            (layer) => layer.id === defaultId,
+          );
+          this.ui.initCustomMapLayers(
+            this.mapOverlays,
+            defaultBase?.defaultOverlayIds,
+          );
           this.features = collection;
           this.loading = false;
-          if (!this.apiKey) {
-            this.noApiKey = true;
+          const styleUrl = styleUrlForBaseLayer(
+            this.mapBaseLayers,
+            this.ui.mapStyle(),
+          );
+          if (!styleUrl) {
+            this.noBaseLayer = true;
             this.cdr.detectChanges();
             return;
           }
           this.cdr.detectChanges();
-          this.initMap();
+          this.initMap(styleUrl);
         },
         error: () => {
           this.loading = false;
@@ -521,12 +559,18 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.reloadFeatures(filters, { fit: true });
   }
 
-  public switchMapStyle(style: MapStyles) {
-    if (!this.map || !this.apiKey || this.ui.mapStyle() === style) {
+  public switchMapStyle(styleId: string) {
+    if (!this.map || this.ui.mapStyle() === styleId) {
       return;
     }
-    this.ui.mapStyle.set(style);
-    this.map.setStyle(maptilerStyleUrl(this.apiKey, style));
+    const styleUrl = styleUrlForBaseLayer(this.mapBaseLayers, styleId);
+    if (!styleUrl) {
+      return;
+    }
+    this.ui.mapStyle.set(styleId);
+    const base = this.mapBaseLayers.find((layer) => layer.id === styleId);
+    this.ui.applyBaseLayerDefaultOverlays(base?.defaultOverlayIds);
+    this.map.setStyle(styleUrl);
     this.map.once('style.load', () => {
       void this.rebindMapLayers().then(() => {
         this.mapInteraction.reattachAfterStyleReload();
@@ -565,14 +609,109 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (!orderedIds) {
       return;
     }
-    const byId = new Map(
-      this.rockExplorerMapLayers.map((layer) => [layer.id, layer]),
-    );
-    this.rockExplorerMapLayers = orderedIds
+    const byId = new Map(this.mapOverlays.map((layer) => [layer.id, layer]));
+    this.mapOverlays = orderedIds
       .map((id) => byId.get(id))
-      .filter((layer): layer is RockExplorerMapLayer => !!layer);
+      .filter((layer): layer is MapOverlay => !!layer);
     this.customLayers?.reorder(orderedIds);
     this.layers?.bringOverlaysToFront();
+  }
+
+  private onMapContextMenu(event: {
+    point: { x: number; y: number };
+    originalEvent: Event;
+  }): void {
+    const original = event.originalEvent;
+    if (!(original instanceof MouseEvent)) {
+      return;
+    }
+    original.preventDefault();
+    const featureHits =
+      this.customLayers?.queryVectorFeaturesAtPoint(event.point) ?? [];
+    const infos = this.ui.customMapLayerInfos();
+    const hits: {
+      name: string;
+      color: string;
+      overlayName: string;
+      attributeLabel?: string;
+      legend?: { value: string; color: string }[];
+    }[] = [];
+    for (const featureHit of featureHits) {
+      const overlayId = RockExplorerCustomMapLayers.configIdFromLayerId(
+        featureHit.layerId,
+      );
+      const index = RockExplorerCustomMapLayers.subLayerIndexFromLayerId(
+        featureHit.layerId,
+      );
+      if (index == null) {
+        continue;
+      }
+      const overlay = infos.find((info) => info.id === overlayId);
+      const sub = overlay?.subLayers?.find((layer) => layer.index === index);
+      if (!sub) {
+        continue;
+      }
+      const color = resolveVectorLayerFeatureColor(sub, featureHit.properties);
+      const property = sub.categoricalProperty?.trim();
+      const isCategorical =
+        sub.paintMode === 'categorical' &&
+        !!property &&
+        (sub.categoricalStops?.length ?? 0) > 0;
+      const rawValue =
+        isCategorical && property
+          ? featureHit.properties?.[property]
+          : undefined;
+      hits.push({
+        name: sub.name,
+        color,
+        overlayName: overlay?.name ?? overlayId,
+        attributeLabel:
+          rawValue == null || rawValue === '' ? undefined : String(rawValue),
+        legend: isCategorical ? (sub.categoricalStops ?? []) : undefined,
+      });
+    }
+    if (hits.length === 0) {
+      this.vectorIdentify = null;
+      this.cdr.detectChanges();
+      return;
+    }
+    this.ignoreVectorIdentifyDocumentClick = true;
+    this.vectorIdentify = {
+      x: original.clientX,
+      y: original.clientY,
+      hits,
+    };
+    this.cdr.detectChanges();
+    queueMicrotask(() => {
+      this.ignoreVectorIdentifyDocumentClick = false;
+    });
+  }
+
+  public closeVectorIdentify(): void {
+    if (!this.vectorIdentify) {
+      return;
+    }
+    this.vectorIdentify = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeCloseVectorIdentify(): void {
+    this.closeVectorIdentify();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClickCloseVectorIdentify(event: MouseEvent): void {
+    if (this.ignoreVectorIdentifyDocumentClick || event.button !== 0) {
+      return;
+    }
+    const target = event.target;
+    if (
+      target instanceof Node &&
+      this.vectorIdentifyPanel?.nativeElement.contains(target)
+    ) {
+      return;
+    }
+    this.closeVectorIdentify();
   }
 
   public onPanelSaveFeature(feature: RockExplorerFeature) {
@@ -749,7 +888,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private initMap() {
+  private initMap(styleUrl: string) {
     const el = this.mapContainer?.nativeElement;
     if (!el) {
       return;
@@ -759,7 +898,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       this.map = new MaplibreMap({
         container: el,
-        style: maptilerStyleUrl(this.apiKey, this.ui.mapStyle()),
+        style: styleUrl,
         center: [10, 50],
         zoom: 5,
       });
@@ -851,7 +990,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           );
         }
         this.map!.on('click', (event) => {
-          this.ngZone.run(() => this.mapInteraction.onMapClick(event));
+          this.ngZone.run(() => {
+            this.closeVectorIdentify();
+            this.mapInteraction.onMapClick(event);
+          });
+        });
+        this.map!.on('contextmenu', (event) => {
+          event.preventDefault();
+          this.ngZone.run(() => this.onMapContextMenu(event));
         });
         this.map!.on('click', ROCK_EXPLORER_LAYERS.points, (event) =>
           this.ngZone.run(() =>
@@ -887,7 +1033,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     // Custom rasters first so feature overlays stay above them.
     this.customLayers = new RockExplorerCustomMapLayers(this.map);
     this.customLayers.apply(
-      this.rockExplorerMapLayers,
+      this.mapOverlays,
       this.ui.customMapLayersVisible(),
       this.ui.customMapLayerOpacities(),
       this.ui.customMapLayerVisibility(),

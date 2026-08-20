@@ -214,26 +214,16 @@
         </p-button>
       }
       <div class="rock-explorer__layer-toggle">
-        <p-button
-          [severity]="
-            ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
-          "
-          [label]="t('rockExplorer.mapStyle.topo')"
-          (onClick)="
-            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
-          "
-          size="small"
-        />
-        <p-button
-          [severity]="
-            ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
-          "
-          [label]="t('rockExplorer.mapStyle.satellite')"
-          (onClick)="
-            ui.dispatch({ type: 'switchMapStyle', style: MapStyles.SATELLITE })
-          "
-          size="small"
-        />
+        @for (layer of ui.baseLayers(); track layer.id) {
+          <p-button
+            [severity]="ui.mapStyle() === layer.id ? 'primary' : 'secondary'"
+            [label]="layer.name"
+            (onClick)="
+              ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
+            "
+            size="small"
+          />
+        }
         @if (ui.hasCustomMapLayers()) {
           <p-button
             [severity]="ui.customMapLayersVisible() ? 'primary' : 'secondary'"
@@ -270,6 +260,24 @@
                 <div class="rock-explorer__overlays-row">
                   <div class="rock-explorer__overlays-row-header">
                     <div class="rock-explorer__overlays-row-label">
+                      @if (layer.subLayers?.length) {
+                        <p-button
+                          [icon]="
+                            isOverlayExpanded(layer.id)
+                              ? 'pi pi-chevron-down'
+                              : 'pi pi-chevron-right'
+                          "
+                          [rounded]="true"
+                          [text]="true"
+                          size="small"
+                          severity="secondary"
+                          (onClick)="toggleOverlayExpanded(layer.id)"
+                          [attr.aria-expanded]="isOverlayExpanded(layer.id)"
+                          [attr.aria-label]="
+                            t('rockExplorer.mapStyle.overlaysExpandLayers')
+                          "
+                        />
+                      }
                       <p-checkbox
                         [inputId]="'re-overlay-visible-' + layer.id"
                         [binary]="true"
@@ -315,6 +323,35 @@
                       />
                     </div>
                   </div>
+                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
+                    <div class="rock-explorer__overlays-sublayers">
+                      @for (sub of layer.subLayers; track sub.id) {
+                        <div class="rock-explorer__overlays-row-label">
+                          <p-checkbox
+                            [inputId]="'re-overlay-sub-' + sub.id"
+                            [binary]="true"
+                            [ngModel]="isLayerVisible(sub.id)"
+                            (ngModelChange)="
+                              onLayerVisibleChange(sub.id, $event)
+                            "
+                            [ngModelOptions]="{ standalone: true }"
+                            [disabled]="
+                              !ui.customMapLayersVisible() ||
+                              !isLayerVisible(layer.id)
+                            "
+                          />
+                          <span
+                            class="rock-explorer__overlays-swatch"
+                            [style.background-color]="sub.color"
+                            aria-hidden="true"
+                          ></span>
+                          <label [for]="'re-overlay-sub-' + sub.id">{{
+                            sub.name
+                          }}</label>
+                        </div>
+                      }
+                    </div>
+                  }
                   <div class="rock-explorer__overlays-row-label">
                     <span class="rock-explorer__overlays-opacity-value"
                       >{{ opacityPercent(layer.id) }}%</span
@@ -422,29 +459,18 @@
           <div
             class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
           >
-            <p-button
-              [severity]="
-                ui.mapStyle() === MapStyles.TOPO ? 'primary' : 'secondary'
-              "
-              [label]="t('rockExplorer.mapStyle.topo')"
-              (onClick)="
-                ui.dispatch({ type: 'switchMapStyle', style: MapStyles.TOPO })
-              "
-              size="small"
-            />
-            <p-button
-              [severity]="
-                ui.mapStyle() === MapStyles.SATELLITE ? 'primary' : 'secondary'
-              "
-              [label]="t('rockExplorer.mapStyle.satellite')"
-              (onClick)="
-                ui.dispatch({
-                  type: 'switchMapStyle',
-                  style: MapStyles.SATELLITE,
-                })
-              "
-              size="small"
-            />
+            @for (layer of ui.baseLayers(); track layer.id) {
+              <p-button
+                [severity]="
+                  ui.mapStyle() === layer.id ? 'primary' : 'secondary'
+                "
+                [label]="layer.name"
+                (onClick)="
+                  ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
+                "
+                size="small"
+              />
+            }
           </div>
           @if (ui.hasCustomMapLayers()) {
             <div class="rock-explorer__overlays-panel">
@@ -474,6 +500,24 @@
                 <div class="rock-explorer__overlays-row">
                   <div class="rock-explorer__overlays-row-header">
                     <div class="rock-explorer__overlays-row-label">
+                      @if (layer.subLayers?.length) {
+                        <p-button
+                          [icon]="
+                            isOverlayExpanded(layer.id)
+                              ? 'pi pi-chevron-down'
+                              : 'pi pi-chevron-right'
+                          "
+                          [rounded]="true"
+                          [text]="true"
+                          size="small"
+                          severity="secondary"
+                          (onClick)="toggleOverlayExpanded(layer.id)"
+                          [attr.aria-expanded]="isOverlayExpanded(layer.id)"
+                          [attr.aria-label]="
+                            t('rockExplorer.mapStyle.overlaysExpandLayers')
+                          "
+                        />
+                      }
                       <p-checkbox
                         [inputId]="'re-overlay-visible-m-' + layer.id"
                         [binary]="true"
@@ -519,6 +563,35 @@
                       />
                     </div>
                   </div>
+                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
+                    <div class="rock-explorer__overlays-sublayers">
+                      @for (sub of layer.subLayers; track sub.id) {
+                        <div class="rock-explorer__overlays-row-label">
+                          <p-checkbox
+                            [inputId]="'re-overlay-sub-m-' + sub.id"
+                            [binary]="true"
+                            [ngModel]="isLayerVisible(sub.id)"
+                            (ngModelChange)="
+                              onLayerVisibleChange(sub.id, $event)
+                            "
+                            [ngModelOptions]="{ standalone: true }"
+                            [disabled]="
+                              !ui.customMapLayersVisible() ||
+                              !isLayerVisible(layer.id)
+                            "
+                          />
+                          <span
+                            class="rock-explorer__overlays-swatch"
+                            [style.background-color]="sub.color"
+                            aria-hidden="true"
+                          ></span>
+                          <label [for]="'re-overlay-sub-m-' + sub.id">{{
+                            sub.name
+                          }}</label>
+                        </div>
+                      }
+                    </div>
+                  }
                   <div class="rock-explorer__overlays-row-label">
                     <span class="rock-explorer__overlays-opacity-value"
                       >{{ opacityPercent(layer.id) }}%</span

@@ -1,40 +1,6 @@
 lc-instance-settings-form {
-  .lc-theme-variant-pair {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 0.5rem;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  p-password {
-    width: 100%;
-
-    .p-password {
-      width: 100%;
-
-      .p-password-input {
-        width: 100%;
-      }
-    }
-  }
-
-  p-toggleswitch {
-    margin-top: 0.25em;
-  }
-
-  .map-layer-first-label {
-    margin-top: 0;
-  }
-
-  .map-layer-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
+  .form-actions {
+    margin-top: 1rem;
   }
 }
 

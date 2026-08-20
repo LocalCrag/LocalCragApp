@@ -98,12 +98,77 @@
 
   @if (loading) {
     <div class="rock-explorer__status">{{ t("rockExplorer.loading") }}</div>
-  } @else if (noApiKey) {
-    <div class="rock-explorer__status">{{ t("rockExplorer.noApiKey") }}</div>
+  } @else if (noBaseLayer) {
+    <div class="rock-explorer__status">{{ t("rockExplorer.noBaseLayer") }}</div>
   } @else {
     <lc-rock-explorer-toolbar />
 
     <div #map class="rock-explorer__map"></div>
+
+    @if (vectorIdentify; as identify) {
+      <div
+        #vectorIdentifyPanel
+        class="rock-explorer__vector-identify"
+        [style.left.px]="identify.x"
+        [style.top.px]="identify.y"
+      >
+        <div class="rock-explorer__vector-identify-title">
+          {{ t("rockExplorer.mapStyle.vectorIdentifyTitle") }}
+        </div>
+        <ul class="rock-explorer__vector-identify-list">
+          @for (hit of identify.hits; track hit.name + hit.overlayName) {
+            <li class="rock-explorer__vector-identify-item">
+              <div class="rock-explorer__vector-identify-row">
+                <span
+                  class="rock-explorer__vector-identify-swatch"
+                  [style.background-color]="hit.color"
+                  aria-hidden="true"
+                ></span>
+                <span class="rock-explorer__vector-identify-text">
+                  <span class="rock-explorer__vector-identify-name">{{
+                    hit.name
+                  }}</span>
+                  @if (hit.attributeLabel) {
+                    <span class="rock-explorer__vector-identify-value">{{
+                      hit.attributeLabel
+                    }}</span>
+                  }
+                  @if (hit.overlayName && hit.overlayName !== hit.name) {
+                    <span class="rock-explorer__vector-identify-overlay">{{
+                      hit.overlayName
+                    }}</span>
+                  }
+                </span>
+              </div>
+              @if (hit.legend?.length) {
+                <div class="rock-explorer__vector-identify-legend">
+                  <div class="rock-explorer__vector-identify-legend-title">
+                    {{ t("rockExplorer.mapStyle.vectorIdentifyLegend") }}
+                  </div>
+                  <ul class="rock-explorer__vector-identify-legend-list">
+                    @for (stop of hit.legend; track stop.value + stop.color) {
+                      <li
+                        class="rock-explorer__vector-identify-legend-item"
+                        [class.rock-explorer__vector-identify-legend-item--active]="
+                          hit.attributeLabel === stop.value
+                        "
+                      >
+                        <span
+                          class="rock-explorer__vector-identify-swatch"
+                          [style.background-color]="stop.color"
+                          aria-hidden="true"
+                        ></span>
+                        <span>{{ stop.value }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
 
     @if (ui.panelOpen()) {
       <lc-rock-explorer-panel />

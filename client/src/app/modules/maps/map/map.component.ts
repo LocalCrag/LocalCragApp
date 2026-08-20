@@ -33,10 +33,12 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
-import { MapStyles } from '../../../enums/map-styles';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { loadMapImages } from '../../../utility/map/load-map-images';
-import { maptilerStyleUrl } from '../../../utility/map/maptiler-style';
+import {
+  resolveMapBaseLayers,
+  styleUrlForTopoBaseLayer,
+} from '../../../utility/map/resolve-map-style-url';
 
 @Component({
   selector: 'lc-map',
@@ -46,12 +48,11 @@ import { maptilerStyleUrl } from '../../../utility/map/maptiler-style';
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
   @Input() target: Crag | Sector | Area | undefined;
-  @Input() mapStyle: MapStyles = MapStyles.TOPO;
 
   public map: MaplibreMap | undefined;
   public markersSource:
     FeatureCollection<Point, MapMarkerProperties> | undefined;
-  public apiKey: string;
+  public hasMapStyle = false;
 
   @ViewChild('map')
   private mapContainer?: ElementRef<HTMLElement>;
@@ -100,10 +101,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([markersSource, instanceSettingsState]) => {
-        this.apiKey = instanceSettingsState.maptilerApiKey;
-        const mapStyleUrl = maptilerStyleUrl(this.apiKey, this.mapStyle);
+        const baseLayers = resolveMapBaseLayers(
+          instanceSettingsState.mapBaseLayers,
+        );
+        const mapStyleUrl = styleUrlForTopoBaseLayer(baseLayers);
+        this.hasMapStyle = !!mapStyleUrl;
         this.markersSource = markersSource;
-        if (this.markersSource?.features?.length === 0 || !this.apiKey) {
+        if (this.markersSource?.features?.length === 0 || !mapStyleUrl) {
           return;
         }
         this.cdr.detectChanges();

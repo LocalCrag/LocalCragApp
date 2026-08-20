@@ -3,7 +3,10 @@ import { FaDefaultFormat } from '../enums/fa-default-format';
 import { StartingPosition } from '../enums/starting-position';
 import { LanguageCode } from '../utility/types/language';
 import { parseServerUtcDate } from '../utility/parse-server-utc-date';
-import { RockExplorerMapLayer } from './rock-explorer-map-layer';
+import { MapBaseLayer } from './map-base-layer';
+import { MapOverlay } from './map-overlay';
+
+export type InstanceSettingsPatch = Record<string, unknown>;
 
 export class InstanceSettings {
   timeUpdated: Date;
@@ -24,8 +27,8 @@ export class InstanceSettings {
   darkBarChartAccentColor: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
-  maptilerApiKey: string;
-  rockExplorerMapLayers: RockExplorerMapLayer[];
+  mapBaseLayers: MapBaseLayer[];
+  mapOverlays: MapOverlay[];
   maxFileSize: number;
   maxImageSize: number;
   sentryEnabled: boolean;
@@ -68,12 +71,12 @@ export class InstanceSettings {
     instanceSettings.darkBarChartAccentColor = payload.darkBarChartAccentColor;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
-    instanceSettings.maptilerApiKey = payload.maptilerApiKey;
-    instanceSettings.rockExplorerMapLayers = (
-      payload.rockExplorerMapLayers ?? []
-    )
-      .map(RockExplorerMapLayer.deserialize)
-      .filter((layer: RockExplorerMapLayer) => layer.id.length > 0);
+    instanceSettings.mapBaseLayers = (payload.mapBaseLayers ?? [])
+      .map(MapBaseLayer.deserialize)
+      .filter((layer: MapBaseLayer) => layer.id.length > 0);
+    instanceSettings.mapOverlays = (payload.mapOverlays ?? [])
+      .map(MapOverlay.deserialize)
+      .filter((layer: MapOverlay) => layer.id.length > 0);
     instanceSettings.maxFileSize = payload.maxFileSize;
     instanceSettings.maxImageSize = payload.maxImageSize;
     instanceSettings.sentryEnabled = payload.sentryEnabled;
@@ -116,9 +119,11 @@ export class InstanceSettings {
       darkBarChartAccentColor: instanceSettings.darkBarChartAccentColor,
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
-      maptilerApiKey: instanceSettings.maptilerApiKey,
-      rockExplorerMapLayers: (instanceSettings.rockExplorerMapLayers ?? []).map(
-        RockExplorerMapLayer.serialize,
+      mapBaseLayers: (instanceSettings.mapBaseLayers ?? []).map(
+        MapBaseLayer.serialize,
+      ),
+      mapOverlays: (instanceSettings.mapOverlays ?? []).map(
+        MapOverlay.serialize,
       ),
       gymMode: instanceSettings.gymMode,
       displayUserGrades: instanceSettings.displayUserGrades,
@@ -129,6 +134,70 @@ export class InstanceSettings {
       rankingPastWeeks: instanceSettings.rankingPastWeeks,
       language: instanceSettings.language,
       timezone: instanceSettings.timezone,
+    };
+  }
+
+  public static serializeGeneralPatch(payload: {
+    instanceName: string;
+    copyrightOwner: string;
+    mailGreeting: string;
+    gymMode: boolean;
+    skippedHierarchicalLayers: number;
+    displayUserGrades: boolean;
+    displayUserRatings: boolean;
+    faDefaultFormat: FaDefaultFormat;
+    defaultStartingPosition: StartingPosition;
+    rankingPastWeeks: number | null;
+    language: LanguageCode;
+    timezone: string;
+  }): InstanceSettingsPatch {
+    return { ...payload };
+  }
+
+  public static serializeAppearancePatch(payload: {
+    logoImage: File | null;
+    darkLogoImage: File | null;
+    faviconImage: File | null;
+    bgImage: File | null;
+    arrowColor: string;
+    arrowTextColor: string;
+    arrowHighlightColor: string;
+    arrowHighlightTextColor: string;
+    barChartColor: string;
+    barChartAccentColor: string;
+    darkBarChartColor: string;
+    darkBarChartAccentColor: string;
+  }): InstanceSettingsPatch {
+    return {
+      logoImage: payload.logoImage ? payload.logoImage.id : null,
+      darkLogoImage: payload.darkLogoImage ? payload.darkLogoImage.id : null,
+      faviconImage: payload.faviconImage ? payload.faviconImage.id : null,
+      bgImage: payload.bgImage ? payload.bgImage.id : null,
+      arrowColor: payload.arrowColor,
+      arrowTextColor: payload.arrowTextColor,
+      arrowHighlightColor: payload.arrowHighlightColor,
+      arrowHighlightTextColor: payload.arrowHighlightTextColor,
+      barChartColor: payload.barChartColor,
+      barChartAccentColor: payload.barChartAccentColor,
+      darkBarChartColor: payload.darkBarChartColor,
+      darkBarChartAccentColor: payload.darkBarChartAccentColor,
+    };
+  }
+
+  public static serializeAnalyticsPatch(payload: {
+    matomoTrackerUrl: string | null;
+    matomoSiteId: string | null;
+  }): InstanceSettingsPatch {
+    return { ...payload };
+  }
+
+  public static serializeMapsPatch(payload: {
+    mapBaseLayers: MapBaseLayer[];
+    mapOverlays: MapOverlay[];
+  }): InstanceSettingsPatch {
+    return {
+      mapBaseLayers: (payload.mapBaseLayers ?? []).map(MapBaseLayer.serialize),
+      mapOverlays: (payload.mapOverlays ?? []).map(MapOverlay.serialize),
     };
   }
 }
