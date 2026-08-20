@@ -1,3 +1,11 @@
+# [1.53.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.52.1...v1.53.0) (2026-08-20)
+
+
+### Features
+
+* **rock-explorer:** add support for vector layers ([#1262](https://github.com/LocalCrag/LocalCragApp/issues/1262)) ([28aa5e8](https://github.com/LocalCrag/LocalCragApp/commit/28aa5e8a72fbd868f6eedc9975b4e34c93772dad))
+* **rock-explorer:** option to configure base layers with custom providers (map tiler tie removed) ([#1261](https://github.com/LocalCrag/LocalCragApp/issues/1261)) ([36bb382](https://github.com/LocalCrag/LocalCragApp/commit/36bb382375ee892d7929a6ce0bb9b67e787dcfa0))
+
 ## [1.52.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.52.0...v1.52.1) (2026-08-11)
 
 
