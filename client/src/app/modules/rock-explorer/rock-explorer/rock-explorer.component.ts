@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  HostListener,
   NgZone,
   OnDestroy,
   ViewChild,
@@ -72,7 +73,10 @@ import {
 import { RockExplorerMapLayers } from '../map/rock-explorer-map-layers';
 import { RockExplorerCustomMapLayers } from '../map/rock-explorer-custom-map-layers';
 import { MapBaseLayer } from '../../../models/map-base-layer';
-import { MapOverlay } from '../../../models/map-overlay';
+import {
+  MapOverlay,
+  resolveVectorLayerFeatureColor,
+} from '../../../models/map-overlay';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 
 @Component({
@@ -97,6 +101,8 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
+  @ViewChild('vectorIdentifyPanel')
+  private vectorIdentifyPanel?: ElementRef<HTMLElement>;
   @ViewChild(RockExplorerPanelComponent) panel?: RockExplorerPanelComponent;
   @ViewChild('recordImageInput')
   private recordImageInput?: ElementRef<HTMLInputElement>;
@@ -114,6 +120,20 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private miscEditMode = false;
   public loading = true;
   public noBaseLayer = false;
+  /** Right-click identify popover for vector overlays under the cursor. */
+  public vectorIdentify: {
+    x: number;
+    y: number;
+    hits: {
+      name: string;
+      color: string;
+      overlayName: string;
+      attributeLabel?: string;
+      legend?: { value: string; color: string }[];
+    }[];
+  } | null = null;
+  /** Ignore document click that can follow a contextmenu in the same gesture. */
+  private ignoreVectorIdentifyDocumentClick = false;
   /** Feature id from the route to open once the map is ready. */
   private pendingDeepLinkFeatureId: string | null = null;
   /** Skip paramMap reactions while we are writing the URL ourselves. */
@@ -597,6 +617,103 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.layers?.bringOverlaysToFront();
   }
 
+  private onMapContextMenu(event: {
+    point: { x: number; y: number };
+    originalEvent: Event;
+  }): void {
+    const original = event.originalEvent;
+    if (!(original instanceof MouseEvent)) {
+      return;
+    }
+    original.preventDefault();
+    const featureHits =
+      this.customLayers?.queryVectorFeaturesAtPoint(event.point) ?? [];
+    const infos = this.ui.customMapLayerInfos();
+    const hits: {
+      name: string;
+      color: string;
+      overlayName: string;
+      attributeLabel?: string;
+      legend?: { value: string; color: string }[];
+    }[] = [];
+    for (const featureHit of featureHits) {
+      const overlayId = RockExplorerCustomMapLayers.configIdFromLayerId(
+        featureHit.layerId,
+      );
+      const index = RockExplorerCustomMapLayers.subLayerIndexFromLayerId(
+        featureHit.layerId,
+      );
+      if (index == null) {
+        continue;
+      }
+      const overlay = infos.find((info) => info.id === overlayId);
+      const sub = overlay?.subLayers?.find((layer) => layer.index === index);
+      if (!sub) {
+        continue;
+      }
+      const color = resolveVectorLayerFeatureColor(sub, featureHit.properties);
+      const property = sub.categoricalProperty?.trim();
+      const isCategorical =
+        sub.paintMode === 'categorical' &&
+        !!property &&
+        (sub.categoricalStops?.length ?? 0) > 0;
+      const rawValue =
+        isCategorical && property
+          ? featureHit.properties?.[property]
+          : undefined;
+      hits.push({
+        name: sub.name,
+        color,
+        overlayName: overlay?.name ?? overlayId,
+        attributeLabel:
+          rawValue == null || rawValue === '' ? undefined : String(rawValue),
+        legend: isCategorical ? (sub.categoricalStops ?? []) : undefined,
+      });
+    }
+    if (hits.length === 0) {
+      this.vectorIdentify = null;
+      this.cdr.detectChanges();
+      return;
+    }
+    this.ignoreVectorIdentifyDocumentClick = true;
+    this.vectorIdentify = {
+      x: original.clientX,
+      y: original.clientY,
+      hits,
+    };
+    this.cdr.detectChanges();
+    queueMicrotask(() => {
+      this.ignoreVectorIdentifyDocumentClick = false;
+    });
+  }
+
+  public closeVectorIdentify(): void {
+    if (!this.vectorIdentify) {
+      return;
+    }
+    this.vectorIdentify = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeCloseVectorIdentify(): void {
+    this.closeVectorIdentify();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClickCloseVectorIdentify(event: MouseEvent): void {
+    if (this.ignoreVectorIdentifyDocumentClick || event.button !== 0) {
+      return;
+    }
+    const target = event.target;
+    if (
+      target instanceof Node &&
+      this.vectorIdentifyPanel?.nativeElement.contains(target)
+    ) {
+      return;
+    }
+    this.closeVectorIdentify();
+  }
+
   public onPanelSaveFeature(feature: RockExplorerFeature) {
     if (!this.draftGeometry && !this.ui.editingFeature()) {
       return;
@@ -873,7 +990,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           );
         }
         this.map!.on('click', (event) => {
-          this.ngZone.run(() => this.mapInteraction.onMapClick(event));
+          this.ngZone.run(() => {
+            this.closeVectorIdentify();
+            this.mapInteraction.onMapClick(event);
+          });
+        });
+        this.map!.on('contextmenu', (event) => {
+          event.preventDefault();
+          this.ngZone.run(() => this.onMapContextMenu(event));
         });
         this.map!.on('click', ROCK_EXPLORER_LAYERS.points, (event) =>
           this.ngZone.run(() =>

@@ -262,6 +262,21 @@
   }
 }
 
+.rock-explorer__overlays-sublayers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-left: 1.75rem;
+}
+
+.rock-explorer__overlays-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.15rem;
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
 .rock-explorer__overlays-order {
   display: flex;
   align-items: center;
