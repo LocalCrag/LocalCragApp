@@ -3,8 +3,10 @@ from copy import deepcopy
 from flask import current_app, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
+from marshmallow import ValidationError
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.conflict import Conflict
 from extensions import db
 from marshmallow_schemas.instance_settings_schema import instance_settings_schema
@@ -18,7 +20,9 @@ from scheduler_jobs.closure_materialization import (
 )
 from util.scheduled_closure import request_closure_materialization
 from util.security_util import check_auth_claims
-from webargs_schemas.instance_settings_args import instance_settings_args
+from webargs_schemas.instance_settings_args import (
+    instance_settings_schema_cls,
+)
 
 
 def add_fixed_instance_settings(payload):
@@ -70,6 +74,13 @@ def merge_instance_settings_patch(current_payload: dict, patch_payload: dict) ->
     for key, value in patch_payload.items():
         merged[key] = deepcopy(value)
     return merged
+
+
+def load_instance_settings_payload(payload: dict) -> dict:
+    try:
+        return instance_settings_schema_cls().load(payload)
+    except ValidationError as error:
+        raise BadRequest(error.messages) from error
 
 
 def apply_instance_settings_data(instance_settings: InstanceSettings, instance_settings_data: dict) -> None:
@@ -168,13 +179,13 @@ class UpdateInstanceSettings(MethodView):
     @jwt_required()
     @check_auth_claims(moderator=True)
     def patch(self):
-        patch_payload = parser.parse(instance_settings_args, request, partial=True)
+        patch_payload = parser.parse(instance_settings_schema_cls(partial=True), request)
         instance_settings: InstanceSettings = InstanceSettings.return_it()
         merged_payload = merge_instance_settings_patch(
             instance_settings_request_payload(instance_settings),
             patch_payload,
         )
-        instance_settings_data = parser.parse(instance_settings_args, {"json": merged_payload})
+        instance_settings_data = load_instance_settings_payload(merged_payload)
         update_instance_settings_from_payload(instance_settings, instance_settings_data)
 
         instance_settings_response = instance_settings_schema.dump(instance_settings)

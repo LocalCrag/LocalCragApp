@@ -83,6 +83,7 @@ def test_successful_get_instance_settings(client):
 
 def test_successful_patch_instance_settings(client, moderator_token, any_file):
     instance_settings = InstanceSettings.return_it()
+    any_file_id = str(any_file.id)
     rv = client.patch(
         "/api/instance-settings",
         token=moderator_token,
@@ -91,9 +92,9 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert rv.status_code == 200, rv.json
 
     patch_data = {
-        "logoImage": str(any_file.id),
-        "faviconImage": str(any_file.id),
-        "bgImage": str(any_file.id),
+        "logoImage": any_file_id,
+        "faviconImage": any_file_id,
+        "bgImage": any_file_id,
         "mailGreeting": "Best regards",
     }
     rv = client.patch("/api/instance-settings", token=moderator_token, json=patch_data)
@@ -102,9 +103,9 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert res["instanceName"] == "Gleesbouldering"
     assert res["copyrightOwner"] == "Die Gleesards e.V."
     assert res["mailGreeting"] == "Best regards"
-    assert res["logoImage"]["id"] == str(any_file.id)
-    assert res["faviconImage"]["id"] == str(any_file.id)
-    assert res["bgImage"]["id"] == str(any_file.id)
+    assert res["logoImage"]["id"] == any_file_id
+    assert res["faviconImage"]["id"] == any_file_id
+    assert res["bgImage"]["id"] == any_file_id
     assert res["arrowColor"] == "#AAAAAA"
     assert res["arrowTextColor"] == "#BBBBBB"
     assert res["arrowHighlightColor"] == "#CCCCCC"
