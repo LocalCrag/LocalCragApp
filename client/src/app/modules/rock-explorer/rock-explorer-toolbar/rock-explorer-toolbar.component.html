@@ -1,6 +1,15 @@
 <div *transloco="let t">
   <div class="rock-explorer__toolbar">
     @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
+      @if (!ui.isMobileViewport()) {
+        <p-button
+          icon="pi pi-search"
+          (onClick)="openCoordinateSearch()"
+          size="small"
+          severity="secondary"
+          [attr.aria-label]="t('rockExplorer.coordinateSearchGo')"
+        />
+      }
       <p-button
         [severity]="ui.sessionsPanelOpen() ? 'primary' : 'secondary'"
         icon="pi pi-list"
@@ -399,6 +408,13 @@
       </p-button>
       <p-popover #overflowPopover>
         <div class="rock-explorer__overflow">
+          <p-button
+            icon="pi pi-search"
+            [label]="t('rockExplorer.coordinateSearchGo')"
+            (onClick)="openCoordinateSearch(); overflowPopover.hide()"
+            size="small"
+            severity="secondary"
+          />
           <div [formGroup]="filterForm">
             <p-select
               formControlName="potential"

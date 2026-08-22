@@ -101,6 +101,32 @@ export class RockExplorerMapLayers {
     }
   }
 
+  setContextMarker(coordinates: { lat: number; lng: number } | null): void {
+    ensureGeoJsonSource(this.map, S.contextMarker);
+    this.ensureContextMarkerLayer();
+    if (!coordinates) {
+      setGeoJsonSourceData(this.map, S.contextMarker, emptyFeatureCollection());
+      return;
+    }
+    setGeoJsonSourceData(this.map, S.contextMarker, {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [coordinates.lng, coordinates.lat],
+          },
+          properties: {},
+        },
+      ],
+    });
+  }
+
+  clearContextMarker(): void {
+    this.setContextMarker(null);
+  }
+
   /** Update selection layers to only show selected features. */
   applySelectionFilters(ids: string[]): void {
     const idLiteral: ['literal', string[]] = ['literal', ids];
@@ -412,6 +438,23 @@ export class RockExplorerMapLayers {
     });
   }
 
+  private ensureContextMarkerLayer(): void {
+    if (this.map.getLayer(L.contextMarker)) {
+      return;
+    }
+    this.map.addLayer({
+      id: L.contextMarker,
+      type: 'circle',
+      source: S.contextMarker,
+      paint: {
+        'circle-radius': 8,
+        'circle-color': '#ef4444',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+      },
+    });
+  }
+
   private ensureSelectionLayers(): void {
     if (this.map.getLayer(L.selectedPoints)) {
       return;
@@ -631,6 +674,7 @@ export class RockExplorerMapLayers {
       L.imageLocations,
       L.imageClusters,
       L.imageClusterCount,
+      L.contextMarker,
     ]) {
       if (this.map.getLayer(layerId)) {
         this.map.moveLayer(layerId);

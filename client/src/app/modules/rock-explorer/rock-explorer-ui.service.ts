@@ -80,7 +80,11 @@ export type RockExplorerCommand =
   | { type: 'imageMapPickChange'; active: boolean }
   | { type: 'coordinatesPreviewChange' }
   | { type: 'imagesLoaded' }
-  | { type: 'focusCoordinates'; coordinates: Coordinates }
+  | {
+      type: 'focusCoordinates';
+      coordinates: Coordinates;
+      transientMarker?: boolean;
+    }
   | { type: 'miscEditModeChange'; editMode: boolean }
   | { type: 'parkingMapPickChange'; active: boolean }
   | { type: 'pathDrawChange'; active: boolean }

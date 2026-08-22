@@ -9,6 +9,7 @@ export const ROCK_EXPLORER_SOURCES = {
   imageLocations: 'rock-explorer-image-locations',
   parking: 'rock-explorer-parking',
   paths: 'rock-explorer-paths',
+  contextMarker: 'rock-explorer-context-marker',
 } as const;
 
 export const ROCK_EXPLORER_LAYERS = {
@@ -31,6 +32,7 @@ export const ROCK_EXPLORER_LAYERS = {
   paths: 'rock-explorer-paths',
   pathLabels: 'rock-explorer-path-labels',
   parking: 'rock-explorer-parking',
+  contextMarker: 'rock-explorer-context-marker',
 } as const;
 
 export const POTENTIAL_FILL_COLORS: Record<string, string> = {

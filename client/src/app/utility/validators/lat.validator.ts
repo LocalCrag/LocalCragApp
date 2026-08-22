@@ -1,5 +1,13 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
+export function isValidLatitude(value: unknown): boolean {
+  const parsedNumber = Number(value);
+  if (Number.isNaN(parsedNumber) || !Number.isFinite(parsedNumber)) {
+    return false;
+  }
+  return Math.abs(parsedNumber) <= 90;
+}
+
 /**
  * Validator for latitude.
  *
@@ -7,14 +15,5 @@ import { AbstractControl, ValidatorFn } from '@angular/forms';
  */
 export const latValidator =
   (): ValidatorFn =>
-  (control: AbstractControl): { [key: string]: any } => {
-    const parsedNumber = Number(control.value);
-    if (
-      Number.isNaN(parsedNumber) ||
-      !isFinite(parsedNumber) ||
-      Math.abs(parsedNumber) > 90
-    ) {
-      return { invalidLat: true };
-    }
-    return null;
-  };
+  (control: AbstractControl): { [key: string]: any } =>
+    isValidLatitude(control.value) ? null : { invalidLat: true };

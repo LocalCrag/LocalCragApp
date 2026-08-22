@@ -78,6 +78,7 @@ import {
   resolveVectorLayerFeatureColor,
 } from '../../../models/map-overlay';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 @Component({
   selector: 'lc-rock-explorer',
@@ -101,8 +102,8 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
-  @ViewChild('vectorIdentifyPanel')
-  private vectorIdentifyPanel?: ElementRef<HTMLElement>;
+  @ViewChild('mapContextPopoverPanel')
+  private mapContextPopoverPanel?: ElementRef<HTMLElement>;
   @ViewChild(RockExplorerPanelComponent) panel?: RockExplorerPanelComponent;
   @ViewChild('recordImageInput')
   private recordImageInput?: ElementRef<HTMLInputElement>;
@@ -120,10 +121,11 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private miscEditMode = false;
   public loading = true;
   public noBaseLayer = false;
-  /** Right-click identify popover for vector overlays under the cursor. */
-  public vectorIdentify: {
+  /** Right-click popover: copy coordinates + optional vector overlay identify. */
+  public mapContextPopover: {
     x: number;
     y: number;
+    coordinates: Coordinates;
     hits: {
       name: string;
       color: string;
@@ -133,7 +135,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }[];
   } | null = null;
   /** Ignore document click that can follow a contextmenu in the same gesture. */
-  private ignoreVectorIdentifyDocumentClick = false;
+  private ignoreMapContextPopoverDocumentClick = false;
   /** Feature id from the route to open once the map is ready. */
   private pendingDeepLinkFeatureId: string | null = null;
   /** Skip paramMap reactions while we are writing the URL ourselves. */
@@ -397,6 +399,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'focusCoordinates':
         this.images.focusCoordinates(cmd.coordinates);
+        if (cmd.transientMarker) {
+          this.showTransientContextMarker(cmd.coordinates);
+        }
         break;
       case 'miscEditModeChange':
         this.mapInteraction.onMiscEditModeChange(cmd.editMode);
@@ -619,6 +624,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
 
   private onMapContextMenu(event: {
     point: { x: number; y: number };
+    lngLat: { lat: number; lng: number };
     originalEvent: Event;
   }): void {
     const original = event.originalEvent;
@@ -670,48 +676,76 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         legend: isCategorical ? (sub.categoricalStops ?? []) : undefined,
       });
     }
-    if (hits.length === 0) {
-      this.vectorIdentify = null;
-      this.cdr.detectChanges();
-      return;
-    }
-    this.ignoreVectorIdentifyDocumentClick = true;
-    this.vectorIdentify = {
+    this.ignoreMapContextPopoverDocumentClick = true;
+    this.mapContextPopover = {
       x: original.clientX,
       y: original.clientY,
+      coordinates: {
+        lat: event.lngLat.lat,
+        lng: event.lngLat.lng,
+      },
       hits,
     };
+    this.syncContextMarker();
     this.cdr.detectChanges();
     queueMicrotask(() => {
-      this.ignoreVectorIdentifyDocumentClick = false;
+      this.ignoreMapContextPopoverDocumentClick = false;
     });
   }
 
-  public closeVectorIdentify(): void {
-    if (!this.vectorIdentify) {
+  public copyMapContextCoordinates(): void {
+    if (!this.mapContextPopover) {
       return;
     }
-    this.vectorIdentify = null;
+    const { lat, lng } = this.mapContextPopover.coordinates;
+    this.clipboardService.copyTextToClipboard(`${lat}, ${lng}`);
+    this.closeMapContextPopover();
+  }
+
+  public closeMapContextPopover(): void {
+    if (!this.mapContextPopover) {
+      return;
+    }
+    this.mapContextPopover = null;
+    this.layers?.clearContextMarker();
+  }
+
+  private syncContextMarker(): void {
+    if (!this.mapContextPopover) {
+      this.layers?.clearContextMarker();
+      return;
+    }
+    this.layers?.setContextMarker(this.mapContextPopover.coordinates);
+  }
+
+  private showTransientContextMarker(coordinates: Coordinates): void {
+    this.layers?.setContextMarker(coordinates);
+  }
+
+  private clearTransientContextMarker(): void {
+    if (!this.mapContextPopover) {
+      this.layers?.clearContextMarker();
+    }
   }
 
   @HostListener('document:keydown.escape')
-  onEscapeCloseVectorIdentify(): void {
-    this.closeVectorIdentify();
+  onEscapeCloseMapContextPopover(): void {
+    this.closeMapContextPopover();
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClickCloseVectorIdentify(event: MouseEvent): void {
-    if (this.ignoreVectorIdentifyDocumentClick || event.button !== 0) {
+  onDocumentClickCloseMapContextPopover(event: MouseEvent): void {
+    if (this.ignoreMapContextPopoverDocumentClick || event.button !== 0) {
       return;
     }
     const target = event.target;
     if (
       target instanceof Node &&
-      this.vectorIdentifyPanel?.nativeElement.contains(target)
+      this.mapContextPopoverPanel?.nativeElement.contains(target)
     ) {
       return;
     }
-    this.closeVectorIdentify();
+    this.closeMapContextPopover();
   }
 
   public onPanelSaveFeature(feature: RockExplorerFeature) {
@@ -991,7 +1025,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         }
         this.map!.on('click', (event) => {
           this.ngZone.run(() => {
-            this.closeVectorIdentify();
+            this.closeMapContextPopover();
+            this.clearTransientContextMarker();
             this.mapInteraction.onMapClick(event);
           });
         });
@@ -1041,6 +1076,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.layers = new RockExplorerMapLayers(this.map);
     this.applyUntitledMapLabels();
     await this.layers.addAll(this.features);
+    this.syncContextMarker();
     this.images.reattachToLayers();
     this.applySelectionFilters();
     await this.recording.refreshLocalDraftPolygons();
