@@ -70,6 +70,12 @@
   font-weight: 600;
   color: var(--p-text-muted-color, var(--p-text-color));
   margin-bottom: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+:host ::ng-deep .rock-explorer__map-context-copy {
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .rock-explorer__vector-identify-list {

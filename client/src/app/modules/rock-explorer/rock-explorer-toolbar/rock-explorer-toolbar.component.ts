@@ -7,8 +7,10 @@ import { Popover } from 'primeng/popover';
 import { Slider } from 'primeng/slider';
 import { Checkbox } from 'primeng/checkbox';
 import { Tooltip } from 'primeng/tooltip';
+import { DialogService } from 'primeng/dynamicdialog';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
+import { RockExplorerCoordinateSearchDialogComponent } from '../rock-explorer-coordinate-search-dialog/rock-explorer-coordinate-search-dialog.component';
 
 @Component({
   selector: 'lc-rock-explorer-toolbar',
@@ -23,6 +25,7 @@ import { RockExplorerUiService } from '../rock-explorer-ui.service';
     Tooltip,
     TranslocoDirective,
   ],
+  providers: [DialogService],
   templateUrl: './rock-explorer-toolbar.component.html',
   styleUrl: './rock-explorer-toolbar.component.scss',
 })
@@ -38,6 +41,7 @@ export class RockExplorerToolbarComponent implements OnInit {
   });
 
   private destroyRef = inject(DestroyRef);
+  private dialogService = inject(DialogService);
 
   public get activeFilterCount(): number {
     const value = this.filterForm.getRawValue();
@@ -64,6 +68,17 @@ export class RockExplorerToolbarComponent implements OnInit {
           },
         });
       });
+  }
+
+  public openCoordinateSearch(): void {
+    this.dialogService.open(RockExplorerCoordinateSearchDialogComponent, {
+      position: 'top',
+      closeOnEscape: true,
+      dismissableMask: true,
+      modal: true,
+      showHeader: false,
+      styleClass: 'search-dialog',
+    });
   }
 
   public clearFilters(): void {

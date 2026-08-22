@@ -1,0 +1,25 @@
+<ng-container *transloco="let t">
+  <p-inputgroup>
+    <p-inputgroup-addon>
+      <i class="pi pi-search"></i>
+    </p-inputgroup-addon>
+    <input
+      #queryInput
+      type="text"
+      pInputText
+      [(ngModel)]="query"
+      (ngModelChange)="errorMessage = ''"
+      (keydown.enter)="goToCoordinates()"
+      [placeholder]="t('rockExplorer.coordinateSearchPlaceholder')"
+    />
+    <p-inputgroup-addon>
+      <p-button icon="pi pi-times" (click)="close()" />
+    </p-inputgroup-addon>
+  </p-inputgroup>
+
+  @if (errorMessage) {
+    <p-message severity="warn" styleClass="rock-explorer-coordinate-search-dialog__error">{{
+      errorMessage
+    }}</p-message>
+  }
+</ng-container>
