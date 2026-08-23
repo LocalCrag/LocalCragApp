@@ -93,6 +93,8 @@ def test_features_geojson_and_filter(client, member_token):
     assert len(geo.json["features"]) >= 2
     assert geo.json["features"][0]["geometry"]["type"] in ("Point", "Polygon")
     assert "potential" in geo.json["features"][0]["properties"]
+    assert "rockQuality" in geo.json["features"][0]["properties"]
+    assert "rockType" in geo.json["features"][0]["properties"]
 
     filtered = client.get("/api/rock-explorer/features.geojson?potential=HIGH", token=member_token)
     assert filtered.status_code == 200

@@ -102,6 +102,9 @@ export type RockExplorerCommand =
   | { type: 'syncNow' }
   | { type: 'openSessionsPanel' }
   | { type: 'closeSessionsPanel' }
+  | { type: 'openListPanel' }
+  | { type: 'closeListPanel' }
+  | { type: 'openFeatureFromList'; featureId: string }
   | { type: 'continueDraft'; localId: string }
   | { type: 'publishDraft'; localId?: string }
   | { type: 'showDraftOnMap'; localId: string }
@@ -185,6 +188,8 @@ export class RockExplorerUiService {
   readonly activeLocalDraftId = signal<string | null>(null);
   /** Floating sessions panel open state. */
   readonly sessionsPanelOpen = signal(false);
+  /** Feature list panel open state. */
+  readonly listPanelOpen = signal(false);
 
   /** Record allowed when IndexedDB is available. */
   readonly canStartRecord = computed(() => this.storageOk());

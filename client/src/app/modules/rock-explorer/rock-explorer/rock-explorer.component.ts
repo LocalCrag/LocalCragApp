@@ -46,6 +46,7 @@ import {
 } from '../rock-explorer-panel/rock-explorer-panel.component';
 import { RockExplorerToolbarComponent } from '../rock-explorer-toolbar/rock-explorer-toolbar.component';
 import { RockExplorerSessionsComponent } from '../rock-explorer-sessions/rock-explorer-sessions.component';
+import { RockExplorerListComponent } from '../rock-explorer-list/rock-explorer-list.component';
 import {
   RockExplorerUiService,
   RockExplorerCommand,
@@ -98,6 +99,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
     RockExplorerPanelComponent,
     RockExplorerToolbarComponent,
     RockExplorerSessionsComponent,
+    RockExplorerListComponent,
   ],
   providers: [MessageService, ConfirmationService, RockExplorerUiService],
   templateUrl: './rock-explorer.component.html',
@@ -149,7 +151,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private customLayers?: RockExplorerCustomMapLayers;
   private mapBaseLayers: MapBaseLayer[] = [];
   private mapOverlays: MapOverlay[] = [];
-  private features: FeatureCollection<Geometry> = emptyFeatureCollection();
+  features: FeatureCollection<Geometry> = emptyFeatureCollection();
   private draftGeometry: Geometry | null = null;
   private geolocateControl: GeolocateControl | null = null;
   private mobileMediaQuery?: MediaQueryList;
@@ -453,6 +455,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'closeSessionsPanel':
         this.recording.closeSessionsPanel();
+        break;
+      case 'openListPanel':
+        this.openListPanel();
+        break;
+      case 'closeListPanel':
+        this.closeListPanel();
+        break;
+      case 'openFeatureFromList':
+        this.openFeatureFromList(cmd.featureId);
         break;
       case 'continueDraft':
         void this.recording.continueDraft(cmd.localId);
@@ -923,6 +934,29 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     if (this.ui.sessionsPanelOpen()) {
       this.ui.sessionsPanelOpen.set(false);
     }
+  }
+
+  private closeListPanelIfOpen(): void {
+    if (this.ui.listPanelOpen()) {
+      this.ui.listPanelOpen.set(false);
+    }
+  }
+
+  private openListPanel(): void {
+    if (this.ui.panelOpen()) {
+      this.closePanel();
+    }
+    this.closeSessionsPanelIfOpen();
+    this.ui.listPanelOpen.set(true);
+  }
+
+  private closeListPanel(): void {
+    this.ui.listPanelOpen.set(false);
+  }
+
+  private openFeatureFromList(featureId: string): void {
+    this.closeListPanel();
+    this.openEditPanel(featureId, { focus: true });
   }
 
   private initMap(styleUrl: string) {

@@ -497,6 +497,7 @@ export class RockExplorerMapInteraction {
 
   private openCreatePanel(geometry: Geometry): void {
     this.closeSessionsPanelIfOpen();
+    this.closeListPanelIfOpen();
     this.host.ui.featureFormActive.set(true);
     this.host.ui.editingFeature.set(null);
     this.host.setDraftGeometry(geometry);
@@ -1070,10 +1071,16 @@ export class RockExplorerMapInteraction {
     this.host.layers?.applySelectionFilters(id ? [id] : []);
   }
 
-  /** Feature panel and sessions panel are mutually exclusive. */
+  /** Feature panel and sessions/list panels are mutually exclusive. */
   private closeSessionsPanelIfOpen(): void {
     if (this.host.ui.sessionsPanelOpen()) {
       this.host.ui.sessionsPanelOpen.set(false);
+    }
+  }
+
+  private closeListPanelIfOpen(): void {
+    if (this.host.ui.listPanelOpen()) {
+      this.host.ui.listPanelOpen.set(false);
     }
   }
 }

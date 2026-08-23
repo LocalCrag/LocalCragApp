@@ -11,6 +11,17 @@
         />
       }
       <p-button
+        [severity]="ui.listPanelOpen() ? 'primary' : 'secondary'"
+        icon="pi pi-table"
+        [label]="t('rockExplorer.listTitle')"
+        (onClick)="
+          ui.dispatch({
+            type: ui.listPanelOpen() ? 'closeListPanel' : 'openListPanel',
+          })
+        "
+        size="small"
+      />
+      <p-button
         [severity]="ui.sessionsPanelOpen() ? 'primary' : 'secondary'"
         icon="pi pi-list"
         [label]="t('rockExplorer.sessionsTitle')"
@@ -408,6 +419,18 @@
       </p-button>
       <p-popover #overflowPopover>
         <div class="rock-explorer__overflow">
+          <p-button
+            icon="pi pi-table"
+            [label]="t('rockExplorer.listTitle')"
+            (onClick)="
+              ui.dispatch({
+                type: ui.listPanelOpen() ? 'closeListPanel' : 'openListPanel',
+              });
+              overflowPopover.hide()
+            "
+            size="small"
+            severity="secondary"
+          />
           <p-button
             icon="pi pi-search"
             [label]="t('rockExplorer.locationSearchGo')"

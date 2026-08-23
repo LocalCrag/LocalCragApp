@@ -186,5 +186,9 @@
     }
 
     <lc-rock-explorer-sessions />
+
+    @if (ui.listPanelOpen()) {
+      <lc-rock-explorer-list [features]="features" />
+    }
   }
 </div>
