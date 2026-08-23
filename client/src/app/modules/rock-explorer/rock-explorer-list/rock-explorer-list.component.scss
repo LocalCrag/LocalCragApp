@@ -102,6 +102,21 @@
   }
 }
 
+.rock-explorer-list__row {
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--p-content-hover-background);
+    outline: none;
+  }
+
+  &--active {
+    background: var(--p-highlight-background, var(--p-content-hover-background));
+    box-shadow: inset 3px 0 0 var(--p-primary-color, #3b82f6);
+  }
+}
+
 .rock-explorer-list__sort {
   display: inline-flex;
   align-items: center;
@@ -118,15 +133,6 @@
     font-size: 0.75rem;
     opacity: 0.75;
   }
-}
-
-.rock-explorer-list__actions-header {
-  width: 6.5rem;
-}
-
-.rock-explorer-list__actions-cell {
-  text-align: right;
-  white-space: nowrap;
 }
 
 .rock-explorer-list__empty {

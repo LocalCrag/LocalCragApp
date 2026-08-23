@@ -156,11 +156,21 @@
                 <i [class]="sortIcons.rockType" aria-hidden="true"></i>
               </button>
             </th>
-            <th class="rock-explorer-list__actions-header"></th>
           </tr>
         </ng-template>
         <ng-template #body let-row>
-          <tr>
+          <tr
+            class="rock-explorer-list__row"
+            [class.rock-explorer-list__row--active]="
+              ui.editingFeature()?.id === row.id
+            "
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="row.displayTitle"
+            (click)="openFeature(row)"
+            (keydown.enter)="openFeature(row)"
+            (keydown.space)="$event.preventDefault(); openFeature(row)"
+          >
             <td>{{ row.displayTitle }}</td>
             <td>
               @if (row.potential) {
@@ -178,20 +188,11 @@
             <td>{{ row.displayArea }}</td>
             <td>{{ row.displayRockQuality }}</td>
             <td>{{ row.displayRockType }}</td>
-            <td class="rock-explorer-list__actions-cell">
-              <p-button
-                [label]="t('rockExplorer.showOnMap')"
-                size="small"
-                severity="secondary"
-                [text]="true"
-                (onClick)="openFeature(row)"
-              />
-            </td>
           </tr>
         </ng-template>
         <ng-template #emptymessage>
           <tr>
-            <td colspan="6" class="rock-explorer-list__empty">
+            <td colspan="5" class="rock-explorer-list__empty">
               {{ t("rockExplorer.listEmpty") }}
             </td>
           </tr>

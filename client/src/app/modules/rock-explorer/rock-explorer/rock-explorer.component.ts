@@ -1171,7 +1171,6 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     options?: { panelTab?: RockExplorerPanelTab },
   ) {
     this.closeSessionsPanelIfOpen();
-    this.closeListPanelIfOpen();
     this.ui.featureFormActive.set(formActive);
     this.ui.editingFeature.set(feature);
     this.draftGeometry = feature.geometry;
