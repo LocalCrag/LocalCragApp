@@ -101,6 +101,7 @@ export class RockExplorerPanelComponent {
   public panelActiveTab: PanelTab = 'info';
   public panelImageCount = 0;
   public panelCommentCount = 0;
+  public panelMiscCount = 0;
   public imageEditMode = false;
   public miscEditMode = false;
 
@@ -354,6 +355,7 @@ export class RockExplorerPanelComponent {
     this.panelActiveTab = 'info';
     this.panelImageCount = 0;
     this.panelCommentCount = 0;
+    this.panelMiscCount = 0;
   }
 
   private applyTopoLinksToEntity(entity: RockExplorerFeature): void {

@@ -62,6 +62,7 @@ export class RockExplorerMiscComponent implements OnChanges {
   @Output() saved = new EventEmitter<RockExplorerFeature>();
   @Output() focusCoordinates = new EventEmitter<Coordinates>();
   @Output() focusPathGeometry = new EventEmitter<Position[]>();
+  @Output() countChange = new EventEmitter<number>();
 
   public editMode = false;
   public saving = false;
@@ -113,6 +114,7 @@ export class RockExplorerMiscComponent implements OnChanges {
   cancelEdit(): void {
     this.parkingSites = cloneParkingSites(this.parkingSnapshot);
     this.paths = clonePaths(this.pathsSnapshot);
+    this.emitCountChange();
     this.setEditMode(false);
   }
 
@@ -185,6 +187,7 @@ export class RockExplorerMiscComponent implements OnChanges {
           this.saving = false;
           this.setEditMode(false);
           this.saved.emit(updated);
+          this.emitCountChange();
           this.previewChange.emit();
           this.cdr.detectChanges();
         },
@@ -212,6 +215,7 @@ export class RockExplorerMiscComponent implements OnChanges {
         description: null,
       },
     ];
+    this.emitCountChange();
     this.previewChange.emit();
     this.cdr.detectChanges();
   }
@@ -267,6 +271,7 @@ export class RockExplorerMiscComponent implements OnChanges {
         if (this.pickingParkingId === site.id) {
           this.cancelMapPick();
         }
+        this.emitCountChange();
         this.previewChange.emit();
         this.cdr.detectChanges();
       },
@@ -364,6 +369,7 @@ export class RockExplorerMiscComponent implements OnChanges {
       geometry: { type: 'LineString', coordinates: [] },
     };
     this.paths = [...this.paths, path];
+    this.emitCountChange();
     this.startPathDraw(path);
     this.cdr.detectChanges();
   }
@@ -400,6 +406,7 @@ export class RockExplorerMiscComponent implements OnChanges {
     const path = this.paths.find((p) => p.id === draftId);
     if (path && !this.pathHasGeometry(path)) {
       this.paths = this.paths.filter((p) => p.id !== draftId);
+      this.emitCountChange();
     }
     this.previewChange.emit();
     this.cdr.detectChanges();
@@ -533,6 +540,7 @@ export class RockExplorerMiscComponent implements OnChanges {
           this.pathDrawChange.emit(false);
         }
         this.paths = this.paths.filter((p) => p.id !== path.id);
+        this.emitCountChange();
         this.previewChange.emit();
         this.cdr.detectChanges();
       },
@@ -612,8 +620,13 @@ export class RockExplorerMiscComponent implements OnChanges {
   private syncFromObject(): void {
     this.parkingSites = cloneParkingSites(this.object.parkingSites);
     this.paths = clonePaths(this.object.paths);
+    this.emitCountChange();
     this.previewChange.emit();
     this.cdr.detectChanges();
+  }
+
+  private emitCountChange(): void {
+    this.countChange.emit(this.parkingSites.length + this.paths.length);
   }
 
   private snapshotEditState(): void {
