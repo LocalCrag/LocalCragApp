@@ -32,6 +32,7 @@
             type="button"
             class="rock-explorer-location-search-dialog__result"
             role="option"
+            [attr.aria-selected]="false"
             (click)="selectPlace(place)"
           >
             <i class="pi pi-map-marker" aria-hidden="true"></i>
