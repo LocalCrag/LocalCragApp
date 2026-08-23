@@ -112,7 +112,10 @@
   }
 
   &--active {
-    background: var(--p-highlight-background, var(--p-content-hover-background));
+    background: var(
+      --p-highlight-background,
+      var(--p-content-hover-background)
+    );
     box-shadow: inset 3px 0 0 var(--p-primary-color, #3b82f6);
   }
 }
