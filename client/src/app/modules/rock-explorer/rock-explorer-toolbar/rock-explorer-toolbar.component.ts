@@ -8,9 +8,15 @@ import { Slider } from 'primeng/slider';
 import { Checkbox } from 'primeng/checkbox';
 import { Tooltip } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+} from 'primeng/autocomplete';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
 import { RockExplorerLocationSearchDialogComponent } from '../rock-explorer-location-search-dialog/rock-explorer-location-search-dialog.component';
+import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'lc-rock-explorer-toolbar',
@@ -23,6 +29,7 @@ import { RockExplorerLocationSearchDialogComponent } from '../rock-explorer-loca
     Slider,
     Checkbox,
     Tooltip,
+    AutoCompleteModule,
     TranslocoDirective,
   ],
   providers: [DialogService],
@@ -38,16 +45,23 @@ export class RockExplorerToolbarComponent implements OnInit {
     potential: [null as string | null],
     rockQuality: [null as string | null],
     rockType: [null as string | null],
+    createdBy: [null as User | null],
   });
+
+  public createdBySuggestions: User[] = [];
 
   private destroyRef = inject(DestroyRef);
   private dialogService = inject(DialogService);
+  private rockExplorerService = inject(RockExplorerService);
 
   public get activeFilterCount(): number {
     const value = this.filterForm.getRawValue();
-    return [value.potential, value.rockQuality, value.rockType].filter(
-      (v) => v != null && v !== '',
-    ).length;
+    return [
+      value.potential,
+      value.rockQuality,
+      value.rockType,
+      value.createdBy,
+    ].filter((v) => v != null && v !== '').length;
   }
 
   public get hasActiveFilters(): boolean {
@@ -65,9 +79,21 @@ export class RockExplorerToolbarComponent implements OnInit {
             potential: value.potential || undefined,
             rockQuality: value.rockQuality || undefined,
             rockType: value.rockType || undefined,
+            createdById: value.createdBy?.id || undefined,
           },
         });
       });
+  }
+
+  public searchCreatedBy(event: AutoCompleteCompleteEvent): void {
+    const query = event.query?.trim();
+    if (!query) {
+      this.createdBySuggestions = [];
+      return;
+    }
+    this.rockExplorerService.searchCreators(query).subscribe((users) => {
+      this.createdBySuggestions = users;
+    });
   }
 
   public openLocationSearch(): void {
@@ -82,10 +108,12 @@ export class RockExplorerToolbarComponent implements OnInit {
   }
 
   public clearFilters(): void {
+    this.createdBySuggestions = [];
     this.filterForm.reset({
       potential: null,
       rockQuality: null,
       rockType: null,
+      createdBy: null,
     });
   }
 

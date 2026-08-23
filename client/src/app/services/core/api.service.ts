@@ -314,6 +314,7 @@ export class ApiService {
       `${this.apiHost}rock-explorer/features/${id}`,
     cloneFeature: (id: string): string =>
       `${this.apiHost}rock-explorer/features/${id}/clone`,
+    searchCreators: (): string => `${this.apiHost}rock-explorer/creators`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;

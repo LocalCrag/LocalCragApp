@@ -139,6 +139,7 @@ from resources.rock_explorer_resources import (
     GetRockExplorerFeature,
     GetRockExplorerFeaturesGeoJSON,
     RockExplorerFeatures,
+    SearchRockExplorerFeatureCreators,
     UpdateRockExplorerFeature,
 )
 from resources.scale_resources import (
@@ -582,6 +583,10 @@ def configure_api(app):
         "/features/<uuid:feature_id>/clone",
         view_func=CloneRockExplorerFeature.as_view("clone_rock_explorer_feature"),
         methods=["POST"],
+    )
+    rock_explorer_bp.add_url_rule(
+        "/creators",
+        view_func=SearchRockExplorerFeatureCreators.as_view("search_rock_explorer_feature_creators"),
     )
     app.register_blueprint(rock_explorer_bp, url_prefix="/api/rock-explorer")
 

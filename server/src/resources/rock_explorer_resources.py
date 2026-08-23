@@ -1,6 +1,9 @@
+import uuid
+
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import func, or_
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -9,6 +12,7 @@ from marshmallow_schemas.rock_explorer_schema import (
     dump_rock_explorer_geojson_collection,
     rock_explorer_feature_schema,
 )
+from marshmallow_schemas.user_schema import user_min_with_avatar_schema
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
 from models.enums.rock_explorer_potential_enum import RockExplorerPotentialEnum
 from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQualityEnum
@@ -49,7 +53,26 @@ def _apply_feature_filters(query):
             query = query.filter(RockExplorerFeature.rock_type == RockExplorerRockTypeEnum(rock_type))
         except ValueError as exc:
             raise BadRequest(f"Invalid rockType filter: {rock_type}") from exc
+    created_by_id = request.args.get("createdById")
+    if created_by_id:
+        try:
+            uuid.UUID(created_by_id)
+        except ValueError as exc:
+            raise BadRequest(f"Invalid createdById filter: {created_by_id}") from exc
+        query = query.filter(RockExplorerFeature.created_by_id == created_by_id)
     return query
+
+
+def _published_feature_creator_ids_subquery():
+    return (
+        db.session.query(RockExplorerFeature.created_by_id)
+        .filter(
+            RockExplorerFeature.status == RockExplorerFeatureStatusEnum.PUBLISHED,
+            RockExplorerFeature.created_by_id.isnot(None),
+        )
+        .distinct()
+        .scalar_subquery()
+    )
 
 
 def _dump_feature(feature: RockExplorerFeature):
@@ -59,6 +82,31 @@ def _dump_feature(feature: RockExplorerFeature):
 
 def _current_user():
     return User.find_by_email(get_jwt_identity())
+
+
+class SearchRockExplorerFeatureCreators(MethodView):
+    @jwt_required()
+    @check_auth_claims(member=True)
+    def get(self):
+        query_str = (request.args.get("q") or "").strip()
+        if not query_str:
+            return jsonify([]), 200
+
+        pattern = f"%{query_str}%"
+        users = (
+            User.query.filter(User.id.in_(_published_feature_creator_ids_subquery()))
+            .filter(
+                or_(
+                    User.firstname.ilike(pattern),
+                    User.lastname.ilike(pattern),
+                    func.concat(User.firstname, " ", User.lastname).ilike(pattern),
+                )
+            )
+            .order_by(User.firstname, User.lastname)
+            .limit(10)
+            .all()
+        )
+        return jsonify(user_min_with_avatar_schema.dump(users, many=True)), 200
 
 
 class GetRockExplorerFeaturesGeoJSON(MethodView):

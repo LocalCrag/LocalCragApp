@@ -5,11 +5,13 @@ import { map } from 'rxjs/operators';
 import { FeatureCollection, Geometry } from 'geojson';
 import { ApiService } from '../core/api.service';
 import { RockExplorerFeature } from '../../models/rock-explorer-feature';
+import { User } from '../../models/user';
 
 export interface RockExplorerFeatureFilters {
   potential?: string;
   rockQuality?: string;
   rockType?: string;
+  createdById?: string;
 }
 
 @Injectable({
@@ -95,6 +97,14 @@ export class RockExplorerService {
         recordingDeviceId,
       })
       .pipe(map(RockExplorerFeature.deserialize));
+  }
+
+  /** Typeahead: users who created published Rock Explorer features. */
+  public searchCreators(query: string): Observable<User[]> {
+    const params = new HttpParams().set('q', query);
+    return this.http
+      .get<any[]>(this.api.rockExplorer.searchCreators(), { params })
+      .pipe(map((rows) => (rows ?? []).map(User.deserialize)));
   }
 
   public deleteFeature(feature: RockExplorerFeature): Observable<null> {

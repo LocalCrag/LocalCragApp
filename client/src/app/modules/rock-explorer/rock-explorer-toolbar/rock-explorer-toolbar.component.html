@@ -462,6 +462,17 @@
               [showClear]="true"
               appendTo="body"
             />
+            <p-autoComplete
+              formControlName="createdBy"
+              [suggestions]="createdBySuggestions"
+              optionLabel="fullname"
+              [forceSelection]="true"
+              [showClear]="true"
+              (completeMethod)="searchCreatedBy($event)"
+              [placeholder]="t('rockExplorer.fields.createdBy')"
+              appendTo="body"
+              fluid
+            />
             <div class="rock-explorer__overflow-actions">
               <p-button
                 [label]="t('rockExplorer.clearFilters')"
@@ -678,6 +689,16 @@
         optionValue="value"
         [placeholder]="t('rockExplorer.fields.rockType')"
         [showClear]="true"
+      />
+      <p-autoComplete
+        formControlName="createdBy"
+        [suggestions]="createdBySuggestions"
+        optionLabel="fullname"
+        [forceSelection]="true"
+        [showClear]="true"
+        (completeMethod)="searchCreatedBy($event)"
+        [placeholder]="t('rockExplorer.fields.createdBy')"
+        styleClass="rock-explorer__created-by-filter"
       />
       <p-button
         [label]="t('rockExplorer.clearFilters')"

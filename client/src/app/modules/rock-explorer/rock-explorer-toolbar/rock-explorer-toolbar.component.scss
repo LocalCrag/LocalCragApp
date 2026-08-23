@@ -97,8 +97,13 @@
   border-radius: var(--p-content-border-radius);
 
   > p-select,
+  > p-autoComplete,
   > p-button {
     display: flex;
+  }
+
+  > p-autoComplete {
+    min-width: 12rem;
   }
 
   > p-button ::ng-deep .p-button {
