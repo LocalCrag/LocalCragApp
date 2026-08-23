@@ -46,6 +46,7 @@ export type RockExplorerFilters = {
   potential?: string;
   rockQuality?: string;
   rockType?: string;
+  createdById?: string;
 };
 
 /** UI / map-host commands. The map host is the sole subscriber. */
