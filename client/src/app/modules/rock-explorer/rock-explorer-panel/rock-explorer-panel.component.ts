@@ -54,7 +54,8 @@ import { dedupePositions } from '../../../utility/geo/convex-hull';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
 
 type SelectOption = { label: string; value: string };
-type PanelTab = 'info' | 'images' | 'comments' | 'misc';
+export type RockExplorerPanelTab = 'info' | 'images' | 'comments' | 'misc';
+type PanelTab = RockExplorerPanelTab;
 
 @Component({
   selector: 'lc-rock-explorer-panel',
@@ -152,8 +153,15 @@ export class RockExplorerPanelComponent {
       });
   }
 
-  public showFeature(feature: RockExplorerFeature, formActive: boolean): void {
+  public showFeature(
+    feature: RockExplorerFeature,
+    formActive: boolean,
+    options?: { tab?: PanelTab },
+  ): void {
     this.resetTabs();
+    if (options?.tab) {
+      this.panelActiveTab = options.tab;
+    }
     this.imageEditMode = false;
     this.miscEditMode = false;
     this.setFeatureFormActive(formActive);

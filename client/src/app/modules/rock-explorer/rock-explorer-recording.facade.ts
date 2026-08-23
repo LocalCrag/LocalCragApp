@@ -72,6 +72,7 @@ export type RockExplorerRecordingFacadeHost = {
   ) => void;
   /** Fetch + open the feature panel for an existing feature id. */
   openEditPanel: (id: string, options?: { focus?: boolean }) => void;
+
   /** Close the open feature panel. */
   closePanel: (options?: { skipUrlSync?: boolean }) => void;
   /** Cancel an in-progress misc-panel path draw. */

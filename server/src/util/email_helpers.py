@@ -14,6 +14,7 @@ from models.crag import Crag
 from models.line import Line
 from models.post import Post
 from models.region import Region
+from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 
 
@@ -46,5 +47,8 @@ def build_comment_action_link(comment: Comment) -> str:
     # Blog posts
     if isinstance(obj, Post):
         return frontend_url(f"news/{obj.slug}#{comment.id}")
+    # Rock Explorer features (panel tab + fragment highlight)
+    if isinstance(obj, RockExplorerFeature):
+        return frontend_url(f"rock-explorer/{obj.id}?tab=comments#{comment.id}")
     # Fallback
     return current_app.config["FRONTEND_HOST"]

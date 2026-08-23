@@ -40,7 +40,10 @@ import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { RockExplorerPotential } from '../../../enums/rock-explorer-potential';
 import { RockExplorerRockQuality } from '../../../enums/rock-explorer-rock-quality';
 import { RockExplorerRockType } from '../../../enums/rock-explorer-rock-type';
-import { RockExplorerPanelComponent } from '../rock-explorer-panel/rock-explorer-panel.component';
+import {
+  RockExplorerPanelComponent,
+  RockExplorerPanelTab,
+} from '../rock-explorer-panel/rock-explorer-panel.component';
 import { RockExplorerToolbarComponent } from '../rock-explorer-toolbar/rock-explorer-toolbar.component';
 import { RockExplorerSessionsComponent } from '../rock-explorer-sessions/rock-explorer-sessions.component';
 import {
@@ -1090,8 +1093,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  public openEditPanel(id: string, options?: { focus?: boolean }) {
+  public openEditPanel(
+    id: string,
+    options?: { focus?: boolean; panelTab?: RockExplorerPanelTab },
+  ) {
     if (this.ui.panelOpen() && this.ui.editingFeature()?.id === id) {
+      if (options?.panelTab && this.panel) {
+        this.panel.panelActiveTab = options.panelTab;
+      }
       if (options?.focus) {
         this.mapInteraction.focusActiveFeature();
       }
@@ -1102,7 +1111,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feature) => {
-          this.applyFeatureToPanel(feature, false);
+          this.applyFeatureToPanel(feature, false, {
+            panelTab: options?.panelTab,
+          });
           if (options?.focus) {
             queueMicrotask(() => this.mapInteraction.focusActiveFeature());
           }
@@ -1123,6 +1134,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private applyFeatureToPanel(
     feature: RockExplorerFeature,
     formActive: boolean,
+    options?: { panelTab?: RockExplorerPanelTab },
   ) {
     this.closeSessionsPanelIfOpen();
     this.ui.featureFormActive.set(formActive);
@@ -1138,12 +1150,20 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.syncFeatureUrl(feature.id ?? null);
     this.cdr.detectChanges();
-    queueMicrotask(() => this.panel?.showFeature(feature, formActive));
+    queueMicrotask(() =>
+      this.panel?.showFeature(feature, formActive, {
+        tab: options?.panelTab,
+      }),
+    );
   }
 
   private onFeatureRouteParam(featureId: string | null) {
     const currentId = this.ui.editingFeature()?.id ?? null;
+    const panelTab = this.resolveDeepLinkTab();
     if (featureId === currentId) {
+      if (featureId && panelTab && this.panel) {
+        this.panel.panelActiveTab = panelTab;
+      }
       return;
     }
     if (featureId) {
@@ -1151,7 +1171,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.pendingDeepLinkFeatureId = featureId;
         return;
       }
-      this.openEditPanel(featureId, { focus: true });
+      this.openEditPanel(featureId, { focus: true, panelTab });
       return;
     }
     this.pendingDeepLinkFeatureId = null;
@@ -1166,7 +1186,27 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.pendingDeepLinkFeatureId = null;
-    this.openEditPanel(id, { focus: true });
+    this.openEditPanel(id, {
+      focus: true,
+      panelTab: this.resolveDeepLinkTab(),
+    });
+  }
+
+  /** Tab from `?tab=` (mail/notification deep links); fragment alone ⇒ comments. */
+  private resolveDeepLinkTab(): RockExplorerPanelTab | undefined {
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (
+      tab === 'info' ||
+      tab === 'images' ||
+      tab === 'comments' ||
+      tab === 'misc'
+    ) {
+      return tab;
+    }
+    if (this.route.snapshot.fragment) {
+      return 'comments';
+    }
+    return undefined;
   }
 
   private syncFeatureUrl(featureId: string | null) {
