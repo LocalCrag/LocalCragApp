@@ -4,10 +4,10 @@
       @if (!ui.isMobileViewport()) {
         <p-button
           icon="pi pi-search"
-          (onClick)="openCoordinateSearch()"
+          (onClick)="openLocationSearch()"
           size="small"
           severity="secondary"
-          [attr.aria-label]="t('rockExplorer.coordinateSearchGo')"
+          [attr.aria-label]="t('rockExplorer.locationSearchGo')"
         />
       }
       <p-button
@@ -410,8 +410,8 @@
         <div class="rock-explorer__overflow">
           <p-button
             icon="pi pi-search"
-            [label]="t('rockExplorer.coordinateSearchGo')"
-            (onClick)="openCoordinateSearch(); overflowPopover.hide()"
+            [label]="t('rockExplorer.locationSearchGo')"
+            (onClick)="openLocationSearch(); overflowPopover.hide()"
             size="small"
             severity="secondary"
           />

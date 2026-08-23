@@ -14,7 +14,7 @@ import {
 } from 'primeng/autocomplete';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
-import { RockExplorerCoordinateSearchDialogComponent } from '../rock-explorer-coordinate-search-dialog/rock-explorer-coordinate-search-dialog.component';
+import { RockExplorerLocationSearchDialogComponent } from '../rock-explorer-location-search-dialog/rock-explorer-location-search-dialog.component';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { User } from '../../../models/user';
 
@@ -96,8 +96,8 @@ export class RockExplorerToolbarComponent implements OnInit {
     });
   }
 
-  public openCoordinateSearch(): void {
-    this.dialogService.open(RockExplorerCoordinateSearchDialogComponent, {
+  public openLocationSearch(): void {
+    this.dialogService.open(RockExplorerLocationSearchDialogComponent, {
       position: 'top',
       closeOnEscape: true,
       dismissableMask: true,
