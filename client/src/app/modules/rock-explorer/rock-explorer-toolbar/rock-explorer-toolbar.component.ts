@@ -10,7 +10,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
-import { RockExplorerCoordinateSearchDialogComponent } from '../rock-explorer-coordinate-search-dialog/rock-explorer-coordinate-search-dialog.component';
+import { RockExplorerLocationSearchDialogComponent } from '../rock-explorer-location-search-dialog/rock-explorer-location-search-dialog.component';
 
 @Component({
   selector: 'lc-rock-explorer-toolbar',
@@ -70,8 +70,8 @@ export class RockExplorerToolbarComponent implements OnInit {
       });
   }
 
-  public openCoordinateSearch(): void {
-    this.dialogService.open(RockExplorerCoordinateSearchDialogComponent, {
+  public openLocationSearch(): void {
+    this.dialogService.open(RockExplorerLocationSearchDialogComponent, {
       position: 'top',
       closeOnEscape: true,
       dismissableMask: true,
