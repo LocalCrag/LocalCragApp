@@ -32,12 +32,14 @@ class RockExplorerFeatureSchema(BaseEntitySchema):
 
 
 class RockExplorerGeoJSONFeatureSchema(ma.Schema):
-    """Map layer only: id for selection, title for labels, potential for paint."""
+    """Map layer + list view: id, title, potential (paint), quality/type (list)."""
 
     id = fields.String()
     geometry = fields.Dict()
     title = fields.String(allow_none=True)
     potential = EnumField(RockExplorerPotentialEnum, by_value=True, allow_none=True)
+    rockQuality = EnumField(RockExplorerRockQualityEnum, by_value=True, attribute="rock_quality", allow_none=True)
+    rockType = EnumField(RockExplorerRockTypeEnum, by_value=True, attribute="rock_type", allow_none=True)
 
     @post_dump
     def to_geojson_feature(self, data, **kwargs):

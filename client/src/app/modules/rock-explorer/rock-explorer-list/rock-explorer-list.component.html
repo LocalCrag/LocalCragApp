@@ -1,0 +1,202 @@
+@if (ui.listPanelOpen()) {
+  <aside
+    class="rock-explorer__panel rock-explorer__list-panel"
+    *transloco="let t"
+    role="dialog"
+    [attr.aria-label]="t('rockExplorer.listTitle')"
+  >
+    <header class="rock-explorer__panel-header">
+      <div class="rock-explorer-list__title">
+        <h2>{{ t("rockExplorer.listTitle") }}</h2>
+      </div>
+      <div class="rock-explorer__panel-header-actions">
+        <p-button
+          icon="pi pi-times"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          [attr.aria-label]="t('rockExplorer.listClose')"
+          (onClick)="ui.dispatch({ type: 'closeListPanel' })"
+        />
+      </div>
+    </header>
+
+    <div class="rock-explorer__panel-body">
+      <div class="rock-explorer-list__filters">
+        <input
+          type="search"
+          pInputText
+          [ngModel]="titleQueryInput"
+          (ngModelChange)="onTitleQueryChange($event)"
+          [placeholder]="t('rockExplorer.fields.title')"
+          class="rock-explorer-list__title-filter"
+        />
+        <p-select
+          [options]="ui.potentialOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="potentialFilter"
+          (ngModelChange)="onFilterChange()"
+          [placeholder]="t('rockExplorer.fields.potential')"
+          [showClear]="true"
+          appendTo="body"
+        >
+          <ng-template let-option #item>
+            <span class="rock-explorer-list__potential-option">
+              <span
+                class="rock-explorer-list__potential-swatch"
+                [style.background]="ui.potentialColor(option.value)"
+                aria-hidden="true"
+              ></span>
+              {{ option.label }}
+            </span>
+          </ng-template>
+          <ng-template let-option #selectedItem>
+            <span class="rock-explorer-list__potential-option">
+              <span
+                class="rock-explorer-list__potential-swatch"
+                [style.background]="ui.potentialColor(option.value)"
+                aria-hidden="true"
+              ></span>
+              {{ option.label }}
+            </span>
+          </ng-template>
+        </p-select>
+        <p-select
+          [options]="ui.rockQualityOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="rockQualityFilter"
+          (ngModelChange)="onFilterChange()"
+          [placeholder]="t('rockExplorer.fields.rockQuality')"
+          [showClear]="true"
+          appendTo="body"
+        />
+        <p-select
+          [options]="ui.rockTypeOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="rockTypeFilter"
+          (ngModelChange)="onFilterChange()"
+          [placeholder]="t('rockExplorer.fields.rockType')"
+          [showClear]="true"
+          appendTo="body"
+        />
+        @if (hasActiveFilters) {
+          <p-button
+            [label]="t('rockExplorer.clearFilters')"
+            icon="pi pi-filter-slash"
+            size="small"
+            severity="secondary"
+            [text]="true"
+            (onClick)="clearFilters()"
+          />
+        }
+      </div>
+
+      <p-table
+        [value]="viewRows"
+        [paginator]="viewRows.length > rows"
+        [rows]="rows"
+        [first]="first"
+        (onPage)="onPage($event)"
+        styleClass="rock-explorer-list__table"
+        [scrollable]="true"
+        scrollHeight="flex"
+      >
+        <ng-template #header>
+          <tr>
+            <th>
+              <button
+                type="button"
+                class="rock-explorer-list__sort"
+                (click)="onSort('title')"
+              >
+                {{ t("rockExplorer.fields.title") }}
+                <i [class]="sortIcons.title" aria-hidden="true"></i>
+              </button>
+            </th>
+            <th>
+              <button
+                type="button"
+                class="rock-explorer-list__sort"
+                (click)="onSort('potential')"
+              >
+                {{ t("rockExplorer.fields.potential") }}
+                <i [class]="sortIcons.potential" aria-hidden="true"></i>
+              </button>
+            </th>
+            <th>
+              <button
+                type="button"
+                class="rock-explorer-list__sort"
+                (click)="onSort('areaSqM')"
+              >
+                {{ t("rockExplorer.fields.areaSize") }}
+                <i [class]="sortIcons.areaSqM" aria-hidden="true"></i>
+              </button>
+            </th>
+            <th>
+              <button
+                type="button"
+                class="rock-explorer-list__sort"
+                (click)="onSort('rockQuality')"
+              >
+                {{ t("rockExplorer.fields.rockQuality") }}
+                <i [class]="sortIcons.rockQuality" aria-hidden="true"></i>
+              </button>
+            </th>
+            <th>
+              <button
+                type="button"
+                class="rock-explorer-list__sort"
+                (click)="onSort('rockType')"
+              >
+                {{ t("rockExplorer.fields.rockType") }}
+                <i [class]="sortIcons.rockType" aria-hidden="true"></i>
+              </button>
+            </th>
+            <th class="rock-explorer-list__actions-header"></th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-row>
+          <tr>
+            <td>{{ row.displayTitle }}</td>
+            <td>
+              @if (row.potential) {
+                <p-tag
+                  [value]="row.displayPotential"
+                  [style]="{
+                    background: row.potentialColor,
+                    color: '#fff',
+                  }"
+                />
+              } @else {
+                —
+              }
+            </td>
+            <td>{{ row.displayArea }}</td>
+            <td>{{ row.displayRockQuality }}</td>
+            <td>{{ row.displayRockType }}</td>
+            <td class="rock-explorer-list__actions-cell">
+              <p-button
+                [label]="t('rockExplorer.showOnMap')"
+                size="small"
+                severity="secondary"
+                [text]="true"
+                (onClick)="openFeature(row)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="6" class="rock-explorer-list__empty">
+              {{ t("rockExplorer.listEmpty") }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </aside>
+}
