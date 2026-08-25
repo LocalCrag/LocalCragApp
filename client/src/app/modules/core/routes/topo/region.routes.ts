@@ -19,6 +19,7 @@ export const topoRegionRoute: Routes = [
   {
     path: 'topo',
     component: RegionComponent,
+    data: { pageTitleHero: true },
     children: [
       {
         path: '',

@@ -20,6 +20,7 @@ export const topoSectorRoutes: Routes = [
   {
     path: sectorPrefix,
     component: SectorComponent,
+    data: { pageTitleHero: true },
     children: [
       {
         path: '',

@@ -22,6 +22,7 @@ export const topoCragRoutes: Routes = [
   {
     path: cragPrefix,
     component: CragComponent,
+    data: { pageTitleHero: true },
     children: [
       {
         path: '',

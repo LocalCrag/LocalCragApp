@@ -7,6 +7,13 @@
 .page-chrome {
   --page-chrome-inline-padding: calc(2 * var(--lc-card-padding-inline));
   --page-chrome-hero-overlay: rgb(0 0 0 / 0.52);
+  /* Locked height so skeleton and loaded hero occupy the same space. */
+  --page-chrome-hero-height: 20rem;
+  --page-chrome-plain-skeleton-height: 4.75rem;
+
+  @include m.on-mobile {
+    --page-chrome-hero-height: 14rem;
+  }
 
   &--with-image {
     border-radius: var(--p-content-border-radius) var(--p-content-border-radius)
@@ -34,6 +41,12 @@
     @include m.on-mobile {
       padding-inline: var(--lc-card-padding-inline);
     }
+
+    &--skeleton {
+      box-sizing: border-box;
+      height: var(--page-chrome-plain-skeleton-height);
+      padding-bottom: 0.75rem;
+    }
   }
 
   &__header &__breadcrumb {
@@ -42,11 +55,69 @@
 
   &__hero {
     position: relative;
-    min-height: 20rem;
+    height: var(--page-chrome-hero-height);
     overflow: hidden;
 
-    @include m.on-mobile {
-      min-height: 14rem;
+    &--skeleton {
+      background: var(--p-content-hover-background, var(--p-surface-100));
+    }
+  }
+
+  /* Full-bleed skeleton standing in for the hero image. */
+  &__hero-skeleton-bg.p-skeleton,
+  &__hero-skeleton-bg {
+    position: absolute !important;
+    inset: 0;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* In-flow strut: absolute overlay/bg must not be the sole height source. */
+  &__hero-strut {
+    display: block;
+    width: 0;
+    height: var(--page-chrome-hero-height);
+    visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  &__skeleton-tabs {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    /* Match typical p-tab row height inside hero. */
+    min-height: 2.95rem;
+    padding-block: 0.85rem;
+    box-sizing: border-box;
+  }
+
+  &--loading#{&}--with-image {
+    .page-chrome__skeleton-muted {
+      --p-skeleton-background: rgb(255 255 255 / 0.55);
+      --p-skeleton-animation-background: rgb(255 255 255 / 0.8);
+    }
+
+    .page-chrome__hero-overlay {
+      /* Keep chrome readable over the shimmering hero skeleton. */
+      background: linear-gradient(
+        to bottom,
+        rgb(0 0 0 / 0.22),
+        rgb(0 0 0 / 0.12) 55%,
+        rgb(0 0 0 / 0.28)
+      );
+    }
+
+    .page-chrome__tabs--on-image {
+      background: rgb(0 0 0 / 0.28);
+      padding-inline: var(--page-chrome-inline-padding);
+
+      @include m.on-mobile {
+        padding-inline: var(--lc-card-padding-inline);
+      }
     }
   }
 
