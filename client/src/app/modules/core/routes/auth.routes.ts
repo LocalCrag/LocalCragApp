@@ -2,12 +2,16 @@ import { Routes } from '@angular/router';
 import { isLoggedOut } from '../../../guards/is-logged-out';
 import { isLoggedIn } from '../../../guards/is-logged-in';
 
+/** Auth / account screens that intentionally omit page-header chrome. */
+const hidePageTitle = { hidePageTitle: true };
+
 export const authRoutes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
       import('../login/login.component').then((m) => m.LoginComponent),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'change-password',
@@ -16,12 +20,14 @@ export const authRoutes: Routes = [
         (m) => m.ChangePasswordComponent,
       ),
     canActivate: [isLoggedIn],
+    data: hidePageTitle,
   },
   {
     path: 'register',
     loadComponent: () =>
       import('../register/register.component').then((m) => m.RegisterComponent),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'register-check-mailbox',
@@ -30,6 +36,7 @@ export const authRoutes: Routes = [
         (m) => m.RegisterCheckMailboxComponent,
       ),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'account',
@@ -38,6 +45,7 @@ export const authRoutes: Routes = [
         (m) => m.AccountFormComponent,
       ),
     canActivate: [isLoggedIn],
+    data: hidePageTitle,
   },
   {
     path: 'activate-account',
@@ -45,6 +53,7 @@ export const authRoutes: Routes = [
       import('../activate-account/activate-account.component').then(
         (m) => m.ActivateAccountComponent,
       ),
+    data: hidePageTitle,
   },
   {
     path: 'forgot-password',
@@ -53,6 +62,7 @@ export const authRoutes: Routes = [
         (m) => m.ForgotPasswordComponent,
       ),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'forgot-password-check-mailbox',
@@ -61,6 +71,7 @@ export const authRoutes: Routes = [
         (m) => m.ForgotPasswordCheckMailboxComponent,
       ),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'reset-password/:hash',
@@ -69,6 +80,7 @@ export const authRoutes: Routes = [
         (m) => m.ResetPasswordComponent,
       ),
     canActivate: [isLoggedOut],
+    data: hidePageTitle,
   },
   {
     path: 'change-email/:hash',
@@ -77,6 +89,7 @@ export const authRoutes: Routes = [
         (m) => m.ChangeEmailComponent,
       ),
     canActivate: [isLoggedIn],
+    data: hidePageTitle,
   },
   {
     path: 'notifications',

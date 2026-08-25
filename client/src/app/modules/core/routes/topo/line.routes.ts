@@ -18,6 +18,7 @@ export const topoLineRoutes: Routes = [
   {
     path: linePrefix,
     component: LineComponent,
+    data: { pageTitleHero: true },
     children: [
       {
         path: '',
