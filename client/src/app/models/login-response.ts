@@ -1,13 +1,11 @@
 import { User } from './user';
 
 /**
- * Model of a login response from the server. Refresh token and account settings may be null for some routes.
+ * Model of a login / session response from the server.
  */
 export class LoginResponse {
   message: string;
   user: User;
-  accessToken: string;
-  refreshToken: string;
 
   /**
    * Parses a login response object.
@@ -19,8 +17,6 @@ export class LoginResponse {
     const loginResponse = new LoginResponse();
     loginResponse.message = payload.message;
     loginResponse.user = User.deserialize(payload.user);
-    loginResponse.accessToken = payload.accessToken;
-    loginResponse.refreshToken = payload.refreshToken;
     return loginResponse;
   }
 }

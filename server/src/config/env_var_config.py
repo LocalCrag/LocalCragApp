@@ -1,6 +1,10 @@
 import os
 
 
+def _parse_bool(value: str) -> bool:
+    return value.strip().lower() in ("1", "true", "yes", "on")
+
+
 def overwrite_config_by_env_vars(app):
 
     # Map legacy environment variable names to new ones (for backwards compatibility)
@@ -17,7 +21,6 @@ def overwrite_config_by_env_vars(app):
     var_names = [
         "SQLALCHEMY_DATABASE_URI",
         "SECRET_KEY",
-        "JWT_SECRET_KEY",
         "SYSTEM_EMAIL",
         "SMTP_HOST",
         "SMTP_USER",
@@ -38,10 +41,21 @@ def overwrite_config_by_env_vars(app):
         "SUPERADMIN_FIRSTNAME",
         "SUPERADMIN_LASTNAME",
         "LOG_LEVEL",
+        "SESSION_COOKIE_SAMESITE",
+        "SESSION_COOKIE_SECURE",
     ]
 
+    bool_vars = {"SENTRY_ENABLED", "SESSION_COOKIE_SECURE"}
+
     for var_name in var_names:
+        raw = None
         if os.environ.get(var_name):
-            app.config[var_name] = os.environ.get(var_name)
+            raw = os.environ.get(var_name)
         elif var_name in legacy_var_name_mapping and os.environ.get(legacy_var_name_mapping[var_name]):
-            app.config[var_name] = os.environ.get(legacy_var_name_mapping[var_name])
+            raw = os.environ.get(legacy_var_name_mapping[var_name])
+        if raw is None:
+            continue
+        if var_name in bool_vars:
+            app.config[var_name] = _parse_bool(raw)
+        else:
+            app.config[var_name] = raw

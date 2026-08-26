@@ -137,7 +137,7 @@ def test_delete_other_user(client, admin_token):
         User.get_id_by_slug("other-user")
 
 
-def test_delete_user_requires_jwt(client):
+def test_delete_user_requires_session(client):
     user_id = User.get_id_by_slug("member-member")
     rv = client.delete(f"/api/users/{user_id}")
     assert rv.status_code == 401
@@ -260,9 +260,8 @@ def test_change_email(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["message"] == ResponseMessage.EMAIL_CHANGED.value
-    assert res["accessToken"] is not None
-    assert res["refreshToken"] is not None
-    assert res["accessToken"] != res["refreshToken"]
+    assert "accessToken" not in res
+    assert "refreshToken" not in res
     assert res["user"]["email"] == "masteradmin@localcrag.invalid.org"
     assert isinstance(res["user"]["id"], str)
     assert res["user"]["accountLanguage"] == "en"

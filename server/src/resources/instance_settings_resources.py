@@ -2,7 +2,6 @@ from copy import deepcopy
 
 from flask import current_app, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 from webargs.flaskparser import parser
 
@@ -18,8 +17,8 @@ from models.sector import Sector
 from scheduler_jobs.closure_materialization import (
     reschedule_closure_materialization_job,
 )
+from util.auth_session import session_required
 from util.scheduled_closure import request_closure_materialization
-from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import (
     instance_settings_schema_cls,
 )
@@ -176,8 +175,7 @@ class GetInstanceSettings(MethodView):
 
 
 class UpdateInstanceSettings(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def patch(self):
         patch_payload = parser.parse(instance_settings_schema_cls(partial=True), request)
         instance_settings: InstanceSettings = InstanceSettings.return_it()

@@ -1,29 +1,4 @@
 <ng-container *transloco="let t; read: 'appLevelAlerts'">
-  @if (showRefreshTokenAboutToExpireAlert$ | async) {
-    <div
-      class="alert"
-      [ngClass]="{
-        warning: refreshLoginAlertType === 'warning',
-        danger: refreshLoginAlertType === 'danger',
-      }"
-    >
-      <div class="alert-text">
-        <i class="pi pi-exclamation-circle"></i>
-        {{ t("yourSessionExpiresInMinutesBefore") }}
-        {{ refreshTokenExpires$ | async | minutesRemaining }}
-        {{ t("yourSessionExpiresInMinutesAfter") }}
-        {{ t("pleaseLogInAgain") }}
-      </div>
-      <div class="alert-actions">
-        <p-button
-          label="{{ t('renewLogin') }}"
-          styleClass="p-button-text"
-          (click)="openRefreshLoginModal()"
-        ></p-button>
-      </div>
-    </div>
-  }
-
   @if (showCookieAlert$ | async) {
     <div class="alert info">
       <div class="alert-text">

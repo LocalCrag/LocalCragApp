@@ -54,21 +54,7 @@ export const newAuthCredentials = createAction(
   }>(),
 );
 
-export const startAccessTokenRefreshTimer = createAction(
-  '[Auth] Start access token refresh timer',
-);
-
-export const startRefreshTokenAboutToExpireTimer = createAction(
-  '[Auth] Start refresh token about to expire timer',
-);
-
-export const refreshAccessToken = createAction('[Auth] Refresh access token');
-
 export const autoLoginFailed = createAction('[Auth] Auto login failed');
-
-export const refreshAccessTokenFailed = createAction(
-  '[Auth] Refresh access token failed',
-);
 
 export const tryAutoLogin = createAction('[Auth] Try auto login');
 

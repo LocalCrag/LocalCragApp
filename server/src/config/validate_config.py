@@ -15,8 +15,12 @@ def validate_config(config):
     # Check token presence
     if not config["SECRET_KEY"]:
         raise Exception("Invalid config: SECRET_KEY needs to be set.")
-    if not config["JWT_SECRET_KEY"]:
-        raise Exception("Invalid config: JWT_SECRET_KEY needs to be set.")
+
+    samesite = config.get("SESSION_COOKIE_SAMESITE", "Lax")
+    if samesite not in ("Lax", "Strict", "None"):
+        raise Exception("Invalid config: SESSION_COOKIE_SAMESITE must be Lax, Strict, or None.")
+    if samesite == "None" and not config.get("SESSION_COOKIE_SECURE", True):
+        raise Exception("Invalid config: SESSION_COOKIE_SECURE must be True when SESSION_COOKIE_SAMESITE is None.")
 
     # Check Sentry configuration
     if config["SENTRY_ENABLED"] and not config["SENTRY_DSN"]:

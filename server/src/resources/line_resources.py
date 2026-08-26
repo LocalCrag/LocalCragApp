@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from sqlalchemy import func, nullslast, select
 from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
@@ -25,6 +24,11 @@ from models.line_path import LinePath
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+    verify_session_in_request,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.line_list_query_args import parse_line_list_filters
 from util.line_list_sql_filters import apply_get_lines_advanced_filters
@@ -37,7 +41,7 @@ from util.scheduled_closure import (
     finalize_closable_save,
 )
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_line_ascent_counts
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import cross_validate_line_args, line_args
@@ -45,8 +49,7 @@ from webargs_schemas.move_args import move_line_args
 
 
 class MoveLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, line_slug):
         """
         Move a line to a different area.
@@ -115,8 +118,7 @@ class GetLinesForLineEditor(MethodView):
 
 
 class FindLinesByName(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self):
         """
         Returns all lines whose name matches (case-insensitive, trimmed).
@@ -182,8 +184,8 @@ class GetLines(MethodView):
 
         user_for_filters = None
         if list_filters.climb_filter != "any":
-            verify_jwt_in_request(optional=True)
-            identity = get_jwt_identity()
+            verify_session_in_request(optional=True)
+            identity = get_session_identity()
             user_for_filters = User.find_by_email(identity) if identity else None
 
         query = apply_get_lines_advanced_filters(query, list_filters, instance_settings, user_for_filters)
@@ -241,15 +243,14 @@ class GetLine(MethodView):
 
 
 class CreateLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, area_slug):
         """
         Creates a line.
         """
         area_id = Area.get_id_by_slug(area_slug)
         line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
@@ -337,8 +338,7 @@ class CreateLine(MethodView):
 
 
 class UpdateLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, line_slug):
         """
         Edit a line.
@@ -359,7 +359,7 @@ class UpdateLine(MethodView):
         HistoryItem.create_history_item(
             HistoryItemTypeEnum.UPDATED,
             line,
-            User.find_by_email(get_jwt_identity()),
+            User.find_by_email(get_session_identity()),
             old_value=line.author_grade_value,
             new_value=line_data["authorGradeValue"],
             property_name="grade_value",
@@ -433,8 +433,7 @@ class UpdateLine(MethodView):
 
 
 class DeleteLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, line_slug):
         """
         Delete a line.

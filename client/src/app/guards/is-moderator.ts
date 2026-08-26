@@ -15,7 +15,7 @@ export const isModerator: CanActivateFn = (): Observable<boolean> => {
   return store.pipe(
     select(selectAuthState),
     map((authState) => {
-      if (authState.isLoggedIn && authState.user.moderator) {
+      if (authState.user?.moderator) {
         return true;
       } else {
         if (authState.user) {

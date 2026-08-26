@@ -3,7 +3,6 @@ import datetime
 import pytz
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -19,6 +18,10 @@ from models.moderator_task import ModeratorTask
 from models.region import Region
 from models.sector import Sector
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.moderator_task_notifications import (
     notify_task_assigned,
@@ -26,7 +29,6 @@ from util.moderator_task_notifications import (
     notify_task_created,
 )
 from util.moderator_task_scope import HIERARCHY_TYPES, filter_tasks_by_scope
-from util.security_util import check_auth_claims
 from webargs_schemas.moderator_task_args import (
     moderator_task_args,
     moderator_task_update_args,
@@ -125,8 +127,7 @@ def _order_tasks_for_list(query):
 class GetModeratorTasks(MethodView):
     """List tasks in the hierarchical scope for the current topo page."""
 
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self):
         scope_type, scope_id = _resolve_scope_from_request()
         page = int(request.args.get("page") or 1)
@@ -140,19 +141,17 @@ class GetModeratorTasks(MethodView):
 
 
 class GetModeratorTask(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self, task_id):
         task = ModeratorTask.find_by_id(task_id)
         return moderator_task_schema.dump(task), 200
 
 
 class CreateModeratorTask(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self):
         data = parser.parse(moderator_task_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
         target = _resolve_target(data["objectType"], data["objectId"])
 
         task = ModeratorTask()
@@ -171,11 +170,10 @@ class CreateModeratorTask(MethodView):
 
 
 class UpdateModeratorTask(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, task_id):
         data = parser.parse(moderator_task_update_args, request)
-        actor = User.find_by_email(get_jwt_identity())
+        actor = User.find_by_email(get_session_identity())
         task = ModeratorTask.find_by_id(task_id)
         previous_assignee_id = task.assigned_to_id
         task.title = data["title"].strip()
@@ -190,10 +188,9 @@ class UpdateModeratorTask(MethodView):
 
 
 class ToggleModeratorTaskComplete(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, task_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         task = ModeratorTask.find_by_id(task_id)
         was_completed = task.completed
         task.completed = not task.completed
@@ -210,8 +207,7 @@ class ToggleModeratorTaskComplete(MethodView):
 
 
 class DeleteModeratorTask(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, task_id):
         task = ModeratorTask.find_by_id(task_id)
         db.session.delete(task)

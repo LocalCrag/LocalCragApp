@@ -27,7 +27,7 @@ export const selectLoginLoadingState = createSelector(
 
 export const selectIsLoggedIn = createSelector(
   selectAuthState,
-  (authState) => authState.isLoggedIn,
+  (authState) => authState.user != null,
 );
 
 export const selectIsSuperadmin = createSelector(
@@ -52,22 +52,7 @@ export const selectIsMember = createSelector(
 
 export const selectIsLoggedOut = createSelector(
   selectAuthState,
-  (authState) => !authState.isLoggedIn,
-);
-
-export const selectAccessTokenExpires = createSelector(
-  selectAuthState,
-  (authState) => authState.accessTokenExpires,
-);
-
-export const selectRefreshTokenExpires = createSelector(
-  selectAuthState,
-  (authState) => authState.refreshTokenExpires,
-);
-
-export const selectAccessToken = createSelector(
-  selectAuthState,
-  (authState) => authState.accessToken,
+  (authState) => authState.user == null,
 );
 
 export const selectCurrentUser = createSelector(

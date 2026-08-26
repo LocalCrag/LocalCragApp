@@ -6,6 +6,7 @@ import pytz
 from app import db
 from messages.messages import ResponseMessage
 from models.enums.map_marker_type_enum import MapMarkerType
+from models.session import Session
 from models.user import User
 
 
@@ -15,9 +16,8 @@ def test_successful_login(client):
     assert rv.status_code == 202
     res = rv.json
     assert res["message"] == ResponseMessage.LOGIN_SUCCESS.value
-    assert res["accessToken"] is not None
-    assert res["refreshToken"] is not None
-    assert res["accessToken"] != res["refreshToken"]
+    assert "accessToken" not in res
+    assert "refreshToken" not in res
     assert res["user"]["email"] == data["email"]
     assert res["user"]["firstname"] == "admin"
     assert res["user"]["lastname"] == "admin"
@@ -25,6 +25,10 @@ def test_successful_login(client):
     assert res["user"]["accountLanguage"] == "en"
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["avatar"] is None
+    assert "lc_session=" in rv.headers.get("Set-Cookie", "")
+    assert "lc_csrf=" in rv.headers.getlist("Set-Cookie")[0] or any(
+        "lc_csrf=" in c for c in rv.headers.getlist("Set-Cookie")
+    )
 
 
 def test_unsuccessful_login(client):
@@ -41,52 +45,41 @@ def test_unsuccessful_login(client):
     assert res_wrong_email["message"] == ResponseMessage.WRONG_CREDENTIALS.value
 
 
-def test_successful_access_and_refresh_logout(client, admin_token, admin_refresh_token):
-    rv = client.post("/api/logout/access", token=admin_token)
+def test_successful_logout(client, admin_token):
+    rv = client.post("/api/logout", token=admin_token)
     assert rv.status_code == 200
     res = rv.json
     assert res["message"] == ResponseMessage.ACCESS_TOKEN_REVOKED.value
+    assert Session.query.filter_by(id=admin_token.session_id).first() is None
 
-    rv = client.post("/api/logout/refresh", token=admin_refresh_token)
+
+def test_logout_without_session(client):
+    rv = client.post("/api/logout")
+    assert rv.status_code == 401
+    res = rv.json
+    assert res["message"] == ResponseMessage.UNAUTHORIZED.value
+
+
+def test_me_with_session(client, admin_token):
+    rv = client.get("/api/me", token=admin_token)
     assert rv.status_code == 200
-    res = rv.json
-    assert res["message"] == ResponseMessage.REFRESH_TOKEN_REVOKED.value
+    assert rv.json["user"]["email"] == "admin@localcrag.invalid.org"
 
 
-def test_access_logout_without_headers(client):
-    rv = client.post("/api/logout/access")
+def test_me_without_session(client):
+    rv = client.get("/api/me")
     assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.UNAUTHORIZED.value
 
 
-def test_refresh_logout_without_headers(client):
-    rv = client.post("/api/logout/refresh")
+def test_csrf_required_for_mutating_authenticated_request(client, admin_token):
+    rv = client.post(
+        "/api/logout",
+        headers={
+            "Cookie": f"lc_session={admin_token.session_id}; lc_csrf={admin_token.csrf_token}",
+            # deliberately omit X-CSRF-Token
+        },
+    )
     assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.UNAUTHORIZED.value
-
-
-def test_successful_token_refresh(client, admin_refresh_token):
-    rv = client.post("/api/token/refresh", token=admin_refresh_token)
-    assert rv.status_code == 200
-    res = rv.json
-    assert res["message"] == ResponseMessage.LOGIN_SUCCESS.value
-    assert res["accessToken"] is not None
-    assert res["user"]["email"] == "admin@localcrag.invalid.org"
-    assert isinstance(res["user"]["id"], str)
-
-
-def test_unsuccessful_token_refresh(client, admin_token):
-    rv = client.post("/api/token/refresh")
-    assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.UNAUTHORIZED.value
-
-    rv = client.post("/api/token/refresh", token=admin_token)
-    assert rv.status_code == 401
-    res = rv.json
-    assert res["message"] == ResponseMessage.UNAUTHORIZED.value
 
 
 def test_forgot_password_wrong_email(client):
@@ -166,15 +159,14 @@ def test_reset_password_success(client):
     assert rv.status_code == 202
     res = rv.json
     assert res["message"] == ResponseMessage.PASSWORD_RESET.value
-    assert res["accessToken"] is not None
-    assert res["refreshToken"] is not None
-    assert res["accessToken"] != res["refreshToken"]
+    assert "accessToken" not in res
     assert res["user"]["email"] == user.email
     assert res["user"]["id"] == str(user.id)
     assert res["user"]["accountLanguage"] == user.account_settings.language
     assert res["user"]["timeCreated"] is not None
     assert res["user"]["timeUpdated"] is not None
     assert res["user"]["avatar"] is None
+    assert any("lc_session=" in c for c in rv.headers.getlist("Set-Cookie"))
 
 
 def test_token_user_does_not_exist(client, member_token):
@@ -188,22 +180,26 @@ def test_token_user_does_not_exist(client, member_token):
     assert res["message"] == ResponseMessage.UNAUTHORIZED.value
 
 
-def test_revoked_access_token_behaviour(client, member_token):
-    rv = client.post("/api/logout/access", token=member_token)
+def test_logged_out_session_rejected(client, member_token):
+    from util.auth_session import CSRF_COOKIE_NAME, SESSION_COOKIE_NAME
+
+    stale_session_id = member_token.session_id
+    stale_csrf = member_token.csrf_token
+    rv = client.post("/api/logout", token=member_token)
     assert rv.status_code == 200
-    res = rv.json
-    assert res["message"] == ResponseMessage.ACCESS_TOKEN_REVOKED.value
+    assert Session.query.filter_by(id=stale_session_id).first() is None
+
+    client.set_cookie(SESSION_COOKIE_NAME, stale_session_id)
+    client.set_cookie(CSRF_COOKIE_NAME, stale_csrf)
     change_pw_data = {"oldPassword": "member", "newPassword": "testPassword"}
-    rv = client.put("/api/change-password", token=member_token, json=change_pw_data)
-    assert rv.status_code == 401
-
-
-def test_revoked_refresh_token_behaviour(client, admin_refresh_token):
-    rv = client.post("/api/logout/refresh", token=admin_refresh_token)
-    assert rv.status_code == 200
-    res = rv.json
-    assert res["message"] == ResponseMessage.REFRESH_TOKEN_REVOKED.value
-    rv = client.post("/api/token/refresh", token=admin_refresh_token)
+    rv = client.put(
+        "/api/change-password",
+        headers={
+            "Cookie": f"{SESSION_COOKIE_NAME}={stale_session_id}; {CSRF_COOKIE_NAME}={stale_csrf}",
+            "X-CSRF-Token": stale_csrf,
+        },
+        json=change_pw_data,
+    )
     assert rv.status_code == 401
 
 

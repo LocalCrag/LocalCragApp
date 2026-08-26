@@ -15,7 +15,7 @@ export const isAdmin: CanActivateFn = (): Observable<boolean> => {
   return store.pipe(
     select(selectAuthState),
     map((authState) => {
-      if (authState.isLoggedIn && authState.user.admin) {
+      if (authState.user?.admin) {
         return true;
       } else {
         if (authState.user) {

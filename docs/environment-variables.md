@@ -6,7 +6,8 @@ This document provides an overview of the environment variables used in the serv
 |---------------------------|-----------------------------------------------------------|----------------------------------------------------------------------------------------|
 | `SQLALCHEMY_DATABASE_URI` | `string` (e.g., `postgresql://user:password@host/dbname`) | Database connection string for SQLAlchemy.                                             |
 | `SECRET_KEY`              | `string`                                                  | Secret key used for application security.                                              |
-| `JWT_SECRET_KEY`          | `string`                                                  | Secret key used for signing JSON Web Tokens (JWT).                                     |
+| `SESSION_COOKIE_SECURE`   | `boolean` (default `true`)                                | Include the Secure flag on session cookies (required for HTTPS production).           |
+| `SESSION_COOKIE_SAMESITE` | `Lax` / `Strict` / `None` (default `Lax`)                 | Use `Lax` for same-origin prod. Cross-origin SPA needs `None` and Secure=true.          |
 | `SYSTEM_EMAIL`            | `string` (e.g., `noreply@example.com`)                    | Email address used for system notifications.                                           |
 | `SMTP_HOST`               | `string` (e.g., `smtp.example.com`)                       | Hostname of the SMTP server.                                                           |
 | `SMTP_USER`               | `string`                                                  | Username for the SMTP server.                                                          |

@@ -108,7 +108,7 @@ def apply_get_lines_advanced_filters(
         col = _BOOL_API_TO_LINE[key]
         query = query.filter(col.is_(True))
 
-    # Personal ascent filter; needs JWT user for meaningful results.
+    # Personal ascent filter; needs the current session user for meaningful results.
     if filters.climb_filter == "climbed":
         if user is None:
             query = query.filter(false())

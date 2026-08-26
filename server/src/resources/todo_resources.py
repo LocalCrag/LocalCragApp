@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import ColumnElement
@@ -16,15 +15,19 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.todo import Todo
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.secret_service import SecretService
 from webargs_schemas.todo_args import todo_args, todo_priority_args
 
 
 class CreateTodo(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self):
         todo_data = parser.parse(todo_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         # Check if the line exists (raises 404 if not)
         Line.find_by_id(todo_data["line"])
@@ -56,10 +59,10 @@ class CreateTodo(MethodView):
 
 class GetTodos(MethodView):
 
-    @jwt_required()
+    @session_required()
     def get(self):
         instance_settings = InstanceSettings.return_it()
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
         area_id = request.args.get("area_id")
@@ -130,9 +133,9 @@ class GetTodos(MethodView):
 
 
 class DeleteTodo(MethodView):
-    @jwt_required()
+    @session_required()
     def delete(self, todo_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         todo = Todo.query.filter(Todo.id == todo_id).filter(Todo.created_by_id == user.id).first()
         if not todo:
             raise BadRequest("Todo not found.")
@@ -142,9 +145,9 @@ class DeleteTodo(MethodView):
 
 
 class UpdateTodoPriority(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self, todo_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         todo = Todo.query.filter(Todo.id == todo_id).filter(Todo.created_by_id == user.id).first()
         if not todo:
             raise BadRequest("Todo not found.")

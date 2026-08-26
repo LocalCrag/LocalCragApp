@@ -1,6 +1,5 @@
 from flask import current_app, jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
@@ -17,6 +16,10 @@ from models.post import Post
 from models.reaction import Reaction
 from models.release_note_item import ReleaseNoteItem
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.email import _build_comment_action_link
 from util.moderator_task_links import (
     moderator_task_list_link,
@@ -82,9 +85,9 @@ def _release_note_item_keys_for_bundle(bundle_id) -> list[str]:
 
 
 class GetNotifications(MethodView):
-    @jwt_required()
+    @session_required()
     def get(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         args = parser.parse(get_notifications_args, request, location="query")
         page = args["page"]
         per_page = args["per_page"]
@@ -173,9 +176,9 @@ class GetNotifications(MethodView):
 
 
 class GetNotificationsCount(MethodView):
-    @jwt_required()
+    @session_required()
     def get(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         count = sum(
             1
             for notification in Notification.query.filter(
@@ -188,9 +191,9 @@ class GetNotificationsCount(MethodView):
 
 
 class DismissNotification(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self, notification_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         now_ts = text("CURRENT_TIMESTAMP")
         db.session.query(Notification).filter(
             Notification.user_id == user.id, Notification.id == notification_id
@@ -200,9 +203,9 @@ class DismissNotification(MethodView):
 
 
 class DismissAllNotifications(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         now_ts = text("CURRENT_TIMESTAMP")
         db.session.query(Notification).filter(
             Notification.user_id == user.id, Notification.dismissed_at.is_(None)

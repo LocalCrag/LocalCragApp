@@ -15,7 +15,7 @@ export const isMember: CanActivateFn = (): Observable<boolean> => {
   return store.pipe(
     select(selectAuthState),
     map((authState) => {
-      if (authState.isLoggedIn && authState.user?.member) {
+      if (authState.user?.member) {
         return true;
       }
       if (authState.user) {

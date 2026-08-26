@@ -543,12 +543,26 @@ def test_parent_receives_email_on_reply(client, member_token, smtp_mock):
     assert rv.status_code == 201, rv.text
     root_id = rv.json["id"]
 
-    from flask_jwt_extended import create_access_token
+    from collections import namedtuple
+    from datetime import datetime, timedelta
 
-    admin_token = create_access_token(
-        identity="admin@localcrag.invalid.org",
-        additional_claims={"admin": True, "moderator": True, "member": True},
+    import pytz
+
+    from extensions import db
+    from models.session import Session
+    from models.user import User
+
+    user = User.find_by_email("admin@localcrag.invalid.org")
+    session = Session(
+        id=Session.generate_id(),
+        user_id=user.id,
+        csrf_token=Session.generate_csrf_token(),
+        expires_at=datetime.now(pytz.utc) + timedelta(days=1),
     )
+    db.session.add(session)
+    db.session.flush()
+    TestAuth = namedtuple("TestAuth", ["session_id", "csrf_token"])
+    admin_token = TestAuth(session_id=session.id, csrf_token=session.csrf_token)
     rv = client.post(
         "/api/comments",
         token=admin_token,

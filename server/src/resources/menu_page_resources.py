@@ -1,14 +1,16 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
 from marshmallow_schemas.menu_page_schema import menu_page_schema, menu_pages_schema
 from models.menu_page import MenuPage
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
-from util.security_util import check_auth_claims
 from webargs_schemas.menu_page_args import menu_page_args
 
 
@@ -33,14 +35,13 @@ class GetMenuPage(MethodView):
 
 
 class CreateMenuPage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self):
         """
         Create a menu page.
         """
         menu_page_data = parser.parse(menu_page_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         new_menu_page: MenuPage = MenuPage()
         new_menu_page.title = menu_page_data["title"].strip()
@@ -54,8 +55,7 @@ class CreateMenuPage(MethodView):
 
 
 class UpdateMenuPage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, menu_page_slug):
         """
         Edit a menu page.
@@ -73,8 +73,7 @@ class UpdateMenuPage(MethodView):
 
 
 class DeleteMenuPage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, menu_page_slug):
         """
         Delete a menu_page.

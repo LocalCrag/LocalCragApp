@@ -11,9 +11,8 @@ import { LineType } from '../../enums/line-type';
 export class ApiService {
   public auth = {
     login: (): string => `${this.apiHost}login`,
-    loginRefresh: (): string => `${this.apiHost}token/refresh`,
-    logoutAccess: (): string => `${this.apiHost}logout/access`,
-    logoutRefresh: (): string => `${this.apiHost}logout/refresh`,
+    logout: (): string => `${this.apiHost}logout`,
+    me: (): string => `${this.apiHost}me`,
     forgotPassword: (): string => `${this.apiHost}forgot-password`,
     resetPassword: (): string => `${this.apiHost}reset-password`,
     changePassword: (): string => `${this.apiHost}change-password`,

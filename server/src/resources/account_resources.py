@@ -3,7 +3,6 @@ import datetime
 import pytz
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -17,18 +16,22 @@ from models.enums.notification_digest_frequency_enum import (
 )
 from models.rules_read_status import RulesReadStatus
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from webargs_schemas.account_settings_args import account_settings_args
 from webargs_schemas.rules_read_status_args import mark_rules_read_args
 
 
 class DeleteOwnUser(MethodView):
 
-    @jwt_required()
+    @session_required()
     def delete(self):
         """
         Deletes the currently authenticated user. Not allowed for superadmins.
         """
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         if user.superadmin:
             raise BadRequest(ResponseMessage.SUPERADMINS_CANNOT_DELETE_OWN_USER.value)
 
@@ -39,17 +42,17 @@ class DeleteOwnUser(MethodView):
 
 class GetAccountSettings(MethodView):
 
-    @jwt_required()
+    @session_required()
     def get(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         return account_settings_schema.dump(user.account_settings), 200
 
 
 class UpdateAccountSettings(MethodView):
 
-    @jwt_required()
+    @session_required()
     def put(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         data = parser.parse(account_settings_args)
         settings = user.account_settings
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
@@ -66,24 +69,24 @@ class UpdateAccountSettings(MethodView):
 
 class GetRulesReadStatus(MethodView):
 
-    @jwt_required()
+    @session_required()
     def get(self):
         """
         Returns the caller's rules read-status rows.
         """
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         rows = RulesReadStatus.query.filter_by(user_id=user.id).all()
         return jsonify(rules_read_status_list_schema.dump(rows)), 200
 
 
 class MarkRulesRead(MethodView):
 
-    @jwt_required()
+    @session_required()
     def post(self):
         """
         Marks a topo entity's rules as read for the current user (upsert).
         """
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         data = parser.parse(mark_rules_read_args, request)
         entity_type = data["entityType"]
         entity_id = data["entityId"]
