@@ -152,9 +152,10 @@ export class LineComponent implements OnInit {
                   gradeValue > 0
                     ? gradeName
                     : this.translocoService.translate(gradeName);
-                this.pageTitleService.setTitle(`${line.name} ${displayGrade}`, {
+                this.pageTitleService.setPortraitTitle(
+                  `${line.name} ${displayGrade}`,
                   image,
-                });
+                );
                 const breadcrumbs = [
                   {
                     label: crag.name,

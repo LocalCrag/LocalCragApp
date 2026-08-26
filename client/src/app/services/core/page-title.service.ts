@@ -1,5 +1,11 @@
 import { DestroyRef, Injectable, TemplateRef, inject } from '@angular/core';
-import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  NavigationEnd,
+  PRIMARY_OUTLET,
+  Router,
+  RoutesRecognized,
+} from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -20,6 +26,9 @@ import { getPrimaryPageHostKey } from '../../utility/router/primary-page-host-ke
  *   inline `background-position` styles via `imageFocusBackgroundStyles(...)`.
  * - **Reset on navigation**: the service clears state when the primary routed
  *   component changes (see {@link getPrimaryPageHostKey}).
+ * - **Loading skeleton**: after a page-host change, `loading` is true until the
+ *   new page calls `setTitle` / `setPortraitTitle`, unless the route opts out
+ *   via `data.hidePageTitle` or `data.fullscreenMap`.
  */
 export interface PageTitleState {
   /** Page heading string; ignored when `template` is set. */
@@ -46,6 +55,18 @@ export interface PageTitleState {
 
   /** Optional tab menu displayed in the header. */
   tabs: MenuItem[] | null;
+
+  /**
+   * When true, the page header shows a loading skeleton instead of real chrome
+   * (reserves height to avoid content jump after async title setup).
+   */
+  loading: boolean;
+
+  /**
+   * When `loading` is true, prefer a hero-sized skeleton (from the previous
+   * page’s hero chrome when available).
+   */
+  loadingHero: boolean;
 }
 
 /** Options for `setTitle(...)`. */
@@ -70,6 +91,8 @@ const initialState: PageTitleState = {
   breadcrumbs: null,
   breadcrumbHome: null,
   tabs: null,
+  loading: false,
+  loadingHero: false,
 };
 
 @Injectable({
@@ -103,7 +126,11 @@ export class PageTitleService {
         const recognized = event as RoutesRecognized;
         const nextPageHostKey = getPrimaryPageHostKey(recognized.state.root);
         if (nextPageHostKey !== this.currentPageHostKey) {
-          this.clear();
+          if (routeHidesPageTitle(recognized.state.root)) {
+            this.reset();
+          } else {
+            this.beginLoading(recognized.state.root);
+          }
         }
       });
 
@@ -171,8 +198,26 @@ export class PageTitleService {
     this.patch({ tabs });
   }
 
-  private clear(): void {
+  /**
+   * Clears header chrome without showing a loading skeleton.
+   * Used for routes that intentionally have no page header.
+   */
+  reset(): void {
     this.stateSubject.next({ ...initialState });
+  }
+
+  private beginLoading(nextRoot: ActivatedRouteSnapshot): void {
+    const prev = this.stateSubject.value;
+    const prevHero = !!prev.image || !!prev.heroDefaultBg || !!prev.loadingHero;
+    const destinationHero = routePrefersHeroTitle(nextRoot);
+    // Prefer the destination hint so skeleton height matches the page that will
+    // load; fall back to the previous chrome when the route has no hint.
+    const loadingHero = destinationHero ?? prevHero;
+    this.stateSubject.next({
+      ...initialState,
+      loading: true,
+      loadingHero,
+    });
   }
 
   private patch(partial: Partial<PageTitleState>): void {
@@ -181,6 +226,53 @@ export class PageTitleService {
       ...partial,
     });
   }
+}
+
+/**
+ * True when the navigated route tree opts out of page-header chrome
+ * (`hidePageTitle` or fullscreen map).
+ */
+export function routeHidesPageTitle(root: ActivatedRouteSnapshot): boolean {
+  return (
+    primaryRouteDataFlag(root, 'hidePageTitle') ||
+    primaryRouteDataFlag(root, 'fullscreenMap')
+  );
+}
+
+/**
+ * Whether the destination page host expects a hero-sized header.
+ * Returns `null` when the route does not declare a preference.
+ */
+export function routePrefersHeroTitle(
+  root: ActivatedRouteSnapshot,
+): boolean | null {
+  let route: ActivatedRouteSnapshot | null = root;
+  let found: boolean | null = null;
+  while (route) {
+    const data = route.data ?? {};
+    if (Object.prototype.hasOwnProperty.call(data, 'pageTitleHero')) {
+      found = data['pageTitleHero'] === true;
+    }
+    route =
+      route.children.find((child) => child.outlet === PRIMARY_OUTLET) ?? null;
+  }
+  return found;
+}
+
+function primaryRouteDataFlag(
+  root: ActivatedRouteSnapshot,
+  key: string,
+): boolean {
+  let route: ActivatedRouteSnapshot | null = root;
+  while (route) {
+    const data = route.data ?? {};
+    if (data[key] === true) {
+      return true;
+    }
+    route =
+      route.children.find((child) => child.outlet === PRIMARY_OUTLET) ?? null;
+  }
+  return false;
 }
 
 /**
