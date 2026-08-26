@@ -4,7 +4,7 @@ export const mockGpsRecording = false;
 
 export const environment = {
   production: false,
-  apiHost: 'http://127.0.0.1:5001',
+  apiHost: 'http://localhost:5001',
   skippedSlug: '_default',
   version: packageInfo.version,
 };

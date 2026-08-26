@@ -15,7 +15,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVER_DIR="$ROOT_DIR/server"
 CLIENT_DIR="$ROOT_DIR/client"
 
-SERVER_HOST="${SERVER_HOST:-127.0.0.1}"
+SERVER_HOST="${SERVER_HOST:-localhost}"
 SERVER_PORT="${SERVER_PORT:-5001}"
 CLIENT_HOST="${CLIENT_HOST:-localhost}"
 CLIENT_PORT="${CLIENT_PORT:-4201}"
@@ -123,6 +123,13 @@ main() {
 
   if [[ ! -f "${LOCALCRAG_CONFIG_PATH}" ]]; then
     echo "Missing config: ${LOCALCRAG_CONFIG_PATH}" >&2
+    exit 1
+  fi
+
+  local cookie_secure
+  cookie_secure="$(cfg_get "SESSION_COOKIE_SECURE" "${LOCALCRAG_CONFIG_PATH}" || true)"
+  if [[ -z "${cookie_secure}" || "${cookie_secure}" == "True" || "${cookie_secure}" == "true" ]]; then
+    echo "test-e2e.cfg must set SESSION_COOKIE_SECURE = False for local HTTP, or Cypress login cookies will not stick." >&2
     exit 1
   fi
 

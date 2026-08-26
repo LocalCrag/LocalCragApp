@@ -12,6 +12,8 @@ export interface AuthState {
   resetPasswordLoadingState: LoadingState;
   forgotPasswordLoadingState: LoadingState;
   user: User;
+  /** False until session restore via /me finishes (or fails). Guards must wait. */
+  authResolved: boolean;
   refreshLoginModalOpen: boolean;
   refreshLoginLoadingState: LoadingState;
   refreshLoginModalLogoutLoadingState: LoadingState;
@@ -23,6 +25,7 @@ export const initialAuthState: AuthState = {
   resetPasswordLoadingState: LoadingState.DEFAULT,
   forgotPasswordLoadingState: LoadingState.DEFAULT,
   user: null,
+  authResolved: false,
   refreshLoginLoadingState: LoadingState.DEFAULT,
   refreshLoginModalOpen: false,
   refreshLoginModalLogoutLoadingState: LoadingState.DEFAULT,
@@ -53,6 +56,11 @@ const authReducer = createReducer(
   on(AuthActions.newAuthCredentials, (state, action) => ({
     ...state,
     user: action.loginResponse.user,
+    authResolved: true,
+  })),
+  on(AuthActions.autoLoginFailed, (state) => ({
+    ...state,
+    authResolved: true,
   })),
   on(AuthActions.updateAccountSettings, (state, action) => ({
     ...state,

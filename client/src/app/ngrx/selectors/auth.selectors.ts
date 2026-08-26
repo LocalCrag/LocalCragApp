@@ -25,6 +25,11 @@ export const selectLoginLoadingState = createSelector(
   (authState) => authState.loginLoadingState,
 );
 
+export const selectAuthResolved = createSelector(
+  selectAuthState,
+  (authState) => authState.authResolved,
+);
+
 export const selectIsLoggedIn = createSelector(
   selectAuthState,
   (authState) => authState.user != null,
