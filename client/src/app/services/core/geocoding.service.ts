@@ -9,7 +9,7 @@ import {
 
 /**
  * Forward geocoding via Photon (OSM). Uses `fetch` so app HTTP interceptors
- * (JWT, token refresh, offline banner) do not apply to the third-party host.
+ * (credentials/CSRF, offline banner) do not apply to the third-party host.
  */
 @Injectable({ providedIn: 'root' })
 export class GeocodingService {

@@ -157,14 +157,13 @@ export class AuthEffects {
 
   /**
    * After session credentials are established, navigate away from the login page
-   * when restoring a session via /me, and clear legacy JWT localStorage.
+   * when restoring a session via /me.
    */
   onNewAuthCredentials = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.newAuthCredentials),
         tap((action) => {
-          localStorage.removeItem('LocalCragAuth');
           if (action.fromAutoLogin && this.router.url === '/login') {
             this.router.navigate(['']);
           }
