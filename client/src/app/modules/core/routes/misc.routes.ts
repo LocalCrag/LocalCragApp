@@ -19,6 +19,7 @@ export const miscRoutes: Routes = [
       import('../sentry-test/sentry-test.component').then(
         (m) => m.SentryTestComponent,
       ),
+    data: { hidePageTitle: true },
   },
   {
     path: 'todos',
@@ -57,5 +58,6 @@ export const notFoundRoute: Routes = [
   {
     component: NotFoundComponent,
     path: '**',
+    data: { hidePageTitle: true },
   },
 ];
