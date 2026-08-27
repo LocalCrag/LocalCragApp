@@ -34,14 +34,14 @@ jobs:
 
           # We only scan source directories:
           # - client/src
-          # - client/cypress
+          # - client/e2e
           # - server/src
           # - server/tests
           # We also exclude i18n JSON translations (may contain user-facing 'ToDo')
           set +e
           git grep -nI --heading -E "$PATTERN" -- \
             'client/src' \
-            'client/cypress' \
+            'client/e2e' \
             'server/src' \
             'server/tests' \
             ':!client/src/assets/i18n/*.json'

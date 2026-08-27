@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Local E2E runner for Cypress. Expects test-e2e.cfg server config in /server/src/config directory.
+# Local E2E runner for Playwright. Expects test-e2e.cfg server config in /server/src/config directory.
 #
 # What it does:
 # - ensures the e2e database exists (as configured in test-e2e.cfg)
 # - drops all tables (by recreating the public schema)
-# - runs the cypress DB seeding script (server/scripts/setup_cypress_db.py)
+# - runs the e2e DB seeding script (server/scripts/setup_e2e_db.py)
 # - starts server + client
 # - waits for health checks
-# - runs Cypress
+# - runs Playwright
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVER_DIR="$ROOT_DIR/server"
@@ -129,7 +129,7 @@ main() {
   local cookie_secure
   cookie_secure="$(cfg_get "SESSION_COOKIE_SECURE" "${LOCALCRAG_CONFIG_PATH}" || true)"
   if [[ -z "${cookie_secure}" || "${cookie_secure}" == "True" || "${cookie_secure}" == "true" ]]; then
-    echo "test-e2e.cfg must set SESSION_COOKIE_SECURE = False for local HTTP, or Cypress login cookies will not stick." >&2
+    echo "test-e2e.cfg must set SESSION_COOKIE_SECURE = False for local HTTP, or Playwright login cookies will not stick." >&2
     exit 1
   fi
 
@@ -172,12 +172,12 @@ main() {
   psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 \
     -f "${SERVER_DIR}/scripts/create_uuid_extension.sql"
 
-  echo "Setting up/seeding database for Cypress"
+  echo "Setting up/seeding database for E2E"
   (
     cd "${ROOT_DIR}/server"
     export PYTHONPATH=".:src"
     export LOCALCRAG_CONFIG="${LOCALCRAG_CONFIG_PATH}"
-    pipenv run python3 scripts/setup_cypress_db.py
+    pipenv run python3 scripts/setup_e2e_db.py
   )
 
   echo "Starting server"
@@ -199,19 +199,28 @@ main() {
   wait_for_http "http://${SERVER_HOST}:${SERVER_PORT}/api/health" "server" 180
   wait_for_http "http://${CLIENT_HOST}:${CLIENT_PORT}" "client" 180
 
-  echo "Running Cypress"
+  # Ensure Chromium is available in the default Playwright cache (not a sandbox path).
+  unset PLAYWRIGHT_BROWSERS_PATH || true
+  echo "Ensuring Playwright Chromium is installed"
+  (
+    cd "${CLIENT_DIR}"
+    npx playwright install chromium
+  )
+
+  echo "Running Playwright"
   (
     cd "${CLIENT_DIR}"
     export FRONTEND_URL="http://${CLIENT_HOST}:${CLIENT_PORT}"
-    # Prefer headless for a single command. Override with CYPRESS_MODE=open.
-    if [[ "${CYPRESS_MODE:-run}" == "open" ]]; then
-      npm run cypress
+    unset PLAYWRIGHT_BROWSERS_PATH || true
+    # Prefer headless for a single command. Override with PLAYWRIGHT_MODE=ui.
+    if [[ "${PLAYWRIGHT_MODE:-run}" == "ui" ]]; then
+      npx playwright test --ui
     else
-      npx cypress run
+      npx playwright test
     fi
   )
 
-  echo "Cypress finished. Logs: /tmp/localcrag-e2e-server.log and /tmp/localcrag-e2e-client.log"
+  echo "Playwright finished. Logs: /tmp/localcrag-e2e-server.log and /tmp/localcrag-e2e-client.log"
 }
 
 main "$@"
