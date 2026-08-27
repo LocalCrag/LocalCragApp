@@ -2,7 +2,6 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
@@ -17,25 +16,27 @@ from models.line_path import LinePath
 from models.topo_image import TopoImage
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.move_args import move_topo_image_args
 from webargs_schemas.topo_image_args import topo_image_args
 
 
 class AddTopoImage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, area_slug):
         """
         Adds a topo image to the area.
         """
         area_id = Area.get_id_by_slug(area_slug)
         topo_image_data = parser.parse(topo_image_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         new_topo_image: TopoImage = TopoImage()
         new_topo_image.file_id = topo_image_data["image"]
@@ -53,8 +54,7 @@ class AddTopoImage(MethodView):
 
 
 class UpdateTopoImage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, image_id):
         topo_image_data = parser.parse(topo_image_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
@@ -69,8 +69,7 @@ class UpdateTopoImage(MethodView):
 
 
 class MoveTopoImage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, image_id):
         """Move a topo image to a different area.
 
@@ -138,8 +137,7 @@ class MoveTopoImage(MethodView):
 
 
 class DeleteTopoImage(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, image_id):
         """
         Delete a topo image.
@@ -202,8 +200,7 @@ class GetTopoImage(MethodView):
 
 
 class UpdateTopoImageOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, area_slug):
         """
         Changes the order index of topo images. Only works on unarchived topo images.

@@ -105,7 +105,7 @@ The Secret must include the following keys:
 
 - `POSTGRES_PASSWORD`
 - `SECRET_KEY`
-- `JWT_SECRET_KEY`
+- `SESSION_COOKIE_SECURE` / `SESSION_COOKIE_SAMESITE` (`SESSION_COOKIE_SECURE` must be `true` behind HTTPS; use `false` only for local HTTP)
 - `SMTP_USER`
 - `SMTP_PASSWORD`
 - `SUPERADMIN_FIRSTNAME`
@@ -129,7 +129,8 @@ stringData:
 
   # LocalCrag server
   SECRET_KEY: "changeme"
-  JWT_SECRET_KEY: "changeme"
+  SESSION_COOKIE_SECURE: "true"
+  SESSION_COOKIE_SAMESITE: "Lax"
 
   # S3 / MinIO credentials (single source of truth)
   rootUser: "localcrag"

@@ -2,7 +2,6 @@ from typing import Optional
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -13,7 +12,7 @@ from marshmallow_schemas.scale_schema import scale_schema, scales_schema
 from messages.messages import ResponseMessage
 from models.line import Line
 from models.scale import Scale
-from util.security_util import check_auth_claims
+from util.auth_session import session_required
 from webargs_schemas.scale_args import scale_args
 
 
@@ -34,8 +33,7 @@ class GetScale(MethodView):
 
 
 class CreateScale(MethodView):
-    @jwt_required()
-    @check_auth_claims(admin=True)
+    @session_required(admin=True)
     def post(self):
         scale_data = parser.parse(scale_args, request)
 
@@ -58,8 +56,7 @@ class CreateScale(MethodView):
 
 
 class UpdateScale(MethodView):
-    @jwt_required()
-    @check_auth_claims(admin=True)
+    @session_required(admin=True)
     def put(self, line_type, name):
         scale: Optional[Scale] = Scale.query.filter_by(name=name, type=line_type).first()
         if scale is None:
@@ -102,8 +99,7 @@ class UpdateScale(MethodView):
 
 
 class DeleteScale(MethodView):
-    @jwt_required()
-    @check_auth_claims(admin=True)
+    @session_required(admin=True)
     def delete(self, line_type, name):
         scale = Scale.query.filter_by(name=name, type=line_type).first()
         if scale is None:

@@ -1,5 +1,6 @@
 from flask import has_request_context
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+
+from util.auth_session import get_current_user
 
 
 def get_show_secret():
@@ -9,6 +10,5 @@ def get_show_secret():
     if not has_request_context():
         return False
 
-    has_jwt = bool(verify_jwt_in_request(optional=True))
-    claims = get_jwt()
-    return has_jwt and (claims["admin"] or claims["moderator"] or claims["member"])
+    user = get_current_user()
+    return bool(user and (user.admin or user.moderator or user.member))

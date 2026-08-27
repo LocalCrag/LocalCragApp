@@ -29,12 +29,11 @@ from resources.ascent_resources import (
     UpdateAscent,
 )
 from resources.auth_resources import (
+    CurrentUser,
     ForgotPassword,
     ResetPassword,
-    TokenRefresh,
     UserLogin,
-    UserLogoutAccess,
-    UserLogoutRefresh,
+    UserLogout,
 )
 from resources.batch_editor_resources import BatchCreateLines
 from resources.blocweather_resources import GetNearestBlocweatherUrl
@@ -288,9 +287,8 @@ def configure_api(app):
     # Auth API
     auth_bp = Blueprint("auth", __name__)
     auth_bp.add_url_rule("/login", view_func=UserLogin.as_view("login_api"))
-    auth_bp.add_url_rule("/logout/refresh", view_func=UserLogoutRefresh.as_view("logout_refresh_api"))
-    auth_bp.add_url_rule("/logout/access", view_func=UserLogoutAccess.as_view("logout_access_api"))
-    auth_bp.add_url_rule("/token/refresh", view_func=TokenRefresh.as_view("token_refresh_api"))
+    auth_bp.add_url_rule("/logout", view_func=UserLogout.as_view("logout_api"))
+    auth_bp.add_url_rule("/me", view_func=CurrentUser.as_view("current_user_api"))
     auth_bp.add_url_rule("/forgot-password", view_func=ForgotPassword.as_view("forgot_password_api"))
     auth_bp.add_url_rule("/reset-password", view_func=ResetPassword.as_view("reset_password_api"))
     auth_bp.add_url_rule("/change-password", view_func=ChangePassword.as_view("change_password"))

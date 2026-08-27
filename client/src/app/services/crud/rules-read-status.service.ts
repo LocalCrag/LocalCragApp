@@ -12,7 +12,10 @@ import {
   take,
 } from 'rxjs/operators';
 import { ApiService } from '../core/api.service';
-import { autoLoginFailed } from '../../ngrx/actions/auth.actions';
+import {
+  autoLoginFailed,
+  newAuthCredentials,
+} from '../../ngrx/actions/auth.actions';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
 import { parseServerUtcDate } from '../../utility/parse-server-utc-date';
 
@@ -49,9 +52,6 @@ const STORAGE_KEY = 'rulesReadStatusV2';
 
 /** Sentinel so a mark-read without a server timestamp still counts as acknowledged. */
 const EPOCH = new Date(0);
-
-/** Auth credentials key — presence means auto-login may still be in flight. */
-const AUTH_STORAGE_KEY = 'LocalCragAuth';
 
 /**
  * Persists "rules read" status per topo entity (region/crag/sector).
@@ -177,9 +177,9 @@ export class RulesReadStatusService {
   }
 
   /**
-   * Resolves whether the user is logged in after auto-login has had a chance
-   * to run. If `LocalCragAuth` is present but `isLoggedIn` is still false,
-   * waits for login success, `autoLoginFailed`, or a short timeout.
+   * Resolves whether the user is logged in after session restore via /me has
+   * had a chance to run. Waits for `newAuthCredentials`, `autoLoginFailed`,
+   * or a short timeout on cold start.
    */
   private waitForAuthResolved(): Observable<boolean> {
     return this.store.pipe(select(selectIsLoggedIn), take(1)).pipe(
@@ -187,16 +187,14 @@ export class RulesReadStatusService {
         if (isLoggedIn) {
           return of(true);
         }
-        const authPending =
-          typeof localStorage !== 'undefined' &&
-          localStorage.getItem(AUTH_STORAGE_KEY) !== null;
-        if (!authPending) {
-          return of(false);
-        }
         return merge(
           this.store.pipe(
             select(selectIsLoggedIn),
             filter((loggedIn) => loggedIn),
+            map(() => true),
+          ),
+          this.actions$.pipe(
+            ofType(newAuthCredentials),
             map(() => true),
           ),
           this.actions$.pipe(

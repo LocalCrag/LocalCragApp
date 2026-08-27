@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -12,6 +11,10 @@ from models.comment import Comment
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.reaction import Reaction
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from webargs_schemas.reaction_args import reaction_args
@@ -36,12 +39,12 @@ def _resolve_target(target_type: str, target_id: str):
 
 
 class CreateReaction(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self, target_type: str, target_id: str):
         data = parser.parse(reaction_args, request)
         emoji = data["emoji"]
 
-        user: User = User.find_by_email(get_jwt_identity())
+        user: User = User.find_by_email(get_session_identity())
 
         target = _resolve_target(target_type, target_id)
         if not target:
@@ -88,12 +91,12 @@ class CreateReaction(MethodView):
 
 
 class UpdateReaction(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self, target_type: str, target_id: str):
         data = parser.parse(reaction_args, request)
         emoji = data["emoji"]
 
-        user: User = User.find_by_email(get_jwt_identity())
+        user: User = User.find_by_email(get_session_identity())
 
         target = _resolve_target(target_type, target_id)
         if not target:
@@ -122,9 +125,9 @@ class UpdateReaction(MethodView):
 
 
 class DeleteReaction(MethodView):
-    @jwt_required()
+    @session_required()
     def delete(self, target_type: str, target_id: str):
-        user: User = User.find_by_email(get_jwt_identity())
+        user: User = User.find_by_email(get_session_identity())
 
         target = _resolve_target(target_type, target_id)
         if not target:

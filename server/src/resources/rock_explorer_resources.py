@@ -2,7 +2,6 @@ import uuid
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func, or_
 from webargs.flaskparser import parser
 
@@ -19,13 +18,16 @@ from models.enums.rock_explorer_rock_quality_enum import RockExplorerRockQuality
 from models.enums.rock_explorer_rock_type_enum import RockExplorerRockTypeEnum
 from models.rock_explorer_feature import RockExplorerFeature
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.rock_explorer import (
     apply_rock_explorer_metadata,
     assert_can_view_feature,
     assert_draft_mutable,
     clone_rock_explorer_feature,
 )
-from util.security_util import check_auth_claims
 from util.tag_object_prefetch import prefetch_tag_objects
 from webargs_schemas.rock_explorer_args import (
     cross_validate_rock_explorer_feature_args,
@@ -81,12 +83,11 @@ def _dump_feature(feature: RockExplorerFeature):
 
 
 def _current_user():
-    return User.find_by_email(get_jwt_identity())
+    return User.find_by_email(get_session_identity())
 
 
 class SearchRockExplorerFeatureCreators(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def get(self):
         query_str = (request.args.get("q") or "").strip()
         if not query_str:
@@ -110,8 +111,7 @@ class SearchRockExplorerFeatureCreators(MethodView):
 
 
 class GetRockExplorerFeaturesGeoJSON(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def get(self):
         query = _apply_feature_filters(RockExplorerFeature.query)
         query = query.filter(RockExplorerFeature.status == RockExplorerFeatureStatusEnum.PUBLISHED)
@@ -120,8 +120,7 @@ class GetRockExplorerFeaturesGeoJSON(MethodView):
 
 
 class GetRockExplorerFeature(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def get(self, feature_id):
         feature = RockExplorerFeature.find_by_id(feature_id)
         assert_can_view_feature(feature, _current_user())
@@ -131,8 +130,7 @@ class GetRockExplorerFeature(MethodView):
 class RockExplorerFeatures(MethodView):
     """Collection: GET owner drafts (?status=draft), POST create."""
 
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def get(self):
         status = request.args.get("status")
         if status != "draft":
@@ -151,8 +149,7 @@ class RockExplorerFeatures(MethodView):
         )
         return [_dump_feature(f) for f in features], 200
 
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def post(self):
         data = parser.parse(
             rock_explorer_feature_args,
@@ -172,8 +169,7 @@ class RockExplorerFeatures(MethodView):
 
 
 class UpdateRockExplorerFeature(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def put(self, feature_id):
         data = parser.parse(
             rock_explorer_feature_args,
@@ -194,8 +190,7 @@ class UpdateRockExplorerFeature(MethodView):
 
 
 class DeleteRockExplorerFeature(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def delete(self, feature_id):
         feature = RockExplorerFeature.find_by_id(feature_id)
         user = _current_user()
@@ -210,8 +205,7 @@ class DeleteRockExplorerFeature(MethodView):
 
 
 class CloneRockExplorerFeature(MethodView):
-    @jwt_required()
-    @check_auth_claims(member=True)
+    @session_required(member=True)
     def post(self, feature_id):
         data = parser.parse(rock_explorer_clone_args, request)
         feature = RockExplorerFeature.find_by_id(feature_id)

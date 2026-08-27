@@ -1,5 +1,4 @@
 import * as AppLevelAlertsActions from './../actions/app-level-alerts.actions';
-import * as AuthActions from './../actions/auth.actions';
 import { Action, createReducer, on } from '@ngrx/store';
 
 /**
@@ -7,27 +6,17 @@ import { Action, createReducer, on } from '@ngrx/store';
  * Every available alert type has a boolean value (shown or not shown).
  */
 export interface AppLevelAlertsState {
-  showRefreshTokenAboutToExpireAlert: boolean;
   showCookieAlert: boolean;
   showOfflineAlert: boolean;
 }
 
 export const initialAppLevelAlertsState: AppLevelAlertsState = {
-  showRefreshTokenAboutToExpireAlert: false,
   showCookieAlert: false,
   showOfflineAlert: false,
 };
 
 const appLevelAlertsStateReducer = createReducer(
   initialAppLevelAlertsState,
-  on(AppLevelAlertsActions.showRefreshTokenAboutToExpireAlert, (state) => ({
-    ...state,
-    showRefreshTokenAboutToExpireAlert: true,
-  })),
-  on(AuthActions.cleanupCredentials, (state) => ({
-    ...state,
-    showRefreshTokenAboutToExpireAlert: false,
-  })),
   on(AppLevelAlertsActions.showCookieAlert, (state) => ({
     ...state,
     showCookieAlert: true,
@@ -35,10 +24,6 @@ const appLevelAlertsStateReducer = createReducer(
   on(AppLevelAlertsActions.cookiesAccepted, (state) => ({
     ...state,
     showCookieAlert: false,
-  })),
-  on(AuthActions.openRefreshLoginModal, (state) => ({
-    ...state,
-    showRefreshTokenAboutToExpireAlert: false,
   })),
   on(AppLevelAlertsActions.showOfflineAlert, (state) =>
     state.showOfflineAlert ? state : { ...state, showOfflineAlert: true },

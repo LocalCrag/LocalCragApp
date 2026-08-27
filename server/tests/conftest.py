@@ -1,13 +1,14 @@
 import os
 import shutil
-from datetime import timedelta
+from collections import namedtuple
+from datetime import datetime, timedelta
 
 import boto3
 import botocore
 import moto
 import pytest
+import pytz
 from flask import current_app
-from flask_jwt_extended import create_access_token, create_refresh_token
 from sqlalchemy import URL, create_engine, inspect, text
 from sqlalchemy.event import listen
 from sqlalchemy.exc import ProgrammingError
@@ -39,12 +40,28 @@ from models.post import Post
 from models.ranking import Ranking
 from models.recent_search import RecentSearch
 from models.region import Region
-from models.revoked_token import RevokedToken
 from models.secret_topo_entity import cleanup_deleted_secret_registry_entries
 from models.sector import Sector
+from models.session import Session
 from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
+from util.auth_session import CSRF_COOKIE_NAME, SESSION_COOKIE_NAME
+
+TestAuth = namedtuple("TestAuth", ["session_id", "csrf_token"])
+
+
+def _create_test_auth(email: str) -> TestAuth:
+    user = User.find_by_email(email)
+    session = Session(
+        id=Session.generate_id(),
+        user_id=user.id,
+        csrf_token=Session.generate_csrf_token(),
+        expires_at=datetime.now(pytz.utc) + timedelta(days=1),
+    )
+    db.session.add(session)
+    db.session.flush()
+    return TestAuth(session_id=session.id, csrf_token=session.csrf_token)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -118,15 +135,25 @@ def clean_db():
 
 @pytest.fixture
 def client():
-    # Monkey patch test_client to create a nicer API for authenticated requests
+    # Monkey patch test_client for session-cookie authenticated requests.
     client = app.test_client()
     client.open_wrapped = client.open.__get__(client, client.__class__)
 
     def open_wrapper(self, *args, **kwargs):
-        headers = kwargs.get("headers", {})
-        if "token" in kwargs:
-            headers["Authorization"] = f"Bearer {kwargs['token']}"
-            del kwargs["token"]
+        headers = dict(kwargs.get("headers") or {})
+        auth = kwargs.pop("token", None)
+        if auth is not None:
+            client.set_cookie(SESSION_COOKIE_NAME, auth.session_id)
+            client.set_cookie(CSRF_COOKIE_NAME, auth.csrf_token)
+            method = (kwargs.get("method") or "GET").upper()
+            if method not in ("GET", "HEAD", "OPTIONS", "TRACE"):
+                headers.setdefault("X-CSRF-Token", auth.csrf_token)
+        else:
+            # Avoid leaking prior authenticated cookies into anonymous calls,
+            # unless the caller set Cookie headers explicitly (e.g. stale-session tests).
+            if "Cookie" not in headers:
+                client.delete_cookie(SESSION_COOKIE_NAME)
+                client.delete_cookie(CSRF_COOKIE_NAME)
         kwargs["headers"] = headers
         return client.open_wrapped(*args, **kwargs)
 
@@ -141,58 +168,29 @@ def gym_mode():
     db.session.add(instance_settings)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def superadmin_token():
-    return create_access_token(
-        identity="superadmin@localcrag.invalid.org",
-        additional_claims={"superadmin": True, "admin": True, "moderator": True, "member": True},
-        expires_delta=timedelta(days=1),
-    )
+    return _create_test_auth("superadmin@localcrag.invalid.org")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def admin_token():
-    return create_access_token(
-        identity="admin@localcrag.invalid.org",
-        additional_claims={"superadmin": False, "admin": True, "moderator": True, "member": True},
-        expires_delta=timedelta(days=1),
-    )
+    return _create_test_auth("admin@localcrag.invalid.org")
 
 
-@pytest.fixture(scope="session")
-def admin_refresh_token():
-    return create_refresh_token(
-        identity="admin@localcrag.invalid.org",
-        additional_claims={"superadmin": False, "admin": True, "moderator": True, "member": True},
-        expires_delta=timedelta(days=1),
-    )
-
-
-@pytest.fixture(scope="session")
+@pytest.fixture
 def moderator_token():
-    return create_access_token(
-        identity="moderator@localcrag.invalid.org",
-        additional_claims={"superadmin": False, "admin": False, "moderator": True, "member": True},
-        expires_delta=timedelta(days=1),
-    )
+    return _create_test_auth("moderator@localcrag.invalid.org")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def member_token():
-    return create_access_token(
-        identity="member@localcrag.invalid.org",
-        additional_claims={"superadmin": False, "admin": False, "moderator": False, "member": True},
-        expires_delta=timedelta(days=1),
-    )
+    return _create_test_auth("member@localcrag.invalid.org")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def user_token():
-    return create_access_token(
-        identity="user@localcrag.invalid.org",
-        additional_claims={"superadmin": False, "admin": False, "moderator": False, "member": False},
-        expires_delta=timedelta(days=1),
-    )
+    return _create_test_auth("user@localcrag.invalid.org")
 
 
 @pytest.fixture
@@ -721,18 +719,6 @@ def fill_db_with_sample_data():
         ranking.rank_total_count = 1
         ranking.secret = secret
         db.session.add(ranking)
-
-    for jti in [
-        "00bd7a15-fdb4-4986-b9d5-78f3edd461fc",
-        "a256938c-cf46-4288-a40b-5bb7305cb61e",
-        "5f2edb37-1fb3-4e10-99cb-66a67fd80d71",
-        "cd5c8e72-e115-4195-84eb-fd8b65559662",
-        "7d291e44-016a-4869-91af-3416d2060c9c",
-        "f5bd3862-78ba-471a-b0e5-fa55d419e435",
-    ]:
-        revoked_token = RevokedToken()
-        revoked_token.jti = jti
-        db.session.add(revoked_token)
 
     line_tag = Tag()
     line_tag.object = Line.query.filter_by(slug="super-spreader").first()

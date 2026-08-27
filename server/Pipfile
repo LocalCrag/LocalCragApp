@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 pillow = "==11.*"
 flask = "==3.*"
-flask-jwt-extended = "==4.*"
 flask-sqlalchemy = "==3.*"
 python-dateutil = "==2.*"
 flask-cors = "==5.*"

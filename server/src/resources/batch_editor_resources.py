@@ -1,6 +1,5 @@
 from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -12,21 +11,23 @@ from models.history_item import HistoryItem
 from models.line import Line
 from models.topo_image import TopoImage
 from models.user import User
-from util.security_util import check_auth_claims
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.validators import cross_validate_grade
 from webargs_schemas.batch_args import batch_args
 
 
 class BatchCreateLines(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, area_slug):
         """
         Creates a number of topo images and lines for an area.
         """
         area = Area.find_by_slug(area_slug)
         batch_data = parser.parse(batch_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         created_topo_images = []
         order_index = TopoImage.find_max_order_index(area.id)

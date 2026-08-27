@@ -6,9 +6,9 @@ class DefaultConfig(object):
     SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"options": "-c timezone=utc"}}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = ""
-    JWT_SECRET_KEY = ""
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    SESSION_LIFETIME = timedelta(days=30)
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = "Lax"
     ERROR_404_HELP = False
     PRINT_MAILS_TO_CONSOLE = False
     SYSTEM_EMAIL = "YOUR_SYSTEM_EMAIL"

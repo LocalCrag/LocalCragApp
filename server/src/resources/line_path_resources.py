@@ -2,7 +2,6 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
@@ -12,21 +11,23 @@ from marshmallow_schemas.line_path_schema import line_path_schema
 from models.line import Line
 from models.line_path import LinePath
 from models.user import User
-from util.security_util import check_auth_claims
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.validators import validate_order_payload
 from webargs_schemas.line_path_args import line_path_args
 
 
 class CreateLinePath(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, image_id):
         """
         Adds a line path to a topo image.
         @param image_id: ID of the topo image for which to add a line path.
         """
         line_path_data = parser.parse(line_path_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         if LinePath.exists_for_topo_image(image_id, line_path_data["line"]):
             raise BadRequest("The same line can only be added once for a single topo image.")
@@ -45,8 +46,7 @@ class CreateLinePath(MethodView):
 
 
 class DeleteLinePath(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, line_path_id):
         """
         Delete a topo image.
@@ -66,8 +66,7 @@ class DeleteLinePath(MethodView):
 
 
 class UpdateLinePathOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, image_id):
         """
         Changes the order index of line paths for unarchived lines for a specific topo image.
@@ -90,8 +89,7 @@ class UpdateLinePathOrder(MethodView):
 
 
 class UpdateLinePathOrderForLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, line_slug):
         """
         Changes the order index of line paths for lines.

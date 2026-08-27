@@ -1,10 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required,
-    verify_jwt_in_request,
-)
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -29,6 +24,11 @@ from models.region import Region
 from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+    verify_session_in_request,
+)
 from util.email import send_comment_created_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
@@ -48,15 +48,15 @@ def _assert_can_view_rock_explorer_comment_target(obj_type: str, target) -> None
     """Draft rock-explorer features are owner-only for comments."""
     if obj_type != "RockExplorerFeature":
         return
-    user = User.find_by_email(get_jwt_identity())
+    user = User.find_by_email(get_session_identity())
     assert_can_view_feature(target, user)
 
 
 class CreateComment(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self):
         data = parser.parse(comment_args, request)
-        created_by: User = User.find_by_email(get_jwt_identity())
+        created_by: User = User.find_by_email(get_session_identity())
 
         # Validate generic target type/id
         target = None
@@ -148,10 +148,10 @@ class CreateComment(MethodView):
 
 
 class UpdateComment(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self, comment_id):
         data = parser.parse(comment_update_args, request)
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         comment: Comment = Comment.find_by_id(comment_id)
         if comment.created_by_id != user.id:
             raise Unauthorized("Only the creator can edit the comment.")
@@ -162,9 +162,9 @@ class UpdateComment(MethodView):
 
 
 class DeleteComment(MethodView):
-    @jwt_required()
+    @session_required()
     def delete(self, comment_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         comment: Comment = Comment.find_by_id(comment_id)
         if comment.created_by_id != user.id and not user.moderator and not user.admin:
             raise Unauthorized("Only the creator or a moderator can delete the comment.")
@@ -193,7 +193,7 @@ class GetComments(MethodView):
             Returns only root comments with replyCount.
           - Thread replies flat: provide root-id.
         """
-        verify_jwt_in_request(optional=True)
+        verify_session_in_request(optional=True)
 
         obj_type = request.args.get("object-type")
         obj_id = request.args.get("object-id")

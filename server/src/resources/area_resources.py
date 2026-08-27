@@ -3,7 +3,6 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func, text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -22,6 +21,10 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import (
     set_area_parents_false,
@@ -32,7 +35,7 @@ from util.scheduled_closure import (
     finalize_closable_save,
 )
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_area_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.area_args import area_args
@@ -40,8 +43,7 @@ from webargs_schemas.move_args import move_area_args
 
 
 class MoveArea(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, area_slug):
         """
         Move an area to a different sector.
@@ -98,8 +100,7 @@ class GetAreas(MethodView):
 
 
 class FindAreasByName(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self):
         """
         Returns all areas whose name matches (case-insensitive, trimmed).
@@ -130,15 +131,14 @@ class GetArea(MethodView):
 
 
 class CreateArea(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, sector_slug):
         """
         Creates an area.
         """
         sector_id = Sector.get_id_by_slug(sector_slug)
         area_data = parser.parse(area_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         valid, error = validate_default_scales(area_data)
         if not valid:
@@ -172,8 +172,7 @@ class CreateArea(MethodView):
 
 
 class UpdateArea(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, area_slug):
         """
         Edit an area.
@@ -206,8 +205,7 @@ class UpdateArea(MethodView):
 
 
 class DeleteArea(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, area_slug):
         """
         Delete an area.
@@ -226,8 +224,7 @@ class DeleteArea(MethodView):
 
 
 class UpdateAreaOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, sector_slug):
         """
         Changes the order index of areas.

@@ -2,7 +2,6 @@ from collections import Counter, defaultdict
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func, text
 from webargs.flaskparser import parser
 
@@ -22,6 +21,10 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from resources.map_resources import create_or_update_markers
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.rules_emphasis import apply_rules_emphasis
@@ -30,7 +33,7 @@ from util.scheduled_closure import (
     finalize_closable_save,
 )
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims, check_secret_spot_permission
+from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_crag_counts
 from util.validators import validate_default_scales, validate_order_payload
 from webargs_schemas.crag_args import crag_args
@@ -49,8 +52,7 @@ class GetCrags(MethodView):
 
 
 class FindCragsByName(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self):
         """
         Returns all crags whose name matches (case-insensitive, trimmed).
@@ -79,14 +81,13 @@ class GetCrag(MethodView):
 
 
 class CreateCrag(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self):
         """
         Create a crag.
         """
         crag_data = parser.parse(crag_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         valid, error = validate_default_scales(crag_data)
         if not valid:
@@ -119,8 +120,7 @@ class CreateCrag(MethodView):
 
 
 class UpdateCrag(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, crag_slug):
         """
         Edit a crag.
@@ -154,8 +154,7 @@ class UpdateCrag(MethodView):
 
 
 class DeleteCrag(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, crag_slug):
         """
         Delete a crag.
@@ -172,8 +171,7 @@ class DeleteCrag(MethodView):
 
 
 class UpdateCragOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self):
         """
         Changes the order index of crags.

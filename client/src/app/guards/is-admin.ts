@@ -2,9 +2,9 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from '../ngrx/reducers';
-import { selectAuthState } from '../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from './wait-for-auth';
 
 /**
  * CanActivateFn for checking if a user is an admin.
@@ -12,17 +12,15 @@ import { selectAuthState } from '../ngrx/selectors/auth.selectors';
 export const isAdmin: CanActivateFn = (): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  return store.pipe(
-    select(selectAuthState),
+  return waitForAuthState(store).pipe(
     map((authState) => {
-      if (authState.isLoggedIn && authState.user.admin) {
+      if (authState.user?.admin) {
         return true;
+      }
+      if (authState.user) {
+        router.navigate(['']);
       } else {
-        if (authState.user) {
-          router.navigate(['']);
-        } else {
-          router.navigate(['/login']);
-        }
+        router.navigate(['/login']);
       }
       return false;
     }),
