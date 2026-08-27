@@ -2,15 +2,13 @@ name: Playwright E2E Tests
 run-name: Run Playwright end-to-end tests 🧪
 
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - main
       - next
 
 jobs:
   playwright-run:
-    # Keep GitHub Environment name for existing S3 secrets used by the app in CI.
-    environment: Cypress
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -34,9 +32,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=localcrag \
+            -e MINIO_ROOT_PASSWORD=password \
+            quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z \
+            server /data
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null; then
+              echo "MinIO is up"
+              break
+            fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null
+          docker run --rm --network host \
+            -e MC_HOST_local="http://localcrag:password@127.0.0.1:9000" \
+            minio/mc \
+            sh -c "mc mb --ignore-existing local/localcrag && mc anonymous set public local/localcrag"
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -81,12 +97,6 @@ jobs:
         run: |
           npm run e2e:run-test-backend > /tmp/localcrag-e2e-api.log 2>&1 &
           echo $! > /tmp/localcrag-e2e-api.pid
-        env:
-          S3_PASSWORD: ${{ secrets.S3_PASSWORD }}
-          S3_USER: ${{ secrets.S3_USER }}
-          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
-          S3_REGION: ${{ secrets.S3_REGION }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
 
       - name: Start client
         working-directory: client
