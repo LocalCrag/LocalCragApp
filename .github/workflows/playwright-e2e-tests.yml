@@ -51,8 +51,9 @@ jobs:
           curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null
           docker run --rm --network host \
             -e MC_HOST_local="http://localcrag:password@127.0.0.1:9000" \
+            --entrypoint /bin/sh \
             minio/mc \
-            sh -c "mc mb --ignore-existing local/localcrag && mc anonymous set public local/localcrag"
+            -c "mc mb --ignore-existing local/localcrag && mc anonymous set public local/localcrag"
 
       - name: Set up Python
         uses: actions/setup-python@v6
