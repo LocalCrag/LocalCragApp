@@ -10,7 +10,11 @@
         <h4 class="col-span-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
         @if (noClosedProjects$ | async) {
           <div class="col-span-12 mb-2">
-            <p-message severity="info" icon="pi pi-info-circle" styleClass="w-full">
+            <p-message
+              severity="info"
+              icon="pi pi-info-circle"
+              styleClass="w-full"
+            >
               {{ t("noClosedProjectsInfo") }}
             </p-message>
           </div>
