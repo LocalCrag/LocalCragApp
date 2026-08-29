@@ -1312,5 +1312,7 @@
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerUp": "Move source layer up",
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerDown": "Move source layer down",
   "rockExplorer.mapStyle.vectorIdentifyTitle": "Layers here",
-  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legend"
+  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legend",
+  "comments.ascentDialogTitle": "Comments on ascent",
+  "comments.ascentDialogAria": "Open comments on this ascent"
 }

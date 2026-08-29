@@ -309,4 +309,10 @@ def _comment_target_label(
         return obj.name
     if isinstance(obj, Post):
         return obj.title
+    if isinstance(obj, Ascent) and obj.line:
+        return _line_label_with_grade(
+            obj.line,
+            display_user_grades=display_user_grades,
+            grade_name_cache=grade_name_cache,
+        )
     return None

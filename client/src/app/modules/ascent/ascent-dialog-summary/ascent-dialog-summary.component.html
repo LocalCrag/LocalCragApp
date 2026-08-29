@@ -1,0 +1,78 @@
+<ng-container *transloco="let t; read: 'ascents.ascentList'">
+  <div class="ascent-dialog-summary">
+    <div class="ascent-dialog-summary-header">
+      <lc-user-avatar [user]="ascent.createdBy" size="large" />
+      <div class="ascent-dialog-summary-main">
+        <a class="username" routerLink="{{ ascent.routerLinkCreatedBy }}">
+          {{ ascent.createdBy.firstname }} {{ ascent.createdBy.lastname }}
+        </a>
+        <div class="ascent-dialog-summary-line">
+          <a routerLink="{{ ascent.routerLinkLine }}">{{ ascent.line.name }}</a>
+          <span class="grade">{{ ascent.line | lineGrade }}</span>
+        </div>
+        <div class="ascent-dialog-summary-location">
+          <lc-topo-hierarchy-breadcrumbs
+            [crag]="ascent.crag"
+            [sector]="ascent.sector"
+            [area]="ascent.area"
+          ></lc-topo-hierarchy-breadcrumbs>
+        </div>
+      </div>
+    </div>
+
+    @if (ascent.comment) {
+      <div class="ascent-dialog-summary-comment">{{ ascent.comment }}</div>
+    }
+
+    <div class="ascent-dialog-summary-meta">
+      <p-rating [ngModel]="ascent.rating" [readonly]="true"></p-rating>
+      <div class="grade">
+        @if (ascent | upgrade) {
+          <i class="pi pi-angle-double-up upgrade-icon"></i>
+        }
+        @if (ascent | consensusGrade) {
+          <i class="pi pi-check"></i>
+        }
+        @if (ascent | downgrade) {
+          <i class="pi pi-angle-double-down downgrade-icon"></i>
+        }
+        <span class="grade-name">
+          {{
+            scalesService.gradeNameByValue(
+              ascent.line.type,
+              ascent.line.gradeScale,
+              ascent.gradeValue
+            )
+              | async
+              | translateSpecialGrades
+          }}
+          @if (ascent.soft) {
+            <span>&nbsp;({{ t('soft') }})</span>
+          }
+          @if (ascent.hard) {
+            <span>&nbsp;({{ t('hard') }})</span>
+          }
+        </span>
+      </div>
+      <div class="ascent-dialog-summary-tags">
+        @if (ascent.fa) {
+          <p-tag [value]="t('fa')" icon="pi pi-star"></p-tag>
+        }
+        @if (ascent.flash) {
+          <p-tag [value]="t('flash')" icon="pi pi-bolt"></p-tag>
+        }
+        @if (ascent.withKneepad) {
+          <p-tag [value]="t('withKneepad')" icon="pi pi-ticket"></p-tag>
+        }
+      </div>
+      <div class="ascent-dialog-summary-date">
+        <i class="pi pi-calendar"></i>
+        @if (ascent.date) {
+          {{ ascent.date | date }}
+        } @else if (ascent.year) {
+          {{ ascent.year }}
+        }
+      </div>
+    </div>
+  </div>
+</ng-container>

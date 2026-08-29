@@ -158,6 +158,7 @@ def test_successful_get_ascents(client):
     assert res["items"][0]["withKneepad"] is True
     assert res["items"][0]["rating"] == 3
     assert res["items"][0]["comment"] == "Yeeha!"
+    assert res["items"][0]["commentCount"] == 0
     assert res["items"][0]["year"] is None
     assert res["items"][0]["gradeValue"] == 22
     assert res["items"][0]["date"] == "2024-04-16"

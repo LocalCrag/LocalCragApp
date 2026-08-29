@@ -1,4 +1,4 @@
-.reaction-wrapper {
+.social-interaction-wrapper {
   position: relative;
   display: inline-block;
   width: 100%;
@@ -8,18 +8,116 @@
   &.reaction-bar-suppressed {
     padding-bottom: 0;
 
-    .reaction-bar {
+    .social-bar {
       display: none;
     }
   }
 }
 
-.reaction-bar {
+.social-bar {
   position: absolute;
   bottom: 0;
   right: 8px;
   transform: translateY(50%);
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: min(calc(100% - 8px), calc(100vw - 16px));
+
+  &.has-reactions,
+  &.picker-open {
+    gap: 6px;
+  }
+
+  &.suppressed {
+    display: none;
+  }
+}
+
+.comment-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 999px;
+  padding: 4px 10px;
+  box-shadow: var(--p-overlay-popover-shadow);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  min-width: 36px;
+  min-height: 26px;
+  color: var(--p-primary-color);
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.15s ease;
+
+  &:not(.has-comments) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    .social-interaction-wrapper:hover &:not(.has-comments).logged-in {
+      opacity: 1;
+      pointer-events: auto;
+      background: var(--p-content-hover-background);
+
+      .comment-hover-hint {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    &.logged-in.has-comments:hover {
+      background: var(--p-content-hover-background);
+    }
+  }
+
+  .pi-comment {
+    font-size: 0.85rem;
+    color: var(--p-primary-color);
+  }
+}
+
+.comment-default {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease;
+}
+
+.comment-hover-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--p-primary-color);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease;
+}
+
+.comment-total {
+  color: var(--p-primary-color);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.reaction-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -35,22 +133,42 @@
   user-select: none;
   transition:
     background 0.15s ease,
-    opacity 0.15s ease;
+    opacity 0.15s ease,
+    min-width 0.15s ease,
+    width 0.15s ease,
+    padding 0.15s ease,
+    border-width 0.15s ease,
+    margin 0.15s ease;
   min-width: 52px;
   min-height: 26px;
   justify-content: center;
-  max-width: min(calc(100% - 8px), calc(100vw - 16px));
+  max-width: 100%;
+  overflow: hidden;
 
   &:not(.has-reactions):not(.picker-open) {
     opacity: 0;
     pointer-events: none;
+    min-width: 0;
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    margin-left: 0;
   }
 
   @media (hover: hover) {
-    .reaction-wrapper:hover
+    .social-interaction-wrapper:hover
       &:not(.has-reactions):not(.picker-open):not(.disabled).logged-in {
       opacity: 1;
       pointer-events: none;
+      min-width: 52px;
+      width: auto;
+      padding-left: 12px;
+      padding-right: 12px;
+      border-left-width: 1px;
+      border-right-width: 1px;
+      margin-left: 6px;
 
       .reaction-default,
       .reaction-hover-hint {
@@ -59,7 +177,7 @@
     }
 
     &.logged-in:hover,
-    .reaction-wrapper:hover &:not(.has-reactions):not(.disabled).logged-in {
+    .social-interaction-wrapper:hover &:not(.has-reactions):not(.disabled).logged-in {
       background: var(--p-content-hover-background);
 
       .reaction-default {
@@ -76,6 +194,14 @@
 
   &.picker-open {
     background: var(--p-content-hover-background);
+    opacity: 1;
+    pointer-events: auto;
+    min-width: 52px;
+    width: auto;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-left-width: 1px;
+    border-right-width: 1px;
 
     .reaction-default {
       opacity: 0;
@@ -97,7 +223,7 @@
 
     @media (hover: hover) {
       &:hover,
-      .reaction-wrapper:hover & {
+      .social-interaction-wrapper:hover & {
         background: var(--p-content-background);
 
         .reaction-default {
@@ -109,6 +235,19 @@
           opacity: 0;
           visibility: hidden;
         }
+      }
+
+      // Own ascent with no reactions: keep bar collapsed on hover
+      .social-interaction-wrapper:hover &:not(.has-reactions):not(.picker-open) {
+        opacity: 0;
+        pointer-events: none;
+        min-width: 0;
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+        margin-left: 0;
       }
     }
   }

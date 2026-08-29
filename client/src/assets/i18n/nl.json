@@ -1312,5 +1312,7 @@
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerUp": "Sourcelaag omhoog",
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerDown": "Sourcelaag omlaag",
   "rockExplorer.mapStyle.vectorIdentifyTitle": "Lagen hier",
-  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legenda"
+  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legenda",
+  "comments.ascentDialogTitle": "Reacties op beklimming",
+  "comments.ascentDialogAria": "Open reacties op deze beklimming"
 }

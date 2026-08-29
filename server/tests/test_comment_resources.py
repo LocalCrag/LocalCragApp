@@ -1,4 +1,5 @@
 from models.area import Area
+from models.ascent import Ascent
 from models.line import Line
 from models.post import Post
 
@@ -95,6 +96,41 @@ def test_get_comments_for_post(client, member_token):
     assert "items" in rv.json
     assert len(rv.json["items"]) >= 1
     assert rv.json["items"][0]["message"] == "On topic"
+
+
+def test_create_and_list_comment_on_ascent(client, member_token):
+    ascent = Ascent.query.first()
+    ascent_id = str(ascent.id)
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={"message": "Nice tick!", "objectType": "Ascent", "objectId": ascent_id},
+    )
+    assert rv.status_code == 201
+    root_id = rv.json["id"]
+
+    rv = client.post(
+        "/api/comments",
+        token=member_token,
+        json={
+            "message": "Agree!",
+            "objectType": "Ascent",
+            "objectId": ascent_id,
+            "parentId": root_id,
+        },
+    )
+    assert rv.status_code == 201
+
+    rv = client.get(f"/api/comments?object-type=Ascent&object-id={ascent_id}&page=1&per-page=100")
+    assert rv.status_code == 200
+    assert len(rv.json["items"]) == 1
+    assert rv.json["items"][0]["message"] == "Nice tick!"
+    assert rv.json["items"][0]["replyCount"] == 1
+
+    rv = client.get("/api/ascents?page=1")
+    assert rv.status_code == 200
+    matched = next(item for item in rv.json["items"] if item["id"] == ascent_id)
+    assert matched["commentCount"] == 2
 
 
 def test_get_comments_for_line(client):

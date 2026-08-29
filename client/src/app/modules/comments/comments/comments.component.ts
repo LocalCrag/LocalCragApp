@@ -71,6 +71,7 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
       return;
     }
     this.commentsContextService.object = this.object;
+    this.commentsContextService.notifyCountChanged = () => this.emitCount();
     this.countChange.emit(0);
     this.loadFirstPage();
   }
@@ -122,8 +123,13 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
   }
 
   private emitCount(): void {
-    this.countChange.emit(
-      this.comments.filter((comment) => !comment.isDeleted).length,
-    );
+    const total = this.comments.reduce((sum, comment) => {
+      const replies = comment.replyCount ?? 0;
+      if (comment.isDeleted) {
+        return sum + replies;
+      }
+      return sum + 1 + replies;
+    }, 0);
+    this.countChange.emit(total);
   }
 }

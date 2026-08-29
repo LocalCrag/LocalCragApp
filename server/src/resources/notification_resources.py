@@ -43,6 +43,8 @@ def _topic_name_from_comment(comment: Comment) -> str | None:
     if getattr(comment, "object", None) is not None:
         if isinstance(comment.object, Post):
             return comment.object.title
+        if isinstance(comment.object, Ascent) and comment.object.line:
+            return comment.object.line.name
         if hasattr(comment.object, "name"):
             return comment.object.name
     return None

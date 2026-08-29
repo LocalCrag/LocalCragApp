@@ -9,6 +9,7 @@ from __future__ import annotations
 from flask import current_app
 
 from models.area import Area
+from models.ascent import Ascent
 from models.comment import Comment
 from models.crag import Crag
 from models.line import Line
@@ -50,5 +51,12 @@ def build_comment_action_link(comment: Comment) -> str:
     # Rock Explorer features (panel tab + fragment highlight)
     if isinstance(obj, RockExplorerFeature):
         return frontend_url(f"rock-explorer/{obj.id}?tab=comments#{comment.id}")
+    # Ascents (line ascents list opens comments dialog via ?ascent=; fragment highlights comment)
+    if isinstance(obj, Ascent) and obj.line:
+        line = obj.line
+        return frontend_url(
+            f"topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}/ascents"
+            f"?ascent={obj.id}#{comment.id}"
+        )
     # Fallback
     return current_app.config["FRONTEND_HOST"]

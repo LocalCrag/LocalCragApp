@@ -1312,5 +1312,7 @@
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerUp": "Sposta layer sorgente su",
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerDown": "Sposta layer sorgente giù",
   "rockExplorer.mapStyle.vectorIdentifyTitle": "Layer qui",
-  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legenda"
+  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legenda",
+  "comments.ascentDialogTitle": "Commenti sulla salita",
+  "comments.ascentDialogAria": "Apri i commenti su questa salita"
 }

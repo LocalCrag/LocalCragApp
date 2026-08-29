@@ -1312,5 +1312,7 @@
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerUp": "Monter la couche source",
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerDown": "Descendre la couche source",
   "rockExplorer.mapStyle.vectorIdentifyTitle": "Couches ici",
-  "rockExplorer.mapStyle.vectorIdentifyLegend": "Légende"
+  "rockExplorer.mapStyle.vectorIdentifyLegend": "Légende",
+  "comments.ascentDialogTitle": "Commentaires sur la réussite",
+  "comments.ascentDialogAria": "Ouvrir les commentaires sur cette réussite"
 }
