@@ -1,0 +1,91 @@
+<div
+  class="social-interaction-wrapper"
+  [class.reaction-bar-suppressed]="hideReactionBar"
+  (touchstart)="onTouchStart()"
+  (touchend)="onTouchEnd()"
+  (touchcancel)="onTouchEnd()"
+  (touchmove)="onTouchEnd()"
+>
+  <ng-content></ng-content>
+
+  <div
+    class="social-bar"
+    [class.suppressed]="hideReactionBar"
+    [class.has-reactions]="totalReactions > 0"
+    [class.picker-open]="isPickerOpen"
+  >
+    @if (showComments) {
+      <button
+        type="button"
+        class="comment-btn"
+        [class.has-comments]="commentCount > 0"
+        [class.logged-in]="isLoggedIn"
+        [attr.aria-label]="commentAriaLabel"
+        data-cy="ascent-comment-button"
+        (click)="openCommentsDialog($event)"
+      >
+        @if (commentCount > 0) {
+          <span class="comment-default">
+            <i class="pi pi-comment"></i>
+            <span class="comment-total">{{ commentCount }}</span>
+          </span>
+        }
+        <span class="comment-hover-hint" *isLoggedIn="true">
+          <i class="pi pi-comment"></i>
+        </span>
+      </button>
+    }
+
+    <div
+      #reactionBar
+      class="reaction-bar"
+      [class.logged-in]="isLoggedIn"
+      [class.picker-open]="isPickerOpen"
+      [class.has-reactions]="totalReactions > 0"
+      [class.disabled]="isDisabled"
+      tabindex="0"
+      (click)="openPicker($event)"
+    >
+      @if (totalReactions > 0) {
+        <span class="reaction-default">
+          @for (reaction of sortedReactions; track reaction.emoji) {
+            <span class="reaction-item">
+              <span class="reaction-emoji">{{ reaction.emoji }}</span>
+            </span>
+          }
+          <span class="reaction-total">{{ totalReactions }}</span>
+        </span>
+      }
+      <span class="reaction-hover-hint" *isLoggedIn="true">
+        <span class="reaction-emoji">😊</span>
+        <i class="pi pi-plus"></i>
+      </span>
+    </div>
+  </div>
+</div>
+
+<p-popover
+  *isLoggedIn="true"
+  #popover
+  appendTo="body"
+  styleClass="reaction-popover"
+  (onShow)="onPickerShow()"
+  (onHide)="onPickerHide()"
+>
+  <div class="reaction-picker">
+    @for (emoji of availableReactions; track emoji) {
+      <button
+        class="reaction-option"
+        [class.active]="myReaction === emoji"
+        (click)="selectReaction(emoji)"
+      >
+        {{ emoji }}
+      </button>
+    }
+    @if (totalReactions > 0) {
+      <button class="reaction-info-btn" (click)="openInfoModal($event)">
+        <i class="pi pi-info-circle"></i>
+      </button>
+    }
+  </div>
+</p-popover>

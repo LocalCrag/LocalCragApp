@@ -1312,5 +1312,7 @@
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerUp": "Source-Layer nach oben",
   "instanceSettings.instanceSettingsForm.mapLayerMoveVectorLayerDown": "Source-Layer nach unten",
   "rockExplorer.mapStyle.vectorIdentifyTitle": "Layer an dieser Stelle",
-  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legende"
+  "rockExplorer.mapStyle.vectorIdentifyLegend": "Legende",
+  "comments.ascentDialogTitle": "Kommentare zur Begehung",
+  "comments.ascentDialogAria": "Kommentare zu dieser Begehung öffnen"
 }

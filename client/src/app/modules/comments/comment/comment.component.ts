@@ -35,7 +35,7 @@ import { select, Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { LanguageService } from '../../../services/core/language.service';
-import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
+import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 
 @Component({
@@ -51,7 +51,7 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
     Menu,
     AsyncPipe,
     NgTemplateOutlet,
-    ReactionWrapperComponent,
+    SocialInteractionWrapperComponent,
   ],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',
@@ -165,6 +165,7 @@ export class CommentComponent implements OnInit {
         this.replies.push(reply);
         this.commentsContextService.addComments([reply]);
       }
+      this.commentsContextService.notifyCountChanged?.();
     } else {
       this.replyCreated.emit(reply);
       this.replyActive = false;
@@ -188,6 +189,7 @@ export class CommentComponent implements OnInit {
     this.commentsService.deleteComment(this.comment.id).subscribe(() => {
       this.comment.isDeleted = true;
       this.store.dispatch(toastNotification('COMMENT_DELETE_SUCCESS'));
+      this.commentsContextService.notifyCountChanged?.();
     });
   }
 

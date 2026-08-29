@@ -27,6 +27,7 @@ export class Ascent extends AbstractModel {
   crag: Crag;
   createdBy: User;
   reactions: Reactions;
+  commentCount: number;
 
   // Helpers for easier template usage
   routerLinkCrag: string;
@@ -56,6 +57,7 @@ export class Ascent extends AbstractModel {
     ascent.reactions = payload.reactions
       ? payload.reactions.map(Reaction.deserialize)
       : [];
+    ascent.commentCount = payload.commentCount ?? 0;
 
     ascent.routerLinkCrag = `/topo/${ascent.crag.slug}`;
     ascent.routerLinkSector = `${ascent.routerLinkCrag}/${ascent.sector.slug}`;

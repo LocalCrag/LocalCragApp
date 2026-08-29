@@ -43,7 +43,7 @@
         }
       </div>
       @if (!comment.isDeleted) {
-        <lc-reaction-wrapper
+        <lc-social-interaction-wrapper
           [reactions]="comment.reactions"
           [targetType]="'comment'"
           [targetId]="comment.id"
@@ -52,7 +52,7 @@
           (reactionsChange)="comment.reactions = $event"
         >
           <ng-container *ngTemplateOutlet="commentMain" />
-        </lc-reaction-wrapper>
+        </lc-social-interaction-wrapper>
       } @else {
         <ng-container *ngTemplateOutlet="commentMain" />
       }
