@@ -32,6 +32,7 @@ def _base_post_data(instance_settings=None, **overrides):
         "gymMode": True,
         "displayUserGrades": True,
         "displayUserRatings": True,
+        "noClosedProjects": True,
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "faDefaultFormat": FaDefaultFormatEnum.DATE.value,
         "defaultStartingPosition": StartingPositionEnum.SIT.value,
@@ -75,6 +76,7 @@ def test_successful_get_instance_settings(client):
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserGrades"] == instance_settings.display_user_grades
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
+    assert res["noClosedProjects"] == instance_settings.no_closed_projects
     assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks
@@ -126,6 +128,7 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserRatings"] is True
     assert res["displayUserGrades"] is True
+    assert res["noClosedProjects"] is True
     assert res["faDefaultFormat"] == FaDefaultFormatEnum.DATE.value
     assert res["defaultStartingPosition"] == StartingPositionEnum.SIT.value
     assert res["rankingPastWeeks"] == 12

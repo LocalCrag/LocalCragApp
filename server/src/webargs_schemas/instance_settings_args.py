@@ -156,6 +156,7 @@ instance_settings_args = {
     ),
     "displayUserGrades": fields.Boolean(required=True),
     "displayUserRatings": fields.Boolean(required=True),
+    "noClosedProjects": fields.Boolean(required=True),
     "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
     "defaultStartingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
     "rankingPastWeeks": fields.Integer(

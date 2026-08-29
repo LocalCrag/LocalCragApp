@@ -61,6 +61,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "displayUserGrades": instance_settings.display_user_grades,
         "displayUserRatings": instance_settings.display_user_ratings,
+        "noClosedProjects": instance_settings.no_closed_projects,
         "faDefaultFormat": instance_settings.fa_default_format.value,
         "defaultStartingPosition": instance_settings.default_starting_position.value,
         "rankingPastWeeks": instance_settings.ranking_past_weeks,
@@ -106,6 +107,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.gym_mode = instance_settings_data["gymMode"]
     instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
     instance_settings.display_user_ratings = instance_settings_data["displayUserRatings"]
+    instance_settings.no_closed_projects = instance_settings_data["noClosedProjects"]
     instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
     instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
     instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]

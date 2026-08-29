@@ -9,6 +9,7 @@ export function createGeneralFormGroup(fb: FormBuilder): FormGroup {
     skippedHierarchicalLayers: [null],
     displayUserGrades: [null],
     displayUserRatings: [null],
+    noClosedProjects: [null],
     faDefaultFormat: [null],
     defaultStartingPosition: [null, [Validators.required]],
     rankingPastWeeks: [null],

@@ -21,6 +21,11 @@ export const selectGymMode = createSelector(
   (instanceSettingsState) => instanceSettingsState.gymMode,
 );
 
+export const selectNoClosedProjects = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.noClosedProjects,
+);
+
 export const selectBgImage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.bgImage,
