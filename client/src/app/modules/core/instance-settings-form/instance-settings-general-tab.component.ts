@@ -7,7 +7,6 @@ import {
 } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
@@ -26,7 +25,6 @@ import { LanguageSelectComponent } from '../../shared/forms/controls/language-se
     TranslocoPipe,
     ButtonModule,
     Select,
-    ToggleSwitch,
     InputTextModule,
     TooltipModule,
     ControlGroupDirective,

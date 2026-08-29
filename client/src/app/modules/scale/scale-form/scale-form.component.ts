@@ -46,6 +46,8 @@ import {
   normalizeStackedChartBracket,
 } from '../../../utility/scale/stacked-chart-brackets';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { selectNoClosedProjects } from '../../../ngrx/selectors/instance-settings.selectors';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'lc-scale-form',
@@ -70,6 +72,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     FormDirective,
     FormEntryRowComponent,
     NgxColorsModule,
+    AsyncPipe,
   ],
   providers: [ConfirmationService],
 })
@@ -89,6 +92,8 @@ export class ScaleFormComponent implements OnInit {
   protected router = inject(Router);
   private store = inject(Store);
   private pageTitleService = inject(PageTitleService);
+
+  public noClosedProjects$ = this.store.select(selectNoClosedProjects);
 
   ngOnInit() {
     const lineType = this.route.snapshot.paramMap.get('lineType') as LineType;

@@ -181,6 +181,7 @@ export class InstanceSettingsFormComponent implements OnInit {
           this.instanceSettings.skippedHierarchicalLayers,
         displayUserGrades: this.instanceSettings.displayUserGrades,
         displayUserRatings: this.instanceSettings.displayUserRatings,
+        noClosedProjects: this.instanceSettings.noClosedProjects,
         faDefaultFormat: this.instanceSettings.faDefaultFormat,
         defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
         rankingPastWeeks: this.instanceSettings.rankingPastWeeks,

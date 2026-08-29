@@ -33,6 +33,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
     displayUserGrades = fields.Boolean(attribute="display_user_grades")
     displayUserRatings = fields.Boolean(attribute="display_user_ratings")
+    noClosedProjects = fields.Boolean(attribute="no_closed_projects")
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)

@@ -32,6 +32,7 @@ export interface InstanceSettingsState {
   skippedHierarchyLayers: number;
   displayUserGrades: boolean;
   displayUserRatings: boolean;
+  noClosedProjects: boolean;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
@@ -64,6 +65,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   skippedHierarchyLayers: 0,
   displayUserGrades: false,
   displayUserRatings: false,
+  noClosedProjects: false,
   faDefaultFormat: FaDefaultFormat.YEAR,
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
@@ -99,6 +101,7 @@ const instanceSettingsReducer = createReducer(
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
     displayUserGrades: action.settings.displayUserGrades,
     displayUserRatings: action.settings.displayUserRatings,
+    noClosedProjects: action.settings.noClosedProjects,
     faDefaultFormat: action.settings.faDefaultFormat,
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,
