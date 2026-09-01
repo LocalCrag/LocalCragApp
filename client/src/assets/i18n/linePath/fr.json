@@ -1,10 +1,14 @@
 {
-  "linePathForm.addLinePathDescription": "Ici, vous pouvez tracer une ligne sur une image Topo. Sélectionnez la ligne à tracer dans la liste puis tracez le chemin de la ligne en cliquant sur l'image.",
+  "linePathForm.manageLinePathsDescription": "Sélectionnez une ligne et tracez son chemin. Basculez entre les lignes et enregistrez-les toutes en une fois.",
+  "linePathForm.helpDetailsMobile": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Appui long sur une ancre pour la supprimer. Touchez un segment de la ligne active pour insérer une ancre.",
+  "linePathForm.helpDetailsDesktop": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Clic droit sur une ancre pour la supprimer. Cliquez sur un segment de la ligne active pour insérer une ancre.",
   "linePathForm.lineLabel": "Doubler",
+  "linePathForm.notOnImage": "Pas sur l'image",
   "linePathForm.linePlaceholder": "Sélectionnez une ligne",
   "linePathForm.linePathLabel": "Chemin de ligne",
+  "linePathForm.drawnLinesHeader": "Lignes tracées",
+  "linePathForm.noDrawnLinesYet": "Aucune ligne tracée pour le moment.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Tracez une ligne avec au moins deux points d'ancrage.",
-  "linePathForm.addLinePathButtonLabel": "Tracer une ligne",
-  "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur",
-  "linePathForm.addLinePathTitle": "Tracer une ligne"
+  "linePathForm.saveAllLinePathsButtonLabel": "Enregistrer les lignes",
+  "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur"
 }

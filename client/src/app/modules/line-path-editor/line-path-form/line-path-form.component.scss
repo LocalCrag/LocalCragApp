@@ -1,6 +1,35 @@
-.color-indicator {
-  outline: 0.5px solid black;
-  border-radius: 1em;
-  background-color: var(--arrow-color);
-  padding: 0 0.55em;
+:host {
+  display: block;
+}
+
+.line-path-editor-layout {
+  &.mobile {
+    flex-direction: column;
+  }
+
+  .line-path-order-panel {
+    .drawn-line-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.25rem 0;
+      cursor: pointer;
+
+      &.selected {
+        font-weight: 600;
+      }
+
+      .drawn-line-item-label {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    .drawn-lines-empty {
+      margin: 0.75rem 0 0;
+      color: var(--p-text-muted-color);
+      font-size: 0.9rem;
+    }
+  }
 }

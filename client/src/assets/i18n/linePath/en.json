@@ -1,10 +1,14 @@
 {
-  "linePathForm.addLinePathDescription": "Here you can draw a line on a Topo image. Select the line to be drawn from the list and then draw the line path by clicking on the image.",
+  "linePathForm.manageLinePathsDescription": "Select a line and draw its path. Switch between lines and save them all at once.",
+  "linePathForm.helpDetailsMobile": "Drag anchors to adjust them — they snap to anchors of other lines. Long-press an anchor to delete it. Tap a segment of the active line to insert an anchor.",
+  "linePathForm.helpDetailsDesktop": "Drag anchors to adjust them — they snap to anchors of other lines. Right-click an anchor to delete it. Click a segment of the active line to insert an anchor.",
   "linePathForm.lineLabel": "Line",
+  "linePathForm.notOnImage": "Not on image",
   "linePathForm.linePlaceholder": "Select a line",
   "linePathForm.linePathLabel": "Line path",
+  "linePathForm.drawnLinesHeader": "Drawn lines",
+  "linePathForm.noDrawnLinesYet": "No lines drawn yet.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Draw a line with at least two anchor points.",
-  "linePathForm.addLinePathButtonLabel": "Draw line",
-  "linePathForm.leaveEditorButtonLabel": "Exit Editor",
-  "linePathForm.addLinePathTitle": "Draw line"
+  "linePathForm.saveAllLinePathsButtonLabel": "Save line paths",
+  "linePathForm.leaveEditorButtonLabel": "Exit Editor"
 }

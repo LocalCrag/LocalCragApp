@@ -7,6 +7,7 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "Geen afbeeldingen gevonden",
   "topoImageList.noLineAssignedToTopoImage": "Tot nu toe is er geen route aan deze afbeelding toegewezen.",
   "topoImageList.lines": "Routes",
+  "topoImageList.editLinePathsButtonLabel": "Routes bewerken",
   "topoImageList.addLineToImageButtonLabel": "Route koppelen",
   "topoImageList.reorderLinePathsButtonLabel": "Routes ordenen",
   "topoImageList.editTopoImageButtonLabel": "Afbeelding bewerken",

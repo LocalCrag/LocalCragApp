@@ -1,10 +1,14 @@
 {
-  "linePathForm.addLinePathDescription": "Hier kunt u een route op een Topo-afbeelding tekenen. Selecteer de route die u wilt tekenen uit de lijst en teken vervolgens het pad van de route door op de afbeelding te klikken.",
+  "linePathForm.manageLinePathsDescription": "Selecteer een route en teken het pad. Wissel tussen routes en sla alles in één keer op.",
+  "linePathForm.helpDetailsMobile": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Lang indrukken op een ankerpunt om het te verwijderen. Tik op een segment van de actieve route om een ankerpunt in te voegen.",
+  "linePathForm.helpDetailsDesktop": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Rechtsklik op een ankerpunt om het te verwijderen. Klik op een segment van de actieve route om een ankerpunt in te voegen.",
   "linePathForm.lineLabel": "Route",
+  "linePathForm.notOnImage": "Niet op de afbeelding",
   "linePathForm.linePlaceholder": "Selecteer een route",
   "linePathForm.linePathLabel": "Routepad",
+  "linePathForm.drawnLinesHeader": "Getekende routes",
+  "linePathForm.noDrawnLinesYet": "Nog geen routes getekend.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
-  "linePathForm.addLinePathButtonLabel": "Route tekenen",
-  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten",
-  "linePathForm.addLinePathTitle": "Route tekenen"
+  "linePathForm.saveAllLinePathsButtonLabel": "Routes opslaan",
+  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten"
 }

@@ -5,18 +5,6 @@
 }
 
 lc-topo-image-list {
-  .line-number {
-    background-color: var(--arrow-color);
-    color: var(--arrow-text-color);
-    border-radius: 0.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.9rem;
-  }
-
   .line-table {
     width: 100%;
     border-top: 1px solid var(--p-content-border-color);
@@ -72,7 +60,7 @@ lc-topo-image-list {
         &:hover {
           cursor: pointer;
 
-          .line-number {
+          lc-line-number-badge .line-number-badge {
             background-color: var(--arrow-highlight-color);
             color: var(--arrow-highlight-text-color);
           }

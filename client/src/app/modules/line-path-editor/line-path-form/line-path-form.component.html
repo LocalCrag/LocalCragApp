@@ -8,25 +8,38 @@
           formControlName="line"
           [options]="lines"
           data-cy="line-dropdown"
-          [optionDisabled]="'disabled'"
           placeholder="{{ t('linePlaceholder') }}"
           lcFormControl
+          (onChange)="onLineChange($event.value)"
         >
           <ng-template let-line #item>
             <div class="flex items-center gap-2" data-cy="line-dropdown-item">
+              @if (getLineNumber(line); as lineNumber) {
+                <lc-line-number-badge
+                  [number]="lineNumber"
+                  [color]="line.color"
+                ></lc-line-number-badge>
+              } @else {
+                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
+              }
               <div>
-                <span
-                  *isGymMode="true"
-                  class="color-indicator mr-6"
-                  [style]="{ '--arrow-color': line.color }"
-                ></span>
                 {{ line.name }}
                 {{ line | lineGrade }}
               </div>
             </div>
           </ng-template>
           <ng-template let-selectedItem #selectedItem>
-            {{ selectedItem.name }} {{ selectedItem | lineGrade }}
+            <div class="flex items-center gap-2">
+              @if (getLineNumber(selectedItem); as lineNumber) {
+                <lc-line-number-badge
+                  [number]="lineNumber"
+                  [color]="selectedItem.color"
+                ></lc-line-number-badge>
+              } @else {
+                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
+              }
+              <div>{{ selectedItem.name }} {{ selectedItem | lineGrade }}</div>
+            </div>
           </ng-template>
         </p-select>
         <small class="lc-error" *lcIfError="'required'">{{
@@ -37,17 +50,62 @@
         <label class="form-label" for="path-editor">{{
           t("linePathLabel")
         }}</label>
-        <lc-line-path-editor
-          formControlName="path"
-          lcFormControl
-          id="path-editor"
-          [topoImage]="selectedTopoImage"
-          [color]="linePathForm.get('line').value?.color"
+        <div
+          class="line-path-editor-layout flex flex-row items-start gap-6 w-full"
+          [ngClass]="{ mobile: isMobile$ | async }"
         >
-        </lc-line-path-editor>
-        <small class="lc-error" *lcIfError="'required'">{{
-          t("drawALineWithAtLeastTwoAnchorPoints")
-        }}</small>
+          <lc-line-path-editor
+            formControlName="path"
+            lcFormControl
+            id="path-editor"
+            class="min-w-0 flex-1"
+            [topoImage]="editorTopoImage"
+            [selectedLine]="linePathForm.get('line').value"
+            [linePathDisplayNumber]="
+              getLineNumber(linePathForm.get('line').value)
+            "
+            [color]="linePathForm.get('line').value?.color"
+          >
+          </lc-line-path-editor>
+          @if ((isMobile$ | async) === false) {
+            <div class="line-path-order-panel w-72 flex-none">
+              <p-orderList
+                [value]="orderedDrafts"
+                [header]="t('drawnLinesHeader')"
+                [dragdrop]="true"
+                [listStyle]="{ 'max-height': '28rem' }"
+                (onReorder)="onDraftsReordered()"
+              >
+                <ng-template let-draft #item>
+                  <div
+                    class="drawn-line-item"
+                    [class.selected]="draft.line.id === selectedLineId"
+                    tabindex="0"
+                    (click)="selectDraft(draft)"
+                    (keydown.enter)="selectDraft(draft)"
+                    (keydown.space)="
+                      $event.preventDefault(); selectDraft(draft)
+                    "
+                  >
+                    @if (getLineNumber(draft.line); as lineNumber) {
+                      <lc-line-number-badge
+                        [number]="lineNumber"
+                        [color]="draft.line.color"
+                      ></lc-line-number-badge>
+                    }
+                    <div class="drawn-line-item-label">
+                      {{ draft.line.name }}
+                      {{ draft.line | lineGrade }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-orderList>
+              @if (orderedDrafts.length === 0) {
+                <p class="drawn-lines-empty">{{ t("noDrawnLinesYet") }}</p>
+              }
+            </div>
+          }
+        </div>
         <small class="lc-error" *lcIfError="'minlength'">{{
           t("drawALineWithAtLeastTwoAnchorPoints")
         }}</small>
@@ -57,20 +115,22 @@
 
   <div class="form-actions">
     <p-button
-      label="{{ t('addLinePathButtonLabel') }}"
-      (click)="saveLinePath()"
+      label="{{ t('saveAllLinePathsButtonLabel') }}"
+      (click)="saveAllLinePaths()"
       icon="pi pi-save"
       class="responsive-button"
       data-cy="submit"
       [loading]="loadingState === loadingStates.LOADING"
     ></p-button>
-    <p-button
-      label="{{ t('leaveEditorButtonLabel') }}"
-      (click)="leaveEditor()"
-      class="responsive-button"
-      styleClass="p-button-secondary"
-      icon="pi pi-ban"
-      data-cy="leave-editor"
-    ></p-button>
+    @if (!embedded) {
+      <p-button
+        label="{{ t('leaveEditorButtonLabel') }}"
+        (click)="leaveEditor()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+        data-cy="leave-editor"
+      ></p-button>
+    }
   </div>
 </ng-container>

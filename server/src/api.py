@@ -74,8 +74,8 @@ from resources.instance_settings_resources import (
     UpdateInstanceSettings,
 )
 from resources.line_path_resources import (
-    CreateLinePath,
     DeleteLinePath,
+    SyncLinePaths,
     UpdateLinePathOrder,
     UpdateLinePathOrderForLine,
 )
@@ -435,7 +435,7 @@ def configure_api(app):
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=GetTopoImage.as_view("get_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=UpdateTopoImage.as_view("update_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>/move", view_func=MoveTopoImage.as_view("move_topo_image"))
-    topo_image_bp.add_url_rule("/<string:image_id>/line-paths", view_func=CreateLinePath.as_view("create_line_path"))
+    topo_image_bp.add_url_rule("/<string:image_id>/line-paths", view_func=SyncLinePaths.as_view("sync_line_paths"))
     topo_image_bp.add_url_rule(
         "/<string:image_id>/line-paths/update-order", view_func=UpdateLinePathOrder.as_view("update_line_path_order")
     )

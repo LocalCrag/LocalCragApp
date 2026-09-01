@@ -45,15 +45,18 @@ export class LinePath extends HasOrderIndex(AbstractModel) {
   }
 
   /**
-   * Marshals a line path.
+   * Marshals line paths for sync requests.
    *
-   * @param linePath LinePath to marshall.
-   * @return Marshalled LinePath.
+   * @param linePaths Line paths in display order.
+   * @return Marshalled sync payload.
    */
-  public static serialize(linePath: LinePath): any {
+  public static serializeForSync(linePaths: LinePath[]): any {
     return {
-      path: linePath.path,
-      line: linePath.line.id,
+      linePaths: linePaths.map((linePath) => ({
+        ...(linePath.id ? { id: linePath.id } : {}),
+        line: linePath.line.id,
+        path: linePath.path,
+      })),
     };
   }
 }

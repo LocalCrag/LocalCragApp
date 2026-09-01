@@ -7,6 +7,7 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "Nessuna immagine trovata",
   "topoImageList.noLineAssignedToTopoImage": "A questa immagine non è stato ancora associato alcun problema.",
   "topoImageList.lines": "Problemi",
+  "topoImageList.editLinePathsButtonLabel": "Modifica problemi",
   "topoImageList.addLineToImageButtonLabel": "Associa problema",
   "topoImageList.reorderLinePathsButtonLabel": "Ordina problemi",
   "topoImageList.editTopoImageButtonLabel": "Modifica immagine",
