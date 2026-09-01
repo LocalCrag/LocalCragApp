@@ -61,6 +61,9 @@
             class="min-w-0 flex-1"
             [topoImage]="editorTopoImage"
             [selectedLine]="linePathForm.get('line').value"
+            [linePathDisplayNumber]="
+              getLineNumber(linePathForm.get('line').value)
+            "
             [color]="linePathForm.get('line').value?.color"
           >
           </lc-line-path-editor>

@@ -48,6 +48,7 @@ export class LinePathEditorComponent
   @Input() color?: string;
   @Input() topoImage: TopoImage;
   @Input() selectedLine?: Line;
+  @Input() linePathDisplayNumber: number | null = null;
 
   public linePath: LinePath;
   public isDisabled = false;

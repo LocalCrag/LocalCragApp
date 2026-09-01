@@ -7,6 +7,7 @@ from marshmallow_schemas.line_schema import line_schema
 class LinePathSchema(BaseEntityMinSchema):
     line = fields.Nested(line_schema, attribute="line", exclude=["linePaths"])
     path = fields.List(fields.Float)
+    orderIndex = fields.Int(attribute="order_index")
 
 
 class LinePathSchemaForLines(BaseEntityMinSchema):

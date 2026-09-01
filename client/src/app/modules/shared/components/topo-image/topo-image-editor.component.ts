@@ -14,7 +14,10 @@ import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance
 import { take } from 'rxjs/operators';
 import { highlightColor } from '../../../../utility/misc/color';
 import { Skeleton } from 'primeng/skeleton';
-import { sortLinePathsByOrderIndex } from '../../../../utility/topo/line-path-numbering';
+import {
+  sortLinePathsByOrderIndex,
+  getLinePathDisplayNumber,
+} from '../../../../utility/topo/line-path-numbering';
 import {
   getAbsoluteCoordinates,
   getClosestSegmentHit,
@@ -36,6 +39,8 @@ export class TopoImageEditorComponent
   implements OnChanges
 {
   @Input() linePathInProgress: LinePath = null;
+  /** 1-based display number for the line path currently being edited. */
+  @Input() linePathInProgressNumber: number | null = null;
 
   @Output() anchorClick = new EventEmitter<number[]>();
   @Output() anchorDrag = new EventEmitter<{
@@ -69,7 +74,8 @@ export class TopoImageEditorComponent
     const shouldRender =
       (changes['topoImage'] && !changes['topoImage'].firstChange) ||
       (changes['linePathInProgress'] &&
-        !changes['linePathInProgress'].firstChange);
+        !changes['linePathInProgress'].firstChange) ||
+      changes['linePathInProgressNumber'];
     if (shouldRender) {
       setTimeout(() => this.render());
     }
@@ -92,13 +98,22 @@ export class TopoImageEditorComponent
     const backgroundOpacity = this.linePathInProgress ? 0.2 : 1;
     orderedLinePaths.forEach((linePath, index) => {
       this.drawLine(linePath, backgroundOpacity);
-      labels.push(this.getLineLabel(linePath, String(index + 1)));
+      labels.push(
+        this.getLineLabel(linePath, getLinePathDisplayNumber(linePath, index)),
+      );
     });
 
     this.placeLineLabels(orderedLinePaths, labels, true);
 
     if (this.linePathInProgress && this.linePathInProgress.path.length >= 4) {
       this.drawLine(this.linePathInProgress, 1, true, this.focusLayer);
+      if (this.linePathInProgressNumber != null) {
+        const inProgressLabel = this.getLineLabel(
+          this.linePathInProgress,
+          String(this.linePathInProgressNumber),
+        );
+        this.placeLineLabel(this.linePathInProgress, inProgressLabel, true);
+      }
     }
 
     this.topoImage.linePaths.forEach((linePath) => {
