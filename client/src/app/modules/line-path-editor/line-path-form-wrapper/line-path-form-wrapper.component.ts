@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Tooltip } from 'primeng/tooltip';
 import { LinePathFormComponent } from '../line-path-form/line-path-form.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 
@@ -21,13 +22,10 @@ export class LinePathFormWrapperComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
 
-  /** t(linePath.linePathForm.manageLinePathsTitle) */
   ngOnInit(): void {
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.pageTitleService.setTitle(
-      this.translocoService.translate(
-        'linePath.linePathForm.manageLinePathsTitle',
-      ),
+      this.translocoService.translate(marker('manageLinePathsBrowserTitle')),
     );
   }
 }

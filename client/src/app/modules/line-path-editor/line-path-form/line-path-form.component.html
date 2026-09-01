@@ -80,7 +80,10 @@
                   <div
                     class="drawn-line-item"
                     [class.selected]="draft.line.id === selectedLineId"
+                    tabindex="0"
                     (click)="selectDraft(draft)"
+                    (keydown.enter)="selectDraft(draft)"
+                    (keydown.space)="$event.preventDefault(); selectDraft(draft)"
                   >
                     @if (getLineNumber(draft.line); as lineNumber) {
                       <lc-line-number-badge

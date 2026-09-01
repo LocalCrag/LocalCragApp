@@ -1,15 +1,14 @@
 {
   "linePathForm.manageLinePathsDescription": "Selecteer een route en teken het pad. Wissel tussen routes en sla alles in één keer op.",
-  "linePathForm.helpDetailsDesktop": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Rechtsklik op een ankerpunt om het te verwijderen. Klik op een segment van de actieve route om een ankerpunt in te voegen.",
   "linePathForm.helpDetailsMobile": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Lang indrukken op een ankerpunt om het te verwijderen. Tik op een segment van de actieve route om een ankerpunt in te voegen.",
+  "linePathForm.helpDetailsDesktop": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Rechtsklik op een ankerpunt om het te verwijderen. Klik op een segment van de actieve route om een ankerpunt in te voegen.",
   "linePathForm.lineLabel": "Route",
+  "linePathForm.notOnImage": "Niet op de afbeelding",
   "linePathForm.linePlaceholder": "Selecteer een route",
   "linePathForm.linePathLabel": "Routepad",
-  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Routes opslaan",
-  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten",
-  "linePathForm.manageLinePathsTitle": "Routepaden",
   "linePathForm.drawnLinesHeader": "Getekende routes",
   "linePathForm.noDrawnLinesYet": "Nog geen routes getekend.",
-  "linePathForm.notOnImage": "Niet op de afbeelding"
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
+  "linePathForm.saveAllLinePathsButtonLabel": "Routes opslaan",
+  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten"
 }

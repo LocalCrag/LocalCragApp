@@ -1,15 +1,14 @@
 {
   "linePathForm.manageLinePathsDescription": "Wähle eine Linie und zeichne ihren Verlauf. Wechsle zwischen Linien und speichere alle auf einmal.",
-  "linePathForm.helpDetailsDesktop": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Rechtsklick auf einen Ankerpunkt zum Löschen. Klicke auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen.",
   "linePathForm.helpDetailsMobile": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Langes Drücken auf einen Ankerpunkt zum Löschen. Tippe auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen.",
+  "linePathForm.helpDetailsDesktop": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Rechtsklick auf einen Ankerpunkt zum Löschen. Klicke auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen.",
   "linePathForm.lineLabel": "Linie",
+  "linePathForm.notOnImage": "Nicht auf dem Bild",
   "linePathForm.linePlaceholder": "Wähle eine Linie",
   "linePathForm.linePathLabel": "Linienverlauf",
-  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Linien speichern",
-  "linePathForm.leaveEditorButtonLabel": "Editor verlassen",
-  "linePathForm.manageLinePathsTitle": "Linienverläufe",
   "linePathForm.drawnLinesHeader": "Eingezeichnete Linien",
   "linePathForm.noDrawnLinesYet": "Noch keine Linien eingezeichnet.",
-  "linePathForm.notOnImage": "Nicht auf dem Bild"
+  "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
+  "linePathForm.saveAllLinePathsButtonLabel": "Linien speichern",
+  "linePathForm.leaveEditorButtonLabel": "Editor verlassen"
 }
