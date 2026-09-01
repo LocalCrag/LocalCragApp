@@ -1,14 +1,22 @@
 <ng-container *transloco="let t; read: 'linePathEditor'">
+  <p-contextmenu
+    #anchorMenu
+    [model]="anchorMenuItems"
+    appendTo="body"
+  ></p-contextmenu>
+
   @if (topoImage) {
-    <lc-topo-image
+    <lc-topo-image-editor
       [topoImage]="topoImage"
       [linePathInProgress]="linePath"
-      [editorMode]="true"
       [color]="color"
       (anchorClick)="handleClick($event)"
+      (anchorDrag)="handleAnchorDrag($event)"
+      (anchorContextMenu)="handleAnchorContextMenu($event)"
+      (lineSegmentClick)="handleLineSegmentClick($event)"
       (imageClick)="handleClick($event)"
     >
-    </lc-topo-image>
+    </lc-topo-image-editor>
   }
 
   <p-button
@@ -18,6 +26,7 @@
     size="small"
     icon="pi pi-refresh"
     label="{{ t('undo') }}"
+    [disabled]="!linePath?.path?.length"
     (click)="undo()"
   ></p-button>
   <p-button
@@ -25,6 +34,7 @@
     size="small"
     icon="pi pi-trash"
     label="{{ t('restart') }}"
+    [disabled]="!linePath?.path?.length"
     (click)="restart()"
   ></p-button>
 </ng-container>

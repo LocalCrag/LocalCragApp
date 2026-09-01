@@ -7,3 +7,8 @@ lc-line-path-editor {
     transform: rotate(270deg);
   }
 }
+
+.line-path-editor-layout:not(.mobile) > lc-line-path-editor {
+  width: auto;
+  max-width: min(700px, calc(100% - 19.5rem));
+}

@@ -1,10 +1,15 @@
 {
-  "linePathForm.addLinePathDescription": "Qui puoi tracciare un problema su un'immagine Topo. Seleziona il problema da tracciare dall'elenco, quindi fai clic sull'immagine per tracciare l'andamento della linea.",
+  "linePathForm.manageLinePathsDescription": "Seleziona un problema e traccia il percorso. Passa da un problema all'altro e salva tutto insieme.",
+  "linePathForm.helpDetailsDesktop": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Clic destro su un punto di ancoraggio per eliminarlo. Clicca su un segmento della linea attiva per inserire un punto di ancoraggio.",
+  "linePathForm.helpDetailsMobile": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Pressione prolungata su un punto di ancoraggio per eliminarlo. Tocca un segmento della linea attiva per inserire un punto di ancoraggio.",
   "linePathForm.lineLabel": "Linea",
   "linePathForm.linePlaceholder": "Seleziona un Problema",
   "linePathForm.linePathLabel": "Tracciatura",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Traccia una linea con almeno due punti di ancoraggio.",
-  "linePathForm.addLinePathButtonLabel": "Traccia linea",
+  "linePathForm.saveAllLinePathsButtonLabel": "Salva linee",
   "linePathForm.leaveEditorButtonLabel": "Esci dall'editor",
-  "linePathForm.addLinePathTitle": "Traccia linea"
+  "linePathForm.manageLinePathsTitle": "Tracciature",
+  "linePathForm.drawnLinesHeader": "Linee tracciate",
+  "linePathForm.noDrawnLinesYet": "Nessuna linea tracciata ancora.",
+  "linePathForm.notOnImage": "Non sull'immagine"
 }

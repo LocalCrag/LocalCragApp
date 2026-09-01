@@ -235,7 +235,7 @@ export class ApiService {
   };
 
   public linePaths = {
-    addLinePath: (topoImageId: string): string =>
+    sync: (topoImageId: string): string =>
       `${this.apiHost}topo-images/${topoImageId}/line-paths`,
     updateOrder: (topoImageId: string): string =>
       `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,

@@ -28,7 +28,7 @@ import { TickButtonComponent } from '../../ascent/tick-button/tick-button.compon
 import { Skeleton } from 'primeng/skeleton';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
-import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { DatePipe } from '../../shared/pipes/date.pipe';
@@ -59,7 +59,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Skeleton,
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
-    TopoImageComponent,
+    TopoImageViewerComponent,
     DatePipe,
     LineGradePipe,
     RouterLink,

@@ -63,11 +63,11 @@ test.describe('Topo images test', () => {
     const createLinePathPromise = page.waitForResponse(
       (response) =>
         /\/topo-images\/[^/]+\/line-paths/.test(response.url()) &&
-        response.request().method() === 'POST',
+        response.request().method() === 'PUT',
     );
 
     await page.goto(
-      `/topo/brione/pampelmousse/shark-attack/topo-images/${topoImageId}/add-line-path`,
+      `/topo/brione/pampelmousse/shark-attack/topo-images/${topoImageId}/edit-line-paths`,
     );
     await page.locator('[data-cy="line-dropdown"] > div').click({
       timeout: 15_000,

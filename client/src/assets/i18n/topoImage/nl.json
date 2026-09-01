@@ -8,6 +8,7 @@
   "topoImageList.noLineAssignedToTopoImage": "Tot nu toe is er geen route aan deze afbeelding toegewezen.",
   "topoImageList.lines": "Routes",
   "topoImageList.addLineToImageButtonLabel": "Route koppelen",
+  "topoImageList.editLinePathsButtonLabel": "Routes bewerken",
   "topoImageList.reorderLinePathsButtonLabel": "Routes ordenen",
   "topoImageList.editTopoImageButtonLabel": "Afbeelding bewerken",
   "topoImageForm.addTopoImageDescription": "Upload een nieuwe Topo-afbeelding. Daarna kunnen beschikbare routes op de afbeelding worden getekend. Het rotsvlak moet het grootste deel van de afbeelding innemen en de hele route moet gemakkelijk zichtbaar zijn. In sommige gevallen is het zinvol om dezelfde route op meerdere afbeeldingen te tekenen. Dit is bijvoorbeeld het geval met traverses.",
