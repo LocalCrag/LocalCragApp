@@ -73,14 +73,13 @@ test.describe('Topo images test', () => {
       timeout: 15_000,
     });
     await page.locator('[data-cy="line-dropdown-item"]').nth(0).click();
-    const editor = page.locator('lc-line-path-editor');
+    const editor = page.locator('lc-topo-image-editor');
     await editor.click({ position: { x: 10, y: 10 } });
     await editor.click({ position: { x: 100, y: 100 } });
     await editor.click({ position: { x: 100, y: 200 } });
     await editor.click({ position: { x: 200, y: 250 } });
     await page.locator('[data-cy="submit"]').click();
     await createLinePathPromise;
-    await page.locator('[data-cy="leave-editor"]').click();
     await expect(page).toHaveURL(
       /\/topo\/brione\/pampelmousse\/shark-attack\/topo-images/,
     );
