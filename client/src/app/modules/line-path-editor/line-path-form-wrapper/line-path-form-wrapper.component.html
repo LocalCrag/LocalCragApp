@@ -5,9 +5,7 @@
       <span
         class="pi pi-question-circle ml-2 mt-1 shrink-0"
         [pTooltip]="
-          (isMobile$ | async)
-            ? t('helpDetailsMobile')
-            : t('helpDetailsDesktop')
+          (isMobile$ | async) ? t('helpDetailsMobile') : t('helpDetailsDesktop')
         "
         tooltipPosition="right"
       ></span>

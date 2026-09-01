@@ -20,10 +20,7 @@
                   [color]="line.color"
                 ></lc-line-number-badge>
               } @else {
-                <p-tag
-                  [value]="t('notOnImage')"
-                  severity="secondary"
-                ></p-tag>
+                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
               }
               <div>
                 {{ line.name }}
@@ -39,14 +36,9 @@
                   [color]="selectedItem.color"
                 ></lc-line-number-badge>
               } @else {
-                <p-tag
-                  [value]="t('notOnImage')"
-                  severity="secondary"
-                ></p-tag>
+                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
               }
-              <div>
-                {{ selectedItem.name }} {{ selectedItem | lineGrade }}
-              </div>
+              <div>{{ selectedItem.name }} {{ selectedItem | lineGrade }}</div>
             </div>
           </ng-template>
         </p-select>
