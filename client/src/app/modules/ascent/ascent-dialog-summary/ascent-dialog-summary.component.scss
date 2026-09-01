@@ -1,0 +1,91 @@
+.ascent-dialog-summary {
+  padding: 0 0 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+
+  a {
+    text-decoration: none;
+    color: var(--p-text-muted-color);
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    :where(html.lc-dark) & {
+      color: var(--p-text-color);
+    }
+  }
+}
+
+.ascent-dialog-summary-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.ascent-dialog-summary-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.ascent-dialog-summary-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+
+  .grade {
+    font-weight: 400;
+    color: var(--p-text-muted-color);
+  }
+}
+
+.ascent-dialog-summary-location {
+  font-size: 0.65rem;
+}
+
+.ascent-dialog-summary-comment {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--p-text-color);
+  white-space: pre-wrap;
+}
+
+.ascent-dialog-summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+
+  .grade {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .upgrade-icon {
+    color: green;
+  }
+
+  .downgrade-icon {
+    color: red;
+  }
+}
+
+.ascent-dialog-summary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ascent-dialog-summary-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--p-text-muted-color);
+}

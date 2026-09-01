@@ -6,6 +6,7 @@ from sqlalchemy_utils import generic_relationship
 
 from extensions import db
 from models.area import Area
+from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.crag import Crag
 from models.line import Line
@@ -87,3 +88,9 @@ def cascade_delete_rock_explorer_feature_comments(mapper, connection, target):
     session.query(Comment).filter(
         and_(Comment.object_id == target.id, Comment.object_type == "RockExplorerFeature")
     ).delete()
+
+
+@listens_for(Ascent, "before_delete")
+def cascade_delete_ascent_comments(mapper, connection, target):
+    session = Session.object_session(target)
+    session.query(Comment).filter(and_(Comment.object_id == target.id, Comment.object_type == "Ascent")).delete()

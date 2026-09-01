@@ -23,21 +23,26 @@ import { ReactionsInfoModalComponent } from '../reactions-info-modal/reactions-i
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { LCObject } from '../../../models/object';
 
 @Component({
-  selector: 'lc-reaction-wrapper',
+  selector: 'lc-social-interaction-wrapper',
   imports: [Popover, HasPermissionDirective],
-  templateUrl: './reaction-wrapper.component.html',
-  styleUrl: './reaction-wrapper.component.scss',
+  templateUrl: './social-interaction-wrapper.component.html',
+  styleUrl: './social-interaction-wrapper.component.scss',
   providers: [DialogService],
 })
-export class ReactionWrapperComponent implements OnInit, OnChanges {
+export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   @Input() reactions: Reactions;
   @Input() targetType: string;
   @Input() targetId: string;
   @Input() createdById: string;
   @Input() hideReactionBar = false;
+  /** When set, show a comment control left of the reaction bar. */
+  @Input() commentTarget: LCObject | null = null;
+  @Input() commentCount = 0;
   @Output() reactionsChange = new EventEmitter<Reactions>();
+  @Output() commentClick = new EventEmitter<void>();
   @ViewChild('popover') popover: Popover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
 
@@ -112,6 +117,25 @@ export class ReactionWrapperComponent implements OnInit, OnChanges {
 
   get totalReactions(): number {
     return this.reactions?.length ?? 0;
+  }
+
+  get showComments(): boolean {
+    return !!this.commentTarget?.id && !this.hideReactionBar;
+  }
+
+  get commentAriaLabel(): string {
+    return this.translocoService.translate(marker('comments.ascentDialogAria'));
+  }
+
+  openCommentsDialog(event: MouseEvent): void {
+    event.stopPropagation();
+    if (!this.commentTarget?.id) {
+      return;
+    }
+    if (!this.isLoggedIn && this.commentCount === 0) {
+      return;
+    }
+    this.commentClick.emit();
   }
 
   openPicker(event: MouseEvent): void {

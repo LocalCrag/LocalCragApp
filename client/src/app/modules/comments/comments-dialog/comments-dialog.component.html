@@ -1,0 +1,10 @@
+@if (ascent) {
+  <lc-ascent-dialog-summary [ascent]="ascent"></lc-ascent-dialog-summary>
+}
+@if (object) {
+  <lc-comments
+    [object]="object"
+    [compact]="true"
+    (countChange)="onCountChange($event)"
+  ></lc-comments>
+}

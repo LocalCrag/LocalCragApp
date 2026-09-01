@@ -31,3 +31,19 @@ def test_build_comment_action_link_for_rock_explorer_feature(client):
 
     link = build_comment_action_link(comment)
     assert f"/rock-explorer/{feature.id}?tab=comments#{comment.id}" in link
+
+
+def test_build_comment_action_link_for_ascent(client):
+    from models.ascent import Ascent
+
+    ascent = Ascent.query.first()
+    comment = Comment(message="Ascent link", object=ascent)
+    db.session.add(comment)
+    db.session.commit()
+
+    link = build_comment_action_link(comment)
+    assert "/ascents?ascent=" in link
+    assert str(ascent.id) in link
+    assert str(comment.id) in link
+    assert ascent.line.slug in link
+    assert link.endswith(f"#{comment.id}")

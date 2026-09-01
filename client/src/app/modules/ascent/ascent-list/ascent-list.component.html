@@ -170,12 +170,15 @@
         <div class="grid grid-cols-12">
           @for (ascent of ascents; track ascent; let first = $first) {
             <div class="col-span-12" data-cy="ascent-list-item">
-              <lc-reaction-wrapper
+              <lc-social-interaction-wrapper
                 [reactions]="ascent.reactions"
                 [targetType]="'ascent'"
                 [targetId]="ascent.id"
                 [createdById]="ascent.createdBy?.id"
+                [commentTarget]="ascent"
+                [commentCount]="ascent.commentCount"
                 (reactionsChange)="ascent.reactions = $event"
+                (commentClick)="openAscentComments(ascent)"
               >
                 <div
                   class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ascent-table-container"
@@ -582,7 +585,7 @@
                     </div>
                   </div>
                 </div>
-              </lc-reaction-wrapper>
+              </lc-social-interaction-wrapper>
             </div>
           }
         </div>

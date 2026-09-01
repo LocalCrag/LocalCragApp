@@ -15,6 +15,7 @@ from marshmallow_schemas.comment_schema import (
 )
 from messages.messages import ResponseMessage
 from models.area import Area
+from models.ascent import Ascent
 from models.comment import Comment
 from models.crag import Crag
 from models.enums.notification_type_enum import NotificationTypeEnum
@@ -76,6 +77,8 @@ class CreateComment(MethodView):
             target = Post.find_by_id(obj_id)
         elif obj_type == "RockExplorerFeature":
             target = RockExplorerFeature.find_by_id(obj_id)
+        elif obj_type == "Ascent":
+            target = Ascent.find_by_id(obj_id)
         else:
             raise BadRequest("Unsupported object type")
 
@@ -84,6 +87,8 @@ class CreateComment(MethodView):
 
         # Enforce secret spot visibility
         if hasattr(target, "secret") and target.secret and not SecretService.can_view_secrets():
+            raise NotFound()
+        if obj_type == "Ascent" and target.line and target.line.secret and not SecretService.can_view_secrets():
             raise NotFound()
 
         parent_id = data.get("parentId")
@@ -207,7 +212,13 @@ class GetComments(MethodView):
 
         # helper to apply secret filters
         def apply_secret_filters(query, current_type):
-            if SecretService.can_view_secrets() or current_type not in ["Line", "Area", "Sector", "Crag"]:
+            if SecretService.can_view_secrets() or current_type not in [
+                "Line",
+                "Area",
+                "Sector",
+                "Crag",
+                "Ascent",
+            ]:
                 return query
             if current_type == "Line":
                 return query.join(Line, and_(Comment.object_id == Line.id, Comment.object_type == "Line")).filter(
@@ -224,6 +235,12 @@ class GetComments(MethodView):
             if current_type == "Crag":
                 return query.join(Crag, and_(Comment.object_id == Crag.id, Comment.object_type == "Crag")).filter(
                     Crag.secret.is_(False)
+                )
+            if current_type == "Ascent":
+                return (
+                    query.join(Ascent, and_(Comment.object_id == Ascent.id, Comment.object_type == "Ascent"))
+                    .join(Line, Ascent.line_id == Line.id)
+                    .filter(Line.secret.is_(False))
                 )
             return query
 
@@ -246,7 +263,7 @@ class GetComments(MethodView):
         else:
             # Top-level listing requires object info
             if (
-                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", "RockExplorerFeature"]
+                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", "RockExplorerFeature", "Ascent"]
                 or not obj_id
             ):
                 raise BadRequest("object-type and object-id are required and must be valid.")
@@ -255,6 +272,10 @@ class GetComments(MethodView):
             if obj_type == "RockExplorerFeature":
                 feature = RockExplorerFeature.find_by_id(obj_id)
                 _assert_can_view_rock_explorer_comment_target(obj_type, feature)
+            if obj_type == "Ascent":
+                ascent = Ascent.find_by_id(obj_id)
+                if ascent.line and ascent.line.secret and not SecretService.can_view_secrets():
+                    raise NotFound()
             filters.extend(
                 [
                     Comment.object_type == obj_type,
