@@ -1,0 +1,84 @@
+<ng-container *transloco="let t; read: 'appAlerts.appAlertList'">
+  <div class="content">
+    <p-dataView
+      #dv
+      [value]="alerts"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template #emptymessage>
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
+          t("noAppAlertsFoundEmptyMessage")
+        }}</p-message>
+      </ng-template>
+      <ng-template #header>
+        <div class="flex flex-row justify-between">
+          <p-select
+            [disabled]="loading === loadingStates.LOADING"
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            (onChange)="onSortChange($event)"
+            styleClass="md:mb-0"
+          ></p-select>
+          <div class="lc-button-group justify-end">
+            <p-button
+              [disabled]="loading === loadingStates.LOADING"
+              label="{{ t('newAppAlertButtonLabel') }}"
+              icon="pi pi-plus"
+              routerLink="/app-alerts/create"
+              class="responsive-button"
+            ></p-button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-alerts #list>
+        @if (loading !== loadingStates.LOADING) {
+          <div class="grid grid-cols-12">
+            @for (alert of alerts; track alert.id; let first = $first) {
+              <div class="col-span-12">
+                <div
+                  class="flex flex-col xl:items-start p-6 gap-2"
+                  [ngClass]="{ 'border-t border-surface': !first }"
+                >
+                  <div
+                    class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full gap-3 items-center"
+                  >
+                    <div class="grow flex items-center gap-3">
+                      <p-tag
+                        [value]="t('severity.' + alert.severity)"
+                        [severity]="
+                          alert.severity === 'danger'
+                            ? 'danger'
+                            : alert.severity === 'warning'
+                              ? 'warn'
+                              : 'info'
+                        "
+                      ></p-tag>
+                      @if (isActive(alert)) {
+                        <p-tag
+                          [value]="t('activeLabel')"
+                          severity="success"
+                        ></p-tag>
+                      }
+                      <span>{{ alert.message }}</span>
+                    </div>
+                    <div class="lc-button-group grow-0">
+                      <p-button
+                        label="{{ t('editAppAlertButtonLabel') }}"
+                        icon="pi pi-file-edit"
+                        routerLink="/app-alerts/{{ alert.id }}/edit"
+                        styleClass="pr-0 responsive-button"
+                        [text]="true"
+                      ></p-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </ng-template>
+    </p-dataView>
+  </div>
+</ng-container>

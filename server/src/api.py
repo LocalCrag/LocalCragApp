@@ -4,8 +4,17 @@ from resources.account_resources import (
     DeleteOwnUser,
     GetAccountSettings,
     GetRulesReadStatus,
+    MarkAppAlertDismissed,
     MarkRulesRead,
     UpdateAccountSettings,
+)
+from resources.app_alert_resources import (
+    CreateAppAlert,
+    DeleteAppAlert,
+    GetAllAppAlerts,
+    GetAppAlert,
+    GetAppAlerts,
+    UpdateAppAlert,
 )
 from resources.archive_resources import SetArchived
 from resources.area_resources import (
@@ -321,6 +330,10 @@ def configure_api(app):
     account_bp.add_url_rule("/rules-read-status", view_func=GetRulesReadStatus.as_view("get_rules_read_status"))
     account_bp.add_url_rule("/rules-read-status", view_func=MarkRulesRead.as_view("mark_rules_read"))
     account_bp.add_url_rule(
+        "/app-alert-dismissals",
+        view_func=MarkAppAlertDismissed.as_view("mark_app_alert_dismissed"),
+    )
+    account_bp.add_url_rule(
         "/release-notes/<string:bundle_id>",
         view_func=GetReleaseNoteBundle.as_view("get_release_note_bundle"),
     )
@@ -510,6 +523,16 @@ def configure_api(app):
     menu_page_bp.add_url_rule("/<string:menu_page_slug>", view_func=DeleteMenuPage.as_view("delete_menu_page"))
     menu_page_bp.add_url_rule("/<string:menu_page_slug>", view_func=UpdateMenuPage.as_view("update_menu_page"))
     app.register_blueprint(menu_page_bp, url_prefix="/api/menu-pages")
+
+    # App alerts API
+    app_alert_bp = Blueprint("app-alerts", __name__)
+    app_alert_bp.add_url_rule("", view_func=GetAppAlerts.as_view("get_app_alerts"))
+    app_alert_bp.add_url_rule("/manage", view_func=GetAllAppAlerts.as_view("get_all_app_alerts"))
+    app_alert_bp.add_url_rule("", view_func=CreateAppAlert.as_view("create_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=GetAppAlert.as_view("get_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=UpdateAppAlert.as_view("update_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=DeleteAppAlert.as_view("delete_app_alert"))
+    app.register_blueprint(app_alert_bp, url_prefix="/api/app-alerts")
 
     # Menu items API
     menu_item_bp = Blueprint("menu-items", __name__)

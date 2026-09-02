@@ -43,6 +43,8 @@ export class ApiService {
     getRulesReadStatus: (): string =>
       `${this.apiHost}account/rules-read-status`,
     markRulesRead: (): string => `${this.apiHost}account/rules-read-status`,
+    markAppAlertDismissed: (): string =>
+      `${this.apiHost}account/app-alert-dismissals`,
   };
 
   public statistics = {
@@ -134,6 +136,15 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
     delete: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
     update: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
+  };
+
+  public appAlerts = {
+    create: (): string => `${this.apiHost}app-alerts`,
+    getList: (): string => `${this.apiHost}app-alerts`,
+    getManageList: (): string => `${this.apiHost}app-alerts/manage`,
+    getDetail: (id: string): string => `${this.apiHost}app-alerts/${id}`,
+    delete: (id: string): string => `${this.apiHost}app-alerts/${id}`,
+    update: (id: string): string => `${this.apiHost}app-alerts/${id}`,
   };
 
   public menuItems = {

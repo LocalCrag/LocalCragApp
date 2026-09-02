@@ -352,6 +352,21 @@ export const NOTIFICATIONS = {
     title: marker('notifications.MENU_PAGE_CREATED_TITLE'),
     message: marker('notifications.MENU_PAGE_CREATED_MESSAGE'),
   },
+  APP_ALERT_CREATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_CREATED_TITLE'),
+    message: marker('notifications.APP_ALERT_CREATED_MESSAGE'),
+  },
+  APP_ALERT_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_UPDATED_TITLE'),
+    message: marker('notifications.APP_ALERT_UPDATED_MESSAGE'),
+  },
+  APP_ALERT_DELETED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_DELETED_TITLE'),
+    message: marker('notifications.APP_ALERT_DELETED_MESSAGE'),
+  },
   MODERATOR_TASK_CREATED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MODERATOR_TASK_CREATED_TITLE'),
