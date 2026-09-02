@@ -1,3 +1,25 @@
+# [1.54.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.53.0...v1.54.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **rock-explorer:** add missing comment link in rock explorer comment mail ([de9baa7](https://github.com/LocalCrag/LocalCragApp/commit/de9baa72f558190f185f30466df59117a3b983ce))
+
+
+### Features
+
+* **ascents:** add possibility to comment on ascents ([#1272](https://github.com/LocalCrag/LocalCragApp/issues/1272)) ([2f608ed](https://github.com/LocalCrag/LocalCragApp/commit/2f608ed649adbcc8c8154bca9f1129c0816ee1c6)), closes [#894](https://github.com/LocalCrag/LocalCragApp/issues/894)
+* **core:** add page title loading skeleton ([#1269](https://github.com/LocalCrag/LocalCragApp/issues/1269)) ([1a7852a](https://github.com/LocalCrag/LocalCragApp/commit/1a7852a995cecbc0773bcda740f1eb80cbf08ecd)), closes [#1220](https://github.com/LocalCrag/LocalCragApp/issues/1220)
+* **core:** allow admins to create app level alerts ([#1274](https://github.com/LocalCrag/LocalCragApp/issues/1274)) ([74763d6](https://github.com/LocalCrag/LocalCragApp/commit/74763d64c1674f66458a5e872375ae0180e6a3f4)), closes [#1192](https://github.com/LocalCrag/LocalCragApp/issues/1192)
+* **core:** replace JWT with session cookies ([#1270](https://github.com/LocalCrag/LocalCragApp/issues/1270)) ([c9f4997](https://github.com/LocalCrag/LocalCragApp/commit/c9f49975653e6d7dc037847f45f8710eca9bc0a5)), closes [#1215](https://github.com/LocalCrag/LocalCragApp/issues/1215)
+* **rock-explorer:** add feature panel misc tab element count in chip ([#1264](https://github.com/LocalCrag/LocalCragApp/issues/1264)) ([c261f98](https://github.com/LocalCrag/LocalCragApp/commit/c261f9884a56cfe9a3a54f02ef17b62a80641110)), closes [#1254](https://github.com/LocalCrag/LocalCragApp/issues/1254)
+* **rock-explorer:** add geocoding location search ([#1265](https://github.com/LocalCrag/LocalCragApp/issues/1265)) ([49dfcf6](https://github.com/LocalCrag/LocalCragApp/commit/49dfcf6706c1c47f40125675597ae44e68c5b63b)), closes [#1244](https://github.com/LocalCrag/LocalCragApp/issues/1244)
+* **rock-explorer:** add list view of features ([#1267](https://github.com/LocalCrag/LocalCragApp/issues/1267)) ([123fd72](https://github.com/LocalCrag/LocalCragApp/commit/123fd72a1f921c99ffa927f668a25c814365fd07)), closes [#1255](https://github.com/LocalCrag/LocalCragApp/issues/1255)
+* **rock-explorer:** add rock explorer feature creator filter ([#1266](https://github.com/LocalCrag/LocalCragApp/issues/1266)) ([57b2e7b](https://github.com/LocalCrag/LocalCragApp/commit/57b2e7bd135b412058816c8bd49d659ac8866434)), closes [#1253](https://github.com/LocalCrag/LocalCragApp/issues/1253)
+* **rock-explorer:** added coordinate search and coordinate picker ([#1263](https://github.com/LocalCrag/LocalCragApp/issues/1263)) ([931c7d3](https://github.com/LocalCrag/LocalCragApp/commit/931c7d309be22aecf091a70f36ee1edc0701c736)), closes [#1251](https://github.com/LocalCrag/LocalCragApp/issues/1251)
+* **topo:** add setting to configure if closed projects exist ([#1271](https://github.com/LocalCrag/LocalCragApp/issues/1271)) ([6336945](https://github.com/LocalCrag/LocalCragApp/commit/633694591d06b2bc06b0620f18c41708341f7b24)), closes [#1146](https://github.com/LocalCrag/LocalCragApp/issues/1146)
+* **topo:** line path editor overhaul ([#1273](https://github.com/LocalCrag/LocalCragApp/issues/1273)) ([18097f2](https://github.com/LocalCrag/LocalCragApp/commit/18097f2e4e5795552b80ef27b4048bf6d2d7ecdb)), closes [#790](https://github.com/LocalCrag/LocalCragApp/issues/790)
+
 # [1.53.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.52.1...v1.53.0) (2026-08-20)
 
 
