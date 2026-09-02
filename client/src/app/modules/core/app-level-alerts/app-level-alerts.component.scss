@@ -4,15 +4,28 @@ lc-app-level-alerts {
 
   .alert {
     width: 100%;
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     height: fit-content;
-    color: var(--p-primary-contrast-color);
 
     a {
-      color: var(--p-primary-contrast-color);
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
+
+    &.info,
+    &.warning,
+    &.danger {
+      color: #fff;
+
+      a,
+      .p-button-label,
+      .p-button-icon {
+        color: #fff;
+      }
     }
 
     &.warning {
@@ -34,10 +47,18 @@ lc-app-level-alerts {
     .alert-text {
       display: inline-block;
       padding: 0.5rem;
+      text-align: center;
     }
 
-    .p-button-label {
-      color: var(--p-primary-contrast-color);
+    .alert-dismiss {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:has(.alert-dismiss) {
+      padding-right: 2.5rem;
     }
   }
 }

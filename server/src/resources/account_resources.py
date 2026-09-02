@@ -10,6 +10,7 @@ from extensions import db
 from marshmallow_schemas.account_settings_schema import account_settings_schema
 from marshmallow_schemas.rules_read_status_schema import rules_read_status_list_schema
 from messages.messages import ResponseMessage
+from models.app_alert_dismissal import AppAlertDismissal
 from models.enums.color_scheme_enum import ColorSchemeEnum
 from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
@@ -21,6 +22,7 @@ from util.auth_session import (
     session_required,
 )
 from webargs_schemas.account_settings_args import account_settings_args
+from webargs_schemas.app_alert_dismissal_args import mark_app_alert_dismissed_args
 from webargs_schemas.rules_read_status_args import mark_rules_read_args
 
 
@@ -109,6 +111,35 @@ class MarkRulesRead(MethodView):
             row.entity_id = entity_id
             row.read_at = now
             row.acknowledged_rules_updated_at = acknowledged_rules_updated_at
+            db.session.add(row)
+        db.session.commit()
+        return jsonify(None), 204
+
+
+class MarkAppAlertDismissed(MethodView):
+
+    @session_required()
+    def post(self):
+        """
+        Marks an app alert as dismissed for the current user (upsert).
+        """
+        user = User.find_by_email(get_session_identity())
+        data = parser.parse(mark_app_alert_dismissed_args, request)
+        alert_id = data["alertId"]
+
+        existing = AppAlertDismissal.query.filter_by(
+            user_id=user.id,
+            alert_id=alert_id,
+        ).first()
+        now = datetime.datetime.now(pytz.utc)
+        if existing:
+            existing.dismissed_at = now
+            db.session.add(existing)
+        else:
+            row = AppAlertDismissal()
+            row.user_id = user.id
+            row.alert_id = alert_id
+            row.dismissed_at = now
             db.session.add(row)
         db.session.commit()
         return jsonify(None), 204

@@ -17,4 +17,25 @@
       </div>
     </div>
   }
+
+  @for (alert of adminAlerts$ | async; track alert.id) {
+    <div class="alert" [class]="alert.severity" data-cy="admin-app-alert">
+      <div class="alert-text">
+        {{ alert.message }}
+        @if (alert.readMoreUrl) {
+          <a [href]="alert.readMoreUrl" target="_blank" rel="noopener">{{
+            t("readMore")
+          }}</a>
+        }
+      </div>
+      <p-button
+        class="alert-dismiss"
+        icon="pi pi-times"
+        styleClass="p-button-text p-button-rounded"
+        [attr.aria-label]="t('dismissAlertButton')"
+        (onClick)="dismissAdminAlert(alert)"
+        data-cy="dismiss-app-alert"
+      />
+    </div>
+  }
 </ng-container>

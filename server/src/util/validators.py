@@ -1,4 +1,5 @@
 from typing import Optional
+from urllib.parse import urlparse
 
 from marshmallow import ValidationError
 
@@ -74,6 +75,26 @@ def validate_default_scales(args: dict) -> tuple[bool, str]:
             return False, f"Scale Trad/{args['defaultTradScale']} does not exist."
 
     return True, ""
+
+
+def http_url_validator(url: Optional[str]):
+    """Validate optional http(s) URLs."""
+
+    if url is None:
+        return
+
+    if not isinstance(url, str):
+        raise ValidationError("Invalid URL")
+
+    url = url.strip()
+    if url == "":
+        return
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValidationError("URL must start with http:// or https://")
+    if not parsed.netloc or "." not in parsed.netloc:
+        raise ValidationError("Must be a valid http(s) URL")
 
 
 def blocweather_url_validator(url: Optional[str]):

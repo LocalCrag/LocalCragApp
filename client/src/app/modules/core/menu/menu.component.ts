@@ -275,42 +275,54 @@ export class MenuComponent implements OnInit, AfterViewInit {
 
           // Only add the system category for moderators
           if (authState.user.moderator) {
+            const systemItems: MenuItem[] = [
+              {
+                icon: 'pi pi-fw pi-file',
+                label: this.translocoService.translate(
+                  marker('menu.menuPages'),
+                ),
+                routerLink: '/pages',
+              },
+              {
+                icon: 'pi pi-fw pi-bars',
+                label: this.translocoService.translate(marker('menu.menus')),
+                routerLink: '/menu-items',
+              },
+              {
+                icon: 'pi pi-fw pi-users',
+                label: this.translocoService.translate(marker('menu.users')),
+                routerLink: '/users',
+                routerLinkActiveOptions: { exact: true },
+              },
+              {
+                icon: 'pi pi-fw pi-sliders-h',
+                label: this.translocoService.translate(marker('menu.scales')),
+                routerLink: '/scales',
+              },
+              {
+                icon: 'pi pi-fw pi-cog',
+                label: this.translocoService.translate(
+                  marker('menu.instanceSettings'),
+                ),
+                routerLink: '/instance-settings',
+              },
+            ];
+
+            if (authState.user.admin) {
+              systemItems.splice(1, 0, {
+                icon: 'pi pi-fw pi-exclamation-triangle',
+                label: this.translocoService.translate(
+                  marker('menu.appAlerts'),
+                ),
+                routerLink: '/app-alerts',
+              });
+            }
+
             items.push({
               label: this.translocoService.translate(
                 marker('menu.systemCategory'),
               ),
-              items: [
-                {
-                  icon: 'pi pi-fw pi-file',
-                  label: this.translocoService.translate(
-                    marker('menu.menuPages'),
-                  ),
-                  routerLink: '/pages',
-                },
-                {
-                  icon: 'pi pi-fw pi-bars',
-                  label: this.translocoService.translate(marker('menu.menus')),
-                  routerLink: '/menu-items',
-                },
-                {
-                  icon: 'pi pi-fw pi-users',
-                  label: this.translocoService.translate(marker('menu.users')),
-                  routerLink: '/users',
-                  routerLinkActiveOptions: { exact: true },
-                },
-                {
-                  icon: 'pi pi-fw pi-sliders-h',
-                  label: this.translocoService.translate(marker('menu.scales')),
-                  routerLink: '/scales',
-                },
-                {
-                  icon: 'pi pi-fw pi-cog',
-                  label: this.translocoService.translate(
-                    marker('menu.instanceSettings'),
-                  ),
-                  routerLink: '/instance-settings',
-                },
-              ],
+              items: systemItems,
             });
           }
 
