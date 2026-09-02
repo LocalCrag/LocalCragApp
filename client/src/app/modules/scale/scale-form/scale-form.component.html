@@ -8,6 +8,17 @@
       </ng-template>
       <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
         <h4 class="col-span-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
+        @if (noClosedProjects$ | async) {
+          <div class="col-span-12 mb-2">
+            <p-message
+              severity="info"
+              icon="pi pi-info-circle"
+              styleClass="w-full"
+            >
+              {{ t("noClosedProjectsInfo") }}
+            </p-message>
+          </div>
+        }
         @if (!editMode) {
           <div class="col-span-12 scale-form-header-field mb-2" lcControlGroup>
             <label for="linetype">
@@ -73,7 +84,8 @@
                         pInputText
                         disabled
                         value="{{
-                          grade.get('name').value | translateSpecialGrades
+                          grade.get('name').value
+                            | translateSpecialGrades: false
                         }}"
                       />
                     </label>

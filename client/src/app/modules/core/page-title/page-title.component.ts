@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { Badge } from 'primeng/badge';
+import { Skeleton } from 'primeng/skeleton';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 import {
   PageTitleService,
@@ -25,6 +26,7 @@ import { HeroParallaxDirective } from './hero-parallax.directive';
     NgTemplateOutlet,
     Breadcrumb,
     Badge,
+    Skeleton,
     Tabs,
     TabList,
     Tab,
@@ -38,6 +40,7 @@ export class PageTitleComponent {
 
   protected hasPageHeader(state: PageTitleState): boolean {
     return (
+      state.loading ||
       !!state.title ||
       !!state.template ||
       this.hasBreadcrumbs(state) ||

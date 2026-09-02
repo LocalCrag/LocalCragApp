@@ -10,7 +10,8 @@ For the full local toolchain (Docker vs native, Husky, MinIO), see [docs/dev-too
 - Create a local config file `src/config/dev.cfg` by copying the config template `src/config/template.cfg` and fill out the appropriate values
     - `SQLALCHEMY_DATABASE_URI` Connection string to your database
     - `SECRET_KEY` Key used for signing session cookies, value irrelevant for local dev
-    - `JWT_SECRET_KEY` Key used for signing JWT tokens, irrelevant for local dev
+    - `SESSION_COOKIE_SECURE` Defaults to `True` (prod-ready). Set `False` in `dev.cfg` for local HTTP.
+    - `SESSION_COOKIE_SAMESITE` Cookie SameSite (`Lax` for same-origin; `None` only with Secure for cross-origin)
     - `PRINT_MAILS_TO_CONSOLE` If set to True, all mails will be printed to the console instead of sending them. Recommended for local dev.
     - `SYSTEM_EMAIL` E-Mail address the system uses to send mails from
     - `SMTP_HOST` SMTP host address

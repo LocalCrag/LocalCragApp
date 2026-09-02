@@ -52,7 +52,8 @@ import { TickButtonComponent } from '../../ascent/tick-button/tick-button.compon
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
+import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
@@ -88,7 +89,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ConfirmPopup,
     LineBoolPropListComponent,
     LineGradePipe,
-    TopoImageComponent,
+    TopoImageViewerComponent,
+    LineNumberBadgeComponent,
   ],
 })
 export class TopoImageListComponent implements OnInit {
@@ -483,6 +485,5 @@ export class TopoImageListComponent implements OnInit {
     });
   }
 
-  protected readonly textColor = textColor;
   protected readonly highlightColor = highlightColor;
 }

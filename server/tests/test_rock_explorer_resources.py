@@ -93,6 +93,8 @@ def test_features_geojson_and_filter(client, member_token):
     assert len(geo.json["features"]) >= 2
     assert geo.json["features"][0]["geometry"]["type"] in ("Point", "Polygon")
     assert "potential" in geo.json["features"][0]["properties"]
+    assert "rockQuality" in geo.json["features"][0]["properties"]
+    assert "rockType" in geo.json["features"][0]["properties"]
 
     filtered = client.get("/api/rock-explorer/features.geojson?potential=HIGH", token=member_token)
     assert filtered.status_code == 200
@@ -261,3 +263,70 @@ def test_feature_invalid_parking_coords_rejected(client, member_token):
         ),
     )
     assert rv.status_code == 400
+
+
+def test_features_geojson_filter_by_created_by_id(client, member_token, admin_token):
+    from models.user import User
+
+    member = User.find_by_email("member@localcrag.invalid.org")
+
+    member_feature = client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(title="Member feature"),
+    ).json
+    admin_feature = client.post(
+        "/api/rock-explorer/features",
+        token=admin_token,
+        json=_point_payload(title="Admin feature"),
+    ).json
+
+    filtered = client.get(
+        f"/api/rock-explorer/features.geojson?createdById={member.id}",
+        token=member_token,
+    )
+    assert filtered.status_code == 200
+    ids = {f["properties"]["id"] for f in filtered.json["features"]}
+    assert member_feature["id"] in ids
+    assert admin_feature["id"] not in ids
+
+    invalid = client.get(
+        "/api/rock-explorer/features.geojson?createdById=not-a-uuid",
+        token=member_token,
+    )
+    assert invalid.status_code == 400
+
+
+def test_search_rock_explorer_feature_creators(client, member_token, admin_token):
+    from models.user import User
+
+    member = User.find_by_email("member@localcrag.invalid.org")
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+
+    client.post(
+        "/api/rock-explorer/features",
+        token=member_token,
+        json=_point_payload(title="Creator search target"),
+    )
+
+    empty = client.get("/api/rock-explorer/creators?q=", token=member_token)
+    assert empty.status_code == 200
+    assert empty.json == []
+
+    results = client.get("/api/rock-explorer/creators?q=member", token=member_token)
+    assert results.status_code == 200
+    ids = {row["id"] for row in results.json}
+    assert str(member.id) in ids
+
+    user_only = client.get("/api/rock-explorer/creators?q=user", token=member_token)
+    assert user_only.status_code == 200
+    assert all(row["firstname"] != "user" for row in user_only.json)
+
+    client.post(
+        "/api/rock-explorer/features",
+        token=admin_token,
+        json=_point_payload(title="Draft only", status="draft"),
+    )
+    admin_search = client.get("/api/rock-explorer/creators?q=admin", token=member_token)
+    assert admin_search.status_code == 200
+    assert all(row["id"] != str(admin.id) for row in admin_search.json)

@@ -58,7 +58,7 @@ import { Message } from 'primeng/message';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { TopoImageComponent } from '../../shared/components/topo-image/topo-image.component';
+import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -112,7 +112,7 @@ import {
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     LineGradePipe,
-    TopoImageComponent,
+    TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
   ],
   providers: [ConfirmationService, DialogService],

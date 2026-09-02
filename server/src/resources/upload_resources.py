@@ -1,6 +1,5 @@
 from flask import request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
@@ -9,11 +8,15 @@ from messages.messages import ResponseMessage
 from models.user import User
 from uploader.errors import FilesizeLimitExceeded, InvalidFiletypeUploaded
 from uploader.media_upload_handler import handle_file_upload
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 
 
 class UploadFile(MethodView):
 
-    @jwt_required()
+    @session_required()
     def post(self):
         """
         Uploads a file and creates a file model object for it.
@@ -23,7 +26,7 @@ class UploadFile(MethodView):
             file_payloads = request.files.getlist("upload")
             for file_payload in file_payloads:
                 file = handle_file_upload(file_payload)
-                file.created_by = User.find_by_email(get_jwt_identity())
+                file.created_by = User.find_by_email(get_session_identity())
                 db.session.add(file)
                 files.append(file)
             db.session.commit()

@@ -7,6 +7,7 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "No images found",
   "topoImageList.noLineAssignedToTopoImage": "No line has been assigned to this image so far.",
   "topoImageList.lines": "Lines",
+  "topoImageList.editLinePathsButtonLabel": "Edit lines",
   "topoImageList.addLineToImageButtonLabel": "Link line",
   "topoImageList.reorderLinePathsButtonLabel": "Reorder lines",
   "topoImageList.editTopoImageButtonLabel": "Edit image",

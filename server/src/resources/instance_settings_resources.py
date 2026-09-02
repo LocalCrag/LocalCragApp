@@ -2,7 +2,6 @@ from copy import deepcopy
 
 from flask import current_app, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 from webargs.flaskparser import parser
 
@@ -18,8 +17,8 @@ from models.sector import Sector
 from scheduler_jobs.closure_materialization import (
     reschedule_closure_materialization_job,
 )
+from util.auth_session import session_required
 from util.scheduled_closure import request_closure_materialization
-from util.security_util import check_auth_claims
 from webargs_schemas.instance_settings_args import (
     instance_settings_schema_cls,
 )
@@ -62,6 +61,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "displayUserGrades": instance_settings.display_user_grades,
         "displayUserRatings": instance_settings.display_user_ratings,
+        "noClosedProjects": instance_settings.no_closed_projects,
         "faDefaultFormat": instance_settings.fa_default_format.value,
         "defaultStartingPosition": instance_settings.default_starting_position.value,
         "rankingPastWeeks": instance_settings.ranking_past_weeks,
@@ -107,6 +107,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.gym_mode = instance_settings_data["gymMode"]
     instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
     instance_settings.display_user_ratings = instance_settings_data["displayUserRatings"]
+    instance_settings.no_closed_projects = instance_settings_data["noClosedProjects"]
     instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
     instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
     instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]
@@ -176,8 +177,7 @@ class GetInstanceSettings(MethodView):
 
 
 class UpdateInstanceSettings(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def patch(self):
         patch_payload = parser.parse(instance_settings_schema_cls(partial=True), request)
         instance_settings: InstanceSettings = InstanceSettings.return_it()

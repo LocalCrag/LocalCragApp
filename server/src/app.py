@@ -7,27 +7,29 @@ from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
 from config.validate_config import validate_config
 from error_handling.http_error_handlers import setup_http_error_handlers
-from error_handling.jwt_error_handlers import setup_jwt_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
-from extensions import cors, db, jwt, ma, migrate
-from models.revoked_token import RevokedToken
+from extensions import cors, db, ma, migrate
 from schedulers import init_schedulers
+from util.auth_session import require_csrf_if_authenticated
 from util.flask_environment import is_development_mode
 from util.logging_config import configure_app_logging
 
 
 def register_extensions(application):
     db.init_app(application)
-    jwt.init_app(application)
     ma.init_app(application)
     migrate.init_app(application, db=db)
-    cors.init_app(application, origins=[application.config["FRONTEND_HOST"]])
+    cors.init_app(
+        application,
+        origins=[application.config["FRONTEND_HOST"]],
+        supports_credentials=True,
+    )
 
 
 def configure_extensions(application):
-    setup_jwt_error_handlers(jwt)
     configure_api(application)
     setup_http_error_handlers(application)
+    application.before_request(require_csrf_if_authenticated)
 
     # Initialize schedulers only in development environment
     # For production usage, they are initialized in via gunicorn post_fork hook
@@ -67,9 +69,3 @@ def create_app():
 app = create_app()
 
 setup_webargs_error_handlers()
-
-
-@jwt.token_in_blocklist_loader
-def check_if_token_in_blocklist(_jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
-    return RevokedToken.is_jti_blocklisted(jti)

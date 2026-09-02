@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func
 from webargs.flaskparser import parser
 
@@ -9,8 +8,11 @@ from marshmallow_schemas.post_schema import post_schema, posts_schema
 from models.comment import Comment
 from models.post import Post
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.html_inline_styles import sanitize_wysiwyg_html
-from util.security_util import check_auth_claims
 from webargs_schemas.post_args import post_args
 
 
@@ -57,14 +59,13 @@ class GetPost(MethodView):
 
 
 class CreatePost(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self):
         """
         Create a post.
         """
         post_data = parser.parse(post_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         new_post: Post = Post()
         new_post.title = post_data["title"].strip()
@@ -78,8 +79,7 @@ class CreatePost(MethodView):
 
 
 class UpdatePost(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, post_slug):
         """
         Edit a post.
@@ -98,8 +98,7 @@ class UpdatePost(MethodView):
 
 
 class DeletePost(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, post_slug):
         """
         Delete a post.

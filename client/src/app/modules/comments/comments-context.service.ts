@@ -6,6 +6,9 @@ import { Comment } from '../../models/comment';
 export class CommentsContextService {
   private commentMap: Map<string, Comment> = new Map();
 
+  /** Optional hook so parents can refresh totals when replies/deletes change. */
+  notifyCountChanged: (() => void) | null = null;
+
   public addComments(comments: Comment[]): void {
     comments.forEach((comment) => {
       this.commentMap.set(comment.id, comment);

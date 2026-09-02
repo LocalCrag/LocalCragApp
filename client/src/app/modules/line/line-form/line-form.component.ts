@@ -79,6 +79,8 @@ import { ScheduledClosureFormComponent } from '../../shared/components/scheduled
 import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
+import { filterSelectableGrades } from '../../../utility/grade/filter-selectable-grades';
+import { Grade } from '../../../models/scale';
 
 /**
  * Form component for lines.
@@ -255,10 +257,7 @@ export class LineFormComponent implements OnInit {
           this.scalesService
             .getScale(this.lineForm.get('type').value, item)
             .subscribe((scale) => {
-              this.grades = scale.grades;
-              if (this.line?.ascentCount > 0) {
-                this.grades = this.grades.filter((grade) => grade.value >= 0);
-              }
+              this.grades = this.filterGradesForSelect(scale.grades);
               if (!this.line || this.line.type != item) {
                 this.lineForm.get('grade').reset();
               } else {
@@ -296,10 +295,7 @@ export class LineFormComponent implements OnInit {
               (scale) => scale.name == this.line.gradeScale,
             );
             this.scaleOptions = [{ label: scale.name, value: scale.name }];
-            this.grades = scale.grades;
-            if (this.line?.ascentCount > 0) {
-              this.grades = this.grades.filter((grade) => grade.value >= 0);
-            }
+            this.grades = this.filterGradesForSelect(scale.grades);
 
             this.setFormValue();
             this.loadingState = LoadingState.DEFAULT;
@@ -698,6 +694,21 @@ export class LineFormComponent implements OnInit {
       take(1),
       map((instanceSettings) => instanceSettings.displayUserRatings),
     );
+  }
+
+  private filterGradesForSelect(grades: Grade[]) {
+    let noClosedProjects = false;
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(take(1))
+      .subscribe((instanceSettings) => {
+        noClosedProjects = instanceSettings.noClosedProjects;
+      });
+    return filterSelectableGrades(grades, {
+      noClosedProjects,
+      hideProjects: this.line?.ascentCount > 0,
+      keepGradeValue: this.line?.authorGradeValue,
+    });
   }
 
   public toggleFaFormat() {

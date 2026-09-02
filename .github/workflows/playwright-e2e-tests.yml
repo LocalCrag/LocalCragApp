@@ -1,0 +1,145 @@
+name: Playwright E2E Tests
+run-name: Run Playwright end-to-end tests 🧪
+
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+
+jobs:
+  playwright-run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2]
+        shardTotal: [2]
+    services:
+      test_db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: localcrag_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=localcrag \
+            -e MINIO_ROOT_PASSWORD=password \
+            quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z \
+            server /data
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null; then
+              echo "MinIO is up"
+              break
+            fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null
+          docker run --rm --network host \
+            -e MC_HOST_local="http://localcrag:password@127.0.0.1:9000" \
+            --entrypoint /bin/sh \
+            minio/mc \
+            -c "mc mb --ignore-existing local/localcrag && mc anonymous set public local/localcrag"
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Installing pipenv dependencies
+        run: |
+          cd server/src
+          pipenv install --deploy --ignore-pipfile
+
+      - name: Setup database
+        run: |
+          export PGPASSWORD='postgres'; psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
+          cd server && PYTHONPATH=.:src LOCALCRAG_CONFIG=config/test-ci-e2e.cfg pipenv run python3 scripts/setup_e2e_db.py
+
+      - name: Copy assets
+        run: |
+          mkdir server/src/uploads
+          cp server/tests/assets/1847c84526574b0f9a15f258cf9a0de8_l.jpeg server/src/uploads/1847c84526574b0f9a15f258cf9a0de8_l.jpeg
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: client
+        run: npx playwright install chromium --with-deps
+
+      - name: Start API
+        working-directory: client
+        run: |
+          npm run e2e:run-test-backend > /tmp/localcrag-e2e-api.log 2>&1 &
+          echo $! > /tmp/localcrag-e2e-api.pid
+
+      - name: Start client
+        working-directory: client
+        run: |
+          npm run start > /tmp/localcrag-e2e-client.log 2>&1 &
+          echo $! > /tmp/localcrag-e2e-client.pid
+
+      - name: Wait for services
+        run: npx --yes wait-on@8 http://127.0.0.1:5000/api/health http://localhost:4200 -t 180000
+
+      - name: Run Playwright tests
+        working-directory: client
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          CI: true
+          FRONTEND_URL: http://localhost:4200
+
+      - name: Upload service logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-service-logs-shard-${{ matrix.shardIndex }}
+          path: |
+            /tmp/localcrag-e2e-api.log
+            /tmp/localcrag-e2e-client.log
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-shard-${{ matrix.shardIndex }}
+          path: client/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload Playwright test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-shard-${{ matrix.shardIndex }}
+          path: client/test-results/
+          retention-days: 14
+          if-no-files-found: ignore

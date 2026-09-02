@@ -62,48 +62,68 @@
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="gym-mode">{{ t("gymModeLabel") }}</label>
-      <div class="flex items-center justify-center sm:justify-start">
-        {{ t("gymModeLabelFalse") }}
-        <p-toggleswitch
-          id="gym-mode"
-          class="mx-2 blue-green-switch"
-          formControlName="gymMode"
-          lcFormControl
-        />
-        {{ t("gymModeLabelTrue") }}
-      </div>
+      <p-select
+        id="gym-mode"
+        [options]="[
+          { value: false, label: t('gymModeLabelFalse') },
+          { value: true, label: t('gymModeLabelTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="gymMode"
+        lcFormControl
+      />
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="display-user-grades">{{
         t("displayUserGradesLabel")
       }}</label>
-      <div class="flex items-center justify-center sm:justify-start">
-        {{ t("displayUserGradesFalse") }}
-        <p-toggleswitch
-          id="display-user-grades"
-          class="mx-2 blue-green-switch"
-          formControlName="displayUserGrades"
-          lcFormControl
-        />
-        {{ t("displayUserGradesTrue") }}
-      </div>
+      <p-select
+        id="display-user-grades"
+        [options]="[
+          { value: false, label: t('displayUserGradesFalse') },
+          { value: true, label: t('displayUserGradesTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="displayUserGrades"
+        lcFormControl
+      />
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="display-user-ratings">{{
         t("displayUserRatingsLabel")
       }}</label>
-      <div class="flex items-center justify-center sm:justify-start">
-        {{ t("displayUserRatingsFalse") }}
-        <p-toggleswitch
-          id="display-user-ratings"
-          class="mx-2 blue-green-switch"
-          formControlName="displayUserRatings"
-          lcFormControl
-        />
-        {{ t("displayUserRatingsTrue") }}
-      </div>
+      <p-select
+        id="display-user-ratings"
+        [options]="[
+          { value: false, label: t('displayUserRatingsFalse') },
+          { value: true, label: t('displayUserRatingsTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="displayUserRatings"
+        lcFormControl
+      />
+    </div>
+
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <label class="form-label" for="no-closed-projects">{{
+        t("noClosedProjectsLabel")
+      }}</label>
+      <p-select
+        id="no-closed-projects"
+        [options]="[
+          { value: false, label: t('noClosedProjectsFalse') },
+          { value: true, label: t('noClosedProjectsTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="noClosedProjects"
+        lcFormControl
+      />
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>

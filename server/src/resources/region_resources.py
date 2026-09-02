@@ -2,7 +2,6 @@ from collections import Counter, defaultdict
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
@@ -14,10 +13,10 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.region import Region
 from models.sector import Sector
+from util.auth_session import session_required
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.rules_emphasis import apply_rules_emphasis
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims
 from webargs_schemas.region_args import region_args
 
 
@@ -31,8 +30,7 @@ class GetRegion(MethodView):
 
 
 class UpdateRegion(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self):
         """
         Edit a region.

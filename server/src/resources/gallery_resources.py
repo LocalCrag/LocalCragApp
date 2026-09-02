@@ -1,11 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import (
-    get_jwt,
-    get_jwt_identity,
-    jwt_required,
-    verify_jwt_in_request,
-)
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
@@ -27,6 +21,12 @@ from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.tag import Tag, get_child_tags
 from models.user import User
+from util.auth_session import (
+    get_session_claims,
+    get_session_identity,
+    session_required,
+    verify_session_in_request,
+)
 from util.rock_explorer import (
     assert_can_view_feature,
     rock_explorer_gallery_image_ids_subquery,
@@ -57,7 +57,7 @@ def _assert_can_view_rock_explorer_tag_targets(tag_data, user) -> None:
 class GetGalleryImages(MethodView):
 
     def get(self):
-        verify_jwt_in_request(optional=True)
+        verify_session_in_request(optional=True)
 
         tag_object_type = request.args.get("tag-object-type")
         tag_object_slug = request.args.get("tag-object-slug")
@@ -72,7 +72,7 @@ class GetGalleryImages(MethodView):
             if not tag_object_id:
                 raise BadRequest("tag-object-id is required for rock explorer tag listings.")
             feature = RockExplorerFeature.find_by_id(tag_object_id)
-            assert_can_view_feature(feature, User.find_by_email(get_jwt_identity()))
+            assert_can_view_feature(feature, User.find_by_email(get_session_identity()))
         elif tag_object_type and tag_object_slug:
             # Get the object_id for the slug based on object type
             tag_object_model = None
@@ -131,10 +131,10 @@ class GetGalleryImages(MethodView):
 
 class CreateGalleryImage(MethodView):
 
-    @jwt_required()
+    @session_required()
     def post(self):
         gallery_image_data = parser.parse(gallery_image_post_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
         _assert_can_view_rock_explorer_tag_targets(gallery_image_data["tags"], created_by)
         image = GalleryImage()
         image.created_by = created_by
@@ -155,14 +155,14 @@ class CreateGalleryImage(MethodView):
 
 class UpdateGalleryImage(MethodView):
 
-    @jwt_required()
+    @session_required()
     def put(self, image_id):
         image = GalleryImage.find_by_id(image_id)
         image_data = parser.parse(gallery_image_put_args, request)
 
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         is_owner = image.created_by_id == user.id
-        is_moderator = get_jwt()["moderator"]
+        is_moderator = get_session_claims()["moderator"]
 
         if not is_owner and not is_moderator:
             raise Unauthorized("You are not allowed to update this image.")
@@ -188,12 +188,12 @@ class UpdateGalleryImage(MethodView):
 
 class DeleteGalleryImage(MethodView):
 
-    @jwt_required()
+    @session_required()
     def delete(self, image_id):
         image = GalleryImage.find_by_id(image_id)
 
-        is_owner = image.created_by_id == User.find_by_email(get_jwt_identity()).id
-        is_moderator = get_jwt()["moderator"]
+        is_owner = image.created_by_id == User.find_by_email(get_session_identity()).id
+        is_moderator = get_session_claims()["moderator"]
 
         if not is_owner and not is_moderator:
             raise Unauthorized("You are not allowed to delete this image.")

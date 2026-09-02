@@ -36,6 +36,7 @@ export class InstanceSettings {
   gymMode: boolean;
   displayUserGrades: boolean;
   displayUserRatings: boolean;
+  noClosedProjects: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
@@ -84,6 +85,7 @@ export class InstanceSettings {
     instanceSettings.gymMode = payload.gymMode;
     instanceSettings.displayUserGrades = payload.displayUserGrades;
     instanceSettings.displayUserRatings = payload.displayUserRatings;
+    instanceSettings.noClosedProjects = payload.noClosedProjects;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
@@ -128,6 +130,7 @@ export class InstanceSettings {
       gymMode: instanceSettings.gymMode,
       displayUserGrades: instanceSettings.displayUserGrades,
       displayUserRatings: instanceSettings.displayUserRatings,
+      noClosedProjects: instanceSettings.noClosedProjects,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
@@ -145,6 +148,7 @@ export class InstanceSettings {
     skippedHierarchicalLayers: number;
     displayUserGrades: boolean;
     displayUserRatings: boolean;
+    noClosedProjects: boolean;
     faDefaultFormat: FaDefaultFormat;
     defaultStartingPosition: StartingPosition;
     rankingPastWeeks: number | null;

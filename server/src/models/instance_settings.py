@@ -46,6 +46,7 @@ class InstanceSettings(db.Model):
     skipped_hierarchical_layers = db.Column(db.Integer, nullable=False, server_default="0")
     display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    no_closed_projects = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     fa_default_format = db.Column(
         db.Enum(FaDefaultFormatEnum), nullable=False, server_default=FaDefaultFormatEnum.YEAR.value
     )

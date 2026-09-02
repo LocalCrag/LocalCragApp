@@ -21,8 +21,7 @@ import {
 import { ErrorHandlerInterceptor } from '../../utility/http-interceptors/error.interceptor';
 import { LocalCragErrorHandler } from '../../services/core/local-crag-error-handler';
 import { ErrorHandlerService } from '../../services/core/error-handler.service';
-import { RefreshTokenInterceptor } from '../../utility/http-interceptors/refresh-token.interceptor';
-import { JWTInterceptor } from '../../utility/http-interceptors/jwt.interceptor';
+import { CredentialsInterceptor } from '../../utility/http-interceptors/credentials.interceptor';
 import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-type.interceptor';
 import { environment } from '../../../environments/environment';
 import * as Sentry from '@sentry/angular';
@@ -190,12 +189,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: RefreshTokenInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: JWTInterceptor,
+      useClass: CredentialsInterceptor,
       multi: true,
     },
     {

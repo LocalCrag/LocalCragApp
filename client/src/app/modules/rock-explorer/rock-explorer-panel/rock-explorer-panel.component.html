@@ -130,7 +130,15 @@
                 class="rock-explorer__tab-badge"
               />
             </p-tab>
-            <p-tab value="misc">{{ t("rockExplorer.misc") }}</p-tab>
+            <p-tab value="misc">
+              {{ t("rockExplorer.misc") }}
+              <p-badge
+                [value]="'' + panelMiscCount"
+                badgeSize="small"
+                severity="secondary"
+                class="rock-explorer__tab-badge"
+              />
+            </p-tab>
           </p-tablist>
           <p-tabpanels>
             <p-tabpanel value="info">
@@ -292,6 +300,7 @@
                 "
                 (pathDraftChange)="ui.dispatch({ type: 'pathDraftChange' })"
                 (previewChange)="ui.dispatch({ type: 'miscPreviewChange' })"
+                (countChange)="panelMiscCount = $event"
                 (saved)="ui.dispatch({ type: 'miscSaved', feature: $event })"
                 (focusCoordinates)="
                   ui.dispatch({

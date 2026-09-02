@@ -59,6 +59,8 @@ import { Image } from 'primeng/image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { filterSelectableGrades } from '../../../utility/grade/filter-selectable-grades';
+import { Grade } from '../../../models/scale';
 
 @Component({
   selector: 'lc-line-entry-batch-editor',
@@ -224,7 +226,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
               item,
             )
             .subscribe((scale) => {
-              this.grades = scale.grades;
+              this.grades = this.filterGradesForSelect(scale.grades);
             });
         });
 
@@ -232,6 +234,17 @@ export class LineEntryBatchEditorComponent implements OnInit {
         .get('lines.type')
         .setValue(LineType.BOULDER);
     });
+  }
+
+  private filterGradesForSelect(grades: Grade[]) {
+    let noClosedProjects = false;
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(take(1))
+      .subscribe((instanceSettings) => {
+        noClosedProjects = instanceSettings.noClosedProjects;
+      });
+    return filterSelectableGrades(grades, { noClosedProjects });
   }
 
   private buildForm() {

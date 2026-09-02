@@ -1,0 +1,11 @@
+<div
+  class="line-number-badge"
+  [style]="{
+    '--arrow-color': color ?? undefined,
+    '--arrow-text-color': textColor(color),
+    '--arrow-highlight-color': highlightColor(color),
+    '--arrow-highlight-text-color': highlightColor(textColor(color)),
+  }"
+>
+  {{ number }}
+</div>

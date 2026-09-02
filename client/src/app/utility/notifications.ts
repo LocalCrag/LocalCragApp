@@ -317,15 +317,25 @@ export const NOTIFICATIONS = {
     title: marker('notifications.TOPO_IMAGE_DELETED_TITLE'),
     message: marker('notifications.TOPO_IMAGE_DELETED_MESSAGE'),
   },
-  LINE_PATH_ADDED: {
-    type: NotificationType.SUCCESS,
-    title: marker('notifications.LINE_PATH_ADDED_TITLE'),
-    message: marker('notifications.LINE_PATH_ADDED_MESSAGE'),
-  },
   LINE_PATH_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.LINE_PATH_DELETED_TITLE'),
     message: marker('notifications.LINE_PATH_DELETED_MESSAGE'),
+  },
+  LINE_PATHS_SAVED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.LINE_PATHS_SAVED_TITLE'),
+    message: marker('notifications.LINE_PATHS_SAVED_MESSAGE'),
+  },
+  LINE_PATH_SINGLE_ANCHOR: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.LINE_PATH_SINGLE_ANCHOR_TITLE'),
+    message: marker('notifications.LINE_PATH_SINGLE_ANCHOR_MESSAGE'),
+  },
+  LINE_PATH_NOTHING_TO_SAVE: {
+    type: NotificationType.INFO,
+    title: marker('notifications.LINE_PATH_NOTHING_TO_SAVE_TITLE'),
+    message: marker('notifications.LINE_PATH_NOTHING_TO_SAVE_MESSAGE'),
   },
   MENU_PAGE_DELETED: {
     type: NotificationType.SUCCESS,
@@ -341,6 +351,21 @@ export const NOTIFICATIONS = {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MENU_PAGE_CREATED_TITLE'),
     message: marker('notifications.MENU_PAGE_CREATED_MESSAGE'),
+  },
+  APP_ALERT_CREATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_CREATED_TITLE'),
+    message: marker('notifications.APP_ALERT_CREATED_MESSAGE'),
+  },
+  APP_ALERT_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_UPDATED_TITLE'),
+    message: marker('notifications.APP_ALERT_UPDATED_MESSAGE'),
+  },
+  APP_ALERT_DELETED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.APP_ALERT_DELETED_TITLE'),
+    message: marker('notifications.APP_ALERT_DELETED_MESSAGE'),
   },
   MODERATOR_TASK_CREATED: {
     type: NotificationType.SUCCESS,

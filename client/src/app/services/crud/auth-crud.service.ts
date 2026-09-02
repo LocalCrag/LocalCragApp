@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../core/api.service';
-import { HttpBackendClientService } from '../core/http-backend-client.service';
 import { LoginResponse } from '../../models/login-response';
 import { map } from 'rxjs/operators';
 
@@ -20,7 +19,6 @@ export interface MessageResponse {
   providedIn: 'root',
 })
 export class AuthCrudService {
-  private httpBackend = inject(HttpBackendClientService);
   private http = inject(HttpClient);
   private api = inject(ApiService);
 
@@ -38,40 +36,23 @@ export class AuthCrudService {
   }
 
   /**
-   * Performs a login refresh HTTP request.
+   * Ends the current session.
    *
-   * @param refreshToken Current refresh token.
-   * @return Returns an Observable that resolves to a login response.
+   * @return Observable that resolves to a message response.
    */
-  public loginRefresh(refreshToken: string): Observable<LoginResponse> {
-    const headers = this.getRefreshTokenHeaders(refreshToken);
-    return this.httpBackend
-      .post(this.api.auth.loginRefresh(), null, { headers })
+  public logout(): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(this.api.auth.logout(), null);
+  }
+
+  /**
+   * Returns the current session user, or errors with 401 if unauthenticated.
+   *
+   * @return Observable that resolves to a login-style response with user.
+   */
+  public getMe(): Observable<LoginResponse> {
+    return this.http
+      .get(this.api.auth.me())
       .pipe(map((res) => LoginResponse.deserialize(res)));
-  }
-
-  /**
-   * Performs an access token logout. This will blacklist the access token.
-   *
-   * @return Observable that resolves to a message response.
-   */
-  public logoutAccess(): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(this.api.auth.logoutAccess(), null);
-  }
-
-  /**
-   * Performs a refresh token logout. This will blacklist the refresh token.
-   *
-   * @param  refreshToken Current refresh token.
-   * @return Observable that resolves to a message response.
-   */
-  public logoutRefresh(refreshToken: string): Observable<MessageResponse> {
-    const headers = this.getRefreshTokenHeaders(refreshToken);
-    return this.httpBackend.post<MessageResponse>(
-      this.api.auth.logoutRefresh(),
-      null,
-      { headers },
-    );
   }
 
   /**
@@ -115,19 +96,6 @@ export class AuthCrudService {
     return this.http.put<MessageResponse>(this.api.auth.changePassword(), {
       oldPassword,
       newPassword,
-    });
-  }
-
-  /**
-   * Returns http headers with a refresh token as bearer.
-   *
-   * @param refreshToken Refresh token that should be used in header.
-   * @return Http headers.
-   */
-  private getRefreshTokenHeaders(refreshToken: string): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: `Bearer ${refreshToken}`,
-      'Content-Type': 'application/json',
     });
   }
 }

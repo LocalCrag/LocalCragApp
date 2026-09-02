@@ -3,7 +3,6 @@ import datetime
 import pytz
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func
 from webargs.flaskparser import parser
 
@@ -14,6 +13,10 @@ from models.instance_settings import InstanceSettings
 from models.recent_search import RecentSearch
 from models.searchable import Searchable
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.generic_relationships import check_object_exists
 from util.search_result_serialization import (
     searchable_type_to_object_type,
@@ -113,9 +116,9 @@ class Search(MethodView):
 
 class GetRecentSearches(MethodView):
 
-    @jwt_required()
+    @session_required()
     def get(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         recent_entries = (
             RecentSearch.query.filter_by(user_id=user.id)
             .order_by(RecentSearch.time_created.desc())
@@ -136,9 +139,9 @@ class GetRecentSearches(MethodView):
 
 class CreateRecentSearch(MethodView):
 
-    @jwt_required()
+    @session_required()
     def post(self):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         data = parser.parse(recent_search_create_args)
 
         object_type = _normalize_object_type(data["objectType"])

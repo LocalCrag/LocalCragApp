@@ -2,9 +2,9 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from '../ngrx/reducers';
-import { selectIsLoggedIn } from '../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from './wait-for-auth';
 
 /**
  * CanActivateFn for checking if a user is logged in.
@@ -12,10 +12,9 @@ import { selectIsLoggedIn } from '../ngrx/selectors/auth.selectors';
 export const isLoggedIn: CanActivateFn = (): Observable<boolean> => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  return store.pipe(
-    select(selectIsLoggedIn),
-    map((isLoggedInValue) => {
-      if (isLoggedInValue) {
+  return waitForAuthState(store).pipe(
+    map((authState) => {
+      if (authState.user != null) {
         return true;
       }
       router.navigate(['login']);

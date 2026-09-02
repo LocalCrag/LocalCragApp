@@ -3,8 +3,7 @@ import threading
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import ColumnElement
 from webargs.flaskparser import parser
@@ -16,6 +15,7 @@ from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
 from models.area import Area
 from models.ascent import Ascent
+from models.comment import Comment
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.instance_settings import InstanceSettings
@@ -23,11 +23,14 @@ from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.email import send_project_climbed_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims
 from util.validators import cross_validate_grade
 from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
@@ -35,6 +38,26 @@ from webargs_schemas.ascent_args import (
     cross_validate_ascent_args,
     project_climbed_args,
 )
+
+
+def _attach_ascent_comment_counts(ascents: list[Ascent]) -> None:
+    """Sets transient `_comment_count` on each ascent (non-deleted comments, including replies)."""
+    if not ascents:
+        return
+    ids = [a.id for a in ascents]
+    rows = (
+        db.session.query(Comment.object_id, func.count(Comment.id))
+        .filter(
+            Comment.object_type == "Ascent",
+            Comment.object_id.in_(ids),
+            Comment.is_deleted.is_(False),
+        )
+        .group_by(Comment.object_id)
+        .all()
+    )
+    count_by_id = {oid: n for oid, n in rows}
+    for ascent in ascents:
+        ascent._comment_count = int(count_by_id.get(ascent.id, 0))
 
 
 def _ctx_update_grades_and_rating(line_id: str):
@@ -136,6 +159,7 @@ class GetAscents(MethodView):
         reactions_by_user = get_reactions_by_user("ascent", ascent_ids)
         for ascent in paginated_ascents.items:
             ascent.reactions_by_user = reactions_by_user.get(str(ascent.id), [])
+        _attach_ascent_comment_counts(paginated_ascents.items)
 
         return jsonify(paginated_ascents_schema.dump(paginated_ascents)), 200
 
@@ -170,10 +194,10 @@ class GetTicks(MethodView):
 
 
 class CreateAscent(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self):
         ascent_data = parser.parse(ascent_args, request, validate=cross_validate_ascent_args)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
         if line.author_grade_value < 0:
@@ -230,12 +254,12 @@ class CreateAscent(MethodView):
 
 
 class UpdateAscent(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self, ascent_id):
         ascent_data = parser.parse(ascent_args, request, validate=cross_validate_ascent_args)
         ascent: Ascent = Ascent.find_by_id(ascent_id)
 
-        if not ascent.created_by.email == get_jwt_identity():
+        if not ascent.created_by.email == get_session_identity():
             raise Unauthorized("Ascents can only be edited by users themselves.")
 
         line: Line = Line.find_by_id(ascent.line_id)
@@ -275,10 +299,9 @@ class UpdateAscent(MethodView):
 
 
 class ClearAscentFa(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self, ascent_id):
-        moderator = User.find_by_email(get_jwt_identity())
+        moderator = User.find_by_email(get_session_identity())
         ascent: Ascent = Ascent.find_by_id(ascent_id)
         if ascent.fa:
             ascent.fa = False
@@ -300,12 +323,12 @@ class ClearAscentFa(MethodView):
 
 
 class DeleteAscent(MethodView):
-    @jwt_required()
+    @session_required()
     def delete(self, ascent_id):
         ascent: Ascent = Ascent.find_by_id(ascent_id)
         line_id = ascent.line_id
 
-        if not ascent.created_by.email == get_jwt_identity():
+        if not ascent.created_by.email == get_session_identity():
             raise Unauthorized("Ascents can only be deleted by users themselves.")
 
         db.session.delete(ascent)
@@ -319,11 +342,11 @@ class DeleteAscent(MethodView):
 
 class SendProjectClimbedMessage(MethodView):
 
-    @jwt_required()
+    @session_required()
     def post(self):
         project_climbed_data = parser.parse(project_climbed_args, request)
 
-        user: User = User.find_by_email(get_jwt_identity())
+        user: User = User.find_by_email(get_session_identity())
         line: Line = Line.find_by_id(project_climbed_data["line"])
 
         if not line:

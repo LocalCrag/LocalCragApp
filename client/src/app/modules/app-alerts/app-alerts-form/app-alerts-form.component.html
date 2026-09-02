@@ -1,0 +1,128 @@
+<ng-container *transloco="let t; read: 'appAlerts.appAlertForm'">
+  <div class="content p-6">
+    <form [formGroup]="appAlertForm" lcForm>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="message">{{ t("messageLabel") }}</label>
+        <textarea
+          pTextarea
+          id="message"
+          formControlName="message"
+          rows="3"
+          placeholder="{{ t('messagePlaceholder') }}"
+          lcFormControl
+        ></textarea>
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 500 }
+        }}</small>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="severity">{{
+          t("severityLabel")
+        }}</label>
+        <p-select
+          inputId="severity"
+          formControlName="severity"
+          [options]="severityOptions"
+          optionLabel="label"
+          optionValue="value"
+          lcFormControl
+        ></p-select>
+      </div>
+
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="readMoreUrl">{{
+          t("readMoreUrlLabel")
+        }}</label>
+        <input
+          type="text"
+          pInputText
+          id="readMoreUrl"
+          formControlName="readMoreUrl"
+          placeholder="{{ t('readMoreUrlPlaceholder') }}"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'maxlength'">{{
+          "validation.maxLength" | transloco: { max: 500 }
+        }}</small>
+        <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
+          t("invalidHttpUrl")
+        }}</small>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="startsAt">{{
+            t("startsAtLabel")
+          }}</label>
+          <p-datepicker
+            inputId="startsAt"
+            formControlName="startsAt"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            lcFormControl
+          ></p-datepicker>
+          <small class="lc-error" *lcIfError="'required'">{{
+            "validation.required" | transloco
+          }}</small>
+        </div>
+
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <label class="form-label" for="endsAt">{{ t("endsAtLabel") }}</label>
+          <p-datepicker
+            inputId="endsAt"
+            formControlName="endsAt"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            lcFormControl
+          ></p-datepicker>
+          <small class="lc-error" *lcIfError="'required'">{{
+            "validation.required" | transloco
+          }}</small>
+        </div>
+      </div>
+    </form>
+
+    <div class="form-actions">
+      @if (!editMode) {
+        <p-button
+          label="{{ t('createAppAlertButtonLabel') }}"
+          (click)="saveAppAlert()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      @if (editMode) {
+        <p-button
+          label="{{ t('editAppAlertButtonLabel') }}"
+          (click)="saveAppAlert()"
+          icon="pi pi-save"
+          class="responsive-button"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-button
+        label="{{ t('cancelButtonLabel') }}"
+        (click)="cancel()"
+        class="responsive-button"
+        styleClass="p-button-secondary"
+        icon="pi pi-ban"
+      ></p-button>
+      @if (editMode) {
+        <p-button
+          label="{{ t('deleteAppAlertButtonLabel') }}"
+          (click)="confirmDeleteAppAlert($event)"
+          icon="pi pi-trash"
+          class="responsive-button"
+          styleClass="p-button-danger"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
+      <p-confirmpopup></p-confirmpopup>
+    </div>
+  </div>
+</ng-container>

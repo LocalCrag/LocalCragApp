@@ -11,9 +11,8 @@ import { LineType } from '../../enums/line-type';
 export class ApiService {
   public auth = {
     login: (): string => `${this.apiHost}login`,
-    loginRefresh: (): string => `${this.apiHost}token/refresh`,
-    logoutAccess: (): string => `${this.apiHost}logout/access`,
-    logoutRefresh: (): string => `${this.apiHost}logout/refresh`,
+    logout: (): string => `${this.apiHost}logout`,
+    me: (): string => `${this.apiHost}me`,
     forgotPassword: (): string => `${this.apiHost}forgot-password`,
     resetPassword: (): string => `${this.apiHost}reset-password`,
     changePassword: (): string => `${this.apiHost}change-password`,
@@ -44,6 +43,8 @@ export class ApiService {
     getRulesReadStatus: (): string =>
       `${this.apiHost}account/rules-read-status`,
     markRulesRead: (): string => `${this.apiHost}account/rules-read-status`,
+    markAppAlertDismissed: (): string =>
+      `${this.apiHost}account/app-alert-dismissals`,
   };
 
   public statistics = {
@@ -135,6 +136,15 @@ export class ApiService {
     getDetail: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
     delete: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
     update: (slug: string): string => `${this.apiHost}menu-pages/${slug}`,
+  };
+
+  public appAlerts = {
+    create: (): string => `${this.apiHost}app-alerts`,
+    getList: (): string => `${this.apiHost}app-alerts`,
+    getManageList: (): string => `${this.apiHost}app-alerts/manage`,
+    getDetail: (id: string): string => `${this.apiHost}app-alerts/${id}`,
+    delete: (id: string): string => `${this.apiHost}app-alerts/${id}`,
+    update: (id: string): string => `${this.apiHost}app-alerts/${id}`,
   };
 
   public menuItems = {
@@ -236,7 +246,7 @@ export class ApiService {
   };
 
   public linePaths = {
-    addLinePath: (topoImageId: string): string =>
+    sync: (topoImageId: string): string =>
       `${this.apiHost}topo-images/${topoImageId}/line-paths`,
     updateOrder: (topoImageId: string): string =>
       `${this.apiHost}topo-images/${topoImageId}/line-paths/update-order`,
@@ -314,6 +324,7 @@ export class ApiService {
       `${this.apiHost}rock-explorer/features/${id}`,
     cloneFeature: (id: string): string =>
       `${this.apiHost}rock-explorer/features/${id}/clone`,
+    searchCreators: (): string => `${this.apiHost}rock-explorer/creators`,
   };
 
   private apiHost = `${environment.apiHost}/api/`;

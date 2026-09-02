@@ -1,53 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import * as AuthActions from '../actions/auth.actions';
 import {
   autoLoginFailed,
-  login,
-  logout,
   newAuthCredentials,
-  refreshAccessToken,
-  startAccessTokenRefreshTimer,
-  startRefreshTokenAboutToExpireTimer,
   tryAutoLogin,
 } from '../actions/auth.actions';
-import {
-  catchError,
-  filter,
-  map,
-  mergeMap,
-  takeUntil,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { AuthCrudService } from '../../services/crud/auth-crud.service';
 import { Router } from '@angular/router';
-import { forkJoin, of, timer } from 'rxjs';
-import {
-  selectAccessTokenExpires,
-  selectAuthState,
-  selectIsLoggedOut,
-  selectRefreshTokenExpires,
-} from '../selectors/auth.selectors';
-import { HttpErrorResponse } from '@angular/common/http';
-import { bigIntTimer } from '../../utility/observables/bigint-timer';
-import { showRefreshTokenAboutToExpireAlert } from '../actions/app-level-alerts.actions';
-import { unixToDate } from '../../utility/operators/unix-to-date';
+import { of } from 'rxjs';
 import { toastNotification } from '../actions/notifications.actions';
 import { LoginResponse } from '../../models/login-response';
-import { differenceInMilliseconds, isAfter, subMilliseconds } from 'date-fns';
-
-/**
- * Time before expiry before an access token gets refreshed. Accounts for an approximate server response delay of the refresh request
- * so that there is theoretically no time with an invalid token.
- */
-const REFRESH_ACCESS_TOKEN_BUFFER_TIME = 10 * 1000;
-/**
- * A warning that the refresh token is about to expire is shown this amount of time before its expiry.
- */
-const REFRESH_TOKEN_EXPIRY_WARNING_TIME = 2 * 60 * 1000;
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -189,72 +155,17 @@ export class AuthEffects {
     ),
   );
 
-  onUpdateAccountSettings = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActions.updateAccountSettings),
-        withLatestFrom(this.store.pipe(select(selectAuthState))),
-        map(([action, authState]) => {
-          // Store the new user in the local storage for enabling auto login
-          const autoLoginObject: LoginResponse = {
-            accessToken: authState.accessToken,
-            refreshToken: authState.refreshToken,
-            user: action.user,
-            message: '',
-          };
-          localStorage.setItem(
-            'LocalCragAuth',
-            JSON.stringify(autoLoginObject),
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
   /**
-   * Stores new authorization credentials and performs actions to keep the session alive:
-   *  - Store the credentials in the local storage for enabling auto login
-   *  - Start a timer for refreshing the access token
-   *  - Start a timer for notifying the user that the refresh token will expire soon (he has to re-login then)
+   * After session credentials are established, navigate away from the login page
+   * when restoring a session via /me.
    */
   onNewAuthCredentials = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.newAuthCredentials),
-        withLatestFrom(
-          this.store.pipe(select(selectAuthState)),
-          this.store.pipe(select(selectRefreshTokenExpires), unixToDate),
-        ),
-        map(([action, authState, refreshTokenExpiresValue]) => {
-          // Store the credentials in the local storage for enabling auto login
-          const autoLoginObject: LoginResponse = {
-            accessToken: authState.accessToken,
-            refreshToken: authState.refreshToken,
-            user: authState.user,
-            message: '',
-          };
-          localStorage.setItem(
-            'LocalCragAuth',
-            JSON.stringify(autoLoginObject),
-          );
-          // Start a timer for refreshing the access token
-          if (action.loginResponse.accessToken !== null) {
-            this.store.dispatch(startAccessTokenRefreshTimer());
-          }
-          // If credentials came from auto login we need to check if the old token is still valid
-          if (action.fromAutoLogin) {
-            if (!isAfter(refreshTokenExpiresValue, new Date())) {
-              this.store.dispatch(autoLoginFailed());
-            } else {
-              this.store.dispatch(refreshAccessToken());
-              if (this.router.url === '/login') {
-                this.router.navigate(['']);
-              }
-            }
-          }
-          // We only need to start this timer one time in a session. Either on login or on auto login
-          if (action.initialCredentials) {
-            this.store.dispatch(startRefreshTokenAboutToExpireTimer());
+        tap((action) => {
+          if (action.fromAutoLogin && this.router.url === '/login') {
+            this.router.navigate(['']);
           }
         }),
       ),
@@ -262,82 +173,13 @@ export class AuthEffects {
   );
 
   /**
-   * Starts the access token refresh timer which will notify the app about a necessary access token refresh before the token expires.
-   */
-  onStartAccessTokenRefreshTimer = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActions.startAccessTokenRefreshTimer),
-        withLatestFrom(
-          this.store.pipe(select(selectAccessTokenExpires), unixToDate),
-        ),
-        tap(([_action, accessTokenExpiresValue]) => {
-          const validityDelta = differenceInMilliseconds(
-            accessTokenExpiresValue,
-            new Date(),
-          );
-          if (validityDelta > 0) {
-            timer(validityDelta - REFRESH_ACCESS_TOKEN_BUFFER_TIME)
-              .pipe(
-                // Cancel the timer when the user logs out
-                takeUntil(
-                  this.store.pipe(
-                    select(selectIsLoggedOut),
-                    filter((isLoggedOutValue) => isLoggedOutValue),
-                  ),
-                ),
-                // Or when he refreshes the login
-                takeUntil(this.actions$.pipe(ofType(login))),
-              )
-              .subscribe(() => {
-                this.store.dispatch(refreshAccessToken());
-              });
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  /**
-   * Refreshes the access token by using the refresh token.
-   */
-  onRefreshAccessToken = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.refreshAccessToken),
-      withLatestFrom(this.store.pipe(select(selectAuthState))),
-      mergeMap(([_action, authState]) =>
-        this.authCrud.loginRefresh(authState.refreshToken).pipe(
-          map((response) =>
-            newAuthCredentials({
-              loginResponse: response,
-              fromAutoLogin: false,
-              initialCredentials: false,
-            }),
-          ),
-          catchError((_err: HttpErrorResponse) => {
-            // Network failures (status 0) show the offline app-level alert via the
-            // error interceptor. Don't force logout — there might be unsaved work
-            // and the server might recover.
-            return of(AuthActions.refreshAccessTokenFailed());
-          }),
-        ),
-      ),
-    ),
-  );
-
-  /**
-   * Performs a logout access and logout refresh request and notifies the app about success or failure.
+   * Performs a logout request and notifies the app about success or failure.
    */
   onLogout = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logout),
-      withLatestFrom(this.store.pipe(select(selectAuthState))),
-      mergeMap(([action, authState]) => {
-        const logoutAccess = this.authCrud.logoutAccess();
-        const logoutRefresh = this.authCrud.logoutRefresh(
-          authState.refreshToken,
-        );
-        return forkJoin([logoutAccess, logoutRefresh]).pipe(
+      mergeMap((action) =>
+        this.authCrud.logout().pipe(
           map(() =>
             AuthActions.logoutSuccess({
               isAutoLogout: action.isAutoLogout,
@@ -352,13 +194,13 @@ export class AuthEffects {
               }),
             ),
           ),
-        );
-      }),
+        ),
+      ),
     ),
   );
 
   /**
-   * Notifies the user about logout success. If the logout was done automatically (expired refresh token) the user is also notified.
+   * Notifies the user about logout success. If the logout was done automatically the user is also notified.
    */
   onLogoutSuccess = createEffect(() =>
     this.actions$.pipe(
@@ -379,85 +221,29 @@ export class AuthEffects {
   );
 
   /**
-   * Tries to perform an auto login using credentials from the local storage and notifies the app if no credentials are found.
+   * Tries to restore the session via GET /api/me and notifies the app on failure.
    */
-  onTryAutoLogin = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(tryAutoLogin),
-        tap(() => {
-          if (localStorage.getItem('LocalCragAuth') !== null) {
-            const autoLoginObject: LoginResponse = JSON.parse(
-              localStorage.getItem('LocalCragAuth') as string,
-            );
-            this.store.dispatch(
-              newAuthCredentials({
-                loginResponse: autoLoginObject,
-                fromAutoLogin: true,
-                initialCredentials: true,
-              }),
-            );
-          } else {
-            this.store.dispatch(autoLoginFailed());
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  /**
-   * Starts two timers:
-   *  - A timer that shows an alert when the refresh token is about to expire so the user can log in again
-   *  - A timer that performs an auto logout when the refresh token is expired.
-   */
-  onStartRefreshTokenAboutToExpireTimer = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(startRefreshTokenAboutToExpireTimer),
-        withLatestFrom(
-          this.store.pipe(select(selectRefreshTokenExpires), unixToDate),
+  onTryAutoLogin = createEffect(() =>
+    this.actions$.pipe(
+      ofType(tryAutoLogin),
+      mergeMap(() =>
+        this.authCrud.getMe().pipe(
+          map((loginResponse) =>
+            newAuthCredentials({
+              loginResponse,
+              fromAutoLogin: true,
+              initialCredentials: true,
+            }),
+          ),
+          catchError(() => of(autoLoginFailed())),
         ),
-        tap(([_action, refreshTokenExpiresValue]) => {
-          const warningBeforeExpiry = subMilliseconds(
-            refreshTokenExpiresValue,
-            REFRESH_TOKEN_EXPIRY_WARNING_TIME,
-          );
-          let msUntilAlert = differenceInMilliseconds(
-            warningBeforeExpiry,
-            new Date(),
-          );
-          if (msUntilAlert < 0) {
-            // Can happen, depending on servers JWT_REFRESH_TOKEN_EXPIRES setting
-            msUntilAlert = 0;
-          }
-          bigIntTimer(msUntilAlert)
-            .pipe(
-              takeUntil(this.actions$.pipe(ofType(logout))),
-              takeUntil(this.actions$.pipe(ofType(login))), // refresh login - not initial login
-            )
-            .subscribe(() => {
-              this.store.dispatch(showRefreshTokenAboutToExpireAlert());
-            });
-          bigIntTimer(
-            differenceInMilliseconds(refreshTokenExpiresValue, new Date()),
-          )
-            .pipe(
-              takeUntil(this.actions$.pipe(ofType(logout))),
-              takeUntil(this.actions$.pipe(ofType(login))), // refresh login - not initial login
-            )
-            .subscribe(() => {
-              this.store.dispatch(
-                logout({ isAutoLogout: true, silent: false }),
-              );
-            });
-        }),
       ),
-    { dispatch: false },
+    ),
   );
 
   /**
    * Notifies the user about successful logout even though it wasn't successful. The reason is that we can't do anything about this,
-   * if the logout fails we throw away the tokens locally and enable the user to login again. From a user's perspective there is no
+   * if the logout fails we clear local session state and enable the user to login again. From a user's perspective there is no
    * difference to a successful logout.
    */
   onLogoutError = createEffect(() =>
@@ -465,7 +251,7 @@ export class AuthEffects {
       ofType(AuthActions.logoutError),
       map((action) => {
         if (!action.silent) {
-          // We notify about a successful logout, although it wasn't successful as we throw away the token locally.
+          // We notify about a successful logout, although it wasn't successful as we clear local session state.
           if (!action.isAutoLogout) {
             this.store.dispatch(toastNotification('LOGOUT_SUCCESS'));
           } else {
@@ -480,7 +266,7 @@ export class AuthEffects {
   );
 
   /**
-   * Clears the LocalCrag auth information from the local storage and navigates to the login page.
+   * Clears legacy LocalCrag auth information from the local storage and navigates to the login page.
    */
   onCleanupCredentials = createEffect(
     () =>

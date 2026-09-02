@@ -2,15 +2,8 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytz
-from flask import request
+from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt,
-    get_jwt_identity,
-    jwt_required,
-)
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -20,13 +13,26 @@ from marshmallow_schemas.auth_response_schema import auth_response_schema
 from marshmallow_schemas.simple_message_schema import simple_message_schema
 from messages.marshalling_objects import AuthResponse, SimpleMessage
 from messages.messages import ResponseMessage
-from models.revoked_token import RevokedToken
 from models.user import User
-from util.auth import get_access_token_claims
+from util.auth_session import (
+    clear_request_session_cache,
+    clear_session_cookies,
+    create_session_for_user,
+    load_request_session,
+    session_required,
+    set_session_cookies,
+)
 from util.email import send_forgot_password_email
 from webargs_schemas.forgot_password_args import forgot_password_args
 from webargs_schemas.login_args import login_args
 from webargs_schemas.reset_password_args import reset_password_args
+
+
+def _auth_response(message: str, user: User, status: int = 200):
+    body = auth_response_schema.dump(AuthResponse(message, user))
+    response = jsonify(body)
+    response.status_code = status
+    return response
 
 
 class UserLogin(MethodView):
@@ -43,17 +49,6 @@ class UserLogin(MethodView):
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
         if User.verify_hash(data["password"], current_user.password):
-            access_token = create_access_token(
-                identity=email_canonical, additional_claims=get_access_token_claims(current_user)
-            )
-            refresh_token = create_refresh_token(identity=email_canonical)
-            auth_response = AuthResponse(
-                ResponseMessage.LOGIN_SUCCESS.value,
-                current_user,
-                access_token=access_token,
-                refresh_token=refresh_token,
-            )
-
             # A user becomes activated after first login
             if not current_user.activated:
                 current_user.activated = True
@@ -61,52 +56,41 @@ class UserLogin(MethodView):
                 db.session.add(current_user)
                 db.session.commit()
 
-            return auth_response_schema.dump(auth_response), 202
+            session = create_session_for_user(current_user)
+            db.session.commit()
+            response = _auth_response(ResponseMessage.LOGIN_SUCCESS.value, current_user, status=202)
+            set_session_cookies(response, session)
+            return response
         else:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
 
-class UserLogoutAccess(MethodView):
-    @jwt_required()
+class UserLogout(MethodView):
+    @session_required()
     def post(self):
         """
-        Invalidates a users access token.
+        Ends the current browser session.
         """
-        jti = get_jwt()["jti"]
-        revoked_token = RevokedToken(jti=jti)
-        revoked_token.persist()
+        session = load_request_session()
+        if session is not None:
+            session.delete()
+            db.session.commit()
+            clear_request_session_cache()
         simple_message = SimpleMessage(ResponseMessage.ACCESS_TOKEN_REVOKED.value)
-        return simple_message_schema.dump(simple_message), 200
+        response = jsonify(simple_message_schema.dump(simple_message))
+        clear_session_cookies(response)
+        return response, 200
 
 
-class UserLogoutRefresh(MethodView):
-    @jwt_required(refresh=True)
-    def post(self):
+class CurrentUser(MethodView):
+    def get(self):
         """
-        Invalidates a users refresh token.
+        Returns the user for the current session cookie, or 401 if unauthenticated.
         """
-        jti = get_jwt()["jti"]
-        revoked_token = RevokedToken(jti=jti)
-        revoked_token.persist()
-        simple_message = SimpleMessage(ResponseMessage.REFRESH_TOKEN_REVOKED.value)
-        return simple_message_schema.dump(simple_message), 200
-
-
-class TokenRefresh(MethodView):
-    @jwt_required(refresh=True)
-    def post(self):
-        """
-        Refreshes a users access token.
-        """
-        current_user = User.find_by_email(get_jwt_identity())
-        if current_user is None:
-            raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
-
-        access_token = create_access_token(
-            identity=current_user.email, additional_claims=get_access_token_claims(current_user)
-        )
-        auth_response = AuthResponse(ResponseMessage.LOGIN_SUCCESS.value, current_user, access_token=access_token)
-        return auth_response_schema.dump(auth_response), 200
+        session = load_request_session()
+        if session is None:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+        return _auth_response(ResponseMessage.LOGIN_SUCCESS.value, session.user)
 
 
 class ForgotPassword(MethodView):
@@ -157,9 +141,8 @@ class ResetPassword(MethodView):
 
         db.session.add(user)
         db.session.commit()
-        access_token = create_access_token(identity=user.email, additional_claims=get_access_token_claims(user))
-        refresh_token = create_refresh_token(identity=user.email)
-        auth_response = AuthResponse(
-            ResponseMessage.PASSWORD_RESET.value, user, access_token=access_token, refresh_token=refresh_token
-        )
-        return auth_response_schema.dump(auth_response), 202
+        session = create_session_for_user(user)
+        db.session.commit()
+        response = _auth_response(ResponseMessage.PASSWORD_RESET.value, user, status=202)
+        set_session_cookies(response, session)
+        return response

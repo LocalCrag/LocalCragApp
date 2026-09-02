@@ -8,7 +8,7 @@ export const mockGpsRecording = true;
 
 export const environment = {
   production: false,
-  apiHost: 'http://127.0.0.1:5000',
+  apiHost: 'http://localhost:5000',
   skippedSlug: '_default',
   version: packageInfo.version,
 };

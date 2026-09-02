@@ -6,6 +6,24 @@ from models.line_path import LinePath
 from models.topo_image import TopoImage
 
 
+def _append_line_path_to_topo_image(client, topo_image_id, line_id, path, moderator_token):
+    topo_image = client.get(f"/api/topo-images/{topo_image_id}", token=moderator_token).json
+    line_paths_payload = [
+        {
+            "id": line_path["id"],
+            "line": line_path["line"]["id"],
+            "path": line_path["path"],
+        }
+        for line_path in topo_image["linePaths"]
+    ]
+    line_paths_payload.append({"line": str(line_id), "path": path})
+    return client.put(
+        f"/api/topo-images/{topo_image_id}/line-paths",
+        token=moderator_token,
+        json={"linePaths": line_paths_payload},
+    )
+
+
 def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client, moderator_token):
     # pick a source area that has topo images
     source_area_slug = "shark-attack"
@@ -63,12 +81,14 @@ def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client
     assert rv_line.status_code == 201
     line = Line.find_by_slug(rv_line.json["slug"])
     # Attach a line path for this line to the topo image
-    rv = client.post(
-        f"/api/topo-images/{image_id}/line-paths",
-        token=moderator_token,
-        json={"line": str(line.id), "path": [1.0, 1.0, 2.0, 2.0]},
+    rv = _append_line_path_to_topo_image(
+        client,
+        image_id,
+        line.id,
+        [1.0, 1.0, 2.0, 2.0],
+        moderator_token,
     )
-    assert rv.status_code == 201
+    assert rv.status_code == 200
 
     # Create another topo image in the same old area and add a line path there too
     # so we can verify deletion of line paths still connected to old area after move.
@@ -95,12 +115,14 @@ def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client
         old_area_other_image_id = rv_add.json["id"]
 
     if LinePath.query.filter_by(line_id=line.id, topo_image_id=old_area_other_image_id).count() == 0:
-        rv = client.post(
-            f"/api/topo-images/{old_area_other_image_id}/line-paths",
-            token=moderator_token,
-            json={"line": str(line.id), "path": [3.0, 3.0, 4.0, 4.0]},
+        rv = _append_line_path_to_topo_image(
+            client,
+            old_area_other_image_id,
+            line.id,
+            [3.0, 3.0, 4.0, 4.0],
+            moderator_token,
         )
-        assert rv.status_code == 201
+        assert rv.status_code == 200
 
     assert LinePath.query.filter_by(line_id=line.id).count() >= 1
 

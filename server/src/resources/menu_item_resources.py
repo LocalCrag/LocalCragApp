@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -12,8 +11,11 @@ from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims
 from util.validators import validate_order_payload
 from webargs_schemas.menu_item_args import menu_item_args
 
@@ -42,14 +44,13 @@ class GetMenuItem(MethodView):
 
 
 class CreateMenuItem(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def post(self):
         """
         Create a menu item.
         """
         menu_item_data = parser.parse(menu_item_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        created_by = User.find_by_email(get_session_identity())
 
         new_menu_item: MenuItem = MenuItem()
         new_menu_item.type = menu_item_data["type"]
@@ -71,8 +72,7 @@ class CreateMenuItem(MethodView):
 
 
 class UpdateMenuItem(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, menu_item_id):
         """
         Edit a menu item.
@@ -101,8 +101,7 @@ class UpdateMenuItem(MethodView):
 
 
 class DeleteMenuItem(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, menu_item_id):
         """
         Delete a menu item.
@@ -117,8 +116,7 @@ class DeleteMenuItem(MethodView):
 
 
 class UpdateMenuItemTopOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self):
         """
         Changes the order index of menu items with position TOP.
@@ -139,8 +137,7 @@ class UpdateMenuItemTopOrder(MethodView):
 
 
 class UpdateMenuItemBottomOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self):
         """
         Changes the order index of menu items with position BOTTOM.

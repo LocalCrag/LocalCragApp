@@ -6,12 +6,6 @@ from uuid import uuid4
 import pytz
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    jwt_required,
-)
 from sqlalchemy import func
 from webargs.flaskparser import parser
 
@@ -39,7 +33,12 @@ from models.ranking import Ranking
 from models.reaction import Reaction
 from models.sector import Sector
 from models.user import User
-from util.auth import get_access_token_claims
+from util.auth_session import (
+    create_session_for_user,
+    get_session_identity,
+    session_required,
+    set_session_cookies,
+)
 from util.email import (
     send_change_email_address_email,
     send_create_user_email,
@@ -48,7 +47,6 @@ from util.email import (
 from util.password_util import generate_password
 from util.regexes import email_regex
 from util.secret_service import SecretService
-from util.security_util import check_auth_claims
 from webargs_schemas.change_password_args import change_password_args
 from webargs_schemas.get_users_args import get_users_args
 from webargs_schemas.new_email_args import new_email_args
@@ -83,13 +81,13 @@ class GetUser(MethodView):
 
 
 class ChangePassword(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self):
         """
         Changes the requesting users password.
         """
         data = parser.parse(change_password_args, request)
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         if not user:
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
         if User.verify_hash(data["oldPassword"], user.password):
@@ -105,8 +103,7 @@ class ChangePassword(MethodView):
 
 
 class GetUsers(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def get(self):
         """
         Returns the list of users.
@@ -131,8 +128,7 @@ class GetEmailTaken(MethodView):
 
 class ResendUserCreateMail(MethodView):
 
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, user_id):
         """
         Resends the user created mail for a user. The password is re-generated in this step. Only works for
@@ -154,8 +150,7 @@ class ResendUserCreateMail(MethodView):
 
 class DeleteUser(MethodView):  # pragma: no cover
 
-    @jwt_required()
-    @check_auth_claims(admin=True)
+    @session_required(admin=True)
     def delete(self, user_id):
         """
         Deletes a User.
@@ -163,7 +158,7 @@ class DeleteUser(MethodView):  # pragma: no cover
         """
 
         user_to_delete: User = User.find_by_id(user_id)
-        request_user = User.find_by_email(get_jwt_identity())
+        request_user = User.find_by_email(get_session_identity())
 
         if user_to_delete.id == request_user.id:
             # Own user can only be deleted via account settings
@@ -179,10 +174,10 @@ class DeleteUser(MethodView):  # pragma: no cover
 
 class UpdateAccount(MethodView):
 
-    @jwt_required()
+    @session_required()
     def put(self):
         user_data = parser.parse(user_args, request)
-        user = User.find_by_email(get_jwt_identity())  # You can only edit your own user!
+        user = User.find_by_email(get_session_identity())  # You can only edit your own user!
 
         email_canonical = user_data["email"].lower()
         user_by_email = User.find_by_email(email_canonical)
@@ -226,12 +221,11 @@ class ChangeEmail(MethodView):
         user.new_email_hash_created = None
         db.session.add(user)
         db.session.commit()
-        access_token = create_access_token(identity=user.email, additional_claims=get_access_token_claims(user))
-        refresh_token = create_refresh_token(identity=user.email)
-        auth_response = AuthResponse(
-            ResponseMessage.EMAIL_CHANGED.value, user, access_token=access_token, refresh_token=refresh_token
-        )
-        return auth_response_schema.dump(auth_response), 200
+        session = create_session_for_user(user)
+        db.session.commit()
+        response = jsonify(auth_response_schema.dump(AuthResponse(ResponseMessage.EMAIL_CHANGED.value, user)))
+        set_session_cookies(response, session)
+        return response, 200
 
 
 class RegisterUser(MethodView):
@@ -257,11 +251,10 @@ class RegisterUser(MethodView):
 
 class PromoteUser(MethodView):
 
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, user_id):
         promotion_data = parser.parse(user_promotion_args, request)
-        own_user = User.find_by_email(get_jwt_identity())
+        own_user = User.find_by_email(get_session_identity())
         user: User = User.find_by_id(user_id)
 
         if user.superadmin:

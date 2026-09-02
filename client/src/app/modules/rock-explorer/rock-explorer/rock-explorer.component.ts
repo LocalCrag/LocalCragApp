@@ -40,9 +40,13 @@ import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
 import { RockExplorerPotential } from '../../../enums/rock-explorer-potential';
 import { RockExplorerRockQuality } from '../../../enums/rock-explorer-rock-quality';
 import { RockExplorerRockType } from '../../../enums/rock-explorer-rock-type';
-import { RockExplorerPanelComponent } from '../rock-explorer-panel/rock-explorer-panel.component';
+import {
+  RockExplorerPanelComponent,
+  RockExplorerPanelTab,
+} from '../rock-explorer-panel/rock-explorer-panel.component';
 import { RockExplorerToolbarComponent } from '../rock-explorer-toolbar/rock-explorer-toolbar.component';
 import { RockExplorerSessionsComponent } from '../rock-explorer-sessions/rock-explorer-sessions.component';
+import { RockExplorerListComponent } from '../rock-explorer-list/rock-explorer-list.component';
 import {
   RockExplorerUiService,
   RockExplorerCommand,
@@ -78,6 +82,7 @@ import {
   resolveVectorLayerFeatureColor,
 } from '../../../models/map-overlay';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 @Component({
   selector: 'lc-rock-explorer',
@@ -94,6 +99,7 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
     RockExplorerPanelComponent,
     RockExplorerToolbarComponent,
     RockExplorerSessionsComponent,
+    RockExplorerListComponent,
   ],
   providers: [MessageService, ConfirmationService, RockExplorerUiService],
   templateUrl: './rock-explorer.component.html',
@@ -101,8 +107,8 @@ import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
-  @ViewChild('vectorIdentifyPanel')
-  private vectorIdentifyPanel?: ElementRef<HTMLElement>;
+  @ViewChild('mapContextPopoverPanel')
+  private mapContextPopoverPanel?: ElementRef<HTMLElement>;
   @ViewChild(RockExplorerPanelComponent) panel?: RockExplorerPanelComponent;
   @ViewChild('recordImageInput')
   private recordImageInput?: ElementRef<HTMLInputElement>;
@@ -120,10 +126,11 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private miscEditMode = false;
   public loading = true;
   public noBaseLayer = false;
-  /** Right-click identify popover for vector overlays under the cursor. */
-  public vectorIdentify: {
+  /** Right-click popover: copy coordinates + optional vector overlay identify. */
+  public mapContextPopover: {
     x: number;
     y: number;
+    coordinates: Coordinates;
     hits: {
       name: string;
       color: string;
@@ -133,7 +140,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }[];
   } | null = null;
   /** Ignore document click that can follow a contextmenu in the same gesture. */
-  private ignoreVectorIdentifyDocumentClick = false;
+  private ignoreMapContextPopoverDocumentClick = false;
   /** Feature id from the route to open once the map is ready. */
   private pendingDeepLinkFeatureId: string | null = null;
   /** Skip paramMap reactions while we are writing the URL ourselves. */
@@ -144,7 +151,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private customLayers?: RockExplorerCustomMapLayers;
   private mapBaseLayers: MapBaseLayer[] = [];
   private mapOverlays: MapOverlay[] = [];
-  private features: FeatureCollection<Geometry> = emptyFeatureCollection();
+  features: FeatureCollection<Geometry> = emptyFeatureCollection();
   private draftGeometry: Geometry | null = null;
   private geolocateControl: GeolocateControl | null = null;
   private mobileMediaQuery?: MediaQueryList;
@@ -397,6 +404,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'focusCoordinates':
         this.images.focusCoordinates(cmd.coordinates);
+        if (cmd.transientMarker) {
+          this.showTransientContextMarker(cmd.coordinates);
+        }
         break;
       case 'miscEditModeChange':
         this.mapInteraction.onMiscEditModeChange(cmd.editMode);
@@ -445,6 +455,15 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         break;
       case 'closeSessionsPanel':
         this.recording.closeSessionsPanel();
+        break;
+      case 'openListPanel':
+        this.openListPanel();
+        break;
+      case 'closeListPanel':
+        this.closeListPanel();
+        break;
+      case 'openFeatureFromList':
+        this.openFeatureFromList(cmd.featureId);
         break;
       case 'continueDraft':
         void this.recording.continueDraft(cmd.localId);
@@ -619,6 +638,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
 
   private onMapContextMenu(event: {
     point: { x: number; y: number };
+    lngLat: { lat: number; lng: number };
     originalEvent: Event;
   }): void {
     const original = event.originalEvent;
@@ -670,48 +690,76 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         legend: isCategorical ? (sub.categoricalStops ?? []) : undefined,
       });
     }
-    if (hits.length === 0) {
-      this.vectorIdentify = null;
-      this.cdr.detectChanges();
-      return;
-    }
-    this.ignoreVectorIdentifyDocumentClick = true;
-    this.vectorIdentify = {
+    this.ignoreMapContextPopoverDocumentClick = true;
+    this.mapContextPopover = {
       x: original.clientX,
       y: original.clientY,
+      coordinates: {
+        lat: event.lngLat.lat,
+        lng: event.lngLat.lng,
+      },
       hits,
     };
+    this.syncContextMarker();
     this.cdr.detectChanges();
     queueMicrotask(() => {
-      this.ignoreVectorIdentifyDocumentClick = false;
+      this.ignoreMapContextPopoverDocumentClick = false;
     });
   }
 
-  public closeVectorIdentify(): void {
-    if (!this.vectorIdentify) {
+  public copyMapContextCoordinates(): void {
+    if (!this.mapContextPopover) {
       return;
     }
-    this.vectorIdentify = null;
+    const { lat, lng } = this.mapContextPopover.coordinates;
+    this.clipboardService.copyTextToClipboard(`${lat}, ${lng}`);
+    this.closeMapContextPopover();
+  }
+
+  public closeMapContextPopover(): void {
+    if (!this.mapContextPopover) {
+      return;
+    }
+    this.mapContextPopover = null;
+    this.layers?.clearContextMarker();
+  }
+
+  private syncContextMarker(): void {
+    if (!this.mapContextPopover) {
+      this.layers?.clearContextMarker();
+      return;
+    }
+    this.layers?.setContextMarker(this.mapContextPopover.coordinates);
+  }
+
+  private showTransientContextMarker(coordinates: Coordinates): void {
+    this.layers?.setContextMarker(coordinates);
+  }
+
+  private clearTransientContextMarker(): void {
+    if (!this.mapContextPopover) {
+      this.layers?.clearContextMarker();
+    }
   }
 
   @HostListener('document:keydown.escape')
-  onEscapeCloseVectorIdentify(): void {
-    this.closeVectorIdentify();
+  onEscapeCloseMapContextPopover(): void {
+    this.closeMapContextPopover();
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClickCloseVectorIdentify(event: MouseEvent): void {
-    if (this.ignoreVectorIdentifyDocumentClick || event.button !== 0) {
+  onDocumentClickCloseMapContextPopover(event: MouseEvent): void {
+    if (this.ignoreMapContextPopoverDocumentClick || event.button !== 0) {
       return;
     }
     const target = event.target;
     if (
       target instanceof Node &&
-      this.vectorIdentifyPanel?.nativeElement.contains(target)
+      this.mapContextPopoverPanel?.nativeElement.contains(target)
     ) {
       return;
     }
-    this.closeVectorIdentify();
+    this.closeMapContextPopover();
   }
 
   public onPanelSaveFeature(feature: RockExplorerFeature) {
@@ -888,6 +936,29 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private closeListPanelIfOpen(): void {
+    if (this.ui.listPanelOpen()) {
+      this.ui.listPanelOpen.set(false);
+    }
+  }
+
+  private openListPanel(): void {
+    if (this.ui.panelOpen()) {
+      this.closePanel();
+    }
+    this.closeSessionsPanelIfOpen();
+    this.ui.listPanelOpen.set(true);
+  }
+
+  private closeListPanel(): void {
+    this.ui.listPanelOpen.set(false);
+  }
+
+  private openFeatureFromList(featureId: string): void {
+    this.closeListPanel();
+    this.openEditPanel(featureId, { focus: true });
+  }
+
   private initMap(styleUrl: string) {
     const el = this.mapContainer?.nativeElement;
     if (!el) {
@@ -991,7 +1062,8 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         }
         this.map!.on('click', (event) => {
           this.ngZone.run(() => {
-            this.closeVectorIdentify();
+            this.closeMapContextPopover();
+            this.clearTransientContextMarker();
             this.mapInteraction.onMapClick(event);
           });
         });
@@ -1041,6 +1113,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     this.layers = new RockExplorerMapLayers(this.map);
     this.applyUntitledMapLabels();
     await this.layers.addAll(this.features);
+    this.syncContextMarker();
     this.images.reattachToLayers();
     this.applySelectionFilters();
     await this.recording.refreshLocalDraftPolygons();
@@ -1054,8 +1127,14 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  public openEditPanel(id: string, options?: { focus?: boolean }) {
+  public openEditPanel(
+    id: string,
+    options?: { focus?: boolean; panelTab?: RockExplorerPanelTab },
+  ) {
     if (this.ui.panelOpen() && this.ui.editingFeature()?.id === id) {
+      if (options?.panelTab && this.panel) {
+        this.panel.panelActiveTab = options.panelTab;
+      }
       if (options?.focus) {
         this.mapInteraction.focusActiveFeature();
       }
@@ -1066,7 +1145,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feature) => {
-          this.applyFeatureToPanel(feature, false);
+          this.applyFeatureToPanel(feature, false, {
+            panelTab: options?.panelTab,
+          });
           if (options?.focus) {
             queueMicrotask(() => this.mapInteraction.focusActiveFeature());
           }
@@ -1087,6 +1168,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private applyFeatureToPanel(
     feature: RockExplorerFeature,
     formActive: boolean,
+    options?: { panelTab?: RockExplorerPanelTab },
   ) {
     this.closeSessionsPanelIfOpen();
     this.ui.featureFormActive.set(formActive);
@@ -1102,12 +1184,20 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
     }
     this.syncFeatureUrl(feature.id ?? null);
     this.cdr.detectChanges();
-    queueMicrotask(() => this.panel?.showFeature(feature, formActive));
+    queueMicrotask(() =>
+      this.panel?.showFeature(feature, formActive, {
+        tab: options?.panelTab,
+      }),
+    );
   }
 
   private onFeatureRouteParam(featureId: string | null) {
     const currentId = this.ui.editingFeature()?.id ?? null;
+    const panelTab = this.resolveDeepLinkTab();
     if (featureId === currentId) {
+      if (featureId && panelTab && this.panel) {
+        this.panel.panelActiveTab = panelTab;
+      }
       return;
     }
     if (featureId) {
@@ -1115,7 +1205,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.pendingDeepLinkFeatureId = featureId;
         return;
       }
-      this.openEditPanel(featureId, { focus: true });
+      this.openEditPanel(featureId, { focus: true, panelTab });
       return;
     }
     this.pendingDeepLinkFeatureId = null;
@@ -1130,7 +1220,27 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.pendingDeepLinkFeatureId = null;
-    this.openEditPanel(id, { focus: true });
+    this.openEditPanel(id, {
+      focus: true,
+      panelTab: this.resolveDeepLinkTab(),
+    });
+  }
+
+  /** Tab from `?tab=` (mail/notification deep links); fragment alone ⇒ comments. */
+  private resolveDeepLinkTab(): RockExplorerPanelTab | undefined {
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (
+      tab === 'info' ||
+      tab === 'images' ||
+      tab === 'comments' ||
+      tab === 'misc'
+    ) {
+      return tab;
+    }
+    if (this.route.snapshot.fragment) {
+      return 'comments';
+    }
+    return undefined;
   }
 
   private syncFeatureUrl(featureId: string | null) {

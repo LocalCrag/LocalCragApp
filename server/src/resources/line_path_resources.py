@@ -2,51 +2,86 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
-from marshmallow_schemas.line_path_schema import line_path_schema
+from marshmallow_schemas.line_path_schema import line_paths_schema
 from models.line import Line
 from models.line_path import LinePath
+from models.topo_image import TopoImage
 from models.user import User
-from util.security_util import check_auth_claims
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+)
 from util.validators import validate_order_payload
-from webargs_schemas.line_path_args import line_path_args
+from webargs_schemas.line_path_args import line_path_sync_args
 
 
-class CreateLinePath(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
-    def post(self, image_id):
+class SyncLinePaths(MethodView):
+    @session_required(moderator=True)
+    def put(self, image_id):
         """
-        Adds a line path to a topo image.
-        @param image_id: ID of the topo image for which to add a line path.
+        Creates, updates, deletes, and reorders all line paths for a topo image in one request.
+        Line paths not included in the payload are removed from the image.
+        Array order determines order_index.
         """
-        line_path_data = parser.parse(line_path_args, request)
-        created_by = User.find_by_email(get_jwt_identity())
+        sync_data = parser.parse(line_path_sync_args, request)
+        topo_image: TopoImage = TopoImage.find_by_id(image_id)
+        created_by = User.find_by_email(get_session_identity())
+        line_paths_data = sync_data["linePaths"]
 
-        if LinePath.exists_for_topo_image(image_id, line_path_data["line"]):
-            raise BadRequest("The same line can only be added once for a single topo image.")
+        line_ids = [item["line"] for item in line_paths_data]
+        if len(line_ids) != len(set(line_ids)):
+            raise BadRequest("Duplicate lines in payload.")
 
-        new_line_path: LinePath = LinePath()
-        new_line_path.line_id = line_path_data["line"]
-        new_line_path.path = line_path_data["path"]
-        new_line_path.topo_image_id = image_id
-        new_line_path.created_by_id = created_by.id
-        new_line_path.order_index = LinePath.find_max_order_index(image_id) + 1
+        existing_line_paths: List[LinePath] = LinePath.return_all(
+            filter=lambda: LinePath.topo_image_id == image_id,
+            options=db.joinedload(LinePath.line),
+        )
+        existing_by_line_id = {str(line_path.line_id): line_path for line_path in existing_line_paths}
+        existing_by_id = {str(line_path.id): line_path for line_path in existing_line_paths}
+        payload_line_ids = set(line_ids)
 
-        db.session.add(new_line_path)
+        for item in line_paths_data:
+            line: Line = Line.find_by_id(item["line"])
+            if line.area_id != topo_image.area_id:
+                raise BadRequest("Line does not belong to the topo image's area.")
+            if item.get("id"):
+                line_path = existing_by_id.get(item["id"])
+                if not line_path or str(line_path.line_id) != item["line"]:
+                    raise BadRequest("Line path id does not match line.")
+
+        for line_path in existing_line_paths:
+            if str(line_path.line_id) not in payload_line_ids:
+                db.session.delete(line_path)
+
+        synced_line_paths: List[LinePath] = []
+        for order_index, item in enumerate(line_paths_data):
+            line_path = existing_by_line_id.get(item["line"])
+            if line_path:
+                line_path.path = item["path"]
+                line_path.order_index = order_index
+                db.session.add(line_path)
+            else:
+                line_path = LinePath()
+                line_path.line_id = item["line"]
+                line_path.topo_image_id = image_id
+                line_path.path = item["path"]
+                line_path.order_index = order_index
+                line_path.created_by_id = created_by.id
+                db.session.add(line_path)
+            synced_line_paths.append(line_path)
+
         db.session.commit()
 
-        return line_path_schema.dump(new_line_path), 201
+        return line_paths_schema.dump(synced_line_paths), 200
 
 
 class DeleteLinePath(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def delete(self, line_path_id):
         """
         Delete a topo image.
@@ -66,8 +101,7 @@ class DeleteLinePath(MethodView):
 
 
 class UpdateLinePathOrder(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, image_id):
         """
         Changes the order index of line paths for unarchived lines for a specific topo image.
@@ -90,8 +124,7 @@ class UpdateLinePathOrder(MethodView):
 
 
 class UpdateLinePathOrderForLine(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     def put(self, line_slug):
         """
         Changes the order index of line paths for lines.

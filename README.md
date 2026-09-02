@@ -29,6 +29,30 @@ This is why I decided to create LocalCrag. A topo webapp to manage your local cl
 - **Multilanguage:** LocalCrag is built using transloco. Adding new languages is easy and there is also the possibility to run your instances in multiple languages.
 - ... more to come! We have a lot of ideas. We are open to your ideas and accept pull requests.
 
+## Rock Explorer
+
+Rock Explorer is a map-based tool for documenting places while you scout for new rock — boulders, cliffs, and sectors that are not in the topo yet.
+
+Use it to capture what you found in the field and share it with other developers in your instance:
+
+- **Map features** — mark spots as points or polygons, edit geometry later, and link features to existing topo objects (crags, sectors, areas, lines).
+- **Field metadata** — record potential, rock quality, rock type, grade range, climb type, and access issues (NSG, FFH, private land, etc.).
+- **Photos** — attach geotagged images, pick locations on the map, and show image pins on the basemap.
+- **Approach info** — add parking sites and hand-drawn approach paths.
+- **Record mode** — walk in with GPS tracking to capture paths; drafts are stored locally, sync when back online, and can be continued across sessions.
+- **Map tools** — switch base maps (topo, satellite, …), toggle custom overlays, adjust opacity, filter features, search by coordinates or place name, and share a feature via link.
+
+### Custom maps
+
+Rock Explorer uses MapLibre and can be configured per instance under **Instance settings → Maps**:
+
+- **Base maps** — any MapLibre style JSON URL (e.g. MapTiler topo/satellite, national basemaps). Set separate defaults for the topo line editor and for Rock Explorer.
+- **Overlays** — optional raster or vector layers shown only in Rock Explorer, stacked in list order. Typical uses include hillshade/DEM, geology maps, nature reserves, or other MVT/MBTiles you serve via TileJSON or an `{z}/{x}/{y}` URL. Tile hosts must allow CORS for your instance origin.
+
+### Place search (Photon)
+
+Location search (addresses, towns, peaks, and other named places) uses the free [Photon](https://github.com/komoot/photon) geocoding API (OpenStreetMap data). Coordinate input (`lat, lng`) still works and takes priority. Photon is a shared public service and **may be rate-limited or temporarily unavailable**; if search fails, try again later or jump using raw coordinates.
+
 ## Example instances
 
 - [gleesbouldering.com](https://gleesbouldering.com/) - The OG LocalCrag instance showcasing undisputably the best bouldering area in the world - the Eifel in Germany

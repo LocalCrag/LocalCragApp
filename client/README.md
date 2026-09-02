@@ -13,7 +13,9 @@ For the full local toolchain (Docker vs native, Husky, MinIO), see [docs/dev-too
 
 ## Running tests
 
-- Run E2E Cypress tests with `npm run cypress:open`
+- Run E2E Playwright tests (UI): `npm run e2e` (seeds DB, starts API + client, opens Playwright UI)
+- Run E2E headless: `npm run e2e:headless`
+- First-time / after upgrading Playwright: `npm run playwright:install` (also runs on `npm i`)
 - Run unit tests with `npm run test`
 
 ## i18n

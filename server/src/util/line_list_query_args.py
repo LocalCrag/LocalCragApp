@@ -133,7 +133,7 @@ def parse_line_list_filters(request: Request) -> LineListFilters:
                 raise BadRequest(f"Invalid required_bools key: {b}")
             required.add(b)
 
-    # Personal ascent filter; JWT user handled when filters are applied in SQL.
+    # Personal ascent filter; current session user handled when filters are applied in SQL.
     climb_filter = (request.args.get("climb_filter") or "any").lower()
     if climb_filter not in ("any", "climbed", "not_climbed"):
         raise BadRequest("Invalid climb_filter value.")

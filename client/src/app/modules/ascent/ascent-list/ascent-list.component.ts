@@ -55,7 +55,7 @@ import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
 import { Select } from 'primeng/select';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
 import { Message } from 'primeng/message';
@@ -64,8 +64,9 @@ import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
-import { ReactionWrapperComponent } from '../../reactions/reaction-wrapper/reaction-wrapper.component';
+import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
+import { CommentsDialogComponent } from '../../comments/comments-dialog/comments-dialog.component';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -96,7 +97,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
     DatePipe,
     TranslateSpecialGradesPipe,
     LineGradePipe,
-    ReactionWrapperComponent,
+    SocialInteractionWrapperComponent,
     TopoHierarchyBreadcrumbsComponent,
     GymModeDirective,
   ],
@@ -159,6 +160,9 @@ export class AscentListComponent
   private regionGradesLoaded = false;
   private initialLoadStarted = false;
   private reloadWhenReady = false;
+  /** From `?ascent=` mail/notification deep links; opens comments dialog when found. */
+  private pendingAscentDeepLinkId: string | null = null;
+  private deepLinkDialogOpened = false;
   private destroyRef = inject(DestroyRef);
   private ascentsService = inject(AscentsService);
   private dialogService = inject(DialogService);
@@ -170,6 +174,8 @@ export class AscentListComponent
   protected scalesService = inject(ScalesService);
   private regionService = inject(RegionService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private gradeDistribution: any = null;
 
   ngOnChanges(changes: SimpleChanges) {
@@ -253,6 +259,17 @@ export class AscentListComponent
       .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loadFirstPage();
+      });
+
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const ascentId = params.get('ascent');
+        if (ascentId !== this.pendingAscentDeepLinkId) {
+          this.deepLinkDialogOpened = false;
+        }
+        this.pendingAscentDeepLinkId = ascentId;
+        this.tryOpenAscentCommentsDeepLink();
       });
   }
 
@@ -392,6 +409,7 @@ export class AscentListComponent
         this.loadFirstPage();
         return;
       }
+      this.tryOpenAscentCommentsDeepLink();
       this.cdr.detectChanges();
     });
   }
@@ -406,6 +424,77 @@ export class AscentListComponent
       data: {
         ascent,
       },
+    });
+  }
+
+  openAscentComments(ascent: Ascent) {
+    this.ref = this.dialogService.open(CommentsDialogComponent, {
+      modal: true,
+      closable: true,
+      draggable: false,
+      dismissableMask: true,
+      focusOnShow: false,
+      styleClass: 'ascent-comments-dialog',
+      width: 'min(560px, 96vw)',
+      header: this.translocoService.translate(
+        marker('comments.ascentDialogTitle'),
+      ),
+      data: {
+        object: ascent,
+        commentCount: ascent.commentCount,
+        onCountChange: (count: number) => {
+          ascent.commentCount = count;
+          this.cdr.markForCheck();
+        },
+      },
+    });
+  }
+
+  /**
+   * Mail/notification deep links use `?ascent=<id>#<commentId>` on the line
+   * ascents route. Open the comments dialog once that ascent is in the list.
+   */
+  private tryOpenAscentCommentsDeepLink(): void {
+    if (!this.pendingAscentDeepLinkId || this.deepLinkDialogOpened) {
+      return;
+    }
+    if (this.loading === this.loadingStates.LOADING) {
+      return;
+    }
+    if (!this.ascents) {
+      return;
+    }
+
+    const ascent = this.ascents.find(
+      (item) => item.id === this.pendingAscentDeepLinkId,
+    );
+    if (ascent) {
+      this.deepLinkDialogOpened = true;
+      this.openAscentComments(ascent);
+      this.clearAscentDeepLinkQuery();
+      return;
+    }
+
+    if (this.hasNextPage) {
+      this.loadNextPage();
+      return;
+    }
+
+    // Ascent not in this list (wrong scope / deleted) — drop the query param.
+    this.pendingAscentDeepLinkId = null;
+    this.clearAscentDeepLinkQuery();
+  }
+
+  private clearAscentDeepLinkQuery(): void {
+    if (!this.route.snapshot.queryParamMap.has('ascent')) {
+      return;
+    }
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { ascent: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+      preserveFragment: true,
     });
   }
 

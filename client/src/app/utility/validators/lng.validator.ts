@@ -1,5 +1,13 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
+export function isValidLongitude(value: unknown): boolean {
+  const parsedNumber = Number(value);
+  if (Number.isNaN(parsedNumber) || !Number.isFinite(parsedNumber)) {
+    return false;
+  }
+  return Math.abs(parsedNumber) <= 180;
+}
+
 /**
  * Validator for longitude.
  *
@@ -7,14 +15,5 @@ import { AbstractControl, ValidatorFn } from '@angular/forms';
  */
 export const lngValidator =
   (): ValidatorFn =>
-  (control: AbstractControl): { [key: string]: any } => {
-    const parsedNumber = Number(control.value);
-    if (
-      Number.isNaN(parsedNumber) ||
-      !isFinite(parsedNumber) ||
-      Math.abs(parsedNumber) > 180
-    ) {
-      return { invalidLng: true };
-    }
-    return null;
-  };
+  (control: AbstractControl): { [key: string]: any } =>
+    isValidLongitude(control.value) ? null : { invalidLng: true };

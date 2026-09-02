@@ -1,10 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required,
-    verify_jwt_in_request,
-)
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
@@ -20,6 +15,7 @@ from marshmallow_schemas.comment_schema import (
 )
 from messages.messages import ResponseMessage
 from models.area import Area
+from models.ascent import Ascent
 from models.comment import Comment
 from models.crag import Crag
 from models.enums.notification_type_enum import NotificationTypeEnum
@@ -29,6 +25,11 @@ from models.region import Region
 from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 from models.user import User
+from util.auth_session import (
+    get_session_identity,
+    session_required,
+    verify_session_in_request,
+)
 from util.email import send_comment_created_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
@@ -48,15 +49,15 @@ def _assert_can_view_rock_explorer_comment_target(obj_type: str, target) -> None
     """Draft rock-explorer features are owner-only for comments."""
     if obj_type != "RockExplorerFeature":
         return
-    user = User.find_by_email(get_jwt_identity())
+    user = User.find_by_email(get_session_identity())
     assert_can_view_feature(target, user)
 
 
 class CreateComment(MethodView):
-    @jwt_required()
+    @session_required()
     def post(self):
         data = parser.parse(comment_args, request)
-        created_by: User = User.find_by_email(get_jwt_identity())
+        created_by: User = User.find_by_email(get_session_identity())
 
         # Validate generic target type/id
         target = None
@@ -76,6 +77,8 @@ class CreateComment(MethodView):
             target = Post.find_by_id(obj_id)
         elif obj_type == "RockExplorerFeature":
             target = RockExplorerFeature.find_by_id(obj_id)
+        elif obj_type == "Ascent":
+            target = Ascent.find_by_id(obj_id)
         else:
             raise BadRequest("Unsupported object type")
 
@@ -84,6 +87,8 @@ class CreateComment(MethodView):
 
         # Enforce secret spot visibility
         if hasattr(target, "secret") and target.secret and not SecretService.can_view_secrets():
+            raise NotFound()
+        if obj_type == "Ascent" and target.line and target.line.secret and not SecretService.can_view_secrets():
             raise NotFound()
 
         parent_id = data.get("parentId")
@@ -148,10 +153,10 @@ class CreateComment(MethodView):
 
 
 class UpdateComment(MethodView):
-    @jwt_required()
+    @session_required()
     def put(self, comment_id):
         data = parser.parse(comment_update_args, request)
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         comment: Comment = Comment.find_by_id(comment_id)
         if comment.created_by_id != user.id:
             raise Unauthorized("Only the creator can edit the comment.")
@@ -162,9 +167,9 @@ class UpdateComment(MethodView):
 
 
 class DeleteComment(MethodView):
-    @jwt_required()
+    @session_required()
     def delete(self, comment_id):
-        user = User.find_by_email(get_jwt_identity())
+        user = User.find_by_email(get_session_identity())
         comment: Comment = Comment.find_by_id(comment_id)
         if comment.created_by_id != user.id and not user.moderator and not user.admin:
             raise Unauthorized("Only the creator or a moderator can delete the comment.")
@@ -193,7 +198,7 @@ class GetComments(MethodView):
             Returns only root comments with replyCount.
           - Thread replies flat: provide root-id.
         """
-        verify_jwt_in_request(optional=True)
+        verify_session_in_request(optional=True)
 
         obj_type = request.args.get("object-type")
         obj_id = request.args.get("object-id")
@@ -207,7 +212,13 @@ class GetComments(MethodView):
 
         # helper to apply secret filters
         def apply_secret_filters(query, current_type):
-            if SecretService.can_view_secrets() or current_type not in ["Line", "Area", "Sector", "Crag"]:
+            if SecretService.can_view_secrets() or current_type not in [
+                "Line",
+                "Area",
+                "Sector",
+                "Crag",
+                "Ascent",
+            ]:
                 return query
             if current_type == "Line":
                 return query.join(Line, and_(Comment.object_id == Line.id, Comment.object_type == "Line")).filter(
@@ -224,6 +235,12 @@ class GetComments(MethodView):
             if current_type == "Crag":
                 return query.join(Crag, and_(Comment.object_id == Crag.id, Comment.object_type == "Crag")).filter(
                     Crag.secret.is_(False)
+                )
+            if current_type == "Ascent":
+                return (
+                    query.join(Ascent, and_(Comment.object_id == Ascent.id, Comment.object_type == "Ascent"))
+                    .join(Line, Ascent.line_id == Line.id)
+                    .filter(Line.secret.is_(False))
                 )
             return query
 
@@ -246,7 +263,7 @@ class GetComments(MethodView):
         else:
             # Top-level listing requires object info
             if (
-                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", "RockExplorerFeature"]
+                obj_type not in ["Line", "Area", "Sector", "Crag", "Region", "Post", "RockExplorerFeature", "Ascent"]
                 or not obj_id
             ):
                 raise BadRequest("object-type and object-id are required and must be valid.")
@@ -255,6 +272,10 @@ class GetComments(MethodView):
             if obj_type == "RockExplorerFeature":
                 feature = RockExplorerFeature.find_by_id(obj_id)
                 _assert_can_view_rock_explorer_comment_target(obj_type, feature)
+            if obj_type == "Ascent":
+                ascent = Ascent.find_by_id(obj_id)
+                if ascent.line and ascent.line.secret and not SecretService.can_view_secrets():
+                    raise NotFound()
             filters.extend(
                 [
                     Comment.object_type == obj_type,

@@ -18,6 +18,7 @@ export const topoLineRoutes: Routes = [
   {
     path: linePrefix,
     component: LineComponent,
+    data: { pageTitleHero: true },
     children: [
       {
         path: '',
@@ -56,7 +57,7 @@ export const topoLineRoutes: Routes = [
     canActivate: [isModerator],
   },
   {
-    path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/add-line-path',
+    path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/edit-line-paths',
     loadComponent: () =>
       import('../../../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component').then(
         (m) => m.LinePathFormWrapperComponent,

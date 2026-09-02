@@ -4,8 +4,17 @@ from resources.account_resources import (
     DeleteOwnUser,
     GetAccountSettings,
     GetRulesReadStatus,
+    MarkAppAlertDismissed,
     MarkRulesRead,
     UpdateAccountSettings,
+)
+from resources.app_alert_resources import (
+    CreateAppAlert,
+    DeleteAppAlert,
+    GetAllAppAlerts,
+    GetAppAlert,
+    GetAppAlerts,
+    UpdateAppAlert,
 )
 from resources.archive_resources import SetArchived
 from resources.area_resources import (
@@ -29,12 +38,11 @@ from resources.ascent_resources import (
     UpdateAscent,
 )
 from resources.auth_resources import (
+    CurrentUser,
     ForgotPassword,
     ResetPassword,
-    TokenRefresh,
     UserLogin,
-    UserLogoutAccess,
-    UserLogoutRefresh,
+    UserLogout,
 )
 from resources.batch_editor_resources import BatchCreateLines
 from resources.blocweather_resources import GetNearestBlocweatherUrl
@@ -75,8 +83,8 @@ from resources.instance_settings_resources import (
     UpdateInstanceSettings,
 )
 from resources.line_path_resources import (
-    CreateLinePath,
     DeleteLinePath,
+    SyncLinePaths,
     UpdateLinePathOrder,
     UpdateLinePathOrderForLine,
 )
@@ -139,6 +147,7 @@ from resources.rock_explorer_resources import (
     GetRockExplorerFeature,
     GetRockExplorerFeaturesGeoJSON,
     RockExplorerFeatures,
+    SearchRockExplorerFeatureCreators,
     UpdateRockExplorerFeature,
 )
 from resources.scale_resources import (
@@ -287,9 +296,8 @@ def configure_api(app):
     # Auth API
     auth_bp = Blueprint("auth", __name__)
     auth_bp.add_url_rule("/login", view_func=UserLogin.as_view("login_api"))
-    auth_bp.add_url_rule("/logout/refresh", view_func=UserLogoutRefresh.as_view("logout_refresh_api"))
-    auth_bp.add_url_rule("/logout/access", view_func=UserLogoutAccess.as_view("logout_access_api"))
-    auth_bp.add_url_rule("/token/refresh", view_func=TokenRefresh.as_view("token_refresh_api"))
+    auth_bp.add_url_rule("/logout", view_func=UserLogout.as_view("logout_api"))
+    auth_bp.add_url_rule("/me", view_func=CurrentUser.as_view("current_user_api"))
     auth_bp.add_url_rule("/forgot-password", view_func=ForgotPassword.as_view("forgot_password_api"))
     auth_bp.add_url_rule("/reset-password", view_func=ResetPassword.as_view("reset_password_api"))
     auth_bp.add_url_rule("/change-password", view_func=ChangePassword.as_view("change_password"))
@@ -321,6 +329,10 @@ def configure_api(app):
     account_bp.add_url_rule("/recent-searches", view_func=CreateRecentSearch.as_view("create_recent_search"))
     account_bp.add_url_rule("/rules-read-status", view_func=GetRulesReadStatus.as_view("get_rules_read_status"))
     account_bp.add_url_rule("/rules-read-status", view_func=MarkRulesRead.as_view("mark_rules_read"))
+    account_bp.add_url_rule(
+        "/app-alert-dismissals",
+        view_func=MarkAppAlertDismissed.as_view("mark_app_alert_dismissed"),
+    )
     account_bp.add_url_rule(
         "/release-notes/<string:bundle_id>",
         view_func=GetReleaseNoteBundle.as_view("get_release_note_bundle"),
@@ -436,7 +448,7 @@ def configure_api(app):
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=GetTopoImage.as_view("get_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=UpdateTopoImage.as_view("update_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>/move", view_func=MoveTopoImage.as_view("move_topo_image"))
-    topo_image_bp.add_url_rule("/<string:image_id>/line-paths", view_func=CreateLinePath.as_view("create_line_path"))
+    topo_image_bp.add_url_rule("/<string:image_id>/line-paths", view_func=SyncLinePaths.as_view("sync_line_paths"))
     topo_image_bp.add_url_rule(
         "/<string:image_id>/line-paths/update-order", view_func=UpdateLinePathOrder.as_view("update_line_path_order")
     )
@@ -512,6 +524,16 @@ def configure_api(app):
     menu_page_bp.add_url_rule("/<string:menu_page_slug>", view_func=UpdateMenuPage.as_view("update_menu_page"))
     app.register_blueprint(menu_page_bp, url_prefix="/api/menu-pages")
 
+    # App alerts API
+    app_alert_bp = Blueprint("app-alerts", __name__)
+    app_alert_bp.add_url_rule("", view_func=GetAppAlerts.as_view("get_app_alerts"))
+    app_alert_bp.add_url_rule("/manage", view_func=GetAllAppAlerts.as_view("get_all_app_alerts"))
+    app_alert_bp.add_url_rule("", view_func=CreateAppAlert.as_view("create_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=GetAppAlert.as_view("get_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=UpdateAppAlert.as_view("update_app_alert"))
+    app_alert_bp.add_url_rule("/<string:alert_id>", view_func=DeleteAppAlert.as_view("delete_app_alert"))
+    app.register_blueprint(app_alert_bp, url_prefix="/api/app-alerts")
+
     # Menu items API
     menu_item_bp = Blueprint("menu-items", __name__)
     menu_item_bp.add_url_rule("", view_func=GetMenuItems.as_view("get_manu_items"))
@@ -582,6 +604,10 @@ def configure_api(app):
         "/features/<uuid:feature_id>/clone",
         view_func=CloneRockExplorerFeature.as_view("clone_rock_explorer_feature"),
         methods=["POST"],
+    )
+    rock_explorer_bp.add_url_rule(
+        "/creators",
+        view_func=SearchRockExplorerFeatureCreators.as_view("search_rock_explorer_feature_creators"),
     )
     app.register_blueprint(rock_explorer_bp, url_prefix="/api/rock-explorer")
 

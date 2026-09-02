@@ -72,6 +72,7 @@ export type RockExplorerRecordingFacadeHost = {
   ) => void;
   /** Fetch + open the feature panel for an existing feature id. */
   openEditPanel: (id: string, options?: { focus?: boolean }) => void;
+
   /** Close the open feature panel. */
   closePanel: (options?: { skipUrlSync?: boolean }) => void;
   /** Cancel an in-progress misc-panel path draw. */
@@ -354,6 +355,7 @@ export class RockExplorerRecordingFacade {
     if (this.host.ui.panelOpen()) {
       this.host.closePanel();
     }
+    this.closeListPanelIfOpen();
     this.host.ui.sessionsPanelOpen.set(true);
     this.host.cdr.detectChanges();
   }
@@ -366,6 +368,12 @@ export class RockExplorerRecordingFacade {
   private closeSessionsPanelIfOpen(): void {
     if (this.host.ui.sessionsPanelOpen()) {
       this.host.ui.sessionsPanelOpen.set(false);
+    }
+  }
+
+  private closeListPanelIfOpen(): void {
+    if (this.host.ui.listPanelOpen()) {
+      this.host.ui.listPanelOpen.set(false);
     }
   }
 
@@ -400,6 +408,7 @@ export class RockExplorerRecordingFacade {
     }
     this.host.closePanel();
     this.closeSessionsPanelIfOpen();
+    this.closeListPanelIfOpen();
     this.host.ui.showFilters.set(false);
     this.host.ui.drawMode.set('select');
 
@@ -500,6 +509,7 @@ export class RockExplorerRecordingFacade {
     }
     await this.host.images.refreshDraftPins();
     this.closeSessionsPanelIfOpen();
+    this.closeListPanelIfOpen();
     if (session.feature.geometry && this.host.map) {
       fitMapToGeometry(this.host.map, session.feature.geometry, {
         padding: 64,
@@ -1228,6 +1238,7 @@ export class RockExplorerRecordingFacade {
       }
     }
     this.closeSessionsPanelIfOpen();
+    this.closeListPanelIfOpen();
     this.host.cdr.detectChanges();
   }
 

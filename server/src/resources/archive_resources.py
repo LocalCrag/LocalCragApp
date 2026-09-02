@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
 from webargs.flaskparser import parser
 
 from extensions import db
@@ -16,14 +15,13 @@ from util.archive import (
     set_crag_archived,
     set_sector_archived,
 )
+from util.auth_session import session_required
 from util.gym_mode import is_gym_mode
-from util.security_util import check_auth_claims
 from webargs_schemas.archive_args import archive_args, cross_validate_archive_args
 
 
 class SetArchived(MethodView):
-    @jwt_required()
-    @check_auth_claims(moderator=True)
+    @session_required(moderator=True)
     @is_gym_mode(True)
     def put(self):
         """

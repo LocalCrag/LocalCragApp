@@ -46,6 +46,7 @@ export type RockExplorerFilters = {
   potential?: string;
   rockQuality?: string;
   rockType?: string;
+  createdById?: string;
 };
 
 /** UI / map-host commands. The map host is the sole subscriber. */
@@ -80,7 +81,11 @@ export type RockExplorerCommand =
   | { type: 'imageMapPickChange'; active: boolean }
   | { type: 'coordinatesPreviewChange' }
   | { type: 'imagesLoaded' }
-  | { type: 'focusCoordinates'; coordinates: Coordinates }
+  | {
+      type: 'focusCoordinates';
+      coordinates: Coordinates;
+      transientMarker?: boolean;
+    }
   | { type: 'miscEditModeChange'; editMode: boolean }
   | { type: 'parkingMapPickChange'; active: boolean }
   | { type: 'pathDrawChange'; active: boolean }
@@ -97,6 +102,9 @@ export type RockExplorerCommand =
   | { type: 'syncNow' }
   | { type: 'openSessionsPanel' }
   | { type: 'closeSessionsPanel' }
+  | { type: 'openListPanel' }
+  | { type: 'closeListPanel' }
+  | { type: 'openFeatureFromList'; featureId: string }
   | { type: 'continueDraft'; localId: string }
   | { type: 'publishDraft'; localId?: string }
   | { type: 'showDraftOnMap'; localId: string }
@@ -180,6 +188,8 @@ export class RockExplorerUiService {
   readonly activeLocalDraftId = signal<string | null>(null);
   /** Floating sessions panel open state. */
   readonly sessionsPanelOpen = signal(false);
+  /** Feature list panel open state. */
+  readonly listPanelOpen = signal(false);
 
   /** Record allowed when IndexedDB is available. */
   readonly canStartRecord = computed(() => this.storageOk());

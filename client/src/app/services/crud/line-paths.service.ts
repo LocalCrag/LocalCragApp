@@ -17,22 +17,22 @@ export class LinePathsService {
   private http = inject(HttpClient);
 
   /**
-   * Adds a LinePath to a topo image.
+   * Syncs all line paths for a topo image in one request.
    *
-   * @param linePath LinePath to persist.
-   * @param topoImageId ID of the topo image to which the line path should be added.
-   * @return Observable of a LinePath.
+   * @param linePaths Line paths to persist in display order.
+   * @param topoImageId ID of the topo image.
+   * @return Observable of synced LinePaths.
    */
-  public addLinePath(
-    linePath: LinePath,
+  public syncLinePaths(
+    linePaths: LinePath[],
     topoImageId: string,
-  ): Observable<LinePath> {
+  ): Observable<LinePath[]> {
     return this.http
-      .post(
-        this.api.linePaths.addLinePath(topoImageId),
-        LinePath.serialize(linePath),
+      .put<any[]>(
+        this.api.linePaths.sync(topoImageId),
+        LinePath.serializeForSync(linePaths),
       )
-      .pipe(map(LinePath.deserialize));
+      .pipe(map((payload) => payload.map(LinePath.deserialize)));
   }
 
   /**

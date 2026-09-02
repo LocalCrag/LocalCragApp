@@ -25,10 +25,14 @@ class AscentSchema(BaseEntitySchema):
     sector = fields.Nested(AscentAndTodoSectorSchema())
     area = fields.Nested(AscentAndTodoAreaSchema())
     reactions = fields.Method(serialize="get_reactions")
+    commentCount = fields.Method(serialize="get_comment_count")
 
     def get_reactions(self, obj):
         # Set by GetAscents resource (fallback to empty list)
         return ReactionUserListSchema(many=True).dump(getattr(obj, "reactions_by_user", []) or [])
+
+    def get_comment_count(self, obj):
+        return int(getattr(obj, "_comment_count", 0))
 
 
 class PaginatedAscentsSchema(ma.SQLAlchemySchema):

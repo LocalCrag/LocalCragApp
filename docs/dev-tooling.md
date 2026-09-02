@@ -102,7 +102,7 @@ Do **not** run `npx husky init` — that recreates hooks and can overwrite the p
 ## Tests (pointers)
 
 - **Client unit tests:** `cd client && npm run test` (CI: `npm run test:ci`)
-- **Client E2E:** see [client/README.md](../client/README.md) (`npm run e2e` / Cypress)
+- **Client E2E:** see [client/README.md](../client/README.md) (`npm run e2e` / Playwright)
 - **Server tests:** pytest under `server/tests` with a test config — see [server/README.md](../server/README.md)
 
 ## Notification digest mails (dev)
