@@ -10,3 +10,4 @@ class NotificationTypeEnum(Enum):
     MODERATOR_TASK_CREATED = "moderator_task_created"
     MODERATOR_TASK_CREATED_AND_ASSIGNED = "moderator_task_created_and_assigned"
     MODERATOR_TASK_ASSIGNED = "moderator_task_assigned"
+    ADMIN_MESSAGE = "admin_message"

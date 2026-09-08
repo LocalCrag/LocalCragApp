@@ -24,6 +24,8 @@ class AccountSettings(db.Model):
     system_notifications_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
     # Whether moderator task events should create notifications
     moderator_task_notifications_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
+    # Whether admin broadcast messages should create notifications
+    admin_message_notifications_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
     # Digest schedule for email delivery ("daily", "weekly")
     notification_digest_frequency = db.Column(
         db.Enum(

@@ -5,6 +5,7 @@ from webargs.flaskparser import parser
 
 from extensions import db
 from marshmallow_schemas.line_schema import ascent_and_todo_lines_schema
+from models.admin_message import AdminMessage
 from models.ascent import Ascent
 from models.comment import Comment
 from models.enums.notification_type_enum import NotificationTypeEnum
@@ -72,6 +73,12 @@ def _notification_action_link(notification: Notification) -> str | None:
         task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
         if task:
             return moderator_task_list_link(task)
+    if (
+        notification.type == NotificationTypeEnum.ADMIN_MESSAGE
+        and notification.entity_type == "admin_message"
+        and notification.entity_id
+    ):
+        return f"/notifications?adminMessage={notification.entity_id}"
     return None
 
 
@@ -159,6 +166,17 @@ class GetNotifications(MethodView):
                     properties["moderatorTask"] = {
                         "title": task.title,
                         "targetLabel": moderator_task_target_label(task),
+                    }
+            if (
+                notification.type == NotificationTypeEnum.ADMIN_MESSAGE
+                and notification.entity_type == "admin_message"
+                and notification.entity_id
+            ):
+                admin_message = AdminMessage.query.filter_by(id=notification.entity_id).first()
+                if admin_message:
+                    properties["adminMessage"] = {
+                        "title": admin_message.title,
+                        "text": admin_message.text,
                     }
             row: dict = {
                 "id": str(notification.id),

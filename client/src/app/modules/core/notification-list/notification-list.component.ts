@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
+import { DialogService } from 'primeng/dynamicdialog';
 import { NotificationsService } from '../../../services/crud/notifications.service';
 import { NotificationItem } from '../../../models/notification-item';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -16,6 +17,7 @@ import { AppNotificationsService } from '../../../services/core/app-notification
 import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { AdminMessageDialogService } from '../admin-message-dialog/admin-message-dialog.service';
 
 @Component({
   selector: 'lc-notification-list',
@@ -23,7 +25,12 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [LineGradePipe, NotificationPresentationService],
+  providers: [
+    LineGradePipe,
+    NotificationPresentationService,
+    DialogService,
+    AdminMessageDialogService,
+  ],
 })
 export class NotificationListComponent implements OnInit {
   public notifications: NotificationItem[] = [];
@@ -36,9 +43,11 @@ export class NotificationListComponent implements OnInit {
   private appNotifications = inject(AppNotificationsService);
   private notificationsService = inject(NotificationsService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
+  private adminMessageDialog = inject(AdminMessageDialogService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -51,6 +60,18 @@ export class NotificationListComponent implements OnInit {
     );
     this.store.dispatch(loadUnreadNotificationCount());
     this.loadFirstPage();
+    this.route.queryParamMap.subscribe((params) => {
+      const messageId = params.get('adminMessage');
+      if (messageId) {
+        this.adminMessageDialog.openById(messageId);
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { adminMessage: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+    });
   }
 
   public loadFirstPage(): void {
@@ -86,9 +107,15 @@ export class NotificationListComponent implements OnInit {
   }
 
   public openNotification(notification: NotificationItem): void {
-    const link = notification.actionLink as string | undefined;
-
     const go = (): void => {
+      if (notification.type === 'admin_message' && notification.entityId) {
+        this.adminMessageDialog.openById(
+          notification.entityId,
+          notification.properties.adminMessage,
+        );
+        return;
+      }
+      const link = notification.actionLink as string | undefined;
       if (link) {
         this.router.navigateByUrl(link);
       }
