@@ -61,6 +61,7 @@ class UpdateAccountSettings(MethodView):
         settings.reaction_notifications_enabled = data["reactionNotificationsEnabled"]
         settings.system_notifications_enabled = data["systemNotificationsEnabled"]
         settings.moderator_task_notifications_enabled = data["moderatorTaskNotificationsEnabled"]
+        settings.admin_message_notifications_enabled = data["adminMessageNotificationsEnabled"]
         settings.notification_digest_frequency = NotificationDigestFrequencyEnum(data["notificationDigestFrequency"])
         settings.language = data["language"]
         settings.color_scheme = ColorSchemeEnum(data["colorScheme"])

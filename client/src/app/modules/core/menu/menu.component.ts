@@ -316,6 +316,13 @@ export class MenuComponent implements OnInit, AfterViewInit {
                 ),
                 routerLink: '/app-alerts',
               });
+              systemItems.splice(2, 0, {
+                icon: 'pi pi-fw pi-envelope',
+                label: this.translocoService.translate(
+                  marker('menu.adminMessages'),
+                ),
+                routerLink: '/admin-messages',
+              });
             }
 
             items.push({

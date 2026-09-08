@@ -6,6 +6,7 @@ export class AccountSettings {
   reactionNotificationsEnabled: boolean;
   systemNotificationsEnabled: boolean;
   moderatorTaskNotificationsEnabled: boolean;
+  adminMessageNotificationsEnabled: boolean;
   notificationDigestFrequency: 'daily' | 'weekly';
   language: LanguageCode;
   colorScheme: ColorScheme;
@@ -19,6 +20,8 @@ export class AccountSettings {
       payload.systemNotificationsEnabled;
     accountSettings.moderatorTaskNotificationsEnabled =
       payload.moderatorTaskNotificationsEnabled;
+    accountSettings.adminMessageNotificationsEnabled =
+      payload.adminMessageNotificationsEnabled;
     accountSettings.notificationDigestFrequency =
       payload.notificationDigestFrequency;
     accountSettings.language = payload.language;
@@ -34,6 +37,8 @@ export class AccountSettings {
       systemNotificationsEnabled: accountSettings.systemNotificationsEnabled,
       moderatorTaskNotificationsEnabled:
         accountSettings.moderatorTaskNotificationsEnabled,
+      adminMessageNotificationsEnabled:
+        accountSettings.adminMessageNotificationsEnabled,
       notificationDigestFrequency: accountSettings.notificationDigestFrequency,
       language: accountSettings.language,
       colorScheme: accountSettings.colorScheme,

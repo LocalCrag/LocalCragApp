@@ -21,6 +21,8 @@ def should_send_notification_mail(settings, notification_type: NotificationTypeE
         NotificationTypeEnum.MODERATOR_TASK_ASSIGNED,
     ):
         return settings.moderator_task_notifications_enabled
+    if notification_type == NotificationTypeEnum.ADMIN_MESSAGE:
+        return settings.admin_message_notifications_enabled
     return True
 
 

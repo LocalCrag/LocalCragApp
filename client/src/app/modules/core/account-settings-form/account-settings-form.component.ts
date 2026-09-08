@@ -52,6 +52,7 @@ export class AccountSettingsFormComponent implements OnInit {
       reactionNotificationsEnabled: [null],
       systemNotificationsEnabled: [null],
       moderatorTaskNotificationsEnabled: [null],
+      adminMessageNotificationsEnabled: [null],
       notificationDigestFrequency: [null],
       language: [null],
       colorScheme: [null],
@@ -78,6 +79,8 @@ export class AccountSettingsFormComponent implements OnInit {
         this.accountSettings.systemNotificationsEnabled,
       moderatorTaskNotificationsEnabled:
         this.accountSettings.moderatorTaskNotificationsEnabled,
+      adminMessageNotificationsEnabled:
+        this.accountSettings.adminMessageNotificationsEnabled,
       notificationDigestFrequency:
         this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
@@ -99,6 +102,8 @@ export class AccountSettingsFormComponent implements OnInit {
       ).value;
       accountSettings.moderatorTaskNotificationsEnabled =
         this.accountSettingsForm.get('moderatorTaskNotificationsEnabled').value;
+      accountSettings.adminMessageNotificationsEnabled =
+        this.accountSettingsForm.get('adminMessageNotificationsEnabled').value;
       accountSettings.notificationDigestFrequency =
         this.accountSettingsForm.get('notificationDigestFrequency').value;
       accountSettings.language = this.accountSettingsForm.get('language').value;

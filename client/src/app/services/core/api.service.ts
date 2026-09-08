@@ -147,6 +147,14 @@ export class ApiService {
     update: (id: string): string => `${this.apiHost}app-alerts/${id}`,
   };
 
+  public adminMessages = {
+    create: (): string => `${this.apiHost}admin-messages`,
+    getList: (): string => `${this.apiHost}admin-messages`,
+    getDetail: (id: string): string => `${this.apiHost}admin-messages/${id}`,
+    delete: (id: string): string => `${this.apiHost}admin-messages/${id}`,
+    update: (id: string): string => `${this.apiHost}admin-messages/${id}`,
+  };
+
   public menuItems = {
     create: (): string => `${this.apiHost}menu-items`,
     getList: (): string => `${this.apiHost}menu-items`,
