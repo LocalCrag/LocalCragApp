@@ -59,6 +59,7 @@ Location search (addresses, towns, peaks, and other named places) uses the free 
 - [nahetalbouldering.com](https://nahetalbouldering.com/) - The lesser known Nahetal sandstone bouldering area
 - [goewalddb.de](https://goewalldb.de/) - Bouldering in the Göttinger Forest - HDWG!
 - [mainbloc.de](https://topo.mainbloc.de/) - Taunus bouldering!
+- [bergsportwaasland.be](https://topo.bergsportwaasland.be/) - Bergsport Waasland gym
 
 ## Screenshots
 
