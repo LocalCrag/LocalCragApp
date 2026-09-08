@@ -17,6 +17,10 @@ export class NotificationsService {
 
   public notificationUpdates$ = this.notificationUpdatesSubject.asObservable();
 
+  public notifyUpdated(): void {
+    this.notificationUpdatesSubject.next();
+  }
+
   getNotifications(
     page: number,
     perPage: number,

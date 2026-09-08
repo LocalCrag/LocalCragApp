@@ -1,0 +1,6 @@
+<ng-container *transloco="let t; read: 'adminMessages.dialog'">
+  <div class="admin-message-dialog-body">{{ text }}</div>
+  <div class="flex w-full justify-end mt-6">
+    <p-button [label]="t('closeButtonLabel')" (click)="close()"></p-button>
+  </div>
+</ng-container>

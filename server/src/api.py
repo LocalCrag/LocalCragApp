@@ -8,6 +8,13 @@ from resources.account_resources import (
     MarkRulesRead,
     UpdateAccountSettings,
 )
+from resources.admin_message_resources import (
+    CreateAdminMessage,
+    DeleteAdminMessage,
+    GetAdminMessage,
+    GetAdminMessages,
+    UpdateAdminMessage,
+)
 from resources.app_alert_resources import (
     CreateAppAlert,
     DeleteAppAlert,
@@ -533,6 +540,15 @@ def configure_api(app):
     app_alert_bp.add_url_rule("/<string:alert_id>", view_func=UpdateAppAlert.as_view("update_app_alert"))
     app_alert_bp.add_url_rule("/<string:alert_id>", view_func=DeleteAppAlert.as_view("delete_app_alert"))
     app.register_blueprint(app_alert_bp, url_prefix="/api/app-alerts")
+
+    # Admin messages API (broadcast inbox notifications)
+    admin_message_bp = Blueprint("admin-messages", __name__)
+    admin_message_bp.add_url_rule("", view_func=GetAdminMessages.as_view("get_admin_messages"))
+    admin_message_bp.add_url_rule("", view_func=CreateAdminMessage.as_view("create_admin_message"))
+    admin_message_bp.add_url_rule("/<string:message_id>", view_func=GetAdminMessage.as_view("get_admin_message"))
+    admin_message_bp.add_url_rule("/<string:message_id>", view_func=UpdateAdminMessage.as_view("update_admin_message"))
+    admin_message_bp.add_url_rule("/<string:message_id>", view_func=DeleteAdminMessage.as_view("delete_admin_message"))
+    app.register_blueprint(admin_message_bp, url_prefix="/api/admin-messages")
 
     # Menu items API
     menu_item_bp = Blueprint("menu-items", __name__)
