@@ -119,6 +119,13 @@ export class NotificationPresentationService {
       return `${lead}: ${titles.join(', ')}`;
     }
 
+    if (notification.type === 'admin_message') {
+      return (
+        notification.properties.adminMessage?.title ||
+        this.translocoService.translate('menu.notificationTextAdminMessage')
+      );
+    }
+
     return notification.actorName || notification.type;
   }
 

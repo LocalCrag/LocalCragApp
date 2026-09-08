@@ -20,6 +20,21 @@ lc-topo-image-list {
     }
   }
 
+  // Keeps the topo image in view while scrolling a long line list. Only in the
+  // xl side-by-side layout; below that the image stacks above the lines.
+  @media (min-width: 80rem) {
+    .topo-image-column {
+      --topo-image-sticky-top: calc(
+        var(--lc-menu-height, 3.25rem) + var(--lc-offline-alert-height, 0px) +
+          1.5rem
+      );
+      position: sticky;
+      top: var(--topo-image-sticky-top);
+      max-height: calc(100vh - var(--topo-image-sticky-top) - 1.5rem);
+      overflow-y: auto;
+    }
+  }
+
   .archived {
     background-color: var(--p-content-hover-background);
 

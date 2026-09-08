@@ -18,11 +18,17 @@ export interface NotificationReleaseNotesProperties {
   releaseNoteItemKeys: string[];
 }
 
+export interface NotificationAdminMessageProperties {
+  title: string;
+  text: string;
+}
+
 export interface NotificationItemProperties {
   subject?: NotificationSubjectProperties;
   reaction?: NotificationReactionProperties;
   moderatorTask?: NotificationModeratorTaskProperties;
   releaseNotes?: NotificationReleaseNotesProperties;
+  adminMessage?: NotificationAdminMessageProperties;
 }
 
 export interface NotificationItem {

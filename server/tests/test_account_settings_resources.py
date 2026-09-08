@@ -10,6 +10,7 @@ def test_get_account_settings(client, member_token):
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is True
     assert rv.json["moderatorTaskNotificationsEnabled"] is True
+    assert rv.json["adminMessageNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] in ("de", "en", "fr", "it", "nl")
     assert rv.json["colorScheme"] == "system"
@@ -24,6 +25,7 @@ def test_update_account_settings(client, member_token):
             "reactionNotificationsEnabled": False,
             "systemNotificationsEnabled": False,
             "moderatorTaskNotificationsEnabled": False,
+            "adminMessageNotificationsEnabled": False,
             "notificationDigestFrequency": "daily",
             "language": "it",
             "colorScheme": "dark",
@@ -34,6 +36,7 @@ def test_update_account_settings(client, member_token):
     assert rv.json["reactionNotificationsEnabled"] is False
     assert rv.json["systemNotificationsEnabled"] is False
     assert rv.json["moderatorTaskNotificationsEnabled"] is False
+    assert rv.json["adminMessageNotificationsEnabled"] is False
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] == "it"
     assert rv.json["colorScheme"] == "dark"
@@ -48,6 +51,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
             "moderatorTaskNotificationsEnabled": True,
+            "adminMessageNotificationsEnabled": True,
             "notificationDigestFrequency": "weekly",
             "language": "en",
             "colorScheme": "system",
@@ -61,6 +65,7 @@ def test_update_account_settings_weekly_digest(client, member_token):
     assert rv.json["reactionNotificationsEnabled"] is True
     assert rv.json["systemNotificationsEnabled"] is True
     assert rv.json["moderatorTaskNotificationsEnabled"] is True
+    assert rv.json["adminMessageNotificationsEnabled"] is True
     assert rv.json["notificationDigestFrequency"] == "weekly"
     assert rv.json["language"] == "en"
 
@@ -102,6 +107,7 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
             "moderatorTaskNotificationsEnabled": True,
+            "adminMessageNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "de",
             "colorScheme": "system",
@@ -143,6 +149,7 @@ def test_update_account_settings_invalid_language(client, member_token):
             "reactionNotificationsEnabled": True,
             "systemNotificationsEnabled": True,
             "moderatorTaskNotificationsEnabled": True,
+            "adminMessageNotificationsEnabled": True,
             "notificationDigestFrequency": "daily",
             "language": "es",
             "colorScheme": "system",

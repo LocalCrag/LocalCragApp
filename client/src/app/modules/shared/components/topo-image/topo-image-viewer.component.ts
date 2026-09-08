@@ -34,6 +34,9 @@ export class TopoImageViewerComponent
 {
   @Input() showLineNumbers = false;
 
+  /** Layer used to bring a hovered line + label above others. */
+  private focusLayer: Konva.Layer;
+
   ngOnChanges(changes: SimpleChanges) {
     if (
       this.topoImage &&
@@ -70,19 +73,25 @@ export class TopoImageViewerComponent
   }
 
   private createKonvaStageAndLayer() {
+    // Allow page scroll over read-only topo canvases (Konva defaults to
+    // preventDefault: true, which blocks touch/wheel scrolling).
     this.stage = new Konva.Stage({
       container: this.konvaContainer.nativeElement,
       width: this.width,
       height: this.height,
+      preventDefault: false,
     });
-    this.lineLayer = new Konva.Layer();
+    this.lineLayer = new Konva.Layer({ preventDefault: false });
     this.stage.add(this.lineLayer);
-    this.numberLayer = new Konva.Layer();
+    this.numberLayer = new Konva.Layer({ preventDefault: false });
     this.stage.add(this.numberLayer);
+    this.focusLayer = new Konva.Layer({ preventDefault: false });
+    this.stage.add(this.focusLayer);
 
     const background = new Konva.Rect({
       width: this.width,
       height: this.height,
+      preventDefault: false,
     });
     background.fillPatternImage(this.backgroundImage);
     this.fitStage();
@@ -116,6 +125,7 @@ export class TopoImageViewerComponent
         });
         this.lineLayer.add(line);
         linePath.konvaLine = line;
+        linePath.konvaFocusLayer = this.focusLayer;
         linePath.konvaNumberLayer = this.numberLayer;
         linePath.konvaLineLayer = this.lineLayer;
       });
