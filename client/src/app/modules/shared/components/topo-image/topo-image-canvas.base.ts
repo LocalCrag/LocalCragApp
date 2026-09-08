@@ -142,7 +142,9 @@ export abstract class TopoImageCanvasBase implements OnInit {
           y: label.position.y - label.height / 2,
           width: label.width,
           height: label.height,
-          ...(editorMode ? { listening: false, preventDefault: true } : {}),
+          ...(editorMode
+            ? { listening: false, preventDefault: true }
+            : { preventDefault: false }),
         });
         const rectangle = new Konva.Rect({
           width: label.width,
@@ -152,7 +154,7 @@ export abstract class TopoImageCanvasBase implements OnInit {
             this.color ??
             instanceSettingsState.arrowColor,
           cornerRadius: label.height / 6,
-          ...(editorMode ? { preventDefault: true } : {}),
+          preventDefault: editorMode,
         });
         rectangleGroup.add(rectangle);
         const konvaText = new Konva.Text({
@@ -166,7 +168,7 @@ export abstract class TopoImageCanvasBase implements OnInit {
           width: label.width,
           padding: label.height / 8,
           align: 'center',
-          ...(editorMode ? { preventDefault: true } : {}),
+          preventDefault: editorMode,
         });
         rectangleGroup.add(konvaText);
         this.numberLayer.add(rectangleGroup);
