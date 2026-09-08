@@ -1,3 +1,16 @@
+# [1.55.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.54.0...v1.55.0) (2026-09-08)
+
+
+### Bug Fixes
+
+* **topo:** fix an issue where scrolling didn't work on topo images on touch devices ([#1280](https://github.com/LocalCrag/LocalCragApp/issues/1280)) ([a522c01](https://github.com/LocalCrag/LocalCragApp/commit/a522c0122a551d135e8bf79dca57fe6828965ff3)), closes [#1275](https://github.com/LocalCrag/LocalCragApp/issues/1275)
+
+
+### Features
+
+* **notifications:** allow admins to create custom notifications ([#1279](https://github.com/LocalCrag/LocalCragApp/issues/1279)) ([9d65027](https://github.com/LocalCrag/LocalCragApp/commit/9d650273b8390e2a27b47c673fb9305b3cd889f1)), closes [#1061](https://github.com/LocalCrag/LocalCragApp/issues/1061)
+* **topo:** make topo image sticky ([#1278](https://github.com/LocalCrag/LocalCragApp/issues/1278)) ([bf568d1](https://github.com/LocalCrag/LocalCragApp/commit/bf568d1fc43f452a5575483da9583aee54099e3d)), closes [#1277](https://github.com/LocalCrag/LocalCragApp/issues/1277)
+
 # [1.54.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.53.0...v1.54.0) (2026-09-02)
 
 
