@@ -1,0 +1,72 @@
+<ng-container *transloco="let t; read: 'adminMessages.list'">
+  <div class="content">
+    <p-dataView
+      #dv
+      [value]="messages"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template #emptymessage>
+        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
+          t("noAdminMessagesFoundEmptyMessage")
+        }}</p-message>
+      </ng-template>
+      <ng-template #header>
+        <div class="flex flex-row justify-between">
+          <p-select
+            [disabled]="loading === loadingStates.LOADING"
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            (onChange)="onSortChange($event)"
+            styleClass="md:mb-0"
+          ></p-select>
+          <div class="lc-button-group justify-end">
+            <p-button
+              [disabled]="loading === loadingStates.LOADING"
+              label="{{ t('newAdminMessageButtonLabel') }}"
+              icon="pi pi-plus"
+              routerLink="/admin-messages/create"
+              class="responsive-button"
+            ></p-button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-messages #list>
+        @if (loading !== loadingStates.LOADING) {
+          <div class="grid grid-cols-12">
+            @for (message of messages; track message.id; let first = $first) {
+              <div class="col-span-12">
+                <div
+                  class="flex flex-col xl:items-start p-6 gap-2"
+                  [ngClass]="{ 'border-t border-surface': !first }"
+                >
+                  <div
+                    class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full gap-3 items-center"
+                  >
+                    <div class="grow flex flex-col gap-1">
+                      <span>{{ message.title }}</span>
+                      <span
+                        class="text-sm font-normal text-muted-color"
+                        >{{ message.timeCreated | date }}</span
+                      >
+                    </div>
+                    <div class="lc-button-group grow-0">
+                      <p-button
+                        label="{{ t('editAdminMessageButtonLabel') }}"
+                        icon="pi pi-file-edit"
+                        routerLink="/admin-messages/{{ message.id }}/edit"
+                        styleClass="pr-0 responsive-button"
+                        [text]="true"
+                      ></p-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </ng-template>
+    </p-dataView>
+  </div>
+</ng-container>

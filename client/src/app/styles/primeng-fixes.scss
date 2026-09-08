@@ -32,3 +32,12 @@ p-menu .p-hidden {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+
+.admin-message-dialog-host .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-message-dialog-host .p-dialog-content > * {
+  width: 100%;
+}

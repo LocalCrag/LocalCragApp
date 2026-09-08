@@ -1,6 +1,7 @@
 import html
 
 from i18n.notification_digest_mail import notification_digest_mail
+from models.admin_message import AdminMessage
 from models.area import Area
 from models.ascent import Ascent
 from models.comment import Comment
@@ -150,6 +151,16 @@ def _build_digest_item(
                     "html": digest_i18n[text_key].format(
                         count=count, target_link=target_link, title=html.escape(task.title)
                     ),
+                }
+        return None
+    if notification_type == NotificationTypeEnum.ADMIN_MESSAGE:
+        if entity_type == "admin_message" and entity_id:
+            message = AdminMessage.query.filter_by(id=entity_id).first()
+            if message:
+                href = frontend_url(f"notifications?adminMessage={entity_id}")
+                title_link = _target_anchor(href, message.title, quote=False)
+                return {
+                    "html": digest_i18n["admin_message_text"].format(title_link=title_link),
                 }
         return None
     if notification_type == NotificationTypeEnum.FA_MODERATION_REMOVED:
