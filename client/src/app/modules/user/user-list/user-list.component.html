@@ -2,17 +2,29 @@
   <div class="content">
     <p-dataView
       #dv
-      [value]="users"
+      [value]="filteredUsers"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
       <ng-template #emptymessage>
         <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noUsersFoundEmptyMessage")
+          searchQuery.trim()
+            ? t("noUsersMatchSearchEmptyMessage")
+            : t("noUsersFoundEmptyMessage")
         }}</p-message>
       </ng-template>
       <ng-template #header>
         <div class="flex flex-col sm:flex-row justify-between gap-2">
+          <input
+            type="search"
+            pInputText
+            [ngModel]="searchQuery"
+            (ngModelChange)="onSearchChange($event)"
+            [placeholder]="t('searchPlaceholder')"
+            [disabled]="loading === loadingStates.LOADING"
+            class="user-list-search"
+            data-cy="user-list-search"
+          />
           <p-select
             [options]="sortOptions"
             [(ngModel)]="sortKey"
@@ -47,78 +59,76 @@
           <lc-user-list-skeleton></lc-user-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
+          <p-menu
+            #userMenu
+            [model]="userActionItems"
+            [popup]="true"
+            appendTo="body"
+          ></p-menu>
           <div class="grid grid-cols-12">
-            @for (user of users; track user; let first = $first) {
-              <div class="col-span-12">
-                <div
-                  class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
-                  [ngClass]="{ 'border-t border-surface': !first }"
+            @for (user of users; track user.id; let first = $first) {
+              <div
+                class="col-span-12 user-list-row"
+                [ngClass]="{ 'border-t border-surface': !first }"
+                data-cy="user-list-item"
+              >
+                <a
+                  class="user-list-row__main clickable-data-item"
+                  [routerLink]="user.routerLink"
                 >
-                  <div>
-                    <lc-user-avatar
-                      [user]="user"
-                      thumbnail="thumbnailM"
-                      size="xlarge"
-                      styleClass="mr-2"
-                    />
-                  </div>
-                  <div class="flex flex-col grow">
-                    <div
-                      class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-1"
+                  <lc-user-avatar
+                    [user]="user"
+                    thumbnail="thumbnailS"
+                    size="large"
+                    styleClass="user-list-row__avatar"
+                  />
+                  <div class="user-list-row__identity">
+                    <span
+                      class="user-list-row__name text-surface-900 dark:text-surface-0"
+                      >{{ user.fullname }}</span
                     >
-                      {{ user.fullname }}
-                    </div>
-                    <small class="mb-6">{{ user.email }}</small>
+                    <small class="user-list-row__email">{{ user.email }}</small>
+                  </div>
+                  <div class="user-list-row__meta">
                     @if (user.activated) {
-                      <small class="mb-6">{{
+                      <small>{{
                         t("userActivatedAt", {
                           activationTime: user.activatedAt | date: "datetime",
                         })
                       }}</small>
-                    }
-                    @if (!user.activated) {
-                      <small class="mb-6">{{ t("userNotActivatedYet") }}</small>
-                    }
-                    <div>
-                      @if (user.superadmin) {
-                        <p-tag
-                          [value]="t('superadmin')"
-                          severity="danger"
-                        ></p-tag>
-                      }
-                      @if (user.admin && !user.superadmin) {
-                        <p-tag [value]="t('admin')" severity="success"></p-tag>
-                      }
-                      @if (user.moderator && !user.admin) {
-                        <p-tag [value]="t('moderator')"></p-tag>
-                      }
-                      @if (user.member && !user.moderator) {
-                        <p-tag [value]="t('member')" severity="info"></p-tag>
-                      }
-                    </div>
-                  </div>
-                  <div>
-                    <p-menu
-                      #menu
-                      [model]="(dynamicMenuItems$ | async)!"
-                      (onShow)="showUserMenu(user)"
-                      [popup]="true"
-                      appendTo="body"
-                    ></p-menu>
-                    @if (
-                      currentUser.id !== user.id &&
-                      !(user.admin && !currentUser.superadmin)
-                    ) {
-                      <p-button
-                        icon="pi pi-wrench"
-                        (click)="menu.toggle($event)"
-                        severity="secondary"
-                        [text]="true"
-                        class="user-actions"
-                        label="{{ t('userActions') }}"
-                      ></p-button>
+                    } @else {
+                      <small>{{ t("userNotActivatedYet") }}</small>
                     }
                   </div>
+                  <div class="user-list-row__role">
+                    @if (user.superadmin) {
+                      <p-tag
+                        [value]="t('superadmin')"
+                        severity="danger"
+                      ></p-tag>
+                    }
+                    @if (user.admin && !user.superadmin) {
+                      <p-tag [value]="t('admin')" severity="success"></p-tag>
+                    }
+                    @if (user.moderator && !user.admin) {
+                      <p-tag [value]="t('moderator')"></p-tag>
+                    }
+                    @if (user.member && !user.moderator) {
+                      <p-tag [value]="t('member')" severity="info"></p-tag>
+                    }
+                  </div>
+                </a>
+                <div class="user-list-row__actions">
+                  <p-button
+                    icon="pi pi-ellipsis-v"
+                    (click)="openUserActions($event, user)"
+                    severity="secondary"
+                    [rounded]="true"
+                    [text]="true"
+                    class="user-actions"
+                    [disabled]="!isUserActionsEnabled(user)"
+                    [attr.aria-label]="t('userActions')"
+                  ></p-button>
                 </div>
               </div>
             }

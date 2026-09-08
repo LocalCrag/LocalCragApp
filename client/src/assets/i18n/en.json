@@ -25,6 +25,8 @@
   "users.list.moderator": "⭐ Moderator",
   "users.list.member": "❤️ Member",
   "users.list.userActions": "Actions",
+  "users.list.searchPlaceholder": "Search by name or email…",
+  "users.list.noUsersMatchSearchEmptyMessage": "No users match your search.",
   "user.charts.achievements": "Climbing achievements",
   "user.charts.totalAscents": "Total ascents",
   "user.charts.hardestAscent": "Hardest ascent: {{grade}}",
