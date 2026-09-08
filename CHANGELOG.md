@@ -1,3 +1,10 @@
+# [1.56.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.55.0...v1.56.0) (2026-09-08)
+
+
+### Features
+
+* **users:** redesign user table ([#1282](https://github.com/LocalCrag/LocalCragApp/issues/1282)) ([a57831d](https://github.com/LocalCrag/LocalCragApp/commit/a57831d2231e2330539a850bf47caf12d53447a5)), closes [#494](https://github.com/LocalCrag/LocalCragApp/issues/494)
+
 # [1.55.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.54.0...v1.55.0) (2026-09-08)
 
 
