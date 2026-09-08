@@ -1,17 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { RatingModule } from 'primeng/rating';
 import {
   ConfirmationService,
   MenuItem,
   PrimeIcons,
   SelectItem,
 } from 'primeng/api';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import {
@@ -23,11 +22,9 @@ import { UsersService } from '../../../services/crud/users.service';
 import { FormsModule } from '@angular/forms';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { TagModule } from 'primeng/tag';
-import { ChipModule } from 'primeng/chip';
-import { MenuModule } from 'primeng/menu';
+import { Menu, MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 import { Select } from 'primeng/select';
@@ -35,34 +32,38 @@ import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skele
 import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { RouterLink } from '@angular/router';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'lc-user-list',
   imports: [
     TranslocoDirective,
-    AsyncPipe,
     ButtonModule,
     DataViewModule,
-    RatingModule,
     NgClass,
     FormsModule,
     UserAvatarComponent,
     TagModule,
-    ChipModule,
     MenuModule,
-    ConfirmPopupModule,
     ConfirmDialogModule,
     Select,
     UserListSkeletonComponent,
     Message,
     DatePipe,
+    RouterLink,
+    InputText,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
   providers: [ConfirmationService],
 })
 export class UserListComponent implements OnInit {
-  public users: User[];
+  @ViewChild('userMenu') userMenu: Menu;
+
+  public users: User[] = [];
+  public filteredUsers: User[] | null = null;
+  public searchQuery = '';
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public sortOptions: SelectItem[];
@@ -70,10 +71,10 @@ export class UserListComponent implements OnInit {
   public sortOrder: number;
   public sortField: string;
   public currentUser: User;
-  public dynamicMenuItems$: BehaviorSubject<MenuItem[]> = new BehaviorSubject(
-    [] as MenuItem[],
-  );
+  public userActionItems: MenuItem[] = [];
 
+  private isAdmin = false;
+  private clickedUser: User | null = null;
   private usersService = inject(UsersService);
   private confirmationService = inject(ConfirmationService);
   private store = inject(Store);
@@ -91,9 +92,12 @@ export class UserListComponent implements OnInit {
     forkJoin([
       this.usersService.getUsers(),
       this.store.select(selectCurrentUser).pipe(take(1)),
-    ]).subscribe(([users, currentUser]) => {
+      this.store.select(selectIsAdmin).pipe(take(1)),
+    ]).subscribe(([users, currentUser, isAdmin]) => {
       this.currentUser = currentUser;
+      this.isAdmin = isAdmin;
       this.users = users;
+      this.applyFilter();
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
         {
@@ -111,77 +115,109 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  /**
-   * Using a BehaviourSubject as workaround for: https://github.com/primefaces/primeng/issues/13934
-   */
-  showUserMenu(user: User) {
-    this.store
-      .select(selectIsAdmin)
-      .pipe(take(1))
-      .subscribe((isAdmin) => {
-        this.dynamicMenuItems$.next([
-          {
-            icon: 'pi pi-fw pi-user',
-            label: this.translocoService.translate(
-              marker('usersMenu.promoteToUser'),
-            ),
-            visible: user.member && !user.superadmin,
-            command: () => {
-              this.promoteUser(user, UserPromotionTargets.USER);
-            },
-          },
-          {
-            icon: 'pi pi-fw pi-heart-fill',
-            label: this.translocoService.translate(
-              marker('usersMenu.promoteToMember'),
-            ),
-            visible:
-              (!user.member || user.moderator || user.admin) &&
-              !user.superadmin,
-            command: () => {
-              this.promoteUser(user, UserPromotionTargets.MEMBER);
-            },
-          },
-          {
-            icon: 'pi pi-fw pi-star-fill',
-            label: this.translocoService.translate(
-              marker('usersMenu.promoteToModerator'),
-            ),
-            visible: (!user.moderator || user.admin) && !user.superadmin,
-            command: () => {
-              this.promoteUser(user, UserPromotionTargets.MODERATOR);
-            },
-          },
-          {
-            icon: 'pi pi-fw pi-key',
-            label: this.translocoService.translate(
-              marker('usersMenu.promoteToAdmin'),
-            ),
-            visible: !user.admin && !user.superadmin,
-            command: () => {
-              this.promoteUser(user, UserPromotionTargets.ADMIN);
-            },
-          },
-          {
-            icon: 'pi pi-fw pi-send',
-            label: this.translocoService.translate(
-              marker('usersMenu.resendUserCreatedMail'),
-            ),
-            visible: !user.activated,
-            command: () => {
-              this.resendUserCreatedMail(user);
-            },
-          },
-          {
-            icon: 'pi pi-fw pi-trash',
-            label: this.translocoService.translate(marker('usersMenu.delete')),
-            command: () => {
-              this.confirmDeleteUser(user);
-            },
-            visible: isAdmin,
-          },
-        ]);
-      });
+  onSearchChange(query: string) {
+    this.searchQuery = query;
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    const q = this.searchQuery.trim().toLocaleLowerCase();
+    if (!q) {
+      this.filteredUsers = this.users;
+      return;
+    }
+    this.filteredUsers = this.users.filter((user) => {
+      const name = (user.fullname ?? '').toLocaleLowerCase();
+      const email = (user.email ?? '').toLocaleLowerCase();
+      return name.includes(q) || email.includes(q);
+    });
+  }
+
+  isUserActionsEnabled(user: User): boolean {
+    if (!this.currentUser || this.currentUser.id === user.id) {
+      return false;
+    }
+    // Superadmins (and other admins for non-superadmin viewers): show menu disabled
+    if (user.superadmin || (user.admin && !this.currentUser.superadmin)) {
+      return false;
+    }
+    return true;
+  }
+
+  openUserActions(event: Event, user: User) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clickedUser = user;
+    this.userActionItems = this.buildUserActionItems();
+    this.userMenu.toggle(event);
+  }
+
+  private buildUserActionItems(): MenuItem[] {
+    const user = this.clickedUser;
+    if (!user) {
+      return [];
+    }
+    return [
+      {
+        icon: 'pi pi-fw pi-user',
+        label: this.translocoService.translate(
+          marker('usersMenu.promoteToUser'),
+        ),
+        visible: user.member && !user.superadmin,
+        command: () => {
+          this.promoteUser(user, UserPromotionTargets.USER);
+        },
+      },
+      {
+        icon: 'pi pi-fw pi-heart-fill',
+        label: this.translocoService.translate(
+          marker('usersMenu.promoteToMember'),
+        ),
+        visible:
+          (!user.member || user.moderator || user.admin) && !user.superadmin,
+        command: () => {
+          this.promoteUser(user, UserPromotionTargets.MEMBER);
+        },
+      },
+      {
+        icon: 'pi pi-fw pi-star-fill',
+        label: this.translocoService.translate(
+          marker('usersMenu.promoteToModerator'),
+        ),
+        visible: (!user.moderator || user.admin) && !user.superadmin,
+        command: () => {
+          this.promoteUser(user, UserPromotionTargets.MODERATOR);
+        },
+      },
+      {
+        icon: 'pi pi-fw pi-key',
+        label: this.translocoService.translate(
+          marker('usersMenu.promoteToAdmin'),
+        ),
+        visible: !user.admin && !user.superadmin,
+        command: () => {
+          this.promoteUser(user, UserPromotionTargets.ADMIN);
+        },
+      },
+      {
+        icon: 'pi pi-fw pi-send',
+        label: this.translocoService.translate(
+          marker('usersMenu.resendUserCreatedMail'),
+        ),
+        visible: !user.activated,
+        command: () => {
+          this.resendUserCreatedMail(user);
+        },
+      },
+      {
+        icon: 'pi pi-fw pi-trash',
+        label: this.translocoService.translate(marker('usersMenu.delete')),
+        command: () => {
+          this.confirmDeleteUser(user);
+        },
+        visible: this.isAdmin,
+      },
+    ];
   }
 
   /**

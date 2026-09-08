@@ -25,6 +25,8 @@
   "users.list.moderator": "⭐ Modérateur",
   "users.list.member": "❤️ Membre",
   "users.list.userActions": "Actes",
+  "users.list.searchPlaceholder": "Rechercher par nom ou e-mail…",
+  "users.list.noUsersMatchSearchEmptyMessage": "Aucun utilisateur ne correspond à votre recherche.",
   "user.charts.achievements": "Réalisations d'escalade",
   "user.charts.totalAscents": "Ascensions totales",
   "user.charts.hardestAscent": "Ascension la plus difficile : {{grade}}",

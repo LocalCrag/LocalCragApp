@@ -6,3 +6,4 @@ docker-compose.override.yml
 helm/localcrag/charts
 .planning/
 .cursor/
+.vscode/
