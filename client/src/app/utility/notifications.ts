@@ -367,6 +367,21 @@ export const NOTIFICATIONS = {
     title: marker('notifications.APP_ALERT_DELETED_TITLE'),
     message: marker('notifications.APP_ALERT_DELETED_MESSAGE'),
   },
+  ADMIN_MESSAGE_CREATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.ADMIN_MESSAGE_CREATED_TITLE'),
+    message: marker('notifications.ADMIN_MESSAGE_CREATED_MESSAGE'),
+  },
+  ADMIN_MESSAGE_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.ADMIN_MESSAGE_UPDATED_TITLE'),
+    message: marker('notifications.ADMIN_MESSAGE_UPDATED_MESSAGE'),
+  },
+  ADMIN_MESSAGE_DELETED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.ADMIN_MESSAGE_DELETED_TITLE'),
+    message: marker('notifications.ADMIN_MESSAGE_DELETED_MESSAGE'),
+  },
   MODERATOR_TASK_CREATED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MODERATOR_TASK_CREATED_TITLE'),

@@ -12,6 +12,7 @@ account_settings_args = {
     "reactionNotificationsEnabled": fields.Boolean(required=True),
     "systemNotificationsEnabled": fields.Boolean(required=True),
     "moderatorTaskNotificationsEnabled": fields.Boolean(required=True),
+    "adminMessageNotificationsEnabled": fields.Boolean(required=True),
     "notificationDigestFrequency": fields.Str(
         required=True,
         validate=validate.OneOf([member.value for member in NotificationDigestFrequencyEnum]),
