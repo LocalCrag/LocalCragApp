@@ -25,6 +25,8 @@
   "users.list.moderator": "⭐ Moderator",
   "users.list.member": "❤️ Mitglied",
   "users.list.userActions": "Aktionen",
+  "users.list.searchPlaceholder": "Nach Name oder E-Mail suchen…",
+  "users.list.noUsersMatchSearchEmptyMessage": "Keine Benutzer entsprechen der Suche.",
   "user.charts.achievements": "Kletterleistungen",
   "user.charts.totalAscents": "Begehungen gesamt",
   "user.charts.hardestAscent": "Schwerste Begehung: {{grade}}",

@@ -25,6 +25,8 @@
   "users.list.moderator": "⭐ Moderator",
   "users.list.member": "❤️ Lid",
   "users.list.userActions": "Acties",
+  "users.list.searchPlaceholder": "Zoeken op naam of e-mail…",
+  "users.list.noUsersMatchSearchEmptyMessage": "Geen gebruikers komen overeen met je zoekopdracht.",
   "user.charts.achievements": "Klimprestaties",
   "user.charts.totalAscents": "Toppen totaal",
   "user.charts.hardestAscent": "Zwaarste top: {{grade}}",

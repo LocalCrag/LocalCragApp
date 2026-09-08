@@ -1,0 +1,28 @@
+.user-list-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-list-skeleton__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.4fr) minmax(12rem, 1fr) 11rem auto;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.625rem 1rem;
+  border-top: 1px solid var(--p-content-border-color);
+
+  &:first-child {
+    border-top: none;
+  }
+}
+
+.user-list-skeleton__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.user-list-skeleton__meta {
+  min-width: 0;
+}

@@ -1,5 +1,86 @@
 @use "../../../styles/media-queries" as m;
 
+.user-list-search {
+  width: 100%;
+  min-width: 0;
+  max-width: 24rem;
+  /* Avoid flex-grow: in the stacked (column) header it stretched the input height. */
+  flex: 0 1 auto;
+}
+
+@media (min-width: 640px) {
+  .user-list-search {
+    width: auto;
+    flex: 1 1 12rem;
+  }
+}
+
+.user-list-row {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.user-list-row__main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.4fr) minmax(12rem, 1fr) 11rem;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.625rem 1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.user-list-row__avatar {
+  grid-column: 1;
+}
+
+.user-list-row__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  grid-column: 2;
+}
+
+.user-list-row__name {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.user-list-row__email {
+  color: var(--p-text-muted-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-list-row__meta {
+  min-width: 0;
+  color: var(--p-text-muted-color);
+  grid-column: 3;
+
+  small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.user-list-row__role {
+  grid-column: 4;
+  justify-self: start;
+  min-width: 0;
+}
+
+.user-list-row__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 0.625rem 1rem 0.625rem 0;
+}
+
 .user-actions {
   @include m.prime-xl {
     margin-left: -1.25rem;
@@ -8,4 +89,21 @@
 
 p-tag {
   line-height: 1.5rem;
+}
+
+@include m.on-mobile {
+  .user-list-row__main {
+    grid-template-columns: auto minmax(0, 1fr) 9rem;
+  }
+
+  .user-list-row__meta {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .user-list-row__role {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
 }
