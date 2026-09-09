@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -17,6 +18,9 @@ import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { User } from '../../../models/user';
+
+/** Fragment targeted by notification digest mail footer links. */
+export const NOTIFICATION_MAIL_SETTINGS_FRAGMENT = 'notification-mails';
 
 @Component({
   selector: 'lc-account-settings-form',
@@ -45,6 +49,7 @@ export class AccountSettingsFormComponent implements OnInit {
   private accountService = inject(AccountService);
   private fb = inject(FormBuilder);
   private store = inject(Store);
+  private route = inject(ActivatedRoute);
 
   private buildForm() {
     this.accountSettingsForm = this.fb.group({
@@ -66,6 +71,7 @@ export class AccountSettingsFormComponent implements OnInit {
       this.accountSettings = accountSettings;
       this.setFormValue();
       this.loadingState = LoadingState.DEFAULT;
+      this.scrollToNotificationMailSettings();
     });
   }
 
@@ -132,5 +138,20 @@ export class AccountSettingsFormComponent implements OnInit {
     } else {
       this.formDirective.markAsTouched();
     }
+  }
+
+  private scrollToNotificationMailSettings() {
+    if (this.route.snapshot.fragment !== NOTIFICATION_MAIL_SETTINGS_FRAGMENT) {
+      return;
+    }
+    setTimeout(() => {
+      document
+        .getElementById(NOTIFICATION_MAIL_SETTINGS_FRAGMENT)
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+    });
   }
 }
