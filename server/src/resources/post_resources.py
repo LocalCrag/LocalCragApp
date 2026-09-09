@@ -7,9 +7,7 @@ from extensions import db
 from marshmallow_schemas.post_schema import post_schema, posts_schema
 from models.comment import Comment
 from models.post import Post
-from models.user import User
 from util.auth_session import (
-    get_session_identity,
     session_required,
 )
 from util.html_inline_styles import sanitize_wysiwyg_html
@@ -65,12 +63,10 @@ class CreatePost(MethodView):
         Create a post.
         """
         post_data = parser.parse(post_args, request)
-        created_by = User.find_by_email(get_session_identity())
 
         new_post: Post = Post()
         new_post.title = post_data["title"].strip()
         new_post.text = sanitize_wysiwyg_html(post_data["text"])
-        new_post.created_by_id = created_by.id
 
         db.session.add(new_post)
         db.session.commit()

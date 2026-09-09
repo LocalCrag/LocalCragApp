@@ -65,7 +65,6 @@ class CreateReaction(MethodView):
             raise BadRequest("Reaction already exists for this target.")
 
         reaction = Reaction()
-        reaction.created_by_id = user.id
         reaction.target_type = target_type
         reaction.target_id = target.id
         reaction.emoji = emoji

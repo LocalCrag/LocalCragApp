@@ -5,11 +5,9 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from extensions import db
 from marshmallow_schemas.file_schema import files_schema
 from messages.messages import ResponseMessage
-from models.user import User
 from uploader.errors import FilesizeLimitExceeded, InvalidFiletypeUploaded
 from uploader.media_upload_handler import handle_file_upload
 from util.auth_session import (
-    get_session_identity,
     session_required,
 )
 
@@ -26,7 +24,6 @@ class UploadFile(MethodView):
             file_payloads = request.files.getlist("upload")
             for file_payload in file_payloads:
                 file = handle_file_upload(file_payload)
-                file.created_by = User.find_by_email(get_session_identity())
                 db.session.add(file)
                 files.append(file)
             db.session.commit()

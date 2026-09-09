@@ -158,7 +158,6 @@ class CreateModeratorTask(MethodView):
         task.title = data["title"].strip()
         task.description = sanitize_wysiwyg_html(data["description"]) if data.get("description") else None
         task.object = target
-        task.created_by_id = created_by.id
         assignee = _resolve_assigned_to(data.get("assignedToId"))
         task.assigned_to_id = assignee.id if assignee else None
 

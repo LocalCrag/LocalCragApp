@@ -5,9 +5,7 @@ from webargs.flaskparser import parser
 from extensions import db
 from marshmallow_schemas.menu_page_schema import menu_page_schema, menu_pages_schema
 from models.menu_page import MenuPage
-from models.user import User
 from util.auth_session import (
-    get_session_identity,
     session_required,
 )
 from util.html_inline_styles import sanitize_wysiwyg_html
@@ -41,12 +39,10 @@ class CreateMenuPage(MethodView):
         Create a menu page.
         """
         menu_page_data = parser.parse(menu_page_args, request)
-        created_by = User.find_by_email(get_session_identity())
 
         new_menu_page: MenuPage = MenuPage()
         new_menu_page.title = menu_page_data["title"].strip()
         new_menu_page.text = sanitize_wysiwyg_html(menu_page_data["text"])
-        new_menu_page.created_by_id = created_by.id
 
         db.session.add(new_menu_page)
         db.session.commit()
