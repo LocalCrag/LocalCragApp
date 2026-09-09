@@ -1,4 +1,5 @@
 from models.menu_page import MenuPage
+from models.user import User
 
 
 def test_successful_create_menu_page(client, moderator_token):
@@ -14,6 +15,9 @@ def test_successful_create_menu_page(client, moderator_token):
     assert res["slug"] == "glees-is-closed"
     assert res["text"] == "<p>Haha, fooled you!</p>"
     assert res["id"] is not None
+    page = MenuPage.find_by_id(res["id"])
+    moderator = User.find_by_email("moderator@localcrag.invalid.org")
+    assert page.created_by_id == moderator.id
 
 
 def test_successful_get_menu_pages(client):

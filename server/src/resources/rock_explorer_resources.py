@@ -156,11 +156,9 @@ class RockExplorerFeatures(MethodView):
             request,
             validate=cross_validate_rock_explorer_feature_args,
         )
-        created_by = _current_user()
 
         feature = RockExplorerFeature()
         feature.geometry = data["geometry"]
-        feature.created_by_id = created_by.id
         apply_rock_explorer_metadata(feature, data)
 
         db.session.add(feature)

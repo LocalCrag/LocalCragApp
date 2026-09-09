@@ -11,9 +11,7 @@ from marshmallow_schemas.line_path_schema import line_paths_schema
 from models.line import Line
 from models.line_path import LinePath
 from models.topo_image import TopoImage
-from models.user import User
 from util.auth_session import (
-    get_session_identity,
     session_required,
 )
 from util.validators import validate_order_payload
@@ -30,7 +28,6 @@ class SyncLinePaths(MethodView):
         """
         sync_data = parser.parse(line_path_sync_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
-        created_by = User.find_by_email(get_session_identity())
         line_paths_data = sync_data["linePaths"]
 
         line_ids = [item["line"] for item in line_paths_data]
@@ -71,7 +68,6 @@ class SyncLinePaths(MethodView):
                 line_path.topo_image_id = image_id
                 line_path.path = item["path"]
                 line_path.order_index = order_index
-                line_path.created_by_id = created_by.id
                 db.session.add(line_path)
             synced_line_paths.append(line_path)
 

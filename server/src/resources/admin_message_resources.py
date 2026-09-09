@@ -64,7 +64,6 @@ class CreateAdminMessage(MethodView):
         message = AdminMessage()
         message.title = data["title"].strip()
         message.text = data["text"].strip()
-        message.created_by_id = created_by.id
 
         db.session.add(message)
         db.session.flush()

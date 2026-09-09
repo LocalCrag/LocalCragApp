@@ -49,7 +49,6 @@ class CreateTodo(MethodView):
 
         todo: Todo = Todo()
         todo.line_id = todo_data["line"]
-        todo.created_by_id = created_by.id
 
         db.session.add(todo)
         db.session.commit()
