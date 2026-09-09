@@ -23,6 +23,7 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.notification import Notification
 from models.user import User
+from util.email_helpers import NOTIFICATION_MAIL_SETTINGS_PATH
 from util.email_helpers import build_comment_action_link as _build_comment_action_link
 from util.email_helpers import frontend_url as _frontend_url
 from util.notification_digest_builder import build_digest_items
@@ -247,6 +248,7 @@ def send_notification_digest_email(receiver: User, notifications: list[Notificat
         digest_items=digest_items,
         frontend_host=current_app.config["FRONTEND_HOST"],
         notifications_link=current_app.config["FRONTEND_HOST"],
+        notification_settings_link=_frontend_url(NOTIFICATION_MAIL_SETTINGS_PATH),
         **i18n_keyword_arg_dict,
     )
     msg.attach(MIMEText(template, "html"))

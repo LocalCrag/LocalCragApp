@@ -8,8 +8,10 @@ from extensions import db
 from i18n.mail_common import merge_mail_translations
 from i18n.reset_password_mail import reset_password_mail
 from models.comment import Comment
+from models.enums.notification_type_enum import NotificationTypeEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.notification import Notification
 from models.user import User
 from util.email import (
     _apply_instance_branding,
@@ -17,6 +19,7 @@ from util.email import (
     build_i18n_keyword_arg_dict,
     log_decoded_email_parts,
     send_comment_created_email,
+    send_notification_digest_email,
     send_project_climbed_email,
     send_user_registered_email,
 )
@@ -64,6 +67,8 @@ def test_reset_password_mail_template_uses_instance_branding():
         assert settings.copyright_owner in html
         assert settings.mail_greeting in html
         assert 'class="email-masthead_name"' in html
+        assert "account#notification-mails" not in html
+        assert "Turn off notification emails" not in html
 
 
 def test_html_to_plain_text_strips_tags_and_script():
@@ -154,3 +159,46 @@ def test_project_climbed_email_uses_receiver_language(client, smtp_mock):
     line = Line.find_by_slug("the-vessel")
     send_project_climbed_email(climber, receiver, "Done!", line)
     _assert_mail_uses_german_subject(smtp_mock, "Ein Projekt wurde geklettert!", "A project has been climbed!")
+
+
+def _sent_mail_html(smtp_mock) -> str:
+    from email import message_from_string
+
+    raw = smtp_mock.return_value.__enter__.return_value.sendmail.call_args[0][2]
+    mail = message_from_string(raw)
+    html_part = mail.get_payload()[0]
+    return html_part.get_payload(decode=True).decode(html_part.get_content_charset() or "utf-8")
+
+
+def test_notification_digest_email_footer_links_to_account_notification_settings(client, smtp_mock):
+    receiver = User.find_by_email("member@localcrag.invalid.org")
+    receiver.account_settings.language = "en"
+    note = Notification()
+    note.user_id = receiver.id
+    note.type = NotificationTypeEnum.REACTION
+    db.session.add(note)
+    db.session.commit()
+
+    send_notification_digest_email(receiver, [note])
+
+    html = _sent_mail_html(smtp_mock)
+    assert "http://localhost:4200/account#notification-mails" in html
+    assert "Turn off notification emails" in html
+    assert 'class="email-footer"' in html
+
+
+def test_notification_digest_email_footer_uses_receiver_language(client, smtp_mock):
+    receiver = User.find_by_email("member@localcrag.invalid.org")
+    receiver.account_settings.language = "de"
+    note = Notification()
+    note.user_id = receiver.id
+    note.type = NotificationTypeEnum.REACTION
+    db.session.add(note)
+    db.session.commit()
+
+    send_notification_digest_email(receiver, [note])
+
+    html = _sent_mail_html(smtp_mock)
+    assert "Benachrichtigungs-E-Mails deaktivieren" in html
+    assert "Turn off notification emails" not in html
+    assert "/account#notification-mails" in html
