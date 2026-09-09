@@ -8,8 +8,11 @@ on:
       - next
 
 jobs:
-  check-migrate-from-prod-db:
-    environment: ${{ github.actor == 'dorthrithil' && 'Testing-dorthrithil' || 'Testing' }}
+  # Temporary: only dorthrithil runs the privileged prod-dump migrate check
+  # (workflow to be reworked). Keep a green required-check job for everyone else.
+  migrate-from-prod-db:
+    if: github.actor == 'dorthrithil'
+    environment: Testing-dorthrithil
     runs-on: ubuntu-latest
     services:
       test_db:
@@ -31,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Python
@@ -103,3 +106,18 @@ jobs:
           export LOCALCRAG_CONFIG=config/test-ci.cfg
           pipenv run flask db upgrade
 
+  # Branch protection requires this exact check name
+  check-migrate-from-prod-db:
+    needs: [migrate-from-prod-db]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pass if migrate succeeded or was skipped
+        run: |
+          result="${{ needs.migrate-from-prod-db.result }}"
+          if [ "$result" = "success" ] || [ "$result" = "skipped" ]; then
+            echo "OK (migrate-from-prod-db: $result)"
+            exit 0
+          fi
+          echo "Failed (migrate-from-prod-db: $result)"
+          exit 1

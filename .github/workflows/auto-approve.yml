@@ -7,8 +7,10 @@ on:
 
 jobs:
   auto-approve:
-    # Only run this action for the dorthrithil user
-    if: github.actor == 'dorthrithil'
+    # Only for same-repo PRs by dorthrithil (fork PRs have no bot secrets)
+    if: >
+      github.actor == 'dorthrithil' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -24,3 +26,13 @@ jobs:
         uses: hmarr/auto-approve-action@v3
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
+
+  skip:
+    # Ensure contributor / fork PRs get a green check instead of an empty failed run
+    if: >
+      github.actor != 'dorthrithil' ||
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip auto-approve
+        run: echo "Auto-approve skipped (not an eligible same-repo PR)."
