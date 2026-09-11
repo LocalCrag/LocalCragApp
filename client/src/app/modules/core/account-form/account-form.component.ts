@@ -50,6 +50,7 @@ import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-o
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AccountSettingsFormComponent } from '../account-settings-form/account-settings-form.component';
+import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user-role-tag.component';
 
 @Component({
   selector: 'lc-account-form',
@@ -69,6 +70,7 @@ import { AccountSettingsFormComponent } from '../account-settings-form/account-s
     HasPermissionDirective,
     HasPermissionDirective,
     AccountSettingsFormComponent,
+    UserRoleTagComponent,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',

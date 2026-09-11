@@ -8,6 +8,11 @@
           <h3>{{ t("accountFormTitle") }}</h3>
 
           {{ t("accountFormDescription") }}
+
+          <lc-user-role-tag
+            [user]="currentUser"
+            dataCy="account-role-tag"
+          />
         </div>
       </div>
 
