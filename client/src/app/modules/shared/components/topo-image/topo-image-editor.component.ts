@@ -347,7 +347,9 @@ export class TopoImageEditorComponent
             stroke: instanceSettingsState.arrowTextColor,
             strokeWidth: 2,
             draggable: true,
-            hitStrokeWidth: 20,
+            // Image-space stroke is scaled with the stage; divide so extra
+            // hit padding stays ~20 CSS px on both tiny and huge photos.
+            hitStrokeWidth: 20 / Math.max(this.scale, 0.1),
             preventDefault: true,
           });
 

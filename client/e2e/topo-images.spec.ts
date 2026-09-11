@@ -75,22 +75,35 @@ test.describe('Topo images test', () => {
     });
     await page.locator('[data-cy="line-dropdown-item"]').nth(0).click();
     const editor = page.locator('lc-topo-image-editor');
-    await editor.click({ position: { x: 10, y: 10 } });
-    await editor.click({ position: { x: 100, y: 100 } });
-    await editor.click({ position: { x: 100, y: 200 } });
-    await editor.click({ position: { x: 200, y: 250 } });
+    await expect(editor.locator('canvas').first()).toBeVisible();
+
+    // peter.jpeg is 271×186 and is scaled up to the editor width. Click in
+    // fractions of the canvas so vertices stay far from each other and from
+    // the inflated anchor hit-area (radius + hitStrokeWidth, in image px).
+    const clickCanvas = async (nx: number, ny: number) => {
+      const box = await editor.boundingBox();
+      expect(box).toBeTruthy();
+      await editor.click({
+        position: { x: box!.width * nx, y: box!.height * ny },
+      });
+    };
+
+    await clickCanvas(0.08, 0.12);
+    await clickCanvas(0.22, 0.45);
+    await clickCanvas(0.22, 0.78);
+    await clickCanvas(0.4, 0.9);
 
     await page.locator('[data-cy="draw-mode"] > div').click();
     await page.locator('[data-cy="draw-mode-tabu"]').click();
     await expect(page.locator('[data-cy="draw-mode-tabu"]')).toBeHidden();
     await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeVisible();
-    // Keep tabu vertices off the line path (10,10)-(100,100)-(100,200)-(200,250)
-    // so clicks hit the image instead of the existing stroke.
-    await editor.click({ position: { x: 160, y: 40 } });
-    await editor.click({ position: { x: 200, y: 40 } });
-    await editor.click({ position: { x: 200, y: 90 } });
-    await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeEnabled();
-    await page.locator('[data-cy="finish-tabu-area"]').click();
+    // Right side of the image, well away from the line on the left.
+    await clickCanvas(0.62, 0.12);
+    await clickCanvas(0.9, 0.12);
+    await clickCanvas(0.9, 0.55);
+    const finishTabu = page.locator('[data-cy="finish-tabu-area"] button');
+    await expect(finishTabu).toBeEnabled();
+    await finishTabu.click();
     await expect(
       page.locator('[data-cy="tabu-assign-checkbox-0"]'),
     ).toBeVisible();
