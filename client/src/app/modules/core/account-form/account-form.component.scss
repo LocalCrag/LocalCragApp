@@ -27,3 +27,8 @@ h3 {
   line-height: 1.3;
   color: var(--p-text-color);
 }
+
+lc-user-role-tag:has(p-tag) {
+  display: flex;
+  margin-top: 0.75rem;
+}
