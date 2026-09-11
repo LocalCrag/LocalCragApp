@@ -101,21 +101,7 @@
                     }
                   </div>
                   <div class="user-list-row__role">
-                    @if (user.superadmin) {
-                      <p-tag
-                        [value]="t('superadmin')"
-                        severity="danger"
-                      ></p-tag>
-                    }
-                    @if (user.admin && !user.superadmin) {
-                      <p-tag [value]="t('admin')" severity="success"></p-tag>
-                    }
-                    @if (user.moderator && !user.admin) {
-                      <p-tag [value]="t('moderator')"></p-tag>
-                    }
-                    @if (user.member && !user.moderator) {
-                      <p-tag [value]="t('member')" severity="info"></p-tag>
-                    }
+                    <lc-user-role-tag [user]="user" />
                   </div>
                 </a>
                 <div class="user-list-row__actions">
