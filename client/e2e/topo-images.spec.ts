@@ -78,8 +78,26 @@ test.describe('Topo images test', () => {
     await editor.click({ position: { x: 100, y: 100 } });
     await editor.click({ position: { x: 100, y: 200 } });
     await editor.click({ position: { x: 200, y: 250 } });
+
+    await page.locator('[data-cy="draw-mode"] > div').click();
+    await page.locator('[data-cy="draw-mode-tabu"]').click();
+    await editor.click({ position: { x: 40, y: 40 } });
+    await editor.click({ position: { x: 80, y: 40 } });
+    await editor.click({ position: { x: 80, y: 80 } });
+    await page.locator('[data-cy="finish-tabu-area"]').click();
+    await expect(
+      page.locator('[data-cy="tabu-assign-checkbox-0"]'),
+    ).toBeVisible();
+
     await page.locator('[data-cy="submit"]').click();
-    await createLinePathPromise;
+    const createLinePath = await createLinePathPromise;
+    const requestPayload = createLinePath.request().postDataJSON();
+    const savedLinePaths = await createLinePath.json();
+    expect(requestPayload.tabuAreas).toHaveLength(1);
+    expect(requestPayload.tabuAreas[0].path.length).toBeGreaterThanOrEqual(6);
+    expect(savedLinePaths[0].tabuAreaIds).toEqual([
+      requestPayload.tabuAreas[0].id,
+    ]);
     await expect(page).toHaveURL(
       /\/topo\/brione\/pampelmousse\/shark-attack\/topo-images/,
     );

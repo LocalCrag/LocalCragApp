@@ -1,5 +1,5 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
@@ -19,6 +19,7 @@ class TopoImage(HasOrderIndex, BaseEntity):
     title = db.Column(db.String(120), nullable=True)
     map_markers = db.relationship("MapMarker", back_populates="topo_image")
     archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    tabu_areas = db.Column(JSON, nullable=False, server_default="[]", default=list)
 
     @classmethod
     def find_max_order_index(cls, area_id) -> int:

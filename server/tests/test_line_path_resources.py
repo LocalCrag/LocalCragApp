@@ -190,6 +190,171 @@ def test_sync_line_paths_rejects_duplicate_lines(client, moderator_token):
     assert rv.status_code == 400
 
 
+def test_sync_line_paths_with_shared_tabu_areas(client, moderator_token):
+    rv = client.get("/api/areas/shark-attack/topo-images")
+    topo_image_id = rv.json[0]["id"]
+    first_line_path = rv.json[0]["linePaths"][0]
+    second_line_path = rv.json[0]["linePaths"][1]
+    first_line_slug = first_line_path["line"]["slug"]
+    tabu_areas = [
+        {"id": "area-shared", "path": [10.0, 20.0, 30.0, 20.0, 30.0, 40.0, 10.0, 40.0]},
+        {"id": "area-first-only", "path": [50.0, 50.0, 60.0, 55.0, 55.0, 65.0]},
+    ]
+
+    rv = client.put(
+        f"/api/topo-images/{topo_image_id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": tabu_areas,
+            "linePaths": [
+                {
+                    "id": first_line_path["id"],
+                    "line": first_line_path["line"]["id"],
+                    "path": first_line_path["path"],
+                    "tabuAreaIds": ["area-shared", "area-first-only"],
+                },
+                {
+                    "id": second_line_path["id"],
+                    "line": second_line_path["line"]["id"],
+                    "path": second_line_path["path"],
+                    "tabuAreaIds": ["area-shared"],
+                },
+            ],
+        },
+    )
+    assert rv.status_code == 200, rv.text
+    assert rv.json[0]["tabuAreaIds"] == ["area-shared", "area-first-only"]
+    assert rv.json[1]["tabuAreaIds"] == ["area-shared"]
+
+    rv = client.get("/api/areas/shark-attack/topo-images")
+    saved_image = rv.json[0]
+    assert saved_image["tabuAreas"] == tabu_areas
+    saved_paths = {item["id"]: item for item in saved_image["linePaths"]}
+    assert saved_paths[first_line_path["id"]]["tabuAreaIds"] == ["area-shared", "area-first-only"]
+    assert saved_paths[second_line_path["id"]]["tabuAreaIds"] == ["area-shared"]
+    assert "tabuHolds" not in saved_paths[first_line_path["id"]]
+
+    rv = client.get(f"/api/lines/{first_line_slug}")
+    assert rv.status_code == 200
+    line_path_for_line = next(item for item in rv.json["linePaths"] if item["id"] == first_line_path["id"])
+    assert line_path_for_line["tabuAreaIds"] == ["area-shared", "area-first-only"]
+    assert line_path_for_line["topoImage"]["tabuAreas"] == tabu_areas
+
+
+def test_sync_line_paths_omits_tabu_areas_defaults_to_empty(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={"linePaths": [{"line": str(stairs.id), "path": [1, 2, 3, 4]}]},
+    )
+    assert rv.status_code == 200
+    assert rv.json[0]["tabuAreaIds"] == []
+
+    rv = client.get("/api/areas/shark-attack/topo-images")
+    saved = next(image for image in rv.json if image["id"] == str(topo_image.id))
+    assert saved["tabuAreas"] == []
+
+
+def test_sync_line_paths_tabu_area_path_too_short(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [{"id": "area-1", "path": [1, 2, 3, 4]}],
+            "linePaths": [
+                {
+                    "line": str(stairs.id),
+                    "path": [1, 2, 3, 4],
+                    "tabuAreaIds": ["area-1"],
+                }
+            ],
+        },
+    )
+    assert rv.status_code == 400
+
+
+def test_sync_line_paths_tabu_area_path_not_even(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [{"id": "area-1", "path": [1, 2, 3, 4, 5]}],
+            "linePaths": [
+                {
+                    "line": str(stairs.id),
+                    "path": [1, 2, 3, 4],
+                    "tabuAreaIds": ["area-1"],
+                }
+            ],
+        },
+    )
+    assert rv.status_code == 400
+
+
+def test_sync_line_paths_tabu_area_path_out_of_bounds(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [{"id": "area-1", "path": [1, 2, 3, 4, 101, 6]}],
+            "linePaths": [
+                {
+                    "line": str(stairs.id),
+                    "path": [1, 2, 3, 4],
+                    "tabuAreaIds": ["area-1"],
+                }
+            ],
+        },
+    )
+    assert rv.status_code == 400
+
+
+def test_sync_line_paths_unknown_tabu_area_id(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [{"id": "area-1", "path": [10.0, 20.0, 30.0, 20.0, 30.0, 40.0]}],
+            "linePaths": [
+                {
+                    "line": str(stairs.id),
+                    "path": [1, 2, 3, 4],
+                    "tabuAreaIds": ["area-missing"],
+                }
+            ],
+        },
+    )
+    assert rv.status_code == 400
+
+
+def test_sync_line_paths_duplicate_tabu_area_ids(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    polygon = [10.0, 20.0, 30.0, 20.0, 30.0, 40.0]
+    rv = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [
+                {"id": "area-1", "path": polygon},
+                {"id": "area-1", "path": polygon},
+            ],
+            "linePaths": [{"line": str(stairs.id), "path": [1, 2, 3, 4]}],
+        },
+    )
+    assert rv.status_code == 400
+
+
 def test_sync_line_paths_rejects_invalid_line_path_id(client, moderator_token):
     rv = client.get("/api/areas/shark-attack/topo-images")
     topo_image_id = rv.json[0]["id"]

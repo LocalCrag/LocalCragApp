@@ -6,6 +6,10 @@ lc-line-path-editor {
   .rotate-icon span.pi-refresh {
     transform: rotate(270deg);
   }
+
+  .draw-mode-select {
+    min-width: 11rem;
+  }
 }
 
 .line-path-editor-layout:not(.mobile) > lc-line-path-editor {

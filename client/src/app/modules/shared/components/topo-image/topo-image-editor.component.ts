@@ -21,8 +21,16 @@ import {
 import {
   getAbsoluteCoordinates,
   getClosestSegmentHit,
+  createTabuPolygon,
 } from './topo-image-canvas.utils';
 import { TopoImageCanvasBase } from './topo-image-canvas.base';
+import { DrawMode } from '../../../../utility/topo/line-path-draw-mode';
+import {
+  isCompleteTabuPolygon,
+  subtractTabuAreas,
+  TABU_HOLD_UNASSIGNED_OPACITY,
+  TabuArea,
+} from '../../../../utility/topo/tabu-holds';
 
 /**
  * Interactive topo image canvas for drawing and editing line paths.
@@ -41,6 +49,9 @@ export class TopoImageEditorComponent
   @Input() linePathInProgress: LinePath = null;
   /** 1-based display number for the line path currently being edited. */
   @Input() linePathInProgressNumber: number | null = null;
+  @Input() drawMode: DrawMode = 'line';
+  @Input() tabuInProgress: number[] = [];
+  @Input() allTabuAreas: TabuArea[] = [];
 
   @Output() anchorClick = new EventEmitter<number[]>();
   @Output() anchorDrag = new EventEmitter<{
@@ -57,11 +68,14 @@ export class TopoImageEditorComponent
     insertAfterIndex: number;
   }>();
   @Output() imageClick = new EventEmitter<number[]>();
+  @Output() closeShapeClick = new EventEmitter<void>();
 
   private focusLayer: Konva.Layer;
   private anchorLayer: Konva.Layer;
   private editableAnchors: Konva.Circle[] = [];
   private magneticAnchorHighlight: Konva.Circle | null = null;
+  private tabuInProgressShape: Konva.Line | null = null;
+  private unassignedTabuShapes: Konva.Line[] = [];
 
   /**
    * Re-renders the canvas when the topo image or active line path changes.
@@ -75,7 +89,9 @@ export class TopoImageEditorComponent
       (changes['topoImage'] && !changes['topoImage'].firstChange) ||
       (changes['linePathInProgress'] &&
         !changes['linePathInProgress'].firstChange) ||
-      changes['linePathInProgressNumber'];
+      changes['linePathInProgressNumber'] ||
+      changes['drawMode'] ||
+      changes['allTabuAreas'];
     if (shouldRender) {
       setTimeout(() => this.render());
     }
@@ -105,8 +121,17 @@ export class TopoImageEditorComponent
 
     this.placeLineLabels(orderedLinePaths, labels, true);
 
+    this.drawUnassignedTabuHolds();
+    if (this.linePathInProgress) {
+      this.drawTabuHolds(this.linePathInProgress, {
+        visible: true,
+        targetLayer: this.focusLayer,
+      });
+    }
+
+    const editingLine = this.drawMode === 'line';
     if (this.linePathInProgress && this.linePathInProgress.path.length >= 4) {
-      this.drawLine(this.linePathInProgress, 1, true, this.focusLayer);
+      this.drawLine(this.linePathInProgress, 1, editingLine, this.focusLayer);
       if (this.linePathInProgressNumber != null) {
         const inProgressLabel = this.getLineLabel(
           this.linePathInProgress,
@@ -116,11 +141,21 @@ export class TopoImageEditorComponent
       }
     }
 
-    this.topoImage.linePaths.forEach((linePath) => {
-      this.drawAnchors(linePath);
-    });
-    if (this.linePathInProgress && this.linePathInProgress.path.length >= 2) {
+    this.drawTabuInProgress();
+
+    if (this.drawMode === 'line') {
+      this.topoImage.linePaths.forEach((linePath) => {
+        this.drawAnchors(linePath);
+      });
+    }
+    if (
+      editingLine &&
+      this.linePathInProgress &&
+      this.linePathInProgress.path.length >= 2
+    ) {
       this.drawEditableAnchors(this.linePathInProgress);
+    } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
+      this.drawEditableTabuAnchors();
     }
   }
 
@@ -155,20 +190,11 @@ export class TopoImageEditorComponent
     background.fillPatternImage(this.backgroundImage);
     background.on('click', (event) => {
       event.cancelBubble = true;
-      this.imageClick.emit([
-        event.evt.offsetX * (1 / this.scale),
-        event.evt.offsetY * (1 / this.scale),
-      ]);
+      this.emitImageClick();
     });
     background.on('touchstart', (event) => {
       event.cancelBubble = true;
-      const rect = (event.evt.target as HTMLElement).getBoundingClientRect();
-      const offsetX = event.evt.targetTouches[0].clientX - rect.left;
-      const offsetY = event.evt.targetTouches[0].clientY - rect.top;
-      this.imageClick.emit([
-        offsetX * (1 / this.scale),
-        offsetY * (1 / this.scale),
-      ]);
+      this.emitImageClick();
     });
     background.on('mouseenter', () => {
       this.stage.container().style.cursor = 'pointer';
@@ -268,8 +294,21 @@ export class TopoImageEditorComponent
    * Draws draggable anchors for the path being edited. Supports magnetic snapping,
    * long-press context menu on touch, and live line updates while dragging.
    * @param linePath The in-progress line path.
+   * @param options.minValues Minimum coordinate count required before an anchor can be deleted.
+   * @param options.magnetic When false, anchors do not snap to other anchors.
+   * @param options.closeOnFirstAnchorClick When true, a click (not a drag) on the first vertex closes the shape.
    */
-  private drawEditableAnchors(linePath: LinePath) {
+  private drawEditableAnchors(
+    linePath: LinePath,
+    options: {
+      minValues?: number;
+      magnetic?: boolean;
+      closeOnFirstAnchorClick?: boolean;
+    } = {},
+  ) {
+    const minValues = options.minValues ?? 4;
+    const magnetic = options.magnetic ?? true;
+    const closeOnFirstAnchorClick = options.closeOnFirstAnchorClick ?? false;
     this.store
       .select(selectInstanceSettingsState)
       .pipe(take(1))
@@ -281,7 +320,7 @@ export class TopoImageEditorComponent
         );
         const snapRadius =
           15 * this.mobileSizeFactor * this.lineSizeMultiplicator;
-        const canDeleteAnchor = linePath.path.length > 4;
+        const canDeleteAnchor = linePath.path.length > minValues;
         const anchorNodes: Konva.Circle[] = [];
         const activeAnchorColor = instanceSettingsState.arrowHighlightColor;
 
@@ -313,6 +352,10 @@ export class TopoImageEditorComponent
           let longPressTimer: ReturnType<typeof setTimeout> | null = null;
           let longPressTriggered = false;
           let touchStartPosition: { x: number; y: number } | null = null;
+
+          let dragOrigin: { x: number; y: number } | null = null;
+          let closeRing: Konva.Circle | null = null;
+          let suppressCloseClick = false;
 
           const clearLongPress = () => {
             if (longPressTimer) {
@@ -350,8 +393,24 @@ export class TopoImageEditorComponent
             });
           };
 
+          if (closeOnFirstAnchorClick && anchorIndex === 0) {
+            const ring = new Konva.Circle({
+              x: absoluteCoordinates[i * 2],
+              y: absoluteCoordinates[i * 2 + 1],
+              radius: 16 * this.mobileSizeFactor,
+              stroke: activeAnchorColor,
+              strokeWidth: 2,
+              dash: [4, 3],
+              listening: false,
+            });
+            this.anchorLayer.add(ring);
+            this.editableAnchors.push(ring);
+            closeRing = ring;
+          }
+
           anchor.on('dragstart', () => {
             clearLongPress();
+            dragOrigin = { x: anchor.x(), y: anchor.y() };
             if (longPressTriggered) {
               anchor.stopDrag();
               longPressTriggered = false;
@@ -362,14 +421,17 @@ export class TopoImageEditorComponent
 
           anchor.on('dragmove', () => {
             clearLongPress();
-            const snapTargets = this.getSnapTargets(linePath, anchorIndex);
-            const snappedPosition = this.getSnappedPosition(
-              anchor.x(),
-              anchor.y(),
-              snapTargets,
-              snapRadius,
-            );
-            anchor.position(snappedPosition);
+            if (magnetic) {
+              const snapTargets = this.getSnapTargets(linePath, anchorIndex);
+              const snappedPosition = this.getSnappedPosition(
+                anchor.x(),
+                anchor.y(),
+                snapTargets,
+                snapRadius,
+              );
+              anchor.position(snappedPosition);
+            }
+            closeRing?.position({ x: anchor.x(), y: anchor.y() });
             updateInProgressLine();
           });
 
@@ -378,30 +440,75 @@ export class TopoImageEditorComponent
               longPressTriggered = false;
               return;
             }
-            const snapTargets = this.getSnapTargets(linePath, anchorIndex);
-            const snappedPosition = this.getSnappedPosition(
-              anchor.x(),
-              anchor.y(),
-              snapTargets,
-              snapRadius,
-            );
-            anchor.position(snappedPosition);
-            const mergeWithIndex = this.getSameLineSnapAnchorIndex(
-              linePath,
-              anchorIndex,
-              snappedPosition.x,
-              snappedPosition.y,
-              snapRadius,
-            );
+            let x = anchor.x();
+            let y = anchor.y();
+            let mergeWithIndex: number | undefined;
+            if (magnetic) {
+              const snapTargets = this.getSnapTargets(linePath, anchorIndex);
+              const snappedPosition = this.getSnappedPosition(
+                x,
+                y,
+                snapTargets,
+                snapRadius,
+              );
+              anchor.position(snappedPosition);
+              x = snappedPosition.x;
+              y = snappedPosition.y;
+              const mergeIndex = this.getSameLineSnapAnchorIndex(
+                linePath,
+                anchorIndex,
+                x,
+                y,
+                snapRadius,
+              );
+              mergeWithIndex =
+                mergeIndex >= 0 && linePath.path.length > minValues
+                  ? mergeIndex
+                  : undefined;
+            }
+            if (closeOnFirstAnchorClick && anchorIndex === 0) {
+              const origin = dragOrigin ?? {
+                x: absoluteCoordinates[0],
+                y: absoluteCoordinates[1],
+              };
+              const moved = Math.hypot(x - origin.x, y - origin.y);
+              if (moved <= 5) {
+                suppressCloseClick = true;
+                this.closeShapeClick.emit();
+                return;
+              }
+            }
             this.anchorDrag.emit({
               index: anchorIndex,
-              point: [snappedPosition.x, snappedPosition.y],
-              mergeWithIndex:
-                mergeWithIndex >= 0 && linePath.path.length > 4
-                  ? mergeWithIndex
-                  : undefined,
+              point: [x, y],
+              mergeWithIndex,
             });
           });
+
+          if (closeOnFirstAnchorClick && anchorIndex === 0) {
+            const emitCloseIfClick = (event: Konva.KonvaEventObject<Event>) => {
+              event.cancelBubble = true;
+              if (suppressCloseClick || longPressTriggered) {
+                suppressCloseClick = false;
+                return;
+              }
+              const origin = dragOrigin ?? {
+                x: absoluteCoordinates[0],
+                y: absoluteCoordinates[1],
+              };
+              const moved = Math.hypot(
+                anchor.x() - origin.x,
+                anchor.y() - origin.y,
+              );
+              dragOrigin = null;
+              if (moved > 5) {
+                return;
+              }
+              this.closeShapeClick.emit();
+            };
+            anchor.on('click', emitCloseIfClick);
+            anchor.on('tap', emitCloseIfClick);
+          }
 
           anchor.on('contextmenu', (event) => {
             event.cancelBubble = true;
@@ -446,7 +553,8 @@ export class TopoImageEditorComponent
           });
 
           anchor.on('mouseenter', () => {
-            this.stage.container().style.cursor = 'grab';
+            this.stage.container().style.cursor =
+              closeOnFirstAnchorClick && anchorIndex === 0 ? 'pointer' : 'grab';
           });
 
           anchor.on('mouseleave', () => {
@@ -454,7 +562,11 @@ export class TopoImageEditorComponent
           });
 
           anchor.on('mousedown', () => {
-            this.stage.container().style.cursor = 'grabbing';
+            dragOrigin = { x: anchor.x(), y: anchor.y() };
+            this.stage.container().style.cursor =
+              closeOnFirstAnchorClick && anchorIndex === 0
+                ? 'pointer'
+                : 'grabbing';
           });
 
           anchor.on('mouseup touchend touchcancel', () => {
@@ -669,11 +781,101 @@ export class TopoImageEditorComponent
       this.linePathInProgress.konvaLine = null;
     }
     this.destroyEditableAnchors();
+    this.destroyTabuInProgress();
+    this.drawUnassignedTabuHolds();
+    if (this.linePathInProgress) {
+      this.drawTabuHolds(this.linePathInProgress, {
+        visible: true,
+        targetLayer: this.focusLayer,
+      });
+    }
+    const editingLine = this.drawMode === 'line';
     if (this.linePathInProgress.path.length >= 4) {
-      this.drawLine(this.linePathInProgress, 1, true, this.focusLayer);
+      this.drawLine(this.linePathInProgress, 1, editingLine, this.focusLayer);
     }
-    if (this.anchorLayer && this.linePathInProgress.path.length >= 2) {
+    this.drawTabuInProgress();
+    if (editingLine && this.linePathInProgress.path.length >= 2) {
       this.drawEditableAnchors(this.linePathInProgress);
+    } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
+      this.drawEditableTabuAnchors();
     }
+  }
+
+  private drawUnassignedTabuHolds() {
+    this.destroyUnassignedTabuHolds();
+    const layer = this.lineLayer;
+    if (!layer) {
+      return;
+    }
+    const unassigned = subtractTabuAreas(
+      this.allTabuAreas,
+      this.linePathInProgress?.tabuAreaIds,
+    );
+    unassigned.forEach((area) => {
+      if (!isCompleteTabuPolygon(area.path)) {
+        return;
+      }
+      const shape = createTabuPolygon(area.path, this.width, this.height, {
+        closed: true,
+        listening: false,
+        opacity: TABU_HOLD_UNASSIGNED_OPACITY,
+        lineSizeMultiplicator: this.lineSizeMultiplicator,
+      });
+      layer.add(shape);
+      this.unassignedTabuShapes.push(shape);
+    });
+  }
+
+  private destroyUnassignedTabuHolds() {
+    this.unassignedTabuShapes.forEach((shape) => shape.destroy());
+    this.unassignedTabuShapes = [];
+  }
+
+  private drawTabuInProgress() {
+    this.destroyTabuInProgress();
+    if (!this.tabuInProgress || this.tabuInProgress.length < 4) {
+      return;
+    }
+    const shape = createTabuPolygon(
+      this.tabuInProgress,
+      this.width,
+      this.height,
+      {
+        closed: false,
+        listening: false,
+        lineSizeMultiplicator: this.lineSizeMultiplicator,
+      },
+    );
+    this.focusLayer.add(shape);
+    this.tabuInProgressShape = shape;
+  }
+
+  private destroyTabuInProgress() {
+    if (this.tabuInProgressShape) {
+      this.tabuInProgressShape.destroy();
+      this.tabuInProgressShape = null;
+    }
+  }
+
+  private drawEditableTabuAnchors() {
+    const tabuPath = new LinePath();
+    tabuPath.path = this.tabuInProgress;
+    tabuPath.konvaLine = this.tabuInProgressShape;
+    this.drawEditableAnchors(tabuPath, {
+      minValues: 6,
+      magnetic: false,
+      closeOnFirstAnchorClick: isCompleteTabuPolygon(this.tabuInProgress),
+    });
+  }
+
+  private emitImageClick() {
+    const pointer = this.stage?.getPointerPosition();
+    if (!pointer) {
+      return;
+    }
+    this.imageClick.emit([
+      pointer.x * (1 / this.scale),
+      pointer.y * (1 / this.scale),
+    ]);
   }
 }
