@@ -28,6 +28,8 @@ class SyncLinePaths(MethodView):
         """
         sync_data = parser.parse(line_path_sync_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
+        tabu_areas = sync_data.get("tabuAreas") or []
+        tabu_area_ids = {area["id"] for area in tabu_areas}
         line_paths_data = sync_data["linePaths"]
 
         line_ids = [item["line"] for item in line_paths_data]
@@ -50,16 +52,24 @@ class SyncLinePaths(MethodView):
                 line_path = existing_by_id.get(item["id"])
                 if not line_path or str(line_path.line_id) != item["line"]:
                     raise BadRequest("Line path id does not match line.")
+            unknown_tabu_ids = [area_id for area_id in (item.get("tabuAreaIds") or []) if area_id not in tabu_area_ids]
+            if unknown_tabu_ids:
+                raise BadRequest("Tabu area id does not belong to this topo image.")
 
         for line_path in existing_line_paths:
             if str(line_path.line_id) not in payload_line_ids:
                 db.session.delete(line_path)
 
+        topo_image.tabu_areas = tabu_areas
+        db.session.add(topo_image)
+
         synced_line_paths: List[LinePath] = []
         for order_index, item in enumerate(line_paths_data):
             line_path = existing_by_line_id.get(item["line"])
+            selected_tabu_ids = list(dict.fromkeys(item.get("tabuAreaIds") or []))
             if line_path:
                 line_path.path = item["path"]
+                line_path.tabu_area_ids = selected_tabu_ids
                 line_path.order_index = order_index
                 db.session.add(line_path)
             else:
@@ -67,6 +77,7 @@ class SyncLinePaths(MethodView):
                 line_path.line_id = item["line"]
                 line_path.topo_image_id = image_id
                 line_path.path = item["path"]
+                line_path.tabu_area_ids = selected_tabu_ids
                 line_path.order_index = order_index
                 db.session.add(line_path)
             synced_line_paths.append(line_path)

@@ -9,13 +9,14 @@ test.describe('Topo images test', () => {
 
     await page.goto('/topo/brione/pampelmousse/shark-attack/topo-images');
     // Seed data has two topo images; wait until the list has rendered.
-    await expect(page.locator('[data-cy="topo-image-list-item"]')).toHaveCount(
-      2,
-      { timeout: 15_000 },
-    );
+    // Do not assert an exact count so a retry after a partial run still works.
+    await expect(
+      page.locator('[data-cy="topo-image-list-item"]').first(),
+    ).toBeVisible({ timeout: 15_000 });
     const numBefore = await page
       .locator('[data-cy="topo-image-list-item"]')
       .count();
+    expect(numBefore).toBeGreaterThanOrEqual(2);
 
     const uploadFilePromise = page.waitForResponse(
       (response) =>
@@ -74,12 +75,48 @@ test.describe('Topo images test', () => {
     });
     await page.locator('[data-cy="line-dropdown-item"]').nth(0).click();
     const editor = page.locator('lc-topo-image-editor');
-    await editor.click({ position: { x: 10, y: 10 } });
-    await editor.click({ position: { x: 100, y: 100 } });
-    await editor.click({ position: { x: 100, y: 200 } });
-    await editor.click({ position: { x: 200, y: 250 } });
+    await expect(editor.locator('canvas').first()).toBeVisible();
+
+    // peter.jpeg is 271×186 and is scaled up to the editor width. Click in
+    // fractions of the canvas so vertices stay far from each other and from
+    // the inflated anchor hit-area (radius + hitStrokeWidth, in image px).
+    const clickCanvas = async (nx: number, ny: number) => {
+      const box = await editor.boundingBox();
+      expect(box).toBeTruthy();
+      await editor.click({
+        position: { x: box!.width * nx, y: box!.height * ny },
+      });
+    };
+
+    await clickCanvas(0.08, 0.12);
+    await clickCanvas(0.22, 0.45);
+    await clickCanvas(0.22, 0.78);
+    await clickCanvas(0.4, 0.9);
+
+    await page.locator('[data-cy="draw-mode"] > div').click();
+    await page.locator('[data-cy="draw-mode-tabu"]').click();
+    await expect(page.locator('[data-cy="draw-mode-tabu"]')).toBeHidden();
+    await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeVisible();
+    // Right side of the image, well away from the line on the left.
+    await clickCanvas(0.62, 0.12);
+    await clickCanvas(0.9, 0.12);
+    await clickCanvas(0.9, 0.55);
+    const finishTabu = page.locator('[data-cy="finish-tabu-area"] button');
+    await expect(finishTabu).toBeEnabled();
+    await finishTabu.click();
+    await expect(
+      page.locator('[data-cy="tabu-assign-checkbox-0"]'),
+    ).toBeVisible();
+
     await page.locator('[data-cy="submit"]').click();
-    await createLinePathPromise;
+    const createLinePath = await createLinePathPromise;
+    const requestPayload = createLinePath.request().postDataJSON();
+    const savedLinePaths = await createLinePath.json();
+    expect(requestPayload.tabuAreas).toHaveLength(1);
+    expect(requestPayload.tabuAreas[0].path.length).toBeGreaterThanOrEqual(6);
+    expect(savedLinePaths[0].tabuAreaIds).toEqual([
+      requestPayload.tabuAreas[0].id,
+    ]);
     await expect(page).toHaveURL(
       /\/topo\/brione\/pampelmousse\/shark-attack\/topo-images/,
     );

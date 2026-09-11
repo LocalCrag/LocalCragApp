@@ -3,6 +3,10 @@ import { TopoImage } from '../../../../models/topo-image';
 import { LinePath } from '../../../../models/line-path';
 import { Label } from './point-feature-label-placement';
 import Konva from 'konva';
+import {
+  TABU_HOLD_FILL,
+  TABU_HOLD_STROKE,
+} from '../../../../utility/topo/tabu-holds';
 
 /**
  * Projects a point onto a line segment.
@@ -192,4 +196,38 @@ export function fitStageIntoParentContainer(
   stage.height(height * scale);
   stage.scale({ x: scale, y: scale });
   return scale;
+}
+
+/**
+ * Builds a Konva polygon (or open polyline) for a tabu-hold area.
+ */
+export function createTabuPolygon(
+  polygon: number[],
+  width: number,
+  height: number,
+  options: {
+    closed: boolean;
+    listening?: boolean;
+    opacity?: number;
+    lineSizeMultiplicator: number;
+  },
+): Konva.Line {
+  return new Konva.Line({
+    points: getAbsoluteCoordinates(polygon, width, height),
+    closed: options.closed,
+    fill: options.closed ? TABU_HOLD_FILL : undefined,
+    fillEnabled: options.closed,
+    stroke: TABU_HOLD_STROKE,
+    strokeWidth: 2 * options.lineSizeMultiplicator,
+    dash: [
+      8 * options.lineSizeMultiplicator,
+      4 * options.lineSizeMultiplicator,
+    ],
+    opacity: options.opacity ?? 1,
+    listening: options.listening ?? false,
+    lineJoin: 'round',
+    lineCap: 'round',
+    preventDefault: true,
+    hitStrokeWidth: options.listening ? 20 : 0,
+  });
 }

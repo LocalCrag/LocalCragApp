@@ -1,14 +1,18 @@
 {
-  "linePathForm.manageLinePathsDescription": "Seleziona un problema e traccia il percorso. Passa da un problema all'altro e salva tutto insieme.",
-  "linePathForm.helpDetailsMobile": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Pressione prolungata su un punto di ancoraggio per eliminarlo. Tocca un segmento della linea attiva per inserire un punto di ancoraggio.",
-  "linePathForm.helpDetailsDesktop": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Clic destro su un punto di ancoraggio per eliminarlo. Clicca su un segmento della linea attiva per inserire un punto di ancoraggio.",
+  "linePathForm.manageLinePathsDescription": "Seleziona un problema e traccia il percorso. Passa alla modalità aree tabù per marcare le prese escluse. Passa da un problema all'altro e salva tutto insieme.",
+  "linePathForm.helpDetailsMobile": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Pressione prolungata su un punto di ancoraggio per eliminarlo. Tocca un segmento della linea attiva per inserire un punto di ancoraggio. In modalità tabù, tocca almeno tre punti e chiudi l'area (o tocca il primo punto). I punti tabù non sono magnetici e l'area non si può chiudere se i lati si intersecano. Le caselle accanto all'immagine assegnano le aree al problema selezionato — cambia il problema in alto per riutilizzare un'area su un altro problema.",
+  "linePathForm.helpDetailsDesktop": "Trascina i punti di ancoraggio per regolarli — si agganciano a quelli di altre linee. Clic destro su un punto di ancoraggio per eliminarlo. Clicca su un segmento della linea attiva per inserire un punto di ancoraggio. In modalità tabù, clicca almeno tre punti e chiudi l'area (o clicca il primo punto). I punti tabù non sono magnetici e l'area non si può chiudere se i lati si intersecano. Le caselle accanto all'immagine assegnano le aree al problema selezionato — cambia il problema in alto per riutilizzare un'area su un altro problema.",
   "linePathForm.lineLabel": "Linea",
   "linePathForm.notOnImage": "Non sull'immagine",
   "linePathForm.linePlaceholder": "Seleziona un Problema",
-  "linePathForm.linePathLabel": "Tracciatura",
+  "linePathForm.linePathLabel": "Tracciatura e aree tabù",
   "linePathForm.drawnLinesHeader": "Linee tracciate",
   "linePathForm.noDrawnLinesYet": "Nessuna linea tracciata ancora.",
+  "linePathForm.tabuAreasHeader": "Aree tabù",
+  "linePathForm.tabuArea": "Area tabù {{n}}",
+  "linePathForm.noTabuAreasYet": "Nessuna area tabù ancora. Disegnane una sull'immagine.",
+  "linePathForm.tabuRequiresLinePath": "Traccia prima la linea sull'immagine per assegnare le aree tabù.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Traccia una linea con almeno due punti di ancoraggio.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Salva linee",
+  "linePathForm.saveAllLinePathsButtonLabel": "Salva",
   "linePathForm.leaveEditorButtonLabel": "Esci dall'editor"
 }
