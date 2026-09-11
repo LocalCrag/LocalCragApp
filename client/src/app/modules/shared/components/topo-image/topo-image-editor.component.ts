@@ -85,12 +85,14 @@ export class TopoImageEditorComponent
     if (!this.topoImage) {
       return;
     }
+    if (changes['drawMode'] && !changes['drawMode'].firstChange) {
+      this.redrawLinePathInProgress();
+    }
     const shouldRender =
       (changes['topoImage'] && !changes['topoImage'].firstChange) ||
       (changes['linePathInProgress'] &&
         !changes['linePathInProgress'].firstChange) ||
       changes['linePathInProgressNumber'] ||
-      changes['drawMode'] ||
       changes['allTabuAreas'];
     if (shouldRender) {
       setTimeout(() => this.render());

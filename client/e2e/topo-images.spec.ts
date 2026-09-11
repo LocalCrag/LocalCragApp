@@ -9,13 +9,14 @@ test.describe('Topo images test', () => {
 
     await page.goto('/topo/brione/pampelmousse/shark-attack/topo-images');
     // Seed data has two topo images; wait until the list has rendered.
-    await expect(page.locator('[data-cy="topo-image-list-item"]')).toHaveCount(
-      2,
-      { timeout: 15_000 },
-    );
+    // Do not assert an exact count so a retry after a partial run still works.
+    await expect(
+      page.locator('[data-cy="topo-image-list-item"]').first(),
+    ).toBeVisible({ timeout: 15_000 });
     const numBefore = await page
       .locator('[data-cy="topo-image-list-item"]')
       .count();
+    expect(numBefore).toBeGreaterThanOrEqual(2);
 
     const uploadFilePromise = page.waitForResponse(
       (response) =>
@@ -81,9 +82,14 @@ test.describe('Topo images test', () => {
 
     await page.locator('[data-cy="draw-mode"] > div').click();
     await page.locator('[data-cy="draw-mode-tabu"]').click();
-    await editor.click({ position: { x: 40, y: 40 } });
-    await editor.click({ position: { x: 80, y: 40 } });
-    await editor.click({ position: { x: 80, y: 80 } });
+    await expect(page.locator('[data-cy="draw-mode-tabu"]')).toBeHidden();
+    await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeVisible();
+    // Keep tabu vertices off the line path (10,10)-(100,100)-(100,200)-(200,250)
+    // so clicks hit the image instead of the existing stroke.
+    await editor.click({ position: { x: 160, y: 40 } });
+    await editor.click({ position: { x: 200, y: 40 } });
+    await editor.click({ position: { x: 200, y: 90 } });
+    await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeEnabled();
     await page.locator('[data-cy="finish-tabu-area"]').click();
     await expect(
       page.locator('[data-cy="tabu-assign-checkbox-0"]'),
