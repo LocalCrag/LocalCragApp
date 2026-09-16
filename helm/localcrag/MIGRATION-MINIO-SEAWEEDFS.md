@@ -6,9 +6,10 @@ A **future chart release** will remove MinIO from LocalCrag entirely (including 
 
 ## Prerequisites
 
-- Recommended: A current backup (chart CronJob or equivalent).
 - The existing Secret still contains `rootUser` / `rootPassword`.
 - `kubectl` access to the release namespace.
+
+Do not treat an older backup as your restore point. Backups taken by earlier chart versions no longer work, so the backup you rely on has to be taken **after** the upgrade in step 1 — see step 2.
 
 ## Step 1 — Upgrade: keep serving from MinIO, add SeaweedFS
 
@@ -26,7 +27,23 @@ After this upgrade:
 - SeaweedFS is running at `{release}-seaweedfs:8333` (empty bucket).
 - The MinIO PVC is unchanged.
 
-## Step 2 — Copy objects
+## Step 2 — Take a backup, and let it succeed
+
+Backups from earlier chart versions stopped working: they drove the backup with the MinIO client `mc`, which the MinIO image no longer ships. Chart 0.2.0 replaces `mc` with the AWS CLI, so the first backup that can actually succeed is the one you take *after* the upgrade above. Whatever the last run before the upgrade reported, do not rely on it.
+
+Trigger one by hand instead of waiting for the nightly schedule:
+
+```bash
+kubectl -n <namespace> create job --from=cronjob/localcrag-backup localcrag-backup-premigration
+kubectl -n <namespace> logs job/localcrag-backup-premigration --follow
+```
+
+Do not move on until that Job completes successfully. Two reasons:
+
+- It is your restore point. The next step copies objects and then repoints the app, and this is the last moment where a single known-good backup covers both the database and the original MinIO bucket.
+- The copy Job in step 3 is a Helm post-upgrade hook. A backup Job that keeps failing leaves the release in an unhealthy state, and the copy Job will not start until the release reconciles successfully.
+
+## Step 3 — Copy objects
 
 Scale the LocalCrag server to zero so no uploads can land in MinIO during the copy:
 
@@ -64,9 +81,9 @@ kubectl -n <namespace> logs job/localcrag-s3-migrate --follow
 
 Wait until it completes successfully. The Job uses the AWS CLI (`aws s3 sync`) to copy the MinIO bucket (`appS3.bucket`, default `localcrag`) to SeaweedFS using the same `rootUser` / `rootPassword`.
 
-Keep the server scaled down until step 3 so the two stores cannot diverge.
+Keep the server scaled down until step 4 so the two stores cannot diverge.
 
-## Step 3 — Serve from SeaweedFS
+## Step 4 — Serve from SeaweedFS
 
 After the copy looks complete (Job logs; spot-check an object in SeaweedFS if you want):
 
@@ -92,7 +109,11 @@ If the server is still at zero replicas after the upgrade:
 kubectl -n <namespace> scale deployment/localcrag-server --replicas=1
 ```
 
-The storage console Ingress now points at the SeaweedFS filer UI (`:8888`), not the MinIO console.
+The storage console Ingress keeps pointing at the MinIO console, which requires a login. SeaweedFS's filer UI is never exposed through the Ingress: it has no authentication at all, so anyone knowing the URL could upload and delete objects. To browse SeaweedFS, forward the port to your machine for as long as you need it:
+
+```bash
+kubectl -n <namespace> port-forward deployment/localcrag-seaweedfs 8888:8888
+```
 
 Leave MinIO running until a future chart version drops it.
 
