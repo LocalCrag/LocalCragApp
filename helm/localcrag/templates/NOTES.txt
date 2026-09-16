@@ -7,7 +7,9 @@ Your LocalCrag installation is using the following service names:
   - Server: {{ include "localcrag.fullname" . }}-server
   - Client: {{ include "localcrag.fullname" . }}-client
   - PostgreSQL: {{ include "localcrag.postgres.fullname" . }}
-  - MinIO (S3): {{ include "localcrag.s3.fullname" . }}
+  - Object storage ({{ include "localcrag.s3.backend" . }}): {{ include "localcrag.s3.fullname" . }}
+  - MinIO: {{ include "localcrag.minio.fullname" . }}
+  - SeaweedFS: {{ include "localcrag.seaweedfs.fullname" . }}
   - Secrets: {{ include "localcrag.secrets.name" . }}
 
 {{- if .Values.client.ingress.host }}
@@ -29,6 +31,16 @@ Backups are ENABLED:
 
 Backups are DISABLED. Set backups.enabled=true to enable automated backups.
 {{- end }}
+
+{{- if .Values.s3.migration.enabled }}
+
+S3 migration Job is ENABLED (MinIO -> SeaweedFS). Watch:
+  kubectl -n {{ .Release.Namespace }} logs job/{{ include "localcrag.fullname" . }}-s3-migrate
+{{- end }}
+
+This chart version always keeps MinIO installed. Copy data to SeaweedFS, then set
+s3.backend=seaweedfs. A future chart release will drop MinIO. See
+helm/localcrag/MIGRATION-MINIO-SEAWEEDFS.md.
 
 IMPORTANT: Make sure you have created the secret "{{ include "localcrag.secrets.name" . }}"
 with all required keys before the pods start. See the chart README for details.

@@ -58,7 +58,7 @@ spec:
               service:
                 name: {{ include "localcrag.s3.fullname" . }}
                 port:
-                  number: 9000
+                  number: {{ include "localcrag.s3.port" . }}
     - host: {{ .Values.s3.ingress.consoleHost | quote }}
       http:
         paths:
@@ -66,6 +66,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "localcrag.s3.fullname" . }}-console
+                name: {{ include "localcrag.s3.console.fullname" . }}
                 port:
-                  number: 9001
+                  number: {{ include "localcrag.s3.console.port" . }}

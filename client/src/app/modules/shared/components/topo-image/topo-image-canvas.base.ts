@@ -25,9 +25,14 @@ import {
 import {
   calculateSkeletonDimensions,
   createLineLabel,
+  createTabuPolygon,
   fitStageIntoParentContainer,
   getMobileSizeFactor,
 } from './topo-image-canvas.utils';
+import {
+  isCompleteTabuPolygon,
+  resolveTabuPolygons,
+} from '../../../../utility/topo/tabu-holds';
 
 /**
  * Shared Konva canvas lifecycle and drawing helpers for topo image components.
@@ -49,7 +54,7 @@ export abstract class TopoImageCanvasBase implements OnInit {
   protected lineLayer: Konva.Layer;
   protected numberLayer: Konva.Layer;
   protected stage: Konva.Stage;
-  protected lineSizeMultiplicator = 1;
+  lineSizeMultiplicator = 1;
   protected scale = 1;
   protected isMobile = false;
 
@@ -185,6 +190,48 @@ export abstract class TopoImageCanvasBase implements OnInit {
       this.width,
       this.height,
     );
+  }
+
+  protected drawTabuHolds(
+    linePath: LinePath,
+    options: {
+      visible: boolean;
+      opacity?: number;
+      targetLayer?: Konva.Layer;
+    },
+  ) {
+    this.destroyTabuHolds(linePath);
+    if (!linePath) {
+      return;
+    }
+    const layer = options.targetLayer ?? this.lineLayer;
+    const shapes: Konva.Line[] = [];
+    resolveTabuPolygons(
+      linePath.tabuAreaIds,
+      this.topoImage?.tabuAreas,
+    ).forEach((polygon) => {
+      if (!isCompleteTabuPolygon(polygon)) {
+        return;
+      }
+      const shape = createTabuPolygon(polygon, this.width, this.height, {
+        closed: true,
+        listening: false,
+        opacity: options.opacity ?? 1,
+        lineSizeMultiplicator: this.lineSizeMultiplicator,
+      });
+      shape.visible(options.visible);
+      layer.add(shape);
+      shapes.push(shape);
+    });
+    linePath.konvaTabuShapes = shapes;
+    linePath.tabuHoldsHiddenUntilHover = !options.visible;
+  }
+
+  protected destroyTabuHolds(linePath: LinePath) {
+    linePath?.konvaTabuShapes?.forEach((shape) => shape.destroy());
+    if (linePath) {
+      linePath.konvaTabuShapes = [];
+    }
   }
 
   private loadBackgroundImage() {

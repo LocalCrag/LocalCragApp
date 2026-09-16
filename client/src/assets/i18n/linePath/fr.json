@@ -1,14 +1,18 @@
 {
-  "linePathForm.manageLinePathsDescription": "Sélectionnez une ligne et tracez son chemin. Basculez entre les lignes et enregistrez-les toutes en une fois.",
-  "linePathForm.helpDetailsMobile": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Appui long sur une ancre pour la supprimer. Touchez un segment de la ligne active pour insérer une ancre.",
-  "linePathForm.helpDetailsDesktop": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Clic droit sur une ancre pour la supprimer. Cliquez sur un segment de la ligne active pour insérer une ancre.",
+  "linePathForm.manageLinePathsDescription": "Sélectionnez une ligne et tracez son chemin. Passez en mode zone tabou pour marquer les prises exclues. Basculez entre les lignes et enregistrez-les toutes en une fois.",
+  "linePathForm.helpDetailsMobile": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Appui long sur une ancre pour la supprimer. Touchez un segment de la ligne active pour insérer une ancre. En mode tabou, touchez au moins trois points et terminez la zone (ou touchez le premier point). Les ancres tabou ne s'aimantent pas, et la zone ne peut pas être fermée si les arêtes se croisent. Les cases à côté de l'image attribuent les zones à la ligne sélectionnée — changez la ligne ci-dessus pour réutiliser une zone sur une autre ligne.",
+  "linePathForm.helpDetailsDesktop": "Faites glisser les ancres pour les ajuster — elles s'alignent sur les ancres des autres lignes. Clic droit sur une ancre pour la supprimer. Cliquez sur un segment de la ligne active pour insérer une ancre. En mode tabou, cliquez au moins trois points et terminez la zone (ou cliquez le premier point). Les ancres tabou ne s'aimantent pas, et la zone ne peut pas être fermée si les arêtes se croisent. Les cases à côté de l'image attribuent les zones à la ligne sélectionnée — changez la ligne ci-dessus pour réutiliser une zone sur une autre ligne.",
   "linePathForm.lineLabel": "Doubler",
   "linePathForm.notOnImage": "Pas sur l'image",
   "linePathForm.linePlaceholder": "Sélectionnez une ligne",
-  "linePathForm.linePathLabel": "Chemin de ligne",
+  "linePathForm.linePathLabel": "Chemin de ligne et zones tabou",
   "linePathForm.drawnLinesHeader": "Lignes tracées",
   "linePathForm.noDrawnLinesYet": "Aucune ligne tracée pour le moment.",
+  "linePathForm.tabuAreasHeader": "Zones tabou",
+  "linePathForm.tabuArea": "Zone tabou {{n}}",
+  "linePathForm.noTabuAreasYet": "Aucune zone tabou pour le moment. Tracez-en une sur l'image.",
+  "linePathForm.tabuRequiresLinePath": "Tracez d'abord la ligne sur l'image pour attribuer des zones tabou.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Tracez une ligne avec au moins deux points d'ancrage.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Enregistrer les lignes",
+  "linePathForm.saveAllLinePathsButtonLabel": "Enregistrer",
   "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur"
 }

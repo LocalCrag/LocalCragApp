@@ -337,6 +337,16 @@ export const NOTIFICATIONS = {
     title: marker('notifications.LINE_PATH_NOTHING_TO_SAVE_TITLE'),
     message: marker('notifications.LINE_PATH_NOTHING_TO_SAVE_MESSAGE'),
   },
+  TABU_HOLD_INCOMPLETE: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.TABU_HOLD_INCOMPLETE_TITLE'),
+    message: marker('notifications.TABU_HOLD_INCOMPLETE_MESSAGE'),
+  },
+  TABU_HOLD_SELF_INTERSECTING: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.TABU_HOLD_SELF_INTERSECTING_TITLE'),
+    message: marker('notifications.TABU_HOLD_SELF_INTERSECTING_MESSAGE'),
+  },
   MENU_PAGE_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.MENU_PAGE_DELETED_TITLE'),

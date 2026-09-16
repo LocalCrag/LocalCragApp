@@ -14,7 +14,7 @@ This document provides an overview of the environment variables used in the serv
 | `SMTP_PASSWORD`           | `string`                                                  | Password for the SMTP server.                                                          |
 | `SMTP_PORT`               | `integer` (e.g., `465`, `587`)                            | Port number for the SMTP server.                                                       |
 | `SMTP_TYPE`               | `string` (`smtps`, `starttls`, `plain`, `disabled`)       | Type of SMTP connection. If set to disabled, no emails are sent.                       |
-| `S3_PASSWORD`             | `string`                                                  | Password / secret key for accessing object storage (e.g., MinIO or S3).                |
+| `S3_PASSWORD`             | `string`                                                  | Password / secret key for accessing object storage (e.g., SeaweedFS or S3).            |
 | `S3_USER`                 | `string`                                                  | User / access key for object storage.                                                  |
 | `S3_ENDPOINT`             | `string` (e.g., `https://s3.example.com`)                 | Endpoint URL for object storage.                                                       |
 | `S3_REGION`               | `string` (e.g., `us-east-1`)                              | Region for object storage.                                                             |

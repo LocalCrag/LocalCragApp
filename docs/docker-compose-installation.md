@@ -48,6 +48,58 @@ docker compose up -d
 On first startup, your initial admin user will be created based on the `SUPERADMIN_FIRSTNAME`, `SUPERADMIN_LASTNAME`, and `SUPERADMIN_EMAIL` variables you set in the `docker-compose.override.yml` file.
 You will get an E-Mail with the initial password for this user.
 
+## Object storage
+
+LocalCrag keeps uploaded images in an S3-compatible object store. The Compose setup starts two of them:
+
+| Service | Ports | Purpose |
+| --- | --- | --- |
+| `storage` (MinIO) | 9000 (S3), 9001 (console) | Discontinued upstream. Still the default so existing installations keep serving their data. |
+| `seaweedfs` | 8333 (S3), 8888 (web UI) | The replacement. |
+
+Which one the application actually uses is decided by `S3_ENDPOINT` in your `.env`. It defaults to MinIO. **If you are setting up a brand new instance**, put `S3_ENDPOINT=http://seaweedfs:8333` in your `.env` before the first start and point your reverse proxy at port 8333 — you then never touch MinIO at all.
+
+### Migrating from MinIO to SeaweedFS
+
+Existing instances need their objects copied before switching. Plan for a few minutes of downtime: the app has to be stopped while copying, otherwise uploads that arrive mid-copy are lost.
+
+1. Get the current Compose setup, which adds the `seaweedfs` service:
+
+   ```bash
+   git pull
+   docker compose up -d
+   ```
+
+2. Stop the parts of the application that accept uploads. MinIO and SeaweedFS keep running:
+
+   ```bash
+   docker compose stop server client
+   ```
+
+3. Copy every object from MinIO to SeaweedFS. This is a one-shot container that is not part of a normal `docker compose up`:
+
+   ```bash
+   docker compose --profile migration run --rm s3_migration
+   ```
+
+   It prints a listing of the copied objects and ends with `MinIO -> SeaweedFS copy complete.`. Re-running it is safe — it only transfers what changed.
+
+4. Switch the application over by setting the endpoint in your `.env`:
+
+   ```dotenv
+   S3_ENDPOINT=http://seaweedfs:8333
+   ```
+
+5. If you serve object storage through a reverse proxy, repoint it from port 9000 to 8333. With the Nginx example further down, that means changing `proxy_pass http://localhost:9000;` to `proxy_pass http://localhost:8333;` in the `s3.your-domain.com` server block and reloading Nginx (`sudo nginx -t && sudo systemctl reload nginx`). `S3_ACCESS_ENDPOINT` itself does not change.
+
+6. Start everything again and check that images load in the web interface:
+
+   ```bash
+   docker compose up -d
+   ```
+
+Leave MinIO running until you are confident the migration worked — it still holds the original copy of your files. A future LocalCrag release will drop the `storage` service, and only then should you remove its volume.
+
 ## Post-Installation Steps
 
 For production use in a server environment you should follow up with e.g. setting up nginx as a reverse proxy and securing your instance with HTTPS. You can find more information on how to do this in the [Nginx documentation](https://nginx.org/en/docs/). Below we also provide a step-by-step guide for a simple example deployment on an Ubuntu server.
@@ -101,6 +153,7 @@ server {
     client_max_body_size 50M; # Adjust as needed for your S3 storage
 
     location / {
+        # Port 9000 is MinIO. Use 8333 if S3_ENDPOINT points at SeaweedFS.
         proxy_pass http://localhost:9000;
         proxy_http_version 1.1;
         proxy_set_header Host $host;

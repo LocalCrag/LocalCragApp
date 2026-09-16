@@ -10,9 +10,7 @@ from marshmallow_schemas.menu_item_schema import menu_item_schema, menu_items_sc
 from models.enums.menu_item_position_enum import MenuItemPositionEnum
 from models.enums.menu_item_type_enum import MenuItemTypeEnum
 from models.menu_item import MenuItem
-from models.user import User
 from util.auth_session import (
-    get_session_identity,
     session_required,
 )
 from util.secret_service import SecretService
@@ -50,7 +48,6 @@ class CreateMenuItem(MethodView):
         Create a menu item.
         """
         menu_item_data = parser.parse(menu_item_args, request)
-        created_by = User.find_by_email(get_session_identity())
 
         new_menu_item: MenuItem = MenuItem()
         new_menu_item.type = menu_item_data["type"]
@@ -62,7 +59,6 @@ class CreateMenuItem(MethodView):
             new_menu_item.url = menu_item_data["url"]
             new_menu_item.icon = menu_item_data["icon"]
             new_menu_item.title = menu_item_data["title"]
-        new_menu_item.created_by_id = created_by.id
         new_menu_item.order_index = MenuItem.find_max_order_index_at_position(new_menu_item.position) + 1
 
         db.session.add(new_menu_item)

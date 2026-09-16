@@ -2,7 +2,11 @@ from extensions import db
 from models.comment import Comment
 from models.line import Line
 from models.rock_explorer_feature import RockExplorerFeature
-from util.email_helpers import build_comment_action_link
+from util.email_helpers import (
+    NOTIFICATION_MAIL_SETTINGS_PATH,
+    build_comment_action_link,
+    frontend_url,
+)
 
 
 def test_build_comment_action_link_for_line(client):
@@ -47,3 +51,10 @@ def test_build_comment_action_link_for_ascent(client):
     assert str(comment.id) in link
     assert ascent.line.slug in link
     assert link.endswith(f"#{comment.id}")
+
+
+def test_frontend_url_notification_mail_settings_anchor(client):
+    from flask import current_app
+
+    link = frontend_url(NOTIFICATION_MAIL_SETTINGS_PATH)
+    assert link == f"{current_app.config['FRONTEND_HOST']}/account#notification-mails"

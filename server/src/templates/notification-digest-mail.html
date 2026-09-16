@@ -13,3 +13,12 @@
 </p>
 <p style="font-size:16px;line-height:1.5em;">{{ i18n_thanks }}<br/>{{ i18n_greetings }}</p>
 {% endblock %}
+
+{% block footer_extra %}
+<p class="sub align-center"
+   style="box-sizing: border-box; color: #AEAEAE; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0; margin-bottom: 12px;"
+   align="center">
+    <a href="{{ notification_settings_link }}" target="_blank"
+       style="box-sizing: border-box; color: #AEAEAE; text-decoration: underline;">{{ i18n_turn_off_notification_mails }}</a>
+</p>
+{% endblock %}

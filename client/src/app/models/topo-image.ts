@@ -9,6 +9,7 @@ import {
   deserializeOrderIndexAttributes,
   HasOrderIndex,
 } from './mixins/has-order-index';
+import { deserializeTabuAreas, TabuArea } from '../utility/topo/tabu-holds';
 
 /**
  * Model of a topo image.
@@ -16,6 +17,7 @@ import {
 export class TopoImage extends HasOrderIndex(AbstractModel) {
   image: File;
   linePaths: LinePath[];
+  tabuAreas: TabuArea[] = [];
   coordinates: Coordinates;
   title: string;
   description: string;
@@ -46,6 +48,7 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
     topoImage.linePaths = payload.linePaths
       ? payload.linePaths.map(LinePath.deserialize)
       : null;
+    topoImage.tabuAreas = deserializeTabuAreas(payload.tabuAreas);
     topoImage.archived = payload.archived;
     topoImage.area = payload.area ? Area.deserialize(payload.area) : null;
     return topoImage;

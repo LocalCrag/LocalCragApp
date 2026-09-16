@@ -8,8 +8,11 @@ on:
       - next
 
 jobs:
-  check-migrate-from-prod-db:
-    environment: ${{ github.actor == 'dorthrithil' && 'Testing-dorthrithil' || 'Testing' }}
+  # Temporary: only dorthrithil runs the privileged prod-dump migrate check
+  # (workflow to be reworked). Keep a green required-check job for everyone else.
+  migrate-from-prod-db:
+    if: github.actor == 'dorthrithil'
+    environment: Testing-dorthrithil
     runs-on: ubuntu-latest
     services:
       test_db:
@@ -31,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Python
@@ -47,16 +50,12 @@ jobs:
           cd server/src
           pipenv install --deploy --ignore-pipfile
 
-      - name: Install MinIO Client (mc)
-        run: |
-          wget https://dl.min.io/client/mc/release/linux-amd64/mc
-          chmod +x mc
-          sudo mv mc /usr/local/bin/
-
       - name: Pull newest prod dump from S3
         env:
-          S3_ACCESS_KEY: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
-          S3_SECRET_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+          AWS_EC2_METADATA_DISABLED: true
           S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
           S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
           S3_PREFIX: ${{ secrets.BACKUP_S3_PREFIX }}
@@ -64,14 +63,12 @@ jobs:
           set -euo pipefail
           
           mkdir -p server/tests/dumps
-          
-          echo "Configuring mc alias..."
-          mc alias set s3backup "${S3_ENDPOINT}" "${S3_ACCESS_KEY}" "${S3_SECRET_KEY}" --api S3v4 --path on > /dev/null 2>&1
+          aws configure set default.s3.addressing_style path
           
           echo "Looking for latest backup..."
           
           # List all snapshot directories and sort to get the newest one
-          NEWEST_BACKUP=$(mc ls "s3backup/${S3_BUCKET}/${S3_PREFIX}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort -r | head -n 1)
+          NEWEST_BACKUP=$(aws s3 ls --endpoint-url "${S3_ENDPOINT}" "s3://${S3_BUCKET}/${S3_PREFIX}/" | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort -r | head -n 1)
           
           if [ -z "$NEWEST_BACKUP" ]; then
             echo "Error: No backups found"
@@ -82,7 +79,7 @@ jobs:
           
           # Download the postgres dump from the newest backup (hardcoded to localcrag)
           echo "Downloading backup..."
-          mc cp "s3backup/${S3_BUCKET}/${S3_PREFIX}/${NEWEST_BACKUP}/postgres/localcrag.sql.gz" server/tests/dumps/localcrag_prod_dump.sql.gz > /dev/null 2>&1
+          aws s3 cp --endpoint-url "${S3_ENDPOINT}" "s3://${S3_BUCKET}/${S3_PREFIX}/${NEWEST_BACKUP}/postgres/localcrag.sql.gz" server/tests/dumps/localcrag_prod_dump.sql.gz > /dev/null 2>&1
           
           echo "Decompressing backup..."
           gunzip server/tests/dumps/localcrag_prod_dump.sql.gz
@@ -103,3 +100,18 @@ jobs:
           export LOCALCRAG_CONFIG=config/test-ci.cfg
           pipenv run flask db upgrade
 
+  # Branch protection requires this exact check name
+  check-migrate-from-prod-db:
+    needs: [migrate-from-prod-db]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pass if migrate succeeded or was skipped
+        run: |
+          result="${{ needs.migrate-from-prod-db.result }}"
+          if [ "$result" = "success" ] || [ "$result" = "skipped" ]; then
+            echo "OK (migrate-from-prod-db: $result)"
+            exit 0
+          fi
+          echo "Failed (migrate-from-prod-db: $result)"
+          exit 1

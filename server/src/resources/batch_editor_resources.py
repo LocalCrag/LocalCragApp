@@ -35,7 +35,6 @@ class BatchCreateLines(MethodView):
             new_topo_image: TopoImage = TopoImage()
             new_topo_image.file_id = image_id
             new_topo_image.area_id = area.id
-            new_topo_image.created_by_id = created_by.id
             new_topo_image.order_index = order_index + index
 
             db.session.add(new_topo_image)
@@ -65,7 +64,6 @@ class BatchCreateLines(MethodView):
                 new_line.fa_name = None
 
             new_line.area_id = area.id
-            new_line.created_by_id = created_by.id
 
             new_line.closed = area.closed
             new_line.closure_is_permanent = area.closure_is_permanent

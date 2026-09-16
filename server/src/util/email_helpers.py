@@ -18,6 +18,9 @@ from models.region import Region
 from models.rock_explorer_feature import RockExplorerFeature
 from models.sector import Sector
 
+# Fragment on /account targeted by notification digest mail footer links.
+NOTIFICATION_MAIL_SETTINGS_PATH = "account#notification-mails"
+
 
 def frontend_url(path: str) -> str:
     """Return an absolute link to the frontend for a given path."""

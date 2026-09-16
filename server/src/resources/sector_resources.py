@@ -156,7 +156,6 @@ class CreateSector(MethodView):
             new_sector, sanitize_wysiwyg_html(sector_data["rules"]), sector_data["rulesTitle"], is_create=True
         )
         new_sector.crag_id = crag_id
-        new_sector.created_by_id = created_by.id
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)

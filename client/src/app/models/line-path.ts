@@ -6,17 +6,25 @@ import {
   deserializeOrderIndexAttributes,
   HasOrderIndex,
 } from './mixins/has-order-index';
+import {
+  cloneTabuAreaIds,
+  cloneTabuAreas,
+  TabuArea,
+} from '../utility/topo/tabu-holds';
 
 /**
  * Model of a line path.
  */
 export class LinePath extends HasOrderIndex(AbstractModel) {
   path: number[];
+  tabuAreaIds: string[];
   line: Line;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
   konvaLine: Konva.Line;
+  konvaTabuShapes: Konva.Line[] = [];
+  tabuHoldsHiddenUntilHover = false;
   konvaNumberGroup: Konva.Group;
   konvaRect: Konva.Rect;
   konvaText: Konva.Text;
@@ -27,6 +35,7 @@ export class LinePath extends HasOrderIndex(AbstractModel) {
   constructor() {
     super();
     this.path = [];
+    this.tabuAreaIds = [];
   }
 
   /**
@@ -40,6 +49,7 @@ export class LinePath extends HasOrderIndex(AbstractModel) {
     AbstractModel.deserializeAbstractAttributes(linePath, payload);
     deserializeOrderIndexAttributes(linePath, payload);
     linePath.path = payload.path;
+    linePath.tabuAreaIds = cloneTabuAreaIds(payload.tabuAreaIds);
     linePath.line = payload.line ? Line.deserialize(payload.line) : null;
     return linePath;
   }
@@ -48,14 +58,20 @@ export class LinePath extends HasOrderIndex(AbstractModel) {
    * Marshals line paths for sync requests.
    *
    * @param linePaths Line paths in display order.
+   * @param tabuAreas Shared tabu polygons stored on the topo image.
    * @return Marshalled sync payload.
    */
-  public static serializeForSync(linePaths: LinePath[]): any {
+  public static serializeForSync(
+    linePaths: LinePath[],
+    tabuAreas: TabuArea[] = [],
+  ): any {
     return {
+      tabuAreas: cloneTabuAreas(tabuAreas),
       linePaths: linePaths.map((linePath) => ({
         ...(linePath.id ? { id: linePath.id } : {}),
         line: linePath.line.id,
         path: linePath.path,
+        tabuAreaIds: cloneTabuAreaIds(linePath.tabuAreaIds),
       })),
     };
   }

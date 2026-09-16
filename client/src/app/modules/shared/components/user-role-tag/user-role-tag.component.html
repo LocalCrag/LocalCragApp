@@ -1,0 +1,9 @@
+@if (role; as displayedRole) {
+  <ng-container *transloco="let t; read: 'users.list'">
+    <p-tag
+      [attr.data-cy]="dataCy"
+      [value]="t(displayedRole.key)"
+      [severity]="displayedRole.severity"
+    ></p-tag>
+  </ng-container>
+}

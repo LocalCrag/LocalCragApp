@@ -23,12 +23,12 @@ You find the following web UIs available:
 - Frontend at http://localhost:4200: Shows you the frontend (credentials sent via email)
 - MailHog at http://localhost:8025: Shows you all the emails
 - Adminer at http://localhost:8080: Database web interface
-- MinIO Admin UI at http://localhost:9001: Shows you all objects in the S3 storage. Credentials: `localcrag:password`
+- SeaweedFS UI at http://localhost:8888: Shows you all objects in the S3 storage
 
 You probably won't need to access these directly:
 
 - Backend at http://localhost:5000
-- Object Storage at http://localhost:9000
+- Object Storage at http://localhost:8333
 
 **Step 4a**: Remove the deployment:
 
@@ -42,4 +42,13 @@ docker compose -f docker-compose.dev.yml down
 docker compose -f docker-compose.dev.yml down -v
 ```
 
-For the broader local toolchain (native setup, Husky, MinIO standalone, etc.), see [dev-tooling.md](./dev-tooling.md).
+## Coming from the MinIO setup
+
+Object storage used to be MinIO on ports 9000/9001. It is now SeaweedFS on 8333/8888. If you had the stack running before, reset the volumes once so the storage volume does not keep leftover MinIO files — your local uploads are discarded, the database is rebuilt on the next start:
+
+```bash
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up
+```
+
+For the broader local toolchain (native setup, Husky, object storage standalone, etc.), see [dev-tooling.md](./dev-tooling.md).

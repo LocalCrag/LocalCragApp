@@ -17,6 +17,7 @@ class LinePath(HasOrderIndex, BaseEntity):
     line: Mapped[Line] = relationship(overlaps="line_paths")
     topo_image: Mapped[TopoImage] = relationship(overlaps="line_paths")
     path = db.Column(JSON, nullable=False)
+    tabu_area_ids = db.Column(JSON, nullable=False, server_default="[]", default=list)
     order_index_for_line = db.Column(db.Integer, nullable=False, server_default="0")
 
     @classmethod

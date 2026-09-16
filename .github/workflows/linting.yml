@@ -61,3 +61,38 @@ jobs:
         run: |
           cd client
           npx prettier --check .
+
+  lint-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.4
+
+      # charts/ is gitignored, so subcharts are fetched from Chart.lock.
+      # This also fails if Chart.lock drifts out of sync with Chart.yaml.
+      - name: Fetch chart dependencies
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm dependency build helm/localcrag
+
+      # values.yaml alone cannot satisfy values.schema.json (required fields
+      # ship empty), so every fixture in ci/ is linted and rendered instead.
+      - name: Run Helm Lint
+        run: |
+          for values in helm/localcrag/ci/*-values.yaml; do
+            echo "::group::helm lint ($values)"
+            helm lint helm/localcrag --strict -f "$values"
+            echo "::endgroup::"
+          done
+
+      - name: Render manifests
+        run: |
+          for values in helm/localcrag/ci/*-values.yaml; do
+            echo "::group::helm template ($values)"
+            helm template localcrag helm/localcrag -f "$values" > /dev/null
+            echo "::endgroup::"
+          done

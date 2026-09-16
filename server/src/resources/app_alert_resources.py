@@ -6,10 +6,8 @@ from extensions import db
 from marshmallow_schemas.app_alert_schema import app_alert_schema, app_alerts_schema
 from models.app_alert import AppAlert
 from models.enums.app_alert_severity_enum import AppAlertSeverityEnum
-from models.user import User
 from util.auth_session import (
     get_current_user,
-    get_session_identity,
     session_required,
     verify_session_in_request,
 )
@@ -58,7 +56,6 @@ class CreateAppAlert(MethodView):
         Create an app alert.
         """
         data = parser.parse(app_alert_args, request)
-        created_by = User.find_by_email(get_session_identity())
 
         alert = AppAlert()
         alert.message = data["message"].strip()
@@ -66,7 +63,6 @@ class CreateAppAlert(MethodView):
         alert.read_more_url = (data.get("readMoreUrl") or "").strip() or None
         alert.starts_at = data["startsAt"]
         alert.ends_at = data["endsAt"]
-        alert.created_by_id = created_by.id
 
         db.session.add(alert)
         db.session.commit()

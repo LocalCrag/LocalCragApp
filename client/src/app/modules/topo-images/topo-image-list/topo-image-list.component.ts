@@ -361,6 +361,7 @@ export class TopoImageListComponent implements OnInit {
       this.store.dispatch(toastNotification('LINE_PATH_DELETED'));
       topoImage.linePaths.splice(topoImage.linePaths.indexOf(linePath), 1);
       linePath.konvaLine.destroy();
+      linePath.konvaTabuShapes?.forEach((shape) => shape.destroy());
       linePath.konvaRect.destroy();
       linePath.konvaText.destroy();
       linePath.loadingState = LoadingState.DEFAULT;
@@ -397,6 +398,11 @@ export class TopoImageListComponent implements OnInit {
           );
           linePath.konvaFocusLayer.add(linePath.konvaLine);
           linePath.konvaFocusLayer.add(linePath.konvaNumberGroup);
+          linePath.konvaTabuShapes?.forEach((shape) => {
+            shape.visible(true);
+            linePath.konvaFocusLayer.add(shape);
+            shape.moveToBottom();
+          });
         });
     }
   }
@@ -427,6 +433,14 @@ export class TopoImageListComponent implements OnInit {
           );
           linePath.konvaLineLayer.add(linePath.konvaLine);
           linePath.konvaNumberLayer.add(linePath.konvaNumberGroup);
+          linePath.konvaTabuShapes?.forEach((shape) => {
+            linePath.konvaLineLayer.add(shape);
+            shape.moveToBottom();
+            shape.moveUp();
+            if (linePath.tabuHoldsHiddenUntilHover) {
+              shape.visible(false);
+            }
+          });
         });
     }
   }

@@ -5,6 +5,7 @@ import { LinePath } from '../../models/line-path';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemOrder } from '../../interfaces/item-order.interface';
+import { TabuArea } from '../../utility/topo/tabu-holds';
 
 /**
  * CRUD service for line paths.
@@ -21,16 +22,18 @@ export class LinePathsService {
    *
    * @param linePaths Line paths to persist in display order.
    * @param topoImageId ID of the topo image.
+   * @param tabuAreas Shared tabu polygons stored on the topo image.
    * @return Observable of synced LinePaths.
    */
   public syncLinePaths(
     linePaths: LinePath[],
     topoImageId: string,
+    tabuAreas: TabuArea[] = [],
   ): Observable<LinePath[]> {
     return this.http
       .put<any[]>(
         this.api.linePaths.sync(topoImageId),
-        LinePath.serializeForSync(linePaths),
+        LinePath.serializeForSync(linePaths, tabuAreas),
       )
       .pipe(map((payload) => payload.map(LinePath.deserialize)));
   }

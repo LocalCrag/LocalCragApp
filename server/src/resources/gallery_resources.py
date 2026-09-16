@@ -137,7 +137,6 @@ class CreateGalleryImage(MethodView):
         created_by = User.find_by_email(get_session_identity())
         _assert_can_view_rock_explorer_tag_targets(gallery_image_data["tags"], created_by)
         image = GalleryImage()
-        image.created_by = created_by
         image.file_id = gallery_image_data["fileId"]
         image.description = gallery_image_data.get("description") or None
         # Seed editable GPS from upload EXIF when present.

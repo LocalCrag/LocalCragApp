@@ -33,27 +33,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Start MinIO
+      - name: Start SeaweedFS
         run: |
-          docker run -d --name minio \
-            -p 9000:9000 \
-            -e MINIO_ROOT_USER=localcrag \
-            -e MINIO_ROOT_PASSWORD=password \
-            quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z \
-            server /data
+          cat > /tmp/seaweedfs-s3.json <<'EOF'
+          {
+            "identities": [
+              {
+                "name": "anonymous",
+                "actions": ["Read"]
+              },
+              {
+                "name": "localcrag",
+                "credentials": [
+                  {
+                    "accessKey": "localcrag",
+                    "secretKey": "password"
+                  }
+                ],
+                "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+              }
+            ]
+          }
+          EOF
+          docker run -d --name seaweedfs \
+            -p 8333:8333 \
+            -e S3_BUCKET=localcrag \
+            -v /tmp/seaweedfs-s3.json:/etc/seaweedfs/s3.json:ro \
+            chrislusf/seaweedfs:4.45 \
+            mini -dir=/data -s3.config=/etc/seaweedfs/s3.json
           for i in $(seq 1 60); do
-            if curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null; then
-              echo "MinIO is up"
+            if curl -sf http://127.0.0.1:8333/healthz >/dev/null; then
+              echo "SeaweedFS is up"
               break
             fi
             sleep 1
           done
-          curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null
-          docker run --rm --network host \
-            -e MC_HOST_local="http://localcrag:password@127.0.0.1:9000" \
-            --entrypoint /bin/sh \
-            minio/mc \
-            -c "mc mb --ignore-existing local/localcrag && mc anonymous set public local/localcrag"
+          curl -sf http://127.0.0.1:8333/healthz >/dev/null
 
       - name: Set up Python
         uses: actions/setup-python@v6

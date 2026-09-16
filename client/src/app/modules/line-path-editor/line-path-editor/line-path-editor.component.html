@@ -10,32 +10,75 @@
       [topoImage]="topoImage"
       [linePathInProgress]="linePath"
       [linePathInProgressNumber]="linePathDisplayNumber"
+      [drawMode]="drawMode"
+      [tabuInProgress]="inProgressVertices"
+      [allTabuAreas]="allTabuAreas"
       [color]="color"
       (anchorClick)="handleClick($event)"
       (anchorDrag)="handleAnchorDrag($event)"
       (anchorContextMenu)="handleAnchorContextMenu($event)"
       (lineSegmentClick)="handleLineSegmentClick($event)"
       (imageClick)="handleClick($event)"
+      (closeShapeClick)="finishTabuPolygon()"
     >
     </lc-topo-image-editor>
   }
 
-  <p-button
-    class="mr-1"
-    styleClass="rotate-icon"
-    severity="secondary"
-    size="small"
-    icon="pi pi-refresh"
-    label="{{ t('undo') }}"
-    [disabled]="!linePath?.path?.length"
-    (click)="undo()"
-  ></p-button>
-  <p-button
-    severity="secondary"
-    size="small"
-    icon="pi pi-trash"
-    label="{{ t('restart') }}"
-    [disabled]="!linePath?.path?.length"
-    (click)="restart()"
-  ></p-button>
+  <div class="editor-toolbar mt-2 flex flex-wrap items-center gap-2">
+    <p-select
+      class="draw-mode-select"
+      [options]="[
+        { label: t('drawModeLine'), value: 'line' },
+        { label: t('drawModeTabu'), value: 'tabu' },
+      ]"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="drawMode"
+      (ngModelChange)="setDrawMode($event)"
+      [disabled]="isDisabled"
+      size="small"
+      appendTo="body"
+      data-cy="draw-mode"
+    >
+      <ng-template let-option #item>
+        <span [attr.data-cy]="'draw-mode-' + option.value">{{
+          option.label
+        }}</span>
+      </ng-template>
+    </p-select>
+    <p-button
+      styleClass="rotate-icon"
+      severity="secondary"
+      size="small"
+      icon="pi pi-refresh"
+      label="{{ drawMode === 'tabu' ? t('undoTabu') : t('undo') }}"
+      [disabled]="
+        drawMode === 'tabu'
+          ? !inProgressVertices.length
+          : !linePath?.path?.length
+      "
+      (click)="undo()"
+    ></p-button>
+    @if (drawMode === "line") {
+      <p-button
+        severity="secondary"
+        size="small"
+        icon="pi pi-trash"
+        label="{{ t('restart') }}"
+        [disabled]="!linePath?.path?.length"
+        (click)="restart()"
+      ></p-button>
+    }
+    @if (drawMode === "tabu") {
+      <p-button
+        severity="secondary"
+        size="small"
+        icon="pi pi-check"
+        label="{{ t('finishTabuArea') }}"
+        data-cy="finish-tabu-area"
+        [disabled]="!canFinishTabuPolygon()"
+        (click)="finishTabuPolygon()"
+      ></p-button>
+    }
+  </div>
 </ng-container>

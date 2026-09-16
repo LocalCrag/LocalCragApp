@@ -101,7 +101,6 @@ class CreateComment(MethodView):
         comment = Comment()
         comment.message = data["message"].strip()
         comment.object = target
-        comment.created_by_id = created_by.id
         if parent:
             comment.root_id = parent.root_id or parent.id
             comment.parent_id = parent.id

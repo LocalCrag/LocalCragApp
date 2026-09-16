@@ -150,7 +150,6 @@ class CreateArea(MethodView):
         new_area.short_description = sanitize_wysiwyg_html(area_data["shortDescription"])
         new_area.portrait_image_id = area_data["portraitImage"]
         new_area.sector_id = sector_id
-        new_area.created_by_id = created_by.id
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)

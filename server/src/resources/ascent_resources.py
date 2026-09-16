@@ -230,7 +230,6 @@ class CreateAscent(MethodView):
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]
         ascent.date = ascent_data["date"]
-        ascent.created_by_id = created_by.id
 
         # Set ascent date for ordering
         if ascent.date:

@@ -33,8 +33,56 @@ Helper templates for dependency service names.
 {{- printf "%s-postgres" .Release.Name -}}
 {{- end -}}
 
+{{- define "localcrag.s3.validate" -}}
+{{- $backend := default "minio" .Values.s3.backend -}}
+{{- if not (or (eq $backend "seaweedfs") (eq $backend "minio")) -}}
+{{- fail "s3.backend must be \"seaweedfs\" or \"minio\"." -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "localcrag.s3.backend" -}}
+{{- include "localcrag.s3.validate" . -}}
+{{- default "minio" .Values.s3.backend -}}
+{{- end -}}
+
 {{- define "localcrag.s3.fullname" -}}
+{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
 {{- printf "%s-s3" .Release.Name -}}
+{{- else -}}
+{{- printf "%s-seaweedfs" .Release.Name -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "localcrag.s3.port" -}}
+{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
+9000
+{{- else -}}
+8333
+{{- end -}}
+{{- end -}}
+
+{{- define "localcrag.s3.console.fullname" -}}
+{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
+{{- printf "%s-s3-console" .Release.Name -}}
+{{- else -}}
+{{- printf "%s-seaweedfs-filer" .Release.Name -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "localcrag.s3.console.port" -}}
+{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
+9001
+{{- else -}}
+8888
+{{- end -}}
+{{- end -}}
+
+{{- define "localcrag.minio.fullname" -}}
+{{- printf "%s-s3" .Release.Name -}}
+{{- end -}}
+
+{{- define "localcrag.seaweedfs.fullname" -}}
+{{- printf "%s-seaweedfs" .Release.Name -}}
 {{- end -}}
 
 {{- define "localcrag.secrets.name" -}}
@@ -50,7 +98,7 @@ Returns the secret name that should be used by the postgres subchart.
 {{- end -}}
 
 {{/*
-Helper to get/set s3 (MinIO) existingSecret (for subchart).
+Helper to get/set s3 existingSecret (for the MinIO subchart when enabled).
 Returns the secret name that should be used by the s3/MinIO subchart.
 */}}
 {{- define "localcrag.s3.secretName" -}}
@@ -87,6 +135,7 @@ This template is included in the main deployments to ensure all mandatory values
 {{- fail "s3.ingress.s3Host is required but not set. Please provide the public hostname for S3 API access." }}
 {{- end }}
 {{- if not .Values.s3.ingress.consoleHost }}
-{{- fail "s3.ingress.consoleHost is required but not set. Please provide the public hostname for MinIO console." }}
+{{- fail "s3.ingress.consoleHost is required but not set. Please provide the public hostname for the object-storage console." }}
 {{- end }}
+{{- include "localcrag.s3.validate" . }}
 {{- end -}}

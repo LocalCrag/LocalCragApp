@@ -21,7 +21,7 @@ import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
 import { FormsModule } from '@angular/forms';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
-import { TagModule } from 'primeng/tag';
+import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user-role-tag.component';
 import { Menu, MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -44,7 +44,7 @@ import { InputText } from 'primeng/inputtext';
     NgClass,
     FormsModule,
     UserAvatarComponent,
-    TagModule,
+    UserRoleTagComponent,
     MenuModule,
     ConfirmDialogModule,
     Select,

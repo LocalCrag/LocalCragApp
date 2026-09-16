@@ -1,14 +1,18 @@
 {
-  "linePathForm.manageLinePathsDescription": "Wähle eine Linie und zeichne ihren Verlauf. Wechsle zwischen Linien und speichere alle auf einmal.",
-  "linePathForm.helpDetailsMobile": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Langes Drücken auf einen Ankerpunkt zum Löschen. Tippe auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen.",
-  "linePathForm.helpDetailsDesktop": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Rechtsklick auf einen Ankerpunkt zum Löschen. Klicke auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen.",
+  "linePathForm.manageLinePathsDescription": "Wähle eine Linie und zeichne ihren Verlauf. Wechsle in den Tabu-Modus, um ausgeschlossene Bereiche zu markieren. Wechsle zwischen Linien und speichere alle auf einmal.",
+  "linePathForm.helpDetailsMobile": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Langes Drücken auf einen Ankerpunkt zum Löschen. Tippe auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen. Im Tabu-Modus tippe mindestens drei Punkte und schließe die Fläche (oder tippe den ersten Punkt). Tabu-Anker rasten nicht ein, und die Fläche kann nicht geschlossen werden, wenn sich Kanten kreuzen. Die Checkboxen neben dem Bild weisen Bereiche der gewählten Linie zu — wechsle oben die Linie, um denselben Bereich einer anderen Linie zuzuweisen.",
+  "linePathForm.helpDetailsDesktop": "Ziehe Ankerpunkte zum Anpassen — sie rasten an Ankerpunkten anderer Linien ein. Rechtsklick auf einen Ankerpunkt zum Löschen. Klicke auf ein Segment der aktiven Linie, um einen Ankerpunkt einzufügen. Im Tabu-Modus klicke mindestens drei Punkte und schließe die Fläche (oder klicke den ersten Punkt). Tabu-Anker rasten nicht ein, und die Fläche kann nicht geschlossen werden, wenn sich Kanten kreuzen. Die Checkboxen neben dem Bild weisen Bereiche der gewählten Linie zu — wechsle oben die Linie, um denselben Bereich einer anderen Linie zuzuweisen.",
   "linePathForm.lineLabel": "Linie",
   "linePathForm.notOnImage": "Nicht auf dem Bild",
   "linePathForm.linePlaceholder": "Wähle eine Linie",
-  "linePathForm.linePathLabel": "Linienverlauf",
+  "linePathForm.linePathLabel": "Linienverlauf und Tabu-Bereiche",
   "linePathForm.drawnLinesHeader": "Eingezeichnete Linien",
   "linePathForm.noDrawnLinesYet": "Noch keine Linien eingezeichnet.",
+  "linePathForm.tabuAreasHeader": "Tabu-Bereiche",
+  "linePathForm.tabuArea": "Tabu-Bereich {{n}}",
+  "linePathForm.noTabuAreasYet": "Noch keine Tabu-Bereiche. Zeichne einen auf dem Bild.",
+  "linePathForm.tabuRequiresLinePath": "Zeichne zuerst den Linienverlauf auf dem Bild, um Tabu-Bereiche zuzuweisen.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Linien speichern",
+  "linePathForm.saveAllLinePathsButtonLabel": "Speichern",
   "linePathForm.leaveEditorButtonLabel": "Editor verlassen"
 }

@@ -102,7 +102,6 @@ class CreateCrag(MethodView):
         )
         new_crag.portrait_image_id = crag_data["portraitImage"]
         new_crag.secret = crag_data["secret"]
-        new_crag.created_by_id = created_by.id
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
         new_crag.default_boulder_scale = crag_data["defaultBoulderScale"]

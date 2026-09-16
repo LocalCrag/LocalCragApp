@@ -33,6 +33,8 @@ export class TopoImageViewerComponent
   implements OnChanges
 {
   @Input() showLineNumbers = false;
+  /** When `hover`, tabu polygons stay hidden until the matching line is highlighted. */
+  @Input() tabuHoldsVisibility: 'always' | 'hover' = 'always';
 
   /** Layer used to bring a hovered line + label above others. */
   private focusLayer: Konva.Layer;
@@ -56,6 +58,9 @@ export class TopoImageViewerComponent
       this.topoImage.linePaths,
     );
     orderedLinePaths.forEach((linePath, index) => {
+      this.drawTabuHolds(linePath, {
+        visible: this.tabuHoldsVisibility === 'always',
+      });
       this.drawLine(linePath, 1);
       if (this.showLineNumbers) {
         labels.push(

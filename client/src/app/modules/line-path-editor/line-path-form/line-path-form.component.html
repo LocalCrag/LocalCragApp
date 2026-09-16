@@ -55,8 +55,6 @@
           [ngClass]="{ mobile: isMobile$ | async }"
         >
           <lc-line-path-editor
-            formControlName="path"
-            lcFormControl
             id="path-editor"
             class="min-w-0 flex-1"
             [topoImage]="editorTopoImage"
@@ -65,9 +63,17 @@
               getLineNumber(linePathForm.get('line').value)
             "
             [color]="linePathForm.get('line').value?.color"
+            [path]="linePathForm.get('path').value"
+            (pathChange)="onPathChange($event)"
+            [tabuAreaIds]="linePathForm.get('tabuAreaIds').value"
+            (tabuAreaIdsChange)="onTabuAreaIdsChange($event)"
+            [allTabuAreas]="allTabuAreas"
+            (allTabuAreasChange)="onAllTabuAreasChange($event)"
+            [tabuInProgress]="editorTabuInProgress"
+            (drawModeChange)="onEditorDrawModeChange($event)"
           >
           </lc-line-path-editor>
-          @if ((isMobile$ | async) === false) {
+          @if (editorDrawMode === "line" && (isMobile$ | async) === false) {
             <div class="line-path-order-panel w-72 flex-none">
               <p-orderList
                 [value]="orderedDrafts"
@@ -105,10 +111,76 @@
               }
             </div>
           }
+          @if (editorDrawMode === "tabu") {
+            <div
+              class="line-path-order-panel flex-none"
+              [ngClass]="(isMobile$ | async) ? 'w-full' : 'w-72'"
+            >
+              <div class="tabu-areas-panel">
+                <div class="tabu-areas-header">
+                  {{ t("tabuAreasHeader") }}
+                </div>
+                @if (!isSelectedLineDrawn()) {
+                  <p-message
+                    severity="info"
+                    icon="pi pi-info-circle"
+                    styleClass="tabu-requires-line-path"
+                    >{{ t("tabuRequiresLinePath") }}</p-message
+                  >
+                }
+                @if (allTabuAreas.length === 0) {
+                  <p class="drawn-lines-empty">
+                    {{ t("noTabuAreasYet") }}
+                  </p>
+                } @else {
+                  <ul class="tabu-areas-list">
+                    @for (area of allTabuAreas; track area.id; let i = $index) {
+                      <li
+                        class="tabu-area-item"
+                        [class.unassigned]="
+                          !isTabuAssignedToSelectedLine(area.id)
+                        "
+                      >
+                        <p-checkbox
+                          [binary]="true"
+                          [ngModel]="isTabuAssignedToSelectedLine(area.id)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [inputId]="'tabu-area-' + i"
+                          [attr.data-cy]="'tabu-assign-checkbox-' + i"
+                          [disabled]="!isSelectedLineDrawn()"
+                          (onChange)="onTabuCheckboxChange(area.id, $event)"
+                        />
+                        <label
+                          class="tabu-area-item-label"
+                          [for]="'tabu-area-' + i"
+                        >
+                          {{ t("tabuArea", { n: i + 1 }) }}
+                        </label>
+                        <p-button
+                          icon="pi pi-trash"
+                          [rounded]="true"
+                          [text]="true"
+                          severity="danger"
+                          size="small"
+                          [attr.data-cy]="'tabu-area-delete-' + i"
+                          (click)="onTabuAreaDeleted(area.id)"
+                        ></p-button>
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+            </div>
+          }
         </div>
-        <small class="lc-error" *lcIfError="'minlength'">{{
-          t("drawALineWithAtLeastTwoAnchorPoints")
-        }}</small>
+        @if (
+          linePathForm.get("path").touched &&
+          linePathForm.get("path").hasError("minlength")
+        ) {
+          <small class="lc-error">{{
+            t("drawALineWithAtLeastTwoAnchorPoints")
+          }}</small>
+        }
       </div>
     </form>
   }

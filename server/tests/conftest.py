@@ -20,6 +20,7 @@ from migrations.util_scripts.add_scales import add_scales
 from models.account_settings import AccountSettings
 from models.area import Area
 from models.ascent import Ascent
+from models.base_entity import set_created_by_ids
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.map_marker_type_enum import MapMarkerType
@@ -105,6 +106,7 @@ def db_session():
         db.session = scoped_session(sessionmaker(bind=connection))
         # We need to re-register all handlers, as we change the session
         listen(db.session, "before_flush", update_slugs)
+        listen(db.session, "before_flush", set_created_by_ids)
         listen(db.session, "before_flush", update_searchables)
         listen(db.session, "before_flush", cleanup_deleted_secret_registry_entries)
         listen(db.session, "after_flush", create_searchables)

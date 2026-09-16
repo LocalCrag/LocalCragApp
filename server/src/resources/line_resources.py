@@ -323,7 +323,6 @@ class CreateLine(MethodView):
         new_line.mantle = line_data["mantle"]
 
         new_line.area_id = area_id
-        new_line.created_by_id = created_by.id
 
         apply_closable_configuration(new_line, line_data, "line_id")
 

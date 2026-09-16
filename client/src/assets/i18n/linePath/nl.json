@@ -1,14 +1,18 @@
 {
-  "linePathForm.manageLinePathsDescription": "Selecteer een route en teken het pad. Wissel tussen routes en sla alles in één keer op.",
-  "linePathForm.helpDetailsMobile": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Lang indrukken op een ankerpunt om het te verwijderen. Tik op een segment van de actieve route om een ankerpunt in te voegen.",
-  "linePathForm.helpDetailsDesktop": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Rechtsklik op een ankerpunt om het te verwijderen. Klik op een segment van de actieve route om een ankerpunt in te voegen.",
+  "linePathForm.manageLinePathsDescription": "Selecteer een route en teken het pad. Schakel naar taboegebiedmodus om uitgesloten grepen te markeren. Wissel tussen routes en sla alles in één keer op.",
+  "linePathForm.helpDetailsMobile": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Lang indrukken op een ankerpunt om het te verwijderen. Tik op een segment van de actieve route om een ankerpunt in te voegen. In taboe-modus tik je minstens drie punten en sluit je het gebied (of tik je het eerste punt). Taboe-ankers zijn niet magnetisch, en het gebied kan niet worden gesloten als zijden elkaar kruisen. Selectievakjes naast de afbeelding wijzen gebieden toe aan de geselecteerde route — wissel hierboven van route om hetzelfde gebied op een andere route te hergebruiken.",
+  "linePathForm.helpDetailsDesktop": "Sleep ankerpunten om ze aan te passen — ze klikken vast op ankerpunten van andere routes. Rechtsklik op een ankerpunt om het te verwijderen. Klik op een segment van de actieve route om een ankerpunt in te voegen. In taboe-modus klik je minstens drie punten en sluit je het gebied (of klik je het eerste punt). Taboe-ankers zijn niet magnetisch, en het gebied kan niet worden gesloten als zijden elkaar kruisen. Selectievakjes naast de afbeelding wijzen gebieden toe aan de geselecteerde route — wissel hierboven van route om hetzelfde gebied op een andere route te hergebruiken.",
   "linePathForm.lineLabel": "Route",
   "linePathForm.notOnImage": "Niet op de afbeelding",
   "linePathForm.linePlaceholder": "Selecteer een route",
-  "linePathForm.linePathLabel": "Routepad",
+  "linePathForm.linePathLabel": "Routepad en taboegebieden",
   "linePathForm.drawnLinesHeader": "Getekende routes",
   "linePathForm.noDrawnLinesYet": "Nog geen routes getekend.",
+  "linePathForm.tabuAreasHeader": "Taboegebieden",
+  "linePathForm.tabuArea": "Taboegebied {{n}}",
+  "linePathForm.noTabuAreasYet": "Nog geen taboegebieden. Teken er een op de afbeelding.",
+  "linePathForm.tabuRequiresLinePath": "Teken eerst de route op de afbeelding om taboegebieden toe te wijzen.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
-  "linePathForm.saveAllLinePathsButtonLabel": "Routes opslaan",
+  "linePathForm.saveAllLinePathsButtonLabel": "Opslaan",
   "linePathForm.leaveEditorButtonLabel": "Editor afsluiten"
 }
