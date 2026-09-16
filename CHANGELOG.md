@@ -1,3 +1,10 @@
+## [1.57.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.57.0...v1.57.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* **helm:** remove unauthenticated seaweedfs filer ui ([#1291](https://github.com/LocalCrag/LocalCragApp/issues/1291)) ([4fbbbd2](https://github.com/LocalCrag/LocalCragApp/commit/4fbbbd2703b7b4438b9c86684366fa3eef67881d))
+
 # [1.57.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.56.0...v1.57.0) (2026-09-16)
 
 
