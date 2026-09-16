@@ -1,3 +1,13 @@
+# [1.57.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.56.0...v1.57.0) (2026-09-16)
+
+
+### Features
+
+* **account:** show user role tag in account settings page ([#1287](https://github.com/LocalCrag/LocalCragApp/issues/1287)) ([1e1a633](https://github.com/LocalCrag/LocalCragApp/commit/1e1a63349aea79084697a657b45611c70acd805f)), closes [#742](https://github.com/LocalCrag/LocalCragApp/issues/742)
+* **helm:** switch from minio to seaweedfs ([#1290](https://github.com/LocalCrag/LocalCragApp/issues/1290)) ([ce10887](https://github.com/LocalCrag/LocalCragApp/commit/ce10887c7b7518a42ff1bb0d2a8d2b67ef50c3a5)), closes [#1288](https://github.com/LocalCrag/LocalCragApp/issues/1288)
+* **notifications:** add link in mail footer to unsubscribe notification mails ([#1285](https://github.com/LocalCrag/LocalCragApp/issues/1285)) ([99c2513](https://github.com/LocalCrag/LocalCragApp/commit/99c2513b2ac0935a9d79987a5f2fed851ffb5513)), closes [#1124](https://github.com/LocalCrag/LocalCragApp/issues/1124)
+* **topo:** allow drawing taboo areas ([#1286](https://github.com/LocalCrag/LocalCragApp/issues/1286)) ([b4f7b9e](https://github.com/LocalCrag/LocalCragApp/commit/b4f7b9e3b90504d3d4141f7cb839c099ede6d540)), closes [#73](https://github.com/LocalCrag/LocalCragApp/issues/73)
+
 # [1.56.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.55.0...v1.56.0) (2026-09-08)
 
 
