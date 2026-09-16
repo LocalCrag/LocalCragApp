@@ -90,10 +90,15 @@
       "required": ["ingress", "existingSecret"],
       "additionalProperties": true,
       "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["seaweedfs", "minio"],
+          "description": "Active S3 backend used by the server, backups, and ingress"
+        },
         "existingSecret": {
           "type": "string",
           "minLength": 1,
-          "description": "Name of the existing Kubernetes Secret containing S3/MinIO credentials (should be same as main existingSecret)"
+          "description": "Name of the existing Kubernetes Secret containing S3 credentials (should be same as main existingSecret)"
         },
         "ingress": {
           "type": "object",
@@ -107,7 +112,7 @@
             "consoleHost": {
               "type": "string",
               "minLength": 1,
-              "description": "Public hostname for MinIO console"
+              "description": "Public hostname for the object-storage console"
             }
           }
         }

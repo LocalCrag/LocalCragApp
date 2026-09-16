@@ -30,12 +30,12 @@ spec:
               done
               echo "Postgres is ready!"
               
-              echo "Waiting for MinIO..."
-              until nc -z {{ include "localcrag.s3.fullname" . }} 9000; do
-                echo "MinIO is unavailable - sleeping"
+              echo "Waiting for object storage..."
+              until nc -z {{ include "localcrag.s3.fullname" . }} {{ include "localcrag.s3.port" . }}; do
+                echo "Object storage is unavailable - sleeping"
                 sleep 2
               done
-              echo "MinIO is ready!"
+              echo "Object storage is ready!"
               
               echo "All dependencies are ready!"
       containers:
@@ -55,7 +55,7 @@ spec:
               value: "postgresql://{{ .Values.postgres.auth.username }}:$(POSTGRES_PASSWORD)@{{ include "localcrag.postgres.fullname" . }}/{{ .Values.postgres.auth.database }}"
 
             - name: S3_ENDPOINT
-              value: {{ printf "http://%s:9000" (include "localcrag.s3.fullname" .) | quote }}
+              value: {{ printf "http://%s:%s" (include "localcrag.s3.fullname" .) (include "localcrag.s3.port" .) | quote }}
             - name: S3_BUCKET
               value: "{{ .Values.appS3.bucket }}"
             - name: S3_ACCESS_ENDPOINT
@@ -63,7 +63,7 @@ spec:
             - name: S3_ADDRESSING
               value: "{{ .Values.appS3.addressing }}"
 
-            # LocalCrag expects S3_USER/S3_PASSWORD; we use MinIO's rootUser/rootPassword as the single source of truth.
+            # LocalCrag expects S3_USER/S3_PASSWORD; rootUser/rootPassword remain the secret keys for S3 credentials.
             - name: S3_USER
               valueFrom:
                 secretKeyRef:

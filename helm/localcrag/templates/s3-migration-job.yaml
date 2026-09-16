@@ -1,0 +1,110 @@
+{{- if .Values.s3.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "localcrag.fullname" . }}-s3-migrate
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: s3-migration
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "10"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        {{- include "localcrag.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: s3-migration
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: {{ printf "%s:%s" .Values.s3.migration.image.repository .Values.s3.migration.image.tag | quote }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SRC_ENDPOINT
+              value: {{ printf "http://%s:9000" (include "localcrag.minio.fullname" .) | quote }}
+            - name: DST_ENDPOINT
+              value: {{ printf "http://%s:8333" (include "localcrag.seaweedfs.fullname" .) | quote }}
+            - name: SRC_BUCKET
+              value: {{ .Values.appS3.bucket | quote }}
+            - name: SRC_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "localcrag.secrets.name" . | quote }}
+                  key: '{{ default "rootUser" .Values.existingSecret.keys.s3User }}'
+            - name: SRC_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "localcrag.secrets.name" . | quote }}
+                  key: '{{ default "rootPassword" .Values.existingSecret.keys.s3Password }}'
+            # AWS CLI settings for S3-compatible endpoints (MinIO / SeaweedFS).
+            - name: AWS_DEFAULT_REGION
+              value: "eu-central-1"
+            - name: AWS_EC2_METADATA_DISABLED
+              value: "true"
+            - name: AWS_REQUEST_CHECKSUM_CALCULATION
+              value: WHEN_REQUIRED
+            - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+              value: WHEN_REQUIRED
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -euo pipefail
+
+              : "${SRC_ENDPOINT:?}"
+              : "${DST_ENDPOINT:?}"
+              : "${SRC_BUCKET:?}"
+              : "${SRC_ACCESS_KEY:?}"
+              : "${SRC_SECRET_KEY:?}"
+
+              apk add --no-cache aws-cli curl ca-certificates >/dev/null
+
+              mkdir -p /tmp/aws
+              cat > /tmp/aws/config <<'EOF'
+              [default]
+              region = eu-central-1
+              s3 =
+                  addressing_style = path
+                  signature_version = s3v4
+              EOF
+              export AWS_CONFIG_FILE=/tmp/aws/config
+
+              aws_s3() {
+                endpoint="$1"; access="$2"; secret="$3"; shift 3
+                AWS_ACCESS_KEY_ID="${access}" AWS_SECRET_ACCESS_KEY="${secret}" \
+                  aws --endpoint-url "${endpoint}" "$@"
+              }
+
+              echo "Waiting for MinIO at ${SRC_ENDPOINT} ..."
+              until curl -sf "${SRC_ENDPOINT}/minio/health/live" >/dev/null; do
+                sleep 2
+              done
+              echo "Waiting for SeaweedFS at ${DST_ENDPOINT} ..."
+              until curl -sf "${DST_ENDPOINT}/healthz" >/dev/null; do
+                sleep 2
+              done
+
+              echo "Ensuring destination bucket '${SRC_BUCKET}' exists..."
+              if ! aws_s3 "${DST_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3api head-bucket --bucket "${SRC_BUCKET}" >/dev/null 2>&1; then
+                aws_s3 "${DST_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 mb "s3://${SRC_BUCKET}"
+              fi
+
+              SYNC_DIR="/tmp/s3-sync"
+              rm -rf "${SYNC_DIR}"
+              mkdir -p "${SYNC_DIR}"
+              echo "Syncing s3://${SRC_BUCKET} from MinIO (${SRC_ENDPOINT}) -> SeaweedFS (${DST_ENDPOINT}) ..."
+              aws_s3 "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 sync "s3://${SRC_BUCKET}" "${SYNC_DIR}"
+              aws_s3 "${DST_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 sync "${SYNC_DIR}" "s3://${SRC_BUCKET}"
+              rm -rf "${SYNC_DIR}"
+
+              echo "Object listings (destination):"
+              aws_s3 "${DST_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 ls "s3://${SRC_BUCKET}/" --recursive --summarize || true
+
+              echo "MinIO -> SeaweedFS sync complete."
+          resources:
+            {{- toYaml .Values.s3.migration.resources | nindent 12 }}
+{{- end }}

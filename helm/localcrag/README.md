@@ -1,5 +1,9 @@
 # LocalCrag Helm chart
 
+## Deprecation notice
+
+LocalCrag stores uploads in an S3-compatible object store. That used to be **MinIO**, which is discontinued. This chart version still deploys MinIO by default so existing clusters keep the same Service/PVC names and data, and it also deploys **SeaweedFS** beside it so you can copy files and switch the app with `s3.backend`. A later chart release will drop MinIO. Migration steps: [MIGRATION-MINIO-SEAWEEDFS.md](./MIGRATION-MINIO-SEAWEEDFS.md).
+
 ## Installation
 
 ### 1. Create your values file
@@ -34,19 +38,19 @@ server:
   # sentryEnabled: true
   # sentryDsn: "https://examplePublicKey@o0.ingest.sentry.io/0"
 
-# REQUIRED: S3 / MinIO configuration
+# REQUIRED: S3 / SeaweedFS configuration
 appS3:
   # Public URL for accessing S3 objects
   accessEndpoint: "https://s3.example.com"
 
 s3:
-  # Secret for S3/MinIO subchart (same as above in typical setup)
+  # Secret for S3 credentials (same as above in typical setup)
   existingSecret: "localcrag-secrets"
   
   # Public hostnames for the S3 endpoints exposed via Ingress
   ingress:
     s3Host: "s3.example.com"           # Public hostname for S3 API
-    consoleHost: "minio.example.com"   # Public hostname for MinIO console
+    consoleHost: "s3-console.example.com"  # SeaweedFS filer UI (or MinIO console during migration)
 
 # REQUIRED: Ingress configuration
 client:
@@ -67,7 +71,7 @@ You must set three secret references in your values file:
 
 1. **`existingSecret.name`** - Secret for the main application (server)
 2. **`postgres.auth.existingSecret`** - Secret for PostgreSQL credentials
-3. **`s3.existingSecret`** - Secret for MinIO/S3 credentials
+3. **`s3.existingSecret`** - Secret for S3 credentials (SeaweedFS, or MinIO while migrating)
 
 **Typical setup:** Use the same secret for all three (recommended for simplicity):
 ```yaml
@@ -111,8 +115,8 @@ The Secret must include the following keys:
 - `SUPERADMIN_FIRSTNAME`
 - `SUPERADMIN_LASTNAME`
 - `SUPERADMIN_EMAIL`
-- `rootUser` (S3/MinIO credentials)
-- `rootPassword` (S3/MinIO credentials)
+- `rootUser` (S3 credentials; SeaweedFS access key)
+- `rootPassword` (S3 credentials; SeaweedFS secret key)
 
 Create a file (e.g., `localcrag-secrets.yaml`):
 
@@ -132,7 +136,7 @@ stringData:
   SESSION_COOKIE_SECURE: "true"
   SESSION_COOKIE_SAMESITE: "Lax"
 
-  # S3 / MinIO credentials (single source of truth)
+  # S3 credentials (single source of truth for SeaweedFS / MinIO)
   rootUser: "localcrag"
   rootPassword: "changeme"
 
@@ -159,7 +163,7 @@ Apply the secret:
 kubectl apply -f localcrag-secrets.yaml -n <my-namespace>
 ```
 
-**Note:** The chart maps MinIO's `rootUser`/`rootPassword` to LocalCrag's expected `S3_USER`/`S3_PASSWORD` environment variables.
+**Note:** The chart maps `rootUser`/`rootPassword` to LocalCrag's expected `S3_USER`/`S3_PASSWORD` environment variables.
 
 ### 3. Install the chart
 
@@ -193,7 +197,7 @@ helm install localcrag ./helm/localcrag \
 This chart can create a **CronJob** that backs up both:
 
 - Postgres (logical dump via `pg_dump`)
-- MinIO objects (bucket mirror via `mc mirror`)
+- Object storage (bucket sync via AWS CLI `aws s3 sync`)
 
 The backup job bundles both database and files into a single snapshot per run.
 
@@ -251,7 +255,7 @@ backups:
   schedule: "0 2 * * *"
 ```
 
-Each run creates a timestamped snapshot containing both the Postgres dump and MinIO files.
+Each run creates a timestamped snapshot containing both the Postgres dump and object-storage files.
 
 ### Where backups land
 

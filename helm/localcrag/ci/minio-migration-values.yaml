@@ -1,0 +1,37 @@
+# Values for helm lint / helm template (dual-run + migration Job).
+existingSecret:
+  name: localcrag-secrets
+
+postgres:
+  auth:
+    existingSecret: localcrag-secrets
+
+smtp:
+  host: smtp.example.com
+  port: "587"
+  type: starttls
+
+systemEmail: noreply@example.com
+
+server:
+  frontendHost: https://localcrag.example.com/
+
+appS3:
+  accessEndpoint: https://s3.example.com
+
+s3:
+  backend: minio
+  existingSecret: localcrag-secrets
+  ingress:
+    s3Host: s3.example.com
+    consoleHost: s3-console.example.com
+  migration:
+    enabled: true
+
+client:
+  ingress:
+    host: localcrag.example.com
+    clusterIssuer: letsencrypt-prod
+
+backups:
+  enabled: true

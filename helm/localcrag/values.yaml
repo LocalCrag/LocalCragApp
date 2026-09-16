@@ -50,25 +50,60 @@ appS3:
   accessEndpoint: ""
   addressing: path
 
-# MinIO official chart settings (dependency aliased as `s3`)
+# Object storage (S3-compatible). This chart version always deploys MinIO
+# (same as before) plus SeaweedFS so you can copy data and switch backends.
+# A future chart release will drop MinIO entirely.
 s3:
-  # REQUIRED: Hosts for the S3 (MinIO) endpoints exposed via Ingress
+  # Active backend used by the LocalCrag server, backups, and S3 ingress.
+  # "minio" | "seaweedfs" — default stays minio so existing releases keep serving
+  # from the current PVC. Set seaweedfs after copying objects (see MIGRATION-MINIO-SEAWEEDFS.md).
+  backend: minio
+
+  # REQUIRED: Hosts for the S3 endpoints exposed via Ingress
   ingress:
     # Public hostname for S3 API access (e.g., "s3.example.com")
     s3Host: ""
-    # Public hostname for MinIO console (e.g., "minio.example.com")
+    # Public hostname for the storage console (SeaweedFS filer UI, or MinIO console)
     consoleHost: ""
 
-  # MinIO subchart configuration
+  # REQUIRED: Secret containing S3 credentials (normally the same as `existingSecret.name`).
+  # Keys default to MinIO-compatible rootUser / rootPassword.
+  existingSecret: ""
+
+  seaweedfs:
+    image:
+      repository: chrislusf/seaweedfs
+      tag: "4.45"
+      pullPolicy: IfNotPresent
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+
+  migration:
+    # When true, run a Helm hook Job that mirrors appS3.bucket from MinIO to SeaweedFS.
+    enabled: false
+    image:
+      repository: alpine
+      tag: "3.21"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+  # MinIO subchart configuration (always installed in this chart version)
   buckets:
     - name: localcrag
       policy: download
       purge: false
       versioning: false
-
-  # REQUIRED: Provide MinIO credentials via an existing Kubernetes Secret (normally the same as `existingSecret.name`).
-  # NOTE: MinIO chart expects keys: rootUser / rootPassword
-  existingSecret: ""
 
   mode: standalone
 
@@ -125,10 +160,10 @@ client:
     clusterIssuer: ""
 
 
-# Scheduled backups for Postgres and MinIO.
+# Scheduled backups for Postgres and object storage.
 #
 # This creates a single CronJob that backs up both the database and files together.
-# The backup container uses the postgres image (includes pg_dump) and installs mc (MinIO client) at runtime.
+# The backup container uses the postgres image (includes pg_dump) and installs the AWS CLI at runtime.
 # Set backups.enabled=true to enable backups, backups.enabled=false to disable.
 # You must provide S3 credentials in your Secret (see README for required keys).
 backups:
