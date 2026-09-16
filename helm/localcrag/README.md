@@ -50,7 +50,7 @@ s3:
   # Public hostnames for the S3 endpoints exposed via Ingress
   ingress:
     s3Host: "s3.example.com"           # Public hostname for S3 API
-    consoleHost: "s3-console.example.com"  # SeaweedFS filer UI (or MinIO console during migration)
+    consoleHost: "s3-console.example.com"  # MinIO console (the SeaweedFS filer UI is unauthenticated and stays internal)
 
 # REQUIRED: Ingress configuration
 client:

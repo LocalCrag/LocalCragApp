@@ -1,6 +1,14 @@
 # [1.57.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.56.0...v1.57.0) (2026-09-16)
 
 
+### Upgrade notes
+
+MinIO has been discontinued. SeaweedFS now runs alongside it in the Helm chart
+and the Docker Compose setup, and CI uses SeaweedFS exclusively. Existing
+deployments keep MinIO and their data until they copy objects across and switch
+backends explicitly.
+
+
 ### Features
 
 * **account:** show user role tag in account settings page ([#1287](https://github.com/LocalCrag/LocalCragApp/issues/1287)) ([1e1a633](https://github.com/LocalCrag/LocalCragApp/commit/1e1a63349aea79084697a657b45611c70acd805f)), closes [#742](https://github.com/LocalCrag/LocalCragApp/issues/742)

@@ -61,20 +61,18 @@ Helper templates for dependency service names.
 {{- end -}}
 {{- end -}}
 
+{{/*
+Storage console. Always the MinIO console, which requires a login, regardless of
+the active backend. The SeaweedFS filer UI is deliberately never routed here: it
+has no authentication whatsoever, so anyone who reached the URL could upload and
+delete objects. Browse SeaweedFS with `kubectl port-forward` instead.
+*/}}
 {{- define "localcrag.s3.console.fullname" -}}
-{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
 {{- printf "%s-s3-console" .Release.Name -}}
-{{- else -}}
-{{- printf "%s-seaweedfs-filer" .Release.Name -}}
-{{- end -}}
 {{- end -}}
 
 {{- define "localcrag.s3.console.port" -}}
-{{- if eq (include "localcrag.s3.backend" .) "minio" -}}
 9001
-{{- else -}}
-8888
-{{- end -}}
 {{- end -}}
 
 {{- define "localcrag.minio.fullname" -}}

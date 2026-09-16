@@ -81,7 +81,9 @@ services:
       - seaweedfs_config:/config:ro
     ports:
       - "8333:8333"  # Stored Files
-      - "8888:8888"  # Web UI
+      # Filer UI, bound to loopback on purpose: it has no authentication and
+      # allows uploads and deletes. Reach it over an SSH tunnel, never directly.
+      - "127.0.0.1:8888:8888"
     command: [ "mini", "-dir=/data", "-s3.config=/config/s3.json" ]
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8333/healthz" ]

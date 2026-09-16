@@ -55,7 +55,9 @@ LocalCrag keeps uploaded images in an S3-compatible object store. The Compose se
 | Service | Ports | Purpose |
 | --- | --- | --- |
 | `storage` (MinIO) | 9000 (S3), 9001 (console) | Discontinued upstream. Still the default so existing installations keep serving their data. |
-| `seaweedfs` | 8333 (S3), 8888 (web UI) | The replacement. |
+| `seaweedfs` | 8333 (S3), 8888 (filer UI, loopback only) | The replacement. |
+
+Only the S3 ports belong on a public reverse proxy. The SeaweedFS filer UI on 8888 has no authentication and accepts uploads and deletes, which is why Compose binds it to `127.0.0.1` — reach it through an SSH tunnel (`ssh -L 8888:127.0.0.1:8888 your-server`) rather than proxying it. The S3 port itself is safe to publish: anonymous callers only get read access, and writes require the `S3_USER` / `S3_PASSWORD` credentials.
 
 Which one the application actually uses is decided by `S3_ENDPOINT` in your `.env`. It defaults to MinIO. **If you are setting up a brand new instance**, put `S3_ENDPOINT=http://seaweedfs:8333` in your `.env` before the first start and point your reverse proxy at port 8333 — you then never touch MinIO at all.
 
