@@ -12,14 +12,14 @@ This guide is the hub for setting up LocalCrag for local development. Detailed n
 | **Python** | `3.14` (see `server/Pipfile` `[requires]`) |
 | **Pipenv** | Server dependency management |
 | **PostgreSQL** | Required for native server setup |
-| **Docker** | Optional; required for the Compose-based path and convenient for MinIO |
+| **Docker** | Optional; required for the Compose-based path and convenient for object storage |
 
 ## Choose a setup path
 
 | Path | Best when | Start here |
 |------|-----------|------------|
-| **Docker Compose (dev)** | You want frontend, backend, Postgres, MinIO, MailHog, and Adminer with minimal host setup | [Docker development setup](./docker-dev-setup.md) |
-| **Native** | You prefer running Angular/`flask` on the host (faster iteration, IDE debugging) | [Client README](../client/README.md) + [Server README](../server/README.md) + [MinIO](#minio-setup) below |
+| **Docker Compose (dev)** | You want frontend, backend, Postgres, SeaweedFS, MailHog, and Adminer with minimal host setup | [Docker development setup](./docker-dev-setup.md) |
+| **Native** | You prefer running Angular/`flask` on the host (faster iteration, IDE debugging) | [Client README](../client/README.md) + [Server README](../server/README.md) + [Object storage](#object-storage-setup) below |
 
 Both paths need a `server/src/config/dev.cfg` copied from `server/src/config/template.cfg` (fill at least the `SUPERADMIN_*` values; for native also DB and S3 settings).
 
@@ -42,41 +42,46 @@ Full steps, URLs, and teardown: [docker-dev-setup.md](./docker-dev-setup.md).
 
 1. **Client** — install Node, `cd client && npm i`, then `npm run dev` (Tailwind watch + `ng serve`). Details: [client/README.md](../client/README.md).
 2. **Server** — install Python/Pipenv/Postgres, `cd server && pipenv install`, create `src/config/dev.cfg`, run migrations and `flask run`. Details: [server/README.md](../server/README.md).
-3. **Object storage** — run MinIO (below) and point the S3_* keys in `dev.cfg` at it. Needed for uploads.
+3. **Object storage** — run SeaweedFS (below) and point the S3_* keys in `dev.cfg` at it. Needed for uploads.
 4. **Pre-commit hooks** — from the repo root, `npm install` (activates Husky). See [Pre-commit hooks](#pre-commit-hooks-husky--lint-staged).
 
 Config reference: [environment-variables.md](./environment-variables.md).
 
-## MinIO setup
+## Object storage setup
 
-For native development, LocalCrag uses MinIO as S3-compatible object storage. Align credentials with the `S3_*` values in `server/src/config/dev.cfg`.
+For native development, LocalCrag uses SeaweedFS as S3-compatible object storage. Align credentials with the `S3_*` values in `server/src/config/dev.cfg`.
 
-```bash
-export MINIO_ROOT_USER=your-access-key
-export MINIO_ROOT_PASSWORD=your-secret-key
-export MINIO_INIT_BUCKET=your-bucket
-```
+Write an identity file. The `anonymous` identity makes uploaded files publicly readable, which the application relies on for image URLs:
 
 ```bash
-docker run -d --name minio \
-  -p 9000:9000 \
-  -p 9001:9001 \
-  -e MINIO_ROOT_USER=$MINIO_ROOT_USER \
-  -e MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
-  quay.io/minio/minio server /data --console-address ":9001"
+cat > /tmp/seaweedfs-s3.json <<'EOF'
+{
+  "identities": [
+    { "name": "anonymous", "actions": ["Read"] },
+    {
+      "name": "localcrag",
+      "credentials": [{ "accessKey": "your-access-key", "secretKey": "your-secret-key" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}
+EOF
 ```
 
-Create and publish the bucket:
+Start it. `S3_BUCKET` makes `weed mini` create the bucket on startup, so there is no separate bucket-creation step:
 
 ```bash
-docker exec -it minio sh -c "
-  mc alias set minio http://127.0.0.1:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD && \
-  mc mb minio/$MINIO_INIT_BUCKET || true && \
-  mc anonymous set public minio/$MINIO_INIT_BUCKET
-"
+docker run -d --name seaweedfs \
+  -p 8333:8333 \
+  -p 8888:8888 \
+  -e S3_BUCKET=your-bucket \
+  -v /tmp/seaweedfs-s3.json:/etc/seaweedfs/s3.json:ro \
+  chrislusf/seaweedfs:4.45 mini -dir=/data -s3.config=/etc/seaweedfs/s3.json
 ```
 
-The Docker Compose path already includes MinIO; you do not need this standalone container when using `docker-compose.dev.yml`.
+Point `S3_ENDPOINT` and `S3_ACCESS_ENDPOINT` in `dev.cfg` at `http://127.0.0.1:8333`. The object browser is at http://localhost:8888.
+
+The Docker Compose path already includes SeaweedFS; you do not need this standalone container when using `docker-compose.dev.yml`.
 
 ## Pre-commit hooks (Husky + lint-staged)
 

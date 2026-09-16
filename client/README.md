@@ -1,6 +1,6 @@
 # LocalCrag Client
 
-For the full local toolchain (Docker vs native, Husky, MinIO), see [docs/dev-tooling.md](../docs/dev-tooling.md).
+For the full local toolchain (Docker vs native, Husky, object storage), see [docs/dev-tooling.md](../docs/dev-tooling.md).
 
 ## Setup
 

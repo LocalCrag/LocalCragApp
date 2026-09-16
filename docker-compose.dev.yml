@@ -8,30 +8,32 @@ services:
       POSTGRES_DB: localcrag
       POSTGRES_PASSWORD: password
 
+  # The "anonymous" identity keeps uploaded files publicly readable, which is
+  # what `mc anonymous set public` did under MinIO.
+  storage_config:
+    image: busybox:1.36
+    volumes:
+      - storage_config:/config
+    command:
+      - sh
+      - "-c"
+      - |
+        printf '%s\n' '{"identities":[{"name":"anonymous","actions":["Read"]},{"name":"localcrag","credentials":[{"accessKey":"localcrag","secretKey":"password"}],"actions":["Admin","Read","Write","List","Tagging"]}]}' > /config/s3.json
+
   storage:
-    image: quay.io/minio/minio
+    image: chrislusf/seaweedfs:4.45
+    depends_on:
+      storage_config:
+        condition: service_completed_successfully
     environment:
-      MINIO_ROOT_USER: localcrag
-      MINIO_ROOT_PASSWORD: password
-      MINIO_INIT_BUCKET: localcrag
+      S3_BUCKET: localcrag  # weed mini pre-creates this bucket on startup
     volumes:
       - storage:/data
+      - storage_config:/config:ro
     ports:
-      - "127.0.0.1:9000:9000"  # Stored Files
-      - "127.0.0.1:9001:9001"  # Web UI
-    command: ["server", "/data", "--console-address", ":9001"]
-    entrypoint: |  # Adopted from https://stackoverflow.com/a/78580294
-      /bin/sh -c '
-        isAlive() { curl -sf http://127.0.0.1:9000/minio/health/live; }
-        minio $$0 "$$@" --quiet & echo $$! > /tmp/minio.pid
-        while ! isAlive; do sleep 0.1; done
-        mc alias set minio http://127.0.0.1:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
-        mc mb minio/$$MINIO_INIT_BUCKET || true
-        mc anonymous set public minio/$$MINIO_INIT_BUCKET
-        kill -s INT $$(cat /tmp/minio.pid) && rm /tmp/minio.pid
-        while isAlive; do sleep 0.1; done
-        exec minio $$0 "$$@"
-      '
+      - "127.0.0.1:8333:8333"  # Stored Files
+      - "127.0.0.1:8888:8888"  # Web UI
+    command: ["mini", "-dir=/data", "-s3.config=/config/s3.json"]
 
   mails:
     image: mailhog/mailhog
@@ -64,9 +66,9 @@ services:
       LOCALCRAG_CONFIG: /localcragapp/src/config/dev.cfg
       S3_USER: localcrag
       S3_PASSWORD: password
-      S3_ENDPOINT: http://storage:9000
+      S3_ENDPOINT: http://storage:8333
       S3_BUCKET: localcrag
-      S3_ACCESS_ENDPOINT: http://localhost:9000
+      S3_ACCESS_ENDPOINT: http://localhost:8333
       S3_ADDRESSING: path
       SMTP_HOST: mails
       SMTP_PORT: 1025
@@ -99,3 +101,4 @@ services:
 volumes:
   database:
   storage:
+  storage_config:
