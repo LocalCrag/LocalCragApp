@@ -134,20 +134,3 @@ spec:
     - name: s3
       port: 8333
       targetPort: s3
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ $seaweedfsName }}-filer
-  labels:
-    {{- include "localcrag.labels" . | nindent 4 }}
-    app.kubernetes.io/component: seaweedfs
-spec:
-  type: ClusterIP
-  selector:
-    app: seaweedfs
-    app.kubernetes.io/instance: {{ .Release.Name }}
-  ports:
-    - name: filer
-      port: 8888
-      targetPort: filer

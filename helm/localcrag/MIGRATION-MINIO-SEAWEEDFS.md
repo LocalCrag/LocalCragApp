@@ -92,7 +92,11 @@ If the server is still at zero replicas after the upgrade:
 kubectl -n <namespace> scale deployment/localcrag-server --replicas=1
 ```
 
-The storage console Ingress now points at the SeaweedFS filer UI (`:8888`), not the MinIO console.
+The storage console Ingress keeps pointing at the MinIO console, which requires a login. SeaweedFS's filer UI is never exposed through the Ingress: it has no authentication at all, so anyone knowing the URL could upload and delete objects. To browse SeaweedFS, forward the port to your machine for as long as you need it:
+
+```bash
+kubectl -n <namespace> port-forward deployment/localcrag-seaweedfs 8888:8888
+```
 
 Leave MinIO running until a future chart version drops it.
 
