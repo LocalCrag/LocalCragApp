@@ -15,6 +15,9 @@ services:
       timeout: 10s
       retries: 3
 
+  # MinIO is discontinued and only stays here so existing installations keep
+  # their data. Copy it to SeaweedFS and switch S3_ENDPOINT when convenient,
+  # see docs/docker-compose-installation.md#migrating-from-minio-to-seaweedfs.
   storage:
     image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     container_name: ${COMPOSE_PROJECT_NAME}_minio
@@ -46,12 +49,118 @@ services:
       timeout: 10s
       retries: 3
 
+  # Writes the SeaweedFS identity file. The "anonymous" identity replaces
+  # MinIO's `mc anonymous set public`, so uploaded files stay publicly readable.
+  seaweedfs_config:
+    image: busybox:1.36
+    container_name: ${COMPOSE_PROJECT_NAME}_seaweedfs_config
+    environment:
+      S3_USER: ${S3_USER}
+      S3_PASSWORD: ${S3_PASSWORD}
+    volumes:
+      - seaweedfs_config:/config
+    command:
+      - sh
+      - "-c"
+      - |
+        escape() { printf '%s' "$$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+        AK=$$(escape "$$S3_USER")
+        SK=$$(escape "$$S3_PASSWORD")
+        printf '%s\n' "{\"identities\":[{\"name\":\"anonymous\",\"actions\":[\"Read\"]},{\"name\":\"localcrag\",\"credentials\":[{\"accessKey\":\"$${AK}\",\"secretKey\":\"$${SK}\"}],\"actions\":[\"Admin\",\"Read\",\"Write\",\"List\",\"Tagging\"]}]}" > /config/s3.json
+
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.45
+    container_name: ${COMPOSE_PROJECT_NAME}_seaweedfs
+    depends_on:
+      seaweedfs_config:
+        condition: service_completed_successfully
+    environment:
+      S3_BUCKET: ${S3_BUCKET}  # weed mini pre-creates this bucket on startup
+    volumes:
+      - seaweedfs:/data
+      - seaweedfs_config:/config:ro
+    ports:
+      - "8333:8333"  # Stored Files
+      - "8888:8888"  # Web UI
+    command: [ "mini", "-dir=/data", "-s3.config=/config/s3.json" ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8333/healthz" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # One-shot copy of all objects from MinIO to SeaweedFS. Does not run during a
+  # normal `docker compose up`; start it explicitly with:
+  #   docker compose --profile migration run --rm s3_migration
+  s3_migration:
+    profiles: [ "migration" ]
+    image: alpine:3.21
+    container_name: ${COMPOSE_PROJECT_NAME}_s3_migration
+    depends_on:
+      - storage
+      - seaweedfs
+    environment:
+      SRC_ENDPOINT: http://storage:9000
+      DST_ENDPOINT: http://seaweedfs:8333
+      S3_BUCKET: ${S3_BUCKET}
+      S3_USER: ${S3_USER}
+      S3_PASSWORD: ${S3_PASSWORD}
+      # AWS CLI settings for S3-compatible endpoints (MinIO / SeaweedFS).
+      AWS_DEFAULT_REGION: eu-central-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+      AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+    command:
+      - /bin/sh
+      - "-lc"
+      - |
+        set -eu
+
+        apk add --no-cache aws-cli curl ca-certificates >/dev/null
+
+        # Path-style addressing matches the server's S3_ADDRESSING=path
+        mkdir -p /tmp/aws
+        cat > /tmp/aws/config <<'EOF'
+        [default]
+        region = eu-central-1
+        s3 =
+            addressing_style = path
+            signature_version = s3v4
+        EOF
+        export AWS_CONFIG_FILE=/tmp/aws/config
+
+        aws_s3() {
+          endpoint="$$1"; shift
+          AWS_ACCESS_KEY_ID="$$S3_USER" AWS_SECRET_ACCESS_KEY="$$S3_PASSWORD" \
+            aws --endpoint-url "$$endpoint" "$$@"
+        }
+
+        echo "Waiting for MinIO at $$SRC_ENDPOINT ..."
+        until curl -sf "$$SRC_ENDPOINT/minio/health/live" >/dev/null; do sleep 2; done
+        echo "Waiting for SeaweedFS at $$DST_ENDPOINT ..."
+        until curl -sf "$$DST_ENDPOINT/healthz" >/dev/null; do sleep 2; done
+
+        if ! aws_s3 "$$DST_ENDPOINT" s3api head-bucket --bucket "$$S3_BUCKET" >/dev/null 2>&1; then
+          aws_s3 "$$DST_ENDPOINT" s3 mb "s3://$$S3_BUCKET"
+        fi
+
+        # aws s3 sync cannot talk to two endpoints at once, so stage locally.
+        SYNC_DIR=/tmp/s3-sync
+        rm -rf "$$SYNC_DIR"; mkdir -p "$$SYNC_DIR"
+        echo "Copying s3://$$S3_BUCKET from MinIO -> SeaweedFS ..."
+        aws_s3 "$$SRC_ENDPOINT" s3 sync "s3://$$S3_BUCKET" "$$SYNC_DIR"
+        aws_s3 "$$DST_ENDPOINT" s3 sync "$$SYNC_DIR" "s3://$$S3_BUCKET"
+        rm -rf "$$SYNC_DIR"
+
+        aws_s3 "$$DST_ENDPOINT" s3 ls "s3://$$S3_BUCKET/" --recursive --summarize || true
+        echo "MinIO -> SeaweedFS copy complete."
 
   server:
     image: ghcr.io/localcrag/localcrag-server:latest
     depends_on:
       - database
       - storage
+      - seaweedfs
     container_name: ${COMPOSE_PROJECT_NAME}_server
     labels: [ "com.centurylinklabs.watchtower.scope=${COMPOSE_PROJECT_NAME}" ]
     ports:
@@ -60,7 +169,9 @@ services:
       SQLALCHEMY_DATABASE_URI: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database/${POSTGRES_DB}"
       S3_PASSWORD: ${S3_PASSWORD}
       S3_USER: ${S3_USER}
-      S3_ENDPOINT: http://storage:9000
+      # Defaults to MinIO so existing installations keep serving their own data.
+      # Set S3_ENDPOINT=http://seaweedfs:8333 in .env once objects are copied.
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://storage:9000}
       S3_BUCKET: ${S3_BUCKET}
       S3_ACCESS_ENDPOINT: ${S3_ACCESS_ENDPOINT}
       S3_ADDRESSING: path
@@ -118,3 +229,5 @@ services:
 volumes:
   database:
   storage:
+  seaweedfs:
+  seaweedfs_config:

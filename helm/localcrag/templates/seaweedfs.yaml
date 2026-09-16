@@ -1,0 +1,153 @@
+{{- $seaweedfsName := include "localcrag.seaweedfs.fullname" . -}}
+{{- if .Values.s3.seaweedfs.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $seaweedfsName }}
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: seaweedfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.s3.seaweedfs.persistence.size | quote }}
+---
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $seaweedfsName }}
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: seaweedfs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: seaweedfs
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: seaweedfs
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "localcrag.labels" . | nindent 8 }}
+        app.kubernetes.io/component: seaweedfs
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: render-s3-config
+          image: busybox:1.36
+          env:
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "localcrag.secrets.name" . | quote }}
+                  key: '{{ default "rootUser" .Values.existingSecret.keys.s3User }}'
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "localcrag.secrets.name" . | quote }}
+                  key: '{{ default "rootPassword" .Values.existingSecret.keys.s3Password }}'
+          volumeMounts:
+            - name: s3-config
+              mountPath: /config
+          command:
+            - sh
+            - -c
+            - |
+              escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+              AK=$(escape "$ACCESS_KEY")
+              SK=$(escape "$SECRET_KEY")
+              printf '%s\n' "{\"identities\":[{\"name\":\"anonymous\",\"actions\":[\"Read\"]},{\"name\":\"localcrag\",\"credentials\":[{\"accessKey\":\"${AK}\",\"secretKey\":\"${SK}\"}],\"actions\":[\"Admin\",\"Read\",\"Write\",\"List\",\"Tagging\"]}]}" > /config/s3.json
+      containers:
+        - name: seaweedfs
+          image: "{{ .Values.s3.seaweedfs.image.repository }}:{{ .Values.s3.seaweedfs.image.tag }}"
+          imagePullPolicy: {{ .Values.s3.seaweedfs.image.pullPolicy }}
+          args:
+            - mini
+            - -s3.config=/etc/seaweedfs/s3.json
+          env:
+            - name: S3_BUCKET
+              value: {{ .Values.appS3.bucket | quote }}
+          ports:
+            - name: s3
+              containerPort: 8333
+            - name: filer
+              containerPort: 8888
+            - name: master
+              containerPort: 9333
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: s3-config
+              mountPath: /etc/seaweedfs/s3.json
+              subPath: s3.json
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: s3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: s3
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.s3.seaweedfs.resources | nindent 12 }}
+      volumes:
+        - name: s3-config
+          emptyDir: {}
+        - name: data
+          {{- if .Values.s3.seaweedfs.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ $seaweedfsName }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $seaweedfsName }}
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: seaweedfs
+spec:
+  type: ClusterIP
+  selector:
+    app: seaweedfs
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: s3
+      port: 8333
+      targetPort: s3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $seaweedfsName }}-filer
+  labels:
+    {{- include "localcrag.labels" . | nindent 4 }}
+    app.kubernetes.io/component: seaweedfs
+spec:
+  type: ClusterIP
+  selector:
+    app: seaweedfs
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: filer
+      port: 8888
+      targetPort: filer

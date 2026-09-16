@@ -49,7 +49,7 @@ spec:
                       key: {{ default "BACKUP_S3_PREFIX" .Values.backups.target.secretKeys.prefixKey | quote }}
                       optional: true
 
-                # Credentials for mc destination.
+                # Credentials for the backup destination (AWS CLI).
                 - name: DST_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
@@ -76,9 +76,9 @@ spec:
                       name: {{ include "localcrag.secrets.name" . | quote }}
                       key: {{ default "POSTGRES_PASSWORD" .Values.existingSecret.keys.postgresPassword | quote }}
 
-                # Always include MinIO env
+                # Active object-storage backend (MinIO or SeaweedFS)
                 - name: SRC_ENDPOINT
-                  value: {{ printf "http://%s:9000" (include "localcrag.s3.fullname" .) | quote }}
+                  value: {{ printf "http://%s:%s" (include "localcrag.s3.fullname" .) (include "localcrag.s3.port" .) | quote }}
                 - name: SRC_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
@@ -91,6 +91,16 @@ spec:
                       key: {{ default "rootPassword" .Values.existingSecret.keys.s3Password | quote }}
                 - name: SRC_BUCKET
                   value: {{ .Values.appS3.bucket | quote }}
+
+                # AWS CLI settings for S3-compatible endpoints (MinIO / SeaweedFS / backup target).
+                - name: AWS_DEFAULT_REGION
+                  value: "eu-central-1"
+                - name: AWS_EC2_METADATA_DISABLED
+                  value: "true"
+                - name: AWS_REQUEST_CHECKSUM_CALCULATION
+                  value: WHEN_REQUIRED
+                - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+                  value: WHEN_REQUIRED
 
               command:
                 - /bin/sh
@@ -123,41 +133,30 @@ spec:
                   TS="$(date -u +%Y%m%dT%H%M%SZ)"
 
                   # Ensure required tools are available (postgres image is Debian-based)
-                  NEED_APT=0
-                  if ! command -v curl >/dev/null 2>&1; then
-                    echo "curl not found; will install..."
-                    NEED_APT=1
-                  fi
-                  if ! command -v sort >/dev/null 2>&1; then
-                    echo "sort not found; will install coreutils..."
-                    NEED_APT=1
-                  fi
-
-                  if [ "${NEED_APT}" -eq 1 ]; then
-                    export DEBIAN_FRONTEND=noninteractive
-                    apt-get update -y
-                    apt-get install -y --no-install-recommends curl ca-certificates coreutils
-                    rm -rf /var/lib/apt/lists/*
-                  fi
-
-                  # Ensure mc is available
-                  if ! command -v mc >/dev/null 2>&1; then
-                    echo "mc not found; downloading..."
-                    ARCH="$(uname -m)"
-                    case "${ARCH}" in
-                      x86_64|amd64) MC_ARCH=amd64 ;;
-                      aarch64|arm64) MC_ARCH=arm64 ;;
-                      *) echo "Unsupported arch for mc: ${ARCH}" >&2; exit 2 ;;
-                    esac
-                    curl -fsSL -o /usr/local/bin/mc "https://dl.min.io/client/mc/release/linux-${MC_ARCH}/mc"
-                    chmod +x /usr/local/bin/mc
-                  fi
+                  export DEBIAN_FRONTEND=noninteractive
+                  apt-get update -y
+                  apt-get install -y --no-install-recommends ca-certificates coreutils
+                  apt-get install -y --no-install-recommends awscli || apt-get install -y --no-install-recommends aws-cli
+                  rm -rf /var/lib/apt/lists/*
 
                   DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
 
-                  echo "Configuring mc aliases..."
-                  mc alias set src "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" --api S3v4 --path on
-                  mc alias set dst "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" --api S3v4 --path on
+                  # Path-style addressing matches LocalCrag S3_ADDRESSING=path
+                  mkdir -p /tmp/aws
+                  cat > /tmp/aws/config <<'EOF'
+                  [default]
+                  region = eu-central-1
+                  s3 =
+                      addressing_style = path
+                      signature_version = s3v4
+                  EOF
+                  export AWS_CONFIG_FILE=/tmp/aws/config
+
+                  aws_s3() {
+                    endpoint="$1"; access="$2"; secret="$3"; shift 3
+                    AWS_ACCESS_KEY_ID="${access}" AWS_SECRET_ACCESS_KEY="${secret}" \
+                      aws --endpoint-url "${endpoint}" "$@"
+                  }
 
                   echo "--- Bundled backup snapshot: ${TS} ---"
 
@@ -166,32 +165,38 @@ spec:
                   echo "Dumping database '${PGDATABASE}' from ${PGHOST}:${PGPORT}..."
                   pg_dump --format=plain --no-owner --no-privileges "${PGDATABASE}" | gzip -9 > "${FILE}"
 
-                  PG_DST="dst/${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/postgres/${PGDATABASE}.sql.gz"
+                  PG_DST="s3://${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/postgres/${PGDATABASE}.sql.gz"
                   echo "Uploading Postgres to ${PG_DST}..."
-                  mc cp "${FILE}" "${PG_DST}"
+                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 cp "${FILE}" "${PG_DST}"
 
-                  # ---- MinIO mirror -> same snapshot dir ----
-
-                  MINIO_DST="dst/${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/minio/${SRC_BUCKET}"
-                  echo "Mirroring src/${SRC_BUCKET} -> ${MINIO_DST} ..."
-                  mc mirror --overwrite --remove "src/${SRC_BUCKET}" "${MINIO_DST}"
+                  # ---- Object storage sync -> same snapshot dir ----
+                  # Keep the historical "minio/" prefix so existing backup layouts still restore.
+                  OBJ_DST="s3://${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/minio/${SRC_BUCKET}"
+                  SYNC_DIR="/tmp/s3-sync"
+                  rm -rf "${SYNC_DIR}"
+                  mkdir -p "${SYNC_DIR}"
+                  echo "Syncing s3://${SRC_BUCKET} from ${SRC_ENDPOINT} -> ${OBJ_DST} ..."
+                  aws_s3 "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 sync "s3://${SRC_BUCKET}" "${SYNC_DIR}"
+                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 sync "${SYNC_DIR}" "${OBJ_DST}"
+                  rm -rf "${SYNC_DIR}"
 
                   # ---- Retention (snapshot-level) ----
-                  echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under dst/${BACKUP_S3_BUCKET}/${PREFIX}/"
+                  echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under s3://${BACKUP_S3_BUCKET}/${PREFIX}/"
 
-                  RETENTION_BASE="dst/${BACKUP_S3_BUCKET}/${PREFIX}"
+                  RETENTION_URI="s3://${BACKUP_S3_BUCKET}/${PREFIX}"
 
-                  # List all snapshot directories - mc ls shows directories with trailing /
+                  # List all snapshot directories. aws s3 ls prints prefixes as: PRE <name>/
                   # Parse output to get just directory names (last column, remove trailing /)
-                  mc ls "${RETENTION_BASE}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort > /tmp/snapshots.txt || true
+                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" \
+                    s3 ls "${RETENTION_URI}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort > /tmp/snapshots.txt || true
 
                   # Debug: show what we found
                   if [ -s /tmp/snapshots.txt ]; then
                     echo "DEBUG: Snapshot directories found:"
                     cat /tmp/snapshots.txt
                   else
-                    echo "DEBUG: No directories found. Raw mc ls output:"
-                    mc ls "${RETENTION_BASE}/" 2>&1 || echo "(mc ls failed)"
+                    echo "DEBUG: No directories found. Raw aws s3 ls output:"
+                    aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 ls "${RETENTION_URI}/" 2>&1 || echo "(aws s3 ls failed)"
                   fi
 
                   if [ ! -s /tmp/snapshots.txt ]; then
@@ -208,7 +213,7 @@ spec:
                       head -n "${DELETE_COUNT}" /tmp/snapshots.txt | while IFS= read -r old; do
                         [ -z "${old}" ] && continue
                         echo "Deleting old bundled snapshot: ${old}"
-                        mc rm --recursive --force "${RETENTION_BASE}/${old}/"
+                        aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 rm "${RETENTION_URI}/${old}/" --recursive
                       done
                     else
                       echo "Retention threshold not exceeded (keeping all ${SNAPSHOT_COUNT} snapshots)."
