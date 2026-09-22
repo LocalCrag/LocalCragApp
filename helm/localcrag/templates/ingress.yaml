@@ -16,7 +16,9 @@ spec:
         - {{ .Values.client.ingress.host | quote }}
         - {{ printf "www.%s" .Values.client.ingress.host | quote }}
         - {{ .Values.s3.ingress.s3Host | quote }}
+        {{- if include "localcrag.minio.installed" . }}
         - {{ .Values.s3.ingress.consoleHost | quote }}
+        {{- end }}
   rules:
     - host: {{ .Values.client.ingress.host | quote }}
       http:
@@ -59,6 +61,9 @@ spec:
                 name: {{ include "localcrag.s3.fullname" . }}
                 port:
                   number: {{ include "localcrag.s3.port" . }}
+    {{- if include "localcrag.minio.installed" . }}
+    # Only the MinIO console is ever published here; once MinIO is gone there is
+    # no console, because the SeaweedFS filer UI is unauthenticated.
     - host: {{ .Values.s3.ingress.consoleHost | quote }}
       http:
         paths:
@@ -69,3 +74,4 @@ spec:
                 name: {{ include "localcrag.s3.console.fullname" . }}
                 port:
                   number: {{ include "localcrag.s3.console.port" . }}
+    {{- end }}
