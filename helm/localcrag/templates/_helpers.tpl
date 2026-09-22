@@ -38,6 +38,24 @@ Helper templates for dependency service names.
 {{- if not (or (eq $backend "seaweedfs") (eq $backend "minio")) -}}
 {{- fail "s3.backend must be \"seaweedfs\" or \"minio\"." -}}
 {{- end -}}
+{{- if not (include "localcrag.minio.installed" .) -}}
+{{- if eq $backend "minio" -}}
+{{- fail "s3.minioEnabled=false would delete the MinIO PVC while s3.backend=minio still serves from it. Copy your objects and set s3.backend=seaweedfs first (see MIGRATION-MINIO-SEAWEEDFS.md)." -}}
+{{- end -}}
+{{- if .Values.s3.migration.enabled -}}
+{{- fail "s3.migration.enabled=true needs MinIO as the copy source, but s3.minioEnabled=false. Finish the copy before removing MinIO." -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Whether the MinIO subchart is part of this release. Empty string means no,
+so it can be used directly in an `if`.
+*/}}
+{{- define "localcrag.minio.installed" -}}
+{{- if ne .Values.s3.minioEnabled false -}}
+true
+{{- end -}}
 {{- end -}}
 
 {{- define "localcrag.s3.backend" -}}
@@ -132,7 +150,7 @@ This template is included in the main deployments to ensure all mandatory values
 {{- if not .Values.s3.ingress.s3Host }}
 {{- fail "s3.ingress.s3Host is required but not set. Please provide the public hostname for S3 API access." }}
 {{- end }}
-{{- if not .Values.s3.ingress.consoleHost }}
+{{- if and (include "localcrag.minio.installed" .) (not .Values.s3.ingress.consoleHost) }}
 {{- fail "s3.ingress.consoleHost is required but not set. Please provide the public hostname for the object-storage console." }}
 {{- end }}
 {{- include "localcrag.s3.validate" . }}

@@ -95,6 +95,10 @@
           "enum": ["seaweedfs", "minio"],
           "description": "Active S3 backend used by the server, backups, and ingress"
         },
+        "minioEnabled": {
+          "type": "boolean",
+          "description": "Install the MinIO subchart. Setting false deletes the MinIO deployment and its PVC; only do this after migrating to SeaweedFS"
+        },
         "existingSecret": {
           "type": "string",
           "minLength": 1,
@@ -102,7 +106,7 @@
         },
         "ingress": {
           "type": "object",
-          "required": ["s3Host", "consoleHost"],
+          "required": ["s3Host"],
           "properties": {
             "s3Host": {
               "type": "string",
@@ -111,8 +115,7 @@
             },
             "consoleHost": {
               "type": "string",
-              "minLength": 1,
-              "description": "Public hostname for the object-storage console"
+              "description": "Public hostname for the MinIO console. Required while s3.minioEnabled is true; unused once MinIO is removed"
             }
           }
         }

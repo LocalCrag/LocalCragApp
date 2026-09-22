@@ -8,7 +8,9 @@ Your LocalCrag installation is using the following service names:
   - Client: {{ include "localcrag.fullname" . }}-client
   - PostgreSQL: {{ include "localcrag.postgres.fullname" . }}
   - Object storage ({{ include "localcrag.s3.backend" . }}): {{ include "localcrag.s3.fullname" . }}
+{{- if include "localcrag.minio.installed" . }}
   - MinIO: {{ include "localcrag.minio.fullname" . }}
+{{- end }}
   - SeaweedFS: {{ include "localcrag.seaweedfs.fullname" . }}
   - Secrets: {{ include "localcrag.secrets.name" . }}
 
@@ -19,7 +21,9 @@ Your application will be available at:
 
 S3 endpoints:
   - API: https://{{ .Values.s3.ingress.s3Host }}
+{{- if include "localcrag.minio.installed" . }}
   - Console: https://{{ .Values.s3.ingress.consoleHost }}
+{{- end }}
 {{- end }}
 
 {{- if .Values.backups.enabled }}
@@ -38,9 +42,16 @@ S3 migration Job is ENABLED (MinIO -> SeaweedFS). Watch:
   kubectl -n {{ .Release.Namespace }} logs job/{{ include "localcrag.fullname" . }}-s3-migrate
 {{- end }}
 
-This chart version always keeps MinIO installed. Copy data to SeaweedFS, then set
-s3.backend=seaweedfs. A future chart release will drop MinIO. See
+{{- if include "localcrag.minio.installed" . }}
+MinIO is still installed. Copy data to SeaweedFS, then set s3.backend=seaweedfs.
+Once SeaweedFS has proven itself you can set s3.minioEnabled=false to remove
+MinIO and its PVC. A future chart release will drop MinIO either way. See
 helm/localcrag/MIGRATION-MINIO-SEAWEEDFS.md.
+{{- else }}
+MinIO has been removed from this release (s3.minioEnabled=false). Its PVC
+"{{ .Release.Name }}-s3" is deleted with it, so SeaweedFS now holds the only copy
+of your objects. Check that your backups are running.
+{{- end }}
 
 IMPORTANT: Make sure you have created the secret "{{ include "localcrag.secrets.name" . }}"
 with all required keys before the pods start. See the chart README for details.

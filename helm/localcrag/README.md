@@ -2,7 +2,7 @@
 
 ## Deprecation notice
 
-LocalCrag stores uploads in an S3-compatible object store. That used to be **MinIO**, which is discontinued. This chart version still deploys MinIO by default so existing clusters keep the same Service/PVC names and data, and it also deploys **SeaweedFS** beside it so you can copy files and switch the app with `s3.backend`. A later chart release will drop MinIO. Migration steps: [MIGRATION-MINIO-SEAWEEDFS.md](./MIGRATION-MINIO-SEAWEEDFS.md).
+LocalCrag stores uploads in an S3-compatible object store. That used to be **MinIO**, which is discontinued. This chart version still deploys MinIO by default so existing clusters keep the same Service/PVC names and data, and it also deploys **SeaweedFS** beside it so you can copy files and switch the app with `s3.backend`. Once the switch has proven itself, `s3.minioEnabled: false` uninstalls MinIO and deletes its PVC to reclaim the storage; a later chart release drops MinIO regardless. Migration steps: [MIGRATION-MINIO-SEAWEEDFS.md](./MIGRATION-MINIO-SEAWEEDFS.md).
 
 ## Installation
 

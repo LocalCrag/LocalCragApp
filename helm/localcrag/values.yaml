@@ -50,14 +50,22 @@ appS3:
   accessEndpoint: ""
   addressing: path
 
-# Object storage (S3-compatible). This chart version always deploys MinIO
-# (same as before) plus SeaweedFS so you can copy data and switch backends.
+# Object storage (S3-compatible). This chart version deploys MinIO (same as
+# before) plus SeaweedFS so you can copy data and switch backends.
 # A future chart release will drop MinIO entirely.
 s3:
   # Active backend used by the LocalCrag server, backups, and S3 ingress.
   # "minio" | "seaweedfs" — default stays minio so existing releases keep serving
   # from the current PVC. Set seaweedfs after copying objects (see MIGRATION-MINIO-SEAWEEDFS.md).
   backend: minio
+
+  # DESTRUCTIVE WHEN DISABLED. Setting this to false uninstalls the MinIO
+  # subchart, and because its PVC carries no keep-policy, Helm deletes
+  # `{release}-s3` along with it. If the StorageClass reclaims with Delete, the
+  # objects are gone for good. Only set false once `backend: seaweedfs` has been
+  # serving correctly for a while and you have a backup you trust.
+  # This flag is temporary: a future chart release drops MinIO unconditionally.
+  minioEnabled: true
 
   # REQUIRED: Hosts for the S3 endpoints exposed via Ingress
   ingress:

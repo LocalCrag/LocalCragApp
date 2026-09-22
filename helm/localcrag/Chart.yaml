@@ -2,14 +2,18 @@ apiVersion: v2
 name: LocalCrag
 description: A Helm chart for deploying the LocalCrag climbing platform on Kubernetes
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "1.57.1"
 
 dependencies:
+  # Setting s3.minioEnabled=false removes MinIO *and its PVC*. It exists so
+  # operators can reclaim storage once they have migrated to SeaweedFS; the
+  # whole dependency goes away in a future chart release.
   - name: minio
     alias: s3
     version: 5.4.0
     repository: https://charts.min.io/
+    condition: s3.minioEnabled
 
   - name: postgres
     version: 0.13.7

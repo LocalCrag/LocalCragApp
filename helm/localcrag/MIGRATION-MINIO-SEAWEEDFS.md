@@ -1,8 +1,8 @@
 # Migrate Helm releases from MinIO to SeaweedFS
 
-MinIO is discontinued. Chart **0.2.0** still **always deploys MinIO** (same Service/PVC names as before: `{release}-s3`) and adds SeaweedFS beside it (`{release}-seaweedfs`). Copy your objects, then point the app at SeaweedFS with `s3.backend`.
+MinIO is discontinued. Chart **0.3.0** still deploys MinIO by default (same Service/PVC names as before: `{release}-s3`) and adds SeaweedFS beside it (`{release}-seaweedfs`). Copy your objects, then point the app at SeaweedFS with `s3.backend`.
 
-A **future chart release** will remove MinIO from LocalCrag entirely (including its PVC). Finish this copy-and-switch **before** you upgrade to that release.
+Removing MinIO is a separate, opt-in step (`s3.minioEnabled: false`, step 5) so that nothing is deleted until you decide it should be. A **future chart release** will remove MinIO entirely regardless. Finish this copy-and-switch **before** you upgrade to that release.
 
 ## Prerequisites
 
@@ -115,7 +115,35 @@ The storage console Ingress keeps pointing at the MinIO console, which requires 
 kubectl -n <namespace> port-forward deployment/localcrag-seaweedfs 8888:8888
 ```
 
-Leave MinIO running until a future chart version drops it.
+Leave MinIO running for now. It still holds the original copy of every object, which is what makes step 5 reversible right up until you run it.
+
+## Step 5 — Remove MinIO and reclaim its storage (optional, destructive)
+
+Only once SeaweedFS has been serving correctly for a while, and you have a backup you trust:
+
+```yaml
+s3:
+  backend: seaweedfs
+  minioEnabled: false
+```
+
+```bash
+helm upgrade localcrag ./helm/localcrag \
+  -f my-values.yaml \
+  -f migrate-values.yaml \
+  -n <namespace>
+```
+
+This uninstalls the MinIO subchart. **The PVC `{release}-s3` goes with it** — it carries no keep-policy, so Helm deletes it, and if your StorageClass reclaims with `Delete` the underlying volume and its objects are destroyed permanently. After this, SeaweedFS holds the only copy of your files and rolling back to `backend: minio` is no longer possible.
+
+The chart refuses the combination that would be an obvious mistake: setting `minioEnabled: false` while `backend: minio` fails the upgrade rather than deleting the store you are serving from.
+
+Two side effects to expect:
+
+- The storage console disappears. It was the MinIO console, and SeaweedFS has no authenticated replacement, so `s3.ingress.consoleHost` is no longer required and its Ingress rule and TLS entry are dropped. Browse SeaweedFS with the `port-forward` above.
+- If you deploy with Argo CD, nothing is actually deleted unless pruning is enabled. Without it the app simply reports OutOfSync with the leftover MinIO objects. Sync with `--prune`, or set `syncPolicy.automated.prune: true`.
+
+You can skip this step entirely — a future chart release removes MinIO unconditionally.
 
 ## New installs
 
@@ -130,11 +158,11 @@ Empty new installs can switch without the copy Job.
 
 ## Rollback
 
-While this chart version is installed:
+As long as you have not run step 5:
 
 ```yaml
 s3:
   backend: minio
 ```
 
-Then `helm upgrade` again. MinIO data remains on its PVC.
+Then `helm upgrade` again. MinIO data remains on its PVC. Once `minioEnabled: false` has been applied, the PVC is gone and restoring from a backup is the only way back.
