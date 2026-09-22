@@ -1,3 +1,10 @@
+# [1.58.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.57.1...v1.58.0) (2026-09-22)
+
+
+### Features
+
+* **helm:** allow uninstalling the minio subchart ([#1292](https://github.com/LocalCrag/LocalCragApp/issues/1292)) ([3e72a7f](https://github.com/LocalCrag/LocalCragApp/commit/3e72a7f877ad66d88b9948a6b646309e27fa3760))
+
 ## [1.57.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.57.0...v1.57.1) (2026-09-16)
 
 
