@@ -11,6 +11,7 @@ from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import cors, db, ma, migrate
 from schedulers import init_schedulers
 from util.auth_session import require_csrf_if_authenticated
+from util.file_links import register_listeners
 from util.flask_environment import is_development_mode
 from util.logging_config import configure_app_logging
 
@@ -62,6 +63,8 @@ def create_app():
     register_extensions(application)
 
     configure_extensions(application)
+
+    register_listeners()
 
     return application
 
