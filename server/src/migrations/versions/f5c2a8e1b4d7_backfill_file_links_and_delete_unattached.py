@@ -15,7 +15,11 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
-from uploader.file_storage import delete_storage_keys, storage_keys_for_deleted_file
+from uploader.file_storage import (
+    delete_storage_keys,
+    object_storage_configured,
+    storage_keys_for_deleted_file,
+)
 from util.file_links import backfill_file_links, delete_unattached_file_rows
 
 revision = "f5c2a8e1b4d7"
@@ -47,6 +51,8 @@ def upgrade():
     bind = op.get_bind()
     backfill_file_links(bind)
     filenames = delete_unattached_file_rows(bind)
+    if not object_storage_configured():
+        return
     keys = []
     for filename in filenames:
         keys.extend(storage_keys_for_deleted_file(filename))

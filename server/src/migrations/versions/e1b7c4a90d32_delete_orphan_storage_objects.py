@@ -15,6 +15,7 @@ from alembic import op
 
 from uploader.file_storage import (
     delete_unreferenced_storage_objects,
+    object_storage_configured,
     referenced_storage_keys,
 )
 
@@ -29,6 +30,8 @@ _FILE_STORAGE_COLUMNS = sa.text(
 
 
 def upgrade():
+    if not object_storage_configured():
+        return
     rows = op.get_bind().execute(_FILE_STORAGE_COLUMNS).mappings()
     delete_unreferenced_storage_objects(referenced_storage_keys(rows))
 

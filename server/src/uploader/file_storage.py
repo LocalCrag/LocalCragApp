@@ -77,6 +77,16 @@ def delete_storage_keys(keys: Iterable[str]) -> int:
     return len(unique_keys)
 
 
+def object_storage_configured() -> bool:
+    """True when this process can reach a bucket.
+
+    Migration configs used in CI set a bucket name and dummy credentials, but
+    leave the endpoint empty. Listing that bucket would call AWS with those
+    credentials and fail the migration.
+    """
+    return bool(current_app.config.get("S3_BUCKET") and current_app.config.get("S3_ENDPOINT"))
+
+
 def delete_unreferenced_storage_objects(referenced_keys: set[str]) -> int:
     """Delete bucket objects that no files row still references."""
     bucket = current_app.config.get("S3_BUCKET")
