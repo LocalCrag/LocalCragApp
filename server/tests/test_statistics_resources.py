@@ -1,6 +1,10 @@
+import datetime
+
 from extensions import db
 from models.area import Area
 from models.ascent import Ascent
+from models.enums.line_type_enum import LineTypeEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 from models.line import Line
 from models.user import User
 
@@ -31,6 +35,58 @@ def test_successful_get_instance_statistics(client):
         assert "withKneepad" in ascent
         assert "comment" in ascent
         assert "date" in ascent or "year" in ascent
+
+
+def _line_with_ascent(name, grade, ascent_date, created_by_id):
+    line = Line()
+    line.name = name
+    line.type = LineTypeEnum.BOULDER
+    line.area_id = Area.get_id_by_slug("shark-attack")
+    line.grade_scale = "FB"
+    line.author_grade_value = grade
+    line.user_grade_value = grade
+    line.starting_position = StartingPositionEnum.STAND
+    db.session.add(line)
+    db.session.flush()
+
+    ascent = Ascent()
+    ascent.grade_value = grade
+    ascent.date = ascent_date
+    ascent.ascent_date = ascent_date
+    ascent.created_by_id = created_by_id
+    ascent.line_id = line.id
+    db.session.add(ascent)
+    return line
+
+
+def test_hardest_ascents_last_month_tie_breaks_on_newest_date(client):
+    """Cutoff grade keeps the newest climb, and a harder grade still ranks above it."""
+    today = datetime.date.today()
+    admin_id = User.find_by_email("admin@localcrag.invalid.org").id
+
+    # Insert the older tied climb last so id order cannot accidentally match date order.
+    for name, grade, days_ago in (
+        ("Rank High Newer", 30, 2),
+        ("Rank High Older", 30, 12),
+        ("Rank Mid", 20, 5),
+        ("Rank Low Newer", 10, 1),
+        ("Rank Low Middle", 10, 8),
+        ("Rank Outside Window", 99, 40),
+        ("Rank Low Older", 10, 20),
+    ):
+        _line_with_ascent(name, grade, today - datetime.timedelta(days=days_ago), admin_id)
+    db.session.commit()
+
+    rv = client.get("/api/statistics/instance")
+    assert rv.status_code == 200
+    names = [ascent["line"]["name"] for ascent in rv.json["hardestAscentsLastMonth"]]
+    assert names == [
+        "Rank High Newer",
+        "Rank High Older",
+        "Rank Mid",
+        "Rank Low Newer",
+        "Rank Low Middle",
+    ]
 
 
 def test_instance_statistics_excludes_secret_lines(client, moderator_token):

@@ -184,7 +184,7 @@ class GetInstanceStatistics(MethodView):
         hardest_ascents_last_month = (
             ascent_base.options(*_ascent_list_options())
             .filter(Ascent.ascent_date >= month_ago)
-            .order_by(grade_col.desc(), Ascent.id.desc())
+            .order_by(grade_col.desc(), Ascent.ascent_date.desc(), Ascent.id.desc())
             .limit(5)
             .all()
         )
