@@ -160,9 +160,9 @@ def test_backfill_links_filenames_already_stored_in_html():
 def test_cleanup_keeps_linked_and_foreign_key_files_and_deletes_old_unattached(s3_mock):
     region = Region.query.first()
     user = User.query.first()
-    linked = _file("cccccccccccccccccccccccccccccccc.jpeg", days_old=3)
-    attached = _file("dddddddddddddddddddddddddddddddd.jpeg", days_old=3)
-    orphan = _file("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.jpeg", days_old=3)
+    linked = _file("cccccccccccccccccccccccccccccccc.jpeg", days_old=8)
+    attached = _file("dddddddddddddddddddddddddddddddd.jpeg", days_old=8)
+    orphan = _file("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.jpeg", days_old=8)
     recent = _file("ffffffffffffffffffffffffffffffff.jpeg", days_old=0)
     region.description = _html_for(linked.filename)
     user.avatar_id = attached.id
@@ -184,8 +184,8 @@ def test_cleanup_keeps_linked_and_foreign_key_files_and_deletes_old_unattached(s
 
 def test_connection_cleanup_returns_only_unattached_filenames():
     region = Region.query.first()
-    linked = _file("11111111111111111111111111111111.jpeg", days_old=3)
-    orphan = _file("22222222222222222222222222222222.jpeg", days_old=3)
+    linked = _file("11111111111111111111111111111111.jpeg", days_old=8)
+    orphan = _file("22222222222222222222222222222222.jpeg", days_old=8)
     linked_name = linked.filename
     orphan_name = orphan.filename
     region.description = _html_for(linked_name)

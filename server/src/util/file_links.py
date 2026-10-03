@@ -213,8 +213,9 @@ def _collect_file_link_sync(session: Session, _flush_context, _instances) -> Non
         if fields:
             pending.append((obj, fields))
     for obj in session.deleted:
-        if obj.id is not None and type(obj) in fields_by_model:
-            pending.append((obj, None))
+        if type(obj) not in fields_by_model or getattr(obj, "id", None) is None:
+            continue
+        pending.append((obj, None))
 
 
 def _apply_file_link_sync(session: Session, _flush_context) -> None:
