@@ -24,6 +24,7 @@ from models.line_path import LinePath
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from util.assumed_grade import normalize_assumed_grade_bounds
 from util.auth_session import (
     get_session_identity,
     session_required,
@@ -265,6 +266,13 @@ class CreateLine(MethodView):
         new_line.grade_scale = line_data["gradeScale"]
         new_line.author_grade_value = line_data["authorGradeValue"]
         new_line.user_grade_value = line_data["authorGradeValue"]
+        new_line.assumed_grade_min, new_line.assumed_grade_max = normalize_assumed_grade_bounds(
+            line_data["authorGradeValue"],
+            line_data.get("assumedGradeMin"),
+            line_data.get("assumedGradeMax"),
+            line_data["gradeScale"],
+            line_data["type"],
+        )
         new_line.starting_position = line_data["startingPosition"]
         new_line.drying = line_data["drying"]
         new_line.author_rating = line_data["authorRating"]
@@ -364,6 +372,13 @@ class UpdateLine(MethodView):
             property_name="grade_value",
         )
         line.author_grade_value = line_data["authorGradeValue"]
+        line.assumed_grade_min, line.assumed_grade_max = normalize_assumed_grade_bounds(
+            line_data["authorGradeValue"],
+            line_data.get("assumedGradeMin"),
+            line_data.get("assumedGradeMax"),
+            line_data["gradeScale"],
+            line_data["type"],
+        )
         line.type = line_data["type"]
         line.starting_position = line_data["startingPosition"]
         line.drying = line_data["drying"]

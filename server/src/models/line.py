@@ -33,6 +33,8 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     grade_scale = db.Column(db.String(120), nullable=False)
     author_grade_value = db.Column(db.Integer, nullable=False)
     user_grade_value = db.Column(db.Integer, nullable=False)
+    assumed_grade_min = db.Column(db.Integer, nullable=True)
+    assumed_grade_max = db.Column(db.Integer, nullable=True)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
     author_rating = db.Column(db.Integer, nullable=True)
     user_rating = db.Column(db.Integer, nullable=True)

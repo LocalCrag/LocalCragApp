@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -82,6 +83,23 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
 import { filterSelectableGrades } from '../../../utility/grade/filter-selectable-grades';
 import { Grade } from '../../../models/scale';
 
+/** Both ends are required together, and the lower grade cannot be harder. */
+function assumedGradeBoundsValidator(control: AbstractControl) {
+  const grade = control.get('grade')?.value;
+  const min = control.get('assumedGradeMin')?.value;
+  const max = control.get('assumedGradeMax')?.value;
+  if (grade == null || grade >= 0 || (min == null && max == null)) {
+    return null;
+  }
+  if (min == null || max == null) {
+    return { assumedGradeIncomplete: true };
+  }
+  if (min > max) {
+    return { assumedGradeOrder: true };
+  }
+  return null;
+}
+
 /**
  * Form component for lines.
  */
@@ -137,6 +155,7 @@ export class LineFormComponent implements OnInit {
   public line: Line;
   public editMode = false;
   public grades = null;
+  public assumedGradeOptions: Grade[] = [];
   public startingPositions = [
     StartingPosition.STAND,
     StartingPosition.SIT,
@@ -252,6 +271,11 @@ export class LineFormComponent implements OnInit {
         .get('scale')
         .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((item) => {
+          if (!this.editMode) {
+            this.lineForm.get('assumedGradeMin').setValue(null);
+            this.lineForm.get('assumedGradeMax').setValue(null);
+          }
+          this.syncAssumedGradeOptions();
           if (this.editMode) return;
 
           this.scalesService
@@ -350,62 +374,68 @@ export class LineFormComponent implements OnInit {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.faFormat = instanceSettings.faDefaultFormat;
-        this.lineForm = this.fb.group({
-          name: ['', [Validators.required, Validators.maxLength(120)]],
-          description: [null],
-          color: [
-            instanceSettings.gymMode ? instanceSettings.arrowColor : null,
-          ],
-          videos: this.fb.array([]),
-          type: [LineType.BOULDER, [Validators.required]],
-          scale: [
-            this.groupedScales[LineType.BOULDER][0],
-            [Validators.required],
-          ],
-          grade: [null, [Validators.required]],
-          rating: [null],
-          faYear: [null, [yearOfDateNotInFutureValidator()]],
-          faDate: [null, [dateNotInFutureValidator()]],
-          faName: [null, [Validators.maxLength(120)]],
-          routesetter: [null, [Validators.maxLength(120)]],
-          setDate: [null, [dateNotInFutureValidator()]],
-          bolter: [null, [Validators.maxLength(120)]],
-          boltDate: [null, [dateNotInFutureValidator()]],
-          startingPosition: [
-            instanceSettings.defaultStartingPosition ?? StartingPosition.STAND,
-            [Validators.required],
-          ],
-          drying: [null],
-          eliminate: [false],
-          traverse: [false],
-          highball: [false],
-          lowball: [false],
-          morpho: [false],
-          noTopout: [false],
-          badDropzone: [false],
-          childFriendly: [false],
-          roof: [false],
-          slab: [false],
-          vertical: [false],
-          overhang: [false],
-          athletic: [false],
-          technical: [false],
-          endurance: [false],
-          cruxy: [false],
-          dyno: [false],
-          jugs: [false],
-          sloper: [false],
-          crimps: [false],
-          pockets: [false],
-          pinches: [false],
-          crack: [false],
-          dihedral: [false],
-          compression: [false],
-          arete: [false],
-          mantle: [false],
-          secret: [false],
-          closureSchedules: [[]],
-        });
+        this.lineForm = this.fb.group(
+          {
+            name: ['', [Validators.required, Validators.maxLength(120)]],
+            description: [null],
+            color: [
+              instanceSettings.gymMode ? instanceSettings.arrowColor : null,
+            ],
+            videos: this.fb.array([]),
+            type: [LineType.BOULDER, [Validators.required]],
+            scale: [
+              this.groupedScales[LineType.BOULDER][0],
+              [Validators.required],
+            ],
+            grade: [null, [Validators.required]],
+            assumedGradeMin: [null],
+            assumedGradeMax: [null],
+            rating: [null],
+            faYear: [null, [yearOfDateNotInFutureValidator()]],
+            faDate: [null, [dateNotInFutureValidator()]],
+            faName: [null, [Validators.maxLength(120)]],
+            routesetter: [null, [Validators.maxLength(120)]],
+            setDate: [null, [dateNotInFutureValidator()]],
+            bolter: [null, [Validators.maxLength(120)]],
+            boltDate: [null, [dateNotInFutureValidator()]],
+            startingPosition: [
+              instanceSettings.defaultStartingPosition ??
+                StartingPosition.STAND,
+              [Validators.required],
+            ],
+            drying: [null],
+            eliminate: [false],
+            traverse: [false],
+            highball: [false],
+            lowball: [false],
+            morpho: [false],
+            noTopout: [false],
+            badDropzone: [false],
+            childFriendly: [false],
+            roof: [false],
+            slab: [false],
+            vertical: [false],
+            overhang: [false],
+            athletic: [false],
+            technical: [false],
+            endurance: [false],
+            cruxy: [false],
+            dyno: [false],
+            jugs: [false],
+            sloper: [false],
+            crimps: [false],
+            pockets: [false],
+            pinches: [false],
+            crack: [false],
+            dihedral: [false],
+            compression: [false],
+            arete: [false],
+            mantle: [false],
+            secret: [false],
+            closureSchedules: [[]],
+          },
+          { validators: assumedGradeBoundsValidator },
+        );
 
         this.lineForm
           .get('grade')
@@ -433,6 +463,60 @@ export class LineFormComponent implements OnInit {
       this.lineForm.get('faYear').enable();
       this.lineForm.get('faDate').enable();
       this.lineForm.get('faName').enable();
+      this.lineForm.get('assumedGradeMin')?.setValue(null);
+      this.lineForm.get('assumedGradeMax')?.setValue(null);
+    }
+  }
+
+  resetAssumedGradeBounds(): void {
+    this.lineForm.get('assumedGradeMin')?.setValue(null);
+    this.lineForm.get('assumedGradeMax')?.setValue(null);
+  }
+
+  get showAssumedGradeBounds(): boolean {
+    const gradeValue = this.lineForm?.get('grade')?.value;
+    return (
+      gradeValue != null &&
+      gradeValue < 0 &&
+      this.assumedGradeOptions.length > 0
+    );
+  }
+
+  get assumedGradeMinOptions(): Grade[] {
+    const max = this.lineForm?.get('assumedGradeMax')?.value;
+    return this.assumedGradeOptions.filter(
+      (grade) => max == null || grade.value <= max,
+    );
+  }
+
+  get assumedGradeMaxOptions(): Grade[] {
+    const min = this.lineForm?.get('assumedGradeMin')?.value;
+    return this.assumedGradeOptions.filter(
+      (grade) => min == null || grade.value >= min,
+    );
+  }
+
+  /**
+   * Real grades of the selected scale. Drops a stored bound that is no longer
+   * a grade on that scale.
+   */
+  private syncAssumedGradeOptions() {
+    const type = this.lineForm?.get('type')?.value;
+    const name = this.lineForm?.get('scale')?.value;
+    const scale = this.groupedScales?.[type]?.find(
+      (item) => item.name === name,
+    );
+    this.assumedGradeOptions = (scale?.grades ?? [])
+      .filter((grade) => grade.value > 0)
+      .sort((a, b) => a.value - b.value);
+    for (const key of ['assumedGradeMin', 'assumedGradeMax'] as const) {
+      const current = this.lineForm?.get(key)?.value;
+      if (
+        current != null &&
+        !this.assumedGradeOptions.some((grade) => grade.value === current)
+      ) {
+        this.lineForm.get(key).setValue(null);
+      }
     }
   }
 
@@ -471,6 +555,8 @@ export class LineFormComponent implements OnInit {
       type: this.line.type,
       scale: this.line.gradeScale,
       grade: this.line.authorGradeValue,
+      assumedGradeMin: this.line.assumedGradeMin,
+      assumedGradeMax: this.line.assumedGradeMax,
       color: this.line.color,
       rating: this.line.authorRating,
       faYear: this.line.faYear ? new Date(this.line.faYear, 6, 15) : null,
@@ -513,6 +599,7 @@ export class LineFormComponent implements OnInit {
       closureSchedules: this.line.closureSchedules ?? [],
     });
     this.lineForm.enable();
+    this.syncAssumedGradeOptions();
     this.setFormDisabledState();
   }
 
@@ -552,6 +639,14 @@ export class LineFormComponent implements OnInit {
       line.videos = this.lineForm.get('videos').value;
       line.type = this.lineForm.get('type').value;
       line.authorGradeValue = this.lineForm.get('grade').value;
+      line.assumedGradeMin =
+        line.authorGradeValue < 0
+          ? this.lineForm.get('assumedGradeMin').value
+          : null;
+      line.assumedGradeMax =
+        line.authorGradeValue < 0
+          ? this.lineForm.get('assumedGradeMax').value
+          : null;
       line.gradeScale = this.lineForm.get('scale').value;
       line.authorRating = this.lineForm.get('rating').value;
       line.faYear =

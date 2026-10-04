@@ -50,6 +50,8 @@ class LineSearchSchema(ma.SQLAlchemySchema):
     gradeScale = fields.String(attribute="grade_scale")
     authorGradeValue = fields.Integer(attribute="author_grade_value")
     userGradeValue = fields.Integer(attribute="user_grade_value")
+    assumedGradeMin = fields.Integer(attribute="assumed_grade_min")
+    assumedGradeMax = fields.Integer(attribute="assumed_grade_max")
     area = fields.Nested(area_search_schema)
 
 

@@ -33,10 +33,11 @@ import {
 } from '../../../utility/paginated-list';
 import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
+import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
 import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { PageTitleService } from '../../../services/core/page-title.service';
@@ -162,12 +163,22 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
             Number(event.newValue),
           ),
         ]).pipe(
-          map(([oldGrade, newGrade]) => {
-            return [
-              this.translateSpecialGradesService.translate(oldGrade),
-              this.translateSpecialGradesService.translate(newGrade),
-            ];
-          }),
+          switchMap(([oldGrade, newGrade]) =>
+            forkJoin([
+              withAssumedGradeRange(
+                this.scalesService,
+                line,
+                Number(event.oldValue),
+                this.translateSpecialGradesService.translate(oldGrade),
+              ),
+              withAssumedGradeRange(
+                this.scalesService,
+                line,
+                Number(event.newValue),
+                this.translateSpecialGradesService.translate(newGrade),
+              ),
+            ]),
+          ),
           map(([oldGrade, newGrade]) => {
             if (
               Number(event.oldValue) < 0 &&

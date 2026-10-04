@@ -18,11 +18,12 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
+import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
+import { Line } from '../../../models/line';
 import { RecentSearchHistoryService } from '../../../services/core/recent-search-history.service';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-searchable',
@@ -58,6 +59,8 @@ export class SearchableComponent {
   @Input()
   ellipsis = false;
   protected readonly environment = environment;
+  private suffixLine: Line | undefined;
+  private suffix$: Observable<string> = of('');
 
   protected rememberSearchSelection(): void {
     if (
@@ -79,6 +82,23 @@ export class SearchableComponent {
   protected onSearchResultClick(): void {
     this.rememberSearchSelection();
     this.selected.emit();
+  }
+
+  /** Parenthetical assumed interval for a project, empty otherwise. */
+  public assumedGradeSuffix(): Observable<string> {
+    const line = this.searchable?.line;
+    if (line === this.suffixLine) {
+      return this.suffix$;
+    }
+    this.suffixLine = line;
+    this.suffix$ = !line
+      ? of('')
+      : this.lineGradeValue().pipe(
+          switchMap((value) =>
+            withAssumedGradeRange(this.scalesService, line, value, ''),
+          ),
+        );
+    return this.suffix$;
   }
 
   public lineGradeValue() {

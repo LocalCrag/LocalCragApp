@@ -5,7 +5,7 @@ import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, switchMap, take } from 'rxjs/operators';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
 import {
   selectInstanceName,
@@ -15,6 +15,8 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
 import { ScalesService } from '../../../services/crud/scales.service';
+import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 
 @Component({
   selector: 'lc-line-ascents',
@@ -32,6 +34,7 @@ export class LineAscentsComponent implements OnInit {
   private title = inject(Title);
   private route = inject(ActivatedRoute);
   private scalesService = inject(ScalesService);
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
@@ -59,14 +62,21 @@ export class LineAscentsComponent implements OnInit {
             : line.authorGradeValue;
           forkJoin([
             this.store.select(selectInstanceName).pipe(take(1)),
-            this.scalesService.gradeNameByValue(
-              line.type,
-              line.gradeScale,
-              gradeValue,
-            ),
-          ]).subscribe(([instanceName, gradeName]) => {
+            this.scalesService
+              .gradeNameByValue(line.type, line.gradeScale, gradeValue)
+              .pipe(
+                switchMap((gradeName) =>
+                  withAssumedGradeRange(
+                    this.scalesService,
+                    line,
+                    gradeValue,
+                    this.translateSpecialGradesService.translate(gradeName),
+                  ),
+                ),
+              ),
+          ]).subscribe(([instanceName, displayGrade]) => {
             this.title.setTitle(
-              `${line.name} ${gradeValue > 0 ? gradeName : this.translocoService.translate(gradeName)} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
+              `${line.name} ${displayGrade} / ${this.translocoService.translate(marker('ascents'))} - ${instanceName}`,
             );
           });
         });

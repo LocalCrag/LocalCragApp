@@ -14,6 +14,53 @@ from models.topo_image import TopoImage
 from models.user import User
 
 
+def _boulder_line_payload(name, author_grade, assumed_min=None, assumed_max=None):
+    return {
+        "name": name,
+        "description": "Super Boulder",
+        "videos": [{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        "authorGradeValue": author_grade,
+        "assumedGradeMin": assumed_min,
+        "assumedGradeMax": assumed_max,
+        "gradeScale": "FB",
+        "type": "BOULDER",
+        "authorRating": 5,
+        "faYear": None,
+        "faDate": None,
+        "faName": None,
+        "startingPosition": "STAND",
+        "eliminate": False,
+        "traverse": False,
+        "highball": False,
+        "morpho": False,
+        "lowball": False,
+        "noTopout": False,
+        "badDropzone": False,
+        "childFriendly": False,
+        "roof": False,
+        "slab": False,
+        "vertical": False,
+        "overhang": False,
+        "athletic": False,
+        "technical": False,
+        "endurance": False,
+        "cruxy": False,
+        "dyno": False,
+        "jugs": False,
+        "sloper": False,
+        "crimps": False,
+        "pockets": False,
+        "pinches": False,
+        "crack": False,
+        "dihedral": False,
+        "compression": False,
+        "arete": False,
+        "mantle": False,
+        "secret": False,
+        "closureSchedules": [],
+    }
+
+
 def test_successful_move_line_to_different_area(client, moderator_token):
     """A line can be re-parented to another area."""
     line: Line = Line.find_by_slug("super-spreader")
@@ -322,6 +369,8 @@ def test_successful_create_line_with_project_status(client, moderator_token):
     assert res["videos"][0]["url"] == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     assert res["videos"][0]["title"] == "Video"
     assert res["authorGradeValue"] == -1
+    assert res["assumedGradeMin"] is None
+    assert res["assumedGradeMax"] is None
     assert res["gradeScale"] == "FB"
     assert res["type"] == "BOULDER"
     assert res["authorRating"] == 5
@@ -1630,3 +1679,70 @@ def test_find_lines_by_name(client, moderator_token):
     )
     assert rv.status_code == 200
     assert all(item["id"] != str(line.id) for item in rv.json)
+
+
+def test_create_project_with_assumed_grade_bounds(client, moderator_token):
+    rv = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Hard Project", -1, 16, 20),
+    )
+    assert rv.status_code == 201
+    assert rv.json["authorGradeValue"] == -1
+    assert rv.json["assumedGradeMin"] == 16
+    assert rv.json["assumedGradeMax"] == 20
+
+
+def test_assumed_grade_bounds_require_both_ends(client, moderator_token):
+    rv = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("One Bound", -1, 16, None),
+    )
+    assert rv.status_code == 400
+
+
+def test_assumed_grade_bounds_reject_inverted_range(client, moderator_token):
+    rv = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Inverted", -1, 20, 16),
+    )
+    assert rv.status_code == 400
+
+
+def test_assumed_grade_bounds_reject_unknown_grade(client, moderator_token):
+    rv = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Unknown Grade", -1, 16, 999),
+    )
+    assert rv.status_code == 400
+
+
+def test_graded_line_drops_assumed_grade_bounds(client, moderator_token):
+    payload = _boulder_line_payload("Graded With Bounds", 19, 16, 20)
+    payload["faYear"] = 2016
+    payload["faName"] = "Dave Graham"
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=payload)
+    assert rv.status_code == 201
+    assert rv.json["assumedGradeMin"] is None
+    assert rv.json["assumedGradeMax"] is None
+
+
+def test_updating_project_to_real_grade_clears_assumed_bounds(client, moderator_token):
+    payload = _boulder_line_payload("Promoted Project", -1, 16, 20)
+    rv = client.post("/api/areas/shark-attack/lines", token=moderator_token, json=payload)
+    assert rv.status_code == 201
+    slug = rv.json["slug"]
+
+    payload["authorGradeValue"] = 19
+    payload["faYear"] = 2016
+    payload["faName"] = "Dave Graham"
+    payload["assumedGradeMin"] = 16
+    payload["assumedGradeMax"] = 20
+    updated = client.put(f"/api/lines/{slug}", token=moderator_token, json=payload)
+    assert updated.status_code == 200
+    assert updated.json["authorGradeValue"] == 19
+    assert updated.json["assumedGradeMin"] is None
+    assert updated.json["assumedGradeMax"] is None
