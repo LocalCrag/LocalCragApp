@@ -221,8 +221,8 @@
                 styleClass="p-button-secondary"
                 data-cy="assumed-grade-reset"
                 [disabled]="
-                  lineForm.get('assumedGradeMin').value == null &&
-                  lineForm.get('assumedGradeMax').value == null
+                  lineForm.get('assumedGradeMin').value === null &&
+                  lineForm.get('assumedGradeMax').value === null
                 "
               ></p-button>
             </div>
