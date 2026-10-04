@@ -22,7 +22,9 @@
         }
       </div>
       <div class="search-result-description">
-        <div class="search-result-name">{{ searchable.line.name }}</div>
+        <div class="search-result-name">
+          {{ searchable.line.name }}{{ assumedGradeSuffix() | async }}
+        </div>
         <div class="search-result-meta">
           <b>{{ t(searchable.line.type) }}</b
           >, {{ searchable.line.area.name }}<!--

@@ -43,6 +43,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   gradeScale: string;
   authorGradeValue: number;
   userGradeValue: number;
+  assumedGradeMin: number | null;
+  assumedGradeMax: number | null;
   authorRating: number;
   userRating: number;
   type: LineType;
@@ -136,6 +138,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.gradeScale = payload.gradeScale;
     line.authorGradeValue = payload.authorGradeValue;
     line.userGradeValue = payload.userGradeValue;
+    line.assumedGradeMin = payload.assumedGradeMin ?? null;
+    line.assumedGradeMax = payload.assumedGradeMax ?? null;
     line.authorRating = payload.authorRating;
     line.userRating = payload.userRating;
     line.type = payload.type;
@@ -247,6 +251,10 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         videos: line.videos ? line.videos : null,
         gradeScale: line.gradeScale,
         authorGradeValue: line.authorGradeValue,
+        assumedGradeMin:
+          line.authorGradeValue < 0 ? (line.assumedGradeMin ?? null) : null,
+        assumedGradeMax:
+          line.authorGradeValue < 0 ? (line.assumedGradeMax ?? null) : null,
         authorRating: line.authorRating,
         type: line.type,
         faYear: line.faYear,

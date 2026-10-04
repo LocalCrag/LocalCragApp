@@ -10,6 +10,7 @@ describe('LineGradePipe', () => {
   // gradeNameByValue stub maps each value to a recognizable name, so the test
   // can assert which grade value (author vs user) the pipe resolved.
   let gradeNameByValue: jasmine.Spy;
+  let gradeNameByValueMap: jasmine.Spy;
   let settings$: BehaviorSubject<{ displayUserGrades: boolean }>;
   let pipe: LineGradePipe;
 
@@ -25,6 +26,9 @@ describe('LineGradePipe', () => {
     gradeNameByValue = jasmine
       .createSpy('gradeNameByValue')
       .and.callFake((_type, _scale, value) => of(`grade-${value}`));
+    gradeNameByValueMap = jasmine
+      .createSpy('gradeNameByValueMap')
+      .and.returnValue(of({ 10: '6A', 16: '7A' }));
     settings$ = new BehaviorSubject<{ displayUserGrades: boolean }>({
       displayUserGrades: false,
     });
@@ -32,7 +36,10 @@ describe('LineGradePipe', () => {
     TestBed.configureTestingModule({
       providers: [
         LineGradePipe,
-        { provide: ScalesService, useValue: { gradeNameByValue } },
+        {
+          provide: ScalesService,
+          useValue: { gradeNameByValue, gradeNameByValueMap },
+        },
         {
           provide: TranslateSpecialGradesService,
           useValue: { translate: (name: string) => name },
@@ -81,5 +88,47 @@ describe('LineGradePipe', () => {
 
   it('returns an empty string when no line is given', () => {
     expect(pipe.transform(undefined)).toBe('');
+  });
+
+  it('appends the assumed interval when the displayed grade is a project', () => {
+    const project = {
+      type: 'BOULDER',
+      gradeScale: 'FB',
+      authorGradeValue: -1,
+      userGradeValue: -1,
+      assumedGradeMin: 10,
+      assumedGradeMax: 16,
+    } as unknown as Line;
+
+    expect(pipe.transform(project)).toBe('grade--1 (~6A–7A)');
+    expect(gradeNameByValueMap).toHaveBeenCalled();
+  });
+
+  it('shows a single grade when both assumed bounds are the same', () => {
+    const project = {
+      type: 'BOULDER',
+      gradeScale: 'FB',
+      authorGradeValue: -1,
+      userGradeValue: -1,
+      assumedGradeMin: 16,
+      assumedGradeMax: 16,
+    } as unknown as Line;
+
+    expect(pipe.transform(project)).toBe('grade--1 (~7A)');
+  });
+
+  it('omits the assumed interval when the displayed grade is a real grade', () => {
+    const graded = {
+      type: 'BOULDER',
+      gradeScale: 'FB',
+      authorGradeValue: 20,
+      userGradeValue: 20,
+      assumedGradeMin: 10,
+      assumedGradeMax: 16,
+    } as unknown as Line;
+
+    gradeNameByValueMap.calls.reset();
+    expect(pipe.transform(graded)).toBe('grade-20');
+    expect(gradeNameByValueMap).not.toHaveBeenCalled();
   });
 });
