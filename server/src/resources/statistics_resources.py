@@ -16,6 +16,7 @@ from models.line import Line
 from models.sector import Sector
 from models.user import User
 from util.secret_service import SecretService
+from util.topo_statistics import build_topo_statistics
 
 
 class GetCompletion(MethodView):
@@ -216,3 +217,10 @@ class GetInstanceStatistics(MethodView):
         }
 
         return jsonify(instance_statistics_schema.dump(payload)), 200
+
+
+class GetTopoStatistics(MethodView):
+    """Statistics for a region, crag, sector, area, or line."""
+
+    def get(self, object_type, slug=None):
+        return jsonify(build_topo_statistics(object_type, slug)), 200

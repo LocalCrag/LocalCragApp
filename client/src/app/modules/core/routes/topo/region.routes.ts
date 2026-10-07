@@ -82,6 +82,15 @@ export const topoRegionRoute: Routes = [
           data: { scopeType: ObjectType.Region },
         },
       ),
+      lazyOutletRoute(
+        'statistics',
+        () =>
+          import('../../../statistics/topo-statistics/topo-statistics.component').then(
+            (m) => m.TopoStatisticsComponent,
+          ),
+        'regionContent',
+        { data: { objectType: ObjectType.Region } },
+      ),
       outletRoute('ascents', RegionAscentsComponent, 'regionContent', {
         canActivate: [skipHierarchy(1, ['/topo'], ['ascents'])],
       }),

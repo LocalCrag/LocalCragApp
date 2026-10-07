@@ -87,6 +87,15 @@ export const topoCragRoutes: Routes = [
           data: { scopeType: ObjectType.Crag },
         },
       ),
+      lazyOutletRoute(
+        'statistics',
+        () =>
+          import('../../../statistics/topo-statistics/topo-statistics.component').then(
+            (m) => m.TopoStatisticsComponent,
+          ),
+        'cragContent',
+        { data: { objectType: ObjectType.Crag } },
+      ),
       outletRoute('ascents', CragAscentsComponent, 'cragContent', {
         canActivate: [skipHierarchy(2, ['/topo'], ['ascents'])],
       }),

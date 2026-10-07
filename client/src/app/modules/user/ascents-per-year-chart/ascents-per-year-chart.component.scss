@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.year-chart-wrap {
+  height: 220px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--p-border-radius-md, 6px);
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+  box-sizing: border-box;
+}
+
+.year-chart-wrap p-chart,
+.year-chart-wrap p-chart > div {
+  display: block;
+  height: 100%;
+}

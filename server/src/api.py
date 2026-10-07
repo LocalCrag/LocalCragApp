@@ -176,7 +176,11 @@ from resources.sector_resources import (
     UpdateSector,
     UpdateSectorOrder,
 )
-from resources.statistics_resources import GetCompletion, GetInstanceStatistics
+from resources.statistics_resources import (
+    GetCompletion,
+    GetInstanceStatistics,
+    GetTopoStatistics,
+)
 from resources.todo_resources import (
     CreateTodo,
     DeleteTodo,
@@ -265,6 +269,14 @@ def configure_api(app):
     statistics_bp = Blueprint("statistics", __name__)
     statistics_bp.add_url_rule("completion", view_func=GetCompletion.as_view("get_completion"))
     statistics_bp.add_url_rule("instance", view_func=GetInstanceStatistics.as_view("get_instance_statistics"))
+    statistics_bp.add_url_rule(
+        "topo/<string:object_type>",
+        view_func=GetTopoStatistics.as_view("get_topo_statistics"),
+    )
+    statistics_bp.add_url_rule(
+        "topo/<string:object_type>/<string:slug>",
+        view_func=GetTopoStatistics.as_view("get_topo_statistics_scoped"),
+    )
     app.register_blueprint(statistics_bp, url_prefix="/api/statistics")
 
     # Search API

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   Input,
@@ -76,6 +77,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   private scalesService = inject(ScalesService);
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   private themeService = inject(ThemeService);
   private dataSubscription: Subscription | null = null;
 
@@ -525,6 +527,7 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
 
     forkJoin(scaleObservers).subscribe((chartData) => {
       this.chartData = chartData.sort((a, b) => a.totalCount - b.totalCount);
+      this.cdr.markForCheck();
     });
   }
 
