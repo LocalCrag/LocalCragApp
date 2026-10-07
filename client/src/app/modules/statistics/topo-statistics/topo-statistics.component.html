@@ -157,7 +157,11 @@
       </h3>
       <p class="section-note">{{ t("topoStatistics.heatmapHint") }}</p>
       @if (heatMax > 0) {
-        <div class="heatmap" role="img" [attr.aria-label]="t('topoStatistics.heatmap')">
+        <div
+          class="heatmap"
+          role="img"
+          [attr.aria-label]="t('topoStatistics.heatmap')"
+        >
           <div class="heatmap-grid">
             <div></div>
             @for (week of weekHeaders; track week) {
@@ -273,7 +277,9 @@
                   ]"
                 >
                   <span class="line-name">{{ line.name }}</span>
-                  <span class="line-grade">{{ gradeLine(line) | lineGrade }}</span>
+                  <span class="line-grade">{{
+                    gradeLine(line) | lineGrade
+                  }}</span>
                   <span class="line-meta">{{
                     t("topoStatistics.ascentCount", { count: line.ascentCount })
                   }}</span>
@@ -308,7 +314,9 @@
                 ]"
               >
                 <span class="line-name">{{ line.name }}</span>
-                <span class="line-grade">{{ gradeLine(line) | lineGrade }}</span>
+                <span class="line-grade">{{
+                  gradeLine(line) | lineGrade
+                }}</span>
                 <span class="line-meta">{{
                   t("topoStatistics.wantedLine", {
                     todos: line.todoCount,
