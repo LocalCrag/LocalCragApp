@@ -26,6 +26,15 @@ export const topoLineRoutes: Routes = [
         component: LineInfoComponent,
         outlet: 'lineContent',
       },
+      lazyOutletRoute(
+        'statistics',
+        () =>
+          import('../../../statistics/topo-statistics/topo-statistics.component').then(
+            (m) => m.TopoStatisticsComponent,
+          ),
+        'lineContent',
+        { data: { objectType: ObjectType.Line } },
+      ),
       outletRoute('ascents', LineAscentsComponent, 'lineContent'),
       lazyOutletRoute('gallery', loadGalleryComponent, 'lineContent', {
         data: { objectType: ObjectType.Line },

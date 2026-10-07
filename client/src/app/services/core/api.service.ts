@@ -50,6 +50,10 @@ export class ApiService {
   public statistics = {
     completion: (): string => `${this.apiHost}statistics/completion`,
     instance: (): string => `${this.apiHost}statistics/instance`,
+    topo: (objectType: string, slug?: string): string =>
+      slug
+        ? `${this.apiHost}statistics/topo/${objectType}/${slug}`
+        : `${this.apiHost}statistics/topo/${objectType}`,
   };
 
   public search = {

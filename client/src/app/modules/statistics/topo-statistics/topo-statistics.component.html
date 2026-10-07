@@ -1,0 +1,347 @@
+<ng-container *transloco="let t">
+  <div class="p-6" data-cy="topo-statistics">
+    @if (failed) {
+      <p-message
+        severity="error"
+        icon="pi pi-times-circle"
+        [text]="t('topoStatistics.loadError')"
+      />
+    } @else if (loading || !stats) {
+      <div class="stat-grid">
+        @for (_ of [1, 2, 3, 4]; track $index) {
+          <div class="stat-card">
+            <p-skeleton width="55%" height="0.85rem" />
+            <div class="skeleton-gap"></div>
+            <p-skeleton width="35%" height="1.35rem" />
+          </div>
+        }
+      </div>
+      <p-skeleton width="100%" height="180px" styleClass="mt-4" />
+    } @else {
+      @if (!isLine && stats.myCompletion) {
+        <h3 class="section-title section-title--completion">
+          {{ t("topoStatistics.myCompletion") }}
+        </h3>
+        @if (stats.myCompletion.total > 0) {
+          <div class="completion">
+            <div class="completion-label">
+              {{
+                t("topoStatistics.completionCount", {
+                  ascended: stats.myCompletion.ascended,
+                  total: stats.myCompletion.total,
+                })
+              }}
+            </div>
+            <p-progressBar [value]="completionPercent" [showValue]="false" />
+            <div class="completion-percent">{{ completionPercent }}%</div>
+          </div>
+        } @else {
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            [text]="t('topoStatistics.completionEmpty')"
+          />
+        }
+      }
+
+      <h3 class="section-title section-title--coverage">
+        {{ t("topoStatistics.coverage") }}
+      </h3>
+      <div class="stat-grid">
+        @if (!isLine) {
+          <div class="stat-card">
+            <div class="stat-label">{{ t("topoStatistics.totalLines") }}</div>
+            <div class="stat-value">{{ stats.coverage.totalLines }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">{{ t("topoStatistics.projects") }}</div>
+            <div class="stat-value">{{ stats.coverage.projects }}</div>
+          </div>
+        }
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.totalAscents") }}</div>
+          <div class="stat-value">{{ stats.coverage.totalAscents }}</div>
+        </div>
+        @if (!isLine) {
+          <div class="stat-card">
+            <div class="stat-label">
+              {{ t("topoStatistics.distinctClimbers") }}
+            </div>
+            <div class="stat-value">{{ stats.coverage.distinctClimbers }}</div>
+          </div>
+        }
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.flashRate") }}</div>
+          <div class="stat-value">
+            {{ stats.flash.percent }}%
+            <span class="stat-sub">({{ stats.flash.count }})</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.softGrades") }}</div>
+          <div class="stat-value">
+            {{ stats.consensus.softPercent }}%
+            <span class="stat-sub">({{ stats.consensus.softCount }})</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.hardGrades") }}</div>
+          <div class="stat-value">
+            {{ stats.consensus.hardPercent }}%
+            <span class="stat-sub">({{ stats.consensus.hardCount }})</span>
+          </div>
+        </div>
+      </div>
+
+      @if (!isLine && gradeDistribution$) {
+        <h3 class="section-title section-title--grades">
+          {{ t("topoStatistics.gradeDistribution") }}
+        </h3>
+        <div class="chart-box">
+          <lc-grade-distribution-bar-chart
+            [fetchingObservable]="gradeDistribution$"
+          />
+        </div>
+      }
+
+      @if (isLine) {
+        <h3 class="section-title section-title--grades">
+          {{ t("topoStatistics.gradeVotes") }}
+        </h3>
+        @if (voteChartData && stats.gradeVotes) {
+          <div class="chart-wrap">
+            <p-chart
+              type="bar"
+              [data]="voteChartData"
+              [options]="voteChartOptions"
+            />
+          </div>
+        } @else {
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            [text]="t('topoStatistics.noGradeVotes')"
+          />
+        }
+      }
+
+      <h3 class="section-title section-title--ratings">
+        {{ t("topoStatistics.ratings") }}
+      </h3>
+      @if (stats.ratings.count > 0) {
+        <p class="section-note">
+          {{
+            t("topoStatistics.averageRating", {
+              rating: stats.ratings.average,
+              count: stats.ratings.count,
+            })
+          }}
+        </p>
+        <div class="chart-wrap">
+          <p-chart
+            type="bar"
+            [data]="ratingChartData"
+            [options]="ratingChartOptions"
+          />
+        </div>
+      } @else {
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          [text]="t('topoStatistics.noRatings')"
+        />
+      }
+
+      <h3 class="section-title section-title--heatmap">
+        {{ t("topoStatistics.heatmap") }}
+      </h3>
+      <p class="section-note">{{ t("topoStatistics.heatmapHint") }}</p>
+      @if (heatMax > 0) {
+        <div
+          class="heatmap"
+          role="img"
+          [attr.aria-label]="t('topoStatistics.heatmap')"
+        >
+          <div class="heatmap-grid">
+            <div></div>
+            @for (week of weekHeaders; track week) {
+              <div class="heat-week">
+                {{ week === 1 || week % 5 === 0 ? week : "" }}
+              </div>
+            }
+            @for (row of heatmap; track row.weekday) {
+              <div
+                class="heat-weekday"
+                [class.heat-weekday--weekend]="row.weekday >= 6"
+              >
+                {{ row.label }}
+              </div>
+              @for (cell of row.cells; track cell.key) {
+                <div
+                  class="heat-cell"
+                  [style.background]="cell.color"
+                  [attr.aria-label]="cell.label"
+                  [attr.title]="cell.label"
+                ></div>
+              }
+            }
+          </div>
+          <div class="heat-legend">
+            <span>{{ t("topoStatistics.less") }}</span>
+            @for (swatch of legendSwatches; track $index) {
+              <span class="heat-swatch" [style.background]="swatch"></span>
+            }
+            <span>{{ t("topoStatistics.more") }}</span>
+          </div>
+        </div>
+      } @else {
+        <p-message
+          severity="info"
+          icon="pi pi-info-circle"
+          [text]="t('topoStatistics.heatmapEmpty')"
+        />
+      }
+
+      <h3 class="section-title section-title--years">
+        {{ t("topoStatistics.ascentsPerYear") }}
+      </h3>
+      <lc-ascents-per-year-chart
+        [ascentsPerYear]="stats.ascentsPerYear"
+        [barChartColor]="barColor"
+        [datasetLabel]="ascentsYearLabel"
+        [emptyText]="ascentsYearEmpty"
+        [animate]="false"
+      />
+
+      @if (stats.firstAscentsPerYear) {
+        <h3 class="section-title section-title--years">
+          {{ t("topoStatistics.firstAscentsPerYear") }}
+        </h3>
+        <p class="section-note">
+          {{
+            t("topoStatistics.firstAscentsUndated", {
+              count: stats.firstAscentsUndated,
+            })
+          }}
+        </p>
+        <lc-ascents-per-year-chart
+          [ascentsPerYear]="stats.firstAscentsPerYear"
+          [barChartColor]="barColor"
+          [datasetLabel]="faYearLabel"
+          [emptyText]="faYearEmpty"
+          [animate]="false"
+        />
+      }
+
+      @if (showDisciplines) {
+        <h3 class="section-title section-title--mix">
+          {{ t("topoStatistics.disciplines") }}
+        </h3>
+        <div class="chart-wrap chart-wrap--pie chart-wrap--mix">
+          <p-chart
+            type="pie"
+            [data]="disciplineChartData"
+            [options]="disciplineChartOptions"
+          />
+        </div>
+      }
+
+      @if (showChildren) {
+        <h3 class="section-title section-title--mix">
+          {{ t(childHeadingKey()) }}
+        </h3>
+        <div class="chart-wrap chart-wrap--pie chart-wrap--mix">
+          <p-chart
+            type="pie"
+            [data]="childrenChartData"
+            [options]="childrenChartOptions"
+          />
+        </div>
+      }
+
+      @if (!isLine) {
+        <h3 class="section-title section-title--lines">
+          {{ t("topoStatistics.popularLines") }}
+        </h3>
+        @if (stats.popularLines?.length) {
+          <ul class="line-list">
+            @for (line of stats.popularLines; track line.slug) {
+              <li>
+                <a
+                  [routerLink]="[
+                    '/topo',
+                    line.cragSlug,
+                    line.sectorSlug,
+                    line.areaSlug,
+                    line.slug,
+                  ]"
+                >
+                  <span class="line-name">{{ line.name }}</span>
+                  <span class="line-grade">{{
+                    gradeLine(line) | lineGrade
+                  }}</span>
+                  <span class="line-meta">{{
+                    t("topoStatistics.ascentCount", { count: line.ascentCount })
+                  }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p-message
+            severity="info"
+            icon="pi pi-info-circle"
+            [text]="t('topoStatistics.noPopularLines')"
+          />
+        }
+      }
+
+      @if (!isLine && stats.wishlist.wantedLines.length) {
+        <h3 class="section-title section-title--wishlist">
+          {{ t("topoStatistics.wishlist") }}
+        </h3>
+        <p class="section-note">{{ t("topoStatistics.wantedLines") }}</p>
+        <ul class="line-list">
+          @for (line of stats.wishlist.wantedLines; track line.slug) {
+            <li>
+              <a
+                [routerLink]="[
+                  '/topo',
+                  line.cragSlug,
+                  line.sectorSlug,
+                  line.areaSlug,
+                  line.slug,
+                ]"
+              >
+                <span class="line-name">{{ line.name }}</span>
+                <span class="line-grade">{{
+                  gradeLine(line) | lineGrade
+                }}</span>
+                <span class="line-meta">{{
+                  t("topoStatistics.wantedLine", {
+                    todos: line.todoCount,
+                    ascents: line.ascentCount,
+                  })
+                }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+
+      <h3 class="section-title section-title--social">
+        {{ t("topoStatistics.social") }}
+      </h3>
+      <div class="stat-grid stat-grid--social">
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.comments") }}</div>
+          <div class="stat-value">{{ stats.social.comments }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">{{ t("topoStatistics.galleryImages") }}</div>
+          <div class="stat-value">{{ stats.social.galleryImages }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</ng-container>

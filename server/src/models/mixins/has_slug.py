@@ -31,6 +31,7 @@ class HasSlug:
         "areas",
         "gallery",
         "ascents",
+        "statistics",
         "rules",
         "create-crag",
         "edit-region",

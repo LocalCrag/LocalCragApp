@@ -249,6 +249,12 @@ export class LineComponent implements OnInit {
         badge: this.tabBadge(this.line.commentCount),
       },
       {
+        label: this.translocoService.translate(marker('line.statistics')),
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/statistics`,
+        visible: true,
+      },
+      {
         label: this.translocoService.translate(marker('line.tasks')),
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/moderator-tasks`,
