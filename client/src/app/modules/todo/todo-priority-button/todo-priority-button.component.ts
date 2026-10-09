@@ -29,6 +29,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class TodoPriorityButtonComponent implements OnInit {
   @Input() todo: Todo;
+  @Input() readOnly = false;
 
   public items: MenuItem[];
   public priorities = TodoPriority;

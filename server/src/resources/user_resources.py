@@ -321,7 +321,9 @@ class GetUserStatistics(MethodView):
     """Aggregate climbing, social, and moderation stats for the public user profile."""
 
     def get(self, user_slug):
-        user_id = User.get_id_by_slug(user_slug)
+        user = User.find_by_slug(user_slug)
+        user_id = user.id
+        excluded_from_rankings = bool(user.account_settings and user.account_settings.exclude_from_rankings)
         instance_settings = InstanceSettings.return_it()
         display_user_grades = bool(instance_settings.display_user_grades)
 
@@ -382,6 +384,11 @@ class GetUserStatistics(MethodView):
         global_rank_top50_by_line_type = {}
         global_rank_total_count_by_line_type = {}
         for lt in LineTypeEnum:
+            if excluded_from_rankings:
+                global_rank_top10_by_line_type[lt.value] = None
+                global_rank_top50_by_line_type[lt.value] = None
+                global_rank_total_count_by_line_type[lt.value] = None
+                continue
             ranking = Ranking.query.filter(
                 Ranking.user_id == user_id,
                 Ranking.crag_id.is_(None),

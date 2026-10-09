@@ -22,4 +22,6 @@ account_settings_args = {
         required=True,
         validate=validate.OneOf([member.value for member in ColorSchemeEnum]),
     ),
+    "excludeFromRankings": fields.Boolean(required=True),
+    "todoListPrivate": fields.Boolean(required=True),
 }

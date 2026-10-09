@@ -6,8 +6,10 @@ from sqlalchemy.sql import ColumnElement
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.todo_schema import paginated_todos_schema, todo_schema
+from messages.messages import ResponseMessage
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
@@ -21,6 +23,29 @@ from util.auth_session import (
 )
 from util.secret_service import SecretService
 from webargs_schemas.todo_args import todo_args, todo_priority_args
+
+
+def _requester() -> User | None:
+    identity = get_session_identity()
+    return User.find_by_email(identity) if identity else None
+
+
+def resolve_todo_list_user() -> User:
+    """
+    Own list when no user_slug is given. Another user's list is readable when
+    it is public, or when the requester is the owner.
+    """
+    user_slug = request.args.get("user_slug")
+    requester = _requester()
+    if user_slug:
+        target = User.find_by_slug(user_slug)
+        is_owner = requester is not None and requester.id == target.id
+        if target.account_settings.todo_list_private and not is_owner:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+        return target
+    if requester is None:
+        raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+    return requester
 
 
 class CreateTodo(MethodView):
@@ -58,10 +83,10 @@ class CreateTodo(MethodView):
 
 class GetTodos(MethodView):
 
-    @session_required()
+    @session_required(optional=True)
     def get(self):
         instance_settings = InstanceSettings.return_it()
-        user = User.find_by_email(get_session_identity())
+        user = resolve_todo_list_user()
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
         area_id = request.args.get("area_id")
@@ -158,19 +183,20 @@ class UpdateTodoPriority(MethodView):
 
 class GetIsTodo(MethodView):
 
+    @session_required()
     def get(self):
-        user_id = request.args.get("user_id")
+        user = User.find_by_email(get_session_identity())
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
         area_id = request.args.get("area_id")
         line_ids = request.args.get("line_ids")
-        if not user_id or not (crag_id or sector_id or area_id or line_ids):
+        if not (crag_id or sector_id or area_id or line_ids):
             raise BadRequest("Filter query params are not properly defined.")
         query = (
             db.session.query(Todo.line_id)
             .join(Line)
             .join(Area, Line.area_id == Area.id)
-            .filter(Todo.created_by_id == user_id)
+            .filter(Todo.created_by_id == user.id)
         )
         if crag_id:
             query = query.join(Area.sector).filter_by(crag_id=crag_id)

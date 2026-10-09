@@ -10,6 +10,8 @@ export class AccountSettings {
   notificationDigestFrequency: 'daily' | 'weekly';
   language: LanguageCode;
   colorScheme: ColorScheme;
+  excludeFromRankings: boolean;
+  todoListPrivate: boolean;
 
   public static deserialize(payload: any): AccountSettings {
     const accountSettings = new AccountSettings();
@@ -26,6 +28,8 @@ export class AccountSettings {
       payload.notificationDigestFrequency;
     accountSettings.language = payload.language;
     accountSettings.colorScheme = payload.colorScheme ?? 'system';
+    accountSettings.excludeFromRankings = payload.excludeFromRankings;
+    accountSettings.todoListPrivate = payload.todoListPrivate;
     return accountSettings;
   }
 
@@ -42,6 +46,8 @@ export class AccountSettings {
       notificationDigestFrequency: accountSettings.notificationDigestFrequency,
       language: accountSettings.language,
       colorScheme: accountSettings.colorScheme,
+      excludeFromRankings: accountSettings.excludeFromRankings,
+      todoListPrivate: accountSettings.todoListPrivate,
     };
   }
 }

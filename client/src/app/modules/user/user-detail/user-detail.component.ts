@@ -11,8 +11,8 @@ import {
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
-import { EMPTY, forkJoin, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { combineLatest, EMPTY, forkJoin, throwError } from 'rxjs';
+import { catchError, filter, take } from 'rxjs/operators';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { User } from '../../../models/user';
 import { UsersService } from '../../../services/crud/users.service';
@@ -21,6 +21,11 @@ import { UserAvatarComponent } from '../../shared/components/user-avatar/user-av
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { Store } from '@ngrx/store';
+import {
+  selectAuthResolved,
+  selectCurrentUser,
+} from '../../../ngrx/selectors/auth.selectors';
 
 @Component({
   selector: 'lc-user-detail',
@@ -35,6 +40,7 @@ export class UserDetailComponent implements OnInit {
 
   public user: User;
   public items: MenuItem[];
+  private todosTabVisible = false;
 
   private destroyRef = inject(DestroyRef);
   private usersService = inject(UsersService);
@@ -43,6 +49,7 @@ export class UserDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private languageService = inject(LanguageService);
   private pageTitleService = inject(PageTitleService);
+  private store = inject(Store);
 
   ngOnInit() {
     this.route.paramMap
@@ -65,7 +72,19 @@ export class UserDetailComponent implements OnInit {
             `${user.firstname} ${user.lastname}`.trim(),
             { template: this.pageTitleTemplate },
           );
-          this.buildItems(userSlug);
+          combineLatest([
+            this.store.select(selectAuthResolved),
+            this.store.select(selectCurrentUser),
+          ])
+            .pipe(
+              filter(([resolved]) => resolved),
+              take(1),
+            )
+            .subscribe(([, currentUser]) => {
+              this.todosTabVisible =
+                !user.todoListPrivate || currentUser?.id === user.id;
+              this.buildItems(userSlug);
+            });
           this.languageService.renderedLanguage$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((rendered) => {
@@ -97,6 +116,13 @@ export class UserDetailComponent implements OnInit {
         icon: 'pi pi-fw pi-images',
         routerLink: `/users/${userSlug}/gallery`,
         visible: true,
+      },
+      {
+        label: this.translocoService.translate(marker('user.todos')),
+        icon: 'pi pi-fw pi-list',
+        routerLink: `/users/${userSlug}/todos`,
+        routerLinkActiveOptions: { exact: true },
+        visible: this.todosTabVisible,
       },
     ];
     this.pageTitleService.setTabs(this.items);

@@ -1,5 +1,10 @@
 <ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
+    @if (listPrivate) {
+      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
+        {{ t("privateListMessage") }}
+      </p-message>
+    } @else {
     <p-dataView #dv [value]="todos">
       <ng-template #emptymessage>
         @if (
@@ -254,24 +259,27 @@
                     <div class="todo-table-priority">
                       <lc-todo-priority-button
                         [todo]="todo"
+                        [readOnly]="readOnly"
                       ></lc-todo-priority-button>
                     </div>
-                    <div class="todo-actions">
-                      <lc-tick-button
-                        [line]="todo.line"
-                        [showLabel]="false"
-                        [ticked]="false"
-                      ></lc-tick-button>
-                      <p-button
-                        styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                        data-cy="delete-todo"
-                        (click)="deleteTodo(todo)"
-                      >
+                    @if (!readOnly) {
+                      <div class="todo-actions">
+                        <lc-tick-button
+                          [line]="todo.line"
+                          [showLabel]="false"
+                          [ticked]="false"
+                        ></lc-tick-button>
+                        <p-button
+                          styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                          data-cy="delete-todo"
+                          (click)="deleteTodo(todo)"
+                        >
                         <ng-template #icon>
                           <i class="pi pi-trash"></i>
                         </ng-template>
                       </p-button>
-                    </div>
+                      </div>
+                    }
                   </div>
                   <!-- DISPLAY FOR SMALL SCREENS -->
                   <div class="todo-table-row-small">
@@ -302,24 +310,27 @@
                       <div class="todo-table-priority">
                         <lc-todo-priority-button
                           [todo]="todo"
+                          [readOnly]="readOnly"
                         ></lc-todo-priority-button>
                       </div>
-                      <div class="todo-actions">
-                        <lc-tick-button
-                          [line]="todo.line"
-                          [showLabel]="false"
-                          [ticked]="false"
-                        ></lc-tick-button>
-                        <p-button
-                          styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
-                          data-cy="tick-button"
-                          (click)="deleteTodo(todo)"
-                        >
+                      @if (!readOnly) {
+                        <div class="todo-actions">
+                          <lc-tick-button
+                            [line]="todo.line"
+                            [showLabel]="false"
+                            [ticked]="false"
+                          ></lc-tick-button>
+                          <p-button
+                            styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+                            data-cy="tick-button"
+                            (click)="deleteTodo(todo)"
+                          >
                           <ng-template #icon>
                             <i class="pi pi-trash"></i>
                           </ng-template>
                         </p-button>
-                      </div>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -342,6 +353,7 @@
           [loading]="loading === loadingStates.LOADING"
         ></p-button>
       </div>
+    }
     }
   </div>
 </ng-container>

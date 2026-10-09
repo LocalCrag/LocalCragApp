@@ -26,6 +26,44 @@
       </select>
     </div>
 
+    <div id="privacy" class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label>{{ t("privacyLabel") }}</label>
+      </div>
+      <div class="flex items-center justify-center sm:justify-start">
+        <div>
+          <p-toggleswitch
+            id="exclude-from-rankings"
+            class="mx-2 blue-green-switch"
+            formControlName="excludeFromRankings"
+            lcFormControl
+          />
+        </div>
+        <div class="flex flex-col">
+          <span>{{ t("excludeFromRankings") }}</span>
+          <small class="text-muted-color">{{
+            t("excludeFromRankingsDescription")
+          }}</small>
+        </div>
+      </div>
+      <div class="flex items-center justify-center sm:justify-start">
+        <div>
+          <p-toggleswitch
+            id="todo-list-private"
+            class="mx-2 blue-green-switch"
+            formControlName="todoListPrivate"
+            lcFormControl
+          />
+        </div>
+        <div class="flex flex-col">
+          <span>{{ t("todoListPrivate") }}</span>
+          <small class="text-muted-color">{{
+            t("todoListPrivateDescription")
+          }}</small>
+        </div>
+      </div>
+    </div>
+
     <div
       id="notification-mails"
       class="notification-mail-settings flex flex-col gap-2"

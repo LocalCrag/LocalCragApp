@@ -14,6 +14,8 @@ def test_get_account_settings(client, member_token):
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] in ("de", "en", "fr", "it", "nl")
     assert rv.json["colorScheme"] == "system"
+    assert rv.json["excludeFromRankings"] is False
+    assert rv.json["todoListPrivate"] is False
 
 
 def test_update_account_settings(client, member_token):
@@ -29,6 +31,8 @@ def test_update_account_settings(client, member_token):
             "notificationDigestFrequency": "daily",
             "language": "it",
             "colorScheme": "dark",
+            "excludeFromRankings": False,
+            "todoListPrivate": False,
         },
     )
     assert rv.status_code == 200, rv.text
@@ -40,6 +44,8 @@ def test_update_account_settings(client, member_token):
     assert rv.json["notificationDigestFrequency"] == "daily"
     assert rv.json["language"] == "it"
     assert rv.json["colorScheme"] == "dark"
+    assert rv.json["excludeFromRankings"] is False
+    assert rv.json["todoListPrivate"] is False
 
 
 def test_update_account_settings_weekly_digest(client, member_token):
@@ -55,6 +61,8 @@ def test_update_account_settings_weekly_digest(client, member_token):
             "notificationDigestFrequency": "weekly",
             "language": "en",
             "colorScheme": "system",
+            "excludeFromRankings": False,
+            "todoListPrivate": False,
         },
     )
     assert rv.status_code == 200, rv.text
@@ -111,6 +119,8 @@ def test_comment_reply_email_not_sent_when_disabled(client, admin_token, member_
             "notificationDigestFrequency": "daily",
             "language": "de",
             "colorScheme": "system",
+            "excludeFromRankings": False,
+            "todoListPrivate": False,
         },
     )
     assert rv.status_code == 200, rv.text
@@ -153,6 +163,53 @@ def test_update_account_settings_invalid_language(client, member_token):
             "notificationDigestFrequency": "daily",
             "language": "es",
             "colorScheme": "system",
+            "excludeFromRankings": False,
+            "todoListPrivate": False,
         },
     )
     assert rv.status_code == 400, rv.text
+
+
+def _account_settings_payload(**overrides):
+    payload = {
+        "commentReplyMailsEnabled": True,
+        "reactionNotificationsEnabled": True,
+        "systemNotificationsEnabled": True,
+        "moderatorTaskNotificationsEnabled": True,
+        "adminMessageNotificationsEnabled": True,
+        "notificationDigestFrequency": "daily",
+        "language": "en",
+        "colorScheme": "system",
+        "excludeFromRankings": False,
+        "todoListPrivate": False,
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_exclude_from_rankings_hides_user_until_turned_off(client, admin_token):
+    rv = client.put(
+        "/api/account/settings",
+        token=admin_token,
+        json=_account_settings_payload(excludeFromRankings=True),
+    )
+    assert rv.status_code == 200, rv.text
+    assert rv.json["excludeFromRankings"] is True
+
+    rv = client.get("/api/ranking?line_type=BOULDER")
+    assert rv.status_code == 200
+    assert rv.json == []
+
+    rv = client.get("/api/users/admin-admin/statistics")
+    assert rv.json["globalRankByLineType"]["BOULDER"] is None
+
+    rv = client.put(
+        "/api/account/settings",
+        token=admin_token,
+        json=_account_settings_payload(excludeFromRankings=False),
+    )
+    assert rv.status_code == 200, rv.text
+    rv = client.get("/api/ranking?line_type=BOULDER")
+    assert len(rv.json) == 1
+    assert rv.json[0]["user"]["slug"] == "admin-admin"
+    assert rv.json[0]["rankTop10"] == 1

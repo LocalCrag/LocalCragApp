@@ -32,7 +32,7 @@ export class IsTodoService {
           if (!user) {
             return of(new Set<string>());
           }
-          const params: ApiQueryParams = { user_id: user.id };
+          const params: ApiQueryParams = {};
           if (crag_id) {
             params.crag_id = crag_id;
           }

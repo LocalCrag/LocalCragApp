@@ -39,6 +39,14 @@ export const userRoutes: Routes = [
       lazyOutletRoute('gallery', loadGalleryComponent, 'userContent', {
         data: { objectType: ObjectType.User },
       }),
+      lazyOutletRoute(
+        'todos',
+        () =>
+          import('../../user/user-todos/user-todos.component').then(
+            (m) => m.UserTodosComponent,
+          ),
+        'userContent',
+      ),
     ],
   },
 ];

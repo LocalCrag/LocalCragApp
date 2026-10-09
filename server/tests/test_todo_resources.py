@@ -1,3 +1,4 @@
+from extensions import db
 from models.crag import Crag
 from models.enums.todo_priority_enum import TodoPriorityEnum
 from models.line import Line
@@ -243,11 +244,9 @@ def test_try_updating_priority_with_invalid_priority(client, user_token):
     assert rv.status_code == 400
 
 
-def test_get_is_todo(client, user_token):
+def test_get_is_todo(client, user_token, member_token):
     line_id = Line.get_id_by_slug("the-vessel")
     line2_id = Line.get_id_by_slug("super-spreader")
-    user_id = User.get_id_by_slug("user-user")
-    member_id = User.get_id_by_slug("member-member")
 
     # Add a to-do first
     todo_data = {
@@ -257,20 +256,20 @@ def test_get_is_todo(client, user_token):
     rv = client.post("/api/todos", token=user_token, json=todo_data)
     assert rv.status_code == 201
 
-    # Then get the is_todo
-    rv = client.get(f"/api/is-todo?user_id={user_id}&line_ids={line_id}", token=user_token)
+    # Then get the is_todo for the calling user
+    rv = client.get(f"/api/is-todo?line_ids={line_id}", token=user_token)
     assert rv.status_code == 200
     res = rv.json
     assert res[0] == str(line_id)
 
     # Test for different line id
-    rv = client.get(f"/api/is-todo?user_id={user_id}&line_ids={line2_id}", token=user_token)
+    rv = client.get(f"/api/is-todo?line_ids={line2_id}", token=user_token)
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 0
 
-    # Test for different user id
-    rv = client.get(f"/api/is-todo?user_id={member_id}&line_ids={line_id}", token=user_token)
+    # Another user only sees their own list
+    rv = client.get(f"/api/is-todo?line_ids={line_id}", token=member_token)
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 0
@@ -313,3 +312,53 @@ def test_creating_an_ascent_for_a_line_that_is_todo_removed_the_todo(client, use
     assert rv.status_code == 200
     res = rv.json
     assert len(res["items"]) == 0
+
+
+def test_public_todo_list_is_readable_by_others(client, user_token, member_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+    rv = client.post("/api/todos", token=user_token, json={"line": str(line_id)})
+    assert rv.status_code == 201
+
+    user = User.find_by_email("user@localcrag.invalid.org")
+    assert user.account_settings.todo_list_private is False
+
+    for token in (member_token, None):
+        kwargs = {"token": token} if token is not None else {}
+        rv = client.get(
+            f"/api/todos?page=1&user_slug={user.slug}&order_by=time_created&order_direction=desc&per_page=10",
+            **kwargs,
+        )
+        assert rv.status_code == 200, rv.text
+        assert len(rv.json["items"]) == 1
+
+
+def test_private_todo_list_is_visible_only_to_the_owner(client, user_token, member_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+    rv = client.post("/api/todos", token=user_token, json={"line": str(line_id)})
+    assert rv.status_code == 201
+
+    user = User.find_by_email("user@localcrag.invalid.org")
+    user.account_settings.todo_list_private = True
+    db.session.commit()
+
+    rv = client.get(
+        f"/api/todos?page=1&user_slug={user.slug}&order_by=time_created&order_direction=desc&per_page=10",
+        token=member_token,
+    )
+    assert rv.status_code == 401
+
+    rv = client.get(
+        f"/api/todos?page=1&user_slug={user.slug}&order_by=time_created&order_direction=desc&per_page=10",
+    )
+    assert rv.status_code == 401
+
+    rv = client.get(
+        f"/api/todos?page=1&user_slug={user.slug}&order_by=time_created&order_direction=desc&per_page=10",
+        token=user_token,
+    )
+    assert rv.status_code == 200
+    assert len(rv.json["items"]) == 1
+
+    rv = client.get(f"/api/is-todo?line_ids={line_id}", token=user_token)
+    assert rv.status_code == 200
+    assert rv.json == [str(line_id)]
