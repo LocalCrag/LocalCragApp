@@ -17,11 +17,19 @@ branch_labels = None
 depends_on = None
 
 
+def _has_column(table_name, column_name):
+    columns = sa.inspect(op.get_bind()).get_columns(table_name)
+    return any(column["name"] == column_name for column in columns)
+
+
 def upgrade():
-    op.add_column(
-        "account_settings",
-        sa.Column("exclude_from_rankings", sa.Boolean(), nullable=False, server_default=sa.false()),
-    )
+    # Added earlier with the competition ranks. Databases that already ran that
+    # revision before this column existed still need it here.
+    if not _has_column("account_settings", "exclude_from_rankings"):
+        op.add_column(
+            "account_settings",
+            sa.Column("exclude_from_rankings", sa.Boolean(), nullable=False, server_default=sa.false()),
+        )
     # Backfill existing rows as private, then switch the default so new rows are public.
     op.add_column(
         "account_settings",
@@ -36,4 +44,3 @@ def upgrade():
 
 def downgrade():
     op.drop_column("account_settings", "todo_list_private")
-    op.drop_column("account_settings", "exclude_from_rankings")
