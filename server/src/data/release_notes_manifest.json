@@ -15,6 +15,14 @@
     {
       "key": "darkMode",
       "type": "FEATURE"
+    },
+    {
+      "key": "privacySettings",
+      "type": "FEATURE"
+    },
+    {
+      "key": "topoStatistics",
+      "type": "FEATURE"
     }
   ]
 }

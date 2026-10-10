@@ -4,7 +4,8 @@
     <p-button
       type="button"
       styleClass="p-button-secondary p-button-text medium-priority"
-      (click)="menu.toggle($event)"
+      (click)="readOnly || menu.toggle($event)"
+      [disabled]="readOnly"
       icon="pi pi-circle"
       [label]="t('mediumPriority')"
     ></p-button>
@@ -13,7 +14,8 @@
     <p-button
       type="button"
       styleClass="p-button-secondary p-button-text low-priority"
-      (click)="menu.toggle($event)"
+      (click)="readOnly || menu.toggle($event)"
+      [disabled]="readOnly"
       icon="pi pi-chevron-circle-down"
       [label]="t('lowPriority')"
     ></p-button>
@@ -22,7 +24,8 @@
     <p-button
       type="button"
       styleClass="p-button-secondary p-button-text high-priority"
-      (click)="menu.toggle($event)"
+      (click)="readOnly || menu.toggle($event)"
+      [disabled]="readOnly"
       icon="pi pi-chevron-circle-up"
       [label]="t('highPriority')"
     ></p-button>

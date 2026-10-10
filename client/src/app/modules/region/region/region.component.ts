@@ -132,6 +132,12 @@ export class RegionComponent implements OnInit {
         badge: this.tabBadge(region.commentCount),
       },
       {
+        label: this.translocoService.translate(marker('region.statistics')),
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLink: `/topo/statistics`,
+        visible: true,
+      },
+      {
         label: this.translocoService.translate(marker('region.tasks')),
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/moderator-tasks`,

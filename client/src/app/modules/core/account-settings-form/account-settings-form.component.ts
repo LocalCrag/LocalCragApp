@@ -61,6 +61,8 @@ export class AccountSettingsFormComponent implements OnInit {
       notificationDigestFrequency: [null],
       language: [null],
       colorScheme: [null],
+      excludeFromRankings: [null],
+      todoListPrivate: [null],
     });
   }
 
@@ -91,6 +93,8 @@ export class AccountSettingsFormComponent implements OnInit {
         this.accountSettings.notificationDigestFrequency,
       language: this.accountSettings.language,
       colorScheme: this.accountSettings.colorScheme,
+      excludeFromRankings: this.accountSettings.excludeFromRankings,
+      todoListPrivate: this.accountSettings.todoListPrivate,
     });
   }
 
@@ -115,6 +119,11 @@ export class AccountSettingsFormComponent implements OnInit {
       accountSettings.language = this.accountSettingsForm.get('language').value;
       accountSettings.colorScheme =
         this.accountSettingsForm.get('colorScheme').value;
+      accountSettings.excludeFromRankings = this.accountSettingsForm.get(
+        'excludeFromRankings',
+      ).value;
+      accountSettings.todoListPrivate =
+        this.accountSettingsForm.get('todoListPrivate').value;
       this.accountService.updateAccountSettings(accountSettings).subscribe({
         next: () => {
           this.store

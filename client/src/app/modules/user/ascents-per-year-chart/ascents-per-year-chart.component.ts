@@ -14,10 +14,17 @@ Chart.register(ChartDataLabels);
   selector: 'lc-ascents-per-year-chart',
   imports: [TranslocoDirective, ChartModule, Message],
   templateUrl: './ascents-per-year-chart.component.html',
+  styleUrl: './ascents-per-year-chart.component.scss',
 })
 export class AscentsPerYearChartComponent implements OnChanges {
   @Input() ascentsPerYear: Record<string, number> | null = null;
   @Input() barChartColor: string | null = null;
+  /** Overrides the default "ascents per year" dataset label. */
+  @Input() datasetLabel: string | null = null;
+  /** Overrides the empty-state message. */
+  @Input() emptyText: string | null = null;
+  /** Skip the draw animation. Dense charts on the statistics page hitch otherwise. */
+  @Input() animate = true;
 
   public yearChartData: any;
   public yearChartOptions: any;
@@ -46,7 +53,9 @@ export class AscentsPerYearChartComponent implements OnChanges {
       labels: years,
       datasets: [
         {
-          label: this.transloco.translate('user.charts.ascentsPerYear'),
+          label:
+            this.datasetLabel ??
+            this.transloco.translate('user.charts.ascentsPerYear'),
           data: values,
           backgroundColor: this.barChartColor,
           borderWidth: 0,
@@ -55,6 +64,7 @@ export class AscentsPerYearChartComponent implements OnChanges {
     };
 
     this.yearChartOptions = {
+      animation: this.animate ? undefined : false,
       layout: {
         padding: {
           left: 0,

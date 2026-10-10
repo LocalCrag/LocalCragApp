@@ -1,0 +1,266 @@
+:host {
+  display: block;
+}
+
+.section-title {
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0.65rem;
+  border-left: 4px solid var(--p-blue-500);
+
+  &:first-child {
+    margin-top: 0.25rem;
+  }
+
+  &--completion {
+    border-left-color: var(--p-primary-500);
+  }
+
+  &--coverage,
+  &--years,
+  &--grades,
+  &--ratings,
+  &--heatmap {
+    border-left-color: var(--p-blue-500);
+  }
+
+  &--mix,
+  &--lines {
+    border-left-color: var(--p-teal-500);
+  }
+
+  &--wishlist {
+    border-left-color: var(--p-purple-500);
+  }
+
+  &--social {
+    border-left-color: var(--p-orange-500);
+  }
+}
+
+.section-note {
+  margin: 0 0 0.75rem;
+  opacity: 0.8;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  border-radius: var(--p-border-radius-md, 6px);
+  padding: 0.75rem 1rem;
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+}
+
+.stat-grid--social .stat-card {
+  border-left-color: var(--p-orange-500);
+  background: color-mix(
+    in srgb,
+    var(--p-orange-500) 12%,
+    var(--p-content-background)
+  );
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.stat-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.skeleton-gap {
+  height: 0.45rem;
+}
+
+.completion {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem 0.75rem;
+  align-items: center;
+  max-width: 36rem;
+}
+
+.completion-label,
+.completion-percent {
+  font-weight: 600;
+}
+
+.completion p-progressBar {
+  grid-column: 1 / -1;
+}
+
+.chart-wrap {
+  height: 240px;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--p-border-radius-md, 6px);
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+  box-sizing: border-box;
+}
+
+.chart-wrap--pie {
+  height: 320px;
+  max-width: 36rem;
+}
+
+.chart-wrap--mix {
+  border-left-color: var(--p-teal-500);
+  background: color-mix(
+    in srgb,
+    var(--p-teal-500) 12%,
+    var(--p-content-background)
+  );
+}
+
+.chart-wrap p-chart,
+.chart-wrap p-chart > div,
+.chart-box lc-grade-distribution-bar-chart {
+  display: block;
+  height: 100%;
+}
+
+.chart-box {
+  padding: 0.65rem 0.75rem 0.75rem 0.85rem;
+  border-radius: var(--p-border-radius-md, 6px);
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+}
+
+.heatmap {
+  overflow-x: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--p-border-radius-md, 6px);
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+  box-sizing: border-box;
+}
+
+.heatmap-grid {
+  display: grid;
+  // A week number must not widen its column. Every data column stays the same width.
+  grid-template-columns: 2.4rem repeat(53, minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  min-width: 46rem;
+  align-items: center;
+}
+
+.heat-week,
+.heat-weekday {
+  min-width: 0;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.heat-week {
+  overflow: visible;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.heat-weekday {
+  height: 0;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.25rem;
+  line-height: 1;
+}
+
+.heat-weekday--weekend {
+  font-weight: 700;
+  opacity: 1;
+}
+
+.heat-cell {
+  min-width: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 2px;
+}
+
+.heat-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.heat-swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 2px;
+}
+
+.line-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.line-list a {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  align-items: baseline;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-border-radius-md, 6px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.line-list a:hover {
+  background: var(--p-content-hover-background);
+}
+
+.line-name {
+  font-weight: 600;
+}
+
+.line-grade,
+.line-meta {
+  opacity: 0.8;
+}

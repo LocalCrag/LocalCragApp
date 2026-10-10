@@ -200,6 +200,12 @@ export class CragComponent implements OnInit {
         visible: this.hasBlocweather && !isGymMode,
       },
       {
+        label: this.translocoService.translate(marker('crag.statistics')),
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLink: `/topo/${this.crag.slug}/statistics`,
+        visible: true,
+      },
+      {
         label: this.translocoService.translate(marker('crag.tasks')),
         icon: 'pi pi-fw pi-list-check',
         routerLink: `/topo/${this.crag.slug}/moderator-tasks`,

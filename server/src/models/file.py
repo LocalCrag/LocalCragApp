@@ -1,8 +1,17 @@
+import logging
+
 from flask import current_app
+from sqlalchemy import event
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Session
 
 from extensions import db
 from models.base_entity import BaseEntity
+from uploader.file_storage import delete_storage_keys, storage_keys_for_deleted_file
+
+logger = logging.getLogger(__name__)
+
+_PENDING_STORAGE_DELETES = "pending_file_storage_deletes"
 
 
 class File(BaseEntity):
@@ -39,3 +48,36 @@ class File(BaseEntity):
         else:  # S3_ADDRESSING = 'virtual'
             result = "{}://{}.{}/{}".format(protocol, current_app.config["S3_BUCKET"], host, self.filename)
         return result
+
+
+def _pending_storage_deletes(session: Session) -> set[str]:
+    return session.info.setdefault(_PENDING_STORAGE_DELETES, set())
+
+
+@event.listens_for(Session, "before_flush")
+def collect_deleted_file_storage_keys(session: Session, _flush_context, _instances):
+    """Remember storage keys before the DELETE is emitted.
+
+    Objects are removed only after commit, so a rolled-back delete keeps them.
+    Attribute access happens here, while the row still exists.
+    """
+    pending = _pending_storage_deletes(session)
+    for instance in session.deleted:
+        if isinstance(instance, File):
+            pending.update(storage_keys_for_deleted_file(instance.filename))
+
+
+@event.listens_for(Session, "after_commit")
+def delete_committed_file_storage(session: Session):
+    keys = session.info.pop(_PENDING_STORAGE_DELETES, None)
+    if not keys:
+        return
+    try:
+        delete_storage_keys(keys)
+    except Exception:
+        logger.exception("Failed to delete storage objects for removed file rows: %s", sorted(keys))
+
+
+@event.listens_for(Session, "after_rollback")
+def discard_pending_file_storage_deletes(session: Session):
+    session.info.pop(_PENDING_STORAGE_DELETES, None)

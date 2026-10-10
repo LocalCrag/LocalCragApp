@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { map, switchMap } from 'rxjs/operators';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
 
 @Pipe({
   name: 'lineGrade',
@@ -40,22 +41,29 @@ export class LineGradePipe implements PipeTransform, OnDestroy {
 
       if (line) {
         const observable = this.store.select(selectInstanceSettingsState).pipe(
-          map((instanceSettings) => {
+          switchMap((instanceSettings) => {
             const useUserGrade = mode
               ? mode === 'user'
               : instanceSettings.displayUserGrades;
-            return this.scalesService.gradeNameByValue(
-              line?.type,
-              line?.gradeScale,
-              useUserGrade ? line?.userGradeValue : line?.authorGradeValue,
-            );
+            const value = useUserGrade
+              ? line?.userGradeValue
+              : line?.authorGradeValue;
+            return this.scalesService
+              .gradeNameByValue(line?.type, line?.gradeScale, value)
+              .pipe(map((gradeName) => ({ value, gradeName })));
           }),
-          switchMap((gradeNameObservable) => gradeNameObservable),
+          switchMap(({ value, gradeName }) =>
+            withAssumedGradeRange(
+              this.scalesService,
+              line,
+              value,
+              this.translateSpecialGradesService.translate(gradeName),
+            ),
+          ),
         );
 
         this.subscription = observable.subscribe((gradeName) => {
-          this.cachedResult =
-            this.translateSpecialGradesService.translate(gradeName);
+          this.cachedResult = gradeName;
         });
       }
     }

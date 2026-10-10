@@ -57,6 +57,8 @@ class BatchLineArgsSchema(Schema):
 
 class LineArgsSchema(BatchLineArgsSchema):
     faName = fields.Str(required=True, allow_none=True, validate=validate.Length(max=120))
+    assumedGradeMin = fields.Integer(required=False, allow_none=True, load_default=None)
+    assumedGradeMax = fields.Integer(required=False, allow_none=True, load_default=None)
     description = fields.Str(required=True, allow_none=True)
     videos = fields.List(fields.Nested(VideosArgsSchema()), required=True, allow_none=True)
     gradeScale = fields.Str(required=True, allow_none=False, validate=validate.Length(max=120))

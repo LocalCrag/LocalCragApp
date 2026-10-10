@@ -36,6 +36,8 @@ class AscentAndTodoLineSchema(ma.SQLAlchemySchema):
     type = EnumField(LineTypeEnum, by_value=True)
     authorGradeValue = fields.Integer(attribute="author_grade_value")
     userGradeValue = fields.Integer(attribute="user_grade_value")
+    assumedGradeMin = fields.Integer(attribute="assumed_grade_min")
+    assumedGradeMax = fields.Integer(attribute="assumed_grade_max")
     gradeScale = fields.String(attribute="grade_scale")
 
 
@@ -46,6 +48,8 @@ class LineSchemaMin(BaseEntityMinSchema):
     type = EnumField(LineTypeEnum, by_value=True)
     authorGradeValue = fields.Integer(attribute="author_grade_value")
     userGradeValue = fields.Integer(attribute="user_grade_value")
+    assumedGradeMin = fields.Integer(attribute="assumed_grade_min")
+    assumedGradeMax = fields.Integer(attribute="assumed_grade_max")
     gradeScale = fields.String(attribute="grade_scale")
     archived = fields.Boolean()
 
@@ -67,6 +71,8 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     userRating = fields.Integer(attribute="user_rating")
     authorGradeValue = fields.Integer(attribute="author_grade_value")
     userGradeValue = fields.Integer(attribute="user_grade_value")
+    assumedGradeMin = fields.Integer(attribute="assumed_grade_min")
+    assumedGradeMax = fields.Integer(attribute="assumed_grade_max")
     gradeScale = fields.String(attribute="grade_scale")
     faYear = fields.Integer(attribute="fa_year")
     faDate = fields.Date(attribute="fa_date")

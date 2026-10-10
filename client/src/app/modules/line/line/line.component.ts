@@ -17,7 +17,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, switchMap, take } from 'rxjs/operators';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -40,6 +40,8 @@ import {
 } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
 import { RegionService } from '../../../services/crud/region.service';
+import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 
 @Component({
   selector: 'lc-line',
@@ -74,6 +76,7 @@ export class LineComponent implements OnInit {
   private regionService = inject(RegionService);
 
   protected scalesService = inject(ScalesService);
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
 
   ngOnInit() {
     this.route.paramMap
@@ -147,11 +150,17 @@ export class LineComponent implements OnInit {
               : line.authorGradeValue;
             this.scalesService
               .gradeNameByValue(line.type, line.gradeScale, gradeValue)
-              .subscribe((gradeName) => {
-                const displayGrade =
-                  gradeValue > 0
-                    ? gradeName
-                    : this.translocoService.translate(gradeName);
+              .pipe(
+                switchMap((gradeName) =>
+                  withAssumedGradeRange(
+                    this.scalesService,
+                    line,
+                    gradeValue,
+                    this.translateSpecialGradesService.translate(gradeName),
+                  ),
+                ),
+              )
+              .subscribe((displayGrade) => {
                 this.pageTitleService.setPortraitTitle(
                   `${line.name} ${displayGrade}`,
                   image,
@@ -238,6 +247,12 @@ export class LineComponent implements OnInit {
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/comments`,
         visible: true,
         badge: this.tabBadge(this.line.commentCount),
+      },
+      {
+        label: this.translocoService.translate(marker('line.statistics')),
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/statistics`,
+        visible: true,
       },
       {
         label: this.translocoService.translate(marker('line.tasks')),

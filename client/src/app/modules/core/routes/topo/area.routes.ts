@@ -57,6 +57,15 @@ export const topoAreaRoutes: Routes = [
           data: { scopeType: ObjectType.Area },
         },
       ),
+      lazyOutletRoute(
+        'statistics',
+        () =>
+          import('../../../statistics/topo-statistics/topo-statistics.component').then(
+            (m) => m.TopoStatisticsComponent,
+          ),
+        'areaContent',
+        { data: { objectType: ObjectType.Area } },
+      ),
       outletRoute('ascents', AreaAscentsComponent, 'areaContent'),
       lazyOutletRoute(
         'weather',

@@ -114,20 +114,33 @@ SET
     rank_total_count = ranked.rank_total_count
 FROM (
     SELECT
-        id,
-        RANK() OVER (
-            PARTITION BY type, secret, crag_id, sector_id
-            ORDER BY COALESCE(top_10, 0) DESC
-        ) AS rank_top_10,
-        RANK() OVER (
-            PARTITION BY type, secret, crag_id, sector_id
-            ORDER BY COALESCE(top_50, 0) DESC
-        ) AS rank_top_50,
-        RANK() OVER (
-            PARTITION BY type, secret, crag_id, sector_id
-            ORDER BY COALESCE(total_count, 0) DESC
-        ) AS rank_total_count
+        rankings.id,
+        CASE
+            WHEN account_settings.exclude_from_rankings THEN NULL
+            ELSE RANK() OVER (
+                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                    account_settings.exclude_from_rankings
+                ORDER BY COALESCE(rankings.top_10, 0) DESC
+            )
+        END AS rank_top_10,
+        CASE
+            WHEN account_settings.exclude_from_rankings THEN NULL
+            ELSE RANK() OVER (
+                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                    account_settings.exclude_from_rankings
+                ORDER BY COALESCE(rankings.top_50, 0) DESC
+            )
+        END AS rank_top_50,
+        CASE
+            WHEN account_settings.exclude_from_rankings THEN NULL
+            ELSE RANK() OVER (
+                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                    account_settings.exclude_from_rankings
+                ORDER BY COALESCE(rankings.total_count, 0) DESC
+            )
+        END AS rank_total_count
     FROM rankings
+    JOIN account_settings ON account_settings.user_id = rankings.user_id
 ) AS ranked
 WHERE r.id = ranked.id
 """

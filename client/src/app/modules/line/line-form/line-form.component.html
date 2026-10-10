@@ -160,6 +160,85 @@
             />
           }
         </div>
+        @if (showAssumedGradeBounds) {
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <span class="form-label">{{ t("assumedGradeBoundsLabel") }}</span>
+            <div class="flex items-end gap-2">
+              <div class="flex min-w-0 flex-1 flex-col gap-2">
+                <label class="form-label" for="assumed-grade-min">{{
+                  t("assumedGradeMinLabel")
+                }}</label>
+                <p-select
+                  formControlName="assumedGradeMin"
+                  id="assumed-grade-min"
+                  [options]="assumedGradeMinOptions"
+                  data-cy="assumed-grade-min"
+                  optionLabel="name"
+                  optionValue="value"
+                  [showClear]="true"
+                  placeholder="{{ t('assumedGradeMinPlaceholder') }}"
+                  lcFormControl
+                  styleClass="w-full"
+                >
+                  <ng-template let-grade #item>
+                    <div>{{ grade.name | translateSpecialGrades }}</div>
+                  </ng-template>
+                  <ng-template let-grade #selectedItem>
+                    {{ grade.name | translateSpecialGrades }}
+                  </ng-template>
+                </p-select>
+              </div>
+              <div class="flex min-w-0 flex-1 flex-col gap-2">
+                <label class="form-label" for="assumed-grade-max">{{
+                  t("assumedGradeMaxLabel")
+                }}</label>
+                <p-select
+                  formControlName="assumedGradeMax"
+                  id="assumed-grade-max"
+                  [options]="assumedGradeMaxOptions"
+                  data-cy="assumed-grade-max"
+                  optionLabel="name"
+                  optionValue="value"
+                  [showClear]="true"
+                  placeholder="{{ t('assumedGradeMaxPlaceholder') }}"
+                  lcFormControl
+                  styleClass="w-full"
+                >
+                  <ng-template let-grade #item>
+                    <div>{{ grade.name | translateSpecialGrades }}</div>
+                  </ng-template>
+                  <ng-template let-grade #selectedItem>
+                    {{ grade.name | translateSpecialGrades }}
+                  </ng-template>
+                </p-select>
+              </div>
+              <p-button
+                type="button"
+                icon="pi pi-undo"
+                ariaLabel="{{ t('assumedGradeBoundsReset') }}"
+                (click)="resetAssumedGradeBounds()"
+                class="shrink-0"
+                styleClass="p-button-secondary"
+                data-cy="assumed-grade-reset"
+                [disabled]="
+                  lineForm.get('assumedGradeMin').value === null &&
+                  lineForm.get('assumedGradeMax').value === null
+                "
+              ></p-button>
+            </div>
+            <small class="text-sm text-muted-color">{{
+              t("assumedGradeBoundsHint")
+            }}</small>
+            @if (lineForm.hasError("assumedGradeIncomplete")) {
+              <small class="lc-error">{{
+                t("assumedGradeBoundsRequired")
+              }}</small>
+            }
+            @if (lineForm.hasError("assumedGradeOrder")) {
+              <small class="lc-error">{{ t("assumedGradeBoundsOrder") }}</small>
+            }
+          </div>
+        }
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="starting-position">{{
             t("startingPositionLabel")

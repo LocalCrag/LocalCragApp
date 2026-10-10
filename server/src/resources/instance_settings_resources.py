@@ -17,6 +17,9 @@ from models.sector import Sector
 from scheduler_jobs.closure_materialization import (
     reschedule_closure_materialization_job,
 )
+from scheduler_jobs.delete_unattached_files import (
+    reschedule_unattached_file_cleanup_job,
+)
 from util.auth_session import session_required
 from util.scheduled_closure import request_closure_materialization
 from webargs_schemas.instance_settings_args import (
@@ -164,7 +167,9 @@ def update_instance_settings_from_payload(instance_settings: InstanceSettings, i
     db.session.commit()
 
     if previous_timezone != instance_settings.timezone:
-        reschedule_closure_materialization_job(current_app._get_current_object())
+        app = current_app._get_current_object()
+        reschedule_closure_materialization_job(app)
+        reschedule_unattached_file_cleanup_job(app)
         request_closure_materialization()
 
 
