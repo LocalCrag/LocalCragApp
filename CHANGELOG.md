@@ -1,3 +1,18 @@
+# [1.59.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.58.0...v1.59.0) (2026-10-10)
+
+
+### Bug Fixes
+
+* **ascents:** update sorting logic for hardest ascents to prioritize newest ascent date ([#1295](https://github.com/LocalCrag/LocalCragApp/issues/1295)) ([2ecb312](https://github.com/LocalCrag/LocalCragApp/commit/2ecb312a7295e8d8e2d10eb51a5dee2f8c9d5bcb)), closes [#1293](https://github.com/LocalCrag/LocalCragApp/issues/1293)
+
+
+### Features
+
+* **account:** add privacy settings ([#1298](https://github.com/LocalCrag/LocalCragApp/issues/1298)) ([fae3e74](https://github.com/LocalCrag/LocalCragApp/commit/fae3e747ccc1a6194962d22eda3cb35e0f382389)), closes [#411](https://github.com/LocalCrag/LocalCragApp/issues/411)
+* **files:** delete stored images when file rows become unused ([#1294](https://github.com/LocalCrag/LocalCragApp/issues/1294)) ([7bbbf09](https://github.com/LocalCrag/LocalCragApp/commit/7bbbf095c120e8bc07148dff394474bf09e6ba7f)), closes [#103](https://github.com/LocalCrag/LocalCragApp/issues/103)
+* **topo:** add topo statistics pages ([#1297](https://github.com/LocalCrag/LocalCragApp/issues/1297)) ([07522ff](https://github.com/LocalCrag/LocalCragApp/commit/07522ff6acfe7d5fb8362e350247c9b1e8dc69c4)), closes [#1161](https://github.com/LocalCrag/LocalCragApp/issues/1161)
+* **topo:** make it possible to attach an assumed grade grange to projects ([#1296](https://github.com/LocalCrag/LocalCragApp/issues/1296)) ([093d756](https://github.com/LocalCrag/LocalCragApp/commit/093d7560ce1e1de3548aa4c85d06bec26883ff57)), closes [#433](https://github.com/LocalCrag/LocalCragApp/issues/433)
+
 # [1.58.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.57.1...v1.58.0) (2026-09-22)
 
 
