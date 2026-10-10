@@ -6,6 +6,7 @@ from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.ranking_schema import ranking_schema
+from models.account_settings import AccountSettings
 from models.enums.line_type_enum import LineTypeEnum
 from models.ranking import Ranking
 from util.secret_service import SecretService
@@ -31,6 +32,8 @@ class GetRanking(MethodView):
 
         query = db.session.query(Ranking)
         query = query.options(joinedload(Ranking.user))
+        query = query.join(AccountSettings, AccountSettings.user_id == Ranking.user_id)
+        query = query.filter(AccountSettings.exclude_from_rankings.is_(False))
         query = query.filter(Ranking.type == line_type)
         query = query.filter(Ranking.crag_id == crag_id)
         query = query.filter(Ranking.sector_id == sector_id)

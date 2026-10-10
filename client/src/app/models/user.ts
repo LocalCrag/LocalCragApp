@@ -23,6 +23,7 @@ export class User extends HasSlug(AbstractModel) {
   avatar: File;
   accountLanguage: LanguageCode;
   accountColorScheme: ColorScheme;
+  todoListPrivate: boolean;
 
   fullname: string;
   routerLink: string;
@@ -53,6 +54,7 @@ export class User extends HasSlug(AbstractModel) {
     user.routerLink = `/users/${user.slug}`;
     user.accountLanguage = payload.accountLanguage;
     user.accountColorScheme = payload.accountColorScheme ?? 'system';
+    user.todoListPrivate = payload.todoListPrivate === true;
     return user;
   }
 

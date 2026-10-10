@@ -66,6 +66,7 @@
   "todos.priorityButton.lowPriority": "Lage prioriteit",
   "todos.priorityButton.highPriority": "Hoge prioriteit",
   "todos.todoList.noTodosFoundMessage": "Geen todo's gevonden.",
+  "todos.todoList.privateListMessage": "Deze todolijst is privé.",
   "todos.todoList.orderByLabel": "Sorteren op",
   "todos.todoList.filterLabel": "Filteren op",
   "todos.todoList.lineType": "Lijntype",
@@ -581,6 +582,11 @@
   "accountSettingsForm.colorSchemeSystem": "Systeemstandaard",
   "accountSettingsForm.colorSchemeLight": "Licht",
   "accountSettingsForm.colorSchemeDark": "Donker",
+  "accountSettingsForm.privacyLabel": "Privacy",
+  "accountSettingsForm.excludeFromRankings": "Uitsluiten van ranglijsten",
+  "accountSettingsForm.excludeFromRankingsDescription": "Verberg je naam in crag-, sector- en globale ranglijsten.",
+  "accountSettingsForm.todoListPrivate": "Privé-todolijst",
+  "accountSettingsForm.todoListPrivateDescription": "Alleen jij kunt je todolijst zien.",
   "accountSettingsForm.notificationsLabel": "E-mailmeldingen",
   "accountSettingsForm.commentReplyMailsEnabled": "Opmerkingen",
   "accountSettingsForm.commentReplyMailsEnabledDescription": "Ontvang meldingen wanneer iemand op je opmerkingen reageert.",
@@ -919,6 +925,7 @@
   "user.ascents": "Beklimmingen",
   "user.charts": "Statistieken",
   "user.gallery": "Galerij",
+  "user.todos": "Todo's",
   "ascents": "Beklimmingen",
   "ALL": "Alle",
   "sortAscending": "Oplopend",
@@ -1386,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Bericht opgeslagen",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Het beheerdersbericht is succesvol opgeslagen.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Bericht verwijderd",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Het beheerdersbericht is succesvol verwijderd."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Het beheerdersbericht is succesvol verwijderd.",
+  "releaseNotes.notes.privacySettings_title": "Nieuwe privacy-instellingen",
+  "releaseNotes.notes.privacySettings": "Je kunt je tot nu toe privé-todolijst nu openbaar maken en anderen laten zien wat er binnenkort op je programma staat. Je kunt jezelf ook uit de ranglijsten halen als je daar geen deel van wilt uitmaken.",
+  "releaseNotes.notes.topoStatistics_title": "Nieuwe topostatistieken",
+  "releaseNotes.notes.topoStatistics": "Elk klimgebied, elke sector, elk gebied enzovoort heeft nu een nieuw statistiekentabblad. Daar kun je bijvoorbeeld zien in welk jaar de meeste eerste beklimmingen in het klimgebied zijn gedaan, of welke dagen bijzonder populair zijn."
 }

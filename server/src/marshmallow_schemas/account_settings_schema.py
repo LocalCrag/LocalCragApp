@@ -12,6 +12,8 @@ class AccountSettingsSchema(ma.SQLAlchemySchema):
     notificationDigestFrequency = fields.Function(lambda obj: obj.notification_digest_frequency.value)
     language = fields.String(attribute="language")
     colorScheme = fields.Function(lambda obj: obj.color_scheme.value)
+    excludeFromRankings = fields.Boolean(attribute="exclude_from_rankings")
+    todoListPrivate = fields.Boolean(attribute="todo_list_private")
 
 
 account_settings_schema = AccountSettingsSchema()

@@ -271,3 +271,44 @@ def test_assign_competition_ranks_persists_shared_ranks(client):
     assert by_slug["admin-admin"]["rankTop10"] == 1
     assert by_slug["member-member"]["rankTop10"] == 1
     assert by_slug["user-user"]["rankTop10"] == 3
+
+
+def test_excluded_user_does_not_take_a_ranking_slot(client):
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+    member = User.find_by_email("member@localcrag.invalid.org")
+    other = User.find_by_email("user@localcrag.invalid.org")
+    other.account_settings.exclude_from_rankings = True
+
+    for user, top_10 in ((member, 22), (other, 30)):
+        ranking = Ranking()
+        ranking.user_id = user.id
+        ranking.top_10 = top_10
+        ranking.top_50 = top_10
+        ranking.top_values = [top_10]
+        ranking.total_count = 1
+        ranking.type = LineTypeEnum.BOULDER
+        ranking.secret = False
+        db.session.add(ranking)
+    db.session.commit()
+
+    assign_competition_ranks()
+
+    other_rank = Ranking.query.filter(
+        Ranking.user_id == other.id,
+        Ranking.crag_id.is_(None),
+        Ranking.sector_id.is_(None),
+        Ranking.secret.is_(False),
+        Ranking.type == LineTypeEnum.BOULDER,
+    ).one()
+    assert other_rank.rank_top_10 is None
+
+    rv = client.get("/api/ranking?line_type=BOULDER")
+    by_slug = {row["user"]["slug"]: row for row in rv.json}
+    assert "user-user" not in by_slug
+    # Other would be first if counted. Admin and member stay tied for first.
+    assert by_slug["admin-admin"]["rankTop10"] == 1
+    assert by_slug["member-member"]["rankTop10"] == 1
+
+    stats = client.get(f"/api/users/{other.slug}/statistics").json
+    assert stats["globalRankByLineType"]["BOULDER"] is None
+    assert client.get(f"/api/users/{admin.slug}/statistics").json["globalRankByLineType"]["BOULDER"] == 1

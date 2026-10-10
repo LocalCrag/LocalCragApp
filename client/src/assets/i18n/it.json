@@ -66,6 +66,7 @@
   "todos.priorityButton.lowPriority": "Priorità bassa",
   "todos.priorityButton.highPriority": "Priorità alta",
   "todos.todoList.noTodosFoundMessage": "Nessun Progetto trovato.",
+  "todos.todoList.privateListMessage": "Questa lista è privata.",
   "todos.todoList.orderByLabel": "Ordina per",
   "todos.todoList.filterLabel": "Filtra per",
   "todos.todoList.lineType": "Tipo di problema",
@@ -581,6 +582,11 @@
   "accountSettingsForm.colorSchemeSystem": "Predefinito di sistema",
   "accountSettingsForm.colorSchemeLight": "Chiaro",
   "accountSettingsForm.colorSchemeDark": "Scuro",
+  "accountSettingsForm.privacyLabel": "Privacy",
+  "accountSettingsForm.excludeFromRankings": "Escludi dalle classifiche",
+  "accountSettingsForm.excludeFromRankingsDescription": "Nascondi il tuo nome dalle classifiche di falesia, settore e globali.",
+  "accountSettingsForm.todoListPrivate": "Lista cose da fare privata",
+  "accountSettingsForm.todoListPrivateDescription": "Solo tu puoi vedere la tua lista.",
   "accountSettingsForm.notificationsLabel": "Notifiche email",
   "accountSettingsForm.commentReplyMailsEnabled": "Commenti",
   "accountSettingsForm.commentReplyMailsEnabledDescription": "Ricevi una notifica quando qualcuno risponde ai tuoi commenti.",
@@ -919,6 +925,7 @@
   "user.ascents": "Ripetizioni",
   "user.charts": "Statistiche",
   "user.gallery": "Galleria",
+  "user.todos": "Progetti",
   "ascents": "Ripetizioni",
   "ALL": "Tutti",
   "sortAscending": "Ascendente",
@@ -1386,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Messaggio salvato",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Il messaggio admin è stato salvato correttamente.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Messaggio eliminato",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Il messaggio admin è stato eliminato correttamente."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Il messaggio admin è stato eliminato correttamente.",
+  "releaseNotes.notes.privacySettings_title": "Nuove impostazioni sulla privacy",
+  "releaseNotes.notes.privacySettings": "Ora puoi rendere pubblica la tua lista cose da fare, finora privata, e mostrare agli altri cosa hai in programma di scalare. Puoi anche escluderti dalle classifiche se non vuoi farne parte.",
+  "releaseNotes.notes.topoStatistics_title": "Nuove statistiche del topo",
+  "releaseNotes.notes.topoStatistics": "Ogni zona, settore, area e così via ha ora una nuova scheda Statistiche. Qui puoi vedere, ad esempio, in quale anno sono state fatte più prime salite nella zona, o quali giorni sono particolarmente frequentati."
 }

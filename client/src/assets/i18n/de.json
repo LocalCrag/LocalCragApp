@@ -66,6 +66,7 @@
   "todos.priorityButton.lowPriority": "Niedrige Priorität",
   "todos.priorityButton.highPriority": "Hohe Priorität",
   "todos.todoList.noTodosFoundMessage": "Keine Todos gefunden.",
+  "todos.todoList.privateListMessage": "Diese To-do-Liste ist privat.",
   "todos.todoList.orderByLabel": "Sortieren nach",
   "todos.todoList.filterLabel": "Filtern nach",
   "todos.todoList.lineType": "Linienart",
@@ -581,6 +582,11 @@
   "accountSettingsForm.colorSchemeSystem": "Systemstandard",
   "accountSettingsForm.colorSchemeLight": "Hell",
   "accountSettingsForm.colorSchemeDark": "Dunkel",
+  "accountSettingsForm.privacyLabel": "Privatsphäre",
+  "accountSettingsForm.excludeFromRankings": "Aus Ranglisten ausschließen",
+  "accountSettingsForm.excludeFromRankingsDescription": "Deinen Namen in Gebiets-, Sektor- und globalen Ranglisten ausblenden.",
+  "accountSettingsForm.todoListPrivate": "Private To-do-Liste",
+  "accountSettingsForm.todoListPrivateDescription": "Nur du kannst deine To-do-Liste sehen.",
   "accountSettingsForm.notificationsLabel": "E-Mail-Benachrichtigungen",
   "accountSettingsForm.commentReplyMailsEnabled": "Kommentare",
   "accountSettingsForm.commentReplyMailsEnabledDescription": "Benachrichtigung bei Antworten auf deine Kommentare.",
@@ -919,6 +925,7 @@
   "user.ascents": "Begehungen",
   "user.charts": "Statistiken",
   "user.gallery": "Galerie",
+  "user.todos": "Todos",
   "ascents": "Begehungen",
   "ALL": "Alle",
   "sortAscending": "Aufsteigend",
@@ -1386,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Nachricht gespeichert",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gespeichert.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Nachricht gelöscht",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gelöscht."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gelöscht.",
+  "releaseNotes.notes.privacySettings_title": "Neue Privatsphäreeinstellungen",
+  "releaseNotes.notes.privacySettings": "Ihr könnt nun eure bisher private Todo Liste öffentlich schalten und so anderen zeigen, was bei euch demnächst auf dem Programm steht! Außerdem ist es möglich, euren Nutzer aus den Rankings zu entfernen, falls ihr kein Teil davon sein wollt.",
+  "releaseNotes.notes.topoStatistics_title": "Neue Topo Statistiken",
+  "releaseNotes.notes.topoStatistics": "Jedes Gebiet / Sektor / Bereich etc hat nun einen neuen Statistik-Tab. Hier könnt ihr z.B. sehen, in welchem Jahr die meisten Erstbegehungen im Gebiet gemacht wurden oder welche Tage besonders beliebt sind."
 }

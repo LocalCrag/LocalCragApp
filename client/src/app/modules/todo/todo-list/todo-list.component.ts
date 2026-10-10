@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  Input,
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
@@ -11,6 +12,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import {
   beginPaginatedPageLoad,
   completePaginatedPageLoad,
+  failPaginatedPageLoad,
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
@@ -85,7 +87,11 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent implements OnInit, PaginatedListView {
+  @Input() userSlug: string | null = null;
+  @Input() readOnly = false;
+
   public loadingStates = LoadingState;
+  public listPrivate = false;
   public loading: LoadingState = LoadingState.DEFAULT;
   public todos: Todo[];
   public ref: DynamicDialogRef | undefined;
@@ -189,6 +195,9 @@ export class TodoListComponent implements OnInit, PaginatedListView {
   }
 
   private setPageTitle(): void {
+    if (this.userSlug) {
+      return;
+    }
     this.pageTitleService.setTitle(
       this.translocoService.translate(marker('todos.todoList.todos')),
     );
@@ -396,6 +405,7 @@ export class TodoListComponent implements OnInit, PaginatedListView {
   }
 
   loadFirstPage() {
+    this.listPrivate = false;
     loadFirstPaginatedPage(
       this,
       () => this.loadNextPage(),
@@ -438,10 +448,24 @@ export class TodoListComponent implements OnInit, PaginatedListView {
     if (this.priorityFilterKey.value !== null) {
       params.priority = this.priorityFilterKey.value;
     }
-    this.todosService.getTodos(params).subscribe((todos) => {
-      this.todos.push(...todos.items);
-      completePaginatedPageLoad(this, todos.hasNext);
-      this.cdr.detectChanges();
+    if (this.userSlug) {
+      params.user_slug = this.userSlug;
+    }
+    this.todosService.getTodos(params).subscribe({
+      next: (todos) => {
+        this.todos.push(...todos.items);
+        completePaginatedPageLoad(this, todos.hasNext);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        failPaginatedPageLoad(this);
+        this.hasNextPage = false;
+        this.listPrivate = err?.status === 401;
+        if (this.listPrivate) {
+          this.todos = [];
+        }
+        this.cdr.detectChanges();
+      },
     });
   }
 

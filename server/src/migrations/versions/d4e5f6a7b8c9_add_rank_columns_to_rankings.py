@@ -18,6 +18,12 @@ depends_on = None
 
 
 def upgrade():
+    # The shared rank SQL reads this column. Databases that already passed this
+    # revision get it from the later privacy migration instead.
+    op.add_column(
+        "account_settings",
+        sa.Column("exclude_from_rankings", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
     with op.batch_alter_table("rankings", schema=None) as batch_op:
         batch_op.add_column(sa.Column("rank_top_10", sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column("rank_top_50", sa.Integer(), nullable=True))
@@ -33,3 +39,6 @@ def downgrade():
         batch_op.drop_column("rank_total_count")
         batch_op.drop_column("rank_top_50")
         batch_op.drop_column("rank_top_10")
+    columns = sa.inspect(op.get_bind()).get_columns("account_settings")
+    if any(column["name"] == "exclude_from_rankings" for column in columns):
+        op.drop_column("account_settings", "exclude_from_rankings")

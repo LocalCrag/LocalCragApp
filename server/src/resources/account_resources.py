@@ -21,6 +21,7 @@ from util.auth_session import (
     get_session_identity,
     session_required,
 )
+from util.build_rankings import assign_competition_ranks
 from webargs_schemas.account_settings_args import account_settings_args
 from webargs_schemas.app_alert_dismissal_args import mark_app_alert_dismissed_args
 from webargs_schemas.rules_read_status_args import mark_rules_read_args
@@ -57,6 +58,7 @@ class UpdateAccountSettings(MethodView):
         user = User.find_by_email(get_session_identity())
         data = parser.parse(account_settings_args)
         settings = user.account_settings
+        was_excluded_from_rankings = settings.exclude_from_rankings
         settings.comment_reply_mails_enabled = data["commentReplyMailsEnabled"]
         settings.reaction_notifications_enabled = data["reactionNotificationsEnabled"]
         settings.system_notifications_enabled = data["systemNotificationsEnabled"]
@@ -65,8 +67,12 @@ class UpdateAccountSettings(MethodView):
         settings.notification_digest_frequency = NotificationDigestFrequencyEnum(data["notificationDigestFrequency"])
         settings.language = data["language"]
         settings.color_scheme = ColorSchemeEnum(data["colorScheme"])
+        settings.exclude_from_rankings = data["excludeFromRankings"]
+        settings.todo_list_private = data["todoListPrivate"]
         db.session.add(settings)
         db.session.commit()
+        if was_excluded_from_rankings != settings.exclude_from_rankings:
+            assign_competition_ranks()
         return account_settings_schema.dump(settings), 200
 
 

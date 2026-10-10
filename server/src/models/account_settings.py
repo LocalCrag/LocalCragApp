@@ -50,4 +50,8 @@ class AccountSettings(db.Model):
         default=ColorSchemeEnum.SYSTEM,
         server_default=ColorSchemeEnum.SYSTEM.value,
     )
+    # Omit this user from public rankings and from competition-rank assignment.
+    exclude_from_rankings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    # Only the owner can view the to-do list.
+    todo_list_private = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     user = db.relationship("User", back_populates="account_settings")
