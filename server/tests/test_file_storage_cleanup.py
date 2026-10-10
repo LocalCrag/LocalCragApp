@@ -1,8 +1,12 @@
+import base64
+import hashlib
+
 from botocore.exceptions import ClientError
 from flask import current_app
 
 from extensions import db
 from models.file import File
+from uploader.do_s3 import get_s3_client
 from uploader.file_storage import (
     delete_unreferenced_storage_objects,
     referenced_storage_keys,
@@ -132,3 +136,26 @@ def test_orphan_cleanup_deletes_unreferenced_objects_only(s3_mock):
         assert _exists(s3_mock, key)
     assert not _exists(s3_mock, thumbnail_storage_key(filename, "xl"))
     assert not _exists(s3_mock, "orphan-not-in-db.jpg")
+
+
+def test_delete_objects_sends_content_md5(s3_mock):
+    client = get_s3_client()
+    captured = {}
+
+    def capture(request, **kwargs):
+        captured["md5"] = request.headers.get("Content-MD5")
+        captured["crc"] = request.headers.get("x-amz-checksum-crc32")
+        captured["body"] = request.body
+
+    client.meta.events.register("before-sign.s3.DeleteObjects", capture)
+    client.delete_objects(
+        Bucket=_bucket(),
+        Delete={"Objects": [{"Key": "orphan.jpeg"}], "Quiet": True},
+    )
+
+    body = captured["body"]
+    if isinstance(body, str):
+        body = body.encode("utf-8")
+    expected = base64.b64encode(hashlib.md5(body, usedforsecurity=False).digest()).decode("ascii")
+    assert captured["md5"] == expected
+    assert captured["crc"] is None
