@@ -1393,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Nachricht gespeichert",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gespeichert.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Nachricht gelöscht",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gelöscht."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Die Admin-Nachricht wurde erfolgreich gelöscht.",
+  "releaseNotes.notes.privacySettings_title": "Neue Privatsphäreeinstellungen",
+  "releaseNotes.notes.privacySettings": "Ihr könnt nun eure bisher private Todo Liste öffentlich schalten und so anderen zeigen, was bei euch demnächst auf dem Programm steht! Außerdem ist es möglich, euren Nutzer aus den Rankings zu entfernen, falls ihr kein Teil davon sein wollt.",
+  "releaseNotes.notes.topoStatistics_title": "Neue Topo Statistiken",
+  "releaseNotes.notes.topoStatistics": "Jedes Gebiet / Sektor / Bereich etc hat nun einen neuen Statistik-Tab. Hier könnt ihr z.B. sehen, in welchem Jahr die meisten Erstbegehungen im Gebiet gemacht wurden oder welche Tage besonders beliebt sind."
 }

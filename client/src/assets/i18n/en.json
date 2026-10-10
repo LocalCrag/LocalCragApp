@@ -1393,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Message saved",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "The admin message was saved successfully.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Message deleted",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "The admin message was deleted successfully."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "The admin message was deleted successfully.",
+  "releaseNotes.notes.privacySettings_title": "New privacy settings",
+  "releaseNotes.notes.privacySettings": "You can now make your previously private to-do list public and show others what you plan to climb next. You can also remove yourself from the rankings if you do not want to be part of them.",
+  "releaseNotes.notes.topoStatistics_title": "New topo statistics",
+  "releaseNotes.notes.topoStatistics": "Every crag, sector, area, and so on now has a new statistics tab. There you can see, for example, in which year the most first ascents in the crag were made, or which days are especially popular."
 }

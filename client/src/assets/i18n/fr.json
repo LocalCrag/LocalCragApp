@@ -1393,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Message enregistré",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Le message admin a été enregistré avec succès.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Message supprimé",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Le message admin a été supprimé avec succès."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Le message admin a été supprimé avec succès.",
+  "releaseNotes.notes.privacySettings_title": "Nouveaux paramètres de confidentialité",
+  "releaseNotes.notes.privacySettings": "Vous pouvez désormais rendre publique votre liste de tâches jusqu'ici privée et montrer aux autres ce que vous comptez grimper prochainement. Vous pouvez aussi vous retirer des classements si vous ne souhaitez pas en faire partie.",
+  "releaseNotes.notes.topoStatistics_title": "Nouvelles statistiques du topo",
+  "releaseNotes.notes.topoStatistics": "Chaque falaise, secteur, zone, etc. dispose désormais d'un nouvel onglet Statistiques. Vous pouvez y voir, par exemple, en quelle année le plus de premières ascensions ont été réalisées sur le site, ou quels jours sont particulièrement fréquentés."
 }

@@ -14,4 +14,8 @@ export const RELEASE_NOTE_TRANSLOCO_KEYS_FOR_EXTRACT = [
   marker('releaseNotes.notes.lineFilters_title'),
   marker('releaseNotes.notes.newOrderOptions'),
   marker('releaseNotes.notes.newOrderOptions_title'),
+  marker('releaseNotes.notes.privacySettings'),
+  marker('releaseNotes.notes.privacySettings_title'),
+  marker('releaseNotes.notes.topoStatistics'),
+  marker('releaseNotes.notes.topoStatistics_title'),
 ] as const;

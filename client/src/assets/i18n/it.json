@@ -1393,5 +1393,9 @@
   "notifications.ADMIN_MESSAGE_UPDATED_TITLE": "Messaggio salvato",
   "notifications.ADMIN_MESSAGE_UPDATED_MESSAGE": "Il messaggio admin è stato salvato correttamente.",
   "notifications.ADMIN_MESSAGE_DELETED_TITLE": "Messaggio eliminato",
-  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Il messaggio admin è stato eliminato correttamente."
+  "notifications.ADMIN_MESSAGE_DELETED_MESSAGE": "Il messaggio admin è stato eliminato correttamente.",
+  "releaseNotes.notes.privacySettings_title": "Nuove impostazioni sulla privacy",
+  "releaseNotes.notes.privacySettings": "Ora puoi rendere pubblica la tua lista cose da fare, finora privata, e mostrare agli altri cosa hai in programma di scalare. Puoi anche escluderti dalle classifiche se non vuoi farne parte.",
+  "releaseNotes.notes.topoStatistics_title": "Nuove statistiche del topo",
+  "releaseNotes.notes.topoStatistics": "Ogni zona, settore, area e così via ha ora una nuova scheda Statistiche. Qui puoi vedere, ad esempio, in quale anno sono state fatte più prime salite nella zona, o quali giorni sono particolarmente frequentati."
 }
