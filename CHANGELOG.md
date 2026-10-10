@@ -1,3 +1,10 @@
+# [1.60.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.59.0...v1.60.0) (2026-10-10)
+
+
+### Features
+
+* **s3:** add Content-MD5 header to DeleteObjects requests ([#1299](https://github.com/LocalCrag/LocalCragApp/issues/1299)) ([7d85f8c](https://github.com/LocalCrag/LocalCragApp/commit/7d85f8c56c7b7c9ac2eed261d602bae332b2f56d))
+
 # [1.59.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.58.0...v1.59.0) (2026-10-10)
 
 
