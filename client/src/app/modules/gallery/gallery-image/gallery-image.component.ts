@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
-import { ImageModule } from 'primeng/image';
 
 import { TagComponent } from '../../shared/components/tag/tag.component';
 import { ButtonModule } from 'primeng/button';
@@ -32,7 +31,6 @@ import { galleryImageAspectRatio } from '../../../utility/gallery-masonry';
   selector: 'lc-gallery-image',
   imports: [
     CardModule,
-    ImageModule,
     TagComponent,
     ButtonModule,
     ConfirmPopupModule,
@@ -49,6 +47,7 @@ export class GalleryImageComponent implements OnInit {
 
   @Output() delete: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() edit: EventEmitter<null> = new EventEmitter<null>();
+  @Output() preview = new EventEmitter<void>();
 
   public speedDialItems: MenuItem[] = [];
   public loggedInUser: User;

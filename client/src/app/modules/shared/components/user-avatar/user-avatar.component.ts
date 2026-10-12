@@ -17,8 +17,8 @@ import {
  * Renders a user avatar using one of three template branches:
  *
  * 1. `p-image` (preview) — when `[preview]` is true and the user has an avatar file.
- *    PrimeNG Avatar has no fullscreen preview; `p-image` provides the same click-to-zoom
- *    behaviour as gallery images. Both `[src]` and `[previewImageSrc]` are set to
+ *    PrimeNG Avatar has no fullscreen preview; `p-image` provides click-to-zoom.
+ *    Both `[src]` and `[previewImageSrc]` are set to
  *    `thumbnailXL`: the former for the inline circle, the latter for the fullscreen overlay
  *    (PrimeNG falls back to `[src]` when `[previewImageSrc]` is omitted).
  *

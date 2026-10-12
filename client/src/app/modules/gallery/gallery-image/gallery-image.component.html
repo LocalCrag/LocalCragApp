@@ -2,15 +2,17 @@
   <p-card styleClass="gallery-image-card">
     <ng-template #header>
       <div class="image-container" [style.aspect-ratio]="aspectRatio()">
-        <p-image
-          [src]="image.image.thumbnailM"
-          [preview]="true"
-          [previewImageSrcSet]="image.image.srcSet"
+        <button
+          type="button"
+          class="gallery-image-open"
+          [attr.aria-label]="image.description || t('viewFullSize')"
+          (click)="preview.emit()"
         >
-          <ng-template #indicator>
+          <img [src]="image.image.thumbnailM" alt="" />
+          <span class="gallery-image-open__icon" aria-hidden="true">
             <i class="pi pi-eye"></i>
-          </ng-template>
-        </p-image>
+          </span>
+        </button>
       </div>
     </ng-template>
     <div class="tags">

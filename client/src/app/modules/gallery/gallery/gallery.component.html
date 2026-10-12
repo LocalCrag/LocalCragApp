@@ -17,6 +17,7 @@
                 [image]="cell.image"
                 (delete)="confirmDeleteImage($event, cell.image)"
                 (edit)="editImage(cell.image)"
+                (preview)="openPreview(cell.image)"
               ></lc-gallery-image>
             } @else {
               <lc-gallery-image-skeleton
@@ -46,5 +47,64 @@
       </p-message>
     }
     <p-confirmpopup></p-confirmpopup>
+
+    <p-galleria
+      [value]="images"
+      [(visible)]="previewVisible"
+      [activeIndex]="previewIndex"
+      [fullScreen]="true"
+      [showThumbnails]="false"
+      [showItemNavigators]="false"
+      [baseZIndex]="1200"
+      [containerStyle]="{ 'max-width': '90vw' }"
+    >
+      <ng-template #item let-item>
+        <ng-container *transloco="let tp; read: 'gallery.preview'">
+          <div
+            class="gallery-preview"
+            (touchstart)="onPreviewTouchStart($event)"
+            (touchend)="onPreviewTouchEnd($event)"
+            (touchcancel)="onPreviewTouchCancel()"
+          >
+            @if (canStepPreview(-1)) {
+              <button
+                type="button"
+                class="p-galleria-nav-button p-galleria-prev-button gallery-preview__nav"
+                (click)="stepPreview(-1, $event)"
+                [attr.aria-label]="tp('previousImage')"
+              >
+                <i
+                  class="pi pi-chevron-left p-galleria-prev-icon"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            }
+            <img
+              class="gallery-preview__img"
+              [src]="item.image.thumbnailXL || item.image.path"
+              [srcset]="item.image.srcSet"
+              sizes="90vw"
+              [alt]="item.description || ''"
+            />
+            @if (canStepPreview(1)) {
+              <button
+                type="button"
+                class="p-galleria-nav-button p-galleria-next-button gallery-preview__nav"
+                (click)="stepPreview(1, $event)"
+                [attr.aria-label]="tp('nextImage')"
+              >
+                <i
+                  class="pi pi-chevron-right p-galleria-next-icon"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            }
+            @if (item.description) {
+              <div class="gallery-preview__caption">{{ item.description }}</div>
+            }
+          </div>
+        </ng-container>
+      </ng-template>
+    </p-galleria>
   </div>
 </ng-container>
