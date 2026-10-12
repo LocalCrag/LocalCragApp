@@ -6,3 +6,17 @@
     [height]="skeletonHeight + 'px'"
   ></p-skeleton>
 }
+
+@if (expandable) {
+  <button
+    type="button"
+    class="topo-image-open"
+    data-cy="topo-image-full-size"
+    [attr.aria-label]="expandLabel"
+    (click)="expand.emit()"
+  >
+    <span class="topo-image-open__icon" aria-hidden="true">
+      <i class="pi pi-eye"></i>
+    </span>
+  </button>
+}

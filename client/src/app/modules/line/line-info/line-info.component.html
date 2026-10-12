@@ -16,12 +16,19 @@
         <div
           class="w-full sm:w-9/12 xl:w-5/12 flex flex-col mx-auto pt-6 gap-4"
         >
-          @for (topoImage of line.topoImages; track topoImage) {
+          @for (
+            topoImage of line.topoImages;
+            track topoImage;
+            let index = $index
+          ) {
             <div>
               <lc-topo-image
                 class="shadow flex rounded-border"
                 [topoImage]="topoImage"
                 [color]="line.color"
+                [expandable]="true"
+                [expandLabel]="t('viewTopoFullSize')"
+                (expand)="openTopoPreview(index)"
               ></lc-topo-image>
               <lc-topo-image-details
                 [topoImage]="topoImage"
@@ -173,6 +180,60 @@
           ></lc-tick-button>
         </div>
       </div>
+    }
+
+    @if (line?.topoImages?.length) {
+      <p-galleria
+        [value]="line.topoImages"
+        [(visible)]="topoPreviewVisible"
+        [activeIndex]="topoPreviewIndex"
+        [fullScreen]="true"
+        [showThumbnails]="false"
+        [showItemNavigators]="false"
+        [baseZIndex]="1200"
+        [containerStyle]="{ 'max-width': '90vw' }"
+      >
+        <ng-template #item let-item>
+          <div
+            class="topo-preview"
+            (touchstart)="onTopoPreviewTouchStart($event)"
+            (touchend)="onTopoPreviewTouchEnd($event)"
+            (touchcancel)="onTopoPreviewTouchCancel()"
+          >
+            @if (canStepTopoPreview(-1)) {
+              <button
+                type="button"
+                class="p-galleria-nav-button p-galleria-prev-button topo-preview__nav"
+                (click)="stepTopoPreview(-1, $event)"
+                [attr.aria-label]="t('previousTopoImage')"
+              >
+                <i
+                  class="pi pi-chevron-left p-galleria-prev-icon"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            }
+            <lc-topo-image
+              [topoImage]="item"
+              [color]="line.color"
+              [viewportFit]="true"
+            ></lc-topo-image>
+            @if (canStepTopoPreview(1)) {
+              <button
+                type="button"
+                class="p-galleria-nav-button p-galleria-next-button topo-preview__nav"
+                (click)="stepTopoPreview(1, $event)"
+                [attr.aria-label]="t('nextTopoImage')"
+              >
+                <i
+                  class="pi pi-chevron-right p-galleria-next-icon"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            }
+          </div>
+        </ng-template>
+      </p-galleria>
     }
 
     @if (!line && !ticks) {

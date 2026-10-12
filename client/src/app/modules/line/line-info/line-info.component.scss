@@ -43,3 +43,17 @@ lc-line-bool-prop-list {
     text-align: center;
   }
 }
+
+.topo-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 80vh;
+  touch-action: pan-y;
+}
+
+.topo-preview__nav {
+  z-index: 1;
+}

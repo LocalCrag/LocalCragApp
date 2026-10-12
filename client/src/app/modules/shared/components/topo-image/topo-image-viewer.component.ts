@@ -78,6 +78,7 @@ export class TopoImageViewerComponent
   }
 
   private createKonvaStageAndLayer() {
+    this.destroyStage();
     // Allow page scroll over read-only topo canvases (Konva defaults to
     // preventDefault: true, which blocks touch/wheel scrolling).
     this.stage = new Konva.Stage({

@@ -5,3 +5,45 @@ lc-topo-image-editor {
   max-width: 100%;
   width: 100%;
 }
+
+lc-topo-image.topo-image--expandable {
+  position: relative;
+}
+
+lc-topo-image.topo-image--viewport-fit {
+  width: auto;
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+.topo-image-open {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  &__icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--p-primary-color);
+    outline-offset: -2px;
+  }
+}
