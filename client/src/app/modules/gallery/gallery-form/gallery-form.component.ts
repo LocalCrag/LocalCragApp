@@ -128,10 +128,9 @@ export class GalleryFormComponent implements OnInit {
         galleryImage.lng = this.galleryImage.lng;
         this.galleryService
           .updateGalleryImage(galleryImage)
-          .subscribe((galleryImage) => {
+          .subscribe((updated) => {
             this.loadingState = LoadingState.DEFAULT;
-            this.ref.close(galleryImage);
-            this.store.dispatch(toastNotification('GALLERY_IMAGE_UPDATED'));
+            this.ref.close(updated);
           });
       } else {
         this.galleryService

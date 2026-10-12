@@ -725,6 +725,8 @@
   "notifications.GALLERY_IMAGE_CREATED_MESSAGE": "Das Bild wurde erfolgreich hinzugefügt.",
   "notifications.GALLERY_IMAGE_UPDATED_TITLE": "Bild gespeichert",
   "notifications.GALLERY_IMAGE_UPDATED_MESSAGE": "Das Bild wurde erfolgreich gespeichert.",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_TITLE": "Bild aus dieser Galerie entfernt",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_MESSAGE": "Die Tags passen nicht mehr zu dieser Galerie, daher wurde das Bild aus der Liste entfernt.",
   "notifications.GALLERY_IMAGE_DELETED_TITLE": "Bild gelöscht",
   "notifications.GALLERY_IMAGE_DELETED_MESSAGE": "Das Bild wurde erfolgreich gelöscht.",
   "notifications.PROJECT_CLIMBED_MESSAGE_SENT_TITLE": "Nachricht gesendet",

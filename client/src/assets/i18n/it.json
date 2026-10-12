@@ -725,6 +725,8 @@
   "notifications.GALLERY_IMAGE_CREATED_MESSAGE": "L'immagine è stata aggiunta con successo.",
   "notifications.GALLERY_IMAGE_UPDATED_TITLE": "Immagine salvata.",
   "notifications.GALLERY_IMAGE_UPDATED_MESSAGE": "L'immagine è stata salvata con successo.",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_TITLE": "Immagine rimossa da questa galleria",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_MESSAGE": "I tag non corrispondono più a questa galleria, quindi l'immagine è stata rimossa dall'elenco.",
   "notifications.GALLERY_IMAGE_DELETED_TITLE": "Immagine eliminata",
   "notifications.GALLERY_IMAGE_DELETED_MESSAGE": "L'immagine è stato eliminata con successo.",
   "notifications.PROJECT_CLIMBED_MESSAGE_SENT_TITLE": "Messaggio inviato.",
