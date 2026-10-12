@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  HostListener,
   inject,
   OnInit,
 } from '@angular/core';
@@ -37,6 +38,17 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import {
+  galleryColumnCount,
+  galleryImageWeight,
+  GALLERY_SKELETON_LAYOUTS,
+  MasonryEntry,
+  packMasonryColumns,
+} from '../../../utility/gallery-masonry';
+
+type GalleryMasonryCell =
+  | { kind: 'image'; image: GalleryImage }
+  | { kind: 'skeleton'; key: string; aspectRatio: string };
 
 @Component({
   selector: 'lc-gallery',
@@ -58,12 +70,16 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
 })
 export class GalleryComponent implements OnInit, PaginatedListView {
   public images: GalleryImage[] = [];
+  public columns: GalleryMasonryCell[][] = [];
   public ref: DynamicDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.DEFAULT;
 
+  private columnCount = galleryColumnCount(
+    typeof window === 'undefined' ? 1280 : window.innerWidth,
+  );
   private objectSlug: string;
   private objectType: ObjectType;
   private destroyRef = inject(DestroyRef);
@@ -109,6 +125,17 @@ export class GalleryComponent implements OnInit, PaginatedListView {
       });
   }
 
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    const next = galleryColumnCount(window.innerWidth);
+    if (next === this.columnCount) {
+      return;
+    }
+    this.columnCount = next;
+    this.syncColumns();
+    this.cdr.markForCheck();
+  }
+
   loadFirstPage() {
     loadFirstPaginatedPage(this, () => this.loadNextPage());
   }
@@ -120,6 +147,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
     if (page === null) {
       return;
     }
+    this.syncColumns();
     const params: ApiQueryParams = {
       page: this.currentPage,
     };
@@ -133,6 +161,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
         map((images) => {
           this.images.push(...images.items);
           completePaginatedPageLoad(this, images.hasNext);
+          this.syncColumns();
           this.cdr.detectChanges();
         }),
       )
@@ -158,6 +187,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
             this.images.unshift(galleryImage);
+            this.syncColumns();
             this.cdr.detectChanges();
           }
         }
@@ -185,6 +215,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   deleteImage(image: GalleryImage) {
     this.galleryService.deleteGalleryImage(image.id).subscribe(() => {
       this.images = this.images.filter((i) => i.id !== image.id);
+      this.syncColumns();
       this.store.dispatch(toastNotification('GALLERY_IMAGE_DELETED'));
       this.cdr.detectChanges();
     });
@@ -208,8 +239,45 @@ export class GalleryComponent implements OnInit, PaginatedListView {
           this.images = this.images.map((i) =>
             i.id === galleryImage.id ? galleryImage : i,
           );
+          this.syncColumns();
           this.cdr.detectChanges();
         }
       });
+  }
+
+  trackCell(cell: GalleryMasonryCell): string {
+    return cell.kind === 'image' ? cell.image.id : cell.key;
+  }
+
+  /**
+   * Rebuilds columns from the current images and loading skeletons.
+   * Appending a page only extends columns; a new column count repacks.
+   */
+  private syncColumns(): void {
+    const entries: MasonryEntry<GalleryMasonryCell>[] = this.images.map(
+      (image) => ({
+        item: { kind: 'image', image },
+        weight: galleryImageWeight(image.image?.width, image.image?.height),
+      }),
+    );
+    const skeletonCount =
+      this.loading === LoadingState.LOADING && this.currentPage > 1
+        ? 3
+        : this.loading === LoadingState.LOADING && this.currentPage === 1
+          ? 6
+          : 0;
+    for (let index = 0; index < skeletonCount; index++) {
+      const layout =
+        GALLERY_SKELETON_LAYOUTS[index % GALLERY_SKELETON_LAYOUTS.length];
+      entries.push({
+        item: {
+          kind: 'skeleton',
+          key: `skeleton-${index}`,
+          aspectRatio: layout.aspectRatio,
+        },
+        weight: layout.weight,
+      });
+    }
+    this.columns = packMasonryColumns(entries, this.columnCount);
   }
 }

@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'gallery.galleryImage'">
   <p-card styleClass="gallery-image-card">
     <ng-template #header>
-      <div class="image-container">
+      <div class="image-container" [style.aspect-ratio]="aspectRatio()">
         <p-image
           [src]="image.image.thumbnailM"
           [preview]="true"

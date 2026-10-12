@@ -2,3 +2,21 @@
   margin-top: 1rem;
   display: block;
 }
+
+.gallery-masonry {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.gallery-masonry__column {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  > * {
+    width: 100%;
+  }
+}
