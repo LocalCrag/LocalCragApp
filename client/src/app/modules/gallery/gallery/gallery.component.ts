@@ -12,7 +12,7 @@ import { GalleryImage } from '../../../models/gallery-image';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 
-import { ImageModule } from 'primeng/image';
+import { GalleriaModule } from 'primeng/galleria';
 
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -30,6 +30,7 @@ import { LoadingState } from '../../../enums/loading-state';
 import {
   beginPaginatedPageLoad,
   completePaginatedPageLoad,
+  failPaginatedPageLoad,
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
@@ -45,6 +46,12 @@ import {
   MasonryEntry,
   packMasonryColumns,
 } from '../../../utility/gallery-masonry';
+import {
+  galleryPreviewIndexAfterRemoval,
+  GalleryPreviewDirection,
+  galleryPreviewSwipeDirection,
+  stepGalleryPreview,
+} from '../../../utility/gallery-preview';
 
 type GalleryMasonryCell =
   | { kind: 'image'; image: GalleryImage }
@@ -53,7 +60,7 @@ type GalleryMasonryCell =
 @Component({
   selector: 'lc-gallery',
   imports: [
-    ImageModule,
+    GalleriaModule,
     GalleryImageComponent,
     ButtonModule,
     TranslocoDirective,
@@ -76,7 +83,12 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   public currentPage = 0;
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.DEFAULT;
+  public previewVisible = false;
+  public previewIndex = 0;
 
+  /** Index of the first image from the page requested by the open preview. */
+  private previewAdvanceTo: number | null = null;
+  private previewTouch: { x: number; y: number } | null = null;
   private columnCount = galleryColumnCount(
     typeof window === 'undefined' ? 1280 : window.innerWidth,
   );
@@ -143,6 +155,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   loadNextPage() {
     const page = beginPaginatedPageLoad(this, () => {
       this.images = [];
+      this.closePreview();
     });
     if (page === null) {
       return;
@@ -157,15 +170,22 @@ export class GalleryComponent implements OnInit, PaginatedListView {
     }
     this.galleryService
       .getGalleryImages(params)
-      .pipe(
-        map((images) => {
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (images) => {
           this.images.push(...images.items);
           completePaginatedPageLoad(this, images.hasNext);
+          this.finishPreviewAdvance();
           this.syncColumns();
           this.cdr.detectChanges();
-        }),
-      )
-      .subscribe();
+        },
+        error: () => {
+          failPaginatedPageLoad(this);
+          this.previewAdvanceTo = null;
+          this.syncColumns();
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   addImage() {
@@ -187,6 +207,9 @@ export class GalleryComponent implements OnInit, PaginatedListView {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
             this.images.unshift(galleryImage);
+            if (this.previewVisible) {
+              this.previewIndex += 1;
+            }
             this.syncColumns();
             this.cdr.detectChanges();
           }
@@ -213,8 +236,19 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   }
 
   deleteImage(image: GalleryImage) {
+    const removedIndex = this.images.findIndex((i) => i.id === image.id);
     this.galleryService.deleteGalleryImage(image.id).subscribe(() => {
       this.images = this.images.filter((i) => i.id !== image.id);
+      const nextIndex = galleryPreviewIndexAfterRemoval(
+        this.previewIndex,
+        removedIndex,
+        this.images.length,
+      );
+      if (nextIndex === null) {
+        this.closePreview();
+      } else {
+        this.previewIndex = nextIndex;
+      }
       this.syncColumns();
       this.store.dispatch(toastNotification('GALLERY_IMAGE_DELETED'));
       this.cdr.detectChanges();
@@ -249,6 +283,100 @@ export class GalleryComponent implements OnInit, PaginatedListView {
     return cell.kind === 'image' ? cell.image.id : cell.key;
   }
 
+  openPreview(image: GalleryImage): void {
+    const index = this.images.findIndex((item) => item.id === image.id);
+    if (index < 0) {
+      return;
+    }
+    this.previewIndex = index;
+    this.previewVisible = true;
+  }
+
+  canStepPreview(direction: GalleryPreviewDirection): boolean {
+    return (
+      stepGalleryPreview({
+        index: this.previewIndex,
+        count: this.images.length,
+        hasNextPage: this.hasNextPage,
+        direction,
+      }) !== null
+    );
+  }
+
+  stepPreview(direction: GalleryPreviewDirection, event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+    const step = stepGalleryPreview({
+      index: this.previewIndex,
+      count: this.images.length,
+      hasNextPage: this.hasNextPage,
+      direction,
+    });
+    if (!step) {
+      return;
+    }
+    if (step.type === 'load-next') {
+      this.queuePreviewAdvance(step.index);
+      return;
+    }
+    this.previewIndex = step.index;
+    this.cdr.markForCheck();
+  }
+
+  onPreviewTouchStart(event: TouchEvent): void {
+    if (event.touches.length !== 1 || this.touchStartedOnButton(event)) {
+      this.previewTouch = null;
+      return;
+    }
+    const touch = event.touches[0];
+    this.previewTouch = { x: touch.clientX, y: touch.clientY };
+  }
+
+  onPreviewTouchEnd(event: TouchEvent): void {
+    const start = this.previewTouch;
+    this.previewTouch = null;
+    if (!start || event.changedTouches.length !== 1) {
+      return;
+    }
+    const touch = event.changedTouches[0];
+    const direction = galleryPreviewSwipeDirection(
+      start.x,
+      start.y,
+      touch.clientX,
+      touch.clientY,
+    );
+    if (!direction) {
+      return;
+    }
+    this.stepPreview(direction, event);
+  }
+
+  onPreviewTouchCancel(): void {
+    this.previewTouch = null;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onPreviewKeydown(event: KeyboardEvent): void {
+    if (!this.previewVisible) {
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closePreview();
+      this.cdr.markForCheck();
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.stepPreview(1);
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.stepPreview(-1);
+    }
+  }
+
   /**
    * Rebuilds columns from the current images and loading skeletons.
    * Appending a page only extends columns; a new column count repacks.
@@ -279,5 +407,40 @@ export class GalleryComponent implements OnInit, PaginatedListView {
       });
     }
     this.columns = packMasonryColumns(entries, this.columnCount);
+  }
+
+  private closePreview(): void {
+    this.previewVisible = false;
+    this.previewIndex = 0;
+    this.previewAdvanceTo = null;
+    this.previewTouch = null;
+  }
+
+  private touchStartedOnButton(event: TouchEvent): boolean {
+    const target = event.target;
+    return target instanceof Element && !!target.closest('button');
+  }
+
+  private queuePreviewAdvance(index: number): void {
+    this.previewAdvanceTo = index;
+    if (this.loading === LoadingState.LOADING) {
+      return;
+    }
+    const pageBefore = this.currentPage;
+    this.loadNextPage();
+    if (this.currentPage === pageBefore) {
+      this.previewAdvanceTo = null;
+    }
+  }
+
+  private finishPreviewAdvance(): void {
+    if (this.previewAdvanceTo === null) {
+      return;
+    }
+    const target = this.previewAdvanceTo;
+    this.previewAdvanceTo = null;
+    if (this.previewVisible && target < this.images.length) {
+      this.previewIndex = target;
+    }
   }
 }
