@@ -77,6 +77,19 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Full-bleed map pages (e.g. Rock Explorer): header only, no chrome. */
   fullscreenMap = false;
 
+  /**
+   * Default toast width is 25rem. On narrow screens that overflows the
+   * bottom-right anchor, so shrink it and keep it inside the safe area.
+   */
+  readonly toastBreakpoints = {
+    '30rem': {
+      width: 'calc(100vw - 2rem)',
+      right: '1rem',
+      left: 'auto',
+      bottom: 'max(1rem, env(safe-area-inset-bottom))',
+    },
+  };
+
   private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);
   private router = inject(Router);

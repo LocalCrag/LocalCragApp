@@ -61,35 +61,57 @@ lc-gallery-image {
     overflow: hidden;
 
     .p-card-header {
-      img {
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
-        object-position: center;
-      }
-
       .image-container {
-        height: 300px;
+        position: relative;
         width: 100%;
-        display: flex;
+        aspect-ratio: 4 / 3;
 
-        p-image {
+        .gallery-image-open {
+          position: absolute;
+          inset: 0;
+          display: block;
           width: 100%;
           height: 100%;
-          display: flex;
-          justify-content: center;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          cursor: pointer;
 
-          .p-image {
+          img {
+            object-fit: contain;
             width: 100%;
             height: 100%;
+            object-position: center;
+          }
+
+          &__icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+          }
+
+          &:hover &__icon,
+          &:focus-visible &__icon {
+            opacity: 1;
+          }
+
+          &:focus-visible {
+            outline: 2px solid var(--p-primary-color);
+            outline-offset: -2px;
           }
         }
       }
     }
 
     .p-card-header {
-      display: flex;
-      justify-content: center;
+      display: block;
       background-color: var(--p-content-hover-background);
     }
 

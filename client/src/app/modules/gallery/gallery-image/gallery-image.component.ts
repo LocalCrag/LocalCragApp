@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
-import { ImageModule } from 'primeng/image';
 
 import { TagComponent } from '../../shared/components/tag/tag.component';
 import { ButtonModule } from 'primeng/button';
@@ -26,12 +25,12 @@ import { take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
+import { galleryImageAspectRatio } from '../../../utility/gallery-masonry';
 
 @Component({
   selector: 'lc-gallery-image',
   imports: [
     CardModule,
-    ImageModule,
     TagComponent,
     ButtonModule,
     ConfirmPopupModule,
@@ -48,6 +47,7 @@ export class GalleryImageComponent implements OnInit {
 
   @Output() delete: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() edit: EventEmitter<null> = new EventEmitter<null>();
+  @Output() preview = new EventEmitter<void>();
 
   public speedDialItems: MenuItem[] = [];
   public loggedInUser: User;
@@ -69,6 +69,13 @@ export class GalleryImageComponent implements OnInit {
       .select(selectCurrentUser)
       .pipe(take(1))
       .subscribe((user) => (this.loggedInUser = user));
+  }
+
+  aspectRatio(): string {
+    return galleryImageAspectRatio(
+      this.image?.image?.width,
+      this.image?.image?.height,
+    );
   }
 
   private buildSpeedDialItems() {
