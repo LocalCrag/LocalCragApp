@@ -1,8 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { select, Store } from '@ngrx/store';
 import { TranslocoService } from '@jsverse/transloco';
-import { AppState } from '../../ngrx/reducers';
-import { selectIsMobile } from '../../ngrx/selectors/device.selectors';
 import { MessageService } from 'primeng/api';
 import {
   getNotification,
@@ -12,9 +9,8 @@ import {
 import { TranslocoHashMap } from '../../utility/types/transloco';
 
 /**
- * Wrapper service for the angular2-notifications.
- * Modifications are:
- *   - Prevent success and info notifications on small screens
+ * Shows PrimeNG toasts for app notification keys.
+ * Success, info, warning, and error toasts are shown on every viewport.
  */
 @Injectable({
   providedIn: 'root',
@@ -22,17 +18,9 @@ import { TranslocoHashMap } from '../../utility/types/transloco';
 export class AppNotificationsService {
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
-  private store = inject<Store<AppState>>(Store);
-  private isMobile: boolean;
-
-  constructor() {
-    this.store.pipe(select(selectIsMobile)).subscribe((isMobile) => {
-      this.isMobile = isMobile;
-    });
-  }
 
   /**
-   * Pushes a toast notification: either immediately or in a deferred way if currently language files are loading.
+   * Pushes a toast notification.
    *
    * @param notificationKey Key of the notification to push.
    * @param titleParams Translation params for the title string.
@@ -46,30 +34,16 @@ export class AppNotificationsService {
     this.doToast(notificationKey, titleParams, messageParams);
   }
 
-  /**
-   * Pushes a success notification if the screen is big enough.
-   *
-   * @param title Notification title.
-   * @param content Notification content.
-   */
-  private success(title: any, content: any) {
-    if (!this.isMobile) {
-      this.messageService.add({
-        severity: 'success',
-        detail: content,
-        summary: title,
-        life: 5000,
-      });
-    }
+  private success(title: string, content: string) {
+    this.messageService.add({
+      severity: 'success',
+      detail: content,
+      summary: title,
+      life: 5000,
+    });
   }
 
-  /**
-   * Pushes an error notification.
-   *
-   * @param title Notification title.
-   * @param content Notification content.
-   */
-  private error(title: any, content: any) {
+  private error(title: string, content: string) {
     this.messageService.add({
       severity: 'error',
       detail: content,
@@ -78,30 +52,16 @@ export class AppNotificationsService {
     });
   }
 
-  /**
-   * Pushes an info notification if the screen is big enough.
-   *
-   * @param title Notification title.
-   * @param content Notification content.
-   */
-  private info(title: any, content: any) {
-    if (!this.isMobile) {
-      this.messageService.add({
-        severity: 'info',
-        detail: content,
-        summary: title,
-        life: 5000,
-      });
-    }
+  private info(title: string, content: string) {
+    this.messageService.add({
+      severity: 'info',
+      detail: content,
+      summary: title,
+      life: 5000,
+    });
   }
 
-  /**
-   * Pushes a warning notification.
-   *
-   * @param title Notification title.
-   * @param content Notification content.
-   */
-  private warning(title: any, content: any) {
+  private warning(title: string, content: string) {
     this.messageService.add({
       severity: 'warn',
       detail: content,
@@ -110,13 +70,6 @@ export class AppNotificationsService {
     });
   }
 
-  /**
-   * Pushes a toast notification.
-   *
-   * @param notificationKey Key of the notification to push.
-   * @param titleParams Translation params for the title string.
-   * @param messageParams Translation params for the message string.
-   */
   private doToast(
     notificationKey: NotificationKey,
     titleParams: TranslocoHashMap = {},
