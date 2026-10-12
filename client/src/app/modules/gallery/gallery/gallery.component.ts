@@ -46,6 +46,7 @@ import {
   MasonryEntry,
   packMasonryColumns,
 } from '../../../utility/gallery-masonry';
+import { galleryImageBelongsToObject } from '../../../utility/gallery-membership';
 import {
   galleryPreviewIndexAfterRemoval,
   GalleryPreviewDirection,
@@ -236,19 +237,8 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   }
 
   deleteImage(image: GalleryImage) {
-    const removedIndex = this.images.findIndex((i) => i.id === image.id);
     this.galleryService.deleteGalleryImage(image.id).subscribe(() => {
-      this.images = this.images.filter((i) => i.id !== image.id);
-      const nextIndex = galleryPreviewIndexAfterRemoval(
-        this.previewIndex,
-        removedIndex,
-        this.images.length,
-      );
-      if (nextIndex === null) {
-        this.closePreview();
-      } else {
-        this.previewIndex = nextIndex;
-      }
+      this.dropLoadedImage(image.id);
       this.syncColumns();
       this.store.dispatch(toastNotification('GALLERY_IMAGE_DELETED'));
       this.cdr.detectChanges();
@@ -269,13 +259,31 @@ export class GalleryComponent implements OnInit, PaginatedListView {
     this.ref.onClose
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((galleryImage: GalleryImage) => {
-        if (galleryImage) {
+        if (!galleryImage) {
+          return;
+        }
+        if (
+          galleryImageBelongsToObject(
+            galleryImage,
+            this.objectType,
+            this.objectSlug,
+          )
+        ) {
           this.images = this.images.map((i) =>
             i.id === galleryImage.id ? galleryImage : i,
           );
-          this.syncColumns();
-          this.cdr.detectChanges();
+          this.store.dispatch(toastNotification('GALLERY_IMAGE_UPDATED'));
+        } else {
+          const wasShown = this.images.some((i) => i.id === galleryImage.id);
+          this.dropLoadedImage(galleryImage.id);
+          if (wasShown) {
+            this.store.dispatch(
+              toastNotification('GALLERY_IMAGE_REMOVED_FROM_GALLERY'),
+            );
+          }
         }
+        this.syncColumns();
+        this.cdr.detectChanges();
       });
   }
 
@@ -407,6 +415,21 @@ export class GalleryComponent implements OnInit, PaginatedListView {
       });
     }
     this.columns = packMasonryColumns(entries, this.columnCount);
+  }
+
+  private dropLoadedImage(imageId: string): void {
+    const removedIndex = this.images.findIndex((i) => i.id === imageId);
+    this.images = this.images.filter((i) => i.id !== imageId);
+    const nextIndex = galleryPreviewIndexAfterRemoval(
+      this.previewIndex,
+      removedIndex,
+      this.images.length,
+    );
+    if (nextIndex === null) {
+      this.closePreview();
+    } else {
+      this.previewIndex = nextIndex;
+    }
   }
 
   private closePreview(): void {

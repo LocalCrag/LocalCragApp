@@ -725,6 +725,8 @@
   "notifications.GALLERY_IMAGE_CREATED_MESSAGE": "De foto is met succes toegevoegd.",
   "notifications.GALLERY_IMAGE_UPDATED_TITLE": "Afbeelding opgeslagen",
   "notifications.GALLERY_IMAGE_UPDATED_MESSAGE": "Het beeld werd met succes opgeslagen.",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_TITLE": "Afbeelding uit deze galerij verwijderd",
+  "notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_MESSAGE": "De tags horen niet meer bij deze galerij, dus de afbeelding is uit de lijst verwijderd.",
   "notifications.GALLERY_IMAGE_DELETED_TITLE": "Afbeelding verwijderd",
   "notifications.GALLERY_IMAGE_DELETED_MESSAGE": "De afbeelding is met succes verwijderd.",
   "notifications.PROJECT_CLIMBED_MESSAGE_SENT_TITLE": "Bericht verzonden",

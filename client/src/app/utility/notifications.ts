@@ -58,6 +58,11 @@ export const NOTIFICATIONS = {
     title: marker('notifications.GALLERY_IMAGE_UPDATED_TITLE'),
     message: marker('notifications.GALLERY_IMAGE_UPDATED_MESSAGE'),
   },
+  GALLERY_IMAGE_REMOVED_FROM_GALLERY: {
+    type: NotificationType.INFO,
+    title: marker('notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_TITLE'),
+    message: marker('notifications.GALLERY_IMAGE_REMOVED_FROM_GALLERY_MESSAGE'),
+  },
   GALLERY_IMAGE_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.GALLERY_IMAGE_DELETED_TITLE'),
