@@ -1,3 +1,14 @@
+# [1.61.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.60.0...v1.61.0) (2026-10-12)
+
+
+### Features
+
+* **core:** show toast notifications of all types also on small viewports ([#1300](https://github.com/LocalCrag/LocalCragApp/issues/1300)) ([94f55c8](https://github.com/LocalCrag/LocalCragApp/commit/94f55c85f77c29ac3dc237b3800615c6faa2c6f5))
+* **gallery:** add masonry layout to gallery ([#1301](https://github.com/LocalCrag/LocalCragApp/issues/1301)) ([03bf103](https://github.com/LocalCrag/LocalCragApp/commit/03bf103b5b625e7a2720c90fdcda43e2afeed078)), closes [#495](https://github.com/LocalCrag/LocalCragApp/issues/495)
+* **gallery:** enhance image management with removal notifications ([#1303](https://github.com/LocalCrag/LocalCragApp/issues/1303)) ([5302242](https://github.com/LocalCrag/LocalCragApp/commit/5302242abe4d1e8b261bfd050aee8076fbd67e2b)), closes [#497](https://github.com/LocalCrag/LocalCragApp/issues/497)
+* **gallery:** galleries can now be browsed in fullscreen mode ([#1302](https://github.com/LocalCrag/LocalCragApp/issues/1302)) ([0fa02de](https://github.com/LocalCrag/LocalCragApp/commit/0fa02de4a034846d6ea9b1d0c85116649086b4e9)), closes [#504](https://github.com/LocalCrag/LocalCragApp/issues/504)
+* **topo:** implement full-size topo image preview ([#1304](https://github.com/LocalCrag/LocalCragApp/issues/1304)) ([2ab52bb](https://github.com/LocalCrag/LocalCragApp/commit/2ab52bb64a372fe09dd6df42b827cda04abfb3f9)), closes [#164](https://github.com/LocalCrag/LocalCragApp/issues/164)
+
 # [1.60.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.59.0...v1.60.0) (2026-10-10)
 
 
