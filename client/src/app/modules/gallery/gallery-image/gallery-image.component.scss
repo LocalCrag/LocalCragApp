@@ -61,35 +61,33 @@ lc-gallery-image {
     overflow: hidden;
 
     .p-card-header {
-      img {
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
-        object-position: center;
-      }
-
       .image-container {
-        height: 300px;
+        position: relative;
         width: 100%;
-        display: flex;
+        aspect-ratio: 4 / 3;
 
         p-image {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
+          position: absolute;
+          inset: 0;
+          display: block;
 
           .p-image {
             width: 100%;
             height: 100%;
+          }
+
+          img {
+            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-position: center;
           }
         }
       }
     }
 
     .p-card-header {
-      display: flex;
-      justify-content: center;
+      display: block;
       background-color: var(--p-content-hover-background);
     }
 

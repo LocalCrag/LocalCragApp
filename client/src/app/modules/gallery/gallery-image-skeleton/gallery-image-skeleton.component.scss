@@ -14,6 +14,21 @@ lc-gallery-image-skeleton {
       border-top-right-radius: var(--p-card-border-radius);
       overflow: hidden;
     }
+
+    .image-container--ratio {
+      position: relative;
+      height: auto;
+
+      p-skeleton {
+        position: absolute;
+        inset: 0;
+        display: block;
+      }
+
+      .p-skeleton {
+        height: 100% !important;
+      }
+    }
   }
 
   .tags {

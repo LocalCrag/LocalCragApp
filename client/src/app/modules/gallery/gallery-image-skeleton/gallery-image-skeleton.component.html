@@ -1,6 +1,10 @@
 <p-card styleClass="gallery-image-card">
   <ng-template #header>
-    <div class="image-container">
+    <div
+      class="image-container"
+      [class.image-container--ratio]="aspectRatio"
+      [style.aspect-ratio]="aspectRatio"
+    >
       <p-skeleton borderRadius="0" height="100%"></p-skeleton>
     </div>
   </ng-template>

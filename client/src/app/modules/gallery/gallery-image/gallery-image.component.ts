@@ -26,6 +26,7 @@ import { take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
+import { galleryImageAspectRatio } from '../../../utility/gallery-masonry';
 
 @Component({
   selector: 'lc-gallery-image',
@@ -69,6 +70,13 @@ export class GalleryImageComponent implements OnInit {
       .select(selectCurrentUser)
       .pipe(take(1))
       .subscribe((user) => (this.loggedInUser = user));
+  }
+
+  aspectRatio(): string {
+    return galleryImageAspectRatio(
+      this.image?.image?.width,
+      this.image?.image?.height,
+    );
   }
 
   private buildSpeedDialItems() {
