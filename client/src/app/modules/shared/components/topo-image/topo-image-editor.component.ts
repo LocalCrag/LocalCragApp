@@ -166,6 +166,7 @@ export class TopoImageEditorComponent
    * handlers for placing new anchors.
    */
   private createKonvaStageAndLayer() {
+    this.destroyStage();
     this.stage = new Konva.Stage({
       container: this.konvaContainer.nativeElement,
       width: this.width,

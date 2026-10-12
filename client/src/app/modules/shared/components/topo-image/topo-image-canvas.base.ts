@@ -2,10 +2,14 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
+  EventEmitter,
+  HostBinding,
   HostListener,
   inject,
   Input,
+  OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { debounceTime, Subject } from 'rxjs';
@@ -33,16 +37,40 @@ import {
   isCompleteTabuPolygon,
   resolveTabuPolygons,
 } from '../../../../utility/topo/tabu-holds';
+import {
+  fullSizeTopoImageSrc,
+  stageScaleToFit,
+  topoPreviewMaxSize,
+} from '../../../../utility/topo/topo-image-preview';
 
 /**
  * Shared Konva canvas lifecycle and drawing helpers for topo image components.
  */
 @Directive()
-export abstract class TopoImageCanvasBase implements OnInit {
+export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
   @ViewChild('konvaContainer') protected konvaContainer: ElementRef;
 
   @Input() topoImage: TopoImage;
   @Input() color?: string;
+  /**
+   * Click opens a full-size view. Only the line detail page sets this;
+   * list thumbnails stay inert so their row link can navigate.
+   */
+  @Input() expandable = false;
+  @Input() expandLabel = '';
+  /** Draw at viewport size from the XL image instead of fitting the column. */
+  @Input() viewportFit = false;
+  @Output() expand = new EventEmitter<void>();
+
+  @HostBinding('class.topo-image--expandable')
+  get topoImageExpandableClass(): boolean {
+    return this.expandable;
+  }
+
+  @HostBinding('class.topo-image--viewport-fit')
+  get topoImageViewportFitClass(): boolean {
+    return this.viewportFit;
+  }
 
   public loading = true;
   public skeletonWidth: number;
@@ -60,6 +88,12 @@ export abstract class TopoImageCanvasBase implements OnInit {
 
   private resizeRenderSubject = new Subject<void>();
   private windowWidth: number;
+  /**
+   * Identifies the render whose photo is allowed to draw.
+   * The image loads asynchronously, so a callback from an older render must
+   * not draw after a resize, an image change, or destroy.
+   */
+  private renderGeneration = 0;
   private destroyRef = inject(DestroyRef);
   protected el = inject(ElementRef);
   protected store = inject(Store);
@@ -82,12 +116,40 @@ export abstract class TopoImageCanvasBase implements OnInit {
       });
   }
 
+  ngOnDestroy() {
+    this.renderGeneration++;
+    this.destroyStage();
+  }
+
+  /**
+   * Starts a draw and ignores it if a newer render begins before the photo loads.
+   */
   protected render() {
-    this.store.select(selectIsMobile).subscribe((isMobile) => {
-      this.isMobile = isMobile;
-      this.loadBackgroundImage();
-      this.backgroundImage.onload = () => this.drawLinesAndLabels();
-    });
+    const generation = ++this.renderGeneration;
+    this.store
+      .select(selectIsMobile)
+      .pipe(take(1))
+      .subscribe((isMobile) => {
+        if (generation !== this.renderGeneration) {
+          return;
+        }
+        this.isMobile = isMobile;
+        this.loadBackgroundImage();
+        this.backgroundImage.onload = () => {
+          if (generation !== this.renderGeneration) {
+            return;
+          }
+          this.drawLinesAndLabels();
+        };
+      });
+  }
+
+  protected destroyStage() {
+    if (!this.stage) {
+      return;
+    }
+    this.stage.destroy();
+    this.stage = null;
   }
 
   protected abstract drawLinesAndLabels(): void;
@@ -184,6 +246,19 @@ export abstract class TopoImageCanvasBase implements OnInit {
   }
 
   protected fitStage() {
+    if (this.viewportFit) {
+      const box = topoPreviewMaxSize(window.innerWidth, window.innerHeight);
+      this.scale = stageScaleToFit(
+        this.width,
+        this.height,
+        box.width,
+        box.height,
+      );
+      this.stage.width(this.width * this.scale);
+      this.stage.height(this.height * this.scale);
+      this.stage.scale({ x: this.scale, y: this.scale });
+      return;
+    }
     this.scale = fitStageIntoParentContainer(
       this.stage,
       this.el.nativeElement,
@@ -235,13 +310,27 @@ export abstract class TopoImageCanvasBase implements OnInit {
   }
 
   private loadBackgroundImage() {
+    this.backgroundImage = new Image();
+    if (this.viewportFit) {
+      const image = this.topoImage.image;
+      const box = topoPreviewMaxSize(window.innerWidth, window.innerHeight);
+      const scale = stageScaleToFit(
+        image.width || box.width,
+        image.height || box.height,
+        box.width,
+        box.height,
+      );
+      this.skeletonWidth = (image.width || box.width) * scale;
+      this.skeletonHeight = (image.height || box.height) * scale;
+      this.backgroundImage.src = fullSizeTopoImageSrc(image);
+      return;
+    }
     const dimensions = calculateSkeletonDimensions(
       this.el.nativeElement.offsetWidth,
       this.topoImage,
     );
     this.skeletonWidth = dimensions.skeletonWidth;
     this.skeletonHeight = dimensions.skeletonHeight;
-    this.backgroundImage = new Image();
     this.backgroundImage.src = dimensions.imageSrc;
   }
 }
