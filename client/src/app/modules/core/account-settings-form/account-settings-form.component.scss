@@ -4,7 +4,6 @@
 
 .notification-mail-settings {
   scroll-margin-top: calc(
-    var(--lc-menu-height, 3.25rem) + var(--lc-top-alerts-height, 0px) +
-      0.75rem
+    var(--lc-menu-height, 3.25rem) + var(--lc-top-alerts-height, 0px) + 0.75rem
   );
 }
