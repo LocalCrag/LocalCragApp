@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.bracket-preview {
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-border-radius-md, 6px);
+  background: var(--p-content-background);
+}
+
+.bracket-preview__title {
+  font-weight: 600;
+}
+
+.bracket-preview__hint {
+  margin: 0.15rem 0 0.75rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.875rem;
+}
+
+.bracket-preview__chart {
+  height: 12rem;
+}
+
+:host ::ng-deep {
+  .bracket-preview__chart p-chart,
+  .bracket-preview__chart p-chart > div {
+    display: block;
+    height: 100%;
+  }
+
+  .bracket-preview .p-metergroup-labels {
+    flex-wrap: wrap;
+  }
+
+  .bracket-preview .p-metergroup-label {
+    white-space: nowrap;
+  }
+
+  .bracket-preview p-message {
+    display: block;
+  }
+}

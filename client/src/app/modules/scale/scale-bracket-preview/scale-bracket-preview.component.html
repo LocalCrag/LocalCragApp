@@ -1,0 +1,93 @@
+<ng-container *transloco="let t">
+  <div class="bracket-preview">
+    <div class="bracket-preview__title">
+      {{ t("scale.scaleForm.bracketPreviewTitle") }}
+    </div>
+    <p class="bracket-preview__hint">
+      {{
+        mode === "bar"
+          ? t("scale.scaleForm.bracketPreviewHintBar")
+          : t("scale.scaleForm.bracketPreviewHint")
+      }}
+    </p>
+
+    @if (mode === "stacked" && stacked && stacked.gradedCount > 0) {
+      <p-meterGroup [value]="meterItems" [min]="0" [max]="stacked.gradedCount">
+        <ng-template #label>
+          <div
+            class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-4"
+          >
+            <div class="p-metergroup-label font-bold">
+              {{ stacked.gradedCount }} {{ t("lines") }}:
+            </div>
+            @for (segment of stacked.segments; track $index) {
+              <div class="p-metergroup-label">
+                <p-tag
+                  [value]="segment.count + ' ' + segment.label"
+                  [style]="{
+                    backgroundColor: segment.color,
+                    color: tagTextColor(segment.color),
+                  }"
+                />
+              </div>
+            }
+            @if (stacked.ungradedCount > 0) {
+              <div class="p-metergroup-label">
+                <p-tag
+                  [value]="
+                    stacked.ungradedCount +
+                    ' ' +
+                    t('leveledGradeDistributionUngraded')
+                  "
+                  [style]="{
+                    backgroundColor: '#e5e7eb',
+                    color: tagTextColor('#e5e7eb'),
+                  }"
+                />
+              </div>
+            }
+            @if (stacked.projectCount > 0) {
+              <div class="p-metergroup-label">
+                <p-tag
+                  [value]="
+                    stacked.projectCount +
+                    ' ' +
+                    t('leveledGradeDistributionProjects')
+                  "
+                  [style]="{
+                    backgroundColor: '#e5e7eb',
+                    color: tagTextColor('#e5e7eb'),
+                  }"
+                />
+              </div>
+            }
+          </div>
+        </ng-template>
+      </p-meterGroup>
+    } @else if (mode === "bar" && bar && bar.gradedCount > 0) {
+      <div class="bracket-preview__chart">
+        <p-chart
+          type="bar"
+          [data]="chartData"
+          [options]="chartOptions"
+          [plugins]="chartPlugins"
+        />
+      </div>
+    } @else if (
+      (mode === "stacked" && stacked && stacked.gradedCount === 0) ||
+      (mode === "bar" && bar && bar.gradedCount === 0)
+    ) {
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        [text]="t('scale.scaleForm.bracketPreviewNoGrades')"
+      />
+    } @else {
+      <p-message
+        severity="info"
+        icon="pi pi-info-circle"
+        [text]="t('scale.scaleForm.bracketPreviewUnavailable')"
+      />
+    }
+  </div>
+</ng-container>
