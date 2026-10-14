@@ -1,15 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  afterNextRender,
-  inject,
-} from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -18,9 +8,10 @@ import { selectShowOfflineAlert } from '../../../ngrx/selectors/app-level-alerts
 import { ConnectivityProbeService } from '../../../services/core/connectivity-probe.service';
 
 /**
- * Fixed top banner for connectivity problems.
+ * Banner for connectivity problems.
  *
- * Kept outside the scroll-hiding site header so it stays visible while the navbar hides.
+ * Rendered by TopAlertsComponent, outside the scroll-hiding site header, so it
+ * stays visible while the navbar hides.
  *
  * ## When to show vs. relying on `window.online` / `offline`
  *
@@ -44,44 +35,14 @@ import { ConnectivityProbeService } from '../../../services/core/connectivity-pr
   styleUrls: ['./offline-alert.component.scss'],
   imports: [TranslocoDirective, AsyncPipe],
 })
-export class OfflineAlertComponent implements AfterViewInit, OnDestroy {
+export class OfflineAlertComponent {
   private store = inject<Store<AppState>>(Store);
-  private hostEl = inject(ElementRef<HTMLElement>);
-  private destroyRef = inject(DestroyRef);
   /** Ensures the root probe service is constructed with the offline banner. */
   private readonly connectivityProbe = inject(ConnectivityProbeService);
-  private resizeObserver?: ResizeObserver;
 
   public showOfflineAlert$: Observable<boolean> = this.store.pipe(
     select(selectShowOfflineAlert),
   );
-
-  constructor() {
-    afterNextRender(() => this.updateHeight());
-
-    this.showOfflineAlert$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        // Wait for @if content to render/unrender before measuring.
-        requestAnimationFrame(() => this.updateHeight());
-      });
-  }
-
-  ngAfterViewInit() {
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-    this.resizeObserver = new ResizeObserver(() => this.updateHeight());
-    this.resizeObserver.observe(this.hostEl.nativeElement);
-  }
-
-  ngOnDestroy() {
-    this.resizeObserver?.disconnect();
-    document.documentElement.style.setProperty(
-      '--lc-offline-alert-height',
-      '0px',
-    );
-  }
 
   /**
    * Browser reports a network interface again — probe the API rather than
@@ -90,14 +51,5 @@ export class OfflineAlertComponent implements AfterViewInit, OnDestroy {
   @HostListener('window:online')
   onWindowOnline() {
     this.connectivityProbe.probeNow();
-  }
-
-  private updateHeight() {
-    const height = this.hostEl.nativeElement.offsetHeight ?? 0;
-    // Set on :root so core layout (header top + spacer) inherits it.
-    document.documentElement.style.setProperty(
-      '--lc-offline-alert-height',
-      `${height}px`,
-    );
   }
 }

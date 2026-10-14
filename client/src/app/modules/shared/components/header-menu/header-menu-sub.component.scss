@@ -47,10 +47,7 @@ lc-header-menu-sub {
     display: none;
     // Keep long Topo hierarchies (many areas/sectors) reachable on short viewports.
     max-height: calc(
-      100dvh - var(--lc-menu-height, 3.25rem) - var(
-          --lc-offline-alert-height,
-          0px
-        )
+      100dvh - var(--lc-menu-height, 3.25rem) - var(--lc-top-alerts-height, 0px)
     );
     overflow-y: auto;
     overflow-x: hidden;

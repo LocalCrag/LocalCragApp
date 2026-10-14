@@ -18,6 +18,7 @@ import {
 } from '../../ngrx/actions/auth.actions';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
 import { parseServerUtcDate } from '../../utility/parse-server-utc-date';
+import { getLocalStorage } from '../../utility/local-storage';
 
 /**
  * The PascalCase entity types that can carry a `rules` field and therefore a
@@ -226,9 +227,10 @@ export class RulesReadStatusService {
   }
 
   private hydrateFromLocalStorage(): void {
-    if (typeof localStorage === 'undefined') return;
+    const storage = getLocalStorage();
+    if (!storage) return;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = storage.getItem(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw) as Record<
         string,
@@ -251,7 +253,8 @@ export class RulesReadStatusService {
   }
 
   private persistLocalStorage(): void {
-    if (typeof localStorage === 'undefined') return;
+    const storage = getLocalStorage();
+    if (!storage) return;
     try {
       const payload: Record<
         string,
@@ -264,7 +267,7 @@ export class RulesReadStatusService {
             value.acknowledgedUpdatedAt?.toISOString() ?? null,
         };
       });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      storage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
       // ignore quota / private mode
     }

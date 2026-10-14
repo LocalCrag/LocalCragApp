@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.storage-access-alert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--p-red-700);
+  color: var(--p-primary-contrast-color);
+  text-align: center;
+}

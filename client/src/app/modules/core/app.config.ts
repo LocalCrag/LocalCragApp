@@ -57,6 +57,12 @@ import {
   SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
   shouldDropSentryEvent,
 } from '../../utility/sentry-network-error';
+import {
+  isLocalStorageAccessDeniedEvent,
+  isLocalStorageAccessError,
+  LOCAL_STORAGE_ACCESS_DENIED_PATTERN,
+  readLocalStorageItem,
+} from '../../utility/local-storage';
 
 /**
  * Transloco HTTP loader.
@@ -136,9 +142,16 @@ const initSentryFromSettings = (settings: InstanceSettings): void => {
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration(),
     ],
-    ignoreErrors: SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
+    ignoreErrors: [
+      ...SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
+      LOCAL_STORAGE_ACCESS_DENIED_PATTERN,
+    ],
     beforeSend(event, hint) {
-      if (shouldDropSentryEvent(event, hint)) {
+      if (
+        shouldDropSentryEvent(event, hint) ||
+        isLocalStorageAccessError(hint?.originalException) ||
+        isLocalStorageAccessDeniedEvent(event)
+      ) {
         return null;
       }
       return event;
@@ -152,7 +165,7 @@ const initSentryFromSettings = (settings: InstanceSettings): void => {
 
 export function localeFactory(): string {
   return (
-    localStorage.getItem('preferredLanguage') || navigator.language || 'de'
+    readLocalStorageItem('preferredLanguage') || navigator.language || 'de'
   );
 }
 

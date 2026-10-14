@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { toastNotification } from '../actions/notifications.actions';
 import { LoginResponse } from '../../models/login-response';
+import { removeLocalStorageItem } from '../../utility/local-storage';
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -273,7 +274,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.cleanupCredentials),
         tap((action) => {
-          localStorage.removeItem('LocalCragAuth');
+          removeLocalStorageItem('LocalCragAuth');
           if (action.navigateToLogin) {
             this.router.navigate(['login']);
           }
