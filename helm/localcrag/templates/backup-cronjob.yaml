@@ -152,8 +152,12 @@ spec:
                   export RCLONE_CONFIG_DST_ENV_AUTH=false
 
                   rclone_run() {
+                    # Buckets already exist. Without --s3-no-check-bucket, rclone
+                    # calls CreateBucket and sends the region as a location
+                    # constraint, which endpoints in any other region reject.
                     rclone \
                       --s3-force-path-style \
+                      --s3-no-check-bucket \
                       --s3-chunk-size 16M \
                       --s3-upload-cutoff 64M \
                       --buffer-size 16M \
