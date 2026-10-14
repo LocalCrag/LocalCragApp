@@ -9,6 +9,32 @@ lc-leveled-grade-distribution {
     flex-wrap: wrap;
   }
 
+  .p-tag-label:empty {
+    display: none;
+  }
+
+  .leveled-grade-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .leveled-grade-tag__count {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .leveled-grade-tag__sep {
+    width: 1px;
+    height: 0.85em;
+    flex: 0 0 auto;
+    background: color-mix(in srgb, currentColor 55%, transparent);
+  }
+
+  .leveled-grade-tag__label {
+    font-weight: 500;
+  }
+
   .leveled-grade-tag--clickable {
     cursor: pointer;
     transition:
