@@ -19,7 +19,16 @@
         <ng-template #content let-event>
           <p-card>
             <ng-template #title>
-              {{ getHeader(event) + ": " + event.object.name }}
+              <span>{{ getHeader(event) + ": " + event.object.name }}</span>
+              @if (lineLocation(event); as location) {
+                <div class="history-line-location">
+                  <lc-topo-hierarchy-breadcrumbs
+                    [crag]="location.crag"
+                    [sector]="location.sector"
+                    [area]="location.area"
+                  ></lc-topo-hierarchy-breadcrumbs>
+                </div>
+              }
             </ng-template>
             <ng-template #subtitle>
               {{ event.timeCreated | date }},

@@ -34,6 +34,15 @@ lc-history-list {
     color: var(--p-text-color);
   }
 
+  .history-line-location {
+    margin-top: 0.25rem;
+    font-weight: 400;
+
+    lc-topo-hierarchy-breadcrumbs {
+      font-size: 0.875rem;
+    }
+  }
+
   // In dark mode the inner timeline cards share the outer card's background,
   // so the drop shadow is invisible. Lift them onto a slightly elevated
   // surface (and add a subtle border) so they read as distinct cards.
