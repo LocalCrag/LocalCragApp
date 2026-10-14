@@ -49,7 +49,7 @@ spec:
                       key: {{ default "BACKUP_S3_PREFIX" .Values.backups.target.secretKeys.prefixKey | quote }}
                       optional: true
 
-                # Credentials for the backup destination (AWS CLI).
+                # Credentials for the backup destination (rclone).
                 - name: DST_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
@@ -92,16 +92,6 @@ spec:
                 - name: SRC_BUCKET
                   value: {{ .Values.appS3.bucket | quote }}
 
-                # AWS CLI settings for S3-compatible endpoints (MinIO / SeaweedFS / backup target).
-                - name: AWS_DEFAULT_REGION
-                  value: "eu-central-1"
-                - name: AWS_EC2_METADATA_DISABLED
-                  value: "true"
-                - name: AWS_REQUEST_CHECKSUM_CALCULATION
-                  value: WHEN_REQUIRED
-                - name: AWS_RESPONSE_CHECKSUM_VALIDATION
-                  value: WHEN_REQUIRED
-
               command:
                 - /bin/sh
                 - -lc
@@ -120,6 +110,9 @@ spec:
                   : "${PGUSER:?PGUSER is required}"
                   : "${PGDATABASE:?PGDATABASE is required}"
                   : "${PGPASSWORD:?PGPASSWORD is required}"
+                  : "${SRC_ENDPOINT:?SRC_ENDPOINT is required}"
+                  : "${SRC_ACCESS_KEY:?SRC_ACCESS_KEY is required}"
+                  : "${SRC_SECRET_KEY:?SRC_SECRET_KEY is required}"
                   : "${SRC_BUCKET:?SRC_BUCKET is required}"
 
                   # Normalize prefix (remove leading/trailing slashes)
@@ -135,27 +128,37 @@ spec:
                   # Ensure required tools are available (postgres image is Debian-based)
                   export DEBIAN_FRONTEND=noninteractive
                   apt-get update -y
-                  apt-get install -y --no-install-recommends ca-certificates coreutils
-                  apt-get install -y --no-install-recommends awscli || apt-get install -y --no-install-recommends aws-cli
+                  apt-get install -y --no-install-recommends ca-certificates rclone
                   rm -rf /var/lib/apt/lists/*
 
-                  DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
+                  # Two S3 remotes. rclone streams objects between them, so the
+                  # bucket is not staged on the pod's disk.
+                  export RCLONE_CONFIG_SRC_TYPE=s3
+                  export RCLONE_CONFIG_SRC_PROVIDER=Other
+                  export RCLONE_CONFIG_SRC_ACCESS_KEY_ID="${SRC_ACCESS_KEY}"
+                  export RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY="${SRC_SECRET_KEY}"
+                  export RCLONE_CONFIG_SRC_ENDPOINT="${SRC_ENDPOINT}"
+                  export RCLONE_CONFIG_SRC_REGION=eu-central-1
+                  export RCLONE_CONFIG_SRC_FORCE_PATH_STYLE=true
+                  export RCLONE_CONFIG_SRC_ENV_AUTH=false
 
-                  # Path-style addressing matches LocalCrag S3_ADDRESSING=path
-                  mkdir -p /tmp/aws
-                  cat > /tmp/aws/config <<'EOF'
-                  [default]
-                  region = eu-central-1
-                  s3 =
-                      addressing_style = path
-                      signature_version = s3v4
-                  EOF
-                  export AWS_CONFIG_FILE=/tmp/aws/config
+                  export RCLONE_CONFIG_DST_TYPE=s3
+                  export RCLONE_CONFIG_DST_PROVIDER=Other
+                  export RCLONE_CONFIG_DST_ACCESS_KEY_ID="${DST_ACCESS_KEY}"
+                  export RCLONE_CONFIG_DST_SECRET_ACCESS_KEY="${DST_SECRET_KEY}"
+                  export RCLONE_CONFIG_DST_ENDPOINT="${BACKUP_S3_ENDPOINT}"
+                  export RCLONE_CONFIG_DST_REGION=eu-central-1
+                  export RCLONE_CONFIG_DST_FORCE_PATH_STYLE=true
+                  export RCLONE_CONFIG_DST_ENV_AUTH=false
 
-                  aws_s3() {
-                    endpoint="$1"; access="$2"; secret="$3"; shift 3
-                    AWS_ACCESS_KEY_ID="${access}" AWS_SECRET_ACCESS_KEY="${secret}" \
-                      aws --endpoint-url "${endpoint}" "$@"
+                  rclone_run() {
+                    rclone \
+                      --s3-force-path-style \
+                      --s3-chunk-size 16M \
+                      --s3-upload-cutoff 64M \
+                      --buffer-size 16M \
+                      --transfers 4 \
+                      "$@"
                   }
 
                   echo "--- Bundled backup snapshot: ${TS} ---"
@@ -165,38 +168,35 @@ spec:
                   echo "Dumping database '${PGDATABASE}' from ${PGHOST}:${PGPORT}..."
                   pg_dump --format=plain --no-owner --no-privileges "${PGDATABASE}" | gzip -9 > "${FILE}"
 
-                  PG_DST="s3://${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/postgres/${PGDATABASE}.sql.gz"
+                  PG_DST="dst:${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/postgres/${PGDATABASE}.sql.gz"
                   echo "Uploading Postgres to ${PG_DST}..."
-                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 cp "${FILE}" "${PG_DST}"
+                  rclone_run copyto "${FILE}" "${PG_DST}"
+                  rm -f "${FILE}"
 
-                  # ---- Object storage sync -> same snapshot dir ----
+                  # ---- Object storage copy -> same snapshot dir ----
                   # Keep the historical "minio/" prefix so existing backup layouts still restore.
-                  OBJ_DST="s3://${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/minio/${SRC_BUCKET}"
-                  SYNC_DIR="/tmp/s3-sync"
-                  rm -rf "${SYNC_DIR}"
-                  mkdir -p "${SYNC_DIR}"
-                  echo "Syncing s3://${SRC_BUCKET} from ${SRC_ENDPOINT} -> ${OBJ_DST} ..."
-                  aws_s3 "${SRC_ENDPOINT}" "${SRC_ACCESS_KEY}" "${SRC_SECRET_KEY}" s3 sync "s3://${SRC_BUCKET}" "${SYNC_DIR}"
-                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 sync "${SYNC_DIR}" "${OBJ_DST}"
-                  rm -rf "${SYNC_DIR}"
+                  OBJ_DST="dst:${BACKUP_S3_BUCKET}/${PREFIX}/${TS}/minio/${SRC_BUCKET}"
+                  echo "Copying src:${SRC_BUCKET} -> ${OBJ_DST} ..."
+                  rclone_run copy --stats 30s --stats-one-line "src:${SRC_BUCKET}" "${OBJ_DST}"
 
                   # ---- Retention (snapshot-level) ----
-                  echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under s3://${BACKUP_S3_BUCKET}/${PREFIX}/"
+                  echo "Applying bundled retention (keep=${BACKUP_RETENTION_KEEP}) under dst:${BACKUP_S3_BUCKET}/${PREFIX}/"
 
-                  RETENTION_URI="s3://${BACKUP_S3_BUCKET}/${PREFIX}"
+                  RETENTION_URI="dst:${BACKUP_S3_BUCKET}/${PREFIX}"
 
-                  # List all snapshot directories. aws s3 ls prints prefixes as: PRE <name>/
-                  # Parse output to get just directory names (last column, remove trailing /)
-                  aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" \
-                    s3 ls "${RETENTION_URI}/" 2>/dev/null | awk '{print $NF}' | grep '/$' | sed 's:/$::' | sort > /tmp/snapshots.txt || true
+                  # rclone lsf --dirs-only prints one "name/" per snapshot directory.
+                  if ! rclone_run lsf "${RETENTION_URI}" --dirs-only > /tmp/snapshots.raw 2>/tmp/lsf.err; then
+                    echo "DEBUG: rclone lsf failed:"
+                    cat /tmp/lsf.err
+                    : > /tmp/snapshots.raw
+                  fi
+                  sed 's:/$::' /tmp/snapshots.raw | sort > /tmp/snapshots.txt
 
-                  # Debug: show what we found
                   if [ -s /tmp/snapshots.txt ]; then
                     echo "DEBUG: Snapshot directories found:"
                     cat /tmp/snapshots.txt
                   else
-                    echo "DEBUG: No directories found. Raw aws s3 ls output:"
-                    aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 ls "${RETENTION_URI}/" 2>&1 || echo "(aws s3 ls failed)"
+                    echo "DEBUG: No snapshot directories found."
                   fi
 
                   if [ ! -s /tmp/snapshots.txt ]; then
@@ -213,14 +213,14 @@ spec:
                       head -n "${DELETE_COUNT}" /tmp/snapshots.txt | while IFS= read -r old; do
                         [ -z "${old}" ] && continue
                         echo "Deleting old bundled snapshot: ${old}"
-                        aws_s3 "${DST_ENDPOINT}" "${DST_ACCESS_KEY}" "${DST_SECRET_KEY}" s3 rm "${RETENTION_URI}/${old}/" --recursive
+                        rclone_run purge "${RETENTION_URI}/${old}"
                       done
                     else
                       echo "Retention threshold not exceeded (keeping all ${SNAPSHOT_COUNT} snapshots)."
                     fi
                   fi
 
-                  rm -f /tmp/snapshots.txt
+                  rm -f /tmp/snapshots.txt /tmp/snapshots.raw /tmp/lsf.err
 
                   echo "Bundled backup complete."
               resources:

@@ -172,7 +172,7 @@ client:
 # Scheduled backups for Postgres and object storage.
 #
 # This creates a single CronJob that backs up both the database and files together.
-# The backup container uses the postgres image (includes pg_dump) and installs the AWS CLI at runtime.
+# The backup container uses the postgres image (includes pg_dump) and installs rclone at runtime.
 # Set backups.enabled=true to enable backups, backups.enabled=false to disable.
 # You must provide S3 credentials in your Secret (see README for required keys).
 backups:
