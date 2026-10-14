@@ -1,3 +1,10 @@
+## [1.62.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.62.0...v1.62.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* **helm:** fix backup cronjob trying to create buckets ([#1306](https://github.com/LocalCrag/LocalCragApp/issues/1306)) ([d16d78a](https://github.com/LocalCrag/LocalCragApp/commit/d16d78a328e390dbfb0961c191f75363b9459ed0))
+
 # [1.62.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.61.0...v1.62.0) (2026-10-14)
 
 
