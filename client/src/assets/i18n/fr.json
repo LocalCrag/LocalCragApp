@@ -425,6 +425,7 @@
   "refreshLoginModal.refreshLoginButtonLabel": "Renouveler la connexion",
   "refreshLoginModal.title": "Renouveler la connexion",
   "appLevelAlerts.youAreOffline": "Vous êtes hors ligne. Certaines fonctionnalités sont indisponibles.",
+  "appLevelAlerts.localStorageDenied": "Le stockage du site est bloqué. LocalCrag ne peut pas conserver la connexion ni enregistrer les préférences. Autorisez les cookies et les données du site, puis rechargez la page.",
   "menu.notificationsMarkAllRead": "Marquer tout comme lu",
   "menu.notificationsEmpty": "Aucune notification.",
   "menu.notificationsMarkReadOnly": "Marquer comme lu",

@@ -425,6 +425,7 @@
   "refreshLoginModal.refreshLoginButtonLabel": "Renew login",
   "refreshLoginModal.title": "Renew login",
   "appLevelAlerts.youAreOffline": "You are offline. Some features are unavailable.",
+  "appLevelAlerts.localStorageDenied": "Site storage is blocked. LocalCrag cannot keep you signed in or save preferences. Allow cookies and site data for this site, then reload.",
   "menu.notificationsMarkAllRead": "Mark all as read",
   "menu.notificationsEmpty": "No notifications.",
   "menu.notificationsMarkReadOnly": "Mark as read",

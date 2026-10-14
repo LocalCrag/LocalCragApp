@@ -425,6 +425,7 @@
   "refreshLoginModal.refreshLoginButtonLabel": "Login vernieuwen",
   "refreshLoginModal.title": "Login vernieuwen",
   "appLevelAlerts.youAreOffline": "Je bent offline. Sommige functies zijn niet beschikbaar.",
+  "appLevelAlerts.localStorageDenied": "Siteopslag is geblokkeerd. LocalCrag kan je niet ingelogd houden en geen voorkeuren opslaan. Sta cookies en sitegegevens toe en herlaad de pagina.",
   "menu.notificationsMarkAllRead": "Alles als gelezen markeren",
   "menu.notificationsEmpty": "Geen meldingen.",
   "menu.notificationsMarkReadOnly": "Markeer als gelezen",

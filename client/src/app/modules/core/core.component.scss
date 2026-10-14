@@ -12,7 +12,7 @@
 
 .site-header {
   position: fixed;
-  top: var(--lc-offline-alert-height, 0px);
+  top: var(--lc-top-alerts-height, 0px);
   left: 0;
   right: 0;
   z-index: 1100;
@@ -30,7 +30,7 @@
 .site-header-spacer {
   flex-shrink: 0;
   height: calc(
-    var(--lc-menu-height, 3.25rem) + var(--lc-offline-alert-height, 0px)
+    var(--lc-menu-height, 3.25rem) + var(--lc-top-alerts-height, 0px)
   );
 }
 
@@ -99,7 +99,7 @@
     overflow: hidden;
     height: calc(
       100vh - var(--lc-menu-height, 3.25rem) - var(
-          --lc-offline-alert-height,
+          --lc-top-alerts-height,
           0px
         )
     );

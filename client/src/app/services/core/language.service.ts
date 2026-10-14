@@ -15,6 +15,10 @@ import { fr } from 'primelocale/js/fr.js';
 import { it } from 'primelocale/js/it.js';
 import { en_GB } from 'primelocale/js/en_GB.js';
 import { nl } from 'primelocale/js/nl.js';
+import {
+  readLocalStorageItem,
+  writeLocalStorageItem,
+} from '../../utility/local-storage';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -93,7 +97,7 @@ export class LanguageService {
     this.changeLanguage().subscribe();
 
     // Persist preference so user language stays after logging out
-    localStorage.setItem('preferredLanguage', lang);
+    writeLocalStorageItem('preferredLanguage', lang);
   }
 
   /**
@@ -108,7 +112,7 @@ export class LanguageService {
     }
 
     // Persist preference so it can be restored on next visit for anonymous users
-    localStorage.setItem('preferredLanguage', lang);
+    writeLocalStorageItem('preferredLanguage', lang);
   }
 
   /**
@@ -172,7 +176,7 @@ export class LanguageService {
    * Can either be user language (logged in) or selected language (anonymous).
    */
   restorePreferredLanguage() {
-    const saved = localStorage.getItem('preferredLanguage');
+    const saved = readLocalStorageItem('preferredLanguage');
     if (!saved) return;
     this.setPreferredLanguage(saved as LanguageCode, true);
   }

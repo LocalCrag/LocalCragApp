@@ -425,6 +425,7 @@
   "refreshLoginModal.refreshLoginButtonLabel": "Aggiorna login",
   "refreshLoginModal.title": "Aggiorna login",
   "appLevelAlerts.youAreOffline": "Sei offline. Alcune funzioni non sono disponibili.",
+  "appLevelAlerts.localStorageDenied": "L'archiviazione del sito è bloccata. LocalCrag non può mantenere l'accesso né salvare le preferenze. Consenti i cookie e i dati del sito, quindi ricarica la pagina.",
   "menu.notificationsMarkAllRead": "Segna tutte come lette",
   "menu.notificationsEmpty": "Nessuna notifica.",
   "menu.notificationsMarkReadOnly": "Segna come letta",

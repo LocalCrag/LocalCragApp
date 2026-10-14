@@ -425,6 +425,7 @@
   "refreshLoginModal.refreshLoginButtonLabel": "Login erneuern",
   "refreshLoginModal.title": "Login erneuern",
   "appLevelAlerts.youAreOffline": "Du bist offline. Einige Funktionen sind nicht verfügbar.",
+  "appLevelAlerts.localStorageDenied": "Seitenspeicher ist blockiert. LocalCrag kann die Anmeldung und Einstellungen nicht speichern. Erlaube Cookies und Website-Daten für diese Seite und lade sie neu.",
   "menu.notificationsMarkAllRead": "Alle als gelesen markieren",
   "menu.notificationsEmpty": "Keine Benachrichtigungen.",
   "menu.notificationsMarkReadOnly": "Als gelesen markieren",

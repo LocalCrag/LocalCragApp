@@ -9,6 +9,11 @@ import {
   showCookieAlert,
 } from '../actions/app-level-alerts.actions';
 import { toastNotification } from '../actions/notifications.actions';
+import {
+  isLocalStorageAccessDenied,
+  readLocalStorageItem,
+  writeLocalStorageItem,
+} from '../../utility/local-storage';
 
 /**
  * Declares effects for the app level alerts.
@@ -27,10 +32,13 @@ export class AppLevelAlertsEffects {
       this.actions$.pipe(
         ofType(checkShowCookieAlert),
         tap(() => {
-          if (
-            JSON.parse(localStorage.getItem('cookiesAccepted') as string) !==
-            true
-          ) {
+          // A blocked document cannot store consent. The storage-access banner
+          // explains that; the cookie alert would reappear on every load.
+          if (isLocalStorageAccessDenied()) {
+            return;
+          }
+          const accepted = readLocalStorageItem('cookiesAccepted');
+          if (JSON.parse(accepted ?? 'null') !== true) {
             this.store.dispatch(showCookieAlert());
           }
         }),
@@ -46,7 +54,7 @@ export class AppLevelAlertsEffects {
       this.actions$.pipe(
         ofType(cookiesAccepted),
         tap(() => {
-          localStorage.setItem('cookiesAccepted', JSON.stringify(true));
+          writeLocalStorageItem('cookiesAccepted', JSON.stringify(true));
           this.store.dispatch(toastNotification('COOKIES_ALLOWED'));
         }),
       ),
