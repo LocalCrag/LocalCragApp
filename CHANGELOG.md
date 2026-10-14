@@ -1,3 +1,10 @@
+# [1.62.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.61.0...v1.62.0) (2026-10-14)
+
+
+### Features
+
+* **helm:** update backup cronjob to sync files with rclone ([#1305](https://github.com/LocalCrag/LocalCragApp/issues/1305)) ([62e9ef5](https://github.com/LocalCrag/LocalCragApp/commit/62e9ef5cee655180f7552d457c275f745355cecb))
+
 # [1.61.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.60.0...v1.61.0) (2026-10-12)
 
 
