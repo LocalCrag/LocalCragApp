@@ -12,11 +12,7 @@
     </p>
 
     @if (mode === "stacked" && stacked && stacked.gradedCount > 0) {
-      <p-meterGroup
-        [value]="meterItems"
-        [min]="0"
-        [max]="stacked.gradedCount"
-      >
+      <p-meterGroup [value]="meterItems" [min]="0" [max]="stacked.gradedCount">
         <ng-template #label>
           <div
             class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-4"
