@@ -197,7 +197,7 @@ helm install localcrag ./helm/localcrag \
 This chart can create a **CronJob** that backs up both:
 
 - Postgres (logical dump via `pg_dump`)
-- Object storage (bucket sync via AWS CLI `aws s3 sync`)
+- Object storage (bucket copy via rclone, streamed between the two endpoints)
 
 The backup job bundles both database and files into a single snapshot per run.
 
