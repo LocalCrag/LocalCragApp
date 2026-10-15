@@ -6,6 +6,7 @@ from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.notification import Notification
 from models.user import User
+from util.notification_digest_builder import build_digest_items
 from util.voting import update_grades_and_rating
 
 
@@ -493,6 +494,111 @@ def test_moderator_clear_ascent_fa(client, moderator_token):
             Notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED, Notification.entity_id == ascent.id
         ).count()
         == 1
+    )
+
+
+def _fa_ascent_payload():
+    return {
+        "flash": False,
+        "fa": True,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 4,
+        "comment": "FA ascent",
+        "year": None,
+        "gradeValue": 11,
+        "line": str(Line.get_id_by_slug("the-vessel")),
+        "date": "2024-04-13",
+    }
+
+
+def test_moderator_clear_ascent_fa_stores_optional_message(client, moderator_token, member_token):
+    rv = client.post("/api/ascents", token=member_token, json=_fa_ascent_payload())
+    assert rv.status_code == 201, rv.text
+    ascent_id = rv.json["id"]
+    message = "Earlier ascent is documented. <b>not html</b>"
+
+    rv = client.post(
+        f"/api/ascents/{ascent_id}/clear-fa",
+        token=moderator_token,
+        json={"message": f"  {message}  "},
+    )
+    assert rv.status_code == 200, rv.text
+    assert rv.json["fa"] is False
+
+    note = Notification.query.filter(
+        Notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED,
+        Notification.entity_id == ascent_id,
+    ).one()
+    assert note.message == message
+
+    rv = client.get("/api/account/notifications?include_dismissed=1", token=member_token)
+    assert rv.status_code == 200, rv.text
+    row = next(item for item in rv.json["items"] if item["id"] == str(note.id))
+    assert row["properties"]["faRemoval"]["message"] == message
+    assert row["actionLink"].endswith("/ascents")
+
+    rv = client.get(f"/api/account/notifications/{note.id}", token=member_token)
+    assert rv.status_code == 200, rv.text
+    assert rv.json["properties"]["faRemoval"]["message"] == message
+
+    rv = client.get(f"/api/account/notifications/{note.id}", token=moderator_token)
+    assert rv.status_code == 404
+
+    items = build_digest_items([note], None)
+    assert len(items) == 1
+    assert f"notifications?faRemoval={note.id}" in items[0]["html"]
+    assert message not in items[0]["html"]
+    assert "/topo/" in items[0]["html"]
+
+
+def test_moderator_clear_ascent_fa_blank_message_is_omitted(client, moderator_token, member_token):
+    rv = client.post("/api/ascents", token=member_token, json=_fa_ascent_payload())
+    assert rv.status_code == 201, rv.text
+    ascent_id = rv.json["id"]
+
+    rv = client.post(
+        f"/api/ascents/{ascent_id}/clear-fa",
+        token=moderator_token,
+        json={"message": "   "},
+    )
+    assert rv.status_code == 200, rv.text
+
+    note = Notification.query.filter(
+        Notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED,
+        Notification.entity_id == ascent_id,
+    ).one()
+    assert note.message is None
+
+    rv = client.get(f"/api/account/notifications/{note.id}", token=member_token)
+    assert rv.status_code == 200, rv.text
+    assert "faRemoval" not in rv.json["properties"]
+
+    items = build_digest_items([note], None)
+    assert f"notifications?faRemoval={note.id}" not in items[0]["html"]
+
+
+def test_moderator_clear_ascent_fa_rejects_long_message(client, moderator_token, member_token):
+    rv = client.post("/api/ascents", token=member_token, json=_fa_ascent_payload())
+    assert rv.status_code == 201, rv.text
+    ascent_id = rv.json["id"]
+
+    rv = client.post(
+        f"/api/ascents/{ascent_id}/clear-fa",
+        token=moderator_token,
+        json={"message": "x" * 2001},
+    )
+    assert rv.status_code == 400
+
+    ascent = Ascent.find_by_id(ascent_id)
+    assert ascent.fa is True
+    assert (
+        Notification.query.filter(
+            Notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED,
+            Notification.entity_id == ascent_id,
+        ).count()
+        == 0
     )
 
 

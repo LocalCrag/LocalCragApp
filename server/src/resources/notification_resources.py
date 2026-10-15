@@ -3,6 +3,7 @@ from flask.views import MethodView
 from sqlalchemy import text
 from webargs.flaskparser import parser
 
+from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.line_schema import ascent_and_todo_lines_schema
 from models.admin_message import AdminMessage
@@ -82,6 +83,88 @@ def _notification_action_link(notification: Notification) -> str | None:
     return None
 
 
+def _serialize_notification(notification: Notification) -> dict:
+    actor_name = None
+    if notification.actor:
+        actor_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
+    line_payload = None
+    topic_name = None
+    reaction_emoji = None
+    if notification.entity_type == "ascent" and notification.entity_id:
+        ascent = Ascent.query.filter_by(id=notification.entity_id).first()
+        if ascent and ascent.line:
+            line_payload = ascent_and_todo_lines_schema.dump(ascent.line)
+    if notification.entity_type == "comment" and notification.entity_id:
+        comment = Comment.query.filter_by(id=notification.entity_id).first()
+        topic_line = _line_from_comment(comment)
+        if topic_line:
+            line_payload = ascent_and_todo_lines_schema.dump(topic_line)
+        topic_name = _topic_name_from_comment(comment)
+    if (
+        notification.type.value == "reaction"
+        and notification.actor_id
+        and notification.entity_type
+        and notification.entity_id
+    ):
+        reaction = (
+            Reaction.query.filter_by(
+                created_by_id=notification.actor_id,
+                target_type=notification.entity_type,
+                target_id=notification.entity_id,
+            )
+            .order_by(Reaction.time_created.desc())
+            .first()
+        )
+        if reaction:
+            reaction_emoji = reaction.emoji
+    properties: dict = {}
+    if line_payload is not None or topic_name is not None:
+        properties["subject"] = {
+            "line": line_payload,
+            "topicName": topic_name,
+        }
+    if reaction_emoji is not None:
+        properties["reaction"] = {"emoji": reaction_emoji}
+    if notification.type.value == "release_notes" and notification.entity_id:
+        properties["releaseNotes"] = {
+            "releaseNoteItemKeys": _release_note_item_keys_for_bundle(
+                notification.entity_id,
+            ),
+        }
+    if notification.entity_type == "moderator_task" and notification.entity_id:
+        task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
+        if task:
+            properties["moderatorTask"] = {
+                "title": task.title,
+                "targetLabel": moderator_task_target_label(task),
+            }
+    if (
+        notification.type == NotificationTypeEnum.ADMIN_MESSAGE
+        and notification.entity_type == "admin_message"
+        and notification.entity_id
+    ):
+        admin_message = AdminMessage.query.filter_by(id=notification.entity_id).first()
+        if admin_message:
+            properties["adminMessage"] = {
+                "title": admin_message.title,
+                "text": admin_message.text,
+            }
+    if notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED and notification.message:
+        properties["faRemoval"] = {"message": notification.message}
+    return {
+        "id": str(notification.id),
+        "type": notification.type.value,
+        "timeCreated": notification.time_created,
+        "actorId": str(notification.actor_id) if notification.actor_id else None,
+        "actorName": actor_name,
+        "entityType": notification.entity_type,
+        "entityId": str(notification.entity_id) if notification.entity_id else None,
+        "actionLink": _notification_action_link(notification),
+        "isDismissed": notification.dismissed_at is not None,
+        "properties": properties,
+    }
+
+
 def _release_note_item_keys_for_bundle(bundle_id) -> list[str]:
     rows = ReleaseNoteItem.query.filter(ReleaseNoteItem.bundle_id == bundle_id).all()
     if not rows:
@@ -113,86 +196,19 @@ class GetNotifications(MethodView):
         for notification in notifications.items:
             if not should_show_notification_to_user(user, notification.type):
                 continue
-            actor_name = None
-            if notification.actor:
-                actor_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
-            line_payload = None
-            topic_name = None
-            reaction_emoji = None
-            if notification.entity_type == "ascent" and notification.entity_id:
-                ascent = Ascent.query.filter_by(id=notification.entity_id).first()
-                if ascent and ascent.line:
-                    line_payload = ascent_and_todo_lines_schema.dump(ascent.line)
-            if notification.entity_type == "comment" and notification.entity_id:
-                comment = Comment.query.filter_by(id=notification.entity_id).first()
-                topic_line = _line_from_comment(comment)
-                if topic_line:
-                    line_payload = ascent_and_todo_lines_schema.dump(topic_line)
-                topic_name = _topic_name_from_comment(comment)
-            if (
-                notification.type.value == "reaction"
-                and notification.actor_id
-                and notification.entity_type
-                and notification.entity_id
-            ):
-                reaction = (
-                    Reaction.query.filter_by(
-                        created_by_id=notification.actor_id,
-                        target_type=notification.entity_type,
-                        target_id=notification.entity_id,
-                    )
-                    .order_by(Reaction.time_created.desc())
-                    .first()
-                )
-                if reaction:
-                    reaction_emoji = reaction.emoji
-            properties: dict = {}
-            if line_payload is not None or topic_name is not None:
-                properties["subject"] = {
-                    "line": line_payload,
-                    "topicName": topic_name,
-                }
-            if reaction_emoji is not None:
-                properties["reaction"] = {"emoji": reaction_emoji}
-            if notification.type.value == "release_notes" and notification.entity_id:
-                properties["releaseNotes"] = {
-                    "releaseNoteItemKeys": _release_note_item_keys_for_bundle(
-                        notification.entity_id,
-                    ),
-                }
-            if notification.entity_type == "moderator_task" and notification.entity_id:
-                task = ModeratorTask.query.filter_by(id=notification.entity_id).first()
-                if task:
-                    properties["moderatorTask"] = {
-                        "title": task.title,
-                        "targetLabel": moderator_task_target_label(task),
-                    }
-            if (
-                notification.type == NotificationTypeEnum.ADMIN_MESSAGE
-                and notification.entity_type == "admin_message"
-                and notification.entity_id
-            ):
-                admin_message = AdminMessage.query.filter_by(id=notification.entity_id).first()
-                if admin_message:
-                    properties["adminMessage"] = {
-                        "title": admin_message.title,
-                        "text": admin_message.text,
-                    }
-            row: dict = {
-                "id": str(notification.id),
-                "type": notification.type.value,
-                "timeCreated": notification.time_created,
-                "actorId": str(notification.actor_id) if notification.actor_id else None,
-                "actorName": actor_name,
-                "entityType": notification.entity_type,
-                "entityId": str(notification.entity_id) if notification.entity_id else None,
-                "actionLink": _notification_action_link(notification),
-                "isDismissed": notification.dismissed_at is not None,
-                "properties": properties,
-            }
-            payload.append(row)
+            payload.append(_serialize_notification(notification))
 
         return jsonify({"items": payload, "hasNext": notifications.has_next}), 200
+
+
+class GetNotification(MethodView):
+    @session_required()
+    def get(self, notification_id):
+        user = User.find_by_email(get_session_identity())
+        notification = Notification.query.filter_by(id=notification_id, user_id=user.id).first()
+        if not notification or not should_show_notification_to_user(user, notification.type):
+            raise NotFound()
+        return jsonify(_serialize_notification(notification)), 200
 
 
 class GetNotificationsCount(MethodView):

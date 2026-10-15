@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.remove-fa-dialog-intro {
+  margin-top: 0;
+}
+
+.remove-fa-dialog-label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.remove-fa-dialog-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--p-text-muted-color);
+}

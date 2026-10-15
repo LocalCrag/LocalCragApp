@@ -174,13 +174,16 @@ def _build_digest_item(
                 moderator_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
                 moderator_email = notification.actor.email
                 target_link = _target_anchor(line_link, line.name, quote=True)
-                return {
-                    "html": digest_i18n["fa_removed_text"].format(
-                        moderator_name=html.escape(moderator_name),
-                        moderator_email=html.escape(moderator_email),
-                        target_link=target_link,
-                    ),
-                }
+                body = digest_i18n["fa_removed_text"].format(
+                    moderator_name=html.escape(moderator_name),
+                    moderator_email=html.escape(moderator_email),
+                    target_link=target_link,
+                )
+                if notification is not None and notification.message:
+                    message_href = frontend_url(f"notifications?faRemoval={notification.id}")
+                    message_link = _target_anchor(message_href, digest_i18n["fa_removed_message_link"])
+                    body = f"{body} {message_link}"
+                return {"html": body}
         return None
     return None
 

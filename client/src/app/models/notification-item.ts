@@ -23,12 +23,17 @@ export interface NotificationAdminMessageProperties {
   text: string;
 }
 
+export interface NotificationFaRemovalProperties {
+  message: string;
+}
+
 export interface NotificationItemProperties {
   subject?: NotificationSubjectProperties;
   reaction?: NotificationReactionProperties;
   moderatorTask?: NotificationModeratorTaskProperties;
   releaseNotes?: NotificationReleaseNotesProperties;
   adminMessage?: NotificationAdminMessageProperties;
+  faRemoval?: NotificationFaRemovalProperties;
 }
 
 export interface NotificationItem {
