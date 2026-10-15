@@ -37,9 +37,12 @@ export class AscentsService {
       .pipe(map(Ascent.deserialize));
   }
 
-  public clearAscentFa(ascentId: string): Observable<Ascent> {
+  public clearAscentFa(
+    ascentId: string,
+    message: string | null = null,
+  ): Observable<Ascent> {
     return this.http
-      .post(this.api.ascents.clearFa(ascentId), {})
+      .post(this.api.ascents.clearFa(ascentId), { message })
       .pipe(map(Ascent.deserialize));
   }
 

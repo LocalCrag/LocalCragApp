@@ -134,6 +134,7 @@ from resources.moderator_task_resources import (
 from resources.notification_resources import (
     DismissAllNotifications,
     DismissNotification,
+    GetNotification,
     GetNotifications,
     GetNotificationsCount,
 )
@@ -358,6 +359,10 @@ def configure_api(app):
     )
     account_bp.add_url_rule("/notifications", view_func=GetNotifications.as_view("get_notifications"))
     account_bp.add_url_rule("/notifications/count", view_func=GetNotificationsCount.as_view("get_notifications_count"))
+    account_bp.add_url_rule(
+        "/notifications/<string:notification_id>",
+        view_func=GetNotification.as_view("get_notification"),
+    )
     account_bp.add_url_rule(
         "/notifications/<string:notification_id>/dismiss",
         view_func=DismissNotification.as_view("dismiss_notification"),

@@ -33,3 +33,5 @@ class Notification(db.Model):
     time_created = db.Column(db.DateTime(), default=lambda: datetime.datetime.now(pytz.utc), nullable=False)
     delivered_at = db.Column(db.DateTime(), nullable=True)
     dismissed_at = db.Column(db.DateTime(), nullable=True)
+    # Optional plain-text note attached to this notification. One language, no markup.
+    message = db.Column(db.Text(), nullable=True)

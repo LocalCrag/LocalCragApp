@@ -1,6 +1,9 @@
+from marshmallow import validate
 from webargs import fields
 
 from webargs_schemas.line_args import validate_fa_date, validate_fa_year
+
+FA_REMOVAL_MESSAGE_MAX_LENGTH = 2000
 
 ticks_args = {
     "user": fields.String(required=False),
@@ -31,6 +34,15 @@ ascent_args = {
 project_climbed_args = {
     "line": fields.String(required=True, allow_none=False),
     "message": fields.String(required=True, allow_none=False),
+}
+
+clear_ascent_fa_args = {
+    "message": fields.Str(
+        required=False,
+        allow_none=True,
+        load_default=None,
+        validate=validate.Length(max=FA_REMOVAL_MESSAGE_MAX_LENGTH),
+    ),
 }
 
 

@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Popover } from 'primeng/popover';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NotificationsService } from '../../../services/crud/notifications.service';
@@ -19,6 +20,7 @@ import { NotificationPresentationService } from '../notification-presentation.se
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
+import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-removal-message-dialog.service';
 
 @Component({
   selector: 'lc-notification-bell',
@@ -26,7 +28,12 @@ import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-n
   styleUrls: ['./notification-bell.component.scss'],
   encapsulation: ViewEncapsulation.None,
   imports: [TranslocoDirective, Popover, RouterLink, ProgressSpinnerModule],
-  providers: [LineGradePipe, NotificationPresentationService],
+  providers: [
+    LineGradePipe,
+    NotificationPresentationService,
+    DialogService,
+    FaRemovalMessageDialogService,
+  ],
 })
 export class NotificationBellComponent implements OnInit {
   notifications: NotificationItem[] = [];
@@ -43,6 +50,7 @@ export class NotificationBellComponent implements OnInit {
   private router = inject(Router);
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
+  private faRemovalDialog = inject(FaRemovalMessageDialogService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -97,6 +105,9 @@ export class NotificationBellComponent implements OnInit {
 
     const go = (): void => {
       popover.hide();
+      if (this.faRemovalDialog.openFromNotification(item)) {
+        return;
+      }
       if (link) {
         this.router.navigateByUrl(link);
       }

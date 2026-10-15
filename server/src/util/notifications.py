@@ -33,6 +33,7 @@ def create_notification_for_user(
     actor_id=None,
     entity_type=None,
     entity_id=None,
+    message=None,
 ):
     notification = Notification()
     notification.user_id = user_id
@@ -40,4 +41,5 @@ def create_notification_for_user(
     notification.actor_id = actor_id
     notification.entity_type = entity_type
     notification.entity_id = entity_id
+    notification.message = message
     return notification
