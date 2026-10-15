@@ -17,7 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column("notifications", sa.Column("message", sa.Text(), nullable=True))
+    op.add_column("notifications", sa.Column("message", sa.String(length=2000), nullable=True))
 
 
 def downgrade():
