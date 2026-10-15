@@ -80,7 +80,17 @@ def test_successful_change_value_history(client, moderator_token):
     rv = client.get("/api/history?page=1&per_page=1000", token=moderator_token)
     assert rv.status_code == 200
     res = rv.json
-    assert res["items"][0]["oldValue"] != res["items"][0]["newValue"]
+    line_item = res["items"][0]
+    assert line_item["oldValue"] != line_item["newValue"]
+    assert line_item["objectType"] == "Line"
+    assert line_item["object"]["name"] == "Es"
+    assert line_item["object"]["slug"] == "es"
+    assert line_item["object"]["area"]["name"] == "Shark Attack"
+    assert line_item["object"]["area"]["slug"] == "shark-attack"
+    assert line_item["object"]["area"]["sector"]["name"] == "Pampelmousse"
+    assert line_item["object"]["area"]["sector"]["slug"] == "pampelmousse"
+    assert line_item["object"]["area"]["sector"]["crag"]["name"] == "Brione"
+    assert line_item["object"]["area"]["sector"]["crag"]["slug"] == "brione"
 
 
 def test_history_respects_secret_flag(client, moderator_token):

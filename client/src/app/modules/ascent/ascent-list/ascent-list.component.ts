@@ -67,6 +67,7 @@ import { LanguageService } from '../../../services/core/language.service';
 import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { CommentsDialogComponent } from '../../comments/comments-dialog/comments-dialog.component';
+import { RemoveFaDialogComponent } from '../remove-fa-dialog/remove-fa-dialog.component';
 
 @Component({
   selector: 'lc-ascent-list',
@@ -541,34 +542,15 @@ export class AscentListComponent
     menu.toggle(event);
   }
 
-  public confirmRemoveFaTag(event: Event, ascent: Ascent) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: this.translocoService.translate(
-        marker('ascent.askReallyWantToRemoveFaTag'),
-      ),
-      acceptLabel: this.translocoService.translate(
-        marker('ascent.yesRemoveFa'),
-      ),
-      acceptButtonStyleClass: 'p-button-warning',
-      rejectLabel: this.translocoService.translate(
-        marker('ascent.noDontDelete'),
-      ),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.removeFaTag(ascent);
-      },
-    });
-  }
-
-  private removeFaTag(ascent: Ascent) {
-    this.ascentsService.clearAscentFa(ascent.id).subscribe((updated) => {
-      ascent.fa = updated.fa;
-      this.store.dispatch(toastNotification('ASCENT_FA_REMOVED'));
-      this.store.dispatch(
-        reloadAfterAscent({ ascendedLineId: ascent.line.id }),
-      );
-      this.cdr.markForCheck();
+  public openRemoveFaDialog(ascent: Ascent) {
+    this.ref = this.dialogService.open(RemoveFaDialogComponent, {
+      modal: true,
+      header: this.translocoService.translate(marker('ascent.removeFaTag')),
+      width: '32rem',
+      breakpoints: { '640px': '95vw' },
+      dismissableMask: true,
+      closeOnEscape: true,
+      data: { ascent },
     });
   }
 
@@ -606,8 +588,8 @@ export class AscentListComponent
         label: this.translocoService.translate(marker('ascent.removeFaTag')),
         icon: 'pi pi-star',
         id: 'remove-fa-tag',
-        command: (e) => {
-          this.confirmRemoveFaTag(e.originalEvent, this.clickedAscentForAction);
+        command: () => {
+          this.openRemoveFaDialog(this.clickedAscentForAction);
         },
       });
     }

@@ -217,6 +217,13 @@
       <div class="mb-2">
         <em>{{ t("gradeBracketsDescriptionStackedChart") }}</em>
       </div>
+      @if (loadingState !== LoadingState.INITIAL_LOADING) {
+        <lc-scale-bracket-preview
+          mode="stacked"
+          [grades]="gradeControls()"
+          [brackets]="stackedChartBracketsControls()"
+        />
+      }
       @for (
         _ of stackedChartBracketsControls().controls;
         track _;
@@ -324,6 +331,13 @@
       <div class="mb-2">
         <em>{{ t("gradeBracketsDescriptionBarChart") }}</em>
       </div>
+      @if (loadingState !== LoadingState.INITIAL_LOADING) {
+        <lc-scale-bracket-preview
+          mode="bar"
+          [grades]="gradeControls()"
+          [brackets]="barChartBracketsControls()"
+        />
+      }
 
       @for (_ of barChartBracketsControls().controls; track _; let i = $index) {
         <div class="col-span-12" formArrayName="barChartBrackets">

@@ -24,6 +24,22 @@ describe('rock-explorer-recording', () => {
       expect(a).toBe(b);
       expect(store[RECORDING_DEVICE_ID_KEY]).toBe(a);
     });
+
+    it('keeps a stable id when storage writes throw', () => {
+      const storage = {
+        getItem: () => null,
+        setItem: () => {
+          throw new DOMException(
+            "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
+            'SecurityError',
+          );
+        },
+      } as unknown as Storage;
+      const a = getOrCreateRecordingDeviceId(storage);
+      const b = getOrCreateRecordingDeviceId(storage);
+      expect(a).toBeTruthy();
+      expect(a).toBe(b);
+    });
   });
 
   describe('distanceMeters / shouldKeepGpsPoint', () => {

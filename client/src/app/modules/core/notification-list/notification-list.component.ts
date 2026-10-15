@@ -18,6 +18,7 @@ import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { AdminMessageDialogService } from '../admin-message-dialog/admin-message-dialog.service';
+import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-removal-message-dialog.service';
 
 @Component({
   selector: 'lc-notification-list',
@@ -30,6 +31,7 @@ import { AdminMessageDialogService } from '../admin-message-dialog/admin-message
     NotificationPresentationService,
     DialogService,
     AdminMessageDialogService,
+    FaRemovalMessageDialogService,
   ],
 })
 export class NotificationListComponent implements OnInit {
@@ -48,6 +50,7 @@ export class NotificationListComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
   private adminMessageDialog = inject(AdminMessageDialogService);
+  private faRemovalDialog = inject(FaRemovalMessageDialogService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -67,6 +70,16 @@ export class NotificationListComponent implements OnInit {
         void this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { adminMessage: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+      const faRemovalId = params.get('faRemoval');
+      if (faRemovalId) {
+        this.faRemovalDialog.openById(faRemovalId);
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { faRemoval: null },
           queryParamsHandling: 'merge',
           replaceUrl: true,
         });
@@ -108,6 +121,9 @@ export class NotificationListComponent implements OnInit {
 
   public openNotification(notification: NotificationItem): void {
     const go = (): void => {
+      if (this.faRemovalDialog.openFromNotification(notification)) {
+        return;
+      }
       if (notification.type === 'admin_message' && notification.entityId) {
         this.adminMessageDialog.openById(
           notification.entityId,

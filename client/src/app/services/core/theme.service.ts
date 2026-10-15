@@ -11,6 +11,10 @@ import {
   cleanupCredentials,
   newAuthCredentials,
 } from '../../ngrx/actions/auth.actions';
+import {
+  readLocalStorageItem,
+  writeLocalStorageItem,
+} from '../../utility/local-storage';
 
 export type ColorScheme = 'light' | 'dark' | 'system';
 
@@ -62,7 +66,7 @@ export class ThemeService {
   toggleGuestColorScheme(): void {
     const next: ColorScheme = this.isDarkMode() ? 'light' : 'dark';
     this.applyColorScheme(next);
-    localStorage.setItem(GUEST_COLOR_SCHEME_STORAGE_KEY, next);
+    writeLocalStorageItem(GUEST_COLOR_SCHEME_STORAGE_KEY, next);
   }
 
   applyColorScheme(scheme: ColorScheme): void {
@@ -82,7 +86,7 @@ export class ThemeService {
   }
 
   private readGuestColorScheme(): ColorScheme | null {
-    const saved = localStorage.getItem(GUEST_COLOR_SCHEME_STORAGE_KEY);
+    const saved = readLocalStorageItem(GUEST_COLOR_SCHEME_STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') {
       return saved;
     }

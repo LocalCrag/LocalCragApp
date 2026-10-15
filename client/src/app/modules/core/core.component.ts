@@ -25,7 +25,7 @@ import { PageTitleComponent } from './page-title/page-title.component';
 import { RulesAlertComponent } from '../shared/components/rules-alert/rules-alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
-import { OfflineAlertComponent } from './offline-alert/offline-alert.component';
+import { TopAlertsComponent } from './top-alerts/top-alerts.component';
 import { MenuComponent } from './menu/menu.component';
 import {
   ActivatedRoute,
@@ -54,7 +54,7 @@ import { Subscription } from 'rxjs';
     RulesAlertComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
-    OfflineAlertComponent,
+    TopAlertsComponent,
     MenuComponent,
     RouterOutlet,
     FooterComponent,

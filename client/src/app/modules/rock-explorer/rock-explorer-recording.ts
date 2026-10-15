@@ -7,6 +7,7 @@ import {
   newPathId,
 } from '../../models/rock-explorer-misc';
 import type { RockExplorerDraftSnapshot } from './offline/rock-explorer-draft.types';
+import { getLocalStorage } from '../../utility/local-storage';
 
 /** localStorage key for stable hard-lock device id. */
 export const RECORDING_DEVICE_ID_KEY = 'rockExplorer.recordingDeviceId';
@@ -27,18 +28,30 @@ export type GpsFix = {
   lat: number;
 };
 
+/** In-memory id when the document denies localStorage. Stable for this page load. */
+let memoryRecordingDeviceId: string | null = null;
+
 /**
  * Persist or create a stable recording device id for draft hard-lock.
+ * Falls back to a memory id when localStorage access is denied.
  */
-export function getOrCreateRecordingDeviceId(
-  storage: Storage = localStorage,
-): string {
-  const existing = storage.getItem(RECORDING_DEVICE_ID_KEY);
+export function getOrCreateRecordingDeviceId(storage?: Storage): string {
+  const resolved = storage ?? getLocalStorage();
+  if (!resolved) {
+    memoryRecordingDeviceId ??= crypto.randomUUID();
+    return memoryRecordingDeviceId;
+  }
+  const existing = resolved.getItem(RECORDING_DEVICE_ID_KEY);
   if (existing && existing.trim().length > 0) {
     return existing;
   }
   const id = crypto.randomUUID();
-  storage.setItem(RECORDING_DEVICE_ID_KEY, id);
+  try {
+    resolved.setItem(RECORDING_DEVICE_ID_KEY, id);
+  } catch {
+    memoryRecordingDeviceId ??= id;
+    return memoryRecordingDeviceId;
+  }
   return id;
 }
 

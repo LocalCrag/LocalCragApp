@@ -35,6 +35,7 @@ from util.validators import cross_validate_grade
 from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
     ascent_args,
+    clear_ascent_fa_args,
     cross_validate_ascent_args,
     project_climbed_args,
 )
@@ -302,6 +303,8 @@ class ClearAscentFa(MethodView):
     def post(self, ascent_id):
         moderator = User.find_by_email(get_session_identity())
         ascent: Ascent = Ascent.find_by_id(ascent_id)
+        data = parser.parse(clear_ascent_fa_args, request)
+        message = (data.get("message") or "").strip() or None
         if ascent.fa:
             ascent.fa = False
             db.session.add(ascent)
@@ -315,6 +318,7 @@ class ClearAscentFa(MethodView):
                         actor_id=moderator.id,
                         entity_type="ascent",
                         entity_id=ascent.id,
+                        message=message,
                     )
                 )
             db.session.commit()

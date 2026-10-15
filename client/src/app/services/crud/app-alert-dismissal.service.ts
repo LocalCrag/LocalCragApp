@@ -7,6 +7,7 @@ import { ApiService } from '../core/api.service';
 import { selectIsLoggedIn } from '../../ngrx/selectors/auth.selectors';
 import { parseServerUtcDate } from '../../utility/parse-server-utc-date';
 import { AppAlert } from '../../models/app-alert';
+import { getLocalStorage } from '../../utility/local-storage';
 
 const STORAGE_KEY = 'appAlertDismissalsV1';
 const EPOCH = new Date(0);
@@ -81,11 +82,12 @@ export class AppAlertDismissalService {
 
   private readLocalStorage(): Map<string, Date> {
     const cache = new Map<string, Date>();
-    if (typeof localStorage === 'undefined') {
+    const storage = getLocalStorage();
+    if (!storage) {
       return cache;
     }
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = storage.getItem(STORAGE_KEY);
       if (!raw) {
         return cache;
       }
@@ -103,7 +105,8 @@ export class AppAlertDismissalService {
   }
 
   private persistLocalStorage(cache: Map<string, Date>): void {
-    if (typeof localStorage === 'undefined') {
+    const storage = getLocalStorage();
+    if (!storage) {
       return;
     }
     try {
@@ -111,7 +114,7 @@ export class AppAlertDismissalService {
       cache.forEach((value, key) => {
         payload[key] = value.toISOString();
       });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      storage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
       // ignore quota / private mode
     }

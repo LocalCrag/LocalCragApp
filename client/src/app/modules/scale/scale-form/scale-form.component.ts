@@ -48,6 +48,7 @@ import {
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectNoClosedProjects } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AsyncPipe } from '@angular/common';
+import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bracket-preview.component';
 
 @Component({
   selector: 'lc-scale-form',
@@ -73,6 +74,7 @@ import { AsyncPipe } from '@angular/common';
     FormEntryRowComponent,
     NgxColorsModule,
     AsyncPipe,
+    ScaleBracketPreviewComponent,
   ],
   providers: [ConfirmationService],
 })

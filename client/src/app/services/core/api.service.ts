@@ -32,6 +32,8 @@ export class ApiService {
     getRecentSearches: (): string => `${this.apiHost}account/recent-searches`,
     createRecentSearch: (): string => `${this.apiHost}account/recent-searches`,
     getNotifications: (): string => `${this.apiHost}account/notifications`,
+    getNotification: (id: string): string =>
+      `${this.apiHost}account/notifications/${id}`,
     getNotificationsCount: (): string =>
       `${this.apiHost}account/notifications/count`,
     dismissNotification: (id: string): string =>

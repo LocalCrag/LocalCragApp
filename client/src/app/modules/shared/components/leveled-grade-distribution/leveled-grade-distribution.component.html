@@ -25,7 +25,6 @@
               @for (meterValue of data.meterValues; track meterValue) {
                 <div class="p-metergroup-label">
                   <p-tag
-                    value="{{ meterValue.value }} {{ meterValue.label }}"
                     [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: meterValue.color,
@@ -39,37 +38,70 @@
                         meterValue.maxGrade
                       )
                     "
-                  />
+                  >
+                    <span class="leveled-grade-tag">
+                      <span class="leveled-grade-tag__count">{{
+                        meterValue.value
+                      }}</span>
+                      <span
+                        class="leveled-grade-tag__sep"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="leveled-grade-tag__label">{{
+                        meterValue.label
+                      }}</span>
+                    </span>
+                  </p-tag>
                 </div>
               }
               @if (data.ungraded > 0) {
                 <div class="p-metergroup-label">
                   <p-tag
-                    value="{{ data.ungraded }} {{
-                      t('leveledGradeDistributionUngraded')
-                    }}"
                     [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: '#e5e7eb',
                       color: textColor('#e5e7eb', '#2e3132'),
                     }"
                     (click)="onGradeRangeClick($event, data, 0, 0)"
-                  />
+                  >
+                    <span class="leveled-grade-tag">
+                      <span class="leveled-grade-tag__count">{{
+                        data.ungraded
+                      }}</span>
+                      <span
+                        class="leveled-grade-tag__sep"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="leveled-grade-tag__label">{{
+                        t("leveledGradeDistributionUngraded")
+                      }}</span>
+                    </span>
+                  </p-tag>
                 </div>
               }
               @if (data.projects > 0) {
                 <div class="p-metergroup-label">
                   <p-tag
-                    value="{{ data.projects }} {{
-                      t('leveledGradeDistributionProjects')
-                    }}"
                     [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
                       backgroundColor: '#e5e7eb',
                       color: textColor('#e5e7eb', '#2e3132'),
                     }"
                     (click)="onGradeRangeClick($event, data, -2, -1)"
-                  />
+                  >
+                    <span class="leveled-grade-tag">
+                      <span class="leveled-grade-tag__count">{{
+                        data.projects
+                      }}</span>
+                      <span
+                        class="leveled-grade-tag__sep"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="leveled-grade-tag__label">{{
+                        t("leveledGradeDistributionProjects")
+                      }}</span>
+                    </span>
+                  </p-tag>
                 </div>
               }
             </div>

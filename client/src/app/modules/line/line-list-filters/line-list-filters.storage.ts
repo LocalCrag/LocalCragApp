@@ -1,4 +1,5 @@
 import { LineType } from '../../../enums/line-type';
+import { getLocalStorage } from '../../../utility/local-storage';
 import {
   LineListFiltersPersisted,
   sanitizeLineListAdvancedFilters,
@@ -16,9 +17,10 @@ const STORAGE_KEY = 'lineListFiltersV1';
  * Returns `null` when storage is unavailable, missing, invalid, or from an unknown key version.
  */
 export function loadLineListFilters(): LineListFiltersPersisted | null {
-  if (typeof localStorage === 'undefined') return null;
+  const storage = getLocalStorage();
+  if (!storage) return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as LineListFiltersPersisted;
     if (!parsed?.grade || !parsed.advanced) return null;
@@ -58,9 +60,10 @@ export function loadLineListFilters(): LineListFiltersPersisted | null {
 
 /** Persists grade and advanced filters in localStorage. */
 export function saveLineListFilters(payload: LineListFiltersPersisted): void {
-  if (typeof localStorage === 'undefined') return;
+  const storage = getLocalStorage();
+  if (!storage) return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    storage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch {
     // ignore quota / private mode
   }

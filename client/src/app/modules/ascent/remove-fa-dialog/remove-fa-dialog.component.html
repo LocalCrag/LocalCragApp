@@ -1,0 +1,30 @@
+<ng-container *transloco="let t; read: 'ascent'">
+  <p class="remove-fa-dialog-intro">{{ t("askReallyWantToRemoveFaTag") }}</p>
+  <label class="remove-fa-dialog-label" for="remove-fa-message">
+    {{ t("removeFaMessageLabel") }}
+  </label>
+  <textarea
+    id="remove-fa-message"
+    pTextarea
+    rows="5"
+    class="w-full"
+    [attr.maxlength]="maxLength"
+    [(ngModel)]="message"
+    [placeholder]="t('removeFaMessagePlaceholder')"
+  ></textarea>
+  <small class="remove-fa-dialog-hint">{{ t("removeFaMessageHint") }}</small>
+  <div class="flex w-full justify-end gap-2 mt-6">
+    <p-button
+      [label]="t('removeFaCancel')"
+      [text]="true"
+      (click)="cancel()"
+      [disabled]="saving"
+    ></p-button>
+    <p-button
+      [label]="t('yesRemoveFa')"
+      severity="warn"
+      (click)="confirm()"
+      [loading]="saving"
+    ></p-button>
+  </div>
+</ng-container>

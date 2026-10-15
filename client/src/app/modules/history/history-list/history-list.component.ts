@@ -41,6 +41,11 @@ import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-labe
 import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
+import {
+  LineHistoryLocation,
+  lineHistoryLocation,
+} from '../line-history-location';
 
 @Component({
   selector: 'lc-history-list',
@@ -56,6 +61,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     RouterLink,
     InfiniteScrollDirective,
     DatePipe,
+    TopoHierarchyBreadcrumbsComponent,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
@@ -108,6 +114,13 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
     );
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.loadFirstPage();
+  }
+
+  lineLocation(event: HistoryItem): LineHistoryLocation | null {
+    if (event.objectType !== ObjectType.Line) {
+      return null;
+    }
+    return lineHistoryLocation(event.object as Line);
   }
 
   getHeader(event: HistoryItem): string {

@@ -36,6 +36,12 @@ export class NotificationsService {
     );
   }
 
+  getNotification(notificationId: string): Observable<NotificationItem> {
+    return this.http.get<NotificationItem>(
+      this.api.account.getNotification(notificationId),
+    );
+  }
+
   getNotificationCount(): Observable<number> {
     return this.http
       .get<{ count: number }>(this.api.account.getNotificationsCount())
