@@ -125,12 +125,12 @@ export function calculateSkeletonDimensions(
   } else if (containerWidth <= ThumbnailWidths.M) {
     skeletonWidth = ThumbnailWidths.M;
     imageSrc = topoImage.image.thumbnailM;
-  } else if (containerWidth <= ThumbnailWidths.XL) {
+  } else if (containerWidth <= ThumbnailWidths.L) {
     skeletonWidth = ThumbnailWidths.L;
     imageSrc = topoImage.image.thumbnailL;
   } else {
     skeletonWidth = ThumbnailWidths.XL;
-    imageSrc = topoImage.image.thumbnailXL;
+    imageSrc = topoImage.image.thumbnailXL || topoImage.image.path;
   }
 
   if (skeletonWidth > containerWidth) {

@@ -6,6 +6,14 @@ class InvalidFiletypeUploaded(Exception):
     pass
 
 
+class InvalidImageTransform(Exception):
+    """
+    Raised when a stored file cannot be rotated or cropped.
+    """
+
+    pass
+
+
 class FilesizeLimitExceeded(Exception):
     """
     Raised when a file with a too great size was uploaded.

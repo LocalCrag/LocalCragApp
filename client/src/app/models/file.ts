@@ -18,6 +18,8 @@ export class File extends AbstractModel {
   path: string;
   srcSet: string;
   focusY: number | null;
+  /** User id of the account that uploaded this file. Null on older rows. */
+  createdById: string | null;
   /** Client-only snapshot used to detect focus edits before save. */
   focusYAtLoad: number | null;
 
@@ -51,6 +53,7 @@ export class File extends AbstractModel {
       ? media.path.replace(/.([^.]*)$/, '_xl.' + '$1')
       : null;
     media.focusY = payload.focusY ?? null;
+    media.createdById = payload.createdById ?? null;
     media.snapshotFocusYAtLoad();
 
     // Build srcSet

@@ -1,0 +1,123 @@
+<ng-container *transloco="let t; read: 'singleImageUploader'">
+  <p-dialog
+    [header]="t('editImageTitle')"
+    [visible]="visible"
+    (visibleChange)="visibleChange.emit($event)"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [closable]="!saving"
+    [closeOnEscape]="!saving"
+    appendTo="body"
+    styleClass="lc-image-edit-dialog"
+    [style]="{ width: 'min(44rem, 96vw)' }"
+  >
+    <div class="edit-layout">
+      <div
+        #stage
+        class="edit-stage"
+        [style.width.px]="viewWidth"
+        [style.height.px]="viewHeight"
+        (pointermove)="onStagePointerMove($event)"
+        (pointerup)="onStagePointerUp($event)"
+        (pointercancel)="onStagePointerUp($event)"
+      >
+        <img
+          class="edit-stage__image"
+          [src]="imageUrl"
+          alt=""
+          draggable="false"
+          [style.width.px]="imageLayoutWidth"
+          [style.height.px]="imageLayoutHeight"
+          [style.transform]="
+            'translate(-50%, -50%) rotate(' + rotation + 'deg)'
+          "
+        />
+        <div
+          class="edit-stage__shade edit-stage__shade--top"
+          [style.height.%]="crop.y * 100"
+        ></div>
+        <div
+          class="edit-stage__shade edit-stage__shade--bottom"
+          [style.top.%]="(crop.y + crop.height) * 100"
+        ></div>
+        <div
+          class="edit-stage__shade edit-stage__shade--left"
+          [style.top.%]="crop.y * 100"
+          [style.height.%]="crop.height * 100"
+          [style.width.%]="crop.x * 100"
+        ></div>
+        <div
+          class="edit-stage__shade edit-stage__shade--right"
+          [style.top.%]="crop.y * 100"
+          [style.height.%]="crop.height * 100"
+          [style.left.%]="(crop.x + crop.width) * 100"
+        ></div>
+        <div
+          class="edit-stage__crop"
+          [style.left.%]="crop.x * 100"
+          [style.top.%]="crop.y * 100"
+          [style.width.%]="crop.width * 100"
+          [style.height.%]="crop.height * 100"
+          (pointerdown)="startMove($event)"
+        >
+          @for (handle of handles; track handle) {
+            <span
+              class="edit-stage__handle"
+              [class]="'edit-stage__handle--' + handle"
+              (pointerdown)="startResize($event, handle)"
+            ></span>
+          }
+        </div>
+      </div>
+      <p class="edit-hint">{{ t("editImageHint") }}</p>
+    </div>
+
+    <ng-template #footer>
+      <div class="edit-footer">
+        <div class="edit-footer__tools">
+          <p-button
+            icon="pi pi-replay"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="saving"
+            [pTooltip]="t('rotateLeftButtonLabel')"
+            [ariaLabel]="t('rotateLeftButtonLabel')"
+            tooltipPosition="top"
+            (onClick)="rotateLeft()"
+          />
+          <p-button
+            icon="pi pi-refresh"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="saving"
+            [pTooltip]="t('rotateRightButtonLabel')"
+            [ariaLabel]="t('rotateRightButtonLabel')"
+            tooltipPosition="top"
+            (onClick)="rotateRight()"
+          />
+          <p-button
+            [label]="t('resetEditButtonLabel')"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="saving"
+            (onClick)="reset()"
+          />
+        </div>
+        <div class="edit-footer__confirm">
+          <p-button
+            [label]="t('cancelEditButtonLabel')"
+            severity="secondary"
+            [disabled]="saving"
+            (onClick)="cancel()"
+          />
+          <p-button
+            [label]="t('applyEditButtonLabel')"
+            [loading]="saving"
+            (onClick)="apply()"
+          />
+        </div>
+      </div>
+    </ng-template>
+  </p-dialog>
+</ng-container>

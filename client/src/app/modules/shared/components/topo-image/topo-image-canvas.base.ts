@@ -94,6 +94,7 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
    * not draw after a resize, an image change, or destroy.
    */
   private renderGeneration = 0;
+  private layoutWait: ResizeObserver | null = null;
   private destroyRef = inject(DestroyRef);
   protected el = inject(ElementRef);
   protected store = inject(Store);
@@ -117,6 +118,7 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.stopWaitingForLayout();
     this.renderGeneration++;
     this.destroyStage();
   }
@@ -126,6 +128,11 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
    */
   protected render() {
     const generation = ++this.renderGeneration;
+    if (!this.viewportFit && this.el.nativeElement.offsetWidth <= 0) {
+      this.waitForLayout(generation);
+      return;
+    }
+    this.stopWaitingForLayout();
     this.store
       .select(selectIsMobile)
       .pipe(take(1))
@@ -142,6 +149,31 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
           this.drawLinesAndLabels();
         };
       });
+  }
+
+  /**
+   * Step panels and flex columns often report 0 width on the first tick.
+   * Choosing a thumbnail then locks in the 20px file.
+   */
+  private waitForLayout(generation: number) {
+    const element = this.el.nativeElement as HTMLElement;
+    this.stopWaitingForLayout();
+    this.layoutWait = new ResizeObserver(() => {
+      if (generation !== this.renderGeneration) {
+        this.stopWaitingForLayout();
+        return;
+      }
+      if (element.offsetWidth > 0) {
+        this.stopWaitingForLayout();
+        this.render();
+      }
+    });
+    this.layoutWait.observe(element);
+  }
+
+  private stopWaitingForLayout() {
+    this.layoutWait?.disconnect();
+    this.layoutWait = null;
   }
 
   protected destroyStage() {
