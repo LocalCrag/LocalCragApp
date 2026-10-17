@@ -1,0 +1,160 @@
+.lc-image-edit-dialog {
+  .edit-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .edit-hint {
+    margin: 0;
+    color: var(--p-text-muted-color);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .edit-stage {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--p-surface-100);
+    touch-action: none;
+    user-select: none;
+
+    &__image {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: block;
+      max-width: none;
+      pointer-events: none;
+    }
+
+    &__shade {
+      position: absolute;
+      background: rgb(0 0 0 / 0.45);
+      pointer-events: none;
+      z-index: 1;
+
+      &--top,
+      &--bottom {
+        left: 0;
+        right: 0;
+      }
+
+      &--top {
+        top: 0;
+      }
+
+      &--bottom {
+        bottom: 0;
+      }
+
+      &--left {
+        left: 0;
+      }
+
+      &--right {
+        right: 0;
+      }
+    }
+
+    &__crop {
+      position: absolute;
+      box-sizing: border-box;
+      border: 2px solid #fff;
+      cursor: move;
+      z-index: 2;
+    }
+
+    &__handle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border: 1px solid rgb(0 0 0 / 0.45);
+      border-radius: 2px;
+      z-index: 3;
+
+      &--n,
+      &--s {
+        left: 50%;
+        margin-left: -6px;
+        cursor: ns-resize;
+      }
+
+      &--n {
+        top: 0;
+      }
+
+      &--s {
+        bottom: 0;
+      }
+
+      &--e,
+      &--w {
+        top: 50%;
+        margin-top: -6px;
+        cursor: ew-resize;
+      }
+
+      &--e {
+        right: 0;
+      }
+
+      &--w {
+        left: 0;
+      }
+
+      &--nw,
+      &--ne,
+      &--sw,
+      &--se {
+        width: 14px;
+        height: 14px;
+      }
+
+      &--nw {
+        top: 0;
+        left: 0;
+        cursor: nwse-resize;
+      }
+
+      &--se {
+        right: 0;
+        bottom: 0;
+        cursor: nwse-resize;
+      }
+
+      &--ne {
+        top: 0;
+        right: 0;
+        cursor: nesw-resize;
+      }
+
+      &--sw {
+        left: 0;
+        bottom: 0;
+        cursor: nesw-resize;
+      }
+    }
+  }
+
+  .edit-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+
+    &__tools,
+    &__confirm {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}

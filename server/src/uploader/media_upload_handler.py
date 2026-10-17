@@ -1,12 +1,17 @@
+import io
 import uuid
 
 import magic
-from PIL import Image, ImageOps
+from botocore.exceptions import ClientError
+from flask import current_app
+from PIL import Image, ImageOps, UnidentifiedImageError
 from werkzeug.datastructures import FileStorage
 
 from models.file import File
 from uploader.do_s3 import get_s3_client, upload_file
+from uploader.errors import InvalidImageTransform
 from uploader.image_gps import extract_gps_from_image
+from uploader.image_transform import apply_rotation_and_crop, is_identity_transform
 from uploader.upload_handler_utils import (
     check_filesize_limit,
     get_image_bytes,
@@ -63,21 +68,27 @@ def handle_image_upload(path: str, file, qquuid):
     :return: Media object representing the image.
     """
     img = Image.open(path)
-    s3_client = get_s3_client()
 
     # GPS is stripped when the image is re-encoded; read it first.
     lat, lng = extract_gps_from_image(img)
 
     ImageOps.exif_transpose(img, in_place=True)
+    return persist_processed_image(img, file.filename, qquuid, lat, lng)
 
+
+def persist_processed_image(img, original_filename: str, qquuid: str, lat, lng) -> File:
+    """
+    Stores an image and its thumbnails. `img.format` selects the file extension.
+    Thumbnails are resized from the previous size, matching the original upload path.
+    """
+    s3_client = get_s3_client()
     extension = img.format.lower()
-
     filename = "{}.{}".format(qquuid, extension)
     upload_file(s3_client, get_image_bytes(img), filename)
 
     file_object = File()
     file_object.filename = filename[:120]  # Max length of db field
-    file_object.original_filename = file.filename
+    file_object.original_filename = (original_filename or filename)[:120]
     file_object.height = img.height
     file_object.width = img.width
     file_object.thumbnail_xs = False
@@ -102,6 +113,46 @@ def handle_image_upload(path: str, file, qquuid):
         upload_file(s3_client, get_image_bytes(img), filename)
 
     return file_object
+
+
+def transform_stored_image(source: File, rotation: int, crop: dict | None) -> File:
+    """
+    Builds a new file from a clockwise rotation and optional crop of `source`.
+    Returns `source` when the request does not change the pixels.
+    """
+    if not source.filename or not source.width or not source.height:
+        raise InvalidImageTransform()
+    if is_identity_transform(source.width, source.height, rotation, crop):
+        return source
+
+    img = _load_stored_image(source.filename)
+    ImageOps.exif_transpose(img, in_place=True)
+    if img.width != source.width or img.height != source.height:
+        raise InvalidImageTransform()
+
+    img = apply_rotation_and_crop(img, rotation, crop)
+    if img.format == "JPEG" and img.mode not in ("RGB", "L"):
+        converted = img.convert("RGB")
+        converted.format = "JPEG"
+        img = converted
+    return persist_processed_image(
+        img,
+        source.original_filename,
+        uuid.uuid4().hex,
+        source.exif_lat,
+        source.exif_lng,
+    )
+
+
+def _load_stored_image(filename: str) -> Image.Image:
+    try:
+        client = get_s3_client()
+        stored = client.get_object(Bucket=current_app.config["S3_BUCKET"], Key=filename)
+        img = Image.open(io.BytesIO(stored["Body"].read()))
+        img.load()
+        return img
+    except (ClientError, UnidentifiedImageError, OSError) as exc:
+        raise InvalidImageTransform() from exc
 
 
 def handle_arbitrary_file_upload(file, qquuid) -> File:

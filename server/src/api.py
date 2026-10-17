@@ -76,7 +76,7 @@ from resources.crag_resources import (
     UpdateCrag,
     UpdateCragOrder,
 )
-from resources.file_resources import UpdateFile
+from resources.file_resources import TransformFile, UpdateFile
 from resources.gallery_resources import (
     CreateGalleryImage,
     DeleteGalleryImage,
@@ -264,6 +264,7 @@ def configure_api(app):
 
     file_bp = Blueprint("files", __name__)
     file_bp.add_url_rule("/<uuid:file_id>", view_func=UpdateFile.as_view("update_file"))
+    file_bp.add_url_rule("/<uuid:file_id>/transform", view_func=TransformFile.as_view("transform_file"))
     app.register_blueprint(file_bp, url_prefix="/api/files")
 
     # Statistics API

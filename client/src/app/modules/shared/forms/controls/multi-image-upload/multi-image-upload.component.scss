@@ -1,7 +1,21 @@
 lc-multi-image-upload {
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 250px;
+  }
+
   .image-wrapper {
     overflow: hidden;
-    display: inline-block;
+    display: block;
     position: relative;
 
     p-image {
@@ -17,7 +31,21 @@ lc-multi-image-upload {
     }
   }
 
+  .image-edit-button {
+    margin-top: 0.5rem;
+    width: 100%;
+
+    .p-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
   // Fix bad spacing below upload button
+  .image-list:not(:empty) + p-fileupload:not([hidden]) {
+    margin-top: 0.75rem;
+  }
+
   p-fileupload:not([hidden]) {
     display: inline-block;
   }

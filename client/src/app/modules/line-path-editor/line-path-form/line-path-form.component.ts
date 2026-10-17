@@ -563,11 +563,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
         });
         this.store.dispatch(toastNotification('LINE_PATHS_SAVED'));
         this.loadingState = LoadingState.DEFAULT;
-        if (this.embedded) {
-          this.refreshData();
-        } else {
-          this.leaveEditor();
-        }
+        this.leaveEditor();
       });
   }
 
