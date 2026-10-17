@@ -4,6 +4,8 @@ from webargs.flaskparser import parser
 
 from extensions import db
 from marshmallow_schemas.menu_page_schema import menu_page_schema, menu_pages_schema
+from models.enums.landing_page_enum import LandingPageEnum
+from models.instance_settings import InstanceSettings
 from models.menu_page import MenuPage
 from util.auth_session import (
     session_required,
@@ -76,6 +78,11 @@ class DeleteMenuPage(MethodView):
         @param menu_page_slug: Slug of the menu_page to delete.
         """
         menu_page: MenuPage = MenuPage.find_by_slug(menu_page_slug)
+        settings = InstanceSettings.return_it()
+        if settings is not None and settings.landing_menu_page_id == menu_page.id:
+            settings.landing_page = LandingPageEnum.NEWS
+            settings.landing_menu_page_id = None
+            db.session.add(settings)
 
         db.session.delete(menu_page)
         db.session.commit()

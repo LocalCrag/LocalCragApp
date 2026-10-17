@@ -2,6 +2,7 @@ from marshmallow import Schema, ValidationError, validate
 from webargs import fields
 
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.landing_page_enum import LandingPageEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from util.instance_timezone import validate_timezone
 from util.validators import color_validator, validate_language
@@ -127,6 +128,12 @@ instance_settings_args = {
     "copyrightOwner": fields.Str(required=True, validate=validate.Length(max=120)),
     "mailGreeting": fields.Str(required=True, validate=validate.Length(max=120)),
     "gymMode": fields.Boolean(required=True),
+    "landingPage": fields.Enum(LandingPageEnum, required=True, allow_none=False),
+    "landingPageSlug": fields.Str(
+        required=False,
+        allow_none=True,
+        validate=validate.Regexp(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"),
+    ),
     "logoImage": fields.String(required=True, allow_none=True),
     "darkLogoImage": fields.String(required=True, allow_none=True),
     "faviconImage": fields.String(required=True, allow_none=True),

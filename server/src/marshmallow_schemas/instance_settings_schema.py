@@ -30,6 +30,8 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     mapBaseLayers = fields.List(fields.Dict(), attribute="map_base_layers", dump_default=list)
     mapOverlays = fields.List(fields.Dict(), attribute="map_overlays", dump_default=list)
     gymMode = fields.Boolean(attribute="gym_mode")
+    landingPage = fields.Method("get_landing_page")
+    landingPageSlug = fields.Method("get_landing_page_slug")
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
     displayUserGrades = fields.Boolean(attribute="display_user_grades")
     displayUserRatings = fields.Boolean(attribute="display_user_ratings")
@@ -37,6 +39,12 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)
+
+    def get_landing_page(self, obj):
+        return obj.effective_landing_page.value
+
+    def get_landing_page_slug(self, obj):
+        return obj.landing_page_slug
 
 
 instance_settings_schema = InstanceSettingsSchema()

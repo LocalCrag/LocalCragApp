@@ -1,5 +1,6 @@
 import { File } from './file';
 import { FaDefaultFormat } from '../enums/fa-default-format';
+import { LandingPage } from '../enums/landing-page';
 import { StartingPosition } from '../enums/starting-position';
 import { LanguageCode } from '../utility/types/language';
 import { parseServerUtcDate } from '../utility/parse-server-utc-date';
@@ -34,6 +35,8 @@ export class InstanceSettings {
   sentryEnabled: boolean;
   sentryDsn: string;
   gymMode: boolean;
+  landingPage: LandingPage;
+  landingPageSlug: string | null;
   displayUserGrades: boolean;
   displayUserRatings: boolean;
   noClosedProjects: boolean;
@@ -83,6 +86,8 @@ export class InstanceSettings {
     instanceSettings.sentryEnabled = payload.sentryEnabled;
     instanceSettings.sentryDsn = payload.sentryDsn;
     instanceSettings.gymMode = payload.gymMode;
+    instanceSettings.landingPage = payload.landingPage ?? LandingPage.NEWS;
+    instanceSettings.landingPageSlug = payload.landingPageSlug ?? null;
     instanceSettings.displayUserGrades = payload.displayUserGrades;
     instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.noClosedProjects = payload.noClosedProjects;
@@ -128,6 +133,8 @@ export class InstanceSettings {
         MapOverlay.serialize,
       ),
       gymMode: instanceSettings.gymMode,
+      landingPage: instanceSettings.landingPage,
+      landingPageSlug: instanceSettings.landingPageSlug,
       displayUserGrades: instanceSettings.displayUserGrades,
       displayUserRatings: instanceSettings.displayUserRatings,
       noClosedProjects: instanceSettings.noClosedProjects,
@@ -145,6 +152,8 @@ export class InstanceSettings {
     copyrightOwner: string;
     mailGreeting: string;
     gymMode: boolean;
+    landingPage: LandingPage;
+    landingPageSlug: string | null;
     skippedHierarchicalLayers: number;
     displayUserGrades: boolean;
     displayUserRatings: boolean;
