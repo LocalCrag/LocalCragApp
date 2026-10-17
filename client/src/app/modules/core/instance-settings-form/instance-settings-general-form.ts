@@ -6,6 +6,8 @@ export function createGeneralFormGroup(fb: FormBuilder): FormGroup {
     copyrightOwner: [null, [Validators.required, Validators.maxLength(120)]],
     mailGreeting: [null, [Validators.required, Validators.maxLength(120)]],
     gymMode: [null],
+    landingPage: [null, [Validators.required]],
+    landingPageSlug: [null],
     skippedHierarchicalLayers: [null],
     displayUserGrades: [null],
     displayUserRatings: [null],

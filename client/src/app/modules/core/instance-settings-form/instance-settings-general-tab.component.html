@@ -61,6 +61,51 @@
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label for="landing-page">{{ t("landingPageLabel") }}</label>
+        <span
+          class="pi pi-question-circle ml-2"
+          [pTooltip]="t('landingPageTooltip')"
+          tooltipPosition="right"
+        ></span>
+      </div>
+      <p-select
+        id="landing-page"
+        [options]="landingPageOptions"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="landingPage"
+        lcFormControl
+      />
+      <small class="lc-error" *lcIfError="'required'">{{
+        "validation.required" | transloco
+      }}</small>
+    </div>
+
+    @if (group.get("landingPage")?.value === landingPages.MENU_PAGE) {
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <label class="form-label" for="landing-page-slug">{{
+          t("landingPageSlugLabel")
+        }}</label>
+        <p-select
+          id="landing-page-slug"
+          [options]="menuPageOptions"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="landingPageSlug"
+          [filter]="true"
+          lcFormControl
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        @if (menuPagesLoaded && menuPageOptions.length === 0) {
+          <small>{{ t("landingPageSlugEmpty") }}</small>
+        }
+      </div>
+    }
+
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="gym-mode">{{ t("gymModeLabel") }}</label>
       <p-select
         id="gym-mode"

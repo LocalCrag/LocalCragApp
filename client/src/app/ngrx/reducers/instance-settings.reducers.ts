@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { File } from '../../models/file';
 import { updateInstanceSettings } from '../actions/instance-settings.actions';
 import { FaDefaultFormat } from '../../enums/fa-default-format';
+import { LandingPage } from '../../enums/landing-page';
 import { StartingPosition } from '../../enums/starting-position';
 import { LanguageCode } from '../../utility/types/language';
 import { MapBaseLayer } from '../../models/map-base-layer';
@@ -29,6 +30,8 @@ export interface InstanceSettingsState {
   sentryEnabled: boolean;
   sentryDsn: string;
   gymMode: boolean;
+  landingPage: LandingPage;
+  landingPageSlug: string | null;
   skippedHierarchyLayers: number;
   displayUserGrades: boolean;
   displayUserRatings: boolean;
@@ -62,6 +65,8 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   sentryEnabled: false,
   sentryDsn: '',
   gymMode: false,
+  landingPage: LandingPage.NEWS,
+  landingPageSlug: null,
   skippedHierarchyLayers: 0,
   displayUserGrades: false,
   displayUserRatings: false,
@@ -98,6 +103,8 @@ const instanceSettingsReducer = createReducer(
     sentryEnabled: action.settings.sentryEnabled,
     sentryDsn: action.settings.sentryDsn,
     gymMode: action.settings.gymMode,
+    landingPage: action.settings.landingPage ?? LandingPage.NEWS,
+    landingPageSlug: action.settings.landingPageSlug ?? null,
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
     displayUserGrades: action.settings.displayUserGrades,
     displayUserRatings: action.settings.displayUserRatings,

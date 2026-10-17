@@ -1,14 +1,27 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { isLoggedIn } from '../../../guards/is-logged-in';
 import { isMember } from '../../../guards/is-member';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { landingPagePath } from './landing-page';
 import { rockExplorerMatcher } from './rock-explorer.matcher';
+
+function redirectToConfiguredLandingPage(): string {
+  const settings = inject(Store).selectSignal(selectInstanceSettingsState)();
+  return landingPagePath(
+    settings.landingPage,
+    settings.skippedHierarchyLayers,
+    settings.landingPageSlug,
+  );
+}
 
 export const rootRedirectRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'news',
+    redirectTo: redirectToConfiguredLandingPage,
   },
 ];
 
