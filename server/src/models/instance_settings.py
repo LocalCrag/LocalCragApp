@@ -9,6 +9,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from extensions import db
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.landing_page_enum import LandingPageEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 
 
@@ -43,6 +44,14 @@ class InstanceSettings(db.Model):
     map_base_layers = db.Column(JSON, nullable=False, default=lambda: [], server_default="[]")
     map_overlays = db.Column(JSON, nullable=False, default=lambda: [], server_default="[]")
     gym_mode = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    landing_page = db.Column(
+        db.Enum(LandingPageEnum, name="landingpageenum"),
+        nullable=False,
+        default=LandingPageEnum.NEWS,
+        server_default=LandingPageEnum.NEWS.value,
+    )
+    landing_menu_page_id = db.Column(UUID(), db.ForeignKey("menu_pages.id", ondelete="SET NULL"), nullable=True)
+    landing_menu_page = db.relationship("MenuPage", foreign_keys=[landing_menu_page_id], lazy="joined")
     skipped_hierarchical_layers = db.Column(db.Integer, nullable=False, server_default="0")
     display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
@@ -63,6 +72,18 @@ class InstanceSettings(db.Model):
     # (bundle + optional notifies). Without it, new instances would treat every manifest key as a
     # new release and notify everyone.
     release_notes_catalog_seeded = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+
+    @property
+    def effective_landing_page(self) -> LandingPageEnum:
+        if self.landing_page == LandingPageEnum.MENU_PAGE and self.landing_menu_page is None:
+            return LandingPageEnum.NEWS
+        return self.landing_page
+
+    @property
+    def landing_page_slug(self) -> str | None:
+        if self.effective_landing_page != LandingPageEnum.MENU_PAGE or self.landing_menu_page is None:
+            return None
+        return self.landing_menu_page.slug
 
     @hybrid_property
     def superadmin_email(self) -> str:

@@ -177,6 +177,8 @@ export class InstanceSettingsFormComponent implements OnInit {
         copyrightOwner: this.instanceSettings.copyrightOwner,
         mailGreeting: this.instanceSettings.mailGreeting,
         gymMode: this.instanceSettings.gymMode,
+        landingPage: this.instanceSettings.landingPage,
+        landingPageSlug: this.instanceSettings.landingPageSlug,
         skippedHierarchicalLayers:
           this.instanceSettings.skippedHierarchicalLayers,
         displayUserGrades: this.instanceSettings.displayUserGrades,

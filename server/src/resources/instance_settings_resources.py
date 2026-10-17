@@ -11,7 +11,9 @@ from extensions import db
 from marshmallow_schemas.instance_settings_schema import instance_settings_schema
 from messages.messages import ResponseMessage
 from models.crag import Crag
+from models.enums.landing_page_enum import LandingPageEnum
 from models.instance_settings import InstanceSettings
+from models.menu_page import MenuPage
 from models.region import Region
 from models.sector import Sector
 from scheduler_jobs.closure_materialization import (
@@ -61,6 +63,8 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "mapBaseLayers": deepcopy(instance_settings.map_base_layers or []),
         "mapOverlays": deepcopy(instance_settings.map_overlays or []),
         "gymMode": instance_settings.gym_mode,
+        "landingPage": instance_settings.effective_landing_page.value,
+        "landingPageSlug": instance_settings.landing_page_slug,
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "displayUserGrades": instance_settings.display_user_grades,
         "displayUserRatings": instance_settings.display_user_ratings,
@@ -108,6 +112,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.map_base_layers = list(instance_settings_data["mapBaseLayers"])
     instance_settings.map_overlays = list(instance_settings_data["mapOverlays"])
     instance_settings.gym_mode = instance_settings_data["gymMode"]
+    apply_landing_page(instance_settings, instance_settings_data)
     instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
     instance_settings.display_user_ratings = instance_settings_data["displayUserRatings"]
     instance_settings.no_closed_projects = instance_settings_data["noClosedProjects"]
@@ -115,6 +120,23 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
     instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]
     instance_settings.timezone = instance_settings_data["timezone"]
+
+
+def apply_landing_page(instance_settings: InstanceSettings, instance_settings_data: dict) -> None:
+    landing_page = instance_settings_data["landingPage"]
+    slug = (instance_settings_data.get("landingPageSlug") or "").strip()
+    if landing_page != LandingPageEnum.MENU_PAGE:
+        instance_settings.landing_page = landing_page
+        instance_settings.landing_menu_page_id = None
+        return
+
+    if not slug:
+        raise BadRequest("landingPageSlug is required when landingPage is MENU_PAGE")
+    menu_page = MenuPage.query.filter_by(slug=slug).first()
+    if menu_page is None:
+        raise BadRequest("landingPageSlug does not match a menu page")
+    instance_settings.landing_page = LandingPageEnum.MENU_PAGE
+    instance_settings.landing_menu_page_id = menu_page.id
 
 
 def apply_skipped_hierarchical_layers(instance_settings: InstanceSettings, next_value: int) -> None:
