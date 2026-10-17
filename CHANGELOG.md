@@ -1,3 +1,18 @@
+# [1.63.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.62.1...v1.63.0) (2026-10-15)
+
+
+### Bug Fixes
+
+* **topo:** enhance tag display and styling ([#1308](https://github.com/LocalCrag/LocalCragApp/issues/1308)) ([84ffe52](https://github.com/LocalCrag/LocalCragApp/commit/84ffe522b6ebe0fea20673a64f8f2a3a5bb3755d)), closes [#640](https://github.com/LocalCrag/LocalCragApp/issues/640)
+
+
+### Features
+
+* **core:** implement localStorage access handling ([#1310](https://github.com/LocalCrag/LocalCragApp/issues/1310)) ([dc49f96](https://github.com/LocalCrag/LocalCragApp/commit/dc49f960799bc57bb39e29e937e95585dcd30f0e)), closes [#465](https://github.com/LocalCrag/LocalCragApp/issues/465)
+* **history:** add line history location functionality ([#1307](https://github.com/LocalCrag/LocalCragApp/issues/1307)) ([620f68c](https://github.com/LocalCrag/LocalCragApp/commit/620f68cfa435692660de2959dc899d4b99af7076)), closes [#658](https://github.com/LocalCrag/LocalCragApp/issues/658)
+* **notifications:** add option to attach a message when removing FA tag of an ascent as moderator ([#1311](https://github.com/LocalCrag/LocalCragApp/issues/1311)) ([b183906](https://github.com/LocalCrag/LocalCragApp/commit/b183906214f04684047ec40304488e8d333f6776)), closes [#1071](https://github.com/LocalCrag/LocalCragApp/issues/1071)
+* **topo:** add bracket chart previews in scale editor ([#1309](https://github.com/LocalCrag/LocalCragApp/issues/1309)) ([1349154](https://github.com/LocalCrag/LocalCragApp/commit/1349154383a6c22990f3e5fba2daee450d34f40a)), closes [#597](https://github.com/LocalCrag/LocalCragApp/issues/597)
+
 ## [1.62.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.62.0...v1.62.1) (2026-10-14)
 
 
