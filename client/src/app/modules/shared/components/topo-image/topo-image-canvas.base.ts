@@ -88,6 +88,8 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
 
   private resizeRenderSubject = new Subject<void>();
   private windowWidth: number;
+  /** Container width of the last draw, so a parent resize can redraw too. */
+  private renderedContainerWidth = -1;
   /**
    * Identifies the render whose photo is allowed to draw.
    * The image loads asynchronously, so a callback from an older render must
@@ -104,16 +106,29 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
     this.resizeRenderSubject.next();
   }
 
+  /**
+   * Redraws after the parent container size changes without a window resize.
+   */
+  relayout(): void {
+    this.resizeRenderSubject.next();
+  }
+
   ngOnInit() {
     setTimeout(() => this.render());
     this.windowWidth = window.innerWidth;
     this.resizeRenderSubject
       .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        if (window.innerWidth !== this.windowWidth) {
-          this.render();
-          this.windowWidth = window.innerWidth;
+        const containerWidth = (this.el.nativeElement as HTMLElement)
+          .offsetWidth;
+        const viewportChanged = window.innerWidth !== this.windowWidth;
+        const containerChanged =
+          containerWidth > 0 && containerWidth !== this.renderedContainerWidth;
+        if (!viewportChanged && !containerChanged) {
+          return;
         }
+        this.render();
+        this.windowWidth = window.innerWidth;
       });
   }
 
@@ -128,10 +143,12 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
    */
   protected render() {
     const generation = ++this.renderGeneration;
-    if (!this.viewportFit && this.el.nativeElement.offsetWidth <= 0) {
+    const containerWidth = (this.el.nativeElement as HTMLElement).offsetWidth;
+    if (!this.viewportFit && containerWidth <= 0) {
       this.waitForLayout(generation);
       return;
     }
+    this.renderedContainerWidth = containerWidth;
     this.stopWaitingForLayout();
     this.store
       .select(selectIsMobile)
