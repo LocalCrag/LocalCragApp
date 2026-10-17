@@ -118,12 +118,17 @@ test.describe('Topo images test', () => {
       requestPayload.tabuAreas[0].id,
     ]);
     await expect(page).toHaveURL(
-      /\/topo\/brione\/pampelmousse\/shark-attack\/topo-images/,
-    );
-    await expect(
-      page.locator(
-        `[data-cy="topo-image-list-item"][id="${topoImageId}"] [data-cy="line-row"]`,
+      new RegExp(
+        `/topo/brione/pampelmousse/shark-attack/topo-images#${topoImageId}$`,
       ),
-    ).toHaveCount(1);
+    );
+    const editedImage = page.locator(
+      `[data-cy="topo-image-list-item"][id="${topoImageId}"]`,
+    );
+    await expect(editedImage.locator('[data-cy="line-row"]')).toHaveCount(1);
+    // The new image is last in the list, so this fails if we stay at the top.
+    await expect
+      .poll(async () => (await editedImage.boundingBox())?.y ?? 10_000)
+      .toBeLessThan(220);
   });
 });

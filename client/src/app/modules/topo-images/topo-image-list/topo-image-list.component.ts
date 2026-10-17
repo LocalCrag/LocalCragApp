@@ -111,6 +111,7 @@ export class TopoImageListComponent implements OnInit {
   public displayUserRating = false;
 
   private scrollTarget: Scroll;
+  private stopAnchorScroll: (() => void) | null = null;
 
   private destroyRef = inject(DestroyRef);
   private topoImagesService = inject(TopoImagesService);
@@ -129,6 +130,7 @@ export class TopoImageListComponent implements OnInit {
   protected scalesService = inject(ScalesService);
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.stopAnchorScroll?.());
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
       .subscribe((e) => {
@@ -229,20 +231,68 @@ export class TopoImageListComponent implements OnInit {
     }
   }
 
+  /**
+   * Scrolls the topo image identified by the URL fragment into view.
+   *
+   * Canvases reserve their height in a timeout after the first change
+   * detection, and the photo can change that height again when it decodes.
+   * Align after that first sizing pass, then again while the list is still
+   * settling, unless the user has started scrolling.
+   */
   scrollToAnchor() {
-    this.route.fragment.subscribe((fragment: string) => {
-      if (fragment) {
-        // CDR not working as expected here because topo image is using setTimeout because of konva bug...
-        // So I have to use setTimeout too
-        setTimeout(() => {
-          const elmnt = document.getElementById(fragment);
-          elmnt.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-          });
-        });
+    this.stopAnchorScroll?.();
+    this.stopAnchorScroll = null;
+
+    const fragment = this.route.snapshot.fragment;
+    if (!fragment) {
+      return;
+    }
+
+    const align = () => {
+      document.getElementById(fragment)?.scrollIntoView({
+        behavior: 'auto',
+        block: 'start',
+        inline: 'nearest',
+      });
+    };
+
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    const stop = () => {
+      if (settleTimer) {
+        clearTimeout(settleTimer);
       }
+      observer?.disconnect();
+      window.removeEventListener('wheel', stop);
+      window.removeEventListener('touchstart', stop);
+      if (this.stopAnchorScroll === stop) {
+        this.stopAnchorScroll = null;
+      }
+    };
+    let observer: ResizeObserver | undefined;
+    this.stopAnchorScroll = stop;
+
+    setTimeout(() => {
+      setTimeout(() => {
+        if (this.stopAnchorScroll !== stop) {
+          return;
+        }
+        const element = document.getElementById(fragment);
+        const container = element?.parentElement;
+        if (!element || !container) {
+          stop();
+          return;
+        }
+        align();
+        if (typeof ResizeObserver === 'undefined') {
+          stop();
+          return;
+        }
+        observer = new ResizeObserver(() => align());
+        observer.observe(container);
+        window.addEventListener('wheel', stop, { passive: true });
+        window.addEventListener('touchstart', stop, { passive: true });
+        settleTimer = setTimeout(stop, 2000);
+      });
     });
   }
 
