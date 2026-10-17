@@ -1,5 +1,27 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Locator, Page } from '@playwright/test';
 import { login, sampleImagePath } from './helpers/auth';
+
+/** True when the edited row is on screen and the list has moved to it. */
+async function editedImageIsInView(page: Page, editedImage: Locator) {
+  const box = await editedImage.boundingBox();
+  if (!box) {
+    return false;
+  }
+  const viewport = page.viewportSize();
+  const visible =
+    !!viewport && box.y < viewport.height && box.y + box.height > 0;
+  if (!visible) {
+    return false;
+  }
+  if (box.y < 220) {
+    return true;
+  }
+  return page.evaluate(
+    () =>
+      window.scrollY + window.innerHeight >=
+      document.documentElement.scrollHeight - 4,
+  );
+}
 
 test.describe('Topo images test', () => {
   test.use({ viewport: { width: 1920, height: 1080 } });
@@ -126,9 +148,10 @@ test.describe('Topo images test', () => {
       `[data-cy="topo-image-list-item"][id="${topoImageId}"]`,
     );
     await expect(editedImage.locator('[data-cy="line-row"]')).toHaveCount(1);
-    // The new image is last in the list, so this fails if we stay at the top.
+    // The new image is last. It should sit at the top, or as close as the
+    // page allows when the card and footer are shorter than the viewport.
     await expect
-      .poll(async () => (await editedImage.boundingBox())?.y ?? 10_000)
-      .toBeLessThan(220);
+      .poll(async () => editedImageIsInView(page, editedImage))
+      .toBe(true);
   });
 });

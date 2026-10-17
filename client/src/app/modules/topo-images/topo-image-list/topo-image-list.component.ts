@@ -232,12 +232,11 @@ export class TopoImageListComponent implements OnInit {
   }
 
   /**
-   * Scrolls the topo image identified by the URL fragment into view.
+   * Scrolls the topo image identified by the URL fragment to the top.
    *
-   * Canvases reserve their height in a timeout after the first change
-   * detection, and the photo can change that height again when it decodes.
-   * Align after that first sizing pass, then again while the list is still
-   * settling, unless the user has started scrolling.
+   * Canvases grow after the first paint and again when the photo decodes,
+   * which pushes the target down. Keep pulling it back until that settles,
+   * unless the user starts scrolling.
    */
   scrollToAnchor() {
     this.stopAnchorScroll?.();
@@ -248,52 +247,32 @@ export class TopoImageListComponent implements OnInit {
       return;
     }
 
-    const align = () => {
-      document.getElementById(fragment)?.scrollIntoView({
-        behavior: 'auto',
-        block: 'start',
-        inline: 'nearest',
-      });
-    };
-
-    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    let timer = 0;
+    let attempts = 0;
     const stop = () => {
-      if (settleTimer) {
-        clearTimeout(settleTimer);
-      }
-      observer?.disconnect();
+      window.clearInterval(timer);
       window.removeEventListener('wheel', stop);
       window.removeEventListener('touchstart', stop);
       if (this.stopAnchorScroll === stop) {
         this.stopAnchorScroll = null;
       }
     };
-    let observer: ResizeObserver | undefined;
+    timer = window.setInterval(() => {
+      attempts += 1;
+      const element = document.getElementById(fragment);
+      if (!element || attempts > 25) {
+        stop();
+        return;
+      }
+      const top = element.getBoundingClientRect().top;
+      if (Math.abs(top) > 2) {
+        window.scrollBy(0, top);
+      }
+    }, 200);
     this.stopAnchorScroll = stop;
 
-    setTimeout(() => {
-      setTimeout(() => {
-        if (this.stopAnchorScroll !== stop) {
-          return;
-        }
-        const element = document.getElementById(fragment);
-        const container = element?.parentElement;
-        if (!element || !container) {
-          stop();
-          return;
-        }
-        align();
-        if (typeof ResizeObserver === 'undefined') {
-          stop();
-          return;
-        }
-        observer = new ResizeObserver(() => align());
-        observer.observe(container);
-        window.addEventListener('wheel', stop, { passive: true });
-        window.addEventListener('touchstart', stop, { passive: true });
-        settleTimer = setTimeout(stop, 2000);
-      });
-    });
+    window.addEventListener('wheel', stop, { passive: true });
+    window.addEventListener('touchstart', stop, { passive: true });
   }
 
   openVideo(event: MouseEvent, line: Line) {
