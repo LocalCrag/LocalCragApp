@@ -501,13 +501,11 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   }
 
   leaveEditor() {
-    this.router.navigate([
-      '/topo',
-      this.cragSlug,
-      this.sectorSlug,
-      this.areaSlug,
-      'topo-images',
-    ]);
+    // Land on the image that was just edited, not the top of the topo list.
+    this.router.navigate(
+      ['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images'],
+      { fragment: this.topoImageId ?? undefined },
+    );
   }
 
   public saveAllLinePaths() {

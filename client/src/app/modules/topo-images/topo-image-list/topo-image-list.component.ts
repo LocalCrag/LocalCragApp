@@ -111,6 +111,7 @@ export class TopoImageListComponent implements OnInit {
   public displayUserRating = false;
 
   private scrollTarget: Scroll;
+  private stopAnchorScroll: (() => void) | null = null;
 
   private destroyRef = inject(DestroyRef);
   private topoImagesService = inject(TopoImagesService);
@@ -129,6 +130,7 @@ export class TopoImageListComponent implements OnInit {
   protected scalesService = inject(ScalesService);
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.stopAnchorScroll?.());
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
       .subscribe((e) => {
@@ -229,21 +231,48 @@ export class TopoImageListComponent implements OnInit {
     }
   }
 
+  /**
+   * Scrolls the topo image identified by the URL fragment to the top.
+   *
+   * Canvases grow after the first paint and again when the photo decodes,
+   * which pushes the target down. Keep pulling it back until that settles,
+   * unless the user starts scrolling.
+   */
   scrollToAnchor() {
-    this.route.fragment.subscribe((fragment: string) => {
-      if (fragment) {
-        // CDR not working as expected here because topo image is using setTimeout because of konva bug...
-        // So I have to use setTimeout too
-        setTimeout(() => {
-          const elmnt = document.getElementById(fragment);
-          elmnt.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-          });
-        });
+    this.stopAnchorScroll?.();
+    this.stopAnchorScroll = null;
+
+    const fragment = this.route.snapshot.fragment;
+    if (!fragment) {
+      return;
+    }
+
+    let timer = 0;
+    let attempts = 0;
+    const stop = () => {
+      window.clearInterval(timer);
+      window.removeEventListener('wheel', stop);
+      window.removeEventListener('touchstart', stop);
+      if (this.stopAnchorScroll === stop) {
+        this.stopAnchorScroll = null;
       }
-    });
+    };
+    timer = window.setInterval(() => {
+      attempts += 1;
+      const element = document.getElementById(fragment);
+      if (!element || attempts > 25) {
+        stop();
+        return;
+      }
+      const top = element.getBoundingClientRect().top;
+      if (Math.abs(top) > 2) {
+        window.scrollBy(0, top);
+      }
+    }, 200);
+    this.stopAnchorScroll = stop;
+
+    window.addEventListener('wheel', stop, { passive: true });
+    window.addEventListener('touchstart', stop, { passive: true });
   }
 
   openVideo(event: MouseEvent, line: Line) {
