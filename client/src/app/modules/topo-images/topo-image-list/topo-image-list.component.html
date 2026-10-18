@@ -110,6 +110,7 @@
                   <lc-topo-image
                     [topoImage]="topoImage"
                     [showLineNumbers]="true"
+                    [includeVariants]="variantsExpanded(topoImage)"
                     tabuHoldsVisibility="hover"
                     class="shadow block xl:block mx-auto rounded-border"
                   ></lc-topo-image>
@@ -193,11 +194,7 @@
                       </div>
                     </div>
                     <div class="line-table-wrapper">
-                      @for (
-                        linePath of topoImage.linePaths;
-                        track linePath;
-                        let i = $index
-                      ) {
+                      <ng-template #lineRow let-linePath>
                         <a
                           class="line-table-row"
                           (mouseenter)="highlightLinePath(linePath, topoImage)"
@@ -210,7 +207,7 @@
                         >
                           <div class="line-table-column-number">
                             <lc-line-number-badge
-                              [number]="i + 1"
+                              [number]="lineNumber(linePath)"
                               [color]="linePath.line.color"
                             ></lc-line-number-badge>
                           </div>
@@ -304,6 +301,48 @@
                             </div>
                           </div>
                         </a>
+                      </ng-template>
+                      @for (
+                        linePath of primaryLinePaths(topoImage);
+                        track linePath
+                      ) {
+                        <ng-container
+                          *ngTemplateOutlet="
+                            lineRow;
+                            context: { $implicit: linePath }
+                          "
+                        ></ng-container>
+                      }
+                      @if (variantCount(topoImage) > 0) {
+                        <button
+                          type="button"
+                          class="variant-toggle"
+                          (click)="toggleVariants(topoImage)"
+                          data-cy="variant-toggle"
+                        >
+                          {{
+                            variantsExpanded(topoImage)
+                              ? t("hideVariants", {
+                                  count: variantCount(topoImage),
+                                })
+                              : t("showVariants", {
+                                  count: variantCount(topoImage),
+                                })
+                          }}
+                        </button>
+                        @if (variantsExpanded(topoImage)) {
+                          @for (
+                            linePath of variantLinePaths(topoImage);
+                            track linePath
+                          ) {
+                            <ng-container
+                              *ngTemplateOutlet="
+                                lineRow;
+                                context: { $implicit: linePath }
+                              "
+                            ></ng-container>
+                          }
+                        }
                       }
                     </div>
                   </div>

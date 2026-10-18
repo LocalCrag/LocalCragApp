@@ -7,6 +7,8 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "Nessuna immagine trovata",
   "topoImageList.noLineAssignedToTopoImage": "A questa immagine non è stato ancora associato alcun problema.",
   "topoImageList.lines": "Problemi",
+  "topoImageList.showVariants": "{count, plural, =1{Mostra 1 variante} other{Mostra # varianti}}",
+  "topoImageList.hideVariants": "{count, plural, =1{Nascondi 1 variante} other{Nascondi # varianti}}",
   "topoImageList.editLinePathsButtonLabel": "Modifica problemi",
   "topoImageList.addLineToImageButtonLabel": "Associa problema",
   "topoImageList.reorderLinePathsButtonLabel": "Ordina problemi",

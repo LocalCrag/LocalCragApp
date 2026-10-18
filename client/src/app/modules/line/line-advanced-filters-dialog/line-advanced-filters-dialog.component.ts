@@ -63,6 +63,7 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
   dryingOptions: { label: string; value: Drying | null }[];
 
   readonly boolGeneralKeys: LineListBoolKey[] = [
+    'variant',
     'eliminate',
     'traverse',
     'highball',

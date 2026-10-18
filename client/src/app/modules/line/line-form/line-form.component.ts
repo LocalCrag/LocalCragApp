@@ -67,6 +67,7 @@ import { AsFormGroupPipe } from '../../shared/pipes/as-form-group.pipe';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Checkbox } from 'primeng/checkbox';
+import { Tooltip } from 'primeng/tooltip';
 import { Message } from 'primeng/message';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
@@ -129,6 +130,7 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
     Button,
     DatePicker,
     Checkbox,
+    Tooltip,
     Message,
     ConfirmPopup,
     FormSkeletonComponent,
@@ -404,6 +406,7 @@ export class LineFormComponent implements OnInit {
               [Validators.required],
             ],
             drying: [null],
+            variant: [false],
             eliminate: [false],
             traverse: [false],
             highball: [false],
@@ -568,6 +571,7 @@ export class LineFormComponent implements OnInit {
       boltDate: this.line.boltDate,
       startingPosition: this.line.startingPosition,
       drying: this.line.drying,
+      variant: this.line.variant,
       eliminate: this.line.eliminate,
       traverse: this.line.traverse,
       highball: this.line.highball,
@@ -670,6 +674,7 @@ export class LineFormComponent implements OnInit {
       }
       line.startingPosition = this.lineForm.get('startingPosition').value;
       line.drying = this.lineForm.get('drying').value;
+      line.variant = this.lineForm.get('variant').value;
       line.eliminate = this.lineForm.get('eliminate').value;
       line.traverse = this.lineForm.get('traverse').value;
       line.highball = this.lineForm.get('highball').value;

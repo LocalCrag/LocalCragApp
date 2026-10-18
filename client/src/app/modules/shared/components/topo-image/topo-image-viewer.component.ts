@@ -11,10 +11,8 @@ import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { Skeleton } from 'primeng/skeleton';
-import {
-  sortLinePathsByOrderIndex,
-  getLinePathDisplayNumber,
-} from '../../../../utility/topo/line-path-numbering';
+import { getLinePathDisplayNumber } from '../../../../utility/topo/line-path-numbering';
+import { linePathsForTopoCanvas } from '../../../../utility/topo/line-path-variants';
 import { getAbsoluteCoordinates } from './topo-image-canvas.utils';
 import { TopoImageCanvasBase } from './topo-image-canvas.base';
 
@@ -33,6 +31,8 @@ export class TopoImageViewerComponent
   implements OnChanges
 {
   @Input() showLineNumbers = false;
+  /** When false, paths whose line is a variant are not drawn. */
+  @Input() includeVariants = true;
   /** When `hover`, tabu polygons stay hidden until the matching line is highlighted. */
   @Input() tabuHoldsVisibility: 'always' | 'hover' = 'always';
 
@@ -40,11 +40,11 @@ export class TopoImageViewerComponent
   private focusLayer: Konva.Layer;
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      this.topoImage &&
-      changes['topoImage'] &&
-      !changes['topoImage'].firstChange
-    ) {
+    const topoChanged =
+      changes['topoImage'] && !changes['topoImage'].firstChange;
+    const variantsChanged =
+      changes['includeVariants'] && !changes['includeVariants'].firstChange;
+    if (this.topoImage && (topoChanged || variantsChanged)) {
       setTimeout(() => this.render());
     }
   }
@@ -54,8 +54,9 @@ export class TopoImageViewerComponent
     this.createKonvaStageAndLayer();
 
     const labels: Label[] = [];
-    const orderedLinePaths = sortLinePathsByOrderIndex(
+    const orderedLinePaths = linePathsForTopoCanvas(
       this.topoImage.linePaths,
+      this.includeVariants,
     );
     orderedLinePaths.forEach((linePath, index) => {
       this.drawTabuHolds(linePath, {

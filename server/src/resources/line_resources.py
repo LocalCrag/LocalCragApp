@@ -298,6 +298,7 @@ class CreateLine(MethodView):
             new_line.bolter = None
             new_line.bolt_date = None
 
+        new_line.variant = line_data["variant"]
         new_line.eliminate = line_data["eliminate"]
         new_line.traverse = line_data["traverse"]
         new_line.highball = line_data["highball"]
@@ -407,6 +408,7 @@ class UpdateLine(MethodView):
             line.bolter = None
             line.bolt_date = None
 
+        line.variant = line_data["variant"]
         line.eliminate = line_data["eliminate"]
         line.traverse = line_data["traverse"]
         line.highball = line_data["highball"]

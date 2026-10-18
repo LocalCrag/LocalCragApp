@@ -32,6 +32,7 @@ def _secret_line_payload():
         "traverse": True,
         "highball": True,
         "morpho": True,
+        "variant": False,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
