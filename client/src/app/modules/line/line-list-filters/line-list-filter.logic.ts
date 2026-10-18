@@ -8,6 +8,7 @@ export type LineListClimbFilterMode = 'any' | 'climbed' | 'notClimbed';
 
 /** Line boolean property keys accepted by GET /lines `required_bools` (see server `line_list_query_args.py`). */
 export const LINE_LIST_BOOL_KEYS = [
+  'variant',
   'eliminate',
   'traverse',
   'highball',

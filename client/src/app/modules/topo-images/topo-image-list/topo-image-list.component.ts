@@ -25,7 +25,7 @@ import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 
-import { NgClass, ViewportScroller } from '@angular/common';
+import { NgClass, NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -55,6 +55,11 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { getLinePathDisplayNumber } from '../../../utility/topo/line-path-numbering';
+import {
+  primaryTopoLinePaths,
+  variantTopoLinePaths,
+} from '../../../utility/topo/line-path-variants';
 
 /**
  * Component that lists all topo images in an area.
@@ -81,6 +86,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Message,
     TopoImageListSkeletonComponent,
     NgClass,
+    NgTemplateOutlet,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,
     ClosedSpotTagComponent,
@@ -109,6 +115,8 @@ export class TopoImageListComponent implements OnInit {
   public ticks: Set<string>;
   public showArchive = false;
   public displayUserRating = false;
+  /** Topo image ids whose variant lines are expanded in the list and drawing. */
+  private expandedVariantImageIds = new Set<string>();
 
   private scrollTarget: Scroll;
   private stopAnchorScroll: (() => void) | null = null;
@@ -395,6 +403,35 @@ export class TopoImageListComponent implements OnInit {
       linePath.konvaText.destroy();
       linePath.loadingState = LoadingState.DEFAULT;
     });
+  }
+
+  primaryLinePaths(topoImage: TopoImage): LinePath[] {
+    return primaryTopoLinePaths(topoImage.linePaths);
+  }
+
+  variantLinePaths(topoImage: TopoImage): LinePath[] {
+    return variantTopoLinePaths(topoImage.linePaths);
+  }
+
+  variantCount(topoImage: TopoImage): number {
+    return variantTopoLinePaths(topoImage.linePaths).length;
+  }
+
+  variantsExpanded(topoImage: TopoImage): boolean {
+    return this.expandedVariantImageIds.has(topoImage.id);
+  }
+
+  toggleVariants(topoImage: TopoImage): void {
+    if (this.variantsExpanded(topoImage)) {
+      this.expandedVariantImageIds.delete(topoImage.id);
+      return;
+    }
+    this.expandedVariantImageIds.add(topoImage.id);
+  }
+
+  /** 1-based badge number. Hidden variants do not renumber the lines that stay visible. */
+  lineNumber(linePath: LinePath): number {
+    return Number(getLinePathDisplayNumber(linePath));
   }
 
   /**

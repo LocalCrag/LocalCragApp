@@ -33,6 +33,7 @@ def _boulder_line_payload(name, author_grade, assumed_min=None, assumed_max=None
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
@@ -163,6 +164,7 @@ def test_successful_create_line(client, moderator_token):
         "traverse": True,
         "highball": True,
         "morpho": True,
+        "variant": True,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -219,6 +221,7 @@ def test_successful_create_line(client, moderator_token):
     assert res["highball"] is True
     assert res["lowball"] is True
     assert res["morpho"] is True
+    assert res["variant"] is True
     assert res["noTopout"] is True
     assert res["badDropzone"] is True
     assert res["childFriendly"] is True
@@ -268,6 +271,7 @@ def test_successful_create_and_edit_sport_line_with_bolter(client, moderator_tok
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
@@ -333,6 +337,7 @@ def test_successful_create_line_with_project_status(client, moderator_token):
         "traverse": True,
         "highball": True,
         "morpho": True,
+        "variant": False,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -431,6 +436,7 @@ def test_create_line_invalid_fa_year(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -479,6 +485,7 @@ def test_create_line_invalid_rating(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -527,6 +534,7 @@ def test_create_line_invalid_video_url(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -575,6 +583,7 @@ def test_create_line_invalid_grade_value(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -623,6 +632,7 @@ def test_create_line_invalid_grade_scale_for_line_type(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -671,6 +681,7 @@ def test_create_line_invalid_grade_scale(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -719,6 +730,7 @@ def test_create_line_invalid_line_type(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -767,6 +779,7 @@ def test_create_line_invalid_line_starting_position(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -819,6 +832,7 @@ def test_create_line_invalid_video_payload(client, moderator_token):
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -867,6 +881,7 @@ def test_create_line_invalid_color(client, moderator_token):
         "traverse": True,
         "highball": True,
         "morpho": True,
+        "variant": False,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,
@@ -1112,6 +1127,7 @@ def test_successful_get_line(client):
     assert res["highball"] is False
     assert res["lowball"] is False
     assert res["morpho"] is False
+    assert res["variant"] is False
     assert res["noTopout"] is True
     assert res["badDropzone"] is False
     assert res["childFriendly"] is False
@@ -1264,6 +1280,7 @@ def test_successful_edit_line(client, moderator_token):
         "overhang": True,
         "athletic": True,
         "morpho": True,
+        "variant": True,
         "technical": True,
         "endurance": True,
         "cruxy": True,
@@ -1304,6 +1321,7 @@ def test_successful_edit_line(client, moderator_token):
     assert res["highball"] is True
     assert res["lowball"] is True
     assert res["morpho"] is True
+    assert res["variant"] is True
     assert res["noTopout"] is True
     assert res["badDropzone"] is True
     assert res["childFriendly"] is True
@@ -1354,6 +1372,7 @@ def test_edit_line_change_grade_to_project_if_line_has_ascents(client, moderator
         "highball": True,
         "lowball": True,
         "morpho": True,
+        "variant": False,
         "noTopout": True,
         "badDropzone": True,
         "childFriendly": True,
@@ -1408,6 +1427,7 @@ def test_create_line_with_fa_date_only(client, moderator_token):
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
@@ -1458,6 +1478,7 @@ def test_create_line_with_fa_date_and_year_raises_400(client, moderator_token):
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
@@ -1505,6 +1526,7 @@ def test_create_project_line_with_fa_date_and_year_raises_400(client, moderator_
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
@@ -1556,6 +1578,24 @@ def test_get_lines_required_bools_highball_filters_lines(client):
     slugs = {item["slug"] for item in rv2.json["items"]}
     assert slugs == {"the-vessel"}
     assert all(item["highball"] is True for item in rv2.json["items"])
+
+
+def test_get_lines_required_bools_variant_filters_lines(client):
+    """required_bools=variant keeps variant lines and leaves the rest out."""
+    rv = client.get("/api/lines?required_bools=variant&per_page=50")
+    assert rv.status_code == 200
+    assert rv.json["items"] == []
+
+    line: Line = Line.find_by_slug("the-vessel")
+    line.variant = True
+    db.session.add(line)
+    db.session.commit()
+
+    rv2 = client.get("/api/lines?required_bools=variant&per_page=50")
+    assert rv2.status_code == 200
+    slugs = {item["slug"] for item in rv2.json["items"]}
+    assert slugs == {"the-vessel"}
+    assert all(item["variant"] is True for item in rv2.json["items"])
 
 
 def test_get_lines_rejects_partial_grade_filter(client):
@@ -1618,6 +1658,7 @@ def test_create_line_with_drying(client, moderator_token):
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,

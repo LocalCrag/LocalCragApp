@@ -2,6 +2,9 @@
   <span
     ><strong>{{ line.startingPosition | transloco }}</strong></span
   >
+  @if (line.variant) {
+    <span>{{ t("variant") }}</span>
+  }
   @if (line.eliminate) {
     <span>{{ t("eliminate") }}</span>
   }

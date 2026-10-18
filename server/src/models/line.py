@@ -50,6 +50,7 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     drying = db.Column(db.Enum(DryingEnum), nullable=True)
     archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
 
+    variant = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     eliminate = db.Column(db.Boolean, nullable=False, default=False)
     traverse = db.Column(db.Boolean, nullable=False, default=False)
     highball = db.Column(db.Boolean, nullable=False, default=False)

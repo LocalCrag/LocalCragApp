@@ -86,6 +86,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     secret = fields.Boolean()
     archived = fields.Boolean()
 
+    variant = fields.Boolean()
     eliminate = fields.Boolean()
     traverse = fields.Boolean()
     highball = fields.Boolean()
