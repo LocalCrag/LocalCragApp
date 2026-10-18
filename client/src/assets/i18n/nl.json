@@ -73,6 +73,7 @@
   "todos.todoList.loadMore": "Meer laden...",
   "todoButton.onTodoList": "Op de Todo-lijst",
   "todoButton.addTodo": "Toevoegen als Todo",
+  "todoButton.choosePriority": "Prioriteit kiezen",
   "singleImageUploader.browseFilesButtonLabel": "Zoeken",
   "singleImageUploader.adjustCropDoneButtonLabel": "Klaar",
   "singleImageUploader.adjustCropResetButtonLabel": "Terug naar midden",

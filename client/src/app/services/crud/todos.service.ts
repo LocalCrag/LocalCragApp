@@ -25,9 +25,12 @@ export class TodosService {
       .pipe(map((payload) => Paginated.deserialize(payload, Todo.deserialize)));
   }
 
-  public createTodo(line: Line): Observable<Todo> {
+  public createTodo(
+    line: Line,
+    priority: TodoPriority = TodoPriority.MEDIUM,
+  ): Observable<Todo> {
     return this.http
-      .post(this.api.todos.create(), { line: line.id })
+      .post(this.api.todos.create(), { line: line.id, priority })
       .pipe(map(Todo.deserialize));
   }
 

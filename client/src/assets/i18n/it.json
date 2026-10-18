@@ -73,6 +73,7 @@
   "todos.todoList.loadMore": "Carica altro...",
   "todoButton.onTodoList": "Sulla lista Progetti",
   "todoButton.addTodo": "Aggiungi ai Progetti",
+  "todoButton.choosePriority": "Scegli la priorità",
   "singleImageUploader.browseFilesButtonLabel": "Sfoglia",
   "singleImageUploader.adjustCropDoneButtonLabel": "Fine",
   "singleImageUploader.adjustCropResetButtonLabel": "Ripristina al centro",

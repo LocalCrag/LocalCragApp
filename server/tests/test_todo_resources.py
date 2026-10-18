@@ -21,6 +21,31 @@ def test_successful_add_todo(client, user_token):
     assert res["crag"]["name"] == "Brione"
 
 
+def test_successful_add_todo_with_priority(client, user_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+    todo_data = {
+        "line": str(line_id),
+        "priority": TodoPriorityEnum.HIGH.value,
+    }
+
+    rv = client.post("/api/todos", token=user_token, json=todo_data)
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["line"]["id"] == str(line_id)
+    assert res["priority"] == TodoPriorityEnum.HIGH.value
+
+
+def test_add_todo_rejects_invalid_priority(client, user_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+    todo_data = {
+        "line": str(line_id),
+        "priority": "URGENT",
+    }
+
+    rv = client.post("/api/todos", token=user_token, json=todo_data)
+    assert rv.status_code == 400
+
+
 def test_try_adding_todo_twice(client, user_token):
     line_id = Line.get_id_by_slug("the-vessel")
     todo_data = {

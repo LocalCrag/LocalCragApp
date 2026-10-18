@@ -74,6 +74,7 @@ class CreateTodo(MethodView):
 
         todo: Todo = Todo()
         todo.line_id = todo_data["line"]
+        todo.priority = todo_data["priority"]
 
         db.session.add(todo)
         db.session.commit()
