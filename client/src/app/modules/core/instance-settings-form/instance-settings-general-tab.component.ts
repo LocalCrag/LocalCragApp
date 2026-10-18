@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   TranslocoDirective,
   TranslocoPipe,
@@ -10,12 +11,14 @@ import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
+import { LandingPage } from '../../../enums/landing-page';
 import { StartingPosition } from '../../../enums/starting-position';
 import { getInstanceTimezoneOptions } from '../../../utility/constants/instance-timezones';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
+import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 
 @Component({
   selector: 'lc-instance-settings-general-tab',
@@ -41,6 +44,10 @@ export class InstanceSettingsGeneralTabComponent implements OnInit {
   @Input() loading = false;
 
   public faDefaultFormats = FaDefaultFormat;
+  public landingPages = LandingPage;
+  public landingPageOptions: { label: string; value: LandingPage }[] = [];
+  public menuPageOptions: { label: string; value: string }[] = [];
+  public menuPagesLoaded = false;
   public startingPositionsOptions: {
     label: string;
     value: StartingPosition;
@@ -50,6 +57,8 @@ export class InstanceSettingsGeneralTabComponent implements OnInit {
   public timezoneOptions = getInstanceTimezoneOptions();
 
   private translocoService = inject(TranslocoService);
+  private menuPagesService = inject(MenuPagesService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     const startingPositions = [
@@ -64,6 +73,40 @@ export class InstanceSettingsGeneralTabComponent implements OnInit {
       label: this.translocoService.translate(sp),
       value: sp,
     }));
+    this.landingPageOptions = [
+      ...[
+        LandingPage.NEWS,
+        LandingPage.TOPO,
+        LandingPage.ASCENTS,
+        LandingPage.RANKING,
+        LandingPage.GALLERY,
+        LandingPage.HISTORY,
+      ].map((page) => ({
+        label: this.translocoService.translate(`menu.${page.toLowerCase()}`),
+        value: page,
+      })),
+      {
+        label: this.translocoService.translate(
+          'instanceSettings.instanceSettingsForm.landingPageMenuPage',
+        ),
+        value: LandingPage.MENU_PAGE,
+      },
+    ];
+    this.group
+      .get('landingPage')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.syncLandingPageSlug(value));
+    this.syncLandingPageSlug(this.group.get('landingPage')?.value);
+    this.menuPagesService
+      .getMenuPages()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((pages) => {
+        this.menuPageOptions = pages.map((page) => ({
+          label: page.title,
+          value: page.slug,
+        }));
+        this.menuPagesLoaded = true;
+      });
     this.rankingPastWeeksOptions = [
       {
         label: this.translocoService.translate(
@@ -84,5 +127,21 @@ export class InstanceSettingsGeneralTabComponent implements OnInit {
         value: w,
       })),
     ];
+  }
+
+  private syncLandingPageSlug(value: LandingPage | null): void {
+    const slugControl = this.group.get('landingPageSlug');
+    if (!slugControl) {
+      return;
+    }
+    if (value === LandingPage.MENU_PAGE) {
+      slugControl.setValidators([Validators.required]);
+    } else {
+      slugControl.clearValidators();
+      if (slugControl.value) {
+        slugControl.setValue(null);
+      }
+    }
+    slugControl.updateValueAndValidity();
   }
 }

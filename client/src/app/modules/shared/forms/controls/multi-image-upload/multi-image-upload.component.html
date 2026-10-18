@@ -1,27 +1,43 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
-  @for (file of files; track file; let i = $index) {
-    <div>
-      <div class="image-wrapper">
-        <p-image
-          [src]="file.path"
-          [preview]="!isDisabled"
-          [alt]="file.originalFilename"
-          width="250"
-        >
-          <ng-template #indicator>
-            <i class="pi pi-eye"></i>
-          </ng-template>
-        </p-image>
-        @if (!isDisabled) {
+  <div class="image-list">
+    @for (file of files; track file; let i = $index) {
+      <div class="image-item">
+        <div class="image-wrapper">
+          <p-image
+            [src]="file.path"
+            [preview]="!isDisabled"
+            [alt]="file.originalFilename"
+            width="250"
+          >
+            <ng-template #indicator>
+              <i class="pi pi-eye"></i>
+            </ng-template>
+          </p-image>
+          @if (!isDisabled) {
+            <p-button
+              icon="pi pi-times"
+              (click)="removeMedia(i)"
+              styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
+            ></p-button>
+          }
+        </div>
+        @if (!isDisabled && file.width && file.height && canEdit(file)) {
           <p-button
-            icon="pi pi-times"
-            (click)="removeMedia(i)"
-            styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
-          ></p-button>
+            class="image-edit-button"
+            icon="pi pi-pencil"
+            [label]="t('editImageButtonLabel')"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            [disabled]="transforming"
+            [pTooltip]="t('editImageTooltip')"
+            tooltipPosition="right"
+            (click)="openImageEdit(file)"
+          />
         }
       </div>
-    </div>
-  }
+    }
+  </div>
 
   @if (!isDisabled) {
     <p-fileupload
@@ -45,4 +61,14 @@
   @if (showProgressBar) {
     <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
   }
+
+  <lc-image-edit-dialog
+    [visible]="!!editingFile"
+    [saving]="transforming"
+    [imageUrl]="editingFile?.path ?? ''"
+    [imageWidth]="editingFile?.width ?? 0"
+    [imageHeight]="editingFile?.height ?? 0"
+    (visibleChange)="onImageEditVisible($event)"
+    (applyEdit)="applyImageEdit($event)"
+  />
 </ng-container>

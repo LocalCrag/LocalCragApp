@@ -7,6 +7,8 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "Keine Topo Bilder gefunden",
   "topoImageList.noLineAssignedToTopoImage": "Diesem Bild ist bisher keine Linie zugeordnet worden.",
   "topoImageList.lines": "Linien",
+  "topoImageList.showVariants": "{count, plural, =1{1 Variante anzeigen} other{# Varianten anzeigen}}",
+  "topoImageList.hideVariants": "{count, plural, =1{1 Variante verbergen} other{# Varianten verbergen}}",
   "topoImageList.editLinePathsButtonLabel": "Linien bearbeiten",
   "topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
   "topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",

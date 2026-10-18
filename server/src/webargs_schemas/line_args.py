@@ -72,6 +72,7 @@ class LineArgsSchema(BatchLineArgsSchema):
     boltDate = fields.Date(required=False, allow_none=True, load_default=None, validate=validate_bolt_date)
     drying = fields.Enum(DryingEnum, required=False, allow_none=True, load_default=None)
     secret = fields.Boolean(required=True, allow_none=False)
+    variant = fields.Boolean(required=True, allow_none=False)
     eliminate = fields.Boolean(required=True, allow_none=False)
     traverse = fields.Boolean(required=True, allow_none=False)
     highball = fields.Boolean(required=True, allow_none=False)

@@ -227,6 +227,16 @@ export const NOTIFICATIONS = {
     title: marker('notifications.UNKNOWN_ERROR_TITLE'),
     message: marker('notifications.UNKNOWN_ERROR_MESSAGE'),
   },
+  INVALID_IMAGE_TRANSFORM: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.INVALID_IMAGE_TRANSFORM_TITLE'),
+    message: marker('notifications.INVALID_IMAGE_TRANSFORM_MESSAGE'),
+  },
+  FORBIDDEN: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.FORBIDDEN_TITLE'),
+    message: marker('notifications.FORBIDDEN_MESSAGE'),
+  },
   LOG_OUT_TO_USE_THIS_FUNCTION: {
     type: NotificationType.INFO,
     title: marker('notifications.LOG_OUT_TO_USE_THIS_FUNCTION_TITLE'),

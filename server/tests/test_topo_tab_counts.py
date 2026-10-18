@@ -37,6 +37,7 @@ def _secret_line_payload(name="Tab Count Secret Line"):
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,

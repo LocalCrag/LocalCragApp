@@ -5,6 +5,11 @@ import { File } from '../../models/file';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DeleteAction, ImageSpec, ResizeAction } from 'quill-blot-formatter';
+import {
+  ImageEditRequest,
+  ImageRotation,
+  PixelCrop,
+} from '../../utility/image-edit';
 import { ImageFocusY, normalizeImageFocusY } from '../../utility/image-focus';
 
 /**
@@ -61,6 +66,20 @@ export class UploadService {
   /**
    * Updates horizontal focus metadata for an uploaded file.
    */
+  /**
+   * Stores a rotated and cropped copy of an uploaded image.
+   */
+  public transformFile(
+    fileId: string,
+    rotation: ImageRotation,
+    crop: PixelCrop | null,
+  ): Observable<File> {
+    const body: ImageEditRequest = { rotation, crop };
+    return this.http
+      .post<any>(this.api.files.transform(fileId), body)
+      .pipe(map((response) => File.deserialize(response)));
+  }
+
   public updateFileFocus(
     fileId: string,
     focusY: ImageFocusY | null,

@@ -1,6 +1,7 @@
 from extensions import db
 from models.crag import Crag
 from models.enums.fa_default_format_enum import FaDefaultFormatEnum
+from models.enums.landing_page_enum import LandingPageEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.instance_settings import InstanceSettings
 from models.sector import Sector
@@ -73,6 +74,8 @@ def test_successful_get_instance_settings(client):
     assert res["sentryEnabled"] is False
     assert res["sentryDsn"] == ""
     assert res["gymMode"] == instance_settings.gym_mode
+    assert res["landingPage"] == instance_settings.effective_landing_page.value
+    assert res["landingPageSlug"] == instance_settings.landing_page_slug
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserGrades"] == instance_settings.display_user_grades
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
@@ -125,6 +128,8 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert res["sentryEnabled"] is False
     assert res["sentryDsn"] == ""
     assert res["gymMode"] is True
+    assert res["landingPage"] == LandingPageEnum.NEWS.value
+    assert res["landingPageSlug"] is None
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserRatings"] is True
     assert res["displayUserGrades"] is True
@@ -552,6 +557,98 @@ def test_successful_change_skipped_hierarchical_layers(client, moderator_token, 
 
     sector = Sector.find_by_slug("_default")
     assert sector is not None
+
+
+def test_successful_patch_landing_page(client, moderator_token):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.TOPO.value},
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["landingPage"] == LandingPageEnum.TOPO.value
+
+    instance_settings = InstanceSettings.return_it()
+    assert instance_settings.landing_page == LandingPageEnum.TOPO
+
+
+def test_successful_patch_menu_page_landing_page(client, moderator_token):
+    rv = client.post(
+        "/api/menu-pages",
+        token=moderator_token,
+        json={"title": "Landing Target", "text": "<p>Welcome</p>"},
+    )
+    assert rv.status_code == 201, rv.json
+    slug = rv.json["slug"]
+
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.MENU_PAGE.value, "landingPageSlug": slug},
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["landingPage"] == LandingPageEnum.MENU_PAGE.value
+    assert rv.json["landingPageSlug"] == slug
+
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.TOPO.value},
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["landingPage"] == LandingPageEnum.TOPO.value
+    assert rv.json["landingPageSlug"] is None
+
+
+def test_reject_menu_page_landing_without_slug(client, moderator_token):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.MENU_PAGE.value, "landingPageSlug": None},
+    )
+    assert rv.status_code == 400, rv.json
+
+
+def test_reject_unknown_menu_page_landing(client, moderator_token):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.MENU_PAGE.value, "landingPageSlug": "missing-page"},
+    )
+    assert rv.status_code == 400, rv.json
+
+
+def test_deleting_landing_menu_page_falls_back_to_news(client, moderator_token):
+    rv = client.post(
+        "/api/menu-pages",
+        token=moderator_token,
+        json={"title": "Temporary Landing", "text": "<p>Temporary</p>"},
+    )
+    assert rv.status_code == 201, rv.json
+    slug = rv.json["slug"]
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": LandingPageEnum.MENU_PAGE.value, "landingPageSlug": slug},
+    )
+    assert rv.status_code == 200, rv.json
+
+    rv = client.delete(f"/api/menu-pages/{slug}", token=moderator_token)
+    assert rv.status_code == 204, rv.json
+
+    rv = client.get("/api/instance-settings")
+    assert rv.status_code == 200
+    assert rv.json["landingPage"] == LandingPageEnum.NEWS.value
+    assert rv.json["landingPageSlug"] is None
+
+
+def test_reject_unknown_landing_page(client, moderator_token):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"landingPage": "https://example.invalid"},
+    )
+    assert rv.status_code == 400, rv.json
 
 
 def test_successful_patch_timezone(client, moderator_token, any_file):

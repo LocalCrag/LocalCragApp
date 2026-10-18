@@ -94,6 +94,20 @@
       }
     </div>
 
+    @if (file && !isDisabled && file.width && file.height && canEdit(file)) {
+      <p-button
+        icon="pi pi-pencil"
+        [label]="t('editImageButtonLabel')"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="focusAdjustActive || transforming"
+        [pTooltip]="t('editImageTooltip')"
+        tooltipPosition="right"
+        (click)="openImageEdit()"
+      />
+    }
+
     @if (file && focusAdjustable && file.width && file.height) {
       <div class="focus-adjust-actions">
         @if (focusAdjustActive) {
@@ -140,4 +154,14 @@
       </div>
     }
   </div>
+
+  <lc-image-edit-dialog
+    [visible]="imageEditOpen"
+    [saving]="transforming"
+    [imageUrl]="file?.path ?? ''"
+    [imageWidth]="file?.width ?? 0"
+    [imageHeight]="file?.height ?? 0"
+    (visibleChange)="onImageEditVisible($event)"
+    (applyEdit)="applyImageEdit($event)"
+  />
 </ng-container>

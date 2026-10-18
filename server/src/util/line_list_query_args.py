@@ -16,6 +16,7 @@ from models.enums.starting_position_enum import StartingPositionEnum
 
 _LINE_LIST_BOOL_API_KEYS: FrozenSet[str] = frozenset(
     {
+        "variant",
         "eliminate",
         "traverse",
         "highball",

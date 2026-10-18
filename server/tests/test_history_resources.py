@@ -57,6 +57,7 @@ def test_successful_change_value_history(client, moderator_token):
         "overhang": True,
         "athletic": True,
         "morpho": True,
+        "variant": False,
         "technical": True,
         "endurance": True,
         "cruxy": True,

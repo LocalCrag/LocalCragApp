@@ -88,12 +88,15 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
 
   private resizeRenderSubject = new Subject<void>();
   private windowWidth: number;
+  /** Container width of the last draw, so a parent resize can redraw too. */
+  private renderedContainerWidth = -1;
   /**
    * Identifies the render whose photo is allowed to draw.
    * The image loads asynchronously, so a callback from an older render must
    * not draw after a resize, an image change, or destroy.
    */
   private renderGeneration = 0;
+  private layoutWait: ResizeObserver | null = null;
   private destroyRef = inject(DestroyRef);
   protected el = inject(ElementRef);
   protected store = inject(Store);
@@ -103,20 +106,34 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
     this.resizeRenderSubject.next();
   }
 
+  /**
+   * Redraws after the parent container size changes without a window resize.
+   */
+  relayout(): void {
+    this.resizeRenderSubject.next();
+  }
+
   ngOnInit() {
     setTimeout(() => this.render());
     this.windowWidth = window.innerWidth;
     this.resizeRenderSubject
       .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        if (window.innerWidth !== this.windowWidth) {
-          this.render();
-          this.windowWidth = window.innerWidth;
+        const containerWidth = (this.el.nativeElement as HTMLElement)
+          .offsetWidth;
+        const viewportChanged = window.innerWidth !== this.windowWidth;
+        const containerChanged =
+          containerWidth > 0 && containerWidth !== this.renderedContainerWidth;
+        if (!viewportChanged && !containerChanged) {
+          return;
         }
+        this.render();
+        this.windowWidth = window.innerWidth;
       });
   }
 
   ngOnDestroy() {
+    this.stopWaitingForLayout();
     this.renderGeneration++;
     this.destroyStage();
   }
@@ -126,6 +143,13 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
    */
   protected render() {
     const generation = ++this.renderGeneration;
+    const containerWidth = (this.el.nativeElement as HTMLElement).offsetWidth;
+    if (!this.viewportFit && containerWidth <= 0) {
+      this.waitForLayout(generation);
+      return;
+    }
+    this.renderedContainerWidth = containerWidth;
+    this.stopWaitingForLayout();
     this.store
       .select(selectIsMobile)
       .pipe(take(1))
@@ -135,13 +159,50 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
         }
         this.isMobile = isMobile;
         this.loadBackgroundImage();
-        this.backgroundImage.onload = () => {
-          if (generation !== this.renderGeneration) {
+        // A cached photo can finish before onload is assigned, which leaves
+        // the skeleton up. Draw immediately in that case, and ignore a second
+        // onload for the same render.
+        let drawn = false;
+        const draw = () => {
+          if (drawn || generation !== this.renderGeneration) {
             return;
           }
+          drawn = true;
           this.drawLinesAndLabels();
         };
+        this.backgroundImage.onload = draw;
+        if (
+          this.backgroundImage.complete &&
+          this.backgroundImage.naturalWidth > 0
+        ) {
+          draw();
+        }
       });
+  }
+
+  /**
+   * Step panels and flex columns often report 0 width on the first tick.
+   * Choosing a thumbnail then locks in the 20px file.
+   */
+  private waitForLayout(generation: number) {
+    const element = this.el.nativeElement as HTMLElement;
+    this.stopWaitingForLayout();
+    this.layoutWait = new ResizeObserver(() => {
+      if (generation !== this.renderGeneration) {
+        this.stopWaitingForLayout();
+        return;
+      }
+      if (element.offsetWidth > 0) {
+        this.stopWaitingForLayout();
+        this.render();
+      }
+    });
+    this.layoutWait.observe(element);
+  }
+
+  private stopWaitingForLayout() {
+    this.layoutWait?.disconnect();
+    this.layoutWait = null;
   }
 
   protected destroyStage() {

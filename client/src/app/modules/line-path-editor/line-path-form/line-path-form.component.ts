@@ -501,13 +501,11 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   }
 
   leaveEditor() {
-    this.router.navigate([
-      '/topo',
-      this.cragSlug,
-      this.sectorSlug,
-      this.areaSlug,
-      'topo-images',
-    ]);
+    // Land on the image that was just edited, not the top of the topo list.
+    this.router.navigate(
+      ['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images'],
+      { fragment: this.topoImageId ?? undefined },
+    );
   }
 
   public saveAllLinePaths() {
@@ -563,11 +561,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
         });
         this.store.dispatch(toastNotification('LINE_PATHS_SAVED'));
         this.loadingState = LoadingState.DEFAULT;
-        if (this.embedded) {
-          this.refreshData();
-        } else {
-          this.leaveEditor();
-        }
+        this.leaveEditor();
       });
   }
 

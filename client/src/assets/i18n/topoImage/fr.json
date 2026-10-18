@@ -7,6 +7,8 @@
   "topoImageList.noTopoImagesFoundEmptyMessage": "Aucune image trouvée",
   "topoImageList.noLineAssignedToTopoImage": "Aucune voie n'a encore été associée à cette image.",
   "topoImageList.lines": "Voies",
+  "topoImageList.showVariants": "{count, plural, =1{Afficher 1 variante} other{Afficher # variantes}}",
+  "topoImageList.hideVariants": "{count, plural, =1{Masquer 1 variante} other{Masquer # variantes}}",
   "topoImageList.editLinePathsButtonLabel": "Modifier les voies",
   "topoImageList.addLineToImageButtonLabel": "Lier une voie",
   "topoImageList.reorderLinePathsButtonLabel": "Réorganiser les voies",

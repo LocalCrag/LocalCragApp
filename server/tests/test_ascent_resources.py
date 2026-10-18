@@ -242,6 +242,7 @@ def test_send_project_climbed_message(client, smtp_mock, moderator_token, user_t
         "traverse": True,
         "highball": True,
         "morpho": True,
+        "variant": False,
         "lowball": True,
         "noTopout": True,
         "badDropzone": True,

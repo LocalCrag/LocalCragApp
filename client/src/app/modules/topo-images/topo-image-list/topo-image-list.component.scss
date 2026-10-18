@@ -58,6 +58,20 @@ lc-topo-image-list {
   }
 
   .line-table-wrapper {
+    .variant-toggle {
+      display: block;
+      width: 100%;
+      margin: 0.25rem 0;
+      padding: 0.5rem 0.25rem;
+      border: 0;
+      border-top: 1px solid var(--p-content-border-color);
+      background: transparent;
+      color: var(--p-primary-color);
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
     .line-table-row {
       display: flex;
       color: inherit;

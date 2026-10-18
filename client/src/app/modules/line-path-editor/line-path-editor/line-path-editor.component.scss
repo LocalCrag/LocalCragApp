@@ -1,7 +1,6 @@
 lc-line-path-editor {
   display: block;
   width: 100%;
-  max-width: 700px;
 
   .rotate-icon span.pi-refresh {
     transform: rotate(270deg);
@@ -12,7 +11,9 @@ lc-line-path-editor {
   }
 }
 
+// Desktop width is measured from this column so the canvas can fill it
+// without covering the side panel.
 .line-path-editor-layout:not(.mobile) > lc-line-path-editor {
   width: auto;
-  max-width: min(700px, calc(100% - 19.5rem));
+  max-width: calc(100% - 19.5rem);
 }

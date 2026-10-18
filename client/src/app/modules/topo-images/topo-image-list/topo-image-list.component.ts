@@ -25,7 +25,7 @@ import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 
-import { NgClass, ViewportScroller } from '@angular/common';
+import { NgClass, NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -55,6 +55,11 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { getLinePathDisplayNumber } from '../../../utility/topo/line-path-numbering';
+import {
+  primaryTopoLinePaths,
+  variantTopoLinePaths,
+} from '../../../utility/topo/line-path-variants';
 
 /**
  * Component that lists all topo images in an area.
@@ -81,6 +86,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Message,
     TopoImageListSkeletonComponent,
     NgClass,
+    NgTemplateOutlet,
     TopoImageDetailsComponent,
     ArchiveButtonComponent,
     ClosedSpotTagComponent,
@@ -109,8 +115,11 @@ export class TopoImageListComponent implements OnInit {
   public ticks: Set<string>;
   public showArchive = false;
   public displayUserRating = false;
+  /** Topo image ids whose variant lines are expanded in the list and drawing. */
+  private expandedVariantImageIds = new Set<string>();
 
   private scrollTarget: Scroll;
+  private stopAnchorScroll: (() => void) | null = null;
 
   private destroyRef = inject(DestroyRef);
   private topoImagesService = inject(TopoImagesService);
@@ -129,6 +138,7 @@ export class TopoImageListComponent implements OnInit {
   protected scalesService = inject(ScalesService);
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.stopAnchorScroll?.());
     this.router.events
       .pipe(filter((event): event is Scroll => event instanceof Scroll))
       .subscribe((e) => {
@@ -229,21 +239,48 @@ export class TopoImageListComponent implements OnInit {
     }
   }
 
+  /**
+   * Scrolls the topo image identified by the URL fragment to the top.
+   *
+   * Canvases grow after the first paint and again when the photo decodes,
+   * which pushes the target down. Keep pulling it back until that settles,
+   * unless the user starts scrolling.
+   */
   scrollToAnchor() {
-    this.route.fragment.subscribe((fragment: string) => {
-      if (fragment) {
-        // CDR not working as expected here because topo image is using setTimeout because of konva bug...
-        // So I have to use setTimeout too
-        setTimeout(() => {
-          const elmnt = document.getElementById(fragment);
-          elmnt.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-          });
-        });
+    this.stopAnchorScroll?.();
+    this.stopAnchorScroll = null;
+
+    const fragment = this.route.snapshot.fragment;
+    if (!fragment) {
+      return;
+    }
+
+    let timer = 0;
+    let attempts = 0;
+    const stop = () => {
+      window.clearInterval(timer);
+      window.removeEventListener('wheel', stop);
+      window.removeEventListener('touchstart', stop);
+      if (this.stopAnchorScroll === stop) {
+        this.stopAnchorScroll = null;
       }
-    });
+    };
+    timer = window.setInterval(() => {
+      attempts += 1;
+      const element = document.getElementById(fragment);
+      if (!element || attempts > 25) {
+        stop();
+        return;
+      }
+      const top = element.getBoundingClientRect().top;
+      if (Math.abs(top) > 2) {
+        window.scrollBy(0, top);
+      }
+    }, 200);
+    this.stopAnchorScroll = stop;
+
+    window.addEventListener('wheel', stop, { passive: true });
+    window.addEventListener('touchstart', stop, { passive: true });
   }
 
   openVideo(event: MouseEvent, line: Line) {
@@ -366,6 +403,35 @@ export class TopoImageListComponent implements OnInit {
       linePath.konvaText.destroy();
       linePath.loadingState = LoadingState.DEFAULT;
     });
+  }
+
+  primaryLinePaths(topoImage: TopoImage): LinePath[] {
+    return primaryTopoLinePaths(topoImage.linePaths);
+  }
+
+  variantLinePaths(topoImage: TopoImage): LinePath[] {
+    return variantTopoLinePaths(topoImage.linePaths);
+  }
+
+  variantCount(topoImage: TopoImage): number {
+    return variantTopoLinePaths(topoImage.linePaths).length;
+  }
+
+  variantsExpanded(topoImage: TopoImage): boolean {
+    return this.expandedVariantImageIds.has(topoImage.id);
+  }
+
+  toggleVariants(topoImage: TopoImage): void {
+    if (this.variantsExpanded(topoImage)) {
+      this.expandedVariantImageIds.delete(topoImage.id);
+      return;
+    }
+    this.expandedVariantImageIds.add(topoImage.id);
+  }
+
+  /** 1-based badge number. Hidden variants do not renumber the lines that stay visible. */
+  lineNumber(linePath: LinePath): number {
+    return Number(getLinePathDisplayNumber(linePath));
   }
 
   /**

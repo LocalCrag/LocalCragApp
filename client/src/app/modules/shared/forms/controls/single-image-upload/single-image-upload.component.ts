@@ -11,21 +11,29 @@ import {
   inject,
 } from '@angular/core';
 import { ApiService } from '../../../../../services/core/api.service';
+import { UploadService } from '../../../../../services/crud/upload.service';
+import {
+  canEditUploadedImage,
+  ImageEditRequest,
+} from '../../../../../utility/image-edit';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NgControl,
 } from '@angular/forms';
 import { File } from '../../../../../models/file';
+import { User } from '../../../../../models/user';
 import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
+import { selectCurrentUser } from '../../../../../ngrx/selectors/auth.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 import { ProgressBar } from 'primeng/progressbar';
 import { Image } from 'primeng/image';
 import { Button } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { ImageEditDialogComponent } from '../image-edit-dialog/image-edit-dialog.component';
 import {
   clampImageFocusY,
   computeFocusFrameRect,
@@ -57,6 +65,7 @@ import {
     Image,
     Button,
     TooltipModule,
+    ImageEditDialogComponent,
   ],
 })
 export class SingleImageUploadComponent
@@ -81,10 +90,14 @@ export class SingleImageUploadComponent
   public focusY: ImageFocusY = DEFAULT_IMAGE_FOCUS_Y;
   public focusFrame: FocusFrameRect | null = null;
   public focusDragging = false;
+  public imageEditOpen = false;
+  public transforming = false;
+  public currentUser: User | null = null;
 
   private api = inject(ApiService);
   private inj = inject(Injector);
   private store = inject(Store);
+  private uploadService = inject(UploadService);
   private persistedFocusY: ImageFocusY | null = null;
 
   /**
@@ -95,6 +108,9 @@ export class SingleImageUploadComponent
     this.formControl = this.inj.get(NgControl);
     this.store.select(selectInstanceSettingsState).subscribe((settings) => {
       this.maxImageSize = settings?.maxImageSize * 1048576; // Convert to bytes
+    });
+    this.store.select(selectCurrentUser).subscribe((user) => {
+      this.currentUser = user;
     });
   }
 
@@ -173,7 +189,54 @@ export class SingleImageUploadComponent
   removeMedia() {
     this.file = null;
     this.focusAdjustActive = false;
+    this.imageEditOpen = false;
     this.onChange();
+  }
+
+  openImageEdit(): void {
+    if (
+      !this.file?.width ||
+      !this.file?.height ||
+      this.focusAdjustActive ||
+      !this.canEdit(this.file)
+    ) {
+      return;
+    }
+    this.imageEditOpen = true;
+  }
+
+  canEdit(file: File | null | undefined): boolean {
+    return canEditUploadedImage(this.currentUser, file?.createdById);
+  }
+
+  onImageEditVisible(open: boolean): void {
+    if (!open && this.transforming) {
+      return;
+    }
+    this.imageEditOpen = open;
+  }
+
+  applyImageEdit(request: ImageEditRequest): void {
+    if (!this.file || this.transforming) {
+      return;
+    }
+    this.transforming = true;
+    this.uploadService
+      .transformFile(this.file.id, request.rotation, request.crop)
+      .subscribe({
+        next: (file) => {
+          this.file = file;
+          this.imageLoading = true;
+          this.imageLoadingError = false;
+          this.syncFocusFromFile();
+          this.onChange();
+          this.transforming = false;
+          this.imageEditOpen = false;
+        },
+        error: () => {
+          this.transforming = false;
+        },
+      });
   }
 
   /**

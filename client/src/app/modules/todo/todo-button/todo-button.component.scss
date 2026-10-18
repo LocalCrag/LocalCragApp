@@ -13,4 +13,29 @@ lc-todo-button {
     padding: 0.1rem;
     color: var(--p-primary-contrast-color);
   }
+
+  .todo-add {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .todo-priority-trigger {
+    width: 1.5rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.todo-add-priority-menu {
+  .high-priority .pi {
+    color: red;
+  }
+
+  .medium-priority .pi {
+    color: blue;
+  }
+
+  .low-priority .pi {
+    color: grey;
+  }
 }

@@ -290,6 +290,7 @@ export class ApiService {
 
   public files = {
     update: (id: string): string => `${this.apiHost}files/${id}`,
+    transform: (id: string): string => `${this.apiHost}files/${id}/transform`,
   };
 
   public scales = {

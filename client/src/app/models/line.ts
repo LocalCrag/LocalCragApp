@@ -61,6 +61,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   secret: boolean;
   archived?: boolean;
 
+  variant: boolean;
   eliminate: boolean;
   traverse: boolean;
   highball: boolean;
@@ -168,6 +169,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.secret = payload.secret;
     line.archived = payload.archived;
 
+    line.variant = payload.variant ?? false;
     line.eliminate = payload.eliminate;
     line.traverse = payload.traverse;
     line.highball = payload.highball;
@@ -268,6 +270,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         drying: line.drying ?? null,
         secret: line.secret,
 
+        variant: line.variant,
         eliminate: line.eliminate,
         traverse: line.traverse,
         highball: line.highball,

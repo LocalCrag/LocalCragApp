@@ -1,9 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -25,6 +29,7 @@ import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { getAbsoluteCoordinates } from '../../shared/components/topo-image/topo-image-canvas.utils';
 import { DrawMode } from '../../../utility/topo/line-path-draw-mode';
+import { linePathEditorCanvasWidth } from './line-path-editor-canvas-size';
 import {
   cloneTabuAreaIds,
   cloneTabuAreas,
@@ -52,7 +57,9 @@ import {
     FormsModule,
   ],
 })
-export class LinePathEditorComponent implements OnInit, OnChanges {
+export class LinePathEditorComponent
+  implements OnInit, OnChanges, AfterViewInit, OnDestroy
+{
   @ViewChild(TopoImageEditorComponent)
   topoImageComponent: TopoImageEditorComponent;
   @ViewChild('anchorMenu') anchorMenu: ContextMenu;
@@ -78,9 +85,12 @@ export class LinePathEditorComponent implements OnInit, OnChanges {
   public inProgressVertices: number[] = [];
 
   private cdr = inject(ChangeDetectorRef);
+  private host = inject(ElementRef<HTMLElement>);
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private pendingAnchorIndex: number;
+  private rowResizeObserver: ResizeObserver | null = null;
+  private appliedCanvasWidth: number | null = null;
 
   /**
    * Initializes the anchor context menu and local editor state.
@@ -96,6 +106,26 @@ export class LinePathEditorComponent implements OnInit, OnChanges {
     this.refreshData();
   }
 
+  ngAfterViewInit() {
+    this.updateCanvasWidth();
+    const row = this.host.nativeElement.parentElement;
+    if (row && typeof ResizeObserver !== 'undefined') {
+      this.rowResizeObserver = new ResizeObserver(() =>
+        this.updateCanvasWidth(),
+      );
+      this.rowResizeObserver.observe(row);
+    }
+  }
+
+  ngOnDestroy() {
+    this.rowResizeObserver?.disconnect();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateCanvasWidth();
+  }
+
   /**
    * Rebuilds editor state when the topo image or bound path/tabu state changes.
    * @param changes Angular input changes.
@@ -103,7 +133,11 @@ export class LinePathEditorComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['topoImage'] && changes['topoImage'].firstChange) {
       this.refreshData(true);
+      this.updateCanvasWidth();
       return;
+    }
+    if (changes['topoImage']) {
+      this.updateCanvasWidth();
     }
     if (changes['path'] || changes['tabuAreaIds'] || changes['selectedLine']) {
       this.syncLinePathFromInputs();
@@ -366,4 +400,89 @@ export class LinePathEditorComponent implements OnInit, OnChanges {
     const closeRadius = 14 * this.topoImageComponent.lineSizeMultiplicator;
     return Math.hypot(point[0] - first[0], point[1] - first[1]) <= closeRadius;
   }
+
+  /**
+   * Sizes the drawing surface to the free column width and viewport height.
+   * The topo canvas scales from its parent width, so the limit is applied on this host.
+   */
+  private updateCanvasWidth() {
+    const host = this.host.nativeElement;
+    const row = host.parentElement;
+    if (!row?.classList.contains('line-path-editor-layout')) {
+      return;
+    }
+    if (window.innerWidth <= 800 || row.classList.contains('mobile')) {
+      this.clearCanvasWidth(host);
+      return;
+    }
+    if (row.clientWidth <= 0) {
+      return;
+    }
+
+    const image = this.topoImage?.image;
+    const width = linePathEditorCanvasWidth({
+      rowWidth: row.clientWidth,
+      sidePanelSpace: this.sidePanelSpace(row),
+      viewportHeight: window.innerHeight,
+      canvasTop: host.getBoundingClientRect().top + window.scrollY,
+      spaceBelow: this.spaceBelowCanvas(host),
+      imageWidth: image?.width ?? 0,
+      imageHeight: image?.height ?? 0,
+    });
+    if (width == null) {
+      return;
+    }
+
+    const rounded = Math.round(width);
+    if (rounded === this.appliedCanvasWidth) {
+      return;
+    }
+    this.appliedCanvasWidth = rounded;
+    const px = `${rounded}px`;
+    host.style.width = px;
+    host.style.maxWidth = px;
+    this.topoImageComponent?.relayout();
+  }
+
+  private clearCanvasWidth(host: HTMLElement) {
+    if (this.appliedCanvasWidth == null && !host.style.maxWidth) {
+      return;
+    }
+    this.appliedCanvasWidth = null;
+    host.style.width = '';
+    host.style.maxWidth = '';
+    this.topoImageComponent?.relayout();
+  }
+
+  private sidePanelSpace(row: HTMLElement): number {
+    const panel = row.querySelector(
+      '.line-path-order-panel',
+    ) as HTMLElement | null;
+    const rawGap = parseFloat(getComputedStyle(row).columnGap);
+    const gap = Number.isFinite(rawGap) ? rawGap : 0;
+    if (panel && panel.offsetWidth > 0) {
+      return panel.offsetWidth + gap;
+    }
+    const rootFont =
+      parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    return 19.5 * rootFont;
+  }
+
+  private spaceBelowCanvas(host: HTMLElement): number {
+    const toolbar = host.querySelector('.editor-toolbar');
+    const actions = host
+      .closest('form')
+      ?.parentElement?.querySelector('.form-actions');
+    return outerHeight(toolbar, 40) + outerHeight(actions, 56) + 24;
+  }
+}
+
+function outerHeight(element: Element | null, fallback: number): number {
+  if (!element) {
+    return fallback;
+  }
+  const style = getComputedStyle(element);
+  const margin =
+    (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
+  return element.getBoundingClientRect().height + margin;
 }

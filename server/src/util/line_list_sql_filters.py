@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 _BOOL_API_TO_LINE = {
+    "variant": Line.variant,
     "eliminate": Line.eliminate,
     "traverse": Line.traverse,
     "highball": Line.highball,

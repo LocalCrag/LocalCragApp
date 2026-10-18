@@ -51,6 +51,7 @@ def test_move_topo_image_moves_connected_lines_and_deletes_old_area_paths(client
         "traverse": False,
         "highball": False,
         "morpho": False,
+        "variant": False,
         "lowball": False,
         "noTopout": False,
         "badDropzone": False,
