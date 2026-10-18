@@ -73,6 +73,7 @@
   "todos.todoList.loadMore": "Load more...",
   "todoButton.onTodoList": "ToDo list",
   "todoButton.addTodo": "Add ToDo",
+  "todoButton.choosePriority": "Choose priority",
   "singleImageUploader.browseFilesButtonLabel": "Browse",
   "singleImageUploader.adjustCropDoneButtonLabel": "Done",
   "singleImageUploader.adjustCropResetButtonLabel": "Reset to center",

@@ -73,6 +73,7 @@
   "todos.todoList.loadMore": "Charger plus...",
   "todoButton.onTodoList": "Liste de tâches",
   "todoButton.addTodo": "Ajouter une tâche",
+  "todoButton.choosePriority": "Choisir la priorité",
   "singleImageUploader.browseFilesButtonLabel": "Parcourir",
   "singleImageUploader.adjustCropDoneButtonLabel": "Terminé",
   "singleImageUploader.adjustCropResetButtonLabel": "Réinitialiser au centre",
