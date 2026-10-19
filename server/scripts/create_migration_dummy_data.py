@@ -6,6 +6,9 @@ revision's migrations, and then checks out the pull request and migrates again.
 menu items, release notes, and an empty region. This script fills the remaining
 tables on top of that.
 
+When a new database entity is added, seed it here too. Commentable entities need
+a comment on every row.
+
 Run from server/src:
 
     PYTHONPATH=. LOCALCRAG_CONFIG=config/test-ci.cfg pipenv run python ../scripts/create_migration_dummy_data.py
