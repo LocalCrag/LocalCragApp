@@ -58,6 +58,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getLinePathDisplayNumber } from '../../../utility/topo/line-path-numbering';
 import {
   primaryTopoLinePaths,
+  topoImageCanHideVariants,
   variantTopoLinePaths,
 } from '../../../utility/topo/line-path-variants';
 
@@ -417,8 +418,21 @@ export class TopoImageListComponent implements OnInit {
     return variantTopoLinePaths(topoImage.linePaths).length;
   }
 
+  /** Mixed images can collapse variants. An image of only variants cannot. */
+  canHideVariants(topoImage: TopoImage): boolean {
+    return topoImageCanHideVariants(topoImage.linePaths);
+  }
+
   variantsExpanded(topoImage: TopoImage): boolean {
     return this.expandedVariantImageIds.has(topoImage.id);
+  }
+
+  /** Variants are listed when opened, or when the image has nothing else to show. */
+  variantsShown(topoImage: TopoImage): boolean {
+    return (
+      this.variantCount(topoImage) > 0 &&
+      (!this.canHideVariants(topoImage) || this.variantsExpanded(topoImage))
+    );
   }
 
   toggleVariants(topoImage: TopoImage): void {

@@ -40,19 +40,50 @@ export class TopoImageViewerComponent
   private focusLayer: Konva.Layer;
 
   ngOnChanges(changes: SimpleChanges) {
-    const topoChanged =
-      changes['topoImage'] && !changes['topoImage'].firstChange;
-    const variantsChanged =
-      changes['includeVariants'] && !changes['includeVariants'].firstChange;
-    if (this.topoImage && (topoChanged || variantsChanged)) {
+    if (
+      this.topoImage &&
+      changes['topoImage'] &&
+      !changes['topoImage'].firstChange
+    ) {
       setTimeout(() => this.render());
+      return;
+    }
+    if (
+      changes['includeVariants'] &&
+      !changes['includeVariants'].firstChange &&
+      this.stage
+    ) {
+      this.redrawVisibleLines();
     }
   }
 
   protected drawLinesAndLabels() {
     this.syncCanvasDimensionsFromImage();
     this.createKonvaStageAndLayer();
+    this.drawVisibleLines();
+  }
 
+  /** Swaps the drawn lines without loading the photo again. */
+  private redrawVisibleLines() {
+    this.clearLineGraphics();
+    this.drawVisibleLines();
+  }
+
+  private clearLineGraphics() {
+    for (const linePath of this.topoImage.linePaths ?? []) {
+      linePath.konvaLine?.destroy();
+      linePath.konvaLine = null;
+      linePath.konvaTabuShapes?.forEach((shape) => shape.destroy());
+      linePath.konvaTabuShapes = [];
+      linePath.konvaNumberGroup?.destroy();
+      linePath.konvaNumberGroup = null;
+      linePath.konvaRect = null;
+      linePath.konvaText = null;
+    }
+    this.focusLayer?.destroyChildren();
+  }
+
+  private drawVisibleLines() {
     const labels: Label[] = [];
     const orderedLinePaths = linePathsForTopoCanvas(
       this.topoImage.linePaths,

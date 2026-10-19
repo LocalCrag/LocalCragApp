@@ -3,6 +3,7 @@ import { LinePath } from '../../models/line-path';
 import {
   linePathsForTopoCanvas,
   primaryTopoLinePaths,
+  topoImageCanHideVariants,
   variantTopoLinePaths,
 } from './line-path-variants';
 
@@ -35,6 +36,17 @@ describe('topo line path variants', () => {
     expect(
       linePathsForTopoCanvas(paths, true).map((item) => item.orderIndex),
     ).toEqual([0, 1, 2]);
+  });
+
+  it('shows an image of only variants without a hide control', () => {
+    const onlyVariants = [path(0, true), path(1, true)];
+    expect(topoImageCanHideVariants(onlyVariants)).toBeFalse();
+    expect(topoImageCanHideVariants(paths)).toBeTrue();
+    expect(
+      linePathsForTopoCanvas(onlyVariants, false).map(
+        (item) => item.orderIndex,
+      ),
+    ).toEqual([0, 1]);
   });
 
   it('treats a path without a variant flag as a normal line', () => {
