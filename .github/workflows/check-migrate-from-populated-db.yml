@@ -1,0 +1,96 @@
+name: Check Migrate from populated DB
+run-name: Check Migrate from populated DB 🧪
+
+# Seeds a migrated base revision, then migrates the pull request.
+# Branch protection must require this check name.
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+
+permissions:
+  contents: read
+
+jobs:
+  check-migrate-from-populated-db:
+    runs-on: ubuntu-latest
+    services:
+      test_db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: localcrag_test
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          # Both parents of the merge commit must be available: the base revision
+          # is migrated and seeded, then the merge commit is migrated again.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Add UUID extension
+        run: |
+          export PGPASSWORD='postgres'
+          psql -h 0.0.0.0 -p 5432 -U postgres -d localcrag_test < server/scripts/create_uuid_extension.sql
+
+      - name: Migrate base branch and load dummy data
+        run: |
+          set -euo pipefail
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          MERGE_SHA="${{ github.sha }}"
+          SCRIPT="server/scripts/create_migration_dummy_data.py"
+
+          # The introducing pull request is the first revision that contains the
+          # script. Later pulls run the copy that already exists on the base branch,
+          # so the seed matches the schema it is inserted into.
+          if ! git cat-file -e "${BASE_SHA}:${SCRIPT}" 2>/dev/null; then
+            echo "Base revision has no dummy-data script yet; using the script from this pull request."
+            git show "${MERGE_SHA}:${SCRIPT}" > /tmp/create_migration_dummy_data.py
+            BORROW_SCRIPT=1
+          fi
+
+          git checkout --force "${BASE_SHA}"
+
+          if [ "${BORROW_SCRIPT:-}" = "1" ]; then
+            mkdir -p server/scripts
+            cp /tmp/create_migration_dummy_data.py "${SCRIPT}"
+          fi
+
+          cd server/src
+          pipenv install --deploy --ignore-pipfile
+          export PYTHONPATH=.
+          export LOCALCRAG_CONFIG=config/test-ci.cfg
+          pipenv run flask db upgrade
+          pipenv run python ../scripts/create_migration_dummy_data.py
+
+      - name: Migrate pull request
+        run: |
+          set -euo pipefail
+          # Drop a script that was copied onto the base tree. A tracked script is left
+          # in place and updated by the checkout below.
+          git clean -fd -- server/scripts/create_migration_dummy_data.py
+          git checkout --force "${{ github.sha }}"
+          cd server/src
+          pipenv install --deploy --ignore-pipfile
+          export PYTHONPATH=.
+          export LOCALCRAG_CONFIG=config/test-ci.cfg
+          pipenv run flask db upgrade
