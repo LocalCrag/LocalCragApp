@@ -1,3 +1,10 @@
+## [1.64.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.0...v1.64.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* **topo:** fix issue with low resolution topo images ([#1319](https://github.com/LocalCrag/LocalCragApp/issues/1319)) ([746ba71](https://github.com/LocalCrag/LocalCragApp/commit/746ba7100a9bb760dc7970fc84b82c074624c4e9))
+
 # [1.64.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.63.0...v1.64.0) (2026-10-18)
 
 
