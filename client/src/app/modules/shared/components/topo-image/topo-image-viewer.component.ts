@@ -11,8 +11,10 @@ import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { Skeleton } from 'primeng/skeleton';
-import { getLinePathDisplayNumber } from '../../../../utility/topo/line-path-numbering';
-import { linePathsForTopoCanvas } from '../../../../utility/topo/line-path-variants';
+import {
+  linePathsForTopoCanvas,
+  topoLinePathDisplayNumbers,
+} from '../../../../utility/topo/line-path-variants';
 import { getAbsoluteCoordinates } from './topo-image-canvas.utils';
 import { TopoImageCanvasBase } from './topo-image-canvas.base';
 
@@ -89,17 +91,15 @@ export class TopoImageViewerComponent
       this.topoImage.linePaths,
       this.includeVariants,
     );
-    orderedLinePaths.forEach((linePath, index) => {
+    const displayNumbers = topoLinePathDisplayNumbers(this.topoImage.linePaths);
+    orderedLinePaths.forEach((linePath) => {
       this.drawTabuHolds(linePath, {
         visible: this.tabuHoldsVisibility === 'always',
       });
       this.drawLine(linePath, 1);
       if (this.showLineNumbers) {
         labels.push(
-          this.getLineLabel(
-            linePath,
-            getLinePathDisplayNumber(linePath, index),
-          ),
+          this.getLineLabel(linePath, displayNumbers.get(linePath) ?? '1'),
         );
       }
     });

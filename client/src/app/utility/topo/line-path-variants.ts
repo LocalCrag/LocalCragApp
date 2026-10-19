@@ -28,6 +28,29 @@ export function variantTopoLinePaths(
 }
 
 /**
+ * Labels for a topo image and its line list.
+ * Normal lines are 1, 2, 3… in topo order. Variants are V1, V2… in their own order,
+ * so a variant between two lines does not leave a gap in the main sequence.
+ */
+export function topoLinePathDisplayNumbers(
+  linePaths: LinePath[] | null | undefined,
+): Map<LinePath, string> {
+  const labels = new Map<LinePath, string>();
+  let lineNumber = 0;
+  let variantNumber = 0;
+  for (const linePath of sortLinePathsByOrderIndex(linePaths ?? [])) {
+    if (isVariantLinePath(linePath)) {
+      variantNumber += 1;
+      labels.set(linePath, `V${variantNumber}`);
+    } else {
+      lineNumber += 1;
+      labels.set(linePath, String(lineNumber));
+    }
+  }
+  return labels;
+}
+
+/**
  * The show/hide control only applies when an image has both normal lines and variants.
  * An image that is only variants shows those lines outright.
  */
