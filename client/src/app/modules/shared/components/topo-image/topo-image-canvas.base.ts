@@ -159,24 +159,12 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
         }
         this.isMobile = isMobile;
         this.loadBackgroundImage();
-        // A cached photo can finish before onload is assigned, which leaves
-        // the skeleton up. Draw immediately in that case, and ignore a second
-        // onload for the same render.
-        let drawn = false;
-        const draw = () => {
-          if (drawn || generation !== this.renderGeneration) {
+        this.backgroundImage.onload = () => {
+          if (generation !== this.renderGeneration) {
             return;
           }
-          drawn = true;
           this.drawLinesAndLabels();
         };
-        this.backgroundImage.onload = draw;
-        if (
-          this.backgroundImage.complete &&
-          this.backgroundImage.naturalWidth > 0
-        ) {
-          draw();
-        }
       });
   }
 

@@ -28,8 +28,25 @@ export function variantTopoLinePaths(
 }
 
 /**
+ * The show/hide control only applies when an image has both normal lines and variants.
+ * An image that is only variants shows those lines outright.
+ */
+export function topoImageCanHideVariants(
+  linePaths: LinePath[] | null | undefined,
+): boolean {
+  const paths = linePaths ?? [];
+  let variantCount = 0;
+  for (const linePath of paths) {
+    if (isVariantLinePath(linePath)) {
+      variantCount += 1;
+    }
+  }
+  return variantCount > 0 && variantCount < paths.length;
+}
+
+/**
  * Paths drawn on a topo image.
- * Variant paths stay hidden until the viewer asks for them.
+ * Variant paths stay hidden until the viewer asks for them, unless every path is a variant.
  * Order matches the stored order index so visible numbers do not shift.
  */
 export function linePathsForTopoCanvas(
@@ -37,7 +54,7 @@ export function linePathsForTopoCanvas(
   includeVariants: boolean,
 ): LinePath[] {
   const ordered = sortLinePathsByOrderIndex(linePaths ?? []);
-  if (includeVariants) {
+  if (includeVariants || !topoImageCanHideVariants(ordered)) {
     return ordered;
   }
   return ordered.filter((linePath) => !isVariantLinePath(linePath));
