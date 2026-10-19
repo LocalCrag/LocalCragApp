@@ -1,3 +1,15 @@
+# [1.64.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.63.0...v1.64.0) (2026-10-18)
+
+
+### Features
+
+* **core:** add option to configure the landing page ([#1314](https://github.com/LocalCrag/LocalCragApp/issues/1314)) ([db7570e](https://github.com/LocalCrag/LocalCragApp/commit/db7570ed361e73bb188f14445a1d6a95cf0dffcf)), closes [#561](https://github.com/LocalCrag/LocalCragApp/issues/561)
+* **core:** implement image rotation and cropping functionality ([#1312](https://github.com/LocalCrag/LocalCragApp/issues/1312)) ([8505e4c](https://github.com/LocalCrag/LocalCragApp/commit/8505e4cf4d4e7e75257e3658a7589a9f7b9d1175)), closes [#98](https://github.com/LocalCrag/LocalCragApp/issues/98)
+* **todos:** add option to directly assign a todo priority when creating it ([#1316](https://github.com/LocalCrag/LocalCragApp/issues/1316)) ([27f220b](https://github.com/LocalCrag/LocalCragApp/commit/27f220bfed3ca2fcbdef92aa605ca3e344f8d853)), closes [#428](https://github.com/LocalCrag/LocalCragApp/issues/428)
+* **topo:** add possibility to mark lines as variants which hides them by default ([#1318](https://github.com/LocalCrag/LocalCragApp/issues/1318)) ([eda0597](https://github.com/LocalCrag/LocalCragApp/commit/eda05974f958caef9c4ad5b2bd2fd1f86fb37fc4)), closes [#1317](https://github.com/LocalCrag/LocalCragApp/issues/1317)
+* **topo:** jump to edited topo image after adding a line ([#1313](https://github.com/LocalCrag/LocalCragApp/issues/1313)) ([eec24d8](https://github.com/LocalCrag/LocalCragApp/commit/eec24d894c6e737fb2fea8367b8da0238a1f27c6)), closes [#224](https://github.com/LocalCrag/LocalCragApp/issues/224)
+* **topo:** optimize line editor scaling on large screens ([#1315](https://github.com/LocalCrag/LocalCragApp/issues/1315)) ([08a52a0](https://github.com/LocalCrag/LocalCragApp/commit/08a52a0d3565d1e87d8894ae58ceddf949f52ced)), closes [#610](https://github.com/LocalCrag/LocalCragApp/issues/610)
+
 # [1.63.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.62.1...v1.63.0) (2026-10-15)
 
 
