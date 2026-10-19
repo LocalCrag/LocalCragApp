@@ -55,10 +55,10 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { getLinePathDisplayNumber } from '../../../utility/topo/line-path-numbering';
 import {
   primaryTopoLinePaths,
   topoImageCanHideVariants,
+  topoLinePathDisplayNumbers,
   variantTopoLinePaths,
 } from '../../../utility/topo/line-path-variants';
 
@@ -443,9 +443,9 @@ export class TopoImageListComponent implements OnInit {
     this.expandedVariantImageIds.add(topoImage.id);
   }
 
-  /** 1-based badge number. Hidden variants do not renumber the lines that stay visible. */
-  lineNumber(linePath: LinePath): number {
-    return Number(getLinePathDisplayNumber(linePath));
+  /** Same label as on the image: 1, 2, 3… for lines and V1, V2… for variants. */
+  lineNumber(linePath: LinePath, topoImage: TopoImage): string {
+    return topoLinePathDisplayNumbers(topoImage.linePaths).get(linePath) ?? '1';
   }
 
   /**

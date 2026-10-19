@@ -11,7 +11,7 @@ import { highlightColor, textColor } from '../../../../utility/misc/color';
   encapsulation: ViewEncapsulation.None,
 })
 export class LineNumberBadgeComponent {
-  @Input({ required: true }) number: number;
+  @Input({ required: true }) number: string | number;
   @Input() color?: string;
 
   protected readonly textColor = textColor;
