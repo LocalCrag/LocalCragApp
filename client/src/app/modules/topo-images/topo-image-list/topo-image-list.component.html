@@ -110,7 +110,7 @@
                   <lc-topo-image
                     [topoImage]="topoImage"
                     [showLineNumbers]="true"
-                    [includeVariants]="variantsExpanded(topoImage)"
+                    [includeVariants]="variantsShown(topoImage)"
                     tabuHoldsVisibility="hover"
                     class="shadow block xl:block mx-auto rounded-border"
                   ></lc-topo-image>
@@ -313,35 +313,47 @@
                           "
                         ></ng-container>
                       }
-                      @if (variantCount(topoImage) > 0) {
+                      @if (canHideVariants(topoImage)) {
                         <button
                           type="button"
                           class="variant-toggle"
+                          [class.is-open]="variantsExpanded(topoImage)"
                           (click)="toggleVariants(topoImage)"
                           data-cy="variant-toggle"
                         >
-                          {{
-                            variantsExpanded(topoImage)
-                              ? t("hideVariants", {
-                                  count: variantCount(topoImage),
-                                })
-                              : t("showVariants", {
-                                  count: variantCount(topoImage),
-                                })
-                          }}
+                          <i
+                            class="pi"
+                            [class.pi-chevron-down]="
+                              variantsExpanded(topoImage)
+                            "
+                            [class.pi-chevron-right]="
+                              !variantsExpanded(topoImage)
+                            "
+                          ></i>
+                          <span>
+                            {{
+                              variantsExpanded(topoImage)
+                                ? t("hideVariants", {
+                                    count: variantCount(topoImage),
+                                  })
+                                : t("showVariants", {
+                                    count: variantCount(topoImage),
+                                  })
+                            }}
+                          </span>
                         </button>
-                        @if (variantsExpanded(topoImage)) {
-                          @for (
-                            linePath of variantLinePaths(topoImage);
-                            track linePath
-                          ) {
-                            <ng-container
-                              *ngTemplateOutlet="
-                                lineRow;
-                                context: { $implicit: linePath }
-                              "
-                            ></ng-container>
-                          }
+                      }
+                      @if (variantsShown(topoImage)) {
+                        @for (
+                          linePath of variantLinePaths(topoImage);
+                          track linePath
+                        ) {
+                          <ng-container
+                            *ngTemplateOutlet="
+                              lineRow;
+                              context: { $implicit: linePath }
+                            "
+                          ></ng-container>
                         }
                       }
                     </div>
