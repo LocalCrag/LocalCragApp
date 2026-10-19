@@ -3,12 +3,16 @@ lc-line-number-badge {
     background-color: var(--arrow-color);
     color: var(--arrow-text-color);
     border-radius: 0.25rem;
-    width: 1.5rem;
+    min-width: 1.5rem;
+    width: max-content;
     height: 1.5rem;
+    padding: 0 0.25rem;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 0.9rem;
+    white-space: nowrap;
     flex-shrink: 0;
   }
 }

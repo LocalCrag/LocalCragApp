@@ -4,6 +4,7 @@ import {
   linePathsForTopoCanvas,
   primaryTopoLinePaths,
   topoImageCanHideVariants,
+  topoLinePathDisplayNumbers,
   variantTopoLinePaths,
 } from './line-path-variants';
 
@@ -47,6 +48,18 @@ describe('topo line path variants', () => {
         (item) => item.orderIndex,
       ),
     ).toEqual([0, 1]);
+  });
+
+  it('numbers normal lines continuously and variants as V1, V2', () => {
+    const labels = topoLinePathDisplayNumbers(paths);
+    expect(labels.get(paths[0])).toBe('1');
+    expect(labels.get(paths[1])).toBe('V1');
+    expect(labels.get(paths[2])).toBe('2');
+
+    const onlyVariants = [path(3, true), path(0, true)];
+    const variantLabels = topoLinePathDisplayNumbers(onlyVariants);
+    expect(variantLabels.get(onlyVariants[1])).toBe('V1');
+    expect(variantLabels.get(onlyVariants[0])).toBe('V2');
   });
 
   it('treats a path without a variant flag as a normal line', () => {
