@@ -322,6 +322,11 @@ export const NOTIFICATIONS = {
     title: marker('notifications.TOPO_IMAGE_ADDED_TITLE'),
     message: marker('notifications.TOPO_IMAGE_ADDED_MESSAGE'),
   },
+  TOPO_IMAGES_ADDED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TOPO_IMAGES_ADDED_TITLE'),
+    message: marker('notifications.TOPO_IMAGES_ADDED_MESSAGE'),
+  },
   TOPO_IMAGE_UPDATED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.TOPO_IMAGE_UPDATED_TITLE'),

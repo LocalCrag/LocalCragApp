@@ -13,13 +13,14 @@
   "topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
   "topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",
   "topoImageList.editTopoImageButtonLabel": "Bild bearbeiten",
-  "topoImageForm.addTopoImageDescription": "Lade ein neues Topo-Bild hoch. Im Anschluss können angelegte Linien im Bild verzeichnet werden. Der Fels sollte den größten Teil des Bildes einnehmen und die ganze Linie sollte gut zu sehen sein. In manchen Fällen ergibt es Sinn, die gleiche Linie auf mehreren Bildern einzuzeichnen. Dies ist z.B. bei Traversen oder Linien die um eine Kante herum verlaufen der Fall.",
+  "topoImageForm.addTopoImageDescription": "Lade ein oder mehrere Topo-Bilder hoch. Nach dem Upload kannst Du für jedes Bild Titel, Beschreibung und GPS-Position angeben. Der Fels sollte den größten Teil des Bildes einnehmen und die ganze Linie gut zu sehen sein. Mehrere Bilder sind z.B. bei Traversen oder Linien sinnvoll, die um eine Kante herum verlaufen.",
   "topoImageForm.editTopoImageDescription": "Metaangaben des Bilds können bearbeitet werden. Das Bild an sich kann leider nicht mehr verändert werden, da eingezeichnete Linienverläufe sonst nicht mehr stimmen.",
   "topoImageForm.topoImageTitleLabel": "Titel (optional)",
   "topoImageForm.topoImageTitlePlaceholder": "z.B. Bruno Block",
   "topoImageForm.topoImageDescriptionLabel": "Beschreibung (optional)",
   "topoImageForm.topoImageDescriptionPlaceholder": "Interessantes über den Block. Bleibt er z.B. lange nass? Hat er eine besondere Historie? Gibt es lockeren Fels? ...",
   "topoImageForm.coordinatesLabel": "GPS (optional)",
+  "topoImageForm.imageDivider": "Bild {current} von {total}",
   "topoImageForm.addTopoImageButtonLabel": "Speichern",
   "topoImageForm.cancelButtonLabel": "Abbrechen",
   "topoImageForm.moveTopoImageButtonLabel": "Verschieben",
@@ -42,6 +43,6 @@
   "batchUploadForm.topoImageLabel": "Topo Bild",
   "batchUploadForm.topoImagePlaceholder": "Wähle ein Topo Bild",
   "topoImageForm.editTopoImageTitle": "Topo Bild bearbeiten",
-  "topoImageForm.addTopoImageTitle": "Topo Bild hinzufügen",
+  "topoImageForm.addTopoImageTitle": "Topo Bilder hinzufügen",
   "batchUploadForm.batchImageUploadTitle": "Topo-Upload + Schnellbearbeitung"
 }

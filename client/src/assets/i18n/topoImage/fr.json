@@ -13,13 +13,14 @@
   "topoImageList.addLineToImageButtonLabel": "Lier une voie",
   "topoImageList.reorderLinePathsButtonLabel": "Réorganiser les voies",
   "topoImageList.editTopoImageButtonLabel": "Modifier l'image",
-  "topoImageForm.addTopoImageDescription": "Téléversez une nouvelle image topo. Ensuite, les voies disponibles peuvent être tracées sur l'image. La paroi doit occuper la majeure partie de l'image et la voie entière doit être bien visible. Dans certains cas, il est pertinent de tracer la même voie sur plusieurs images, par exemple pour les traversées ou les voies qui contournent un angle.",
+  "topoImageForm.addTopoImageDescription": "Téléversez une ou plusieurs images topo. Après le téléversement, ajoutez un titre, une description et une position GPS pour chaque image. La paroi doit occuper la majeure partie de l'image et la voie entière doit être bien visible. Plusieurs images sont utiles, par exemple pour les traversées ou les voies qui contournent un angle.",
   "topoImageForm.editTopoImageDescription": "Les métadonnées de l'image peuvent être modifiées. Malheureusement, l'image elle-même ne peut plus être changée, sinon les tracés des voies ne seraient plus corrects.",
   "topoImageForm.topoImageTitleLabel": "Titre (facultatif)",
   "topoImageForm.topoImageTitlePlaceholder": "p. ex. Bloc Bruno",
   "topoImageForm.topoImageDescriptionLabel": "Description (facultative)",
   "topoImageForm.topoImageDescriptionPlaceholder": "Informations sur le bloc. Reste-t-il humide longtemps, par exemple ? A-t-il une histoire particulière ? Y a-t-il des roches instables ?",
   "topoImageForm.coordinatesLabel": "GPS (facultatif)",
+  "topoImageForm.imageDivider": "Image {current} sur {total}",
   "topoImageForm.addTopoImageButtonLabel": "Enregistrer",
   "topoImageForm.cancelButtonLabel": "Annuler",
   "topoImageForm.moveTopoImageButtonLabel": "Déplacer",
@@ -42,6 +43,6 @@
   "batchUploadForm.topoImageLabel": "Image topo",
   "batchUploadForm.topoImagePlaceholder": "Sélectionner une image topo",
   "topoImageForm.editTopoImageTitle": "Modifier l'image topo",
-  "topoImageForm.addTopoImageTitle": "Ajouter une image topo",
+  "topoImageForm.addTopoImageTitle": "Ajouter des images topo",
   "batchUploadForm.batchImageUploadTitle": "Import topo + édition rapide"
 }
