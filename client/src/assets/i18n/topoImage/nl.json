@@ -13,13 +13,14 @@
   "topoImageList.addLineToImageButtonLabel": "Route koppelen",
   "topoImageList.reorderLinePathsButtonLabel": "Routes ordenen",
   "topoImageList.editTopoImageButtonLabel": "Afbeelding bewerken",
-  "topoImageForm.addTopoImageDescription": "Upload een nieuwe Topo-afbeelding. Daarna kunnen beschikbare routes op de afbeelding worden getekend. Het rotsvlak moet het grootste deel van de afbeelding innemen en de hele route moet gemakkelijk zichtbaar zijn. In sommige gevallen is het zinvol om dezelfde route op meerdere afbeeldingen te tekenen. Dit is bijvoorbeeld het geval met traverses.",
+  "topoImageForm.addTopoImageDescription": "Upload een of meer topo-afbeeldingen. Voeg na het uploaden voor elke afbeelding een titel, beschrijving en GPS-positie toe. Het rotsvlak moet het grootste deel van de afbeelding innemen en de hele route moet gemakkelijk zichtbaar zijn. Meerdere afbeeldingen zijn zinvol, bijvoorbeeld bij traverses.",
   "topoImageForm.editTopoImageDescription": "Metadata van de afbeelding kunnen worden bewerkt. Helaas kan de afbeelding zelf niet meer worden gewijzigd, anders zijn getekende routes niet meer correct.",
   "topoImageForm.topoImageTitleLabel": "Titel (optioneel)",
   "topoImageForm.topoImageTitlePlaceholder": "bijv. Bruno Block",
   "topoImageForm.topoImageDescriptionLabel": "Beschrijving (optioneel)",
   "topoImageForm.topoImageDescriptionPlaceholder": "Informatie over de route. Blijft het bijvoorbeeld lang nat? Heeft het een bijzondere geschiedenis? Zijn er losse stenen?",
   "topoImageForm.coordinatesLabel": "GPS (optioneel)",
+  "topoImageForm.imageDivider": "Afbeelding {current} van {total}",
   "topoImageForm.addTopoImageButtonLabel": "Opslaan",
   "topoImageForm.cancelButtonLabel": "Annuleren",
   "topoImageForm.moveTopoImageButtonLabel": "Verplaatsen",
@@ -42,6 +43,6 @@
   "batchUploadForm.topoImageLabel": "Topo-afbeelding",
   "batchUploadForm.topoImagePlaceholder": "Selecteer een Topo-afbeelding",
   "topoImageForm.editTopoImageTitle": "Topo-afbeelding bewerken",
-  "topoImageForm.addTopoImageTitle": "Topo-afbeelding toevoegen",
+  "topoImageForm.addTopoImageTitle": "Topo-afbeeldingen toevoegen",
   "batchUploadForm.batchImageUploadTitle": "Topo-upload + Snelle bewerking"
 }

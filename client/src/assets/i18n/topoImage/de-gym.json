@@ -1,5 +1,5 @@
 {
   "batchUploadForm.lineFADateLabel": "Datum des Schraubens",
-  "topoImageForm.addTopoImageDescription": "Lade ein neues Topo-Bild hoch. Im Anschluss können angelegte Linien im Bild verzeichnet werden. Die Wand sollte den größten Teil des Bildes einnehmen und die ganze Linie sollte gut zu sehen sein. In manchen Fällen ergibt es Sinn, die gleiche Linie auf mehreren Bildern einzuzeichnen. Dies ist z.B. bei Traversen oder Linien die um eine Kante herum verlaufen der Fall.",
+  "topoImageForm.addTopoImageDescription": "Lade ein oder mehrere Topo-Bilder hoch. Nach dem Upload kannst Du für jedes Bild Titel, Beschreibung und GPS-Position angeben. Die Wand sollte den größten Teil des Bildes einnehmen und die ganze Linie gut zu sehen sein. Mehrere Bilder sind z.B. bei Traversen oder Linien sinnvoll, die um eine Kante herum verlaufen.",
   "topoImageForm.topoImageDescriptionPlaceholder": "Interessantes über die Wand. Gibt es z.B einen typischen Linienstil? Hat er eine besondere Historie? ..."
 }

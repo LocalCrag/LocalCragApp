@@ -22,7 +22,10 @@
     <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
   }
 
-  <div class="image-upload-preview">
+  <div
+    class="image-upload-preview"
+    [class.image-upload-preview--full]="fullWidth"
+  >
     <div class="image-wrapper">
       @if (file) {
         @if (focusAdjustable && focusAdjustActive && focusFrame) {
@@ -76,7 +79,7 @@
             [src]="file.path"
             [preview]="!isDisabled"
             [alt]="file.originalFilename"
-            width="250"
+            [width]="fullWidth ? undefined : '250'"
           >
             <ng-template #indicator>
               <i class="pi pi-eye"></i>

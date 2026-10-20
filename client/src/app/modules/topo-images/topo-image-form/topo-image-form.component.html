@@ -6,107 +6,273 @@
       </p>
     }
     @if (editMode) {
-      <p class="mt-0">
+      <p class="mt-0 mb-4">
         {{ t("editTopoImageDescription") }}
       </p>
     }
 
     <form [formGroup]="topoImageForm" lcForm>
-      <div class="flex flex-col gap-2 topo-image-upload-group" lcControlGroup>
-        <lc-single-image-upload
-          lcFormControl
-          formControlName="image"
-          [focusAdjustable]="true"
-          data-cy="topo-image-input"
-        ></lc-single-image-upload>
-        <small class="lc-error" *lcIfError="'required'">{{
-          "validation.required" | transloco
-        }}</small>
-      </div>
+      @if (editMode) {
+        <div class="topo-image-entry__columns">
+          <div
+            class="topo-image-entry__image flex flex-col gap-2 topo-image-upload-group"
+            lcControlGroup
+          >
+            <lc-single-image-upload
+              lcFormControl
+              formControlName="image"
+              [focusAdjustable]="true"
+              [fullWidth]="true"
+              data-cy="topo-image-input"
+            ></lc-single-image-upload>
+            <small class="lc-error" *lcIfError="'required'">{{
+              "validation.required" | transloco
+            }}</small>
+          </div>
 
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="title">{{
-          t("topoImageTitleLabel")
-        }}</label>
-        <input
-          id="title"
-          type="text"
-          pInputText
-          formControlName="title"
-          placeholder="{{ t('topoImageTitlePlaceholder') }}"
-          lcFormControl
-          data-cy="topo-image-form-title"
-        />
-        <small class="lc-error" *lcIfError="'maxlength'">{{
-          "validation.maxLength" | transloco: { max: 120 }
-        }}</small>
-      </div>
+          <div class="topo-image-entry__fields">
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="title">{{
+                t("topoImageTitleLabel")
+              }}</label>
+              <input
+                id="title"
+                type="text"
+                pInputText
+                formControlName="title"
+                placeholder="{{ t('topoImageTitlePlaceholder') }}"
+                class="w-full"
+                lcFormControl
+                data-cy="topo-image-form-title"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                "validation.maxLength" | transloco: { max: 120 }
+              }}</small>
+            </div>
 
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="description">{{
-          t("topoImageDescriptionLabel")
-        }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
-          id="description"
-          formControlName="description"
-          lcFormControl
-          placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
-          [style]="{ height: '200px' }"
-          [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          data-cy="topo-image-form-description"
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="description">{{
+                t("topoImageDescriptionLabel")
+              }}</label>
+              <p-editor
+                class="lc-wysiwyg-editor"
+                id="description"
+                formControlName="description"
+                lcFormControl
+                placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
+                [style]="{ height: '200px' }"
+                [readonly]="loadingState === loadingStates.INITIAL_LOADING"
+                data-cy="topo-image-form-description"
+              >
+                <ng-template #header>
+                  <span class="ql-formats">
+                    <button
+                      type="button"
+                      class="ql-bold"
+                      aria-label="Bold"
+                    ></button>
+                    <button
+                      type="button"
+                      class="ql-italic"
+                      aria-label="Italic"
+                    ></button>
+                    <button
+                      type="button"
+                      class="ql-underline"
+                      aria-label="Underline"
+                    ></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button
+                      type="button"
+                      class="ql-link"
+                      aria-label="Link"
+                    ></button>
+                  </span>
+                </ng-template>
+              </p-editor>
+            </div>
+
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="coordinates">{{
+                t("coordinatesLabel")
+              }}</label>
+              <lc-coordinates
+                id="coordinates"
+                formControlName="coordinates"
+                lcFormControl
+                data-cy="topo-image-form-coordinates"
+              ></lc-coordinates>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="flex flex-col gap-2 topo-image-upload-group mt-4">
+          <p-fileupload
+            mode="basic"
+            [hidden]="showProgressBar || loadingState === loadingStates.LOADING"
+            name="upload"
+            [url]="uploadUrl"
+            accept="image/jpeg,image/png,image/gif,image/bmp"
+            [multiple]="true"
+            [maxFileSize]="maxImageSize"
+            (onError)="showProgressBar = false"
+            (onBeforeUpload)="startProgress()"
+            (onProgress)="setProgress($event)"
+            (onUpload)="addUploadedImages($event)"
+            [auto]="true"
+            chooseLabel="{{
+              'singleImageUploader.browseFilesButtonLabel' | transloco
+            }}"
+            data-cy="topo-image-input"
+          ></p-fileupload>
+          @if (showProgressBar) {
+            <p-progress-bar
+              [mode]="progressMode"
+              [value]="progress"
+            ></p-progress-bar>
+          }
+          @if (imagesTouched && images.length === 0) {
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
+          }
+        </div>
+
+        <div
+          formArrayName="images"
+          class="flex flex-col gap-8"
+          [class.mt-6]="images.length > 0"
         >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-            </span>
-          </ng-template>
-        </p-editor>
-      </div>
+          @for (group of images.controls; track group; let i = $index) {
+            <div class="topo-image-entry" [formGroupName]="i">
+              @if (images.length > 1) {
+                <p-divider align="center" type="solid">
+                  <b>{{
+                    t("imageDivider", {
+                      current: i + 1,
+                      total: images.length,
+                    })
+                  }}</b>
+                </p-divider>
+              }
+              <div class="topo-image-entry__columns">
+                <div
+                  class="topo-image-entry__image flex flex-col gap-2 topo-image-upload-group"
+                  lcControlGroup
+                >
+                  <lc-single-image-upload
+                    lcFormControl
+                    formControlName="image"
+                    [focusAdjustable]="true"
+                    [fullWidth]="true"
+                  ></lc-single-image-upload>
+                </div>
 
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <label class="form-label" for="coordinates">{{
-          t("coordinatesLabel")
-        }}</label>
-        <lc-coordinates
-          id="coordinates"
-          formControlName="coordinates"
-          lcFormControl
-          data-cy="topo-image-form-coordinates"
-          #coordinates
-        ></lc-coordinates>
-      </div>
+                <div class="topo-image-entry__fields">
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label class="form-label" [attr.for]="'title-' + i">{{
+                      t("topoImageTitleLabel")
+                    }}</label>
+                    <input
+                      [id]="'title-' + i"
+                      type="text"
+                      pInputText
+                      formControlName="title"
+                      placeholder="{{ t('topoImageTitlePlaceholder') }}"
+                      class="w-full"
+                      lcFormControl
+                      data-cy="topo-image-form-title"
+                    />
+                    <small class="lc-error" *lcIfError="'maxlength'">{{
+                      "validation.maxLength" | transloco: { max: 120 }
+                    }}</small>
+                  </div>
+
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label class="form-label" [attr.for]="'description-' + i">{{
+                      t("topoImageDescriptionLabel")
+                    }}</label>
+                    <p-editor
+                      class="lc-wysiwyg-editor"
+                      [id]="'description-' + i"
+                      formControlName="description"
+                      lcFormControl
+                      placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
+                      [style]="{ height: '200px' }"
+                      [readonly]="
+                        loadingState === loadingStates.INITIAL_LOADING
+                      "
+                      data-cy="topo-image-form-description"
+                    >
+                      <ng-template #header>
+                        <span class="ql-formats">
+                          <button
+                            type="button"
+                            class="ql-bold"
+                            aria-label="Bold"
+                          ></button>
+                          <button
+                            type="button"
+                            class="ql-italic"
+                            aria-label="Italic"
+                          ></button>
+                          <button
+                            type="button"
+                            class="ql-underline"
+                            aria-label="Underline"
+                          ></button>
+                        </span>
+                        <span class="ql-formats">
+                          <button
+                            type="button"
+                            class="ql-link"
+                            aria-label="Link"
+                          ></button>
+                        </span>
+                      </ng-template>
+                    </p-editor>
+                  </div>
+
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <label class="form-label" [attr.for]="'coordinates-' + i">{{
+                      t("coordinatesLabel")
+                    }}</label>
+                    <lc-coordinates
+                      [id]="'coordinates-' + i"
+                      [idPrefix]="'topo-image-' + i + '-'"
+                      formControlName="coordinates"
+                      lcFormControl
+                      data-cy="topo-image-form-coordinates"
+                    ></lc-coordinates>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </form>
 
     <div class="form-actions">
-      <p-button
-        label="{{ t('addTopoImageButtonLabel') }}"
-        (click)="saveTopoImage()"
-        icon="pi pi-save"
-        class="responsive-button"
-        data-cy="submit"
-        [disabled]="coordinates.positionLoading"
-        [loading]="loadingState === loadingStates.LOADING"
-      ></p-button>
+      @if (editMode || hasUploadedImages) {
+        <p-button
+          label="{{ t('addTopoImageButtonLabel') }}"
+          (click)="saveTopoImage()"
+          icon="pi pi-save"
+          class="responsive-button"
+          data-cy="submit"
+          [disabled]="coordinatesBusy"
+          [loading]="loadingState === loadingStates.LOADING"
+        ></p-button>
+      }
       <p-button
         label="{{ t('cancelButtonLabel') }}"
         (click)="cancel()"
         class="responsive-button"
         styleClass="p-button-secondary"
         icon="pi pi-ban"
+        [disabled]="loadingState === loadingStates.LOADING"
       ></p-button>
       @if (editMode) {
         <p-button
