@@ -1,3 +1,10 @@
+## [1.64.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.1...v1.64.2) (2026-10-19)
+
+
+### Bug Fixes
+
+* **topo:** fix topo image line numbering when there are variants ([#1320](https://github.com/LocalCrag/LocalCragApp/issues/1320)) ([c4af78c](https://github.com/LocalCrag/LocalCragApp/commit/c4af78cc8de02bca659c93d019531978328fe6c4))
+
 ## [1.64.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.0...v1.64.1) (2026-10-19)
 
 
