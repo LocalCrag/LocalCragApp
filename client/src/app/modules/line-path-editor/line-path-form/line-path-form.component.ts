@@ -211,8 +211,11 @@ export class LinePathFormComponent implements OnInit, OnChanges {
       this.allTabuAreas = cloneTabuAreas(topoImage.tabuAreas);
       this.originalTabuAreas = cloneTabuAreas(topoImage.tabuAreas);
       this.refreshOrderedDrafts();
+      const requestedLineId = this.route.snapshot.queryParamMap.get('line');
       const initialLine =
-        lines.find((line) => !this.draftPaths[line.id]) ?? lines[0];
+        lines.find((line) => line.id === requestedLineId) ??
+        lines.find((line) => !this.draftPaths[line.id]) ??
+        lines[0];
       this.selectedLineId = initialLine?.id;
       this.linePathEditor?.setDrawMode('line');
       this.updateEditorTopoImage(this.selectedLineId);
