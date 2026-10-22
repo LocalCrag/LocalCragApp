@@ -297,14 +297,12 @@
                                   >
                                   </p-button>
                                 }
-                                <ng-container
-                                  *isLoggedIn="true"
-                                >
+                                <ng-container *isLoggedIn="true">
                                   @if (
-                                    (linePath.line.publicationStatus ===
+                                    linePath.line.publicationStatus ===
                                       "published" ||
-                                      linePath.line.publicationStatus ===
-                                        "archived")
+                                    linePath.line.publicationStatus ===
+                                      "archived"
                                   ) {
                                     <lc-tick-button
                                       [line]="linePath.line"

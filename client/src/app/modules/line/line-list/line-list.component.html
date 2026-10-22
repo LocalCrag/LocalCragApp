@@ -311,7 +311,8 @@
                         *isModerator="true"
                       ></lc-archive-button>
                       @if (
-                        line.publicationStatus === "published" && !ticks.has(line.id)
+                        line.publicationStatus === "published" &&
+                        !ticks.has(line.id)
                       ) {
                         <lc-todo-button
                           [line]="line"

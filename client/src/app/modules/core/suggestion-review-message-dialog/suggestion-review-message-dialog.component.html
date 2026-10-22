@@ -3,7 +3,7 @@
     @if (message) {
       <div class="suggestion-review-message-dialog-body">{{ message }}</div>
     }
-    @if (subject?.kind === 'line') {
+    @if (subject?.kind === "line") {
       <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
         <div class="w-9/12 sm:w-40 shrink-0 overflow-hidden mx-auto sm:mx-0">
           @if (linePreview) {
@@ -28,7 +28,7 @@
         </div>
       </div>
     }
-    @if (subject?.kind === 'topoImage' && imagePreview) {
+    @if (subject?.kind === "topoImage" && imagePreview) {
       <div class="flex flex-col gap-2">
         <lc-topo-image
           class="shadow block rounded-border"
@@ -43,7 +43,11 @@
   </div>
   <div class="flex w-full justify-end gap-2 mt-6">
     @if (targetLink) {
-      <p-button [label]="t('viewDetails')" [text]="true" (click)="viewDetails()"></p-button>
+      <p-button
+        [label]="t('viewDetails')"
+        [text]="true"
+        (click)="viewDetails()"
+      ></p-button>
     }
     <p-button [label]="t('close')" (click)="close()"></p-button>
   </div>

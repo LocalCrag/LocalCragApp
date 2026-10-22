@@ -1,7 +1,7 @@
 <ng-container *transloco="let t; read: 'users.rightsDialog'">
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
-      <label for="user-role">{{ t('role') }}</label>
+      <label for="user-role">{{ t("role") }}</label>
       <p-select
         inputId="user-role"
         [options]="roleOptions"
@@ -24,7 +24,7 @@
           [binary]="true"
         />
         <label for="allow-suggestions" class="cursor-pointer">{{
-          t('allowSuggestions')
+          t("allowSuggestions")
         }}</label>
       </div>
     }

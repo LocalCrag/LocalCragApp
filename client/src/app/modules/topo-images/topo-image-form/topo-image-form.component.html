@@ -2,7 +2,8 @@
   <div class="content p-6">
     @if (!editMode) {
       <p class="mt-0">
-        {{ t("addTopoImageDescription") }}@if (!viewerIsModerator) {
+        {{ t("addTopoImageDescription") }}
+        @if (!viewerIsModerator) {
           {{ " " + t("addTopoImageDraftNotice") }}
         }
       </p>
