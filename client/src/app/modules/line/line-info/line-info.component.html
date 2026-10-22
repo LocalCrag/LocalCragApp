@@ -163,7 +163,7 @@
             *isModerator="true"
           ></lc-archive-button>
 
-          @if (!ticks.has(line.id)) {
+          @if (line.publicationStatus === "published" && !ticks.has(line.id)) {
             <lc-todo-button
               [line]="line"
               [isTodo]="todos.has(line.id)"
@@ -172,12 +172,17 @@
             ></lc-todo-button>
           }
 
-          <lc-tick-button
-            [line]="line"
-            [ticked]="ticks.has(line.id)"
-            [showLabel]="true"
-            *isLoggedIn="true"
-          ></lc-tick-button>
+          @if (
+            line.publicationStatus === "published" ||
+            line.publicationStatus === "archived"
+          ) {
+            <lc-tick-button
+              [line]="line"
+              [ticked]="ticks.has(line.id)"
+              [showLabel]="true"
+              *isLoggedIn="true"
+            ></lc-tick-button>
+          }
         </div>
       </div>
     }

@@ -86,6 +86,14 @@ export class UsersService {
       .pipe(map(User.deserialize));
   }
 
+  public setSuggestionsEnabled(id: string, enabled: boolean): Observable<User> {
+    return this.http
+      .put(this.api.users.setSuggestionsEnabled(id), {
+        suggestionsEnabled: enabled,
+      })
+      .pipe(map(User.deserialize));
+  }
+
   public getUserGrades(userSlug: string): Observable<{
     distribution: GradeDistribution;
     flashDistribution: GradeDistribution;

@@ -2,6 +2,7 @@
 
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { InstanceSettingsState } from '../reducers/instance-settings.reducers';
+import { selectCurrentUser, selectIsModerator } from './auth.selectors';
 
 export const selectInstanceSettingsState =
   createFeatureSelector<InstanceSettingsState>('instanceSettings');
@@ -24,6 +25,23 @@ export const selectGymMode = createSelector(
 export const selectNoClosedProjects = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.noClosedProjects,
+);
+
+export const selectCanSuggest = createSelector(
+  selectCurrentUser,
+  selectInstanceSettingsState,
+  (user, settings) =>
+    !!settings.loaded &&
+    !!user &&
+    !user.moderator &&
+    settings.suggestionsEnabled &&
+    user.suggestionsEnabled,
+);
+
+export const selectCanContributeTopo = createSelector(
+  selectIsModerator,
+  selectCanSuggest,
+  (isModerator, canSuggest) => isModerator || canSuggest,
 );
 
 export const selectBgImage = createSelector(

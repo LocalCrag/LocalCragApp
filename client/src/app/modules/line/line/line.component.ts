@@ -18,7 +18,10 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
+import {
+  selectIsModerator,
+  selectCurrentUser,
+} from '../../../ngrx/selectors/auth.selectors';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -32,6 +35,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import {
@@ -48,7 +52,12 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  imports: [
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    DraftTagComponent,
+    RouterOutlet,
+  ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
@@ -73,6 +82,7 @@ export class LineComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private canEditLine = false;
   private regionService = inject(RegionService);
 
   protected scalesService = inject(ScalesService);
@@ -124,6 +134,7 @@ export class LineComponent implements OnInit {
             }),
           ),
           this.store.pipe(select(selectIsModerator), take(1)),
+          this.store.pipe(select(selectCurrentUser), take(1)),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),
           this.regionService.getRegionCached(),
         ]).subscribe(
@@ -133,6 +144,7 @@ export class LineComponent implements OnInit {
             area,
             line,
             isModerator,
+            currentUser,
             instanceSettings,
             region,
           ]) => {
@@ -140,6 +152,10 @@ export class LineComponent implements OnInit {
             this.sector = sector;
             this.area = area;
             this.line = line;
+            this.canEditLine =
+              isModerator ||
+              (line.publicationStatus === 'draft' &&
+                line.createdById === currentUser?.id);
             this.rulesAlertService.setContext({ sector, crag, region });
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
@@ -265,7 +281,7 @@ export class LineComponent implements OnInit {
         label: this.translocoService.translate(marker('line.edit')),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
-        visible: isModerator,
+        visible: this.canEditLine,
       },
     ];
     this.pageTitleService.setTabs(this.items);

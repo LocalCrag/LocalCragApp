@@ -1,9 +1,16 @@
 from marshmallow import Schema, fields
+from marshmallow_enum import EnumField
 
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.line_path_schema import line_path_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
+from models.enums.publication_status_enum import PublicationStatusEnum
+
+
+def _created_by_id(obj):
+    created_by_id = getattr(obj, "created_by_id", None)
+    return str(created_by_id) if created_by_id else None
 
 
 class TabuAreaSchema(Schema):
@@ -19,7 +26,8 @@ class TopoImageSchema(BaseEntityMinSchema):
     description = fields.String()
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    archived = fields.Boolean()
+    publicationStatus = EnumField(PublicationStatusEnum, by_value=True, attribute="publication_status")
+    createdById = fields.Function(_created_by_id)
 
 
 class TopoImageSchemaForLines(BaseEntityMinSchema):
@@ -29,7 +37,8 @@ class TopoImageSchemaForLines(BaseEntityMinSchema):
     description = fields.String()
     title = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    archived = fields.Boolean()
+    publicationStatus = EnumField(PublicationStatusEnum, by_value=True, attribute="publication_status")
+    createdById = fields.Function(_created_by_id)
 
 
 topo_image_schema = TopoImageSchema()

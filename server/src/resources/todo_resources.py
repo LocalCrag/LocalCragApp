@@ -13,6 +13,7 @@ from messages.messages import ResponseMessage
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.todo import Todo
@@ -55,7 +56,9 @@ class CreateTodo(MethodView):
         created_by = User.find_by_email(get_session_identity())
 
         # Check if the line exists (raises 404 if not)
-        Line.find_by_id(todo_data["line"])
+        line = Line.find_by_id(todo_data["line"])
+        if line.publication_status != PublicationStatusEnum.PUBLISHED:
+            raise BadRequest("Draft lines cannot be added as todos.")
 
         if (
             db.session.query(Todo.line_id)
@@ -112,7 +115,10 @@ class GetTodos(MethodView):
         query = select(Todo).join(Line).join(Area, Line.area_id == Area.id).options(joinedload(Todo.line))
 
         # Filter for user, crag, sector or area
-        query = query.filter(Todo.created_by_id == user.id, Line.archived.is_(False))
+        query = query.filter(
+            Todo.created_by_id == user.id,
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+        )
         if crag_id:
             query = query.join(Area.sector).filter_by(crag_id=crag_id)
         if sector_id:

@@ -6,6 +6,10 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
+from models.enums.publication_status_enum import (
+    PublicationStatusEnum,
+    publication_status_type,
+)
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.line import Line
 from models.mixins.has_order_index import HasOrderIndex
@@ -43,13 +47,27 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     default_sport_scale = db.Column(db.String(32), nullable=True)
     default_trad_scale = db.Column(db.String(32), nullable=True)
     blocweather_url = db.Column(db.String(255), nullable=True)
+    publication_status = db.Column(
+        publication_status_type,
+        nullable=False,
+        default=PublicationStatusEnum.PUBLISHED,
+        server_default=PublicationStatusEnum.PUBLISHED.value,
+    )
+
+    def should_be_searchable(self) -> bool:
+        if self.publication_status != PublicationStatusEnum.PUBLISHED:
+            return False
+        return super().should_be_searchable()
 
     @hybrid_property
     def line_count(self):
         cached = get_cached_line_count(self)
         if cached is not None:
             return cached
-        query = db.session.query(func.count(Line.id)).where(Line.area_id == self.id)
+        query = db.session.query(func.count(Line.id)).where(
+            Line.area_id == self.id,
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+        )
         query = SecretService.apply_line_filter(query)
         return query.scalar()
 
@@ -75,7 +93,10 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
         """Unarchived topo images — matches default ``GetTopoImages`` listing."""
         return (
             db.session.query(func.count(TopoImage.id))
-            .filter(TopoImage.area_id == self.id, TopoImage.archived.is_(False))
+            .filter(
+                TopoImage.area_id == self.id,
+                TopoImage.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
             .scalar()
         )
 

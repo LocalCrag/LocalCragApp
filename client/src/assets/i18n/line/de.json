@@ -1,6 +1,9 @@
 {
   "lineList.noLinesFoundEmptyMessage": "Keine Linien gefunden",
   "lineList.newLineButtonLabel": "Neue Linie",
+  "lineList.suggestLineButtonLabel": "Linie vorschlagen",
+
+  "lineList.draftTag": "Entwurf",
   "lineList.orderByLabel": "Sortieren nach:",
   "lineList.lineType": "Linientyp",
   "lineList.hideArchive": "Archiv verstecken",
@@ -12,6 +15,8 @@
   "line.previousTopoImage": "Vorheriges Bild",
   "line.nextTopoImage": "Nächstes Bild",
   "line.ascentCount": "Begehungen",
+
+  "line.draftTag": "Entwurf",
   "line.userGrade": "Nutzerbewertung",
   "line.proposedAs": "Vorgeschlagen als",
   "line.videoBeta": "Videobeta",

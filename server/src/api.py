@@ -182,6 +182,14 @@ from resources.statistics_resources import (
     GetInstanceStatistics,
     GetTopoStatistics,
 )
+from resources.suggestion_resources import (
+    GetSuggestions,
+    PublishLine,
+    PublishTopoImage,
+    RejectLine,
+    RejectTopoImage,
+    UpdateSuggestionPermission,
+)
 from resources.todo_resources import (
     CreateTodo,
     DeleteTodo,
@@ -332,6 +340,10 @@ def configure_api(app):
     user_bp.add_url_rule("/<string:user_slug>", view_func=GetUser.as_view("get_user"))
     user_bp.add_url_rule("/<string:user_id>/promote", view_func=PromoteUser.as_view("promote_user"))
     user_bp.add_url_rule(
+        "/<string:user_id>/suggestion-permission",
+        view_func=UpdateSuggestionPermission.as_view("update_suggestion_permission"),
+    )
+    user_bp.add_url_rule(
         "/<string:user_id>/resend-user-create-mail", view_func=ResendUserCreateMail.as_view("resend_user_create_mail")
     )
     user_bp.add_url_rule("/email-taken/<email>", view_func=GetEmailTaken.as_view("get_email_taken"))
@@ -393,6 +405,8 @@ def configure_api(app):
     line_bp.add_url_rule("/<string:line_slug>", view_func=UpdateLine.as_view("update_line"))
     line_bp.add_url_rule("/<string:line_slug>", view_func=DeleteLine.as_view("delete_line"))
     line_bp.add_url_rule("/<string:line_slug>/move", view_func=MoveLine.as_view("move_line"))
+    line_bp.add_url_rule("/<string:line_slug>/publish", view_func=PublishLine.as_view("publish_line"))
+    line_bp.add_url_rule("/<string:line_slug>/reject", view_func=RejectLine.as_view("reject_line"))
     line_bp.add_url_rule(
         "/<string:line_slug>/closure-state", view_func=GetLineClosureState.as_view("get_line_closure_state")
     )
@@ -473,6 +487,8 @@ def configure_api(app):
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=GetTopoImage.as_view("get_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>", view_func=UpdateTopoImage.as_view("update_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>/move", view_func=MoveTopoImage.as_view("move_topo_image"))
+    topo_image_bp.add_url_rule("/<string:image_id>/publish", view_func=PublishTopoImage.as_view("publish_topo_image"))
+    topo_image_bp.add_url_rule("/<string:image_id>/reject", view_func=RejectTopoImage.as_view("reject_topo_image"))
     topo_image_bp.add_url_rule("/<string:image_id>/line-paths", view_func=SyncLinePaths.as_view("sync_line_paths"))
     topo_image_bp.add_url_rule(
         "/<string:image_id>/line-paths/update-order", view_func=UpdateLinePathOrder.as_view("update_line_path_order")
@@ -483,6 +499,10 @@ def configure_api(app):
     line_path_bp = Blueprint("line-paths", __name__)
     line_path_bp.add_url_rule("/<string:line_path_id>", view_func=DeleteLinePath.as_view("delete_line_path"))
     app.register_blueprint(line_path_bp, url_prefix="/api/line-paths")
+
+    suggestion_bp = Blueprint("suggestions", __name__)
+    suggestion_bp.add_url_rule("", view_func=GetSuggestions.as_view("get_suggestions"))
+    app.register_blueprint(suggestion_bp, url_prefix="/api/suggestions")
 
     # Sector API
     sector_bp = Blueprint("sectors", __name__)

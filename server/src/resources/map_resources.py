@@ -21,6 +21,7 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.secret_service import SecretService
+from util.suggestions import can_view_publication, optional_request_user
 
 
 class GetMarkers(MethodView):
@@ -81,10 +82,13 @@ class GetMarkers(MethodView):
             joinedload(MapMarker.area).joinedload(Area.sector).joinedload(Sector.crag),
             joinedload(MapMarker.topo_image).joinedload(TopoImage.area).joinedload(Area.sector).joinedload(Sector.crag),
         ).all()
+        viewer = optional_request_user()
 
         # Convert markers to GeoJSON
         markers_geo_json = {"type": "FeatureCollection", "features": []}
         for marker in markers:
+            if marker.topo_image is not None and not can_view_publication(marker.topo_image, viewer):
+                continue
             marker_geo_json = {
                 "type": "Feature",
                 "geometry": {"type": "Point", "coordinates": [marker.lng, marker.lat]},

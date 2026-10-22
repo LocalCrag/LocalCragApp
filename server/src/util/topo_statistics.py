@@ -1,6 +1,6 @@
 """Aggregates for the topo statistics pages.
 
-Counts use climbable lines: not archived, not a project (author grade >= 0),
+Counts use climbable lines: published, and not a project (author grade >= 0),
 and hidden when the caller cannot see secret spots. Year-only ascents stay out
 of the week heatmap and are still counted in the per-year chart via ``Ascent.year``.
 """
@@ -13,6 +13,7 @@ from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.region import Region
@@ -114,7 +115,10 @@ def _climbable_lines(object_type: str, entity, *, projects: bool = False):
         .join(Area, Line.area_id == Area.id)
         .join(Sector, Area.sector_id == Sector.id)
         .join(Crag, Sector.crag_id == Crag.id)
-        .filter(Line.archived.is_(False), grade_filter)
+        .filter(
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            grade_filter,
+        )
     )
     if object_type == "crag":
         query = query.filter(Crag.id == entity.id)

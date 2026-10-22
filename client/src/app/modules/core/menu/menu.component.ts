@@ -295,6 +295,13 @@ export class MenuComponent implements OnInit, AfterViewInit {
                 routerLinkActiveOptions: { exact: true },
               },
               {
+                icon: 'pi pi-fw pi-flag',
+                label: this.translocoService.translate(
+                  marker('menu.suggestions'),
+                ),
+                routerLink: '/suggestions',
+              },
+              {
                 icon: 'pi pi-fw pi-sliders-h',
                 label: this.translocoService.translate(marker('menu.scales')),
                 routerLink: '/scales',

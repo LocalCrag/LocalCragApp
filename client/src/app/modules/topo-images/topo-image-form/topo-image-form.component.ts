@@ -23,7 +23,14 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { catchError, concatMap, switchMap, tap, toArray } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  switchMap,
+  take,
+  tap,
+  toArray,
+} from 'rxjs/operators';
 import { EMPTY, forkJoin, from, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -39,6 +46,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
 
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
@@ -103,6 +111,7 @@ export class TopoImageFormComponent implements OnInit {
   public progress: number = null;
   public progressMode: 'determinate' | 'indeterminate' = 'determinate';
   public imagesTouched = false;
+  public viewerIsModerator = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -125,6 +134,12 @@ export class TopoImageFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    this.store
+      .select(selectCurrentUser)
+      .pipe(take(1))
+      .subscribe((user) => {
+        this.viewerIsModerator = !!user?.moderator;
+      });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -146,6 +161,13 @@ export class TopoImageFormComponent implements OnInit {
         ),
         this.areasService.getArea(this.areaSlug),
       ]).subscribe(([topoImage, area]) => {
+        if (
+          !this.viewerIsModerator &&
+          topoImage.publicationStatus !== 'draft'
+        ) {
+          this.router.navigate(['']);
+          return;
+        }
         this.topoImage = topoImage;
         this.parentArea = area;
         this.setFormValue();

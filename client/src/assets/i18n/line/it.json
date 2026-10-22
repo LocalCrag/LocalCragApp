@@ -1,6 +1,9 @@
 {
   "lineList.noLinesFoundEmptyMessage": "Nessun Problema trovato",
   "lineList.newLineButtonLabel": "Nuovo Problema",
+  "lineList.suggestLineButtonLabel": "Proponi una linea",
+
+  "lineList.draftTag": "Bozza",
   "lineList.orderByLabel": "Ordina per:",
   "lineList.lineType": "Tipo di problema",
   "lineList.hideArchive": "Nascondi archivio",
@@ -12,6 +15,8 @@
   "line.previousTopoImage": "Immagine precedente",
   "line.nextTopoImage": "Immagine successiva",
   "line.ascentCount": "Ripetizioni",
+
+  "line.draftTag": "Bozza",
   "line.userGrade": "Valutazione degli utenti",
   "line.proposedAs": "Proposto a",
   "line.videoBeta": "Video beta",

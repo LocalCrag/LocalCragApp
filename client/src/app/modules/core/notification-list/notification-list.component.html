@@ -47,6 +47,12 @@
                     notification.type === "moderator_task_assigned"
                   ) {
                     <i class="pi pi-list-check"></i>
+                  } @else if (
+                    notification.type === "suggestion_submitted" ||
+                    notification.type === "suggestion_published" ||
+                    notification.type === "suggestion_rejected"
+                  ) {
+                    <i class="pi pi-flag"></i>
                   } @else {
                     <i class="pi pi-cog"></i>
                   }

@@ -1,0 +1,50 @@
+<ng-container *transloco="let t; read: 'suggestionReview.dialog'">
+  <div class="flex flex-col gap-4">
+    @if (message) {
+      <div class="suggestion-review-message-dialog-body">{{ message }}</div>
+    }
+    @if (subject?.kind === 'line') {
+      <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
+        <div class="w-9/12 sm:w-40 shrink-0 overflow-hidden mx-auto sm:mx-0">
+          @if (linePreview) {
+            <lc-topo-image
+              class="shadow block rounded-border"
+              [topoImage]="linePreview"
+              [color]="lineColor ?? undefined"
+            ></lc-topo-image>
+          } @else {
+            <img
+              class="w-full shadow block rounded-border"
+              src="assets/placeholder.png"
+              [alt]="subject?.name ?? ''"
+            />
+          }
+        </div>
+        <div class="min-w-0">
+          <div>{{ subject?.name }}</div>
+          @if (location()) {
+            <div class="text-sm text-surface-500">{{ location() }}</div>
+          }
+        </div>
+      </div>
+    }
+    @if (subject?.kind === 'topoImage' && imagePreview) {
+      <div class="flex flex-col gap-2">
+        <lc-topo-image
+          class="shadow block rounded-border"
+          [topoImage]="imagePreview"
+        ></lc-topo-image>
+        <div>{{ subject?.title || subject?.areaName }}</div>
+        @if (location()) {
+          <div class="text-sm text-surface-500">{{ location() }}</div>
+        }
+      </div>
+    }
+  </div>
+  <div class="flex w-full justify-end gap-2 mt-6">
+    @if (targetLink) {
+      <p-button [label]="t('viewDetails')" [text]="true" (click)="viewDetails()"></p-button>
+    }
+    <p-button [label]="t('close')" (click)="close()"></p-button>
+  </div>
+</ng-container>

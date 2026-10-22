@@ -8,13 +8,3 @@ archive_args = {
     "value": fields.Boolean(required=True),
     "cascade": fields.Boolean(required=False),
 }
-
-
-def cross_validate_archive_args(args):
-    if args["value"] is False and args["type"] in [
-        ArchiveTypeEnum.AREA.value,
-        ArchiveTypeEnum.SECTOR.value,
-        ArchiveTypeEnum.CRAG.value,
-    ]:
-        return False
-    return True

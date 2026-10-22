@@ -24,6 +24,7 @@ from sqlalchemy import func
 from extensions import db
 from models.area import Area
 from models.ascent import Ascent
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.line import Line
 from models.sector import Sector
 from util.entity_count_cache import (
@@ -56,7 +57,7 @@ def attach_crag_counts(crags) -> None:
         .select_from(Line)
         .join(Area, Line.area_id == Area.id)
         .join(Sector, Area.sector_id == Sector.id)
-        .filter(Sector.crag_id.in_(crag_ids))
+        .filter(Sector.crag_id.in_(crag_ids), Line.publication_status == PublicationStatusEnum.PUBLISHED)
         .group_by(Sector.crag_id)
     )
     line_query = SecretService.apply_line_filter(line_query)
@@ -86,7 +87,7 @@ def attach_sector_counts(sectors) -> None:
         db.session.query(Area.sector_id, func.count(Line.id))
         .select_from(Line)
         .join(Area, Line.area_id == Area.id)
-        .filter(Area.sector_id.in_(sector_ids))
+        .filter(Area.sector_id.in_(sector_ids), Line.publication_status == PublicationStatusEnum.PUBLISHED)
         .group_by(Area.sector_id)
     )
     line_query = SecretService.apply_line_filter(line_query)
@@ -112,7 +113,9 @@ def attach_area_counts(areas) -> None:
     area_ids = [area.id for area in areas]
 
     line_query = (
-        db.session.query(Line.area_id, func.count(Line.id)).filter(Line.area_id.in_(area_ids)).group_by(Line.area_id)
+        db.session.query(Line.area_id, func.count(Line.id))
+        .filter(Line.area_id.in_(area_ids), Line.publication_status == PublicationStatusEnum.PUBLISHED)
+        .group_by(Line.area_id)
     )
     line_query = SecretService.apply_line_filter(line_query)
 

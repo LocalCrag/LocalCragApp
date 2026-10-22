@@ -41,6 +41,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { AreasService } from '../../../services/crud/areas.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -155,6 +156,7 @@ export class LineFormComponent implements OnInit {
   public area: Area;
 
   public line: Line;
+  public viewerIsModerator = false;
   public editMode = false;
   public grades = null;
   public assumedGradeOptions: Grade[] = [];
@@ -213,6 +215,12 @@ export class LineFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    this.store
+      .select(selectCurrentUser)
+      .pipe(take(1))
+      .subscribe((user) => {
+        this.viewerIsModerator = !!user?.moderator;
+      });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -314,6 +322,10 @@ export class LineFormComponent implements OnInit {
             }),
           )
           .subscribe((line) => {
+            if (!this.viewerIsModerator && line.publicationStatus !== 'draft') {
+              this.router.navigate(['']);
+              return;
+            }
             this.line = line;
             this.buildTypeOptionsForLine();
             // find() must always find a result if the backend state is not corrupted

@@ -15,6 +15,7 @@ from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
@@ -206,7 +207,10 @@ class GetCragGrades(MethodView):
             )
             .join(Area)
             .join(Sector)
-            .filter(Sector.crag_id == crag_id, Line.archived.is_(False))
+            .filter(
+                Sector.crag_id == crag_id,
+                Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
         )
         query = SecretService.apply_line_filter(query)
         result = query.all()

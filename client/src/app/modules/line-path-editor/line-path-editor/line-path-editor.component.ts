@@ -73,7 +73,6 @@ export class LinePathEditorComponent
   @Input() allTabuAreas: TabuArea[] = [];
   @Input() tabuInProgress: number[] = [];
   @Input() isDisabled = false;
-
   @Output() pathChange = new EventEmitter<number[]>();
   @Output() tabuAreaIdsChange = new EventEmitter<string[]>();
   @Output() allTabuAreasChange = new EventEmitter<TabuArea[]>();

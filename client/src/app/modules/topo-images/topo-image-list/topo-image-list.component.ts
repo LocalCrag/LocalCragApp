@@ -17,6 +17,7 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { TopoImage } from '../../../models/topo-image';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -54,6 +55,7 @@ import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-b
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
+import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   primaryTopoLinePaths,
@@ -98,6 +100,7 @@ import {
     LineGradePipe,
     TopoImageViewerComponent,
     LineNumberBadgeComponent,
+    DraftTagComponent,
   ],
 })
 export class TopoImageListComponent implements OnInit {
@@ -116,6 +119,8 @@ export class TopoImageListComponent implements OnInit {
   public ticks: Set<string>;
   public showArchive = false;
   public displayUserRating = false;
+  public currentUserId: string | null = null;
+  public viewerIsModerator = false;
   /** Topo image ids whose variant lines are expanded in the list and drawing. */
   private expandedVariantImageIds = new Set<string>();
 
@@ -178,6 +183,21 @@ export class TopoImageListComponent implements OnInit {
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
       });
+    this.store
+      .select(selectCurrentUser)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        this.currentUserId = user?.id ?? null;
+        this.viewerIsModerator = !!user?.moderator;
+      });
+  }
+
+  canManage(topoImage: TopoImage): boolean {
+    return (
+      this.viewerIsModerator ||
+      (topoImage.publicationStatus === 'draft' &&
+        topoImage.createdById === this.currentUserId)
+    );
   }
 
   toggleArchive() {

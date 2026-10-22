@@ -2,6 +2,9 @@
   "topoImageList.hideArchive": "Archief verbergen",
   "topoImageList.showArchive": "Archief weergeven",
   "topoImageList.newTopoImageButtonLabel": "Nieuwe Topo-afbeelding",
+  "topoImageList.suggestTopoImageButtonLabel": "Topo-afbeelding voorstellen",
+
+  "topoImageList.draftTag": "Concept",
   "topoImageList.topoImageBatchUploadButtonLabel": "Topo-upload + Snelle bewerking",
   "topoImageList.reorderTopoImagesButtonLabel": "Topo-afbeeldingen ordenen",
   "topoImageList.noTopoImagesFoundEmptyMessage": "Geen afbeeldingen gevonden",
@@ -14,6 +17,7 @@
   "topoImageList.reorderLinePathsButtonLabel": "Routes ordenen",
   "topoImageList.editTopoImageButtonLabel": "Afbeelding bewerken",
   "topoImageForm.addTopoImageDescription": "Upload een of meer topo-afbeeldingen. Voeg na het uploaden voor elke afbeelding een titel, beschrijving en GPS-positie toe. Het rotsvlak moet het grootste deel van de afbeelding innemen en de hele route moet gemakkelijk zichtbaar zijn. Meerdere afbeeldingen zijn zinvol, bijvoorbeeld bij traverses.",
+  "topoImageForm.addTopoImageDraftNotice": "De afbeeldingen zijn niet openbaar totdat een moderator ze accepteert.",
   "topoImageForm.editTopoImageDescription": "Metadata van de afbeelding kunnen worden bewerkt. Helaas kan de afbeelding zelf niet meer worden gewijzigd, anders zijn getekende routes niet meer correct.",
   "topoImageForm.topoImageTitleLabel": "Titel (optioneel)",
   "topoImageForm.topoImageTitlePlaceholder": "bijv. Bruno Block",

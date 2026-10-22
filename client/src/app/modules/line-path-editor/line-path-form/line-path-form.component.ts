@@ -25,6 +25,7 @@ import { LinesService } from '../../../services/crud/lines.service';
 import { Line } from '../../../models/line';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { forkJoin, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
 import { Title } from '@angular/platform-browser';
 import {
@@ -35,6 +36,10 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectCurrentUser,
+  selectIsModerator,
+} from '../../../ngrx/selectors/auth.selectors';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -122,6 +127,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   public allTabuAreas: TabuArea[] = [];
   public editorDrawMode: DrawMode = 'line';
   public editorTabuInProgress: number[] = [];
+  public canOnlyDrawOwnDrafts = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -190,10 +196,24 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     forkJoin([
       this.linesService.getLinesForLineEditor(this.areaSlug),
       this.topoImagesService.getTopoImage(this.topoImageId),
-    ]).subscribe(([lines, topoImage]) => {
-      this.lines = lines;
+      this.store.select(selectIsModerator).pipe(take(1)),
+      this.store.select(selectCurrentUser).pipe(take(1)),
+    ]).subscribe(([lines, topoImage, isModerator, user]) => {
+      this.canOnlyDrawOwnDrafts = !isModerator;
+      const editableLines = this.canOnlyDrawOwnDrafts
+        ? lines.filter(
+            (line) =>
+              line.publicationStatus === 'draft' &&
+              line.createdById === user?.id,
+          )
+        : lines;
+      this.lines = editableLines;
+      const editableLineIds = new Set(editableLines.map((line) => line.id));
       this.selectedTopoImage = topoImage;
       sortLinePathsByOrderIndex(topoImage.linePaths).forEach((linePath) => {
+        if (!editableLineIds.has(linePath.line.id)) {
+          return;
+        }
         this.draftPaths[linePath.line.id] = {
           line: linePath.line,
           path: [...linePath.path],
@@ -289,6 +309,13 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   onAllTabuAreasChange(areas: TabuArea[]) {
     this.allTabuAreas = cloneTabuAreas(areas);
     this.updateEditorTopoImage(this.selectedLineId);
+  }
+
+  canDeleteTabuArea(areaId: string): boolean {
+    if (!this.canOnlyDrawOwnDrafts) {
+      return true;
+    }
+    return !this.originalTabuAreas.some((area) => area.id === areaId);
   }
 
   onTabuAreaIdsChange(tabuAreaIds: string[]) {

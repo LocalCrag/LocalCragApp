@@ -1,4 +1,5 @@
 from marshmallow import fields, post_dump
+from marshmallow_enum import EnumField
 
 from extensions import ma
 from marshmallow_schemas.area_schema import AreaMenuSchema
@@ -12,6 +13,7 @@ from marshmallow_schemas.mixins.is_closable import (
 from marshmallow_schemas.mixins.moderator_task_count import (
     ModeratorTaskCountSchemaMixin,
 )
+from models.enums.publication_status_enum import PublicationStatusEnum
 from util.bucket_placeholders import replace_bucket_placeholders
 
 
@@ -30,6 +32,7 @@ class SectorSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     lineCount = fields.Integer(attribute="line_count")
     ascentCount = fields.Integer(attribute="ascent_count")
     secret = fields.Boolean()
+    publicationStatus = EnumField(PublicationStatusEnum, by_value=True, attribute="publication_status")
 
 
 class SectorDetailSchema(SectorSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):

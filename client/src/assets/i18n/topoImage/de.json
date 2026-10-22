@@ -2,6 +2,9 @@
   "topoImageList.hideArchive": "Archiv verstecken",
   "topoImageList.showArchive": "Archiv anzeigen",
   "topoImageList.newTopoImageButtonLabel": "Neues Topo Bild",
+  "topoImageList.suggestTopoImageButtonLabel": "Topo Bild vorschlagen",
+
+  "topoImageList.draftTag": "Entwurf",
   "topoImageList.topoImageBatchUploadButtonLabel": "Topo-Upload + Schnellbearbeitung",
   "topoImageList.reorderTopoImagesButtonLabel": "Topo Bilder ordnen",
   "topoImageList.noTopoImagesFoundEmptyMessage": "Keine Topo Bilder gefunden",
@@ -14,6 +17,7 @@
   "topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",
   "topoImageList.editTopoImageButtonLabel": "Bild bearbeiten",
   "topoImageForm.addTopoImageDescription": "Lade ein oder mehrere Topo-Bilder hoch. Nach dem Upload kannst Du für jedes Bild Titel, Beschreibung und GPS-Position angeben. Der Fels sollte den größten Teil des Bildes einnehmen und die ganze Linie gut zu sehen sein. Mehrere Bilder sind z.B. bei Traversen oder Linien sinnvoll, die um eine Kante herum verlaufen.",
+  "topoImageForm.addTopoImageDraftNotice": "Die Bilder sind nicht öffentlich, bis ein Moderator sie annimmt.",
   "topoImageForm.editTopoImageDescription": "Metaangaben des Bilds können bearbeitet werden. Das Bild an sich kann leider nicht mehr verändert werden, da eingezeichnete Linienverläufe sonst nicht mehr stimmen.",
   "topoImageForm.topoImageTitleLabel": "Titel (optional)",
   "topoImageForm.topoImageTitlePlaceholder": "z.B. Bruno Block",

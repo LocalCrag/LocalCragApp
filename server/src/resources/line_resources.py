@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
+from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.line_schema import (
     line_schema,
@@ -12,11 +13,13 @@ from marshmallow_schemas.line_schema import (
     paginated_lines_schema,
 )
 from marshmallow_schemas.search_schema import line_search_schema, lines_search_schema
+from messages.messages import ResponseMessage
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
@@ -26,6 +29,7 @@ from models.topo_image import TopoImage
 from models.user import User
 from util.assumed_grade import normalize_assumed_grade_bounds
 from util.auth_session import (
+    get_current_user,
     get_session_identity,
     session_required,
     verify_session_in_request,
@@ -43,6 +47,15 @@ from util.scheduled_closure import (
 )
 from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
+from util.suggestions import (
+    assert_can_delete_publication,
+    assert_can_view_publication,
+    can_edit_publication,
+    notify_moderators_of_submission,
+    optional_request_user,
+    publication_visibility_clause,
+    require_suggest_or_moderator,
+)
 from util.topo_entity_counts import attach_line_ascent_counts
 from util.validators import cross_validate_grade
 from webargs_schemas.line_args import cross_validate_line_args, line_args
@@ -114,7 +127,17 @@ class GetLinesForLineEditor(MethodView):
         """
         Returns all lines of an area which is needed for the line select in the line editor.
         """
-        lines = Line.query.join(Area).filter(Line.archived.is_(False), Area.slug == area_slug).order_by(Line.name).all()
+        viewer = optional_request_user()
+        query = Line.query.join(Area).filter(
+            Area.slug == area_slug,
+            publication_visibility_clause(Line, viewer),
+        )
+        if viewer is not None and not viewer.moderator:
+            query = query.filter(
+                Line.publication_status == PublicationStatusEnum.DRAFT,
+                Line.created_by_id == viewer.id,
+            )
+        lines = query.order_by(Line.name).all()
         return jsonify(lines_schema.dump(lines)), 200
 
 
@@ -130,7 +153,8 @@ class FindLinesByName(MethodView):
             return jsonify([]), 200
         exclude_id = (request.args.get("excludeId") or "").strip() or None
         query = Line.query.options(joinedload(Line.area).joinedload(Area.sector).joinedload(Sector.crag)).filter(
-            func.lower(Line.name) == name.lower()
+            func.lower(Line.name) == name.lower(),
+            publication_visibility_clause(Line, get_current_user()),
         )
         if exclude_id:
             query = query.filter(Line.id != exclude_id)
@@ -172,8 +196,14 @@ class GetLines(MethodView):
         ]:
             raise BadRequest("Invalid order by query parameters")
 
-        # Filter for crag, sector or area
-        query = select(Line).filter(Line.archived == archived).join(Area).join(Sector).join(Crag)
+        # Filter for crag, sector or area. The archive view is the archived status; the default view hides it.
+        viewer = optional_request_user()
+        status_filter = (
+            Line.publication_status == PublicationStatusEnum.ARCHIVED
+            if archived
+            else publication_visibility_clause(Line, viewer)
+        )
+        query = select(Line).filter(status_filter).join(Area).join(Sector).join(Crag)
         if crag_slug:
             query = query.filter(Crag.slug == crag_slug)
         if sector_slug:
@@ -240,18 +270,20 @@ class GetLine(MethodView):
         """
         line: Line = Line.find_by_slug(line_slug)
         check_secret_spot_permission(line)
+        assert_can_view_publication(line)
         return line_schema.dump(line), 200
 
 
 class CreateLine(MethodView):
-    @session_required(moderator=True)
+    @session_required()
     def post(self, area_slug):
         """
-        Creates a line.
+        Creates a line. Moderators publish immediately. Other accounts create a draft when suggestions are enabled.
         """
         area_id = Area.get_id_by_slug(area_slug)
         line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
-        created_by = User.find_by_email(get_session_identity())
+        created_by = get_current_user()
+        require_suggest_or_moderator(created_by)
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
@@ -332,21 +364,31 @@ class CreateLine(MethodView):
         new_line.mantle = line_data["mantle"]
 
         new_line.area_id = area_id
+        new_line.publication_status = (
+            PublicationStatusEnum.PUBLISHED if created_by.moderator else PublicationStatusEnum.DRAFT
+        )
+        if not created_by.moderator:
+            new_line.secret = False
 
         apply_closable_configuration(new_line, line_data, "line_id")
 
         if not new_line.secret:
             set_line_parents_false(new_line, "secret")
-        db.session.commit()
-        finalize_closable_save(new_line)
-
-        HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
+        if new_line.publication_status == PublicationStatusEnum.DRAFT:
+            db.session.flush()
+            notify_moderators_of_submission(created_by, "line", new_line.id)
+            db.session.commit()
+            finalize_closable_save(new_line)
+        else:
+            db.session.commit()
+            finalize_closable_save(new_line)
+            HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_line, created_by)
 
         return line_schema.dump(new_line), 201
 
 
 class UpdateLine(MethodView):
-    @session_required(moderator=True)
+    @session_required()
     def put(self, line_slug):
         """
         Edit a line.
@@ -354,6 +396,9 @@ class UpdateLine(MethodView):
         """
         line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
         line: Line = Line.find_by_slug(line_slug)
+        actor = get_current_user()
+        if not can_edit_publication(actor, line):
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
@@ -364,14 +409,15 @@ class UpdateLine(MethodView):
         line.videos = line_data["videos"]
         line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
-        HistoryItem.create_history_item(
-            HistoryItemTypeEnum.UPDATED,
-            line,
-            User.find_by_email(get_session_identity()),
-            old_value=line.author_grade_value,
-            new_value=line_data["authorGradeValue"],
-            property_name="grade_value",
-        )
+        if line.publication_status == PublicationStatusEnum.PUBLISHED:
+            HistoryItem.create_history_item(
+                HistoryItemTypeEnum.UPDATED,
+                line,
+                actor,
+                old_value=line.author_grade_value,
+                new_value=line_data["authorGradeValue"],
+                property_name="grade_value",
+            )
         line.author_grade_value = line_data["authorGradeValue"]
         line.assumed_grade_min, line.assumed_grade_max = normalize_assumed_grade_bounds(
             line_data["authorGradeValue"],
@@ -384,7 +430,8 @@ class UpdateLine(MethodView):
         line.starting_position = line_data["startingPosition"]
         line.drying = line_data["drying"]
         line.author_rating = line_data["authorRating"]
-        update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
+        if actor.moderator:
+            update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
         apply_closable_configuration(line, line_data, "line_id")
 
         if line.author_grade_value >= 0:
@@ -449,13 +496,14 @@ class UpdateLine(MethodView):
 
 
 class DeleteLine(MethodView):
-    @session_required(moderator=True)
+    @session_required()
     def delete(self, line_slug):
         """
         Delete a line.
         @param line_slug: Slug of the line to delete.
         """
         line: Line = Line.find_by_slug(line_slug)
+        assert_can_delete_publication(get_current_user(), line)
 
         db.session.delete(line)
         db.session.commit()

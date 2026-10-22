@@ -37,6 +37,7 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   taskCount?: number;
   routerLink: string | null;
   secret: boolean;
+  publicationStatus: string;
   mapMarkers: MapMarker[];
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
@@ -58,6 +59,7 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     sector.name = payload.name;
     sector.description = payload.description;
     sector.secret = payload.secret;
+    sector.publicationStatus = payload.publicationStatus ?? 'published';
     sector.shortDescription = payload.shortDescription;
     sector.rules = payload.rules;
     sector.rulesTitle = payload.rulesTitle ?? null;

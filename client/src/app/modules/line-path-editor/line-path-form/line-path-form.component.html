@@ -156,15 +156,17 @@
                         >
                           {{ t("tabuArea", { n: i + 1 }) }}
                         </label>
-                        <p-button
-                          icon="pi pi-trash"
-                          [rounded]="true"
-                          [text]="true"
-                          severity="danger"
-                          size="small"
-                          [attr.data-cy]="'tabu-area-delete-' + i"
-                          (click)="onTabuAreaDeleted(area.id)"
-                        ></p-button>
+                        @if (canDeleteTabuArea(area.id)) {
+                          <p-button
+                            icon="pi pi-trash"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="danger"
+                            size="small"
+                            [attr.data-cy]="'tabu-area-delete-' + i"
+                            (click)="onTabuAreaDeleted(area.id)"
+                          ></p-button>
+                        }
                       </li>
                     }
                   </ul>

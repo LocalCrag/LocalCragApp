@@ -895,23 +895,25 @@
             {{ t("closedBecauseParentIsClosed") }}
           </p-message>
         }
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label">{{ t("lineOptionsLabel") }}</label>
-          <div class="flex flex-col gap-2">
-            <div class="flex">
-              <p-checkbox
-                inputId="secret"
-                name="secret"
-                [binary]="true"
-                formControlName="secret"
-                lcFormControl
-              ></p-checkbox>
-              <label [for]="'secret'" class="ml-2">{{
-                t("secretLabel")
-              }}</label>
+        @if (viewerIsModerator) {
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label">{{ t("lineOptionsLabel") }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex">
+                <p-checkbox
+                  inputId="secret"
+                  name="secret"
+                  [binary]="true"
+                  formControlName="secret"
+                  lcFormControl
+                ></p-checkbox>
+                <label [for]="'secret'" class="ml-2">{{
+                  t("secretLabel")
+                }}</label>
+              </div>
             </div>
           </div>
-        </div>
+        }
         @if (parentArea?.secret && !lineForm.get("secret").value) {
           <p-message severity="warn" icon="pi pi-info-circle">
             {{ t("aPublicLineWillSetParentsToPublic") }}

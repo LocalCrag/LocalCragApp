@@ -35,6 +35,7 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   taskCount?: number;
   routerLink: string | null;
   secret: boolean;
+  publicationStatus: string;
   mapMarkers: MapMarker[];
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
@@ -60,6 +61,7 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     crag.rulesTitle = payload.rulesTitle ?? null;
     crag.rulesUpdatedAt = parseServerUtcDate(payload.rulesUpdatedAt);
     crag.secret = payload.secret;
+    crag.publicationStatus = payload.publicationStatus ?? 'published';
     crag.portraitImage = payload.portraitImage
       ? File.deserialize(payload.portraitImage)
       : null;

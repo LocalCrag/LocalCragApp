@@ -184,6 +184,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         displayUserGrades: this.instanceSettings.displayUserGrades,
         displayUserRatings: this.instanceSettings.displayUserRatings,
         noClosedProjects: this.instanceSettings.noClosedProjects,
+        suggestionsEnabled: this.instanceSettings.suggestionsEnabled,
         faDefaultFormat: this.instanceSettings.faDefaultFormat,
         defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
         rankingPastWeeks: this.instanceSettings.rankingPastWeeks,

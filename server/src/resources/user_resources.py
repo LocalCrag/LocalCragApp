@@ -24,6 +24,7 @@ from models.ascent import Ascent
 from models.comment import Comment
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.user_promotion_enum import UserPromotionEnum
 from models.gallery_image import GalleryImage
 from models.instance_settings import InstanceSettings
@@ -295,7 +296,10 @@ class GetUserGrades(MethodView):
         query = (
             db.session.query(Line.type, Line.grade_scale, grade_col, Ascent.flash)
             .join(Ascent, Ascent.line_id == Line.id)
-            .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
+            .filter(
+                Ascent.created_by_id == user_id,
+                Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
         )
         query = SecretService.apply_line_filter(query)
         result = query.all()
@@ -330,7 +334,10 @@ class GetUserStatistics(MethodView):
         ascents_query = (
             db.session.query(Ascent, Line)
             .join(Line, Ascent.line_id == Line.id)
-            .filter(Ascent.created_by_id == user_id, Line.archived.is_(False))
+            .filter(
+                Ascent.created_by_id == user_id,
+                Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
         )
         ascents_query = SecretService.apply_line_filter(ascents_query)
         pairs = ascents_query.all()

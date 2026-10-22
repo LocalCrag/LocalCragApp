@@ -9,6 +9,7 @@ from marshmallow_schemas.region_schema import region_schema
 from models.area import Area
 from models.crag import Crag
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.region import Region
@@ -67,7 +68,9 @@ class GetRegionGrades(MethodView):
             .join(Area)
             .join(Sector)
             .join(Crag)
-            .filter(Line.archived.is_(False))
+            .filter(
+                Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
         )
         if exclude_closed:
             query = query.filter(

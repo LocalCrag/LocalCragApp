@@ -45,6 +45,8 @@ from models.enums.notification_digest_frequency_enum import (
     NotificationDigestFrequencyEnum,
 )
 from models.enums.notification_type_enum import NotificationTypeEnum
+from models.enums.permission_effect_enum import PermissionEffectEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.release_note_item_type_enum import ReleaseNoteItemTypeEnum
 from models.enums.rock_explorer_access_issue_enum import RockExplorerAccessIssueEnum
 from models.enums.rock_explorer_feature_status_enum import RockExplorerFeatureStatusEnum
@@ -65,6 +67,7 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.moderator_task import ModeratorTask
 from models.notification import Notification
+from models.permission import SUGGESTION_CREATE, Permission
 from models.post import Post
 from models.ranking import Ranking
 from models.reaction import Reaction
@@ -171,6 +174,7 @@ def create_migration_dummy_data():
         _create_rankings(users, crags)
         _create_alerts(users, admin)
         _create_admin_messages(users, admin)
+        _create_permissions(users)
         _create_sessions(users)
         _create_release_notes()
         timer.mark("remaining entities")
@@ -371,7 +375,8 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
             line.starting_position = STARTING_POSITIONS[sequence % len(STARTING_POSITIONS)]
             line.author_rating = (sequence % 5) + 1
             line.user_rating = (sequence % 5) + 1
-            line.archived = sequence % 37 == 0
+            if sequence % 37 == 0:
+                line.publication_status = PublicationStatusEnum.ARCHIVED
             line.secret = area.name.startswith(f"{CRAG_BLUEPRINTS[0][0]} ") or sequence % 29 == 0
             if sequence % 3:
                 line.type = LineTypeEnum.BOULDER
@@ -428,7 +433,8 @@ def _create_topo_images(areas: list[Area], admin: User) -> dict:
             topo.order_index = order_index
             topo.title = f"Topo {order_index + 1}"
             topo.created_by_id = admin.id
-            topo.archived = order_index == area.topo_budget - 1 and area.topo_budget > 1 and area.order_index == 0
+            if order_index == area.topo_budget - 1 and area.topo_budget > 1 and area.order_index == 0:
+                topo.publication_status = PublicationStatusEnum.ARCHIVED
             if order_index == 0 and area.order_index % 4 == 0:
                 topo.tabu_areas = [{"id": f"tabu-{order_index}", "points": [10, 20, 40, 20, 40, 50]}]
             db.session.add(topo)
@@ -1060,6 +1066,16 @@ def _path_points(line_index: int, path_index: int) -> list[float]:
     ]
 
 
+def _create_permissions(users):
+    denied = next(user for user in users if not user.moderator)
+    permission = Permission()
+    permission.user_id = denied.id
+    permission.key = SUGGESTION_CREATE
+    permission.effect = PermissionEffectEnum.DENY
+    db.session.add(permission)
+    db.session.flush()
+
+
 def _assert_counts(line_count: int):
     migration_users = User.query.filter(User.email.like("migration-user-%@localcrag.invalid")).count()
     counts = {
@@ -1089,6 +1105,7 @@ def _assert_counts(line_count: int):
         "app_alerts": AppAlert.query.count(),
         "admin_messages": AdminMessage.query.count(),
         "sessions": AuthSession.query.count(),
+        "permissions": Permission.query.count(),
         "file_links": FileLink.query.count(),
         "secret_topo_entities": SecretTopoEntity.query.count(),
     }
@@ -1100,6 +1117,7 @@ def _assert_counts(line_count: int):
         "lines": line_count,
         "ascents": USER_COUNT * ASCENTS_PER_USER,
         "posts": POST_COUNT,
+        "permissions": 1,
         "gallery_images": GALLERY_IMAGE_COUNT,
         "rock_explorer_features": ROCK_EXPLORER_COUNT,
     }

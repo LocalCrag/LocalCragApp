@@ -56,6 +56,7 @@ class InstanceSettings(db.Model):
     display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     no_closed_projects = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    suggestions_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
     fa_default_format = db.Column(
         db.Enum(FaDefaultFormatEnum), nullable=False, server_default=FaDefaultFormatEnum.YEAR.value
     )
