@@ -4,6 +4,13 @@
   }
 }
 
+.p-menu-item.topo-image-menu-danger {
+  .p-menu-item-icon,
+  .p-menu-item-label {
+    color: var(--p-red-500, #ef4444);
+  }
+}
+
 lc-topo-image-list {
   .line-table {
     width: 100%;
