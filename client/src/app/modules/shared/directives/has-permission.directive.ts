@@ -15,13 +15,17 @@ import {
   selectIsModerator,
   selectIsSuperadmin,
 } from '../../../ngrx/selectors/auth.selectors';
+import {
+  selectCanContributeTopo,
+  selectCanSuggest,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { User } from '../../../models/user';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector:
     // eslint-disable-next-line  @angular-eslint/directive-selector
-    '[isAdmin], [isSuperadmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember]',
+    '[isAdmin], [isSuperadmin], [isModerator], [isLoggedIn], [isLoggedOut], [isOwnUser], [isMember], [canContributeTopo], [canSuggest]',
 })
 export class HasPermissionDirective {
   private templateRef = inject<TemplateRef<any>>(TemplateRef);
@@ -108,6 +112,28 @@ export class HasPermissionDirective {
         } else {
           this.decideView(!isLoggedIn);
         }
+      });
+  }
+
+  /** Logged-in non-moderators who may submit line and topo image suggestions. */
+  @Input()
+  set canSuggest(value: boolean) {
+    this.store
+      .select(selectCanSuggest)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((canSuggest) => {
+        this.decideView(value ? canSuggest : !canSuggest);
+      });
+  }
+
+  /** Moderators, and anyone `canSuggest` matches. */
+  @Input()
+  set canContributeTopo(value: boolean) {
+    this.store
+      .select(selectCanContributeTopo)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((canContribute) => {
+        this.decideView(value ? canContribute : !canContribute);
       });
   }
 

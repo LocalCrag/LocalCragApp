@@ -22,7 +22,8 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
   title: string;
   description: string;
   area: Area;
-  archived?: boolean;
+  publicationStatus: string;
+  createdById: string | null;
 
   // Properties for UI features
   loadingState: LoadingState = LoadingState.DEFAULT;
@@ -49,7 +50,8 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
       ? payload.linePaths.map(LinePath.deserialize)
       : null;
     topoImage.tabuAreas = deserializeTabuAreas(payload.tabuAreas);
-    topoImage.archived = payload.archived;
+    topoImage.publicationStatus = payload.publicationStatus ?? 'published';
+    topoImage.createdById = payload.createdById ?? null;
     topoImage.area = payload.area ? Area.deserialize(payload.area) : null;
     return topoImage;
   }

@@ -19,6 +19,7 @@ export class User extends HasSlug(AbstractModel) {
   admin: boolean;
   moderator: boolean;
   member: boolean;
+  suggestionsEnabled: boolean;
   activatedAt: Date;
   avatar: File;
   accountLanguage: LanguageCode;
@@ -48,6 +49,7 @@ export class User extends HasSlug(AbstractModel) {
     user.admin = payload.admin;
     user.moderator = payload.moderator;
     user.member = payload.member;
+    user.suggestionsEnabled = payload.suggestionsEnabled !== false;
     user.activatedAt = parseServerUtcDate(payload.activatedAt);
     user.fullname = `${user.firstname} ${user.lastname}`;
     user.avatar = payload.avatar ? File.deserialize(payload.avatar) : null;

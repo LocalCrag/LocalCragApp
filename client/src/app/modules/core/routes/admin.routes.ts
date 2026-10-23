@@ -36,6 +36,14 @@ export const adminRoutes: Routes = [
     canActivate: [isAdmin],
   },
   {
+    path: 'suggestions',
+    loadComponent: () =>
+      import('../../suggestion/suggestion-list/suggestion-list.component').then(
+        (m) => m.SuggestionListComponent,
+      ),
+    canActivate: [isModerator],
+  },
+  {
     path: 'history',
     loadComponent: () =>
       import('../../history/history-list/history-list.component').then(

@@ -4,6 +4,7 @@ import { SectorInfoComponent } from '../../../sector/sector-info/sector-info.com
 import { AreaListComponent } from '../../../area/area-list/area-list.component';
 import { LineListComponent } from '../../../line/line-list/line-list.component';
 import { SectorAscentsComponent } from '../../../sector/sector-ascents/sector-ascents.component';
+import { canContributeTopo } from '../../../../guards/can-contribute-topo';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
@@ -115,7 +116,7 @@ export const topoSectorRoutes: Routes = [
       import('../../../line/line-form/line-form.component').then(
         (m) => m.LineFormComponent,
       ),
-    canActivate: [isModerator],
+    canActivate: [canContributeTopo],
   },
   {
     path: `${sectorPrefix}/:area-slug/add-topo-image`,
@@ -123,7 +124,7 @@ export const topoSectorRoutes: Routes = [
       import('../../../topo-images/topo-image-form/topo-image-form.component').then(
         (m) => m.TopoImageFormComponent,
       ),
-    canActivate: [isModerator],
+    canActivate: [canContributeTopo],
   },
   {
     path: `${sectorPrefix}/:area-slug/line-entry-batch-editor`,
@@ -139,6 +140,6 @@ export const topoSectorRoutes: Routes = [
       import('../../../topo-images/topo-image-form/topo-image-form.component').then(
         (m) => m.TopoImageFormComponent,
       ),
-    canActivate: [isModerator],
+    canActivate: [canContributeTopo],
   },
 ];

@@ -6,6 +6,7 @@ from extensions import db
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.line import Line
@@ -102,7 +103,6 @@ def test_move_line_deletes_all_line_paths(client, moderator_token):
             order_index=topo_image_1.order_index + 1,
             title=None,
             description=None,
-            archived=False,
         )
 
         db.session.add(topo_image_2)
@@ -1018,7 +1018,6 @@ def test_get_lines_order_by_topo_position_respects_area_order_within_sector(clie
         order_index=0,
         title=None,
         description=None,
-        archived=False,
     )
     db.session.add(second_area_topo)
     db.session.flush()
@@ -1702,7 +1701,7 @@ def test_create_line_with_drying(client, moderator_token):
 
 
 def test_find_lines_by_name(client, moderator_token):
-    line = Line.query.filter_by(archived=False).first()
+    line = Line.query.filter_by(publication_status=PublicationStatusEnum.PUBLISHED).first()
     assert line is not None
 
     rv = client.get(f"/api/lines/find-by-name?name={line.name}", token=moderator_token)

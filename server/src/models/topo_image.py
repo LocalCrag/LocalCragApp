@@ -1,11 +1,18 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
 from models.base_entity import BaseEntity
+from models.enums.publication_status_enum import (
+    PublicationStatusEnum,
+    publication_status_type,
+)
 from models.file import File
 from models.mixins.has_order_index import HasOrderIndex
+from models.tabu_area import (  # noqa: F401  relationship target must be registered
+    TabuArea,
+)
 
 
 class TopoImage(HasOrderIndex, BaseEntity):
@@ -18,8 +25,19 @@ class TopoImage(HasOrderIndex, BaseEntity):
     description = db.Column(db.Text, nullable=True)
     title = db.Column(db.String(120), nullable=True)
     map_markers = db.relationship("MapMarker", back_populates="topo_image")
-    archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
-    tabu_areas = db.Column(JSON, nullable=False, server_default="[]", default=list)
+    publication_status = db.Column(
+        publication_status_type,
+        nullable=False,
+        default=PublicationStatusEnum.PUBLISHED,
+        server_default=PublicationStatusEnum.PUBLISHED.value,
+    )
+    tabu_areas = db.relationship(
+        "TabuArea",
+        back_populates="topo_image",
+        cascade="all, delete-orphan",
+        order_by="TabuArea.order_index.asc()",
+        passive_deletes=True,
+    )
 
     @classmethod
     def find_max_order_index(cls, area_id) -> int:

@@ -26,7 +26,7 @@ export class ArchiveService {
     return this.http.put(this.api.archive.setArchived(), {
       type: ArchiveType.LINE,
       slug: line.slug,
-      value: Boolean(line.archived),
+      value: line.publicationStatus === 'archived',
     });
   }
 
@@ -44,7 +44,7 @@ export class ArchiveService {
     return this.http.put(this.api.archive.setArchived(), {
       type: ArchiveType.TOPO_IMAGE,
       slug: topoImage.id,
-      value: Boolean(topoImage.archived),
+      value: topoImage.publicationStatus === 'archived',
       cascade: cascade,
     });
   }
@@ -63,6 +63,14 @@ export class ArchiveService {
     });
   }
 
+  public restoreArea(area: Area): Observable<object> {
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.AREA,
+      slug: area.slug,
+      value: false,
+    });
+  }
+
   /**
    * Sets all lines and topo images in a sector to archived
    *
@@ -77,6 +85,14 @@ export class ArchiveService {
     });
   }
 
+  public restoreSector(sector: Sector): Observable<object> {
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.SECTOR,
+      slug: sector.slug,
+      value: false,
+    });
+  }
+
   /**
    * Sets all lines and topo images in a crag to archived
    *
@@ -88,6 +104,14 @@ export class ArchiveService {
       type: ArchiveType.CRAG,
       slug: crag.slug,
       value: true,
+    });
+  }
+
+  public restoreCrag(crag: Crag): Observable<object> {
+    return this.http.put(this.api.archive.setArchived(), {
+      type: ArchiveType.CRAG,
+      slug: crag.slug,
+      value: false,
     });
   }
 }

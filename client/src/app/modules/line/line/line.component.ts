@@ -18,7 +18,7 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -32,6 +32,7 @@ import { ScalesService } from '../../../services/crud/scales.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import {
@@ -48,7 +49,12 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  imports: [
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    DraftTagComponent,
+    RouterOutlet,
+  ],
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
@@ -73,6 +79,8 @@ export class LineComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private canEditLine = false;
+  private currentUserId: string | null = null;
   private regionService = inject(RegionService);
 
   protected scalesService = inject(ScalesService);
@@ -123,23 +131,22 @@ export class LineComponent implements OnInit {
               return throwError(() => e);
             }),
           ),
-          this.store.pipe(select(selectIsModerator), take(1)),
+          waitForAuthState(this.store),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),
           this.regionService.getRegionCached(),
         ]).subscribe(
-          ([
-            crag,
-            sector,
-            area,
-            line,
-            isModerator,
-            instanceSettings,
-            region,
-          ]) => {
+          ([crag, sector, area, line, auth, instanceSettings, region]) => {
+            const currentUser = auth.user;
+            const isModerator = !!currentUser?.moderator;
             this.crag = crag;
             this.sector = sector;
             this.area = area;
             this.line = line;
+            this.currentUserId = currentUser?.id ?? null;
+            this.canEditLine =
+              isModerator ||
+              (line.publicationStatus === 'draft' &&
+                line.createdById === currentUser?.id);
             this.rulesAlertService.setContext({ sector, crag, region });
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
@@ -262,10 +269,16 @@ export class LineComponent implements OnInit {
         badge: this.tabBadge(this.line.taskCount ?? 0),
       },
       {
-        label: this.translocoService.translate(marker('line.edit')),
+        label: this.translocoService.translate(
+          this.reviewsForeignDraft()
+            ? marker('suggestions.review')
+            : marker('line.edit'),
+        ),
         icon: 'pi pi-fw pi-file-edit',
-        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
-        visible: isModerator,
+        routerLink: this.reviewsForeignDraft()
+          ? '/suggestions'
+          : `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
+        visible: this.canEditLine,
       },
     ];
     this.pageTitleService.setTabs(this.items);
@@ -273,5 +286,13 @@ export class LineComponent implements OnInit {
 
   private tabBadge(count: number): string {
     return String(count);
+  }
+
+  /** Moderators review someone else's draft in the suggestions queue instead of the editor. */
+  private reviewsForeignDraft(): boolean {
+    return (
+      this.line.publicationStatus === 'draft' &&
+      this.line.createdById !== this.currentUserId
+    );
   }
 }

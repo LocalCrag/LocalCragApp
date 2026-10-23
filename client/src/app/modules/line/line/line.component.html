@@ -1,5 +1,8 @@
 <div class="content">
   <div class="flex gap-1">
+    @if (line?.publicationStatus === "draft") {
+      <lc-draft-tag></lc-draft-tag>
+    }
     @if (line?.closed) {
       <lc-closed-spot-tag
         spotType="line"

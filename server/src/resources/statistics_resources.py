@@ -11,6 +11,7 @@ from marshmallow_schemas.instance_statistics_schema import instance_statistics_s
 from models.area import Area
 from models.ascent import Ascent
 from models.crag import Crag
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
@@ -53,8 +54,8 @@ class GetCompletion(MethodView):
             .join(Sector, Area.sector_id == Sector.id)
             .join(Crag, Sector.crag_id == Crag.id)
             .filter(
-                Line.author_grade_value >= 0, Line.archived.is_(False)
-            )  # Don't include projects in progress or archived lines
+                Line.author_grade_value >= 0, Line.publication_status == PublicationStatusEnum.PUBLISHED
+            )  # Don't include projects or lines that are not published
             .distinct(Line.id)
         )
 
@@ -175,11 +176,13 @@ class GetInstanceStatistics(MethodView):
         ascent_base = (
             db.session.query(Ascent)
             .join(Line, Ascent.line_id == Line.id)
-            .filter(Line.archived.is_(False), Line.author_grade_value >= 0)
+            .filter(Line.publication_status == PublicationStatusEnum.PUBLISHED, Line.author_grade_value >= 0)
         )
         ascent_base = SecretService.apply_line_filter(ascent_base)
 
-        line_base = db.session.query(Line).filter(Line.archived.is_(False), Line.author_grade_value >= 0)
+        line_base = db.session.query(Line).filter(
+            Line.publication_status == PublicationStatusEnum.PUBLISHED, Line.author_grade_value >= 0
+        )
         line_base = SecretService.apply_line_filter(line_base)
 
         hardest_ascents_last_month = (

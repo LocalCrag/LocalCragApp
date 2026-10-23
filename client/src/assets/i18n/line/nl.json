@@ -1,6 +1,9 @@
 {
   "lineList.noLinesFoundEmptyMessage": "Geen routes gevonden",
   "lineList.newLineButtonLabel": "Nieuwe route",
+  "lineList.suggestLineButtonLabel": "Lijn voorstellen",
+
+  "lineList.draftTag": "Concept",
   "lineList.orderByLabel": "Sorteren op:",
   "lineList.lineType": "Routetype",
   "lineList.hideArchive": "Archief verbergen",
@@ -12,6 +15,8 @@
   "line.previousTopoImage": "Vorige afbeelding",
   "line.nextTopoImage": "Volgende afbeelding",
   "line.ascentCount": "Beklimmingen",
+
+  "line.draftTag": "Concept",
   "line.userGrade": "Graad volgens klimmers",
   "line.proposedAs": "Voorgesteld als",
   "line.videoBeta": "Video-hint",

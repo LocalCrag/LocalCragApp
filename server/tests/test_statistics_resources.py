@@ -4,6 +4,7 @@ from extensions import db
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.line import Line
 from models.user import User
@@ -90,7 +91,7 @@ def test_hardest_ascents_last_month_tie_breaks_on_newest_date(client):
 
 
 def test_instance_statistics_excludes_secret_lines(client, moderator_token):
-    line = Line.query.filter(Line.archived.is_(False)).first()
+    line = Line.query.filter(Line.publication_status == PublicationStatusEnum.PUBLISHED).first()
     assert line is not None
 
     rv_before = client.get("/api/statistics/instance")

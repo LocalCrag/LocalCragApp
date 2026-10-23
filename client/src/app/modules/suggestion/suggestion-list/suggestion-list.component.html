@@ -1,0 +1,235 @@
+<ng-container *transloco="let t; read: 'suggestions'">
+  <div class="content">
+    <div class="p-6 flex flex-col gap-8">
+      @if (lines.length === 0 && topoImages.length === 0) {
+        <p-message severity="info" [text]="t('empty')" />
+      }
+
+      @if (lines.length > 0) {
+        <section class="flex flex-col gap-3">
+          <h2 class="text-xl m-0">{{ t("lines") }}</h2>
+          @for (line of lines; track line.id) {
+            <div
+              class="flex flex-col xl:flex-row xl:items-start justify-between gap-6 border border-surface rounded p-4"
+              [id]="'suggestion-line-' + line.slug"
+            >
+              <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
+                <a
+                  class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto sm:mx-0"
+                  [routerLink]="
+                    '/topo/' +
+                    line.cragSlug +
+                    '/' +
+                    line.sectorSlug +
+                    '/' +
+                    line.areaSlug +
+                    '/' +
+                    line.slug
+                  "
+                >
+                  @if (line.preview) {
+                    <lc-topo-image
+                      class="shadow block rounded-border"
+                      [topoImage]="line.preview"
+                      [color]="line.color ?? undefined"
+                    ></lc-topo-image>
+                  } @else {
+                    <img
+                      class="w-full shadow block rounded-border"
+                      src="assets/placeholder.png"
+                      [alt]="line.name"
+                    />
+                  }
+                </a>
+                <div class="min-w-0">
+                  <a
+                    [routerLink]="
+                      '/topo/' +
+                      line.cragSlug +
+                      '/' +
+                      line.sectorSlug +
+                      '/' +
+                      line.areaSlug +
+                      '/' +
+                      line.slug
+                    "
+                    >{{ line.name }}</a
+                  >
+                  <lc-topo-hierarchy-breadcrumbs
+                    class="mt-1"
+                    [crag]="{ name: line.cragName, slug: line.cragSlug }"
+                    [sector]="{ name: line.sectorName, slug: line.sectorSlug }"
+                    [area]="{ name: line.areaName, slug: line.areaSlug }"
+                  ></lc-topo-hierarchy-breadcrumbs>
+                  @if (authorName(line.createdBy); as name) {
+                    <div class="text-sm mt-1">
+                      {{ t("suggestedBy") }}
+                      <a
+                        class="underline"
+                        [routerLink]="'/users/' + line.createdBy?.slug"
+                        >{{ name }}</a
+                      >
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <p-button
+                  [label]="t('publish')"
+                  (click)="
+                    openReview({ kind: 'line', item: line, action: 'publish' })
+                  "
+                />
+                <p-button
+                  [label]="t('reject')"
+                  severity="danger"
+                  [outlined]="true"
+                  (click)="
+                    openReview({ kind: 'line', item: line, action: 'reject' })
+                  "
+                />
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (topoImages.length > 0) {
+        <section class="flex flex-col gap-3">
+          <h2 class="text-xl m-0">{{ t("topoImages") }}</h2>
+          @for (image of topoImages; track image.id) {
+            <div
+              class="flex flex-col xl:flex-row xl:items-start justify-between gap-6 border border-surface rounded p-4"
+              [id]="'suggestion-image-' + image.id"
+            >
+              <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
+                <a
+                  class="w-full sm:w-96 shrink-0 overflow-hidden"
+                  [routerLink]="
+                    '/topo/' +
+                    image.cragSlug +
+                    '/' +
+                    image.sectorSlug +
+                    '/' +
+                    image.areaSlug +
+                    '/topo-images'
+                  "
+                  [fragment]="image.id"
+                >
+                  <lc-topo-image
+                    class="shadow block rounded-border"
+                    [topoImage]="image.preview"
+                  ></lc-topo-image>
+                </a>
+                <div class="min-w-0">
+                  <a
+                    [routerLink]="
+                      '/topo/' +
+                      image.cragSlug +
+                      '/' +
+                      image.sectorSlug +
+                      '/' +
+                      image.areaSlug +
+                      '/topo-images'
+                    "
+                    [fragment]="image.id"
+                    >{{ image.title || image.areaName }}</a
+                  >
+                  <lc-topo-hierarchy-breadcrumbs
+                    class="mt-1"
+                    [crag]="{ name: image.cragName, slug: image.cragSlug }"
+                    [sector]="{
+                      name: image.sectorName,
+                      slug: image.sectorSlug,
+                    }"
+                    [area]="{ name: image.areaName, slug: image.areaSlug }"
+                  ></lc-topo-hierarchy-breadcrumbs>
+                  @if (authorName(image.createdBy); as name) {
+                    <div class="text-sm mt-1">
+                      {{ t("suggestedBy") }}
+                      <a
+                        class="underline"
+                        [routerLink]="'/users/' + image.createdBy?.slug"
+                        >{{ name }}</a
+                      >
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <p-button
+                  [label]="t('publish')"
+                  (click)="
+                    openReview({
+                      kind: 'topoImage',
+                      item: image,
+                      action: 'publish',
+                    })
+                  "
+                />
+                <p-button
+                  [label]="t('reject')"
+                  severity="danger"
+                  [outlined]="true"
+                  (click)="
+                    openReview({
+                      kind: 'topoImage',
+                      item: image,
+                      action: 'reject',
+                    })
+                  "
+                />
+              </div>
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </div>
+
+  <p-dialog
+    [header]="t('messageLabel')"
+    [(visible)]="dialogVisible"
+    [modal]="true"
+    [style]="{ width: '32rem' }"
+  >
+    <div class="flex flex-col gap-3">
+      <label for="suggestion-message">{{ t("messageLabel") }}</label>
+      <textarea
+        pTextarea
+        id="suggestion-message"
+        rows="4"
+        [maxlength]="2000"
+        [(ngModel)]="message"
+        [placeholder]="t('messagePlaceholder')"
+      ></textarea>
+      <div class="flex justify-end gap-2">
+        <p-button
+          [label]="t('cancel')"
+          [text]="true"
+          (click)="dialogVisible = false"
+        />
+        @if (reviewActionChosen) {
+          <p-button
+            [label]="t('confirm')"
+            [loading]="saving"
+            (click)="confirm()"
+          />
+        } @else {
+          <p-button
+            [label]="t('publish')"
+            [loading]="saving"
+            (click)="confirm('publish')"
+          />
+          <p-button
+            [label]="t('reject')"
+            severity="danger"
+            [outlined]="true"
+            [loading]="saving"
+            (click)="confirm('reject')"
+          />
+        }
+      </div>
+    </div>
+  </p-dialog>
+</ng-container>

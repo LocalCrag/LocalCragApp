@@ -40,6 +40,7 @@ export class InstanceSettings {
   displayUserGrades: boolean;
   displayUserRatings: boolean;
   noClosedProjects: boolean;
+  suggestionsEnabled: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
@@ -91,6 +92,7 @@ export class InstanceSettings {
     instanceSettings.displayUserGrades = payload.displayUserGrades;
     instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.noClosedProjects = payload.noClosedProjects;
+    instanceSettings.suggestionsEnabled = payload.suggestionsEnabled !== false;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
@@ -138,6 +140,7 @@ export class InstanceSettings {
       displayUserGrades: instanceSettings.displayUserGrades,
       displayUserRatings: instanceSettings.displayUserRatings,
       noClosedProjects: instanceSettings.noClosedProjects,
+      suggestionsEnabled: instanceSettings.suggestionsEnabled,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
@@ -158,6 +161,7 @@ export class InstanceSettings {
     displayUserGrades: boolean;
     displayUserRatings: boolean;
     noClosedProjects: boolean;
+    suggestionsEnabled: boolean;
     faDefaultFormat: FaDefaultFormat;
     defaultStartingPosition: StartingPosition;
     rankingPastWeeks: number | null;

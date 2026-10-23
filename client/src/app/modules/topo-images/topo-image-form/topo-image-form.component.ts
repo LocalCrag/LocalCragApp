@@ -39,6 +39,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { PageTitleService } from '../../../services/core/page-title.service';
 
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
@@ -103,6 +104,7 @@ export class TopoImageFormComponent implements OnInit {
   public progress: number = null;
   public progressMode: 'determinate' | 'indeterminate' = 'determinate';
   public imagesTouched = false;
+  public viewerIsModerator = false;
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -125,6 +127,9 @@ export class TopoImageFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    waitForAuthState(this.store).subscribe((auth) => {
+      this.viewerIsModerator = !!auth.user?.moderator;
+    });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -145,7 +150,29 @@ export class TopoImageFormComponent implements OnInit {
           }),
         ),
         this.areasService.getArea(this.areaSlug),
-      ]).subscribe(([topoImage, area]) => {
+        waitForAuthState(this.store),
+      ]).subscribe(([topoImage, area, auth]) => {
+        this.viewerIsModerator = !!auth.user?.moderator;
+        const ownsDraft =
+          topoImage.publicationStatus === 'draft' &&
+          topoImage.createdById === auth.user?.id;
+        if (topoImage.publicationStatus === 'draft' && !ownsDraft) {
+          if (this.viewerIsModerator) {
+            this.router.navigate(['/suggestions'], {
+              queryParams: { topoImage: topoImage.id },
+            });
+            return;
+          }
+          this.router.navigate(['']);
+          return;
+        }
+        if (
+          !this.viewerIsModerator &&
+          topoImage.publicationStatus !== 'draft'
+        ) {
+          this.router.navigate(['']);
+          return;
+        }
         this.topoImage = topoImage;
         this.parentArea = area;
         this.setFormValue();

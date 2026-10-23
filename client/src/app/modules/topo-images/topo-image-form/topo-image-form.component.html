@@ -3,6 +3,9 @@
     @if (!editMode) {
       <p class="mt-0">
         {{ t("addTopoImageDescription") }}
+        @if (!viewerIsModerator) {
+          {{ " " + t("addTopoImageDraftNotice") }}
+        }
       </p>
     }
     @if (editMode) {
@@ -21,7 +24,7 @@
             <lc-single-image-upload
               lcFormControl
               formControlName="image"
-              [focusAdjustable]="true"
+              [focusAdjustable]="viewerIsModerator"
               [fullWidth]="true"
               data-cy="topo-image-input"
             ></lc-single-image-upload>
@@ -164,7 +167,7 @@
                   <lc-single-image-upload
                     lcFormControl
                     formControlName="image"
-                    [focusAdjustable]="true"
+                    [focusAdjustable]="viewerIsModerator"
                     [fullWidth]="true"
                   ></lc-single-image-upload>
                 </div>

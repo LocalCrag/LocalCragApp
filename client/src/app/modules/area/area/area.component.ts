@@ -9,8 +9,8 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
+import { catchError, map, take } from 'rxjs/operators';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Area } from '../../../models/area';
@@ -96,7 +96,9 @@ export class AreaComponent implements OnInit {
               return throwError(() => e);
             }),
           ),
-          this.store.pipe(select(selectIsModerator), take(1)),
+          waitForAuthState(this.store).pipe(
+            map((auth) => !!auth.user?.moderator),
+          ),
           this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectGymMode), take(1)),
           this.store.pipe(select(selectBgImage), take(1)),

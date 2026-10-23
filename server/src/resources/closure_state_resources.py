@@ -6,6 +6,7 @@ from models.crag import Crag
 from models.line import Line
 from models.sector import Sector
 from util.security_util import check_secret_spot_permission
+from util.suggestions import assert_can_view_publication
 
 
 class GetCragClosureState(MethodView):
@@ -37,4 +38,5 @@ class GetLineClosureState(MethodView):
         """Materialized closure state for a line (lazy-loaded from closed tags)."""
         line = Line.find_by_slug(line_slug)
         check_secret_spot_permission(line)
+        assert_can_view_publication(line)
         return closure_state_schema.dump(line), 200

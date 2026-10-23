@@ -1,6 +1,9 @@
 {
   "lineList.noLinesFoundEmptyMessage": "No lines found",
   "lineList.newLineButtonLabel": "New line",
+  "lineList.suggestLineButtonLabel": "Suggest line",
+
+  "lineList.draftTag": "Draft",
   "lineList.orderByLabel": "Sort by:",
   "lineList.lineType": "Line type",
   "lineList.hideArchive": "Hide archive",
@@ -12,6 +15,8 @@
   "line.previousTopoImage": "Previous image",
   "line.nextTopoImage": "Next image",
   "line.ascentCount": "Ascents",
+
+  "line.draftTag": "Draft",
   "line.userGrade": "User grade",
   "line.proposedAs": "Proposed as",
   "line.videoBeta": "Video beta",

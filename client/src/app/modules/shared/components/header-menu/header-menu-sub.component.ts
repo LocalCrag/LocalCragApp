@@ -2,14 +2,16 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  HostListener,
   Input,
+  OnDestroy,
+  OnInit,
   QueryList,
+  Renderer2,
   ViewChildren,
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DOCUMENT, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
@@ -21,7 +23,7 @@ import { HeaderMenuService } from './header-menu.service';
   styleUrl: './header-menu-sub.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class HeaderMenuSubComponent {
+export class HeaderMenuSubComponent implements OnInit, OnDestroy {
   @Input() model: ProcessedMenuItem[];
   @HostBinding('class.root')
   @Input()
@@ -36,6 +38,27 @@ export class HeaderMenuSubComponent {
   private router = inject(Router);
   private el = inject(ElementRef);
   private headerMenuService = inject(HeaderMenuService);
+  private renderer = inject(Renderer2);
+  private document = inject(DOCUMENT);
+  private unlistenDocumentClick?: () => void;
+
+  ngOnInit() {
+    // Every submenu used to listen for document clicks. Each listener schedules
+    // its own change detection pass, so one click refreshed the whole app once
+    // per submenu. Only the root menu needs to close itself on an outside click.
+    if (!this.root) {
+      return;
+    }
+    this.unlistenDocumentClick = this.renderer.listen(
+      this.document,
+      'click',
+      (event: Event) => this.handleOutsideClick(event),
+    );
+  }
+
+  ngOnDestroy() {
+    this.unlistenDocumentClick?.();
+  }
 
   onItemClick(item: ProcessedMenuItem) {
     if (item.item.routerLink) {
@@ -79,8 +102,7 @@ export class HeaderMenuSubComponent {
     }
   }
 
-  @HostListener('document:click', ['$event'])
-  handleOutsideClick(event) {
+  handleOutsideClick(event: Event) {
     if (this.root && !this.el.nativeElement.contains(event.target)) {
       this.headerMenuService.deactivateCurrent();
       this.headerMenuService.collapseMobileMenu();

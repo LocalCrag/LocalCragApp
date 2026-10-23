@@ -6,6 +6,7 @@ from extensions import db
 from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.crag import Crag
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.line import Line
 from util.secret_service import SecretService
 from util.topo_tab_counts import count_all_gallery_images, count_comments
@@ -34,7 +35,7 @@ class Region(BaseEntity):
 
     @hybrid_property
     def line_count(self):
-        query = db.session.query(func.count(Line.id))
+        query = db.session.query(func.count(Line.id)).filter(Line.publication_status == PublicationStatusEnum.PUBLISHED)
         query = SecretService.apply_line_filter(query)
         return query.scalar()
 

@@ -29,6 +29,7 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   topoImageCount: number;
   taskCount?: number;
   secret: boolean;
+  publicationStatus: string;
   mapMarkers: MapMarker[];
   defaultBoulderScale: string | null = null;
   defaultSportScale: string | null = null;
@@ -64,6 +65,7 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
     area.topoImageCount = payload.topoImageCount;
     area.taskCount = payload.taskCount;
     area.secret = payload.secret;
+    area.publicationStatus = payload.publicationStatus ?? 'published';
     area.mapMarkers = payload.mapMarkers
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;

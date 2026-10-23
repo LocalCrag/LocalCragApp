@@ -1,4 +1,5 @@
 from extensions import db
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.line import Line
 
 
@@ -50,7 +51,7 @@ def test_successful_get_region_grades(client):
 
 
 def test_region_grades_exclude_closed_lines(client):
-    line = Line.query.filter(Line.archived.is_(False), Line.closed.is_(False)).first()
+    line = Line.query.filter(Line.publication_status == PublicationStatusEnum.PUBLISHED, Line.closed.is_(False)).first()
     assert line is not None
     original_grade_value = str(line.author_grade_value)
     original_scale = line.grade_scale

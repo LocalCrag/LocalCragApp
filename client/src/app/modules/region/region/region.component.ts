@@ -6,12 +6,12 @@ import { TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
@@ -52,7 +52,7 @@ export class RegionComponent implements OnInit {
           return throwError(() => e);
         }),
       ),
-      this.store.pipe(select(selectIsModerator), take(1)),
+      waitForAuthState(this.store).pipe(map((auth) => !!auth.user?.moderator)),
       this.store.pipe(select(selectBgImage), take(1)),
     ]).subscribe(([region, isModerator, bgImage]) => {
       this.region = region;

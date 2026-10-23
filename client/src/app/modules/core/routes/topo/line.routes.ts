@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LineComponent } from '../../../line/line/line.component';
 import { LineInfoComponent } from '../../../line/line-info/line-info.component';
 import { LineAscentsComponent } from '../../../line/line-ascents/line-ascents.component';
+import { canContributeTopo } from '../../../../guards/can-contribute-topo';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
 import {
@@ -63,7 +64,7 @@ export const topoLineRoutes: Routes = [
       import('../../../line/line-form/line-form.component').then(
         (m) => m.LineFormComponent,
       ),
-    canActivate: [isModerator],
+    canActivate: [canContributeTopo],
   },
   {
     path: 'topo/:crag-slug/:sector-slug/:area-slug/topo-images/:topo-image-id/edit-line-paths',
@@ -71,6 +72,6 @@ export const topoLineRoutes: Routes = [
       import('../../../line-path-editor/line-path-form-wrapper/line-path-form-wrapper.component').then(
         (m) => m.LinePathFormWrapperComponent,
       ),
-    canActivate: [isModerator],
+    canActivate: [canContributeTopo],
   },
 ];

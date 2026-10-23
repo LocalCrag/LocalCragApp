@@ -7,6 +7,7 @@ from extensions import db
 from models.area import Area
 from models.comment import Comment
 from models.crag import Crag
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.file import File
 from models.line import Line
 from models.region import Region
@@ -158,7 +159,7 @@ def test_area_topo_image_count_excludes_archived(client):
     baseline = area.topo_image_count
     assert baseline == 2
 
-    topo_image.archived = True
+    topo_image.publication_status = PublicationStatusEnum.ARCHIVED
     db.session.commit()
 
     rv = client.get("/api/areas/shark-attack")

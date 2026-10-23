@@ -23,6 +23,15 @@
               *isModerator="true"
               class="responsive-button"
             ></p-button>
+            <p-button
+              label="{{ t('suggestLineButtonLabel') }}"
+              icon="pi pi-plus"
+              routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+                areaSlug
+              }}/create-line"
+              *canSuggest="true"
+              class="responsive-button"
+            ></p-button>
           </div>
         }
 
@@ -185,7 +194,7 @@
                 class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
                 [ngClass]="{
                   'border-t border-surface': !first,
-                  archived: line.archived,
+                  archived: line.publicationStatus === 'archived',
                 }"
               >
                 @if (line.topoImages.length > 0) {
@@ -295,26 +304,39 @@
                         </p-button>
                       }
                       <div class="grow"></div>
-                      <lc-archive-button
-                        [line]="line"
-                        [showLabel]="false"
-                        [style]="'plain'"
-                        *isModerator="true"
-                      ></lc-archive-button>
-                      @if (!ticks.has(line.id)) {
+                      @if (
+                        line.publicationStatus === "published" ||
+                        line.publicationStatus === "archived"
+                      ) {
+                        <lc-archive-button
+                          [line]="line"
+                          [showLabel]="false"
+                          [style]="'plain'"
+                          *isModerator="true"
+                        ></lc-archive-button>
+                      }
+                      @if (
+                        line.publicationStatus === "published" &&
+                        !ticks.has(line.id)
+                      ) {
                         <lc-todo-button
                           [line]="line"
                           [isTodo]="isTodo.has(line.id)"
                           *isLoggedIn="true"
                         ></lc-todo-button>
                       }
-                      <lc-tick-button
-                        [line]="line"
-                        [ticked]="ticks.has(line.id)"
-                        *isLoggedIn="true"
-                      ></lc-tick-button>
+                      @if (line.publicationStatus !== "draft") {
+                        <lc-tick-button
+                          [line]="line"
+                          [ticked]="ticks.has(line.id)"
+                          *isLoggedIn="true"
+                        ></lc-tick-button>
+                      }
                     </div>
                     <div class="flex gap-1">
+                      @if (line.publicationStatus === "draft") {
+                        <lc-draft-tag></lc-draft-tag>
+                      }
                       @if (line.closed) {
                         <lc-closed-spot-tag
                           spotType="line"

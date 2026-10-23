@@ -8,6 +8,7 @@ from extensions import db
 from models.area import Area
 from models.ascent import Ascent
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.ranking import Ranking
@@ -199,7 +200,9 @@ def build_rankings():
             .join(Area, Line.area_id == Area.id)
             .join(Sector, Area.sector_id == Sector.id)
             .filter(Ascent.created_by_id == user_id)
-            .filter(Line.archived.is_(False))
+            .filter(
+                Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            )
             .order_by(Line.id, Ascent.id)
             .distinct(Line.id)
         )

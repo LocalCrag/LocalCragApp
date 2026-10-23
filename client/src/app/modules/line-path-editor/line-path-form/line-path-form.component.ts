@@ -25,6 +25,7 @@ import { LinesService } from '../../../services/crud/lines.service';
 import { Line } from '../../../models/line';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { forkJoin, Observable } from 'rxjs';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
 import { Title } from '@angular/platform-browser';
 import {
@@ -112,6 +113,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   public loadingState = LoadingState.DEFAULT;
   public loadingStates = LoadingState;
   public lines: Line[];
+  public noSelectableLines = false;
   public selectedTopoImage: TopoImage;
   public editorTopoImage: TopoImage;
   public draftPaths: Record<string, LinePathDraft> = {};
@@ -122,6 +124,8 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   public allTabuAreas: TabuArea[] = [];
   public editorDrawMode: DrawMode = 'line';
   public editorTabuInProgress: number[] = [];
+  public canOnlyDrawOwnDrafts = false;
+  public tabuAreaIdsOnSkippedPaths = new Set<string>();
 
   private cragSlug: string;
   private sectorSlug: string;
@@ -129,6 +133,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   private originalPaths: Record<string, number[]> = {};
   private originalTabuAreaIds: Record<string, string[]> = {};
   private originalTabuAreas: TabuArea[] = [];
+  private skippedTabuAreas: TabuArea[] = [];
   private originalOrder: ItemOrder = {};
   private topoImageId: string;
 
@@ -182,18 +187,69 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     this.originalPaths = {};
     this.originalTabuAreaIds = {};
     this.originalTabuAreas = [];
+    this.skippedTabuAreas = [];
+    this.tabuAreaIdsOnSkippedPaths = new Set();
     this.originalOrder = {};
     this.orderedDrafts = [];
+    this.noSelectableLines = false;
     this.allTabuAreas = [];
     this.editorDrawMode = 'line';
     this.editorTabuInProgress = [];
     forkJoin([
       this.linesService.getLinesForLineEditor(this.areaSlug),
       this.topoImagesService.getTopoImage(this.topoImageId),
-    ]).subscribe(([lines, topoImage]) => {
-      this.lines = lines;
+      waitForAuthState(this.store),
+    ]).subscribe(([lines, topoImage, auth]) => {
+      const user = auth.user;
+      const isModerator = !!user?.moderator;
+      const ownsDraft =
+        topoImage.publicationStatus === 'draft' &&
+        topoImage.createdById === user?.id;
+      if (topoImage.publicationStatus === 'draft' && !ownsDraft) {
+        this.loadingState = LoadingState.DEFAULT;
+        if (isModerator) {
+          void this.router.navigate(['/suggestions'], {
+            queryParams: { topoImage: topoImage.id },
+          });
+        } else if (this.cragSlug && this.sectorSlug && this.areaSlug) {
+          void this.router.navigate([
+            '/topo',
+            this.cragSlug,
+            this.sectorSlug,
+            this.areaSlug,
+            'topo-images',
+          ]);
+        }
+        return;
+      }
+      this.canOnlyDrawOwnDrafts = !isModerator;
+      const editableLines = this.canOnlyDrawOwnDrafts
+        ? lines.filter(
+            (line) =>
+              line.publicationStatus === 'draft' &&
+              line.createdById === user?.id,
+          )
+        : lines.filter(
+            (line) =>
+              line.publicationStatus !== 'draft' ||
+              line.createdById === user?.id,
+          );
+      this.lines = editableLines;
+      this.noSelectableLines = editableLines.length === 0;
+      if (this.noSelectableLines) {
+        this.loadingState = LoadingState.DEFAULT;
+        return;
+      }
+      const editableLineIds = new Set(editableLines.map((line) => line.id));
       this.selectedTopoImage = topoImage;
+      this.tabuAreaIdsOnSkippedPaths = new Set();
       sortLinePathsByOrderIndex(topoImage.linePaths).forEach((linePath) => {
+        if (!editableLineIds.has(linePath.line.id)) {
+          for (const areaId of linePath.tabuAreaIds ?? []) {
+            this.tabuAreaIdsOnSkippedPaths.add(areaId);
+          }
+          return;
+        }
         this.draftPaths[linePath.line.id] = {
           line: linePath.line,
           path: [...linePath.path],
@@ -210,12 +266,15 @@ export class LinePathFormComponent implements OnInit, OnChanges {
       });
       this.allTabuAreas = cloneTabuAreas(topoImage.tabuAreas);
       this.originalTabuAreas = cloneTabuAreas(topoImage.tabuAreas);
+      this.skippedTabuAreas = this.originalTabuAreas.filter((area) =>
+        this.tabuAreaIdsOnSkippedPaths.has(area.id),
+      );
       this.refreshOrderedDrafts();
       const requestedLineId = this.route.snapshot.queryParamMap.get('line');
       const initialLine =
-        lines.find((line) => line.id === requestedLineId) ??
-        lines.find((line) => !this.draftPaths[line.id]) ??
-        lines[0];
+        editableLines.find((line) => line.id === requestedLineId) ??
+        editableLines.find((line) => !this.draftPaths[line.id]) ??
+        editableLines[0];
       this.selectedLineId = initialLine?.id;
       this.linePathEditor?.setDrawMode('line');
       this.updateEditorTopoImage(this.selectedLineId);
@@ -290,8 +349,39 @@ export class LinePathFormComponent implements OnInit, OnChanges {
   }
 
   onAllTabuAreasChange(areas: TabuArea[]) {
-    this.allTabuAreas = cloneTabuAreas(areas);
+    const merged = this.withSkippedTabuAreas(areas);
+    if (tabuAreasEqual(this.allTabuAreas, merged)) {
+      return;
+    }
+    this.allTabuAreas = merged;
     this.updateEditorTopoImage(this.selectedLineId);
+  }
+
+  canDeleteTabuArea(areaId: string): boolean {
+    if (this.tabuAreaIdsOnSkippedPaths.has(areaId)) {
+      return false;
+    }
+    if (!this.canOnlyDrawOwnDrafts) {
+      return true;
+    }
+    return !this.originalTabuAreas.some((area) => area.id === areaId);
+  }
+
+  private withSkippedTabuAreas(areas: TabuArea[]): TabuArea[] {
+    const protectedById = new Map(
+      this.skippedTabuAreas.map((area) => [area.id, area]),
+    );
+    const merged = cloneTabuAreas(areas).map((area) => {
+      const preserved = protectedById.get(area.id);
+      return preserved ? cloneTabuAreas([preserved])[0] : area;
+    });
+    const mergedIds = new Set(merged.map((area) => area.id));
+    for (const area of this.skippedTabuAreas) {
+      if (!mergedIds.has(area.id)) {
+        merged.push(cloneTabuAreas([area])[0]);
+      }
+    }
+    return merged;
   }
 
   onTabuAreaIdsChange(tabuAreaIds: string[]) {
@@ -499,7 +589,10 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     );
   }
 
-  getLineNumber(line: Line): number | null {
+  getLineNumber(line: Line | null | undefined): number | null {
+    if (!line) {
+      return null;
+    }
     return this.linePathNumbers.get(line.id) ?? null;
   }
 
@@ -515,6 +608,7 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     if (!this.persistCurrentLineDraft()) {
       return;
     }
+    this.allTabuAreas = this.withSkippedTabuAreas(this.allTabuAreas);
     this.refreshOrderedDrafts();
 
     const singleAnchorDraft = Object.values(this.draftPaths).some(
