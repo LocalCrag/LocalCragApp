@@ -1,7 +1,10 @@
+from extensions import db
 from models.area import Area
 from models.ascent import Ascent
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.line import Line
 from models.post import Post
+from tests.test_suggestions import _create_draft_line
 
 
 def test_create_comment_on_line(client, member_token):
@@ -849,3 +852,29 @@ def test_rock_explorer_gating_does_not_affect_line_comments(client):
     line_id = Line.get_id_by_slug("the-vessel")
     rv = client.get(f"/api/comments?object-type=Line&object-id={line_id}&per-page=20")
     assert rv.status_code == 200
+
+
+def test_comment_on_hidden_line_matches_line_visibility(client, member_token, user_token, moderator_token):
+    created = _create_draft_line(client, member_token, "Comment Visibility")
+    assert created.status_code == 201, created.text
+    line_id = created.json["id"]
+    payload = {"message": "On a draft", "objectType": "Line", "objectId": line_id}
+
+    hidden = client.post("/api/comments", token=user_token, json=payload)
+    assert hidden.status_code == 404
+
+    owner = client.post("/api/comments", token=member_token, json=payload)
+    assert owner.status_code == 201, owner.text
+
+    moderator = client.post(
+        "/api/comments",
+        token=moderator_token,
+        json={"message": "Moderator note", "objectType": "Line", "objectId": line_id},
+    )
+    assert moderator.status_code == 201, moderator.text
+
+    line = Line.find_by_id(line_id)
+    line.publication_status = PublicationStatusEnum.REJECTED
+    db.session.commit()
+    rejected = client.post("/api/comments", token=member_token, json=payload)
+    assert rejected.status_code == 404

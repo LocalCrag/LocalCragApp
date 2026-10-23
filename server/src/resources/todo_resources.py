@@ -23,6 +23,7 @@ from util.auth_session import (
     session_required,
 )
 from util.secret_service import SecretService
+from util.suggestions import assert_can_view_publication
 from webargs_schemas.todo_args import todo_args, todo_priority_args
 
 
@@ -55,8 +56,12 @@ class CreateTodo(MethodView):
         todo_data = parser.parse(todo_args, request)
         created_by = User.find_by_email(get_session_identity())
 
-        # Check if the line exists (raises 404 if not)
+        # Check if the line exists (raises 404 if not). Hidden drafts and rejected lines
+        # use the same 404 as line GET. Archived lines are visible, so they get their own message.
         line = Line.find_by_id(todo_data["line"])
+        assert_can_view_publication(line, created_by)
+        if line.publication_status == PublicationStatusEnum.ARCHIVED:
+            raise BadRequest("Archived lines cannot be added as todos.")
         if line.publication_status != PublicationStatusEnum.PUBLISHED:
             raise BadRequest("Draft lines cannot be added as todos.")
 

@@ -1,8 +1,10 @@
 from extensions import db
 from models.crag import Crag
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.todo_priority_enum import TodoPriorityEnum
 from models.line import Line
 from models.user import User
+from tests.test_suggestions import _create_draft_line
 
 
 def test_successful_add_todo(client, user_token):
@@ -387,3 +389,29 @@ def test_private_todo_list_is_visible_only_to_the_owner(client, user_token, memb
     rv = client.get(f"/api/is-todo?line_ids={line_id}", token=user_token)
     assert rv.status_code == 200
     assert rv.json == [str(line_id)]
+
+
+def test_todo_on_hidden_line_matches_line_visibility(client, member_token, user_token):
+    created = _create_draft_line(client, member_token, "Todo Visibility")
+    assert created.status_code == 201, created.text
+    line_id = created.json["id"]
+
+    hidden = client.post("/api/todos", token=user_token, json={"line": line_id})
+    assert hidden.status_code == 404
+
+    own_draft = client.post("/api/todos", token=member_token, json={"line": line_id})
+    assert own_draft.status_code == 400
+    assert own_draft.json["message"] == "Draft lines cannot be added as todos."
+
+    line = Line.find_by_id(line_id)
+    line.publication_status = PublicationStatusEnum.REJECTED
+    db.session.commit()
+    rejected = client.post("/api/todos", token=member_token, json={"line": line_id})
+    assert rejected.status_code == 404
+
+    archived = Line.find_by_slug("the-vessel")
+    archived.publication_status = PublicationStatusEnum.ARCHIVED
+    db.session.commit()
+    archived_todo = client.post("/api/todos", token=user_token, json={"line": str(archived.id)})
+    assert archived_todo.status_code == 400
+    assert archived_todo.json["message"] == "Archived lines cannot be added as todos."
