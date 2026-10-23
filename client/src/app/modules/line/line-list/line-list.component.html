@@ -304,12 +304,17 @@
                         </p-button>
                       }
                       <div class="grow"></div>
-                      <lc-archive-button
-                        [line]="line"
-                        [showLabel]="false"
-                        [style]="'plain'"
-                        *isModerator="true"
-                      ></lc-archive-button>
+                      @if (
+                        line.publicationStatus === "published" ||
+                        line.publicationStatus === "archived"
+                      ) {
+                        <lc-archive-button
+                          [line]="line"
+                          [showLabel]="false"
+                          [style]="'plain'"
+                          *isModerator="true"
+                        ></lc-archive-button>
+                      }
                       @if (
                         line.publicationStatus === "published" &&
                         !ticks.has(line.id)

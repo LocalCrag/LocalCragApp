@@ -728,7 +728,10 @@ export class LineFormComponent implements OnInit {
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
       line.secret = this.lineForm.get('secret').value;
-      line.closureSchedules = this.lineForm.get('closureSchedules').value ?? [];
+      if (this.viewerIsModerator) {
+        line.closureSchedules =
+          this.lineForm.get('closureSchedules').value ?? [];
+      }
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {

@@ -1,5 +1,5 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from extensions import db
@@ -10,6 +10,9 @@ from models.enums.publication_status_enum import (
 )
 from models.file import File
 from models.mixins.has_order_index import HasOrderIndex
+from models.tabu_area import (  # noqa: F401  relationship target must be registered
+    TabuArea,
+)
 
 
 class TopoImage(HasOrderIndex, BaseEntity):
@@ -28,7 +31,13 @@ class TopoImage(HasOrderIndex, BaseEntity):
         default=PublicationStatusEnum.PUBLISHED,
         server_default=PublicationStatusEnum.PUBLISHED.value,
     )
-    tabu_areas = db.Column(JSON, nullable=False, server_default="[]", default=list)
+    tabu_areas = db.relationship(
+        "TabuArea",
+        back_populates="topo_image",
+        cascade="all, delete-orphan",
+        order_by="TabuArea.order_index.asc()",
+        passive_deletes=True,
+    )
 
     @classmethod
     def find_max_order_index(cls, area_id) -> int:

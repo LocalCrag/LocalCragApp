@@ -786,6 +786,8 @@
   "notifications.LOGIN_ERROR_MESSAGE": "L'email et le mot de passe sont-ils corrects ?",
   "notifications.USER_PROMOTED_TITLE": "Droits des utilisateurs modifiés",
   "notifications.USER_PROMOTED_MESSAGE": "Les droits des utilisateurs ont été modifiés avec succès.",
+  "notifications.PERMISSIONS_UPDATED_TITLE": "Autorisations modifiées",
+  "notifications.PERMISSIONS_UPDATED_MESSAGE": "Les autorisations ont été mises à jour.",
   "notifications.USER_DELETED_TITLE": "Compte supprimé",
   "notifications.USER_DELETED_MESSAGE": "Le compte a été supprimé avec succès.",
   "notifications.CREATE_USER_MAIL_SENT_TITLE": "Envoyé par email",

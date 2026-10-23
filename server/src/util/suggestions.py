@@ -3,6 +3,7 @@
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import joinedload, selectinload
 
+from error_handling.http_exceptions.bad_request import BadRequest
 from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
@@ -52,6 +53,19 @@ def require_suggest_or_moderator(user):
     if user is not None and (user.moderator or can_suggest(user)):
         return
     raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
+
+def assert_ancestors_not_archived(area: Area):
+    """Refuse a new or newly published line or image under an archived area, sector, or crag."""
+    if area is None:
+        return
+    sector = area.sector
+    crag = sector.crag if sector is not None else None
+    if any(
+        entity is not None and entity.publication_status == PublicationStatusEnum.ARCHIVED
+        for entity in (area, sector, crag)
+    ):
+        raise BadRequest("Cannot create or publish while the area, sector, or crag is archived.")
 
 
 def _owns_publication(created_by_id, user) -> bool:

@@ -78,7 +78,7 @@
               <p-orderList
                 [value]="orderedDrafts"
                 [header]="t('drawnLinesHeader')"
-                [dragdrop]="true"
+                [dragdrop]="!canOnlyDrawOwnDrafts"
                 [listStyle]="{ 'max-height': '28rem' }"
                 (onReorder)="onDraftsReordered()"
               >

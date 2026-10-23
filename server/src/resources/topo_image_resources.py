@@ -25,7 +25,9 @@ from util.auth_session import (
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_line_propagating_boolean_attr
 from util.secret_service import SecretService
+from util.security_util import check_secret_spot_permission
 from util.suggestions import (
+    assert_ancestors_not_archived,
     assert_can_delete_publication,
     assert_can_view_publication,
     can_edit_publication,
@@ -49,7 +51,10 @@ class AddTopoImage(MethodView):
         """
         actor = get_current_user()
         require_suggest_or_moderator(actor)
-        area_id = Area.get_id_by_slug(area_slug)
+        area = Area.find_by_slug(area_slug)
+        check_secret_spot_permission(area)
+        assert_ancestors_not_archived(area)
+        area_id = area.id
         topo_image_data = parser.parse(topo_image_args, request)
 
         new_topo_image: TopoImage = TopoImage()
@@ -78,6 +83,7 @@ class UpdateTopoImage(MethodView):
         topo_image_data = parser.parse(topo_image_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
         actor = get_current_user()
+        check_secret_spot_permission(topo_image.area)
         if not can_edit_publication(actor, topo_image):
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 

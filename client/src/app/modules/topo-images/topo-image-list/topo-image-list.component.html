@@ -194,13 +194,18 @@
                             styleClass="p-button-sm"
                           ></p-button>
                         }
-                        <lc-archive-button
-                          *isModerator="true"
-                          [showLabel]="false"
-                          [topoImage]="topoImage"
-                          [style]="'plain'"
-                          class="responsive-button"
-                        ></lc-archive-button>
+                        @if (
+                          topoImage.publicationStatus === "published" ||
+                          topoImage.publicationStatus === "archived"
+                        ) {
+                          <lc-archive-button
+                            *isModerator="true"
+                            [showLabel]="false"
+                            [topoImage]="topoImage"
+                            [style]="'plain'"
+                            class="responsive-button"
+                          ></lc-archive-button>
+                        }
                         @if (canDelete(topoImage)) {
                           <p-button
                             icon="pi pi-trash"

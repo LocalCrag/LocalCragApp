@@ -10,6 +10,7 @@ from models.line_path import LinePath
 from models.notification import Notification
 from models.permission import SUGGESTION_CREATE, Permission
 from models.searchable import Searchable
+from models.tabu_area import TabuArea
 from models.topo_image import TopoImage
 from models.user import User
 from tests.test_line_resources import _boulder_line_payload
@@ -207,9 +208,16 @@ def test_member_can_add_tabu_area_without_changing_existing_ones(client, member_
     topo_image = TopoImage.query.filter_by(area_id=line.area_id).order_by(TopoImage.order_index.asc()).first()
     published_path = LinePath.query.filter_by(topo_image_id=topo_image.id).first()
     existing_area = {"id": "existing-tabu", "path": [1.0, 1.0, 20.0, 1.0, 20.0, 20.0]}
-    topo_image.tabu_areas = [existing_area]
+    db.session.add(
+        TabuArea(
+            id=existing_area["id"],
+            topo_image_id=topo_image.id,
+            path=existing_area["path"],
+            order_index=0,
+            created_by_id=published_path.line.created_by_id,
+        )
+    )
     published_path.tabu_area_ids = ["existing-tabu"]
-    db.session.add(topo_image)
     db.session.add(published_path)
     db.session.commit()
 
@@ -229,9 +237,11 @@ def test_member_can_add_tabu_area_without_changing_existing_ones(client, member_
         },
     )
     assert response.status_code == 200, response.text
-    db.session.refresh(topo_image)
     db.session.refresh(published_path)
-    saved_ids = [area["id"] for area in topo_image.tabu_areas]
+    saved_ids = [
+        area.id
+        for area in TabuArea.query.filter_by(topo_image_id=topo_image.id).order_by(TabuArea.order_index.asc()).all()
+    ]
     assert saved_ids == ["existing-tabu", "new-tabu"]
     own_path = LinePath.query.filter_by(topo_image_id=topo_image.id, line_id=line.id).one()
     assert own_path.tabu_area_ids == ["new-tabu", "existing-tabu"]
@@ -255,8 +265,198 @@ def test_member_can_add_tabu_area_without_changing_existing_ones(client, member_
         },
     )
     assert changed.status_code == 400
-    db.session.refresh(topo_image)
-    assert topo_image.tabu_areas[0]["path"] == existing_area["path"]
+    kept = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="existing-tabu").one()
+    assert kept.path == existing_area["path"]
+
+
+def test_member_cannot_drop_unowned_tabu_area(client, member_token):
+    created = _create_draft_line(client, member_token, "Unowned Tabu")
+    line = Line.find_by_slug(created.json["slug"])
+    topo_image = TopoImage.query.filter_by(area_id=line.area_id).order_by(TopoImage.order_index.asc()).first()
+    published_path = LinePath.query.filter_by(topo_image_id=topo_image.id).first()
+    stray_path = [4.0, 4.0, 12.0, 4.0, 12.0, 12.0]
+    db.session.add(
+        TabuArea(
+            id="stray-tabu",
+            topo_image_id=topo_image.id,
+            path=stray_path,
+            order_index=0,
+            created_by_id=published_path.line.created_by_id,
+        )
+    )
+    db.session.commit()
+
+    response = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=member_token,
+        json={
+            "tabuAreas": [],
+            "linePaths": [
+                {"line": str(line.id), "path": [10.0, 20.0, 30.0, 40.0, 50.0, 60.0]},
+            ],
+        },
+    )
+    assert response.status_code == 200, response.text
+    stray = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="stray-tabu").one()
+    assert stray.path == stray_path
+    assert stray.created_by_id == published_path.line.created_by_id
+
+
+def test_moderator_keeps_tabu_area_used_by_hidden_draft(client, member_token, moderator_token):
+    created = _create_draft_line(client, member_token, "Hidden Tabu Draft")
+    line = Line.find_by_slug(created.json["slug"])
+    topo_image = TopoImage.query.filter_by(area_id=line.area_id).order_by(TopoImage.order_index.asc()).first()
+    hidden = {"id": "hidden-tabu", "path": [5.0, 5.0, 15.0, 5.0, 15.0, 15.0]}
+    drawn = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=member_token,
+        json={
+            "tabuAreas": [hidden],
+            "linePaths": [
+                {
+                    "line": str(line.id),
+                    "path": [10.0, 20.0, 30.0, 40.0, 50.0, 60.0],
+                    "tabuAreaIds": ["hidden-tabu"],
+                }
+            ],
+        },
+    )
+    assert drawn.status_code == 200, drawn.text
+
+    published_paths = [
+        {
+            "id": str(path.id),
+            "line": str(path.line_id),
+            "path": path.path,
+            "tabuAreaIds": path.tabu_area_ids or [],
+        }
+        for path in LinePath.query.filter_by(topo_image_id=topo_image.id).all()
+        if path.line is not None and path.line.publication_status == PublicationStatusEnum.PUBLISHED
+    ]
+    kept_areas = [
+        {"id": area.id, "path": area.path}
+        for area in TabuArea.query.filter_by(topo_image_id=topo_image.id).all()
+        if area.id != "hidden-tabu"
+    ]
+    moderator_sync = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={"linePaths": published_paths, "tabuAreas": kept_areas},
+    )
+    assert moderator_sync.status_code == 200, moderator_sync.text
+    hidden_row = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="hidden-tabu").one()
+    assert hidden_row.path == hidden["path"]
+    draft = LinePath.query.filter_by(topo_image_id=topo_image.id, line_id=line.id).one()
+    assert draft.tabu_area_ids == ["hidden-tabu"]
+
+    reshaped = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "linePaths": published_paths,
+            "tabuAreas": kept_areas + [{"id": "hidden-tabu", "path": [1.0, 1.0, 2.0, 1.0, 2.0, 2.0]}],
+        },
+    )
+    assert reshaped.status_code == 400
+    hidden_row = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="hidden-tabu").one()
+    assert hidden_row.path == hidden["path"]
+
+
+def test_moderator_sync_keeps_omitted_archived_and_rejected_paths(client, moderator_token):
+    archived_response = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Kept Archived", 10),
+    )
+    assert archived_response.status_code == 201, archived_response.text
+    rejected_response = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Kept Rejected", 11),
+    )
+    assert rejected_response.status_code == 201, rejected_response.text
+    draft_response = client.post(
+        "/api/areas/shark-attack/lines",
+        token=moderator_token,
+        json=_boulder_line_payload("Dropped Own Draft", 12),
+    )
+    assert draft_response.status_code == 201, draft_response.text
+
+    archived = Line.find_by_slug(archived_response.json["slug"])
+    rejected = Line.find_by_slug(rejected_response.json["slug"])
+    own_draft = Line.find_by_slug(draft_response.json["slug"])
+    topo_image = TopoImage.query.filter_by(area_id=archived.area_id).order_by(TopoImage.order_index.asc()).first()
+    archived_path = [8.0, 8.0, 18.0, 8.0, 18.0, 18.0]
+    rejected_path = [9.0, 9.0, 19.0, 9.0, 19.0, 19.0]
+    hidden = {"id": "archived-only-tabu", "path": [6.0, 6.0, 16.0, 6.0, 16.0, 16.0]}
+    drawn = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [hidden],
+            "linePaths": [
+                {"line": str(archived.id), "path": archived_path, "tabuAreaIds": ["archived-only-tabu"]},
+                {"line": str(rejected.id), "path": rejected_path},
+                {"line": str(own_draft.id), "path": [7.0, 7.0, 17.0, 7.0, 17.0, 17.0]},
+            ],
+        },
+    )
+    assert drawn.status_code == 200, drawn.text
+
+    archived.publication_status = PublicationStatusEnum.ARCHIVED
+    rejected.publication_status = PublicationStatusEnum.REJECTED
+    own_draft.publication_status = PublicationStatusEnum.DRAFT
+    db.session.commit()
+
+    omitted = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={"tabuAreas": [], "linePaths": []},
+    )
+    assert omitted.status_code == 200, omitted.text
+    kept_archived = LinePath.query.filter_by(topo_image_id=topo_image.id, line_id=archived.id).one()
+    assert kept_archived.path == archived_path
+    kept_rejected = LinePath.query.filter_by(topo_image_id=topo_image.id, line_id=rejected.id).one()
+    assert kept_rejected.path == rejected_path
+    assert LinePath.query.filter_by(topo_image_id=topo_image.id, line_id=own_draft.id).count() == 0
+    area = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="archived-only-tabu").one()
+    assert area.path == hidden["path"]
+
+
+def test_moderator_can_edit_tabu_area_owned_by_someone_else(client, moderator_token):
+    stairs = Line.find_by_slug("the-vessel")
+    topo_image = TopoImage.query.filter_by(area_id=stairs.area_id).order_by(TopoImage.order_index.desc()).first()
+    owner_id = stairs.created_by_id
+    updated = [11.0, 11.0, 21.0, 11.0, 21.0, 21.0]
+    db.session.add(
+        TabuArea(
+            id="owned-by-someone-else",
+            topo_image_id=topo_image.id,
+            path=[10.0, 10.0, 20.0, 10.0, 20.0, 20.0],
+            order_index=0,
+            created_by_id=owner_id,
+        )
+    )
+    db.session.commit()
+
+    response = client.put(
+        f"/api/topo-images/{topo_image.id}/line-paths",
+        token=moderator_token,
+        json={
+            "tabuAreas": [{"id": "owned-by-someone-else", "path": updated}],
+            "linePaths": [
+                {
+                    "line": str(stairs.id),
+                    "path": [1, 2, 3, 4],
+                    "tabuAreaIds": ["owned-by-someone-else"],
+                }
+            ],
+        },
+    )
+    assert response.status_code == 200, response.text
+    row = TabuArea.query.filter_by(topo_image_id=topo_image.id, id="owned-by-someone-else").one()
+    assert row.path == updated
+    assert row.created_by_id == owner_id
 
 
 def test_member_line_editor_lists_only_own_drafts(client, member_token, user_token):

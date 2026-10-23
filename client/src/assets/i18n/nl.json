@@ -786,6 +786,8 @@
   "notifications.LOGIN_ERROR_MESSAGE": "Zijn e-mail en wachtwoord correct?",
   "notifications.USER_PROMOTED_TITLE": "Gebruikersrechten veranderd",
   "notifications.USER_PROMOTED_MESSAGE": "De rechten van de gebruiker zijn met succes gewijzigd.",
+  "notifications.PERMISSIONS_UPDATED_TITLE": "Rechten gewijzigd",
+  "notifications.PERMISSIONS_UPDATED_MESSAGE": "De rechten zijn bijgewerkt.",
   "notifications.USER_DELETED_TITLE": "Gebruiker verwijderd",
   "notifications.USER_DELETED_MESSAGE": "De gebruiker is succesvol verwijderd.",
   "notifications.CREATE_USER_MAIL_SENT_TITLE": "Mail verzonden",

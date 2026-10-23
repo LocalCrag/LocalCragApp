@@ -886,10 +886,12 @@
             </div>
           </div>
         </div>
-        <lc-scheduled-closure-form
-          formControlName="closureSchedules"
-          lcFormControl
-        />
+        @if (viewerIsModerator) {
+          <lc-scheduled-closure-form
+            formControlName="closureSchedules"
+            lcFormControl
+          />
+        }
         @if (parentClosureState?.closed) {
           <p-message severity="info" icon="pi pi-info-circle">
             {{ t("closedBecauseParentIsClosed") }}
@@ -947,13 +949,15 @@
           styleClass="p-button-secondary"
           icon="pi pi-ban"
         ></p-button>
-        @if (editMode) {
+        @if (editMode && viewerIsModerator) {
           <p-button
             icon="pi pi-arrow-right-arrow-left"
             label="{{ t('moveLineButtonLabel') }}"
             styleClass="p-button-secondary"
             (click)="openMoveDialog()"
           ></p-button>
+        }
+        @if (editMode) {
           <p-button
             label="{{ t('deleteLineButtonLabel') }}"
             (click)="confirmDeleteLine($event)"

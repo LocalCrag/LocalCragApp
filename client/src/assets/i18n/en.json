@@ -786,6 +786,8 @@
   "notifications.LOGIN_ERROR_MESSAGE": "Are the email and password correct?",
   "notifications.USER_PROMOTED_TITLE": "User rights changed",
   "notifications.USER_PROMOTED_MESSAGE": "User rights were changed successfully.",
+  "notifications.PERMISSIONS_UPDATED_TITLE": "Permissions changed",
+  "notifications.PERMISSIONS_UPDATED_MESSAGE": "Permissions were updated.",
   "notifications.USER_DELETED_TITLE": "Account deleted",
   "notifications.USER_DELETED_MESSAGE": "The account was deleted successfully.",
   "notifications.CREATE_USER_MAIL_SENT_TITLE": "Sent via email",

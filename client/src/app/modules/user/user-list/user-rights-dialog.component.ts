@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
-import { forkJoin } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 import { User } from '../../../models/user';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -92,36 +92,40 @@ export class UserRightsDialogComponent {
     if (this.saving) {
       return;
     }
-    const requests = [];
     const roleChanged = this.selectedRole !== this.data.role;
-    if (roleChanged) {
-      requests.push(
-        this.usersService.promoteUser(this.data.userId, this.selectedRole),
-      );
-    }
-    if (
+    const persistSuggestions =
       this.showSuggestionRight &&
-      this.suggestionsEnabled !== this.data.suggestionsEnabled
-    ) {
-      requests.push(
-        this.usersService.setSuggestionsEnabled(
-          this.data.userId,
-          this.suggestionsEnabled,
-        ),
-      );
-    }
-    if (requests.length === 0) {
+      (roleChanged || this.suggestionsEnabled !== this.data.suggestionsEnabled);
+    if (!roleChanged && !persistSuggestions) {
       this.ref.close(false);
       return;
     }
+    const role$ = roleChanged
+      ? this.usersService.promoteUser(this.data.userId, this.selectedRole)
+      : of(null);
+    const save$ = persistSuggestions
+      ? role$.pipe(
+          switchMap(() =>
+            this.usersService.setSuggestionsEnabled(
+              this.data.userId,
+              this.suggestionsEnabled,
+            ),
+          ),
+        )
+      : role$;
     this.saving = true;
-    forkJoin(requests).subscribe({
+    save$.subscribe({
       next: () => {
-        this.store.dispatch(toastNotification('USER_PROMOTED'));
+        this.store.dispatch(
+          toastNotification(
+            roleChanged ? 'USER_PROMOTED' : 'PERMISSIONS_UPDATED',
+          ),
+        );
         this.ref.close(true);
       },
       error: () => {
         this.saving = false;
+        this.store.dispatch(toastNotification('UNKNOWN_ERROR'));
         this.changeDetector.markForCheck();
       },
     });

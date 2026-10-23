@@ -422,7 +422,10 @@ class GetUserStatistics(MethodView):
             "cragsCreated": Crag.query.filter(Crag.created_by_id == user_id).count(),
             "sectorsCreated": Sector.query.filter(Sector.created_by_id == user_id).count(),
             "areasCreated": Area.query.filter(Area.created_by_id == user_id).count(),
-            "linesCreated": Line.query.filter(Line.created_by_id == user_id).count(),
+            "linesCreated": Line.query.filter(
+                Line.created_by_id == user_id,
+                Line.publication_status.in_((PublicationStatusEnum.PUBLISHED, PublicationStatusEnum.ARCHIVED)),
+            ).count(),
             "postsWritten": Post.query.filter(Post.created_by_id == user_id).count(),
         }
 

@@ -157,11 +157,16 @@
             </div>
           }
 
-          <lc-archive-button
-            [line]="line"
-            [showLabel]="true"
-            *isModerator="true"
-          ></lc-archive-button>
+          @if (
+            line.publicationStatus === "published" ||
+            line.publicationStatus === "archived"
+          ) {
+            <lc-archive-button
+              [line]="line"
+              [showLabel]="true"
+              *isModerator="true"
+            ></lc-archive-button>
+          }
 
           @if (line.publicationStatus === "published" && !ticks.has(line.id)) {
             <lc-todo-button

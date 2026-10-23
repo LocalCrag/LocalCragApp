@@ -143,6 +143,11 @@ export const NOTIFICATIONS = {
     title: marker('notifications.USER_PROMOTED_TITLE'),
     message: marker('notifications.USER_PROMOTED_MESSAGE'),
   },
+  PERMISSIONS_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PERMISSIONS_UPDATED_TITLE'),
+    message: marker('notifications.PERMISSIONS_UPDATED_MESSAGE'),
+  },
   USER_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.USER_DELETED_TITLE'),

@@ -22,6 +22,7 @@ from models.topo_image import TopoImage
 from models.user import User
 from util.auth_session import get_current_user, session_required
 from util.suggestions import (
+    assert_ancestors_not_archived,
     clean_review_message,
     delete_line_paths,
     notify_suggestion_author,
@@ -73,6 +74,7 @@ class PublishLine(MethodView):
         line: Line = Line.find_by_slug(line_slug)
         if line.publication_status != PublicationStatusEnum.DRAFT:
             raise BadRequest("Line is not a draft.")
+        assert_ancestors_not_archived(line.area)
         line.publication_status = PublicationStatusEnum.PUBLISHED
         actor = get_current_user()
         notify_suggestion_author(
@@ -118,6 +120,7 @@ class PublishTopoImage(MethodView):
         image: TopoImage = TopoImage.find_by_id(image_id)
         if image.publication_status != PublicationStatusEnum.DRAFT:
             raise BadRequest("Topo image is not a draft.")
+        assert_ancestors_not_archived(image.area)
         image.publication_status = PublicationStatusEnum.PUBLISHED
         actor = get_current_user()
         notify_suggestion_author(

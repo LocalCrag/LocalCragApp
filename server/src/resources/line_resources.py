@@ -48,6 +48,7 @@ from util.scheduled_closure import (
 from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
 from util.suggestions import (
+    assert_ancestors_not_archived,
     assert_can_delete_publication,
     assert_can_view_publication,
     can_edit_publication,
@@ -287,10 +288,12 @@ class CreateLine(MethodView):
         """
         Creates a line. Moderators publish immediately. Other accounts create a draft when suggestions are enabled.
         """
-        area_id = Area.get_id_by_slug(area_slug)
+        area = Area.find_by_slug(area_slug)
         line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
         created_by = get_current_user()
         require_suggest_or_moderator(created_by)
+        check_secret_spot_permission(area)
+        assert_ancestors_not_archived(area)
 
         if not cross_validate_grade(line_data["authorGradeValue"], line_data["gradeScale"], line_data["type"]):
             raise BadRequest("Grade scale, value and line type do not match.")
@@ -369,10 +372,11 @@ class CreateLine(MethodView):
         new_line.arete = line_data["arete"]
         new_line.mantle = line_data["mantle"]
 
-        new_line.area_id = area_id
+        new_line.area_id = area.id
         new_line.publication_status = (
             PublicationStatusEnum.PUBLISHED if created_by.moderator else PublicationStatusEnum.DRAFT
         )
+        db.session.add(new_line)
         # A suggestion inherits the area's secret flag and must not clear it on the area, sector, or crag.
         if created_by.moderator:
             new_line.secret = line_data["secret"]
@@ -380,7 +384,7 @@ class CreateLine(MethodView):
             if not new_line.secret:
                 set_line_parents_false(new_line, "secret")
         else:
-            new_line.secret = bool(Area.find_by_id(area_id).secret)
+            new_line.secret = bool(area.secret)
         if new_line.publication_status == PublicationStatusEnum.DRAFT:
             db.session.flush()
             notify_moderators_of_submission(created_by, "line", new_line.id)
@@ -404,6 +408,7 @@ class UpdateLine(MethodView):
         line_data = parser.parse(line_args, request, validate=cross_validate_line_args)
         line: Line = Line.find_by_slug(line_slug)
         actor = get_current_user()
+        check_secret_spot_permission(line)
         if not can_edit_publication(actor, line):
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
 
