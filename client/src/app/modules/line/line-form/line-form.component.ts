@@ -186,6 +186,8 @@ export class LineFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
+  /** Set when this form was opened to draw the new line on a topo image. */
+  private drawOnTopoImageId: string | null = null;
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
@@ -216,6 +218,8 @@ export class LineFormComponent implements OnInit {
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+    this.drawOnTopoImageId =
+      this.route.snapshot.queryParamMap.get('drawOnTopoImage');
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
 
     forkJoin([
@@ -619,6 +623,11 @@ export class LineFormComponent implements OnInit {
         this.areaSlug,
         this.line.slug,
       ]);
+    } else if (this.drawOnTopoImageId) {
+      this.router.navigate(
+        ['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images'],
+        { fragment: this.drawOnTopoImageId },
+      );
     } else {
       this.router.navigate([
         '/topo',
@@ -718,17 +727,34 @@ export class LineFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.linesService.createLine(line, this.areaSlug).subscribe(() => {
-          this.store.dispatch(toastNotification('LINE_CREATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            this.areaSlug,
-            'lines',
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.linesService
+          .createLine(line, this.areaSlug)
+          .subscribe((createdLine) => {
+            this.store.dispatch(toastNotification('LINE_CREATED'));
+            if (this.drawOnTopoImageId) {
+              void this.router.navigate(
+                [
+                  '/topo',
+                  this.cragSlug,
+                  this.sectorSlug,
+                  this.areaSlug,
+                  'topo-images',
+                  this.drawOnTopoImageId,
+                  'edit-line-paths',
+                ],
+                { queryParams: { line: createdLine.id } },
+              );
+            } else {
+              this.router.navigate([
+                '/topo',
+                this.cragSlug,
+                this.sectorSlug,
+                this.areaSlug,
+                'lines',
+              ]);
+            }
+            this.loadingState = LoadingState.DEFAULT;
+          });
       }
     } else {
       this.formDirective.markAsTouched();
