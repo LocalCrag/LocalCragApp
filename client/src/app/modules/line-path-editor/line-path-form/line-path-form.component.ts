@@ -25,7 +25,7 @@ import { LinesService } from '../../../services/crud/lines.service';
 import { Line } from '../../../models/line';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { forkJoin, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { LinePathEditorComponent } from '../line-path-editor/line-path-editor.component';
 import { Title } from '@angular/platform-browser';
 import {
@@ -36,10 +36,6 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import {
-  selectCurrentUser,
-  selectIsModerator,
-} from '../../../ngrx/selectors/auth.selectors';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -196,9 +192,10 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     forkJoin([
       this.linesService.getLinesForLineEditor(this.areaSlug),
       this.topoImagesService.getTopoImage(this.topoImageId),
-      this.store.select(selectIsModerator).pipe(take(1)),
-      this.store.select(selectCurrentUser).pipe(take(1)),
-    ]).subscribe(([lines, topoImage, isModerator, user]) => {
+      waitForAuthState(this.store),
+    ]).subscribe(([lines, topoImage, auth]) => {
+      const user = auth.user;
+      const isModerator = !!user?.moderator;
       this.canOnlyDrawOwnDrafts = !isModerator;
       const editableLines = this.canOnlyDrawOwnDrafts
         ? lines.filter(
@@ -206,7 +203,11 @@ export class LinePathFormComponent implements OnInit, OnChanges {
               line.publicationStatus === 'draft' &&
               line.createdById === user?.id,
           )
-        : lines;
+        : lines.filter(
+            (line) =>
+              line.publicationStatus !== 'draft' ||
+              line.createdById === user?.id,
+          );
       this.lines = editableLines;
       const editableLineIds = new Set(editableLines.map((line) => line.id));
       this.selectedTopoImage = topoImage;

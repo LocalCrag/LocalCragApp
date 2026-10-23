@@ -200,6 +200,39 @@ export class TopoImageListComponent implements OnInit {
     );
   }
 
+  /**
+   * Owners open the editor. A moderator who does not own a draft is sent to
+   * the suggestions queue with that image's review dialog open.
+   */
+  canDelete(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  editTopoImage(topoImage: TopoImage) {
+    if (
+      this.viewerIsModerator &&
+      topoImage.publicationStatus === 'draft' &&
+      topoImage.createdById !== this.currentUserId
+    ) {
+      this.router.navigate(['/suggestions'], {
+        queryParams: { topoImage: topoImage.id },
+      });
+      return;
+    }
+    this.router.navigate([
+      '/topo',
+      this.cragSlug,
+      this.sectorSlug,
+      this.areaSlug,
+      'topo-images',
+      topoImage.id,
+      'edit',
+    ]);
+  }
+
   toggleArchive() {
     this.showArchive = !this.showArchive;
     this.refreshData();

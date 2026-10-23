@@ -14,6 +14,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-archive-button',
@@ -52,8 +53,18 @@ export class ArchiveButtonComponent {
     return false;
   }
 
-  private setArchived(archived: boolean) {
-    const status = archived ? 'archived' : 'published';
+  private publicationStatus(): string {
+    return (
+      this.line?.publicationStatus ??
+      this.topoImage?.publicationStatus ??
+      this.area?.publicationStatus ??
+      this.sector?.publicationStatus ??
+      this.crag?.publicationStatus ??
+      'published'
+    );
+  }
+
+  private applyStatus(status: string) {
     if (this.line) this.line.publicationStatus = status;
     if (this.topoImage) this.topoImage.publicationStatus = status;
     if (this.area) this.area.publicationStatus = status;
@@ -61,30 +72,49 @@ export class ArchiveButtonComponent {
     if (this.crag) this.crag.publicationStatus = status;
   }
 
-  toggleArchivedResultHandler = {
-    next: (_) => {
-      this.store.dispatch(
-        toastNotification(this.getCurrentState() ? 'ARCHIVED' : 'UNARCHIVED'),
-      );
-    },
-    error: () => {
-      this.store.dispatch(
-        toastNotification(
-          this.getCurrentState() ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
-        ),
-      );
-    },
-  };
+  private setArchived(archived: boolean) {
+    this.applyStatus(archived ? 'archived' : 'published');
+  }
+
+  /**
+   * Flip the local status immediately, then put it back if the request fails.
+   * The toast uses the attempted change, not the restored status.
+   */
+  private subscribeArchive(
+    request: Observable<unknown>,
+    nextArchived: boolean,
+    previous: string,
+  ) {
+    request.subscribe({
+      next: () => {
+        this.store.dispatch(
+          toastNotification(nextArchived ? 'ARCHIVED' : 'UNARCHIVED'),
+        );
+      },
+      error: () => {
+        this.applyStatus(previous);
+        this.store.dispatch(
+          toastNotification(
+            nextArchived ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
+          ),
+        );
+      },
+    });
+  }
 
   toggleArchived(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
 
     if (this.line) {
-      this.setArchived(!this.getCurrentState());
-      this.archiveService
-        .changeLineArchived(this.line)
-        .subscribe(this.toggleArchivedResultHandler);
+      const previous = this.publicationStatus();
+      const nextArchived = !this.getCurrentState();
+      this.setArchived(nextArchived);
+      this.subscribeArchive(
+        this.archiveService.changeLineArchived(this.line),
+        nextArchived,
+        previous,
+      );
     }
 
     if (this.topoImage) {
@@ -127,6 +157,7 @@ export class ArchiveButtonComponent {
   }
 
   doArchiveEntity(type: 'area' | 'sector' | 'crag') {
+    const previous = this.publicationStatus();
     this.setArchived(true);
     const archiveRequest =
       type === 'area'
@@ -135,17 +166,18 @@ export class ArchiveButtonComponent {
           ? this.archiveService.setSectorArchived(this.sector)
           : this.archiveService.setCragArchived(this.crag);
 
-    archiveRequest.subscribe(this.toggleArchivedResultHandler);
+    this.subscribeArchive(archiveRequest, true, previous);
   }
 
   restoreArchivedEntity() {
+    const previous = this.publicationStatus();
     this.setArchived(false);
     const archiveRequest = this.area
       ? this.archiveService.restoreArea(this.area)
       : this.sector
         ? this.archiveService.restoreSector(this.sector)
         : this.archiveService.restoreCrag(this.crag);
-    archiveRequest.subscribe(this.toggleArchivedResultHandler);
+    this.subscribeArchive(archiveRequest, false, previous);
   }
 
   confirmArchiveTopoImage(event: Event) {
@@ -175,9 +207,16 @@ export class ArchiveButtonComponent {
   }
 
   doArchiveTopoImage(cascadeToLines: boolean) {
-    this.setArchived(this.topoImage.publicationStatus !== 'archived');
-    this.archiveService
-      .changeTopoImageArchived(this.topoImage, cascadeToLines)
-      .subscribe(this.toggleArchivedResultHandler);
+    const previous = this.publicationStatus();
+    const nextArchived = this.topoImage.publicationStatus !== 'archived';
+    this.setArchived(nextArchived);
+    this.subscribeArchive(
+      this.archiveService.changeTopoImageArchived(
+        this.topoImage,
+        cascadeToLines,
+      ),
+      nextArchived,
+      previous,
+    );
   }
 }

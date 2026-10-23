@@ -11,6 +11,7 @@
           @for (line of lines; track line.id) {
             <div
               class="flex flex-col xl:flex-row xl:items-start justify-between gap-6 border border-surface rounded p-4"
+              [id]="'suggestion-line-' + line.slug"
             >
               <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
                 <a
@@ -90,6 +91,7 @@
           @for (image of topoImages; track image.id) {
             <div
               class="flex flex-col xl:flex-row xl:items-start justify-between gap-6 border border-surface rounded p-4"
+              [id]="'suggestion-image-' + image.id"
             >
               <div class="flex flex-col sm:flex-row items-start gap-4 min-w-0">
                 <a
@@ -186,11 +188,26 @@
           [text]="true"
           (click)="dialogVisible = false"
         />
-        <p-button
-          [label]="t('confirm')"
-          [loading]="saving"
-          (click)="confirm()"
-        />
+        @if (reviewActionChosen) {
+          <p-button
+            [label]="t('confirm')"
+            [loading]="saving"
+            (click)="confirm()"
+          />
+        } @else {
+          <p-button
+            [label]="t('publish')"
+            [loading]="saving"
+            (click)="confirm('publish')"
+          />
+          <p-button
+            [label]="t('reject')"
+            severity="danger"
+            [outlined]="true"
+            [loading]="saving"
+            (click)="confirm('reject')"
+          />
+        }
       </div>
     </div>
   </p-dialog>

@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { Message } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
+import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
@@ -21,12 +22,14 @@ import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 
+type ReviewAction = 'publish' | 'reject';
+
 type ReviewTarget =
-  | { kind: 'line'; item: SuggestionLine; action: 'publish' | 'reject' }
+  | { kind: 'line'; item: SuggestionLine; action: ReviewAction | null }
   | {
       kind: 'topoImage';
       item: SuggestionTopoImage;
-      action: 'publish' | 'reject';
+      action: ReviewAction | null;
     };
 
 interface SuggestionLineView extends SuggestionLine {
@@ -58,9 +61,11 @@ export class SuggestionListComponent implements OnInit {
   dialogVisible = false;
   message = '';
   saving = false;
+  reviewActionChosen = false;
   private pending: ReviewTarget | null = null;
 
   private suggestionsService = inject(SuggestionsService);
+  private route = inject(ActivatedRoute);
   private title = inject(Title);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
@@ -92,6 +97,33 @@ export class SuggestionListComponent implements OnInit {
         preview.tabuAreas = [];
         return { ...image, preview };
       });
+      this.openFromQuery();
+    });
+  }
+
+  private openFromQuery() {
+    const lineSlug = this.route.snapshot.queryParamMap.get('line');
+    const imageId = this.route.snapshot.queryParamMap.get('topoImage');
+    if (lineSlug) {
+      const line = this.lines.find((item) => item.slug === lineSlug);
+      if (line) {
+        this.openReview({ kind: 'line', item: line, action: null });
+        this.scrollToSuggestion(`suggestion-line-${line.slug}`);
+      }
+      return;
+    }
+    if (imageId) {
+      const image = this.topoImages.find((item) => item.id === imageId);
+      if (image) {
+        this.openReview({ kind: 'topoImage', item: image, action: null });
+        this.scrollToSuggestion(`suggestion-image-${image.id}`);
+      }
+    }
+  }
+
+  private scrollToSuggestion(elementId: string) {
+    setTimeout(() => {
+      document.getElementById(elementId)?.scrollIntoView({ block: 'center' });
     });
   }
 
@@ -116,16 +148,24 @@ export class SuggestionListComponent implements OnInit {
 
   openReview(target: ReviewTarget) {
     this.pending = target;
+    this.reviewActionChosen = target.action != null;
     this.message = '';
     this.dialogVisible = true;
   }
 
-  confirm() {
+  confirm(action?: ReviewAction) {
     if (!this.pending || this.saving) {
       return;
     }
-    const message = this.message.trim() || null;
+    if (action) {
+      this.pending = { ...this.pending, action };
+      this.reviewActionChosen = true;
+    }
     const pending = this.pending;
+    if (!pending.action) {
+      return;
+    }
+    const message = this.message.trim() || null;
     const request =
       pending.kind === 'line'
         ? pending.action === 'publish'
@@ -140,6 +180,7 @@ export class SuggestionListComponent implements OnInit {
         this.saving = false;
         this.dialogVisible = false;
         this.pending = null;
+        this.reviewActionChosen = false;
         this.load();
       },
       error: () => {

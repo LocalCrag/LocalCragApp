@@ -59,11 +59,16 @@ def _owns_publication(created_by_id, user) -> bool:
 
 
 def can_view_publication(entity, user) -> bool:
-    """Published and archived content is public. Drafts are creator-only. Rejected content is hidden."""
+    """Published and archived content is public. Drafts are visible to their creator and to moderators.
+
+    Rejected content is hidden.
+    """
     status = entity.publication_status
     if status in (PublicationStatusEnum.PUBLISHED, PublicationStatusEnum.ARCHIVED):
         return True
     if status == PublicationStatusEnum.DRAFT:
+        if user is not None and user.moderator:
+            return True
         return _owns_publication(entity.created_by_id, user)
     return False
 
@@ -76,15 +81,12 @@ def assert_can_view_publication(entity, user=None):
 
 
 def can_edit_publication(user, entity) -> bool:
+    """Moderators edit published content. A draft can be edited only by the user who created it."""
     if user is None:
         return False
-    if user.moderator:
-        return True
-    return (
-        entity.publication_status == PublicationStatusEnum.DRAFT
-        and entity.created_by_id is not None
-        and entity.created_by_id == user.id
-    )
+    if entity.publication_status == PublicationStatusEnum.DRAFT:
+        return _owns_publication(entity.created_by_id, user)
+    return bool(user.moderator)
 
 
 def assert_can_delete_publication(user, entity):
@@ -98,12 +100,12 @@ def assert_can_delete_publication(user, entity):
 def publication_visibility_clause(model, user):
     """List filter matching ``can_view_publication``. Rejected rows are excluded for every viewer."""
     published = model.publication_status == PublicationStatusEnum.PUBLISHED
+    draft = model.publication_status == PublicationStatusEnum.DRAFT
     if user is None:
         return published
-    own_draft = and_(
-        model.publication_status == PublicationStatusEnum.DRAFT,
-        model.created_by_id == user.id,
-    )
+    if user.moderator:
+        return or_(published, draft)
+    own_draft = and_(draft, model.created_by_id == user.id)
     return or_(published, own_draft)
 
 
@@ -120,6 +122,8 @@ def line_payload_visible(line_payload, user) -> bool:
     if user is None:
         return False
     if status == PublicationStatusEnum.DRAFT.value:
+        if user.moderator:
+            return True
         return line_payload.get("createdById") == str(user.id)
     return False
 

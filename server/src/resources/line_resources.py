@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from sqlalchemy import func, nullslast, select
+from sqlalchemy import and_, func, nullslast, or_, select
 from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
@@ -132,7 +132,14 @@ class GetLinesForLineEditor(MethodView):
             Area.slug == area_slug,
             publication_visibility_clause(Line, viewer),
         )
-        if viewer is not None and not viewer.moderator:
+        if viewer is not None and viewer.moderator:
+            query = query.filter(
+                or_(
+                    Line.publication_status != PublicationStatusEnum.DRAFT,
+                    and_(Line.publication_status == PublicationStatusEnum.DRAFT, Line.created_by_id == viewer.id),
+                )
+            )
+        elif viewer is not None:
             query = query.filter(
                 Line.publication_status == PublicationStatusEnum.DRAFT,
                 Line.created_by_id == viewer.id,
@@ -309,7 +316,6 @@ class CreateLine(MethodView):
         new_line.drying = line_data["drying"]
         new_line.author_rating = line_data["authorRating"]
         new_line.user_rating = line_data["authorRating"]
-        new_line.secret = line_data["secret"]
 
         if new_line.author_grade_value >= 0:
             new_line.fa_year = line_data["faYear"]
@@ -367,13 +373,14 @@ class CreateLine(MethodView):
         new_line.publication_status = (
             PublicationStatusEnum.PUBLISHED if created_by.moderator else PublicationStatusEnum.DRAFT
         )
-        if not created_by.moderator:
-            new_line.secret = False
-
-        apply_closable_configuration(new_line, line_data, "line_id")
-
-        if not new_line.secret:
-            set_line_parents_false(new_line, "secret")
+        # A suggestion inherits the area's secret flag and must not clear it on the area, sector, or crag.
+        if created_by.moderator:
+            new_line.secret = line_data["secret"]
+            apply_closable_configuration(new_line, line_data, "line_id")
+            if not new_line.secret:
+                set_line_parents_false(new_line, "secret")
+        else:
+            new_line.secret = bool(Area.find_by_id(area_id).secret)
         if new_line.publication_status == PublicationStatusEnum.DRAFT:
             db.session.flush()
             notify_moderators_of_submission(created_by, "line", new_line.id)
@@ -432,7 +439,7 @@ class UpdateLine(MethodView):
         line.author_rating = line_data["authorRating"]
         if actor.moderator:
             update_line_propagating_boolean_attr(line, line_data["secret"], "secret")
-        apply_closable_configuration(line, line_data, "line_id")
+            apply_closable_configuration(line, line_data, "line_id")
 
         if line.author_grade_value >= 0:
             line.fa_year = line_data["faYear"]
@@ -490,7 +497,8 @@ class UpdateLine(MethodView):
 
         db.session.add(line)
         db.session.commit()
-        finalize_closable_save(line)
+        if actor.moderator:
+            finalize_closable_save(line)
 
         return line_schema.dump(line), 200
 

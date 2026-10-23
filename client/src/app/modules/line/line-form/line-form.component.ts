@@ -41,7 +41,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { AreasService } from '../../../services/crud/areas.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -215,11 +215,10 @@ export class LineFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.store
-      .select(selectCurrentUser)
-      .pipe(take(1))
-      .subscribe((user) => {
-        this.viewerIsModerator = !!user?.moderator;
+    waitForAuthState(this.store)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((auth) => {
+        this.viewerIsModerator = !!auth.user?.moderator;
       });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
@@ -310,9 +309,8 @@ export class LineFormComponent implements OnInit {
         this.editMode = true;
         this.setPageTitle();
         this.lineForm.disable();
-        this.linesService
-          .getLine(lineSlug)
-          .pipe(
+        forkJoin([
+          this.linesService.getLine(lineSlug).pipe(
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
@@ -320,27 +318,42 @@ export class LineFormComponent implements OnInit {
               }
               return throwError(() => e);
             }),
-          )
-          .subscribe((line) => {
-            if (!this.viewerIsModerator && line.publicationStatus !== 'draft') {
-              this.router.navigate(['']);
+          ),
+          waitForAuthState(this.store),
+        ]).subscribe(([line, auth]) => {
+          this.viewerIsModerator = !!auth.user?.moderator;
+          const ownsDraft =
+            line.publicationStatus === 'draft' &&
+            line.createdById === auth.user?.id;
+          if (line.publicationStatus === 'draft' && !ownsDraft) {
+            if (this.viewerIsModerator) {
+              this.router.navigate(['/suggestions'], {
+                queryParams: { line: line.slug },
+              });
               return;
             }
-            this.line = line;
-            this.buildTypeOptionsForLine();
-            // find() must always find a result if the backend state is not corrupted
-            const scale = this.groupedScales[this.line.type].find(
-              (scale) => scale.name == this.line.gradeScale,
-            );
-            this.scaleOptions = [{ label: scale.name, value: scale.name }];
-            this.grades = this.filterGradesForSelect(scale.grades);
+            this.router.navigate(['']);
+            return;
+          }
+          if (!this.viewerIsModerator && line.publicationStatus !== 'draft') {
+            this.router.navigate(['']);
+            return;
+          }
+          this.line = line;
+          this.buildTypeOptionsForLine();
+          // find() must always find a result if the backend state is not corrupted
+          const scale = this.groupedScales[this.line.type].find(
+            (scale) => scale.name == this.line.gradeScale,
+          );
+          this.scaleOptions = [{ label: scale.name, value: scale.name }];
+          this.grades = this.filterGradesForSelect(scale.grades);
 
-            this.setFormValue();
-            this.loadingState = LoadingState.DEFAULT;
-            if (this.editor) {
-              this.editor.getQuill()?.enable();
-            }
-          });
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          if (this.editor) {
+            this.editor.getQuill()?.enable();
+          }
+        });
         // Rebuild type/scale labels on language change
         this.languageService.renderedLanguage$
           .pipe(takeUntilDestroyed(this.destroyRef))

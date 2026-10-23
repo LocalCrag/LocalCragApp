@@ -190,9 +190,7 @@
                             label="{{ t('editTopoImageButtonLabel') }}"
                             icon="pi pi-pencil"
                             class="responsive-button"
-                            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                              areaSlug
-                            }}/topo-images/{{ topoImage.id }}/edit"
+                            (click)="editTopoImage(topoImage)"
                             styleClass="p-button-sm"
                           ></p-button>
                         }
@@ -203,7 +201,7 @@
                           [style]="'plain'"
                           class="responsive-button"
                         ></lc-archive-button>
-                        @if (canManage(topoImage)) {
+                        @if (canDelete(topoImage)) {
                           <p-button
                             icon="pi pi-trash"
                             (click)="confirmDeleteTopoImage($event, topoImage)"

@@ -250,7 +250,7 @@ class UpdateTopoImageOrder(MethodView):
         topo_images: List[TopoImage] = TopoImage.return_all(
             filter=lambda: [
                 TopoImage.area_id == area_id,
-                TopoImage.publication_status != PublicationStatusEnum.ARCHIVED,
+                TopoImage.publication_status.in_([PublicationStatusEnum.PUBLISHED, PublicationStatusEnum.DRAFT]),
             ]
         )
 

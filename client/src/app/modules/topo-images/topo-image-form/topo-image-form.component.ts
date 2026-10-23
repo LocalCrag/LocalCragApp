@@ -23,14 +23,7 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import {
-  catchError,
-  concatMap,
-  switchMap,
-  take,
-  tap,
-  toArray,
-} from 'rxjs/operators';
+import { catchError, concatMap, switchMap, tap, toArray } from 'rxjs/operators';
 import { EMPTY, forkJoin, from, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -46,7 +39,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { PageTitleService } from '../../../services/core/page-title.service';
 
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
@@ -134,12 +127,9 @@ export class TopoImageFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    this.store
-      .select(selectCurrentUser)
-      .pipe(take(1))
-      .subscribe((user) => {
-        this.viewerIsModerator = !!user?.moderator;
-      });
+    waitForAuthState(this.store).subscribe((auth) => {
+      this.viewerIsModerator = !!auth.user?.moderator;
+    });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -160,7 +150,22 @@ export class TopoImageFormComponent implements OnInit {
           }),
         ),
         this.areasService.getArea(this.areaSlug),
-      ]).subscribe(([topoImage, area]) => {
+        waitForAuthState(this.store),
+      ]).subscribe(([topoImage, area, auth]) => {
+        this.viewerIsModerator = !!auth.user?.moderator;
+        const ownsDraft =
+          topoImage.publicationStatus === 'draft' &&
+          topoImage.createdById === auth.user?.id;
+        if (topoImage.publicationStatus === 'draft' && !ownsDraft) {
+          if (this.viewerIsModerator) {
+            this.router.navigate(['/suggestions'], {
+              queryParams: { topoImage: topoImage.id },
+            });
+            return;
+          }
+          this.router.navigate(['']);
+          return;
+        }
         if (
           !this.viewerIsModerator &&
           topoImage.publicationStatus !== 'draft'

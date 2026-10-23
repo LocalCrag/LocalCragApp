@@ -18,10 +18,7 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
-import {
-  selectIsModerator,
-  selectCurrentUser,
-} from '../../../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
@@ -83,6 +80,7 @@ export class LineComponent implements OnInit {
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
   private canEditLine = false;
+  private currentUserId: string | null = null;
   private regionService = inject(RegionService);
 
   protected scalesService = inject(ScalesService);
@@ -133,25 +131,18 @@ export class LineComponent implements OnInit {
               return throwError(() => e);
             }),
           ),
-          this.store.pipe(select(selectIsModerator), take(1)),
-          this.store.pipe(select(selectCurrentUser), take(1)),
+          waitForAuthState(this.store),
           this.store.pipe(select(selectInstanceSettingsState), take(1)),
           this.regionService.getRegionCached(),
         ]).subscribe(
-          ([
-            crag,
-            sector,
-            area,
-            line,
-            isModerator,
-            currentUser,
-            instanceSettings,
-            region,
-          ]) => {
+          ([crag, sector, area, line, auth, instanceSettings, region]) => {
+            const currentUser = auth.user;
+            const isModerator = !!currentUser?.moderator;
             this.crag = crag;
             this.sector = sector;
             this.area = area;
             this.line = line;
+            this.currentUserId = currentUser?.id ?? null;
             this.canEditLine =
               isModerator ||
               (line.publicationStatus === 'draft' &&
@@ -280,7 +271,12 @@ export class LineComponent implements OnInit {
       {
         label: this.translocoService.translate(marker('line.edit')),
         icon: 'pi pi-fw pi-file-edit',
-        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
+        routerLink: this.reviewsForeignDraft()
+          ? '/suggestions'
+          : `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
+        queryParams: this.reviewsForeignDraft()
+          ? { line: this.line.slug }
+          : undefined,
         visible: this.canEditLine,
       },
     ];
@@ -289,5 +285,13 @@ export class LineComponent implements OnInit {
 
   private tabBadge(count: number): string {
     return String(count);
+  }
+
+  /** Moderators review someone else's draft in the suggestions queue instead of the editor. */
+  private reviewsForeignDraft(): boolean {
+    return (
+      this.line.publicationStatus === 'draft' &&
+      this.line.createdById !== this.currentUserId
+    );
   }
 }

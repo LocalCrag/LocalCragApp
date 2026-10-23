@@ -203,6 +203,8 @@ class SyncLinePaths(MethodView):
             line: Line = Line.find_by_id(item["line"])
             if line.area_id != topo_image.area_id:
                 raise BadRequest("Line does not belong to the topo image's area.")
+            if line.publication_status == PublicationStatusEnum.DRAFT and line.created_by_id != actor.id:
+                raise BadRequest("You can only edit your own drafts.")
             if item.get("id"):
                 line_path = existing_by_id.get(item["id"])
                 if not line_path or str(line_path.line_id) != item["line"]:
@@ -280,7 +282,9 @@ class UpdateLinePathOrder(MethodView):
         line_paths: List[LinePath] = LinePath.return_all(
             filter=lambda: [
                 LinePath.topo_image_id == image_id,
-                LinePath.line.has(Line.publication_status != PublicationStatusEnum.ARCHIVED),
+                LinePath.line.has(
+                    Line.publication_status.in_([PublicationStatusEnum.PUBLISHED, PublicationStatusEnum.DRAFT])
+                ),
             ],
             options=db.joinedload(LinePath.line),
         )

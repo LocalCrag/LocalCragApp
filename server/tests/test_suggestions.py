@@ -1,4 +1,5 @@
 from extensions import db
+from models.area import Area
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.enums.permission_effect_enum import PermissionEffectEnum
 from models.enums.publication_status_enum import PublicationStatusEnum
@@ -35,7 +36,7 @@ def test_member_line_is_draft_and_hidden_from_other_users(client, member_token, 
     assert slug in {item["slug"] for item in owner.json["items"]}
 
     moderator = client.get("/api/lines?area_slug=shark-attack&per_page=50", token=moderator_token)
-    assert slug not in {item["slug"] for item in moderator.json["items"]}
+    assert slug in {item["slug"] for item in moderator.json["items"]}
     editor = client.get("/api/lines/for-line-editor/shark-attack", token=moderator_token)
     assert slug not in {item["slug"] for item in editor.json}
     queue = client.get("/api/suggestions", token=moderator_token)
@@ -43,8 +44,8 @@ def test_member_line_is_draft_and_hidden_from_other_users(client, member_token, 
 
     hidden = client.get(f"/api/lines/{slug}", token=user_token)
     assert hidden.status_code == 404
-    hidden_from_moderator = client.get(f"/api/lines/{slug}", token=moderator_token)
-    assert hidden_from_moderator.status_code == 404
+    visible_to_moderator = client.get(f"/api/lines/{slug}", token=moderator_token)
+    assert visible_to_moderator.status_code == 200
     visible = client.get(f"/api/lines/{slug}", token=member_token)
     assert visible.status_code == 200
 
@@ -184,7 +185,7 @@ def test_member_path_sync_keeps_published_paths(client, member_token, moderator_
     owner_image = client.get(f"/api/topo-images/{topo_image.id}", token=member_token).json
     assert str(line.id) in {path["line"]["id"] for path in owner_image["linePaths"]}
     moderator_image = client.get(f"/api/topo-images/{topo_image.id}", token=moderator_token).json
-    assert str(line.id) not in {path["line"]["id"] for path in moderator_image["linePaths"]}
+    assert str(line.id) in {path["line"]["id"] for path in moderator_image["linePaths"]}
 
     kept_paths = [
         {"id": str(path.id), "line": str(path.line_id), "path": path.path}
@@ -319,9 +320,9 @@ def test_member_can_add_draft_topo_image(client, member_token, user_token, moder
     images = client.get("/api/areas/shark-attack/topo-images", token=user_token).json
     assert image_id not in {image["id"] for image in images}
     moderator_images = client.get("/api/areas/shark-attack/topo-images", token=moderator_token).json
-    assert image_id not in {image["id"] for image in moderator_images}
-    hidden_from_moderator = client.get(f"/api/topo-images/{image_id}", token=moderator_token)
-    assert hidden_from_moderator.status_code == 404
+    assert image_id in {image["id"] for image in moderator_images}
+    visible_to_moderator = client.get(f"/api/topo-images/{image_id}", token=moderator_token)
+    assert visible_to_moderator.status_code == 200
     own_images = client.get("/api/areas/shark-attack/topo-images", token=member_token).json
     assert image_id in {image["id"] for image in own_images}
 
@@ -384,6 +385,12 @@ def test_moderator_cannot_delete_another_users_draft(client, member_token, moder
 
     denied = client.delete(f"/api/lines/{slug}", token=moderator_token)
     assert denied.status_code == 401
+    denied_edit = client.put(
+        f"/api/lines/{slug}",
+        token=moderator_token,
+        json=_boulder_line_payload("Not Their Edit", 10),
+    )
+    assert denied_edit.status_code == 401
     assert Line.find_by_slug(slug).publication_status == PublicationStatusEnum.DRAFT
 
     file = File.query.first()
@@ -396,8 +403,78 @@ def test_moderator_cannot_delete_another_users_draft(client, member_token, moder
     image_id = image.json["id"]
     denied_image = client.delete(f"/api/topo-images/{image_id}", token=moderator_token)
     assert denied_image.status_code == 401
+    denied_image_edit = client.put(
+        f"/api/topo-images/{image_id}",
+        token=moderator_token,
+        json={"image": str(file.id), "title": "Changed", "description": None, "mapMarkers": []},
+    )
+    assert denied_image_edit.status_code == 401
     assert TopoImage.query.filter_by(id=image_id).first().publication_status == PublicationStatusEnum.DRAFT
 
     deleted = client.delete(f"/api/lines/{slug}", token=member_token)
     assert deleted.status_code == 204
     assert Line.query.filter_by(slug=slug).first() is None
+
+
+def test_suggestion_does_not_change_secret_or_closure_schedules(client, member_token):
+    area = Area.find_by_slug("shark-attack")
+    area.secret = True
+    db.session.commit()
+
+    payload = _boulder_line_payload("Secret Suggestion", 10)
+    payload["secret"] = False
+    payload["closureSchedules"] = [
+        {
+            "scheduleType": "ANNUAL",
+            "reason": "Nesting",
+            "startMonth": 1,
+            "startDay": 1,
+            "endMonth": 3,
+            "endDay": 1,
+        }
+    ]
+    created = client.post("/api/areas/shark-attack/lines", token=member_token, json=payload)
+    assert created.status_code == 201, created.text
+    line = Line.find_by_slug(created.json["slug"])
+    assert line.secret is True
+    assert line.closure_schedules == []
+    assert Area.find_by_slug("shark-attack").secret is True
+
+    payload["name"] = "Secret Suggestion Edit"
+    payload["secret"] = False
+    updated = client.put(f"/api/lines/{line.slug}", token=member_token, json=payload)
+    assert updated.status_code == 200, updated.text
+    db.session.refresh(line)
+    assert line.secret is True
+    assert line.closure_schedules == []
+    assert Area.find_by_slug("shark-attack").secret is True
+
+
+def test_moderator_can_reorder_while_a_rejected_image_exists(client, member_token, moderator_token):
+    file = File.query.first()
+    created = client.post(
+        "/api/areas/shark-attack/topo-images",
+        token=member_token,
+        json={"image": str(file.id), "title": "Reorder around me", "description": None, "mapMarkers": []},
+    )
+    assert created.status_code == 201, created.text
+    image_id = created.json["id"]
+    rejected = client.post(f"/api/topo-images/{image_id}/reject", token=moderator_token, json={})
+    assert rejected.status_code == 204, rejected.text
+    kept = client.post(
+        "/api/areas/shark-attack/topo-images",
+        token=member_token,
+        json={"image": str(file.id), "title": "Still a draft", "description": None, "mapMarkers": []},
+    )
+    assert kept.status_code == 201, kept.text
+
+    images = client.get("/api/areas/shark-attack/topo-images", token=moderator_token).json
+    assert image_id not in {image["id"] for image in images}
+    assert kept.json["id"] in {image["id"] for image in images}
+    order = {image["id"]: index for index, image in enumerate(images)}
+    response = client.put(
+        "/api/areas/shark-attack/topo-images/update-order",
+        token=moderator_token,
+        json=order,
+    )
+    assert response.status_code == 200, response.text
