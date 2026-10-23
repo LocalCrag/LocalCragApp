@@ -24,6 +24,7 @@ from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
 from util.suggestions import (
     assert_can_view_publication,
+    assert_owns_draft_topo_image,
     can_suggest,
     line_path_listed,
 )
@@ -280,13 +281,15 @@ class SyncLinePaths(MethodView):
         Tabu polygons those kept paths still use cannot be deleted or reshaped by this save.
         The array order of the paths in the payload becomes order_index.
 
-        Non-moderators are saved by ``_sync_owned_draft_paths``, which only touches their own drafts.
+        A draft image can be changed only by its creator. Non-moderators are saved by
+        ``_sync_owned_draft_paths``, which only touches their own drafts.
         """
         sync_data = parser.parse(line_path_sync_args, request)
         topo_image: TopoImage = TopoImage.find_by_id(image_id)
         actor = get_current_user()
         check_secret_spot_permission(topo_image.area)
         assert_can_view_publication(topo_image, actor)
+        assert_owns_draft_topo_image(actor, topo_image)
         if not actor.moderator:
             return _sync_owned_draft_paths(topo_image, actor, sync_data, image_id)
         incoming_areas = sync_data.get("tabuAreas") or []
@@ -358,10 +361,13 @@ class DeleteLinePath(MethodView):
     @session_required(moderator=True)
     def delete(self, line_path_id):
         """
-        Delete a topo image.
+        Delete a line path.
         @param line_path_id: ID of the line_path to delete.
         """
         line_path: LinePath = LinePath.find_by_id(line_path_id)
+        actor = get_current_user()
+        topo_image: TopoImage = TopoImage.find_by_id(line_path.topo_image_id)
+        assert_owns_draft_topo_image(actor, topo_image)
 
         db.session.delete(line_path)
         query = text(
@@ -375,11 +381,19 @@ class DeleteLinePath(MethodView):
 
 
 class UpdateLinePathOrder(MethodView):
-    @session_required(moderator=True)
+    @session_required()
     def put(self, image_id):
         """
         Changes the order index of line paths for unarchived lines for a specific topo image.
+
+        Moderators order published images. On a draft image only the creator may reorder.
         """
+        actor = get_current_user()
+        topo_image: TopoImage = TopoImage.find_by_id(image_id)
+        assert_owns_draft_topo_image(actor, topo_image)
+        if topo_image.publication_status != PublicationStatusEnum.DRAFT and not actor.moderator:
+            raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
         new_order = request.json
         line_paths: List[LinePath] = LinePath.return_all(
             filter=lambda: [

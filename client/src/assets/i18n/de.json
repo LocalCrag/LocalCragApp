@@ -105,7 +105,7 @@
   "advancedColorPicker.accept": "Übernehmen",
   "advancedColorPicker.cancel": "Abbrechen",
   "secretSpotTag.secret": "Geheim",
-  "draftTag.label": "Entwurf",
+  "draftTag.label": "Vorschlag",
   "noDataAvailable": "Keine Daten verfügbar.",
   "rulesAlert.updatedSinceLastView": "Regeln seit dem letzten Besuch aktualisiert",
   "rulesAlert.lastUpdated": "Zuletzt aktualisiert: {{date}}",
@@ -993,6 +993,7 @@
   "topoImage.topoImageList.createLineButtonLabel": "Linie erstellen",
   "topoImage.topoImageList.suggestLineButtonLabel": "Linie vorschlagen",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Linien bearbeiten",
+  "topoImage.topoImageList.suggestLinePathsButtonLabel": "Linienverläufe vorschlagen",
   "topoImage.topoImageList.addLineToImageButtonLabel": "Linie verknüpfen",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Bild bearbeiten",
@@ -1327,6 +1328,7 @@
 
   "menu.suggestions": "Vorschläge",
 
+  "suggestions.review": "Vorschlag prüfen",
   "suggestions.title": "Vorschläge",
   "suggestions.empty": "Keine offenen Vorschläge.",
   "suggestions.lines": "Linien",
@@ -1337,7 +1339,7 @@
   "suggestions.messagePlaceholder": "Optionaler Hinweis",
   "suggestions.confirm": "Senden",
   "suggestions.cancel": "Abbrechen",
-  "suggestions.by": "von",
+  "suggestions.suggestedBy": "Vorgeschlagen von",
   "menu.notificationTextSuggestionSubmitted": "Ein neuer Linien- oder Topo-Vorschlag ist eingegangen.",
   "menu.notificationTextSuggestionPublished": "Dein Vorschlag wurde veröffentlicht.",
   "menu.notificationTextSuggestionRejected": "Dein Vorschlag wurde abgelehnt.",

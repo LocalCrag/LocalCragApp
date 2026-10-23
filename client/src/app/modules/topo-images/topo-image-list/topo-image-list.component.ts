@@ -222,24 +222,52 @@ export class TopoImageListComponent implements OnInit {
    */
   showTopoImageActions(topoImage: TopoImage): boolean {
     return (
-      this.canContributeTopo ||
-      this.viewerIsModerator ||
+      this.canDrawLines(topoImage) ||
+      this.canReorderLines(topoImage) ||
+      this.canAcceptDraft(topoImage) ||
       this.canManage(topoImage) ||
-      this.canDelete(topoImage)
-    );
-  }
-
-  canManage(topoImage: TopoImage): boolean {
-    return (
-      this.viewerIsModerator ||
-      (topoImage.publicationStatus === 'draft' &&
-        topoImage.createdById === this.currentUserId)
+      this.canDelete(topoImage) ||
+      this.canArchive(topoImage)
     );
   }
 
   /**
-   * Owners open the editor. A moderator who does not own a draft is sent to
-   * the suggestions queue with that image's review dialog open.
+   * Owners edit their drafts. Moderators edit published images, and review someone else's draft instead of editing it.
+   */
+  canManage(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  /** Create and draw stay with the draft owner. Moderators and suggesters keep them on published images. */
+  private canDrawLines(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.canContributeTopo;
+  }
+
+  /** Reorder stays with the draft owner. On a published image it stays a moderator action. */
+  private canReorderLines(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  /** A moderator reviewing someone else's draft can open it for acceptance. */
+  private canAcceptDraft(topoImage: TopoImage): boolean {
+    return (
+      this.viewerIsModerator &&
+      topoImage.publicationStatus === 'draft' &&
+      topoImage.createdById !== this.currentUserId
+    );
+  }
+
+  /**
+   * Owners delete their drafts. Moderators delete published images, not someone else's draft.
    */
   canDelete(topoImage: TopoImage): boolean {
     if (topoImage.publicationStatus === 'draft') {
@@ -254,9 +282,7 @@ export class TopoImageListComponent implements OnInit {
       topoImage.publicationStatus === 'draft' &&
       topoImage.createdById !== this.currentUserId
     ) {
-      this.router.navigate(['/suggestions'], {
-        queryParams: { topoImage: topoImage.id },
-      });
+      this.router.navigate(['/suggestions']);
       return;
     }
     this.router.navigate([
@@ -419,14 +445,16 @@ export class TopoImageListComponent implements OnInit {
     const archived = topoImage.publicationStatus === 'archived';
     const items: MenuItem[] = [];
 
-    if (this.canContributeTopo) {
+    if (this.canDrawLines(topoImage)) {
       items.push(
         {
           id: 'edit-line-paths',
           label: this.translocoService.translate(
-            hasLines
-              ? marker('topoImage.topoImageList.editLinePathsButtonLabel')
-              : marker('topoImage.topoImageList.addLineToImageButtonLabel'),
+            !hasLines
+              ? marker('topoImage.topoImageList.addLineToImageButtonLabel')
+              : this.viewerIsModerator
+                ? marker('topoImage.topoImageList.editLinePathsButtonLabel')
+                : marker('topoImage.topoImageList.suggestLinePathsButtonLabel'),
           ),
           icon: hasLines ? 'pi pi-fw pi-share-alt' : 'pi pi-fw pi-plus',
           command: () => {
@@ -465,7 +493,7 @@ export class TopoImageListComponent implements OnInit {
       );
     }
 
-    if (this.viewerIsModerator) {
+    if (this.canReorderLines(topoImage)) {
       items.push({
         id: 'reorder-line-paths',
         label: this.translocoService.translate(
@@ -475,6 +503,17 @@ export class TopoImageListComponent implements OnInit {
         disabled: (topoImage.linePaths?.length ?? 0) < 2,
         command: () => {
           this.reorderLinePaths(topoImage);
+        },
+      });
+    }
+
+    if (this.canAcceptDraft(topoImage)) {
+      items.push({
+        id: 'accept-draft',
+        label: this.translocoService.translate(marker('suggestions.review')),
+        icon: 'pi pi-fw pi-check',
+        command: () => {
+          this.editTopoImage(topoImage);
         },
       });
     }

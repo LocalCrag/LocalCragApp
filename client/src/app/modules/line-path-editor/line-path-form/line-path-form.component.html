@@ -1,5 +1,14 @@
 <ng-container *transloco="let t; read: 'linePath.linePathForm'">
-  @if (linePathForm) {
+  @if (noSelectableLines) {
+    <p-message
+      class="mt-4 block"
+      severity="info"
+      icon="pi pi-info-circle"
+      styleClass="w-full"
+    >
+      {{ canOnlyDrawOwnDrafts ? t("noOwnLinesToDraw") : t("noLinesToDraw") }}
+    </p-message>
+  } @else if (linePathForm) {
     <form [formGroup]="linePathForm" lcForm>
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="line">{{ t("lineLabel") }}</label>
@@ -29,17 +38,21 @@
             </div>
           </ng-template>
           <ng-template let-selectedItem #selectedItem>
-            <div class="flex items-center gap-2">
-              @if (getLineNumber(selectedItem); as lineNumber) {
-                <lc-line-number-badge
-                  [number]="lineNumber"
-                  [color]="selectedItem.color"
-                ></lc-line-number-badge>
-              } @else {
-                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
-              }
-              <div>{{ selectedItem.name }} {{ selectedItem | lineGrade }}</div>
-            </div>
+            @if (selectedItem) {
+              <div class="flex items-center gap-2">
+                @if (getLineNumber(selectedItem); as lineNumber) {
+                  <lc-line-number-badge
+                    [number]="lineNumber"
+                    [color]="selectedItem.color"
+                  ></lc-line-number-badge>
+                } @else {
+                  <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
+                }
+                <div>
+                  {{ selectedItem.name }} {{ selectedItem | lineGrade }}
+                </div>
+              </div>
+            }
           </ng-template>
         </p-select>
         <small class="lc-error" *lcIfError="'required'">{{
@@ -54,25 +67,25 @@
           class="line-path-editor-layout flex flex-row items-start gap-6 w-full"
           [ngClass]="{ mobile: isMobile$ | async }"
         >
-          <lc-line-path-editor
-            id="path-editor"
-            class="min-w-0 flex-1"
-            [topoImage]="editorTopoImage"
-            [selectedLine]="linePathForm.get('line').value"
-            [linePathDisplayNumber]="
-              getLineNumber(linePathForm.get('line').value)
-            "
-            [color]="linePathForm.get('line').value?.color"
-            [path]="linePathForm.get('path').value"
-            (pathChange)="onPathChange($event)"
-            [tabuAreaIds]="linePathForm.get('tabuAreaIds').value"
-            (tabuAreaIdsChange)="onTabuAreaIdsChange($event)"
-            [allTabuAreas]="allTabuAreas"
-            (allTabuAreasChange)="onAllTabuAreasChange($event)"
-            [tabuInProgress]="editorTabuInProgress"
-            (drawModeChange)="onEditorDrawModeChange($event)"
-          >
-          </lc-line-path-editor>
+          @if (linePathForm.get("line").value; as selectedLine) {
+            <lc-line-path-editor
+              id="path-editor"
+              class="min-w-0 flex-1"
+              [topoImage]="editorTopoImage"
+              [selectedLine]="selectedLine"
+              [linePathDisplayNumber]="getLineNumber(selectedLine)"
+              [color]="selectedLine.color"
+              [path]="linePathForm.get('path').value"
+              (pathChange)="onPathChange($event)"
+              [tabuAreaIds]="linePathForm.get('tabuAreaIds').value"
+              (tabuAreaIdsChange)="onTabuAreaIdsChange($event)"
+              [allTabuAreas]="allTabuAreas"
+              (allTabuAreasChange)="onAllTabuAreasChange($event)"
+              [tabuInProgress]="editorTabuInProgress"
+              (drawModeChange)="onEditorDrawModeChange($event)"
+            >
+            </lc-line-path-editor>
+          }
           @if (editorDrawMode === "line" && (isMobile$ | async) === false) {
             <div class="line-path-order-panel w-72 flex-none">
               <p-orderList
@@ -188,14 +201,16 @@
   }
 
   <div class="form-actions">
-    <p-button
-      label="{{ t('saveAllLinePathsButtonLabel') }}"
-      (click)="saveAllLinePaths()"
-      icon="pi pi-save"
-      class="responsive-button"
-      data-cy="submit"
-      [loading]="loadingState === loadingStates.LOADING"
-    ></p-button>
+    @if (!noSelectableLines) {
+      <p-button
+        label="{{ t('saveAllLinePathsButtonLabel') }}"
+        (click)="saveAllLinePaths()"
+        icon="pi pi-save"
+        class="responsive-button"
+        data-cy="submit"
+        [loading]="loadingState === loadingStates.LOADING"
+      ></p-button>
+    }
     @if (!embedded) {
       <p-button
         label="{{ t('leaveEditorButtonLabel') }}"

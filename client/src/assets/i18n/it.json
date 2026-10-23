@@ -105,7 +105,7 @@
   "advancedColorPicker.accept": "Conferma",
   "advancedColorPicker.cancel": "Annulla",
   "secretSpotTag.secret": "Segreto",
-  "draftTag.label": "Bozza",
+  "draftTag.label": "Suggerimento",
   "noDataAvailable": "Dati non disponibili.",
   "rulesAlert.updatedSinceLastView": "Regolamento aggiornato dalla tua ultima visita",
   "rulesAlert.lastUpdated": "Ultimo aggiornamento: {{date}}",
@@ -993,6 +993,7 @@
   "topoImage.topoImageList.createLineButtonLabel": "Aggiungi problema",
   "topoImage.topoImageList.suggestLineButtonLabel": "Proponi un problema",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Modifica problemi",
+  "topoImage.topoImageList.suggestLinePathsButtonLabel": "Proponi i tracciati",
   "topoImage.topoImageList.addLineToImageButtonLabel": "Associa problema",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Ordina problemi",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Modifica immagine",
@@ -1327,6 +1328,7 @@
 
   "menu.suggestions": "Suggerimenti",
 
+  "suggestions.review": "Revisiona suggerimento",
   "suggestions.title": "Suggerimenti",
   "suggestions.empty": "Nessun suggerimento in attesa.",
   "suggestions.lines": "Linee",
@@ -1337,7 +1339,7 @@
   "suggestions.messagePlaceholder": "Nota facoltativa",
   "suggestions.confirm": "Invia",
   "suggestions.cancel": "Annulla",
-  "suggestions.by": "di",
+  "suggestions.suggestedBy": "Proposto da",
   "menu.notificationTextSuggestionSubmitted": "È stata proposta una nuova linea o immagine topo.",
   "menu.notificationTextSuggestionPublished": "Il tuo suggerimento è stato pubblicato.",
   "menu.notificationTextSuggestionRejected": "Il tuo suggerimento è stato rifiutato.",

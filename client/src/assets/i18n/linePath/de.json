@@ -14,5 +14,7 @@
   "linePathForm.tabuRequiresLinePath": "Zeichne zuerst den Linienverlauf auf dem Bild, um Tabu-Bereiche zuzuweisen.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Zeichne eine Linie mit mindestens zwei Ankerpunkten ein.",
   "linePathForm.saveAllLinePathsButtonLabel": "Speichern",
-  "linePathForm.leaveEditorButtonLabel": "Editor verlassen"
+  "linePathForm.leaveEditorButtonLabel": "Editor verlassen",
+  "linePathForm.noLinesToDraw": "Es gibt noch keine Linien zum Einzeichnen.",
+  "linePathForm.noOwnLinesToDraw": "Du kannst nur deine eigenen Vorschläge einzeichnen. Schlage zuerst eine Linie vor."
 }

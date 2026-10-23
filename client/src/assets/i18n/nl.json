@@ -105,7 +105,7 @@
   "advancedColorPicker.accept": "Overnemen",
   "advancedColorPicker.cancel": "Annuleren",
   "secretSpotTag.secret": "Verborgen",
-  "draftTag.label": "Concept",
+  "draftTag.label": "Suggestie",
   "noDataAvailable": "Geen gegevens beschikbaar.",
   "rulesAlert.updatedSinceLastView": "Regels bijgewerkt sinds je laatste bezoek",
   "rulesAlert.lastUpdated": "Laatst bijgewerkt: {{date}}",
@@ -993,6 +993,7 @@
   "topoImage.topoImageList.createLineButtonLabel": "Route aanmaken",
   "topoImage.topoImageList.suggestLineButtonLabel": "Route voorstellen",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Routes bewerken",
+  "topoImage.topoImageList.suggestLinePathsButtonLabel": "Routeverlopen voorstellen",
   "topoImage.topoImageList.addLineToImageButtonLabel": "Route koppelen",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Routes ordenen",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Afbeelding bewerken",
@@ -1327,6 +1328,7 @@
 
   "menu.suggestions": "Suggesties",
 
+  "suggestions.review": "Suggestie beoordelen",
   "suggestions.title": "Suggesties",
   "suggestions.empty": "Geen openstaande suggesties.",
   "suggestions.lines": "Lijnen",
@@ -1337,7 +1339,7 @@
   "suggestions.messagePlaceholder": "Optionele opmerking",
   "suggestions.confirm": "Versturen",
   "suggestions.cancel": "Annuleren",
-  "suggestions.by": "door",
+  "suggestions.suggestedBy": "Voorgesteld door",
   "menu.notificationTextSuggestionSubmitted": "Er is een nieuwe lijn of topo-afbeelding voorgesteld.",
   "menu.notificationTextSuggestionPublished": "Je suggestie is gepubliceerd.",
   "menu.notificationTextSuggestionRejected": "Je suggestie is afgewezen.",

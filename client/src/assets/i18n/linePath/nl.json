@@ -14,5 +14,7 @@
   "linePathForm.tabuRequiresLinePath": "Teken eerst de route op de afbeelding om taboegebieden toe te wijzen.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Teken een route met minstens twee ankerpunten.",
   "linePathForm.saveAllLinePathsButtonLabel": "Opslaan",
-  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten"
+  "linePathForm.leaveEditorButtonLabel": "Editor afsluiten",
+  "linePathForm.noLinesToDraw": "Er zijn nog geen routes om te tekenen.",
+  "linePathForm.noOwnLinesToDraw": "Je kunt alleen je eigen suggesties tekenen. Stel eerst een route voor."
 }

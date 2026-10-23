@@ -14,5 +14,7 @@
   "linePathForm.tabuRequiresLinePath": "Tracez d'abord la ligne sur l'image pour attribuer des zones tabou.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Tracez une ligne avec au moins deux points d'ancrage.",
   "linePathForm.saveAllLinePathsButtonLabel": "Enregistrer",
-  "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur"
+  "linePathForm.leaveEditorButtonLabel": "Quitter l'éditeur",
+  "linePathForm.noLinesToDraw": "Il n'y a pas encore de voies à tracer.",
+  "linePathForm.noOwnLinesToDraw": "Vous ne pouvez tracer que vos propres suggestions. Proposez d'abord une voie."
 }

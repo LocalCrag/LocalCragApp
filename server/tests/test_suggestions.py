@@ -41,7 +41,9 @@ def test_member_line_is_draft_and_hidden_from_other_users(client, member_token, 
     editor = client.get("/api/lines/for-line-editor/shark-attack", token=moderator_token)
     assert slug not in {item["slug"] for item in editor.json}
     queue = client.get("/api/suggestions", token=moderator_token)
-    assert slug in {item["slug"] for item in queue.json["lines"]}
+    queued_line = next(item for item in queue.json["lines"] if item["slug"] == slug)
+    assert queued_line["createdBy"]["firstname"] == "member"
+    assert queued_line["createdBy"]["lastname"] == "member"
 
     hidden = client.get(f"/api/lines/{slug}", token=user_token)
     assert hidden.status_code == 404
@@ -530,6 +532,8 @@ def test_member_can_add_draft_topo_image(client, member_token, user_token, moder
     assert queue.status_code == 200
     queued_image = next(item for item in queue.json["topoImages"] if item["id"] == image_id)
     assert queued_image["image"]["id"] == str(file.id)
+    assert queued_image["createdBy"]["firstname"] == "member"
+    assert queued_image["createdBy"]["lastname"] == "member"
 
 
 def test_rejecting_draft_topo_image_deletes_line_paths(client, member_token, moderator_token):
@@ -678,3 +682,63 @@ def test_moderator_can_reorder_while_a_rejected_image_exists(client, member_toke
         json=order,
     )
     assert response.status_code == 200, response.text
+
+
+def test_only_draft_owner_can_draw_or_reorder_a_draft_topo_image(client, member_token, moderator_token):
+    file = File.query.first()
+    created = client.post(
+        "/api/areas/shark-attack/topo-images",
+        token=member_token,
+        json={"image": str(file.id), "title": "Owner draws", "description": None, "mapMarkers": []},
+    )
+    assert created.status_code == 201, created.text
+    image_id = created.json["id"]
+    line = _create_draft_line(client, member_token, "Line On Draft Image")
+    assert line.status_code == 201, line.text
+    line_id = Line.find_by_slug(line.json["slug"]).id
+
+    drawn = client.put(
+        f"/api/topo-images/{image_id}/line-paths",
+        token=member_token,
+        json={"linePaths": [{"line": str(line_id), "path": [10.0, 20.0, 30.0, 40.0, 50.0, 60.0]}]},
+    )
+    assert drawn.status_code == 200, drawn.text
+    path = LinePath.query.filter_by(topo_image_id=image_id, line_id=line_id).one()
+
+    blocked_draw = client.put(
+        f"/api/topo-images/{image_id}/line-paths",
+        token=moderator_token,
+        json={
+            "linePaths": [
+                {"id": str(path.id), "line": str(line_id), "path": [11.0, 21.0, 31.0, 41.0, 51.0, 61.0]},
+            ]
+        },
+    )
+    assert blocked_draw.status_code == 401
+    db.session.refresh(path)
+    assert path.path == [10.0, 20.0, 30.0, 40.0, 50.0, 60.0]
+
+    blocked_order = client.put(
+        f"/api/topo-images/{image_id}/line-paths/update-order",
+        token=moderator_token,
+        json={str(path.id): 0},
+    )
+    assert blocked_order.status_code == 401
+    owner_order = client.put(
+        f"/api/topo-images/{image_id}/line-paths/update-order",
+        token=member_token,
+        json={str(path.id): 0},
+    )
+    assert owner_order.status_code == 200, owner_order.text
+
+    blocked_delete = client.delete(f"/api/line-paths/{path.id}", token=moderator_token)
+    assert blocked_delete.status_code == 401
+    assert LinePath.query.filter_by(id=path.id).count() == 1
+
+    published = TopoImage.query.filter_by(publication_status=PublicationStatusEnum.PUBLISHED).first()
+    blocked_published_order = client.put(
+        f"/api/topo-images/{published.id}/line-paths/update-order",
+        token=member_token,
+        json={},
+    )
+    assert blocked_published_order.status_code == 401

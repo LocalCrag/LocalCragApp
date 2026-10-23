@@ -15,6 +15,7 @@
   "topoImageList.createLineButtonLabel": "Create line",
   "topoImageList.suggestLineButtonLabel": "Suggest line",
   "topoImageList.editLinePathsButtonLabel": "Edit lines",
+  "topoImageList.suggestLinePathsButtonLabel": "Suggest line paths",
   "topoImageList.addLineToImageButtonLabel": "Link line",
   "topoImageList.reorderLinePathsButtonLabel": "Reorder lines",
   "topoImageList.editTopoImageButtonLabel": "Edit image",

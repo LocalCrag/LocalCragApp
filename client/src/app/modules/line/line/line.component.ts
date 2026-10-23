@@ -269,14 +269,15 @@ export class LineComponent implements OnInit {
         badge: this.tabBadge(this.line.taskCount ?? 0),
       },
       {
-        label: this.translocoService.translate(marker('line.edit')),
+        label: this.translocoService.translate(
+          this.reviewsForeignDraft()
+            ? marker('suggestions.review')
+            : marker('line.edit'),
+        ),
         icon: 'pi pi-fw pi-file-edit',
         routerLink: this.reviewsForeignDraft()
           ? '/suggestions'
           : `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/edit`,
-        queryParams: this.reviewsForeignDraft()
-          ? { line: this.line.slug }
-          : undefined,
         visible: this.canEditLine,
       },
     ];

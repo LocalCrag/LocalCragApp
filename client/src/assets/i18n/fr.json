@@ -105,7 +105,7 @@
   "advancedColorPicker.accept": "Appliquer les modifications",
   "advancedColorPicker.cancel": "Annuler",
   "secretSpotTag.secret": "Secrète",
-  "draftTag.label": "Brouillon",
+  "draftTag.label": "Suggestion",
   "noDataAvailable": "Aucune donnée disponible.",
   "rulesAlert.updatedSinceLastView": "Règles mises à jour depuis votre dernière visite",
   "rulesAlert.lastUpdated": "Dernière mise à jour : {{date}}",
@@ -993,6 +993,7 @@
   "topoImage.topoImageList.createLineButtonLabel": "Créer une voie",
   "topoImage.topoImageList.suggestLineButtonLabel": "Proposer une voie",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Modifier les voies",
+  "topoImage.topoImageList.suggestLinePathsButtonLabel": "Proposer les tracés",
   "topoImage.topoImageList.addLineToImageButtonLabel": "Lier une voie",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Réorganiser les voies",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Modifier l'image",
@@ -1327,6 +1328,7 @@
 
   "menu.suggestions": "Suggestions",
 
+  "suggestions.review": "Examiner la suggestion",
   "suggestions.title": "Suggestions",
   "suggestions.empty": "Aucune suggestion en attente.",
   "suggestions.lines": "Lignes",
@@ -1337,7 +1339,7 @@
   "suggestions.messagePlaceholder": "Note facultative",
   "suggestions.confirm": "Envoyer",
   "suggestions.cancel": "Annuler",
-  "suggestions.by": "par",
+  "suggestions.suggestedBy": "Proposé par",
   "menu.notificationTextSuggestionSubmitted": "Une nouvelle ligne ou image topo a été proposée.",
   "menu.notificationTextSuggestionPublished": "Ta suggestion a été publiée.",
   "menu.notificationTextSuggestionRejected": "Ta suggestion a été refusée.",

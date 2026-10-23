@@ -21,6 +21,7 @@ import {
 import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
+import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 
 type ReviewAction = 'publish' | 'reject';
 
@@ -51,6 +52,7 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
     RouterLink,
     Textarea,
     TopoImageViewerComponent,
+    TopoHierarchyBreadcrumbsComponent,
   ],
   templateUrl: './suggestion-list.component.html',
   styleUrl: './suggestion-list.component.scss',

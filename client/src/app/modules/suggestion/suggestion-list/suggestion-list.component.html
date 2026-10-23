@@ -55,13 +55,22 @@
                     "
                     >{{ line.name }}</a
                   >
-                  <div class="text-sm text-surface-500">
-                    {{ line.cragName }} / {{ line.sectorName }} /
-                    {{ line.areaName }}
-                    @if (authorName(line.createdBy)) {
-                      · {{ t("by") }} {{ authorName(line.createdBy) }}
-                    }
-                  </div>
+                  <lc-topo-hierarchy-breadcrumbs
+                    class="mt-1"
+                    [crag]="{ name: line.cragName, slug: line.cragSlug }"
+                    [sector]="{ name: line.sectorName, slug: line.sectorSlug }"
+                    [area]="{ name: line.areaName, slug: line.areaSlug }"
+                  ></lc-topo-hierarchy-breadcrumbs>
+                  @if (authorName(line.createdBy); as name) {
+                    <div class="text-sm mt-1">
+                      {{ t("suggestedBy") }}
+                      <a
+                        class="underline"
+                        [routerLink]="'/users/' + line.createdBy?.slug"
+                        >{{ name }}</a
+                      >
+                    </div>
+                  }
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
@@ -126,13 +135,25 @@
                     [fragment]="image.id"
                     >{{ image.title || image.areaName }}</a
                   >
-                  <div class="text-sm text-surface-500">
-                    {{ image.cragName }} / {{ image.sectorName }} /
-                    {{ image.areaName }}
-                    @if (authorName(image.createdBy)) {
-                      · {{ t("by") }} {{ authorName(image.createdBy) }}
-                    }
-                  </div>
+                  <lc-topo-hierarchy-breadcrumbs
+                    class="mt-1"
+                    [crag]="{ name: image.cragName, slug: image.cragSlug }"
+                    [sector]="{
+                      name: image.sectorName,
+                      slug: image.sectorSlug,
+                    }"
+                    [area]="{ name: image.areaName, slug: image.areaSlug }"
+                  ></lc-topo-hierarchy-breadcrumbs>
+                  @if (authorName(image.createdBy); as name) {
+                    <div class="text-sm mt-1">
+                      {{ t("suggestedBy") }}
+                      <a
+                        class="underline"
+                        [routerLink]="'/users/' + image.createdBy?.slug"
+                        >{{ name }}</a
+                      >
+                    </div>
+                  }
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">

@@ -103,6 +103,17 @@ def can_edit_publication(user, entity) -> bool:
     return bool(user.moderator)
 
 
+def assert_owns_draft_topo_image(user, topo_image):
+    """Drawing and ordering on a draft image belong to the user who created it.
+
+    Moderators keep those actions on published images. On someone else's draft they review it instead.
+    """
+    if topo_image.publication_status != PublicationStatusEnum.DRAFT:
+        return
+    if not _owns_publication(topo_image.created_by_id, user):
+        raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
+
+
 def assert_can_delete_publication(user, entity):
     """Owners may delete their drafts. Moderators may delete published content, not someone else's draft."""
     if not can_edit_publication(user, entity):
