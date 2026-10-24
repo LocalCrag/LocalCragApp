@@ -41,6 +41,7 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { AreasService } from '../../../services/crud/areas.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
@@ -155,6 +156,7 @@ export class LineFormComponent implements OnInit {
   public area: Area;
 
   public line: Line;
+  public viewerIsModerator = false;
   public editMode = false;
   public grades = null;
   public assumedGradeOptions: Grade[] = [];
@@ -186,6 +188,8 @@ export class LineFormComponent implements OnInit {
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
+  /** Set when this form was opened to draw the new line on a topo image. */
+  private drawOnTopoImageId: string | null = null;
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
@@ -213,9 +217,16 @@ export class LineFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    waitForAuthState(this.store)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((auth) => {
+        this.viewerIsModerator = !!auth.user?.moderator;
+      });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
+    this.drawOnTopoImageId =
+      this.route.snapshot.queryParamMap.get('drawOnTopoImage');
     const lineSlug = this.route.snapshot.paramMap.get('line-slug');
 
     forkJoin([
@@ -302,9 +313,8 @@ export class LineFormComponent implements OnInit {
         this.editMode = true;
         this.setPageTitle();
         this.lineForm.disable();
-        this.linesService
-          .getLine(lineSlug)
-          .pipe(
+        forkJoin([
+          this.linesService.getLine(lineSlug).pipe(
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
@@ -312,23 +322,42 @@ export class LineFormComponent implements OnInit {
               }
               return throwError(() => e);
             }),
-          )
-          .subscribe((line) => {
-            this.line = line;
-            this.buildTypeOptionsForLine();
-            // find() must always find a result if the backend state is not corrupted
-            const scale = this.groupedScales[this.line.type].find(
-              (scale) => scale.name == this.line.gradeScale,
-            );
-            this.scaleOptions = [{ label: scale.name, value: scale.name }];
-            this.grades = this.filterGradesForSelect(scale.grades);
-
-            this.setFormValue();
-            this.loadingState = LoadingState.DEFAULT;
-            if (this.editor) {
-              this.editor.getQuill()?.enable();
+          ),
+          waitForAuthState(this.store),
+        ]).subscribe(([line, auth]) => {
+          this.viewerIsModerator = !!auth.user?.moderator;
+          const ownsDraft =
+            line.publicationStatus === 'draft' &&
+            line.createdById === auth.user?.id;
+          if (line.publicationStatus === 'draft' && !ownsDraft) {
+            if (this.viewerIsModerator) {
+              this.router.navigate(['/suggestions'], {
+                queryParams: { line: line.slug },
+              });
+              return;
             }
-          });
+            this.router.navigate(['']);
+            return;
+          }
+          if (!this.viewerIsModerator && line.publicationStatus !== 'draft') {
+            this.router.navigate(['']);
+            return;
+          }
+          this.line = line;
+          this.buildTypeOptionsForLine();
+          // find() must always find a result if the backend state is not corrupted
+          const scale = this.groupedScales[this.line.type].find(
+            (scale) => scale.name == this.line.gradeScale,
+          );
+          this.scaleOptions = [{ label: scale.name, value: scale.name }];
+          this.grades = this.filterGradesForSelect(scale.grades);
+
+          this.setFormValue();
+          this.loadingState = LoadingState.DEFAULT;
+          if (this.editor) {
+            this.editor.getQuill()?.enable();
+          }
+        });
         // Rebuild type/scale labels on language change
         this.languageService.renderedLanguage$
           .pipe(takeUntilDestroyed(this.destroyRef))
@@ -619,6 +648,11 @@ export class LineFormComponent implements OnInit {
         this.areaSlug,
         this.line.slug,
       ]);
+    } else if (this.drawOnTopoImageId) {
+      this.router.navigate(
+        ['/topo', this.cragSlug, this.sectorSlug, this.areaSlug, 'topo-images'],
+        { fragment: this.drawOnTopoImageId },
+      );
     } else {
       this.router.navigate([
         '/topo',
@@ -703,7 +737,10 @@ export class LineFormComponent implements OnInit {
       line.arete = this.lineForm.get('arete').value;
       line.mantle = this.lineForm.get('mantle').value;
       line.secret = this.lineForm.get('secret').value;
-      line.closureSchedules = this.lineForm.get('closureSchedules').value ?? [];
+      if (this.viewerIsModerator) {
+        line.closureSchedules =
+          this.lineForm.get('closureSchedules').value ?? [];
+      }
       if (this.line) {
         line.slug = this.line.slug;
         this.linesService.updateLine(line).subscribe((line) => {
@@ -718,17 +755,34 @@ export class LineFormComponent implements OnInit {
           this.loadingState = LoadingState.DEFAULT;
         });
       } else {
-        this.linesService.createLine(line, this.areaSlug).subscribe(() => {
-          this.store.dispatch(toastNotification('LINE_CREATED'));
-          this.router.navigate([
-            '/topo',
-            this.cragSlug,
-            this.sectorSlug,
-            this.areaSlug,
-            'lines',
-          ]);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.linesService
+          .createLine(line, this.areaSlug)
+          .subscribe((createdLine) => {
+            this.store.dispatch(toastNotification('LINE_CREATED'));
+            if (this.drawOnTopoImageId) {
+              void this.router.navigate(
+                [
+                  '/topo',
+                  this.cragSlug,
+                  this.sectorSlug,
+                  this.areaSlug,
+                  'topo-images',
+                  this.drawOnTopoImageId,
+                  'edit-line-paths',
+                ],
+                { queryParams: { line: createdLine.id } },
+              );
+            } else {
+              this.router.navigate([
+                '/topo',
+                this.cragSlug,
+                this.sectorSlug,
+                this.areaSlug,
+                'lines',
+              ]);
+            }
+            this.loadingState = LoadingState.DEFAULT;
+          });
       }
     } else {
       this.formDirective.markAsTouched();

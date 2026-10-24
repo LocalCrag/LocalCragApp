@@ -51,6 +51,12 @@
                 item.type === "moderator_task_assigned"
               ) {
                 <i class="pi pi-list-check"></i>
+              } @else if (
+                item.type === "suggestion_submitted" ||
+                item.type === "suggestion_published" ||
+                item.type === "suggestion_rejected"
+              ) {
+                <i class="pi pi-flag"></i>
               } @else {
                 <i class="pi pi-cog"></i>
               }

@@ -19,6 +19,7 @@ import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-n
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { AdminMessageDialogService } from '../admin-message-dialog/admin-message-dialog.service';
 import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-removal-message-dialog.service';
+import { SuggestionReviewMessageDialogService } from '../suggestion-review-message-dialog/suggestion-review-message-dialog.service';
 
 @Component({
   selector: 'lc-notification-list',
@@ -32,6 +33,7 @@ import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-r
     DialogService,
     AdminMessageDialogService,
     FaRemovalMessageDialogService,
+    SuggestionReviewMessageDialogService,
   ],
 })
 export class NotificationListComponent implements OnInit {
@@ -51,6 +53,7 @@ export class NotificationListComponent implements OnInit {
   private pageTitleService = inject(PageTitleService);
   private adminMessageDialog = inject(AdminMessageDialogService);
   private faRemovalDialog = inject(FaRemovalMessageDialogService);
+  private suggestionReviewDialog = inject(SuggestionReviewMessageDialogService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -80,6 +83,16 @@ export class NotificationListComponent implements OnInit {
         void this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { faRemoval: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+      const suggestionReviewId = params.get('suggestionReview');
+      if (suggestionReviewId) {
+        this.suggestionReviewDialog.openById(suggestionReviewId);
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { suggestionReview: null },
           queryParamsHandling: 'merge',
           replaceUrl: true,
         });
@@ -122,6 +135,9 @@ export class NotificationListComponent implements OnInit {
   public openNotification(notification: NotificationItem): void {
     const go = (): void => {
       if (this.faRemovalDialog.openFromNotification(notification)) {
+        return;
+      }
+      if (this.suggestionReviewDialog.openFromNotification(notification)) {
         return;
       }
       if (notification.type === 'admin_message' && notification.entityId) {

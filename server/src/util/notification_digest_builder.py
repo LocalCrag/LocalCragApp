@@ -49,7 +49,11 @@ def build_digest_items(
     grouped: dict[tuple, int] = {}
     explicit_items: list[dict] = []
     for notification in notifications:
-        if notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED:
+        if notification.type in (
+            NotificationTypeEnum.FA_MODERATION_REMOVED,
+            NotificationTypeEnum.SUGGESTION_PUBLISHED,
+            NotificationTypeEnum.SUGGESTION_REJECTED,
+        ):
             entry = _build_digest_item(
                 notification.type,
                 notification.entity_type,
@@ -185,6 +189,33 @@ def _build_digest_item(
                     body = f"{body} {message_link}"
                 return {"html": body}
         return None
+    if notification_type == NotificationTypeEnum.SUGGESTION_SUBMITTED:
+        target_link = _target_anchor(frontend_url("suggestions"), digest_i18n["open_notifications"], quote=False)
+        text_key = "suggestion_submitted_text_single" if count == 1 else "suggestion_submitted_text"
+        return {"html": digest_i18n[text_key].format(count=count, target_link=target_link)}
+    if notification_type in (
+        NotificationTypeEnum.SUGGESTION_PUBLISHED,
+        NotificationTypeEnum.SUGGESTION_REJECTED,
+    ):
+        moderator_name = ""
+        if notification is not None and notification.actor:
+            moderator_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
+        href = (
+            frontend_url(f"notifications?suggestionReview={notification.id}")
+            if notification is not None
+            else frontend_url("notifications")
+        )
+        target_link = _target_anchor(href, digest_i18n["open_notifications"], quote=False)
+        text_key = (
+            "suggestion_published_text"
+            if notification_type == NotificationTypeEnum.SUGGESTION_PUBLISHED
+            else "suggestion_rejected_text"
+        )
+        body = digest_i18n[text_key].format(
+            moderator_name=html.escape(moderator_name),
+            target_link=target_link,
+        )
+        return {"html": body}
     return None
 
 

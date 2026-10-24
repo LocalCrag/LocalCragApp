@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { NgClass } from '@angular/common';
@@ -26,7 +33,7 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
 import { Message } from 'primeng/message';
@@ -34,6 +41,10 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RouterLink } from '@angular/router';
 import { InputText } from 'primeng/inputtext';
+import {
+  UserRightsDialogComponent,
+  userPromotionTarget,
+} from './user-rights-dialog.component';
 
 @Component({
   selector: 'lc-user-list',
@@ -56,7 +67,8 @@ import { InputText } from 'primeng/inputtext';
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ConfirmationService, DialogService],
 })
 export class UserListComponent implements OnInit {
   @ViewChild('userMenu') userMenu: Menu;
@@ -80,6 +92,9 @@ export class UserListComponent implements OnInit {
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
+  private dialogService = inject(DialogService);
+  private changeDetector = inject(ChangeDetectorRef);
+  private rightsDialogRef: DynamicDialogRef | undefined;
 
   ngOnInit() {
     this.pageTitleService.setTitle(
@@ -112,6 +127,7 @@ export class UserListComponent implements OnInit {
         },
       ];
       this.sortKey = this.sortOptions[0];
+      this.changeDetector.markForCheck();
     });
   }
 
@@ -159,44 +175,12 @@ export class UserListComponent implements OnInit {
     }
     return [
       {
-        icon: 'pi pi-fw pi-user',
+        icon: 'pi pi-fw pi-shield',
         label: this.translocoService.translate(
-          marker('usersMenu.promoteToUser'),
+          marker('usersMenu.rightsAndRoles'),
         ),
-        visible: user.member && !user.superadmin,
         command: () => {
-          this.promoteUser(user, UserPromotionTargets.USER);
-        },
-      },
-      {
-        icon: 'pi pi-fw pi-heart-fill',
-        label: this.translocoService.translate(
-          marker('usersMenu.promoteToMember'),
-        ),
-        visible:
-          (!user.member || user.moderator || user.admin) && !user.superadmin,
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.MEMBER);
-        },
-      },
-      {
-        icon: 'pi pi-fw pi-star-fill',
-        label: this.translocoService.translate(
-          marker('usersMenu.promoteToModerator'),
-        ),
-        visible: (!user.moderator || user.admin) && !user.superadmin,
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.MODERATOR);
-        },
-      },
-      {
-        icon: 'pi pi-fw pi-key',
-        label: this.translocoService.translate(
-          marker('usersMenu.promoteToAdmin'),
-        ),
-        visible: !user.admin && !user.superadmin,
-        command: () => {
-          this.promoteUser(user, UserPromotionTargets.ADMIN);
+          this.openRightsDialog(user);
         },
       },
       {
@@ -269,10 +253,27 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  promoteUser(user: User, promotionTarget: UserPromotionTargets) {
-    this.usersService.promoteUser(user.id, promotionTarget).subscribe(() => {
-      this.store.dispatch(toastNotification('USER_PROMOTED'));
-      this.refreshData();
+  openRightsDialog(user: User) {
+    this.rightsDialogRef?.close();
+    this.rightsDialogRef = this.dialogService.open(UserRightsDialogComponent, {
+      header: this.translocoService.translate(
+        marker('users.list.rightsDialogTitle'),
+      ),
+      data: {
+        userId: user.id,
+        role: userPromotionTarget(user),
+        suggestionsEnabled: user.suggestionsEnabled,
+      },
+      modal: true,
+      dismissableMask: true,
+      closeOnEscape: true,
+      width: '28rem',
+      breakpoints: { '640px': '95vw' },
+    });
+    this.rightsDialogRef.onClose.subscribe((saved: boolean) => {
+      if (saved) {
+        this.refreshData();
+      }
     });
   }
 }

@@ -16,6 +16,8 @@ MODERATOR_TASK_NOTIFICATION_TYPES = frozenset(
 def should_show_notification_to_user(user: User, notification_type: NotificationTypeEnum) -> bool:
     if notification_type in MODERATOR_TASK_NOTIFICATION_TYPES:
         return user.moderator
+    if notification_type == NotificationTypeEnum.SUGGESTION_SUBMITTED:
+        return user.moderator
     return True
 
 

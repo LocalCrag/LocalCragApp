@@ -14,5 +14,7 @@
   "linePathForm.tabuRequiresLinePath": "Traccia prima la linea sull'immagine per assegnare le aree tabù.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Traccia una linea con almeno due punti di ancoraggio.",
   "linePathForm.saveAllLinePathsButtonLabel": "Salva",
-  "linePathForm.leaveEditorButtonLabel": "Esci dall'editor"
+  "linePathForm.leaveEditorButtonLabel": "Esci dall'editor",
+  "linePathForm.noLinesToDraw": "Non ci sono ancora problemi da tracciare.",
+  "linePathForm.noOwnLinesToDraw": "Puoi tracciare solo i tuoi suggerimenti. Proponi prima un problema."
 }

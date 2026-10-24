@@ -4,6 +4,35 @@ lc-single-image-upload {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+
+    &--full {
+      display: flex;
+      width: 100%;
+
+      .image-wrapper,
+      .image-focus-preview,
+      .p-image,
+      .p-image img,
+      .image-focus-preview__image {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .image-wrapper,
+      .image-focus-preview {
+        display: block;
+      }
+
+      .p-image img,
+      .image-focus-preview__image {
+        height: auto;
+      }
+
+      .p-image-preview-mask {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
   }
 
   .focus-adjust-actions {

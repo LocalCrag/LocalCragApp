@@ -1,5 +1,5 @@
 {
   "batchUploadForm.lineFADateLabel": "Data di tracciatura",
-  "topoImageForm.addTopoImageDescription": "Carica una nuova immagine Guida. Così i problemi associati potranno essere tracciati sull'immagine. Accertarsi che la parete prenda la maggior parte dell'immagine e che l'intera linea sia ben visibile. In alcuni casi può avere senso tracciare la stessa linea su più immagini. Per esempio nel caso di traverse o problemi lungo uno spigolo.",
+  "topoImageForm.addTopoImageDescription": "Carica una o più immagini Guida. Dopo il caricamento, aggiungi titolo, descrizione e posizione GPS per ogni immagine. La parete deve occupare la maggior parte dell'immagine e l'intera linea deve essere ben visibile. Più immagini sono utili, ad esempio per traverse o problemi lungo uno spigolo.",
   "topoImageForm.topoImageDescriptionPlaceholder": "Info sulla parete. Ad esempio, esiste uno stile di problemi tipico? Ha una storia particolare? Etc..."
 }

@@ -15,6 +15,7 @@ from marshmallow_schemas.search_schema import area_search_schema, areas_search_s
 from models.area import Area
 from models.enums.history_item_type_enum import HistoryItemTypeEnum
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.history_item import HistoryItem
 from models.instance_settings import InstanceSettings
 from models.line import Line
@@ -256,7 +257,10 @@ class GetAreaGrades(MethodView):
             Line.type,
             Line.grade_scale,
             Line.user_grade_value if instance_settings.display_user_grades else Line.author_grade_value,
-        ).filter(Line.area_id == area_id, Line.archived.is_(False))
+        ).filter(
+            Line.area_id == area_id,
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+        )
         query = SecretService.apply_line_filter(query)
         result = query.all()
 

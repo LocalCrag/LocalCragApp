@@ -28,6 +28,7 @@ from util.moderator_task_links import (
     moderator_task_target_label,
 )
 from util.moderator_task_notifications import should_show_notification_to_user
+from util.suggestions import published_suggestion_link, suggestion_review_subject
 from webargs_schemas.notification_args import get_notifications_args
 
 
@@ -80,6 +81,13 @@ def _notification_action_link(notification: Notification) -> str | None:
         and notification.entity_id
     ):
         return f"/notifications?adminMessage={notification.entity_id}"
+    if notification.type == NotificationTypeEnum.SUGGESTION_SUBMITTED:
+        return "/suggestions"
+    if notification.type in (
+        NotificationTypeEnum.SUGGESTION_PUBLISHED,
+        NotificationTypeEnum.SUGGESTION_REJECTED,
+    ):
+        return f"/notifications?suggestionReview={notification.id}"
     return None
 
 
@@ -151,6 +159,14 @@ def _serialize_notification(notification: Notification) -> dict:
             }
     if notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED and notification.message:
         properties["faRemoval"] = {"message": notification.message}
+    if notification.type in (
+        NotificationTypeEnum.SUGGESTION_PUBLISHED,
+        NotificationTypeEnum.SUGGESTION_REJECTED,
+    ):
+        review = {"message": notification.message}
+        review["targetLink"] = published_suggestion_link(notification.entity_type, notification.entity_id)
+        review["subject"] = suggestion_review_subject(notification.entity_type, notification.entity_id)
+        properties["suggestionReview"] = review
     return {
         "id": str(notification.id),
         "type": notification.type.value,

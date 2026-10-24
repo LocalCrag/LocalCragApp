@@ -27,6 +27,24 @@ export interface NotificationFaRemovalProperties {
   message: string;
 }
 
+export interface NotificationSuggestionReviewSubject {
+  kind: 'line' | 'topoImage';
+  name?: string;
+  title?: string | null;
+  color?: string | null;
+  cragName?: string;
+  sectorName?: string;
+  areaName?: string;
+  linePaths?: unknown[];
+  image?: unknown;
+}
+
+export interface NotificationSuggestionReviewProperties {
+  message: string | null;
+  targetLink?: string | null;
+  subject?: NotificationSuggestionReviewSubject | null;
+}
+
 export interface NotificationItemProperties {
   subject?: NotificationSubjectProperties;
   reaction?: NotificationReactionProperties;
@@ -34,6 +52,7 @@ export interface NotificationItemProperties {
   releaseNotes?: NotificationReleaseNotesProperties;
   adminMessage?: NotificationAdminMessageProperties;
   faRemoval?: NotificationFaRemovalProperties;
+  suggestionReview?: NotificationSuggestionReviewProperties;
 }
 
 export interface NotificationItem {

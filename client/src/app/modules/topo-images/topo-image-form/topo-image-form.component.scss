@@ -1,3 +1,44 @@
+@use "../../../styles/media-queries" as m;
+
 .topo-image-upload-group.disabled {
   opacity: 1;
+}
+
+.topo-image-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.topo-image-entry__columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.topo-image-entry__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+@media (min-width: m.$mobile-breakpoint) {
+  .topo-image-entry__columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .topo-image-entry__fields > :first-child .form-label {
+    margin-top: 0;
+  }
+}
+
+.topo-image-entry__image {
+  min-width: 0;
+}
+
+.topo-image-entry__fields ::ng-deep .p-editor {
+  width: 100%;
 }

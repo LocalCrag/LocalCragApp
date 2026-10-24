@@ -56,6 +56,9 @@ test.describe('Topo images test', () => {
       .locator('[data-cy="topo-image-input"] input')
       .setInputFiles(sampleImagePath);
     await uploadFilePromise;
+    await expect(
+      page.locator('[data-cy="topo-image-form-title"]'),
+    ).toBeVisible();
     await page
       .locator('[data-cy="topo-image-form-coordinates"] input')
       .nth(0)

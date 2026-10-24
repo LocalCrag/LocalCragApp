@@ -14,5 +14,7 @@
   "linePathForm.tabuRequiresLinePath": "Draw the line on the image first to assign tabu areas.",
   "linePathForm.drawALineWithAtLeastTwoAnchorPoints": "Draw a line with at least two anchor points.",
   "linePathForm.saveAllLinePathsButtonLabel": "Save",
-  "linePathForm.leaveEditorButtonLabel": "Exit Editor"
+  "linePathForm.leaveEditorButtonLabel": "Exit Editor",
+  "linePathForm.noLinesToDraw": "There are no lines to draw yet.",
+  "linePathForm.noOwnLinesToDraw": "You can only draw your own suggestions. Suggest a line first."
 }

@@ -150,9 +150,10 @@ def test_member_can_update_and_delete_feature(client, member_token):
 
 def test_feature_topo_links_multi_and_dump(client, member_token):
     from models.crag import Crag
+    from models.enums.publication_status_enum import PublicationStatusEnum
     from models.line import Line
 
-    line = Line.query.filter(Line.archived.is_(False)).first()
+    line = Line.query.filter(Line.publication_status == PublicationStatusEnum.PUBLISHED).first()
     crag = Crag.query.first()
     assert line is not None
     assert crag is not None

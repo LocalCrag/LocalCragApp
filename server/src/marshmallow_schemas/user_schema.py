@@ -3,6 +3,7 @@ from marshmallow import fields
 from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntitySchema
 from marshmallow_schemas.file_schema import FileSchema
+from util.suggestions import suggestions_enabled
 
 
 class UserMinSchema(ma.SQLAlchemySchema):
@@ -28,9 +29,13 @@ class UserSchema(BaseEntitySchema):
     admin = fields.Boolean()
     moderator = fields.Boolean()
     member = fields.Boolean()
+    suggestionsEnabled = fields.Method("get_suggestions_enabled")
     activated = fields.Boolean()
     activatedAt = fields.DateTime(attribute="activated_at")
     avatar = ma.Nested(FileSchema)
+
+    def get_suggestions_enabled(self, obj):
+        return suggestions_enabled(obj)
 
 
 user_list_schema = UserSchema(many=True)

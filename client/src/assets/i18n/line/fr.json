@@ -1,6 +1,9 @@
 {
   "lineList.noLinesFoundEmptyMessage": "Aucune ligne trouvée",
   "lineList.newLineButtonLabel": "Nouvelle ligne",
+  "lineList.suggestLineButtonLabel": "Proposer une ligne",
+
+  "lineList.draftTag": "Brouillon",
   "lineList.orderByLabel": "Trier par:",
   "lineList.lineType": "Type de ligne",
   "lineList.hideArchive": "Masquer les archives",
@@ -12,6 +15,8 @@
   "line.previousTopoImage": "Image précédente",
   "line.nextTopoImage": "Image suivante",
   "line.ascentCount": "Ascensions",
+
+  "line.draftTag": "Brouillon",
   "line.userGrade": "Évaluation des utilisateurs",
   "line.proposedAs": "Proposé à",
   "line.videoBeta": "Vidéo bêta",

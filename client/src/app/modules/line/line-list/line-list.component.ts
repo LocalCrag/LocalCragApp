@@ -19,6 +19,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { NgClass } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -95,6 +96,7 @@ import {
     RatingModule,
     RouterLink,
     SecretSpotTagComponent,
+    DraftTagComponent,
     TickButtonComponent,
     TranslocoDirective,
     NgClass,

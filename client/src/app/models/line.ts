@@ -59,7 +59,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   startingPosition: StartingPosition;
   drying: Drying | null;
   secret: boolean;
-  archived?: boolean;
+  publicationStatus: string;
+  createdById: string | null;
 
   variant: boolean;
   eliminate: boolean;
@@ -167,7 +168,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.startingPosition = payload.startingPosition;
     line.drying = payload.drying ?? null;
     line.secret = payload.secret;
-    line.archived = payload.archived;
+    line.publicationStatus = payload.publicationStatus ?? 'published';
+    line.createdById = payload.createdById ?? null;
 
     line.variant = payload.variant ?? false;
     line.eliminate = payload.eliminate;

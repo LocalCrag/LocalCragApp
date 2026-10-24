@@ -15,7 +15,13 @@ from marshmallow_schemas.mixins.moderator_task_count import (
 from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
 from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+
+
+def _created_by_id(obj):
+    created_by_id = getattr(obj, "created_by_id", None)
+    return str(created_by_id) if created_by_id else None
 
 
 class LineFaUserSchema(ma.Schema):
@@ -51,7 +57,8 @@ class LineSchemaMin(BaseEntityMinSchema):
     assumedGradeMin = fields.Integer(attribute="assumed_grade_min")
     assumedGradeMax = fields.Integer(attribute="assumed_grade_max")
     gradeScale = fields.String(attribute="grade_scale")
-    archived = fields.Boolean()
+    publicationStatus = EnumField(PublicationStatusEnum, by_value=True, attribute="publication_status")
+    createdById = fields.Function(_created_by_id)
 
 
 class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
@@ -84,7 +91,8 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     startingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="starting_position")
     drying = EnumField(DryingEnum, by_value=True, allow_none=True)
     secret = fields.Boolean()
-    archived = fields.Boolean()
+    publicationStatus = EnumField(PublicationStatusEnum, by_value=True, attribute="publication_status")
+    createdById = fields.Function(_created_by_id)
 
     variant = fields.Boolean()
     eliminate = fields.Boolean()

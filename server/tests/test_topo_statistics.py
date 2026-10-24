@@ -5,6 +5,7 @@ from models.area import Area
 from models.ascent import Ascent
 from models.comment import Comment
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.enums.todo_priority_enum import TodoPriorityEnum
 from models.instance_settings import InstanceSettings
@@ -137,7 +138,7 @@ def test_area_statistics_include_first_ascents_and_wishlist(client):
         SecretService.apply_line_filter(db.session.query(Line))
         .filter(
             Line.area_id == area.id,
-            Line.archived.is_(False),
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
             Line.author_grade_value >= 0,
             Line.fa_year.is_(None),
             Line.fa_date.is_(None),
@@ -150,12 +151,20 @@ def test_area_statistics_include_first_ascents_and_wishlist(client):
     assert body["disciplines"]["BOULDER"] >= 1
     graded_lines = (
         SecretService.apply_line_filter(db.session.query(Line))
-        .filter(Line.area_id == area.id, Line.archived.is_(False), Line.author_grade_value >= 0)
+        .filter(
+            Line.area_id == area.id,
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            Line.author_grade_value >= 0,
+        )
         .count()
     )
     project_lines = (
         SecretService.apply_line_filter(db.session.query(Line))
-        .filter(Line.area_id == area.id, Line.archived.is_(False), Line.author_grade_value < 0)
+        .filter(
+            Line.area_id == area.id,
+            Line.publication_status == PublicationStatusEnum.PUBLISHED,
+            Line.author_grade_value < 0,
+        )
         .count()
     )
     assert body["coverage"]["totalLines"] == graded_lines

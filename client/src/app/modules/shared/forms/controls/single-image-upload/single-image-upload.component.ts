@@ -75,6 +75,7 @@ export class SingleImageUploadComponent
   @ViewChild('focusStage') focusStage?: ElementRef<HTMLElement>;
 
   @Input() focusAdjustable = false;
+  @Input() fullWidth = false;
 
   public uploadUrl: string;
   public isDisabled = false;

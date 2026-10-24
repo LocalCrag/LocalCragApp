@@ -8,6 +8,10 @@ from models.ascent import Ascent
 from models.base_entity import BaseEntity
 from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import (
+    PublicationStatusEnum,
+    publication_status_type,
+)
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from models.mixins.has_slug import HasSlug
@@ -48,7 +52,12 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     bolt_date = db.Column(db.Date, nullable=True)
     starting_position = db.Column(db.Enum(StartingPositionEnum), nullable=False)
     drying = db.Column(db.Enum(DryingEnum), nullable=True)
-    archived = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    publication_status = db.Column(
+        publication_status_type,
+        nullable=False,
+        default=PublicationStatusEnum.PUBLISHED,
+        server_default=PublicationStatusEnum.PUBLISHED.value,
+    )
 
     variant = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     eliminate = db.Column(db.Boolean, nullable=False, default=False)
@@ -118,6 +127,11 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
         from util.moderator_task_scope import count_open_moderator_tasks
 
         return count_open_moderator_tasks("Line", self.id)
+
+    def should_be_searchable(self) -> bool:
+        if self.publication_status != PublicationStatusEnum.PUBLISHED:
+            return False
+        return super().should_be_searchable()
 
     def get_fa_users(self):
         """FA climbers with ascent year/date, ordered by ascent_date then name.

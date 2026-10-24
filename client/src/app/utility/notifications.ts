@@ -143,6 +143,11 @@ export const NOTIFICATIONS = {
     title: marker('notifications.USER_PROMOTED_TITLE'),
     message: marker('notifications.USER_PROMOTED_MESSAGE'),
   },
+  PERMISSIONS_UPDATED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PERMISSIONS_UPDATED_TITLE'),
+    message: marker('notifications.PERMISSIONS_UPDATED_MESSAGE'),
+  },
   USER_DELETED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.USER_DELETED_TITLE'),
@@ -321,6 +326,11 @@ export const NOTIFICATIONS = {
     type: NotificationType.SUCCESS,
     title: marker('notifications.TOPO_IMAGE_ADDED_TITLE'),
     message: marker('notifications.TOPO_IMAGE_ADDED_MESSAGE'),
+  },
+  TOPO_IMAGES_ADDED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TOPO_IMAGES_ADDED_TITLE'),
+    message: marker('notifications.TOPO_IMAGES_ADDED_MESSAGE'),
   },
   TOPO_IMAGE_UPDATED: {
     type: NotificationType.SUCCESS,

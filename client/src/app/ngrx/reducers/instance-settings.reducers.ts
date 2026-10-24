@@ -36,11 +36,13 @@ export interface InstanceSettingsState {
   displayUserGrades: boolean;
   displayUserRatings: boolean;
   noClosedProjects: boolean;
+  suggestionsEnabled: boolean;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
   language: LanguageCode;
   timezone: string;
+  loaded: boolean;
 }
 
 export const initialInstanceSettingsState: InstanceSettingsState = {
@@ -71,11 +73,13 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   displayUserGrades: false,
   displayUserRatings: false,
   noClosedProjects: false,
+  suggestionsEnabled: true,
   faDefaultFormat: FaDefaultFormat.YEAR,
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
   language: null,
   timezone: 'UTC',
+  loaded: false,
 };
 
 const instanceSettingsReducer = createReducer(
@@ -109,11 +113,13 @@ const instanceSettingsReducer = createReducer(
     displayUserGrades: action.settings.displayUserGrades,
     displayUserRatings: action.settings.displayUserRatings,
     noClosedProjects: action.settings.noClosedProjects,
+    suggestionsEnabled: action.settings.suggestionsEnabled,
     faDefaultFormat: action.settings.faDefaultFormat,
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,
     language: action.settings.language,
     timezone: action.settings.timezone,
+    loaded: true,
   })),
 );
 

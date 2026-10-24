@@ -18,6 +18,7 @@ from models.ascent import Ascent
 from models.comment import Comment
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.notification_type_enum import NotificationTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
 from models.sector import Sector
@@ -31,6 +32,7 @@ from util.email import send_project_climbed_email
 from util.notifications import create_notification_for_user
 from util.reactions import get_reactions_by_user
 from util.secret_service import SecretService
+from util.suggestions import can_view_publication
 from util.validators import cross_validate_grade
 from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
@@ -201,6 +203,10 @@ class CreateAscent(MethodView):
         created_by = User.find_by_email(get_session_identity())
 
         line: Line = Line.find_by_id(ascent_data["line"])
+        if line.publication_status not in (PublicationStatusEnum.PUBLISHED, PublicationStatusEnum.ARCHIVED):
+            if not can_view_publication(line, created_by):
+                raise NotFound()
+            raise BadRequest("Draft lines cannot be ticked.")
         if line.author_grade_value < 0:
             raise BadRequest("Projects cannot be ticked.")
         if ascent_data["gradeValue"] < 0:

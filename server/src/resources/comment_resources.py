@@ -36,6 +36,7 @@ from util.reactions import get_reactions_by_user
 from util.rock_explorer import assert_can_view_feature
 from util.secret_service import SecretService
 from util.security_util import current_user_is_member
+from util.suggestions import assert_can_view_publication
 from webargs_schemas.comment_args import comment_args, comment_update_args
 
 
@@ -90,6 +91,8 @@ class CreateComment(MethodView):
             raise NotFound()
         if obj_type == "Ascent" and target.line and target.line.secret and not SecretService.can_view_secrets():
             raise NotFound()
+        if obj_type == "Line":
+            assert_can_view_publication(target, created_by)
 
         parent_id = data.get("parentId")
         parent = None

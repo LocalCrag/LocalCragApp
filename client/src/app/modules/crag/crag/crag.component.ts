@@ -7,9 +7,9 @@ import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
-import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
+import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { Title } from '@angular/platform-browser';
 
 import {
@@ -71,7 +71,9 @@ export class CragComponent implements OnInit {
               return throwError(() => e);
             }),
           ),
-          this.store.pipe(select(selectIsModerator), take(1)),
+          waitForAuthState(this.store).pipe(
+            map((auth) => !!auth.user?.moderator),
+          ),
           this.store.pipe(select(selectGymMode), take(1)),
           this.blocWeatherService.getNearest('crag', cragSlug),
           this.store.pipe(select(selectBgImage), take(1)),

@@ -119,6 +119,23 @@ export class NotificationPresentationService {
       return `${lead}: ${titles.join(', ')}`;
     }
 
+    if (notification.type === 'suggestion_submitted') {
+      return this.translocoService
+        .translate('menu.notificationTextSuggestionSubmitted')
+        .trim();
+    }
+
+    if (
+      notification.type === 'suggestion_published' ||
+      notification.type === 'suggestion_rejected'
+    ) {
+      const key =
+        notification.type === 'suggestion_published'
+          ? 'menu.notificationTextSuggestionPublished'
+          : 'menu.notificationTextSuggestionRejected';
+      return this.translocoService.translate(key).trim();
+    }
+
     if (notification.type === 'admin_message') {
       return (
         notification.properties.adminMessage?.title ||

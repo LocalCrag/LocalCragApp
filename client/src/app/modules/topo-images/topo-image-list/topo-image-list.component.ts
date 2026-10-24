@@ -3,10 +3,16 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { ConfirmationService, PrimeIcons, SelectItem } from 'primeng/api';
+import {
+  ConfirmationService,
+  MenuItem,
+  PrimeIcons,
+  SelectItem,
+} from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
@@ -17,6 +23,7 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { TopoImage } from '../../../models/topo-image';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -28,7 +35,10 @@ import { OrderItemsComponent } from '../../shared/components/order-items/order-i
 import { NgClass, NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import { filter, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
-import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import {
+  selectCanContributeTopo,
+  selectInstanceSettingsState,
+} from '../../../ngrx/selectors/instance-settings.selectors';
 import { TicksService } from '../../../services/crud/ticks.service';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
@@ -40,12 +50,13 @@ import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
-import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
+import { ArchiveService } from '../../../services/crud/archive.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { Rating } from 'primeng/rating';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -54,6 +65,7 @@ import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-b
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
+import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   primaryTopoLinePaths,
@@ -82,6 +94,7 @@ import {
     FormsModule,
     GymModeDirective,
     Button,
+    Menu,
     HasPermissionDirective,
     RouterLink,
     Message,
@@ -89,7 +102,6 @@ import {
     NgClass,
     NgTemplateOutlet,
     TopoImageDetailsComponent,
-    ArchiveButtonComponent,
     ClosedSpotTagComponent,
     Rating,
     TickButtonComponent,
@@ -98,10 +110,14 @@ import {
     LineGradePipe,
     TopoImageViewerComponent,
     LineNumberBadgeComponent,
+    DraftTagComponent,
   ],
 })
 export class TopoImageListComponent implements OnInit {
+  @ViewChild('topoImageMenu') topoImageMenu: Menu;
+
   public topoImages: TopoImage[];
+  public topoImageActionItems: MenuItem[] = [];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public sortOptions: SelectItem[];
@@ -116,8 +132,14 @@ export class TopoImageListComponent implements OnInit {
   public ticks: Set<string>;
   public showArchive = false;
   public displayUserRating = false;
+  public currentUserId: string | null = null;
+  public viewerIsModerator = false;
+  public canContributeTopo = false;
+  public gymMode = false;
   /** Topo image ids whose variant lines are expanded in the list and drawing. */
   private expandedVariantImageIds = new Set<string>();
+  /** Stays on screen after the menu closes, so confirm popups can anchor to it. */
+  private actionAnchor: EventTarget | null = null;
 
   private scrollTarget: Scroll;
   private stopAnchorScroll: (() => void) | null = null;
@@ -131,6 +153,7 @@ export class TopoImageListComponent implements OnInit {
   private actions$ = inject(Actions);
   private dialogService = inject(DialogService);
   private linePathsService = inject(LinePathsService);
+  private archiveService = inject(ArchiveService);
   private route = inject(ActivatedRoute);
   private translocoService = inject(TranslocoService);
   private router = inject(Router);
@@ -177,7 +200,100 @@ export class TopoImageListComponent implements OnInit {
       .select(selectInstanceSettingsState)
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
+        this.gymMode = instanceSettings.gymMode;
       });
+    this.store
+      .select(selectCurrentUser)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        this.currentUserId = user?.id ?? null;
+        this.viewerIsModerator = !!user?.moderator;
+      });
+    this.store
+      .select(selectCanContributeTopo)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((canContribute) => {
+        this.canContributeTopo = canContribute;
+      });
+  }
+
+  /**
+   * The overflow menu is shown when this viewer can do something with the image.
+   */
+  showTopoImageActions(topoImage: TopoImage): boolean {
+    return (
+      this.canDrawLines(topoImage) ||
+      this.canReorderLines(topoImage) ||
+      this.canAcceptDraft(topoImage) ||
+      this.canManage(topoImage) ||
+      this.canDelete(topoImage) ||
+      this.canArchive(topoImage)
+    );
+  }
+
+  /**
+   * Owners edit their drafts. Moderators edit published images, and review someone else's draft instead of editing it.
+   */
+  canManage(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  /** Create and draw stay with the draft owner. Moderators and suggesters keep them on published images. */
+  private canDrawLines(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.canContributeTopo;
+  }
+
+  /** Reorder stays with the draft owner. On a published image it stays a moderator action. */
+  private canReorderLines(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  /** A moderator reviewing someone else's draft can open it for acceptance. */
+  private canAcceptDraft(topoImage: TopoImage): boolean {
+    return (
+      this.viewerIsModerator &&
+      topoImage.publicationStatus === 'draft' &&
+      topoImage.createdById !== this.currentUserId
+    );
+  }
+
+  /**
+   * Owners delete their drafts. Moderators delete published images, not someone else's draft.
+   */
+  canDelete(topoImage: TopoImage): boolean {
+    if (topoImage.publicationStatus === 'draft') {
+      return topoImage.createdById === this.currentUserId;
+    }
+    return this.viewerIsModerator;
+  }
+
+  editTopoImage(topoImage: TopoImage) {
+    if (
+      this.viewerIsModerator &&
+      topoImage.publicationStatus === 'draft' &&
+      topoImage.createdById !== this.currentUserId
+    ) {
+      this.router.navigate(['/suggestions']);
+      return;
+    }
+    this.router.navigate([
+      '/topo',
+      this.cragSlug,
+      this.sectorSlug,
+      this.areaSlug,
+      'topo-images',
+      topoImage.id,
+      'edit',
+    ]);
   }
 
   toggleArchive() {
@@ -313,6 +429,213 @@ export class TopoImageListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+  }
+
+  /**
+   * Opens the overflow menu for one topo image.
+   */
+  openTopoImageActions(event: Event, topoImage: TopoImage) {
+    this.actionAnchor = event.currentTarget ?? event.target;
+    this.topoImageActionItems = this.buildTopoImageActionItems(topoImage);
+    this.topoImageMenu.toggle(event);
+  }
+
+  private buildTopoImageActionItems(topoImage: TopoImage): MenuItem[] {
+    const archived = topoImage.publicationStatus === 'archived';
+    const items: MenuItem[] = [];
+
+    if (this.canDrawLines(topoImage)) {
+      items.push(
+        {
+          id: 'edit-line-paths',
+          label: this.translocoService.translate(
+            this.viewerIsModerator
+              ? marker('topoImage.topoImageList.editLinePathsButtonLabel')
+              : marker('topoImage.topoImageList.suggestLinePathsButtonLabel'),
+          ),
+          icon: 'pi pi-fw pi-share-alt',
+          command: () => {
+            void this.router.navigate([
+              '/topo',
+              this.cragSlug,
+              this.sectorSlug,
+              this.areaSlug,
+              'topo-images',
+              topoImage.id,
+              'edit-line-paths',
+            ]);
+          },
+        },
+        {
+          id: 'create-line',
+          label: this.translocoService.translate(
+            this.viewerIsModerator
+              ? marker('topoImage.topoImageList.createLineButtonLabel')
+              : marker('topoImage.topoImageList.suggestLineButtonLabel'),
+          ),
+          icon: 'pi pi-fw pi-plus',
+          command: () => {
+            void this.router.navigate(
+              [
+                '/topo',
+                this.cragSlug,
+                this.sectorSlug,
+                this.areaSlug,
+                'create-line',
+              ],
+              { queryParams: { drawOnTopoImage: topoImage.id } },
+            );
+          },
+        },
+      );
+    }
+
+    if (this.canReorderLines(topoImage)) {
+      items.push({
+        id: 'reorder-line-paths',
+        label: this.translocoService.translate(
+          marker('topoImage.topoImageList.reorderLinePathsButtonLabel'),
+        ),
+        icon: 'pi pi-fw pi-sort',
+        disabled: (topoImage.linePaths?.length ?? 0) < 2,
+        command: () => {
+          this.reorderLinePaths(topoImage);
+        },
+      });
+    }
+
+    if (this.canAcceptDraft(topoImage)) {
+      items.push({
+        id: 'accept-draft',
+        label: this.translocoService.translate(marker('suggestions.review')),
+        icon: 'pi pi-fw pi-check',
+        command: () => {
+          this.editTopoImage(topoImage);
+        },
+      });
+    }
+
+    if (this.canManage(topoImage)) {
+      items.push({
+        id: 'edit-topo-image',
+        label: this.translocoService.translate(
+          marker('topoImage.topoImageList.editTopoImageButtonLabel'),
+        ),
+        icon: 'pi pi-fw pi-pencil',
+        command: () => {
+          this.editTopoImage(topoImage);
+        },
+      });
+    }
+
+    const destructive: MenuItem[] = [];
+    if (this.canArchive(topoImage)) {
+      destructive.push({
+        id: 'archive-topo-image',
+        label: this.translocoService.translate(
+          archived
+            ? marker('archiveButton.unarchive')
+            : marker('archiveButton.archive'),
+        ),
+        icon: archived ? 'pi pi-fw pi-undo' : 'pi pi-fw pi-hammer',
+        command: (menuEvent) => {
+          this.confirmArchiveTopoImage(
+            this.actionConfirmEvent(menuEvent.originalEvent),
+            topoImage,
+          );
+        },
+      });
+    }
+    if (this.canDelete(topoImage)) {
+      destructive.push({
+        id: 'delete-topo-image',
+        label: this.translocoService.translate(
+          marker('topoImage.topoImageList.deleteTopoImageButtonLabel'),
+        ),
+        icon: 'pi pi-fw pi-trash',
+        styleClass: 'topo-image-menu-danger',
+        command: (menuEvent) => {
+          this.confirmDeleteTopoImage(
+            this.actionConfirmEvent(menuEvent.originalEvent),
+            topoImage,
+          );
+        },
+      });
+    }
+    if (items.length > 0 && destructive.length > 0) {
+      items.push({ separator: true });
+    }
+    items.push(...destructive);
+    return items;
+  }
+
+  /** Archive is a gym-mode moderator action, and drafts cannot be archived. */
+  private canArchive(topoImage: TopoImage): boolean {
+    return (
+      this.viewerIsModerator &&
+      this.gymMode &&
+      (topoImage.publicationStatus === 'published' ||
+        topoImage.publicationStatus === 'archived')
+    );
+  }
+
+  private actionConfirmEvent(fallback: Event | undefined): Event {
+    if (this.actionAnchor) {
+      return { target: this.actionAnchor } as Event;
+    }
+    return fallback ?? new Event('click');
+  }
+
+  /**
+   * Asks whether linked lines should be archived together with the image.
+   */
+  confirmArchiveTopoImage(event: Event, topoImage: TopoImage) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: this.translocoService.translate(
+        topoImage.publicationStatus === 'archived'
+          ? marker('archive.askAlsoUnArchiveLines')
+          : marker('archive.askAlsoArchiveLines'),
+      ),
+      acceptLabel: this.translocoService.translate(
+        marker('archive.yesWithLines'),
+      ),
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
+      rejectLabel: this.translocoService.translate(
+        marker('archive.noWithoutLines'),
+      ),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.archiveTopoImage(topoImage, true);
+      },
+      reject: () => {
+        this.archiveTopoImage(topoImage, false);
+      },
+    });
+  }
+
+  private archiveTopoImage(topoImage: TopoImage, cascadeToLines: boolean) {
+    const previous = topoImage.publicationStatus;
+    const nextArchived = previous !== 'archived';
+    topoImage.publicationStatus = nextArchived ? 'archived' : 'published';
+    this.archiveService
+      .changeTopoImageArchived(topoImage, cascadeToLines)
+      .subscribe({
+        next: () => {
+          this.store.dispatch(
+            toastNotification(nextArchived ? 'ARCHIVED' : 'UNARCHIVED'),
+          );
+        },
+        error: () => {
+          topoImage.publicationStatus = previous;
+          this.store.dispatch(
+            toastNotification(
+              nextArchived ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
+            ),
+          );
+        },
+      });
   }
 
   /**

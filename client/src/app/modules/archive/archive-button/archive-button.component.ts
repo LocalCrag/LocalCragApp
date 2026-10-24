@@ -14,6 +14,7 @@ import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-archive-button',
@@ -44,51 +45,91 @@ export class ArchiveButtonComponent {
   private store = inject(Store);
 
   getCurrentState() {
-    if (this.line) return this.line.archived;
-    if (this.topoImage) return this.topoImage.archived;
+    if (this.line) return this.line.publicationStatus === 'archived';
+    if (this.topoImage) return this.topoImage.publicationStatus === 'archived';
+    if (this.area) return this.area.publicationStatus === 'archived';
+    if (this.sector) return this.sector.publicationStatus === 'archived';
+    if (this.crag) return this.crag.publicationStatus === 'archived';
     return false;
   }
 
-  toggleArchivedResultHandler = {
-    next: (_) => {
-      this.store.dispatch(
-        toastNotification(this.getCurrentState() ? 'ARCHIVED' : 'UNARCHIVED'),
-      );
-    },
-    error: () => {
-      this.store.dispatch(
-        toastNotification(
-          this.getCurrentState() ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
-        ),
-      );
-    },
-  };
+  private publicationStatus(): string {
+    return (
+      this.line?.publicationStatus ??
+      this.topoImage?.publicationStatus ??
+      this.area?.publicationStatus ??
+      this.sector?.publicationStatus ??
+      this.crag?.publicationStatus ??
+      'published'
+    );
+  }
+
+  private applyStatus(status: string) {
+    if (this.line) this.line.publicationStatus = status;
+    if (this.topoImage) this.topoImage.publicationStatus = status;
+    if (this.area) this.area.publicationStatus = status;
+    if (this.sector) this.sector.publicationStatus = status;
+    if (this.crag) this.crag.publicationStatus = status;
+  }
+
+  private setArchived(archived: boolean) {
+    this.applyStatus(archived ? 'archived' : 'published');
+  }
+
+  /**
+   * Flip the local status immediately, then put it back if the request fails.
+   * The toast uses the attempted change, not the restored status.
+   */
+  private subscribeArchive(
+    request: Observable<unknown>,
+    nextArchived: boolean,
+    previous: string,
+  ) {
+    request.subscribe({
+      next: () => {
+        this.store.dispatch(
+          toastNotification(nextArchived ? 'ARCHIVED' : 'UNARCHIVED'),
+        );
+      },
+      error: () => {
+        this.applyStatus(previous);
+        this.store.dispatch(
+          toastNotification(
+            nextArchived ? 'ARCHIVED_ERROR' : 'UNARCHIVED_ERROR',
+          ),
+        );
+      },
+    });
+  }
 
   toggleArchived(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
 
     if (this.line) {
-      this.line.archived = !this.line.archived;
-      this.archiveService
-        .changeLineArchived(this.line)
-        .subscribe(this.toggleArchivedResultHandler);
+      const previous = this.publicationStatus();
+      const nextArchived = !this.getCurrentState();
+      this.setArchived(nextArchived);
+      this.subscribeArchive(
+        this.archiveService.changeLineArchived(this.line),
+        nextArchived,
+        previous,
+      );
     }
 
     if (this.topoImage) {
       this.confirmArchiveTopoImage(event);
     }
 
-    if (this.area) {
-      this.confirmArchiveEntity(event, 'area');
-    }
-
-    if (this.sector) {
-      this.confirmArchiveEntity(event, 'sector');
-    }
-
-    if (this.crag) {
-      this.confirmArchiveEntity(event, 'crag');
+    if (this.area || this.sector || this.crag) {
+      if (this.getCurrentState()) {
+        this.restoreArchivedEntity();
+        return;
+      }
+      this.confirmArchiveEntity(
+        event,
+        this.area ? 'area' : this.sector ? 'sector' : 'crag',
+      );
     }
   }
 
@@ -116,6 +157,8 @@ export class ArchiveButtonComponent {
   }
 
   doArchiveEntity(type: 'area' | 'sector' | 'crag') {
+    const previous = this.publicationStatus();
+    this.setArchived(true);
     const archiveRequest =
       type === 'area'
         ? this.archiveService.setAreaArchived(this.area)
@@ -123,23 +166,25 @@ export class ArchiveButtonComponent {
           ? this.archiveService.setSectorArchived(this.sector)
           : this.archiveService.setCragArchived(this.crag);
 
-    archiveRequest.subscribe(this.archiveEntityResultHandler);
+    this.subscribeArchive(archiveRequest, true, previous);
   }
 
-  archiveEntityResultHandler = {
-    next: (_) => {
-      this.store.dispatch(toastNotification('ARCHIVED'));
-    },
-    error: () => {
-      this.store.dispatch(toastNotification('ARCHIVED_ERROR'));
-    },
-  };
+  restoreArchivedEntity() {
+    const previous = this.publicationStatus();
+    this.setArchived(false);
+    const archiveRequest = this.area
+      ? this.archiveService.restoreArea(this.area)
+      : this.sector
+        ? this.archiveService.restoreSector(this.sector)
+        : this.archiveService.restoreCrag(this.crag);
+    this.subscribeArchive(archiveRequest, false, previous);
+  }
 
   confirmArchiveTopoImage(event: Event) {
     this.confirmationService.confirm({
       target: event.target,
       message: this.translocoService.translate(
-        this.topoImage.archived
+        this.topoImage.publicationStatus === 'archived'
           ? marker('archive.askAlsoUnArchiveLines')
           : marker('archive.askAlsoArchiveLines'),
       ),
@@ -162,9 +207,16 @@ export class ArchiveButtonComponent {
   }
 
   doArchiveTopoImage(cascadeToLines: boolean) {
-    this.topoImage.archived = !this.topoImage.archived;
-    this.archiveService
-      .changeTopoImageArchived(this.topoImage, cascadeToLines)
-      .subscribe(this.toggleArchivedResultHandler);
+    const previous = this.publicationStatus();
+    const nextArchived = this.topoImage.publicationStatus !== 'archived';
+    this.setArchived(nextArchived);
+    this.subscribeArchive(
+      this.archiveService.changeTopoImageArchived(
+        this.topoImage,
+        cascadeToLines,
+      ),
+      nextArchived,
+      previous,
+    );
   }
 }

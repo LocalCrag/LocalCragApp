@@ -59,6 +59,16 @@
           ></p-button>
           <p-button
             [disabled]="loading === loadingStates.LOADING"
+            label="{{ t('suggestTopoImageButtonLabel') }}"
+            icon="pi pi-image"
+            class="responsive-button"
+            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+              areaSlug
+            }}/add-topo-image"
+            *canSuggest="true"
+          ></p-button>
+          <p-button
+            [disabled]="loading === loadingStates.LOADING"
             label="{{ t('topoImageBatchUploadButtonLabel') }}"
             icon="pi pi-images"
             class="responsive-button"
@@ -101,19 +111,26 @@
                 class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
                 [ngClass]="{
                   'border-t border-surface': !first,
-                  archived: topoImage.archived,
+                  archived: topoImage.publicationStatus === 'archived',
                 }"
               >
                 <div
                   class="w-full sm:w-9/12 xl:w-5/12 self-start topo-image-column"
                 >
-                  <lc-topo-image
-                    [topoImage]="topoImage"
-                    [showLineNumbers]="true"
-                    [includeVariants]="variantsShown(topoImage)"
-                    tabuHoldsVisibility="hover"
-                    class="shadow block xl:block mx-auto rounded-border"
-                  ></lc-topo-image>
+                  <div class="relative">
+                    <lc-topo-image
+                      [topoImage]="topoImage"
+                      [showLineNumbers]="true"
+                      [includeVariants]="variantsShown(topoImage)"
+                      tabuHoldsVisibility="hover"
+                      class="shadow block xl:block mx-auto rounded-border"
+                    ></lc-topo-image>
+                    @if (topoImage.publicationStatus === "draft") {
+                      <lc-draft-tag
+                        class="draft-tag-overlay pointer-events-none absolute top-2 left-2 z-10"
+                      ></lc-draft-tag>
+                    }
+                  </div>
                   <lc-topo-image-details
                     [topoImage]="topoImage"
                   ></lc-topo-image-details>
@@ -135,63 +152,25 @@
                           {{ t("lines") }}
                         </div>
                       }
-                      <div
-                        *isModerator="true"
-                        class="lc-button-group justify-start sm:justify-end grow items-center"
-                      >
-                        <p-button
-                          label="{{
-                            topoImage.linePaths.length > 0
-                              ? t('editLinePathsButtonLabel')
-                              : t('addLineToImageButtonLabel')
-                          }}"
-                          [icon]="
-                            topoImage.linePaths.length > 0
-                              ? 'pi pi-share-alt'
-                              : 'pi pi-plus'
-                          "
-                          routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                            areaSlug
-                          }}/topo-images/{{ topoImage.id }}/edit-line-paths"
-                          [disabled]="
-                            topoImage.loadingState !== loadingStates.DEFAULT
-                          "
-                          styleClass="p-button-sm"
-                          class="responsive-button"
-                        ></p-button>
-                        <p-button
-                          label="{{ t('reorderLinePathsButtonLabel') }}"
-                          icon="pi pi-sort"
-                          (click)="reorderLinePaths(topoImage)"
-                          [disabled]="topoImage.linePaths?.length < 2"
-                          styleClass="p-button-sm"
-                          class="responsive-button"
-                        ></p-button>
-                        <p-button
-                          label="{{ t('editTopoImageButtonLabel') }}"
-                          icon="pi pi-pencil"
-                          class="responsive-button"
-                          routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                            areaSlug
-                          }}/topo-images/{{ topoImage.id }}/edit"
-                          styleClass="p-button-sm"
-                        ></p-button>
-                        <lc-archive-button
-                          *isModerator="true"
-                          [showLabel]="false"
-                          [topoImage]="topoImage"
-                          [style]="'plain'"
-                          class="responsive-button"
-                        ></lc-archive-button>
-                        <p-button
-                          icon="pi pi-trash"
-                          (click)="confirmDeleteTopoImage($event, topoImage)"
-                          [loading]="
-                            topoImage.loadingState === loadingStates.LOADING
-                          "
-                          styleClass="p-button-outlined p-button-danger p-button-sm"
-                        ></p-button>
-                      </div>
+                      @if (showTopoImageActions(topoImage)) {
+                        <div
+                          class="lc-button-group justify-end grow items-center self-end sm:self-center"
+                        >
+                          <p-button
+                            icon="pi pi-ellipsis-v"
+                            styleClass="p-button-rounded p-button-text p-button-secondary"
+                            (click)="openTopoImageActions($event, topoImage)"
+                            [ariaLabel]="t('actions')"
+                            [disabled]="
+                              topoImage.loadingState !== loadingStates.DEFAULT
+                            "
+                            [loading]="
+                              topoImage.loadingState === loadingStates.LOADING
+                            "
+                            data-cy="topo-image-actions"
+                          ></p-button>
+                        </div>
+                      }
                     </div>
                     <div class="line-table-wrapper">
                       <ng-template #lineRow let-linePath>
@@ -223,7 +202,12 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="line-table-info-style">
+                              <div class="line-table-info-style gap-1">
+                                @if (
+                                  linePath.line.publicationStatus === "draft"
+                                ) {
+                                  <lc-draft-tag></lc-draft-tag>
+                                }
                                 @if (!linePath.line.closed) {
                                   <lc-line-bool-prop-list
                                     [line]="linePath.line"
@@ -271,10 +255,17 @@
                                   </p-button>
                                 }
                                 <ng-container *isLoggedIn="true">
-                                  <lc-tick-button
-                                    [line]="linePath.line"
-                                    [ticked]="ticks.has(linePath.line.id)"
-                                  ></lc-tick-button>
+                                  @if (
+                                    linePath.line.publicationStatus ===
+                                      "published" ||
+                                    linePath.line.publicationStatus ===
+                                      "archived"
+                                  ) {
+                                    <lc-tick-button
+                                      [line]="linePath.line"
+                                      [ticked]="ticks.has(linePath.line.id)"
+                                    ></lc-tick-button>
+                                  }
                                 </ng-container>
                                 <ng-container *isModerator="true">
                                   <p-button
@@ -367,5 +358,11 @@
     </ng-template>
   </p-dataView>
 
+  <p-menu
+    #topoImageMenu
+    [model]="topoImageActionItems"
+    [popup]="true"
+    appendTo="body"
+  ></p-menu>
   <p-confirmpopup></p-confirmpopup>
 </ng-container>

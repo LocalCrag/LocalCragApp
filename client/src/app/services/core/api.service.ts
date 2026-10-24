@@ -103,6 +103,8 @@ export class ApiService {
       `${this.apiHost}users/${id}/resend-user-create-mail`,
     delete: (id: string): string => `${this.apiHost}users/${id}`,
     promoteUser: (id: string): string => `${this.apiHost}users/${id}/promote`,
+    setSuggestionsEnabled: (id: string): string =>
+      `${this.apiHost}users/${id}/suggestion-permission`,
     getEmailTaken: (email: string): string =>
       `${this.apiHost}users/email-taken/${email}`,
     getGrades: (slug: string): string => `${this.apiHost}users/${slug}/grades`,
@@ -242,6 +244,10 @@ export class ApiService {
       `${this.apiHost}ascents/send-project-climbed-message`,
   };
 
+  public suggestions = {
+    getList: (): string => `${this.apiHost}suggestions`,
+  };
+
   public ranking = {
     getList: (): string => `${this.apiHost}ranking`,
   };
@@ -254,6 +260,8 @@ export class ApiService {
     getDetail: (id: string): string => `${this.apiHost}topo-images/${id}`,
     delete: (id: string): string => `${this.apiHost}topo-images/${id}`,
     update: (id: string): string => `${this.apiHost}topo-images/${id}`,
+    publish: (id: string): string => `${this.apiHost}topo-images/${id}/publish`,
+    reject: (id: string): string => `${this.apiHost}topo-images/${id}/reject`,
     updateOrder: (areaSlug: string): string =>
       `${this.apiHost}areas/${areaSlug}/topo-images/update-order`,
     move: (id: string): string => `${this.apiHost}topo-images/${id}/move`,
@@ -276,6 +284,8 @@ export class ApiService {
     getListForLineEditor: (areaSlug: string): string =>
       `${this.apiHost}lines/for-line-editor/${areaSlug}`,
     getDetail: (slug: string): string => `${this.apiHost}lines/${slug}`,
+    publish: (slug: string): string => `${this.apiHost}lines/${slug}/publish`,
+    reject: (slug: string): string => `${this.apiHost}lines/${slug}/reject`,
     getClosureState: (slug: string): string =>
       `${this.apiHost}lines/${slug}/closure-state`,
     delete: (slug: string): string => `${this.apiHost}lines/${slug}`,
