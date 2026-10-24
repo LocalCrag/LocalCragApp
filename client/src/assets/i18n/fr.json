@@ -994,7 +994,6 @@
   "topoImage.topoImageList.suggestLineButtonLabel": "Proposer une voie",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Modifier les voies",
   "topoImage.topoImageList.suggestLinePathsButtonLabel": "Proposer les tracés",
-  "topoImage.topoImageList.addLineToImageButtonLabel": "Lier une voie",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Réorganiser les voies",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Modifier l'image",
   "topoImage.topoImageList.deleteTopoImageButtonLabel": "Supprimer l'image",

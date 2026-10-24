@@ -994,7 +994,6 @@
   "topoImage.topoImageList.suggestLineButtonLabel": "Proponi un problema",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Modifica problemi",
   "topoImage.topoImageList.suggestLinePathsButtonLabel": "Proponi i tracciati",
-  "topoImage.topoImageList.addLineToImageButtonLabel": "Associa problema",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Ordina problemi",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Modifica immagine",
   "topoImage.topoImageList.deleteTopoImageButtonLabel": "Elimina immagine",

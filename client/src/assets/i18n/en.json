@@ -994,7 +994,6 @@
   "topoImage.topoImageList.suggestLineButtonLabel": "Suggest line",
   "topoImage.topoImageList.editLinePathsButtonLabel": "Edit lines",
   "topoImage.topoImageList.suggestLinePathsButtonLabel": "Suggest line paths",
-  "topoImage.topoImageList.addLineToImageButtonLabel": "Link line",
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Reorder lines",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Edit image",
   "topoImage.topoImageList.deleteTopoImageButtonLabel": "Delete image",

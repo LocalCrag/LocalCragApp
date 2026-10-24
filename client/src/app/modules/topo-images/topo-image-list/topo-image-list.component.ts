@@ -441,7 +441,6 @@ export class TopoImageListComponent implements OnInit {
   }
 
   private buildTopoImageActionItems(topoImage: TopoImage): MenuItem[] {
-    const hasLines = topoImage.linePaths.length > 0;
     const archived = topoImage.publicationStatus === 'archived';
     const items: MenuItem[] = [];
 
@@ -450,13 +449,11 @@ export class TopoImageListComponent implements OnInit {
         {
           id: 'edit-line-paths',
           label: this.translocoService.translate(
-            !hasLines
-              ? marker('topoImage.topoImageList.addLineToImageButtonLabel')
-              : this.viewerIsModerator
-                ? marker('topoImage.topoImageList.editLinePathsButtonLabel')
-                : marker('topoImage.topoImageList.suggestLinePathsButtonLabel'),
+            this.viewerIsModerator
+              ? marker('topoImage.topoImageList.editLinePathsButtonLabel')
+              : marker('topoImage.topoImageList.suggestLinePathsButtonLabel'),
           ),
-          icon: hasLines ? 'pi pi-fw pi-share-alt' : 'pi pi-fw pi-plus',
+          icon: 'pi pi-fw pi-share-alt',
           command: () => {
             void this.router.navigate([
               '/topo',
