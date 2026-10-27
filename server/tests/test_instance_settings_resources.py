@@ -80,6 +80,7 @@ def test_successful_get_instance_settings(client):
     assert res["displayUserGrades"] == instance_settings.display_user_grades
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
     assert res["noClosedProjects"] == instance_settings.no_closed_projects
+    assert res["moderatorGameEnabled"] == instance_settings.moderator_game_enabled
     assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks

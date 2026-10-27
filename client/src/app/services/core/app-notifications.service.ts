@@ -34,39 +34,43 @@ export class AppNotificationsService {
     this.doToast(notificationKey, titleParams, messageParams);
   }
 
-  private success(title: string, content: string) {
+  private success(title: string, content: string, styleClass?: string) {
     this.messageService.add({
       severity: 'success',
       detail: content,
       summary: title,
       life: 5000,
+      ...(styleClass ? { styleClass } : {}),
     });
   }
 
-  private error(title: string, content: string) {
+  private error(title: string, content: string, styleClass?: string) {
     this.messageService.add({
       severity: 'error',
       detail: content,
       summary: title,
       life: 5000,
+      ...(styleClass ? { styleClass } : {}),
     });
   }
 
-  private info(title: string, content: string) {
+  private info(title: string, content: string, styleClass?: string) {
     this.messageService.add({
       severity: 'info',
       detail: content,
       summary: title,
       life: 5000,
+      ...(styleClass ? { styleClass } : {}),
     });
   }
 
-  private warning(title: string, content: string) {
+  private warning(title: string, content: string, styleClass?: string) {
     this.messageService.add({
       severity: 'warn',
       detail: content,
       summary: title,
       life: 5000,
+      ...(styleClass ? { styleClass } : {}),
     });
   }
 
@@ -84,18 +88,19 @@ export class AppNotificationsService {
       notificationDefinition.message,
       messageParams,
     );
+    const styleClass = notificationDefinition.styleClass;
     switch (notificationDefinition.type) {
       case NotificationType.ERROR:
-        this.error(title, message);
+        this.error(title, message, styleClass);
         break;
       case NotificationType.WARNING:
-        this.warning(title, message);
+        this.warning(title, message, styleClass);
         break;
       case NotificationType.SUCCESS:
-        this.success(title, message);
+        this.success(title, message, styleClass);
         break;
       case NotificationType.INFO:
-        this.info(title, message);
+        this.info(title, message, styleClass);
         break;
     }
   }

@@ -332,6 +332,27 @@ export class ApiService {
       `${this.apiHost}reactions/${targetType}/${targetId}`,
   };
 
+  public topoQuality = {
+    tree: (): string => `${this.apiHost}topo-quality`,
+    ranking: (): string => `${this.apiHost}topo-quality/ranking`,
+    restart: (): string => `${this.apiHost}topo-quality/restart`,
+    detail: (
+      level: string,
+      slugs: { cragSlug?: string; sectorSlug?: string; areaSlug?: string },
+    ): string => {
+      if (level === 'crag') {
+        return `${this.apiHost}topo-quality/crags/${slugs.cragSlug}`;
+      }
+      if (level === 'sector') {
+        return `${this.apiHost}topo-quality/crags/${slugs.cragSlug}/sectors/${slugs.sectorSlug}`;
+      }
+      if (level === 'area') {
+        return `${this.apiHost}topo-quality/crags/${slugs.cragSlug}/sectors/${slugs.sectorSlug}/areas/${slugs.areaSlug}`;
+      }
+      return `${this.apiHost}topo-quality/region`;
+    },
+  };
+
   public health = {
     check: (): string => `${this.apiHost}health`,
   };

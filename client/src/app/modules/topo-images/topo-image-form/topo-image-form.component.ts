@@ -27,6 +27,9 @@ import { catchError, concatMap, switchMap, tap, toArray } from 'rxjs/operators';
 import { EMPTY, forkJoin, from, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { MapMarkerType } from '../../../enums/map-marker-type';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
+import { MapMarker } from '../../../models/map-marker';
 import { TopoImage } from '../../../models/topo-image';
 import { Sector } from '../../../models/sector';
 import { Area } from '../../../models/area';
@@ -253,7 +256,7 @@ export class TopoImageFormComponent implements OnInit {
     this.topoImageForm.patchValue({
       title: this.topoImage.title,
       description: this.topoImage.description,
-      coordinates: this.topoImage.coordinates,
+      coordinates: this.topoImage.mapMarker?.coordinates ?? null,
       image: this.topoImage.image,
     });
     this.topoImageForm.get('image').disable();
@@ -412,8 +415,21 @@ export class TopoImageFormComponent implements OnInit {
     topoImage.image = group.get('image').value;
     topoImage.title = group.get('title').value;
     topoImage.description = group.get('description').value;
-    topoImage.coordinates = group.get('coordinates').value;
+    topoImage.mapMarker = this.mapMarkerFor(group.get('coordinates').value);
     return topoImage;
+  }
+
+  private mapMarkerFor(coordinates: Coordinates | null): MapMarker | null {
+    if (!coordinates) {
+      return null;
+    }
+    const marker = new MapMarker();
+    marker.id = this.topoImage?.mapMarker?.id;
+    marker.coordinates = coordinates;
+    marker.type = MapMarkerType.TOPO_IMAGE;
+    marker.name = null;
+    marker.description = null;
+    return marker;
   }
 
   openMoveDialog() {

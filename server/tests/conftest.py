@@ -48,6 +48,7 @@ from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
 from util.auth_session import CSRF_COOKIE_NAME, SESSION_COOKIE_NAME
+from util.topo_contribution import award_topo_points
 
 TestAuth = namedtuple("TestAuth", ["session_id", "csrf_token"])
 
@@ -107,6 +108,7 @@ def db_session():
         # We need to re-register all handlers, as we change the session
         listen(db.session, "before_flush", update_slugs)
         listen(db.session, "before_flush", set_created_by_ids)
+        listen(db.session, "before_flush", award_topo_points)
         listen(db.session, "before_flush", update_searchables)
         listen(db.session, "before_flush", cleanup_deleted_secret_registry_entries)
         listen(db.session, "after_flush", create_searchables)

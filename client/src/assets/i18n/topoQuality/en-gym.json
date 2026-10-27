@@ -1,0 +1,6 @@
+{
+  "ui.legend": "Topo quality is measured from important basic information (for example images). Extra information that is not always available adds bonus points (for example setter dates and videos).",
+  "ui.scoreHint": "The percent is the required points of this spot and everything inside it, divided by the maximum.\n\nA drawn line is 2 points. A line style is 5. A portrait image is 10. A description on a crag, sector or area is 5.\n\nA video is 3 bonus points. A routesetter with a set date is 3 bonus points. Bonus points sit beside the bar and do not change the percent.\n\nA spot with nothing to score is Platin.",
+  "ui.checkHint.lineFa": "3 bonus points for every published line with a routesetter and a set date. This is not required for 100%.",
+  "ui.check.lineFa": "Routesetter and set date"
+}

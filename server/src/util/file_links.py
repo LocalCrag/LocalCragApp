@@ -40,7 +40,7 @@ _UUID_STEM = re.compile(
 )
 
 
-def register_listeners() -> None:
+def register_file_listeners() -> None:
     global _listeners_registered
     if _listeners_registered:
         return

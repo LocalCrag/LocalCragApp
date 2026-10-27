@@ -1,4 +1,4 @@
-@if (topoImage.title || (topoImage.coordinates && topoImage.coordinates)) {
+@if (topoImage.title || topoImage.mapMarker) {
   <div class="flex justify-center items-center mt-2">
     <div class="grow flex block-title">
       @if (topoImage.title) {
@@ -7,9 +7,9 @@
         </h5>
       }
     </div>
-    @if (topoImage.coordinates) {
+    @if (topoImage.mapMarker) {
       <lc-coordinates-button
-        [coordinates]="topoImage.coordinates"
+        [coordinates]="topoImage.mapMarker.coordinates"
       ></lc-coordinates-button>
     }
   </div>

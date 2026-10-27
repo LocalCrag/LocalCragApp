@@ -1,0 +1,31 @@
+// Point toasts can appear on any page, so this file is included globally.
+.p-toast-message.topo-points-toast {
+  .p-toast-message-content {
+    align-items: center;
+    overflow: visible;
+    padding-bottom: 0.85rem;
+  }
+
+  .p-toast-message-icon {
+    display: none;
+  }
+
+  .p-toast-message-content::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 3.4rem;
+    height: 5.1rem;
+    margin-right: 0.15rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
+
+.p-toast-message.topo-points-toast--gain .p-toast-message-content::before {
+  background-image: url("../../../assets/images/topo-points/happy.png");
+}
+
+.p-toast-message.topo-points-toast--loss .p-toast-message-content::before {
+  background-image: url("../../../assets/images/topo-points/sad.png");
+}
