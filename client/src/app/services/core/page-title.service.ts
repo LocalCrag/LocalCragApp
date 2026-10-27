@@ -106,6 +106,11 @@ export class PageTitleService {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private currentPageHostKey = '';
+  /**
+   * Bumped when navigation replaces the header. A title applied on the next
+   * microtask is dropped if a newer navigation already started.
+   */
+  private headerEpoch = 0;
 
   readonly state$ = this.stateSubject.asObservable();
 
@@ -154,13 +159,22 @@ export class PageTitleService {
    */
   setTitle(title: string | null, options?: SetPageTitleOptions): void {
     const image = options?.image ?? null;
-    this.stateSubject.next({
+    const next: PageTitleState = {
       ...initialState,
       title,
       image,
       heroDefaultBg: options?.heroDefaultBg ?? false,
       imageBackgroundStyles: imageFocusBackgroundStyles(image?.focusY) || null,
       template: options?.template ?? null,
+    };
+    // The header is checked before the new page's ngOnInit. Applying the title
+    // in that same turn flips `loading` and throws NG0100.
+    const epoch = this.headerEpoch;
+    queueMicrotask(() => {
+      if (epoch !== this.headerEpoch) {
+        return;
+      }
+      this.stateSubject.next(next);
     });
   }
 
@@ -203,10 +217,12 @@ export class PageTitleService {
    * Used for routes that intentionally have no page header.
    */
   reset(): void {
+    this.headerEpoch++;
     this.stateSubject.next({ ...initialState });
   }
 
   private beginLoading(nextRoot: ActivatedRouteSnapshot): void {
+    this.headerEpoch++;
     const prev = this.stateSubject.value;
     const prevHero = !!prev.image || !!prev.heroDefaultBg || !!prev.loadingHero;
     const destinationHero = routePrefersHeroTitle(nextRoot);

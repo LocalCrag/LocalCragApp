@@ -206,6 +206,12 @@ from resources.topo_image_resources import (
     UpdateTopoImage,
     UpdateTopoImageOrder,
 )
+from resources.topo_quality_resources import (
+    GetTopoQuality,
+    GetTopoQualityDetail,
+    GetTopoQualityRanking,
+    RestartTopoQuality,
+)
 from resources.upload_resources import UploadFile
 from resources.user_resources import (
     ChangeEmail,
@@ -288,6 +294,25 @@ def configure_api(app):
         view_func=GetTopoStatistics.as_view("get_topo_statistics_scoped"),
     )
     app.register_blueprint(statistics_bp, url_prefix="/api/statistics")
+
+    topo_quality_bp = Blueprint("topo-quality", __name__)
+    topo_quality_bp.add_url_rule("", view_func=GetTopoQuality.as_view("get_topo_quality"))
+    topo_quality_bp.add_url_rule("ranking", view_func=GetTopoQualityRanking.as_view("get_topo_quality_ranking"))
+    topo_quality_bp.add_url_rule("restart", view_func=RestartTopoQuality.as_view("restart_topo_quality"))
+    topo_quality_bp.add_url_rule("region", view_func=GetTopoQualityDetail.as_view("get_topo_quality_region"))
+    topo_quality_bp.add_url_rule(
+        "crags/<string:crag_slug>",
+        view_func=GetTopoQualityDetail.as_view("get_topo_quality_crag"),
+    )
+    topo_quality_bp.add_url_rule(
+        "crags/<string:crag_slug>/sectors/<string:sector_slug>",
+        view_func=GetTopoQualityDetail.as_view("get_topo_quality_sector"),
+    )
+    topo_quality_bp.add_url_rule(
+        "crags/<string:crag_slug>/sectors/<string:sector_slug>/areas/<string:area_slug>",
+        view_func=GetTopoQualityDetail.as_view("get_topo_quality_area"),
+    )
+    app.register_blueprint(topo_quality_bp, url_prefix="/api/topo-quality")
 
     # Search API
     search_bp = Blueprint("search", __name__)

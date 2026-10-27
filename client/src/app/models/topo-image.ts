@@ -2,9 +2,8 @@ import { AbstractModel } from './abstract-model';
 import { File } from './file';
 import { LinePath } from './line-path';
 import { LoadingState } from '../enums/loading-state';
-import { Coordinates } from '../interfaces/coordinates.interface';
-import { MapMarkerType } from '../enums/map-marker-type';
 import { Area } from './area';
+import { MapMarker } from './map-marker';
 import {
   deserializeOrderIndexAttributes,
   HasOrderIndex,
@@ -18,7 +17,7 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
   image: File;
   linePaths: LinePath[];
   tabuAreas: TabuArea[] = [];
-  coordinates: Coordinates;
+  mapMarker: MapMarker | null;
   title: string;
   description: string;
   area: Area;
@@ -39,11 +38,9 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
     AbstractModel.deserializeAbstractAttributes(topoImage, payload);
     deserializeOrderIndexAttributes(topoImage, payload);
     topoImage.image = File.deserialize(payload.image);
-    // We parse the map parker into simple coordinates object for topo images
-    topoImage.coordinates =
-      payload.mapMarkers?.length > 0
-        ? { lat: payload.mapMarkers[0].lat, lng: payload.mapMarkers[0].lng }
-        : null;
+    topoImage.mapMarker = payload.mapMarkers?.[0]
+      ? MapMarker.deserialize(payload.mapMarkers[0])
+      : null;
     topoImage.title = payload.title;
     topoImage.description = payload.description;
     topoImage.linePaths = payload.linePaths
@@ -65,16 +62,8 @@ export class TopoImage extends HasOrderIndex(AbstractModel) {
   public static serialize(topoImage: TopoImage): any {
     return {
       image: topoImage.image.id,
-      mapMarkers: topoImage.coordinates
-        ? [
-            {
-              lat: topoImage.coordinates.lat,
-              lng: topoImage.coordinates.lng,
-              type: MapMarkerType.TOPO_IMAGE,
-              description: null,
-              name: null,
-            },
-          ]
+      mapMarkers: topoImage.mapMarker
+        ? [MapMarker.serialize(topoImage.mapMarker)]
         : [],
       title: topoImage.title,
       description: topoImage.description,

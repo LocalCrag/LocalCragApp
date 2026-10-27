@@ -1,0 +1,21 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  <div class="quality-bar">
+    <span class="quality-tier" [style.color]="color()">{{
+      t("tier." + tier)
+    }}</span>
+    <div class="quality-track">
+      <div
+        class="quality-fill"
+        [style.width.%]="percent"
+        [style.background]="color()"
+      ></div>
+    </div>
+    <span class="quality-percent">{{ percent }}%</span>
+    <span class="quality-figures">
+      <span class="quality-points">{{ t("points", { earned, max }) }}</span>
+      @if (bonus > 0) {
+        <span class="quality-bonus">{{ t("bonus", { bonus }) }}</span>
+      }
+    </span>
+  </div>
+</ng-container>

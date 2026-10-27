@@ -197,6 +197,7 @@ export class LanguageService {
         'linePath/',
         'maps/',
         'closableForm/',
+        'topoQuality/',
       ].flatMap((path) => [
         this.transloco.load(path + lang),
         ...(this.gymMode ? [this.transloco.load(path + lang + '-gym')] : []),

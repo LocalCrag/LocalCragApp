@@ -41,6 +41,7 @@ export class InstanceSettings {
   displayUserRatings: boolean;
   noClosedProjects: boolean;
   suggestionsEnabled: boolean;
+  moderatorGameEnabled: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
@@ -93,6 +94,8 @@ export class InstanceSettings {
     instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.noClosedProjects = payload.noClosedProjects;
     instanceSettings.suggestionsEnabled = payload.suggestionsEnabled !== false;
+    instanceSettings.moderatorGameEnabled =
+      payload.moderatorGameEnabled === true;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
@@ -141,6 +144,7 @@ export class InstanceSettings {
       displayUserRatings: instanceSettings.displayUserRatings,
       noClosedProjects: instanceSettings.noClosedProjects,
       suggestionsEnabled: instanceSettings.suggestionsEnabled,
+      moderatorGameEnabled: instanceSettings.moderatorGameEnabled,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
@@ -162,6 +166,7 @@ export class InstanceSettings {
     displayUserRatings: boolean;
     noClosedProjects: boolean;
     suggestionsEnabled: boolean;
+    moderatorGameEnabled: boolean;
     faDefaultFormat: FaDefaultFormat;
     defaultStartingPosition: StartingPosition;
     rankingPastWeeks: number | null;

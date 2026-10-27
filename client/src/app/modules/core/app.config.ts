@@ -23,6 +23,7 @@ import { LocalCragErrorHandler } from '../../services/core/local-crag-error-hand
 import { ErrorHandlerService } from '../../services/core/error-handler.service';
 import { CredentialsInterceptor } from '../../utility/http-interceptors/credentials.interceptor';
 import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-type.interceptor';
+import { TopoPointsInterceptor } from '../../utility/http-interceptors/topo-points.interceptor';
 import { environment } from '../../../environments/environment';
 import * as Sentry from '@sentry/angular';
 import { providePrimeNG } from 'primeng/config';
@@ -208,6 +209,11 @@ export const appConfig: ApplicationConfig = {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ContentTypeInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TopoPointsInterceptor,
       multi: true,
     },
     {

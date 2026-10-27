@@ -1,0 +1,16 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  <div class="content flex flex-col gap-6 p-6">
+    @if (!rankingActive()) {
+      <label class="flex items-center gap-2 self-end">
+        <p-toggleswitch
+          [ngModel]="excludeSecret"
+          (ngModelChange)="onExcludeSecret($event)"
+          inputId="exclude-secret-spots"
+          data-cy="topo-quality-exclude-secret"
+        />
+        {{ t("excludeSecret") }}
+      </label>
+    }
+    <router-outlet />
+  </div>
+</ng-container>

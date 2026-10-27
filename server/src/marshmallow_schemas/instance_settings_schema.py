@@ -37,6 +37,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     displayUserRatings = fields.Boolean(attribute="display_user_ratings")
     noClosedProjects = fields.Boolean(attribute="no_closed_projects")
     suggestionsEnabled = fields.Boolean(attribute="suggestions_enabled")
+    moderatorGameEnabled = fields.Boolean(attribute="moderator_game_enabled")
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)

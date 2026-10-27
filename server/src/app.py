@@ -1,7 +1,7 @@
 import os
 
 import sentry_sdk
-from flask import Flask
+from flask import Flask, g
 
 from api import configure_api
 from config.env_var_config import overwrite_config_by_env_vars
@@ -10,10 +10,11 @@ from error_handling.http_error_handlers import setup_http_error_handlers
 from error_handling.webargs_error_handlers import setup_webargs_error_handlers
 from extensions import cors, db, ma, migrate
 from schedulers import init_schedulers
-from util.auth_session import require_csrf_if_authenticated
-from util.file_links import register_listeners
+from util.auth_session import get_current_user, require_csrf_if_authenticated
+from util.file_links import register_file_listeners
 from util.flask_environment import is_development_mode
 from util.logging_config import configure_app_logging
+from util.topo_contribution import register_topo_contribution_listener
 
 
 def register_extensions(application):
@@ -24,6 +25,7 @@ def register_extensions(application):
         application,
         origins=[application.config["FRONTEND_HOST"]],
         supports_credentials=True,
+        expose_headers=["X-Topo-Points-Delta"],
     )
 
 
@@ -64,7 +66,18 @@ def create_app():
 
     configure_extensions(application)
 
-    register_listeners()
+    register_file_listeners()
+    register_topo_contribution_listener()
+
+    @application.after_request
+    def add_topo_points_header(response):
+        delta = getattr(g, "topo_points_delta", None)
+        if not delta or not (200 <= response.status_code < 300):
+            return response
+        user = get_current_user()
+        if user is not None and user.moderator:
+            response.headers["X-Topo-Points-Delta"] = str(delta)
+        return response
 
     return application
 

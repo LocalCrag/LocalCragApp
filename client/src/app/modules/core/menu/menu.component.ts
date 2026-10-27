@@ -380,20 +380,29 @@ export class MenuComponent implements OnInit, AfterViewInit {
             items: accountItems,
           });
 
-          if (authState.user.member && !gymMode) {
+          if (authState.user.member) {
+            const toolItems: MenuItem[] = [];
+            if (!gymMode) {
+              toolItems.push({
+                icon: 'pi pi-fw pi-map',
+                label: this.translocoService.translate(
+                  marker('menu.rockExplorer'),
+                ),
+                routerLink: '/rock-explorer',
+              });
+            }
+            toolItems.push({
+              icon: 'pi pi-fw pi-chart-bar',
+              label: this.translocoService.translate(
+                marker('menu.topoQuality'),
+              ),
+              routerLink: '/topo-quality',
+            });
             items.push({
               label: this.translocoService.translate(
                 marker('menu.toolsCategory'),
               ),
-              items: [
-                {
-                  icon: 'pi pi-fw pi-map',
-                  label: this.translocoService.translate(
-                    marker('menu.rockExplorer'),
-                  ),
-                  routerLink: '/rock-explorer',
-                },
-              ],
+              items: toolItems,
             });
           }
 

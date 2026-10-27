@@ -119,6 +119,8 @@ describe('PageTitleService', () => {
   });
 
   async function latestState(): Promise<PageTitleState> {
+    // setTitle applies on a microtask so it does not flip the header mid-check.
+    await Promise.resolve();
     return firstValueFrom(service.state$);
   }
 
@@ -215,4 +217,65 @@ describe('PageTitleService', () => {
 
     expect(getPrimaryPageHostKey(routerStateRoot)).toContain('history');
   });
+
+  it('keeps the header when a child route opts out of being a page host', async () => {
+    const tree = makeNestedRoot('');
+    const detail = makeNestedRoot('region');
+    expect(getPrimaryPageHostKey(tree)).toBe(getPrimaryPageHostKey(detail));
+
+    routerEvents.next(
+      new RoutesRecognized(1, '/topo-quality', '/topo-quality', {
+        root: tree,
+      } as never),
+    );
+    routerStateRoot = tree;
+    routerEvents.next(new NavigationEnd(1, '/topo-quality', '/topo-quality'));
+    service.setTitle('Topo quality', { heroDefaultBg: true });
+
+    routerEvents.next(
+      new RoutesRecognized(2, '/topo-quality/region', '/topo-quality/region', {
+        root: detail,
+      } as never),
+    );
+
+    const state = await latestState();
+    expect(state.loading).toBeFalse();
+    expect(state.title).toBe('Topo quality');
+  });
 });
+
+function makeNestedRoot(childPath: string): ActivatedRouteSnapshot {
+  const root = {} as ActivatedRouteSnapshot;
+  const parent = {} as ActivatedRouteSnapshot;
+  const child = {} as ActivatedRouteSnapshot;
+  Object.assign(root, {
+    data: {},
+    children: [parent],
+    outlet: 'primary',
+    routeConfig: { path: '' },
+    pathFromRoot: [root],
+  });
+  Object.assign(parent, {
+    data: { pageTitleHero: true },
+    children: [child],
+    outlet: 'primary',
+    routeConfig: {
+      path: 'topo-quality',
+      loadComponent: () => Promise.resolve(null),
+      data: { pageTitleHero: true },
+    },
+    pathFromRoot: [root, parent],
+  });
+  Object.assign(child, {
+    data: { pageTitleHost: false },
+    children: [],
+    outlet: 'primary',
+    routeConfig: {
+      path: childPath,
+      loadComponent: () => Promise.resolve(null),
+      data: { pageTitleHost: false },
+    },
+    pathFromRoot: [root, parent, child],
+  });
+  return root;
+}
