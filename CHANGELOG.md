@@ -1,3 +1,10 @@
+# [1.66.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.65.0...v1.66.0) (2026-10-27)
+
+
+### Features
+
+* **quality-tool:** add topo quality measuring tool ([#1326](https://github.com/LocalCrag/LocalCragApp/issues/1326)) ([221e9e8](https://github.com/LocalCrag/LocalCragApp/commit/221e9e8ac4b7cf9a2664a60059d961cb5d39db09)), closes [#1107](https://github.com/LocalCrag/LocalCragApp/issues/1107)
+
 # [1.65.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.2...v1.65.0) (2026-10-24)
 
 
