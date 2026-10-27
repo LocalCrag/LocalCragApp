@@ -42,7 +42,7 @@ class GetTopoQuality(MethodView):
 class GetTopoQualityDetail(MethodView):
     @session_required(member=True)
     def get(self, crag_slug=None, sector_slug=None, area_slug=None):
-        (region_name, spots, lines, topos), gym = _snapshot()
+        gym = bool(InstanceSettings.return_it().gym_mode)
         if area_slug is not None:
             level, target_id = "area", _area_id(crag_slug, sector_slug, area_slug)
         elif sector_slug is not None:
@@ -53,6 +53,8 @@ class GetTopoQualityDetail(MethodView):
             level, target_id = "region", ""
         if level != "region" and not target_id:
             raise NotFound()
+        root = None if level == "region" else (level, target_id)
+        region_name, spots, lines, topos = load_quality_snapshot(_exclude_secret(), gym, root=root)
         payload = build_detail(level, target_id, region_name, spots, lines, topos, gym)
         if payload is None:
             raise NotFound()

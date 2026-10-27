@@ -1,19 +1,22 @@
-"""Add or remove a user's stored topo points when a quality gate changes.
+"""Add to a user's stored topo points when a quality gate turns on.
 
-Points are a running total. Publishing a line, spot, or topo image pays a
-small base to the person who publishes it. Fields a member already put on a
-draft are paid to that member when the draft is published, not to the
-moderator who clicks publish. The person who later adds or removes a valuable
-property, such as GPS, gets the difference. Editing something that is already
-counted, such as a second video or a replacement photo, adds a single bonus
-point. Nothing is awarded when the request has no logged-in user, so
-migrations and seeds stay put until the backfill assigns existing rows to
-their creators.
+Points are a running total that only grows. Publishing a line, spot, or topo
+image pays a small base to the person who publishes it. Fields a member
+already put on a draft are paid to that member when the draft is published,
+not to the moderator who clicks publish. Adding a valuable property, such as
+GPS, pays its points. Editing something that is already counted, such as a
+second video or a replacement photo, adds a single bonus point. Removing a
+property, unpublishing, or deleting an entry takes nothing away, so cleaning
+up a bad entry does not cost the editor. Nothing is awarded when the request
+has no logged-in user, so migrations and seeds stay put until the backfill
+assigns existing rows to their creators.
 """
 
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
+from typing import NamedTuple
 
 from sqlalchemy import event, inspect, text
 from sqlalchemy.orm import Session
@@ -31,6 +34,7 @@ from models.user import User
 from util.topo_quality_score import (
     CREATE_ITEM,
     EDIT_BONUS,
+    LINE_DESCRIPTION,
     LINE_DRAWN,
     LINE_FA,
     LINE_STYLE,
@@ -42,6 +46,7 @@ from util.topo_quality_score import (
     STYLE_FIELDS,
     TOPO_GPS,
     description_earned_max,
+    description_slots,
     fa_complete,
     gate_delta,
     has_text,
@@ -90,6 +95,11 @@ def award_topo_points(session: Session, _flush_context, _instances) -> None:
     delta, credits = compute_topo_points_delta(session)
     if actor_id in credits:
         delta += credits.pop(actor_id)
+    # A cleanup must not lower the editor's score, even if a gate's difference
+    # comes out negative.
+    if delta < 0:
+        delta = 0
+    credits = {user_id: points for user_id, points in credits.items() if points > 0}
     if not delta and not credits:
         return
     session.info["awarding_topo_points"] = True
@@ -125,6 +135,7 @@ def compute_topo_points_delta(session: Session) -> tuple[int, dict]:
     # other gates on a brand new row.
     _ensure_pending_ids(session)
     gym = bool(InstanceSettings.return_it().gym_mode)
+    session.info["topo_visible_spots"] = {}
     delta = 0
     credits: dict = {}
     area_ids = set()
@@ -178,6 +189,19 @@ def _is_published_now(obj) -> bool:
     return is_published(status)
 
 
+def _is_being_deleted(obj) -> bool:
+    """True when this flush will delete the row.
+
+    InstanceState.deleted stays false during before_flush. The session's
+    deleted collection is the signal this hook can see.
+    """
+    state = inspect(obj)
+    if state.deleted:
+        return True
+    session = state.session
+    return session is not None and obj in session.deleted
+
+
 def _publishing_draft(obj) -> bool:
     """An existing draft is becoming published in this flush.
 
@@ -185,7 +209,7 @@ def _publishing_draft(obj) -> bool:
     not either: only a previous status of draft counts.
     """
     state = inspect(obj)
-    if state.pending or state.deleted or state.transient:
+    if state.pending or state.transient or _is_being_deleted(obj):
         return False
     before = _value_before(obj, "publication_status")
     return _enum_value(before) == "draft" and is_published(getattr(obj, "publication_status", None))
@@ -238,7 +262,7 @@ def _changed(obj, *attrs) -> bool:
     if obj is None:
         return False
     state = inspect(obj)
-    if state.pending or state.transient or state.deleted:
+    if state.pending or state.transient or _is_being_deleted(obj):
         return True
     return any(state.attrs[attr].history.has_changes() for attr in attrs)
 
@@ -360,6 +384,7 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
     if line is None:
         return 0, None, None
     state = inspect(line)
+    deleting = _is_being_deleted(line)
     before_count, after_count = _path_counts(session, line_id)
     geometry_changed = _path_geometry_changed(session, line_id)
     if state.pending:
@@ -372,7 +397,7 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
         style_changed = True
         video_changed = True
         fa_changed = True
-    elif state.deleted:
+    elif deleting:
         before_published = is_published(line.publication_status)
         before = _facts(line, before_count > 0, gym, before_published)
         after = _facts(None, False, gym, False)
@@ -419,7 +444,7 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
     # The publish click itself pays only the base. `before` already includes
     # the draft's gates, so only a change made in this same flush still pays
     # the publisher.
-    if not state.pending and not state.deleted and _publishing_draft(line):
+    if not state.pending and not deleting and _publishing_draft(line):
         delta = CREATE_ITEM
     else:
         delta = publish_delta(before["published"], after["published"])
@@ -427,6 +452,12 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
     delta += gate_delta(before["styled"], after["styled"], style_changed, LINE_STYLE)
     delta += gate_delta(before["video"], after["video"], video_changed, LINE_VIDEO)
     delta += gate_delta(before["fa"], after["fa"], fa_changed, LINE_FA)
+    # A line under a draft crag, sector, or area is hidden on the quality page.
+    if after_area is not None and not _spot_chain_published(session, "area", after_area):
+        delta = 0
+        after_area = None
+    if before_area is not None and not _spot_chain_published(session, "area", before_area):
+        before_area = None
     return delta, before_area, after_area
 
 
@@ -443,106 +474,147 @@ class _AttrBag:
         return getattr(self._fallback, name)
 
 
+class _QuotaLine(NamedTuple):
+    """One line's place in an area's description quota."""
+
+    id: object
+    published: bool
+    described: bool
+    created_by_id: object
+    time_created: object
+    pending: bool
+
+
+def _quota_sort_key(line: _QuotaLine):
+    """Same order as the backfill: oldest description first, then id.
+
+    A line created in this flush has no timestamp yet. It sorts last, which is
+    where the database will put it once ``time_created`` is filled in.
+    """
+    when = line.time_created
+    if when is None:
+        when = datetime.max if line.pending else datetime.min
+    elif when.tzinfo is not None:
+        when = when.replace(tzinfo=None)
+    return (when, str(line.id))
+
+
+def _paid_quota_lines(state: dict, gym: bool) -> list[_QuotaLine]:
+    """The earliest described lines that currently hold a paid slot."""
+    published = [line for line in state.values() if line.published]
+    slots = description_slots(len(published), gym)
+    described = sorted((line for line in published if line.described), key=_quota_sort_key)
+    return described[:slots]
+
+
 def _description_delta(session: Session, area_id, gym: bool) -> tuple[int, dict]:
     """Points for the line-description quota in one area.
 
     Outdoors, each published line with a description is worth two points until
-    the area reaches ceil(20% of its published lines). Gym mode pays nothing.
-    The first value is the signed-in user's change: filling a free slot,
-    losing one, or the one-point edit bonus for rewriting a description that
-    is already counted or for adding one past the quota. The second value
-    credits draft authors. When a draft that already has a description is
-    published, that slot's points go to the line's creator, not to the person
-    who clicks publish.
+    the area reaches ceil(20% of its published lines). The paid lines are the
+    earliest ones, matching the backfill. Gym mode pays nothing. The first
+    value is the signed-in user's gain. The second credits other authors.
+
+    Writing a description pays the person who wrote it. A description that was
+    already stored, including one on a draft, pays the line's creator when a
+    newly opened slot takes it in. Adding an undescribed line that opens a
+    slot therefore pays the author of that description, not the person who
+    changed the line count. Dropping a slot pays nothing back. Rewriting a
+    counted description, or adding one past the quota, pays the edit bonus.
     """
     if gym or area_id is None:
         return 0, {}
     # The database is the before picture. Inserts, deletes, and edits in this
     # flush are applied on a copy so the quota can be compared.
     rows = session.connection().execute(
-        text("SELECT id, publication_status, description FROM lines WHERE area_id = :area_id"),
+        text(
+            """
+            SELECT id, publication_status, description, created_by_id, time_created
+            FROM lines
+            WHERE area_id = :area_id
+            """
+        ),
         {"area_id": area_id},
     )
     before = {}
     for row in rows:
-        before[row.id] = (is_published(row.publication_status), has_text(row.description))
+        before[row.id] = _QuotaLine(
+            id=row.id,
+            published=is_published(row.publication_status),
+            described=has_text(row.description),
+            created_by_id=row.created_by_id,
+            time_created=row.time_created,
+            pending=False,
+        )
     after = dict(before)
+    session_lines = {}
 
-    def apply_line(line: Line, target: dict, present: bool):
+    def remember(line: Line):
+        session_lines[line.id] = line
+
+    def apply_line(line: Line, present: bool):
+        remember(line)
         if not present:
-            target.pop(line.id, None)
+            after.pop(line.id, None)
             return
         # A line that moved to another area no longer counts here.
-        if line.area_id == area_id:
-            target[line.id] = (_is_published_now(line), has_text(line.description))
-        else:
-            target.pop(line.id, None)
+        if line.area_id != area_id:
+            after.pop(line.id, None)
+            return
+        after[line.id] = _QuotaLine(
+            id=line.id,
+            published=_is_published_now(line),
+            described=has_text(line.description),
+            created_by_id=line.created_by_id,
+            time_created=line.time_created,
+            pending=inspect(line).pending,
+        )
 
     for line in list(session.deleted):
         if isinstance(line, Line) and line.id in after:
+            remember(line)
             after.pop(line.id, None)
     for line in list(session.new):
         if isinstance(line, Line):
-            apply_line(line, after, True)
+            apply_line(line, True)
     # A dirty line counts when it is in this area now or was before the flush.
     for line in list(session.dirty):
         if not isinstance(line, Line):
             continue
         old_area = _value_before(line, "area_id")
         if old_area == area_id or line.area_id == area_id:
-            apply_line(line, after, True)
+            apply_line(line, True)
 
-    before_earned, _before_max = description_earned_max(
-        sum(1 for published, _described in before.values() if published),
-        sum(1 for published, described in before.values() if published and described),
-        gym,
-    )
-    after_earned, _after_max = description_earned_max(
-        sum(1 for published, _described in after.values() if published),
-        sum(1 for published, described in after.values() if published and described),
-        gym,
-    )
+    def described_count(state: dict) -> tuple[int, int]:
+        published = [line for line in state.values() if line.published]
+        described = sum(1 for line in published if line.described)
+        return len(published), described
+
+    before_count, before_described = described_count(before)
+    after_count, after_described = described_count(after)
+    before_earned, _before_max = description_earned_max(before_count, before_described, gym)
+    after_earned, _after_max = description_earned_max(after_count, after_described, gym)
     point_delta = after_earned - before_earned
+    actor_delta = 0
     credits: dict = {}
-    # Drafts published in this flush whose description was already written.
-    # Those slot points belong to the author, so they are left out while the
-    # publisher's share is measured.
-    carried = []
-    for line in list(session.dirty):
-        if not isinstance(line, Line) or line.area_id != area_id or not _publishing_draft(line):
-            continue
-        if has_text(_value_before(line, "description")):
-            carried.append(line)
-    if carried:
-        shadow = dict(after)
-        for line in carried:
-            if line.id in shadow:
-                _published, described = shadow[line.id]
-                shadow[line.id] = (False, described)
-        cursor, _shadow_max = description_earned_max(
-            sum(1 for published, _described in shadow.values() if published),
-            sum(1 for published, described in shadow.values() if published and described),
-            gym,
-        )
-        actor_delta = cursor - before_earned
-        # Turn the carried lines back on one at a time. Each step that fills
-        # a free slot is credited to that line's creator.
-        state = dict(shadow)
-        for line in carried:
-            if line.id not in after:
+    # Only lines that newly hold a slot are paid, and only up to the growth in
+    # the quota. Swapping one description for another does not mint points.
+    before_paid = _paid_quota_lines(before, gym)
+    after_paid = _paid_quota_lines(after, gym)
+    growth = len(after_paid) - len(before_paid)
+    if growth > 0:
+        before_ids = {line.id for line in before_paid}
+        newcomers = [line for line in after_paid if line.id not in before_ids]
+        for line in newcomers[:growth]:
+            holder = session_lines.get(line.id)
+            before_line = before.get(line.id)
+            already_counted = before_line is not None and before_line.published and before_line.described
+            wrote_it = holder is not None and not already_counted and _changed(holder, "description")
+            if wrote_it:
+                actor_delta += LINE_DESCRIPTION
                 continue
-            state[line.id] = after[line.id]
-            step, _step_max = description_earned_max(
-                sum(1 for published, _described in state.values() if published),
-                sum(1 for published, described in state.values() if published and described),
-                gym,
-            )
-            marginal = step - cursor
-            cursor = step
-            if marginal and line.created_by_id:
-                credits[line.created_by_id] = credits.get(line.created_by_id, 0) + marginal
-    else:
-        actor_delta = point_delta
+            if line.created_by_id:
+                credits[line.created_by_id] = credits.get(line.created_by_id, 0) + LINE_DESCRIPTION
     # Rewriting a counted description, or adding one when the quota is already
     # full, pays the edit bonus instead of another slot.
     for line in list(session.new) + list(session.dirty):
@@ -550,7 +622,8 @@ def _description_delta(session: Session, area_id, gym: bool) -> tuple[int, dict]
             continue
         if not _changed(line, "description"):
             continue
-        before_has = before.get(line.id, (False, False))[1] if line.id in before else False
+        before_line = before.get(line.id)
+        before_has = before_line.described if before_line is not None else False
         after_has = has_text(line.description) and _is_published_now(line)
         if before_has and after_has:
             actor_delta += EDIT_BONUS
@@ -574,11 +647,18 @@ def _affected_topo_ids(session: Session) -> set:
 
 
 def _topo_in_session(session: Session, topo_id):
-    """The topo image from this flush when it is there, otherwise the loaded row."""
+    """The topo image for this id.
+
+    ``id`` is unique, but the primary key also includes the area and the file,
+    so session.get cannot look the row up from the id alone.
+    """
     for obj in list(session.new) + list(session.dirty) + list(session.deleted):
         if isinstance(obj, TopoImage) and obj.id == topo_id:
             return obj
-    return session.get(TopoImage, topo_id)
+    for obj in session.identity_map.values():
+        if isinstance(obj, TopoImage) and obj.id == topo_id:
+            return obj
+    return session.query(TopoImage).filter(TopoImage.id == topo_id).first()
 
 
 def _presence(
@@ -635,11 +715,14 @@ def _topo_delta(session: Session, topo_id, gym: bool, credits: dict) -> int:
     image = _topo_in_session(session, topo_id)
     if image is None:
         return 0
+    if not _spot_chain_published(session, "area", image.area_id):
+        return 0
     state = inspect(image)
+    deleting = _is_being_deleted(image)
     if state.pending:
         before_published = False
         after_published = _is_published_now(image)
-    elif state.deleted:
+    elif deleting:
         before_published = is_published(image.publication_status)
         after_published = False
     else:
@@ -662,10 +745,10 @@ def _topo_delta(session: Session, topo_id, gym: bool, credits: dict) -> int:
         {"topo_id": topo_id},
         match,
     )
-    if state.deleted:
+    if deleting:
         after_gps = False
     points = 0 if gym else TOPO_GPS
-    publishing = not state.pending and not state.deleted and _publishing_draft(image)
+    publishing = not state.pending and not deleting and _publishing_draft(image)
     if publishing:
         # The pin already on the draft belongs to its author. A pin added in
         # this same flush still pays the publisher through the gate below.
@@ -711,6 +794,33 @@ def _spot_object(session: Session, level: str, spot_id):
     return session.get(model, spot_id)
 
 
+def _spot_chain_published(session: Session, level: str, spot_id) -> bool:
+    """True when this spot and every spot above it are published.
+
+    A line, topo image, or spot under a draft crag or sector is absent from
+    the quality report, so it must not earn points either.
+    """
+    if spot_id is None:
+        return False
+    cache = session.info.setdefault("topo_visible_spots", {})
+    key = (level, spot_id)
+    cached = cache.get(key)
+    if cached is not None:
+        return cached
+    spot = _spot_object(session, level, spot_id)
+    if spot is None or not _is_published_now(spot):
+        cache[key] = False
+        return False
+    if level == "sector":
+        visible = _spot_chain_published(session, "crag", spot.crag_id)
+    elif level == "area":
+        visible = _spot_chain_published(session, "sector", spot.sector_id)
+    else:
+        visible = True
+    cache[key] = visible
+    return visible
+
+
 def _spot_delta(session: Session, level: str, spot_id, gym: bool) -> int:
     """Points for one crag, sector, or area.
 
@@ -718,9 +828,10 @@ def _spot_delta(session: Session, level: str, spot_id, gym: bool) -> int:
     a parking pin count only outdoors.
     """
     spot = _spot_object(session, level, spot_id)
-    if spot is None:
+    if spot is None or not _spot_chain_published(session, level, spot_id):
         return 0
     state = inspect(spot)
+    deleting = _is_being_deleted(spot)
     if state.pending:
         before_published = False
         after_published = _is_published_now(spot)
@@ -730,7 +841,7 @@ def _spot_delta(session: Session, level: str, spot_id, gym: bool) -> int:
         after_image = spot.portrait_image_id is not None
         description_changed = True
         image_changed = True
-    elif state.deleted:
+    elif deleting:
         before_published = is_published(spot.publication_status)
         after_published = False
         before_description = has_text(spot.description) or has_text(spot.short_description)
@@ -785,7 +896,7 @@ def _spot_delta(session: Session, level: str, spot_id, gym: bool) -> int:
         match_type("PARKING"),
         "PARKING",
     )
-    if state.deleted:
+    if deleting:
         after_gps = False
         after_parking = False
     delta = publish_delta(before_published, after_published)

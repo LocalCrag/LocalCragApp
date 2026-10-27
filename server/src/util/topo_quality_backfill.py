@@ -39,26 +39,31 @@ def backfill_creator_points(connection) -> None:
     }
     spot_flags = _spot_flags(connection)
 
+    crag_ids = _published_ids(connection, "crags")
+    sector_ids = _published_ids(connection, "sectors", "crag_id", crag_ids)
+    area_ids = _published_ids(connection, "areas", "sector_id", sector_ids)
     spots = []
-    spots.extend(_spots(connection, "crag", "crags", spot_flags))
-    spots.extend(_spots(connection, "sector", "sectors", spot_flags))
-    spots.extend(_spots(connection, "area", "areas", spot_flags))
-    area_ids = {spot.id for spot in spots if spot.level == "area"}
+    spots.extend(_spots(connection, "crag", "crags", spot_flags, crag_ids))
+    spots.extend(_spots(connection, "sector", "sectors", spot_flags, sector_ids))
+    spots.extend(_spots(connection, "area", "areas", spot_flags, area_ids))
 
     lines = []
-    for row in connection.execute(
-        sa.text(
-            """
-            SELECT id, name, area_id, created_by_id, time_created, description, videos,
-                   publication_status, fa_name, fa_date, fa_year, routesetter, set_date,
-                   roof, overhang, vertical, slab, traverse, dihedral, compression, arete, crack, dyno, mantle
-            FROM lines
-            WHERE publication_status = 'published'
-            """
-        )
-    ).mappings():
-        if str(row["area_id"]) not in area_ids:
-            continue
+    if area_ids:
+        line_rows = connection.execute(
+            sa.text(
+                """
+                SELECT id, name, area_id, created_by_id, time_created, description, videos,
+                       publication_status, fa_name, fa_date, fa_year, routesetter, set_date,
+                       roof, overhang, vertical, slab, traverse, dihedral, compression, arete, crack, dyno, mantle
+                FROM lines
+                WHERE publication_status = 'published' AND area_id IN :area_ids
+                """
+            ).bindparams(sa.bindparam("area_ids", expanding=True)),
+            {"area_ids": list(area_ids)},
+        ).mappings()
+    else:
+        line_rows = []
+    for row in line_rows:
         values = dict(row)
         lines.append(
             LineRecord(
@@ -81,17 +86,20 @@ def backfill_creator_points(connection) -> None:
         )
 
     topos = []
-    for row in connection.execute(
-        sa.text(
-            """
-            SELECT id, title, area_id, created_by_id
-            FROM topo_images
-            WHERE publication_status = 'published'
-            """
-        )
-    ).mappings():
-        if str(row["area_id"]) not in area_ids:
-            continue
+    if area_ids:
+        topo_rows = connection.execute(
+            sa.text(
+                """
+                SELECT id, title, area_id, created_by_id
+                FROM topo_images
+                WHERE publication_status = 'published' AND area_id IN :area_ids
+                """
+            ).bindparams(sa.bindparam("area_ids", expanding=True)),
+            {"area_ids": list(area_ids)},
+        ).mappings()
+    else:
+        topo_rows = []
+    for row in topo_rows:
         topos.append(
             TopoRecord(
                 id=str(row["id"]),
@@ -113,15 +121,33 @@ def backfill_creator_points(connection) -> None:
         )
 
 
-def _spots(connection, level: str, table: str, flags: dict) -> list[SpotRecord]:
+def _published_ids(connection, table: str, parent_column: str | None = None, parent_ids=None) -> list:
+    """Ids of published rows, optionally limited to parents that are themselves published."""
+    if parent_column is not None and not parent_ids:
+        return []
+    sql = f"SELECT id FROM {table} WHERE publication_status = 'published'"
+    if parent_column is None:
+        rows = connection.execute(sa.text(sql))
+    else:
+        statement = sa.text(sql + f" AND {parent_column} IN :parent_ids").bindparams(
+            sa.bindparam("parent_ids", expanding=True)
+        )
+        rows = connection.execute(statement, {"parent_ids": list(parent_ids)})
+    return [row.id for row in rows]
+
+
+def _spots(connection, level: str, table: str, flags: dict, only_ids) -> list[SpotRecord]:
+    if not only_ids:
+        return []
     rows = connection.execute(
         sa.text(
             f"""
             SELECT id, name, created_by_id, description, short_description, portrait_image_id
             FROM {table}
-            WHERE publication_status = 'published'
+            WHERE id IN :ids
             """
-        )
+        ).bindparams(sa.bindparam("ids", expanding=True)),
+        {"ids": list(only_ids)},
     ).mappings()
     spots = []
     for row in rows:

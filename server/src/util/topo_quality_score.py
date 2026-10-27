@@ -148,22 +148,25 @@ def summarize(earned: int, maximum: int, bonus: int) -> dict:
 
 
 def publish_delta(before_published: bool, after_published: bool) -> int:
-    """Base moderator points for a published item appearing or disappearing."""
+    """Base points for a published item appearing.
+
+    Unpublishing or deleting pays nothing back. Taking points away would
+    reward leaving a bad entry in place.
+    """
     if after_published and not before_published:
         return CREATE_ITEM
-    if before_published and not after_published:
-        return -CREATE_ITEM
     return 0
 
 
 def gate_delta(before_on: bool, after_on: bool, changed: bool, points: int) -> int:
-    """Points to add for one gate. A same-state edit of relevant data pays ``EDIT_BONUS``."""
+    """Points to add for one gate. A same-state edit of relevant data pays ``EDIT_BONUS``.
+
+    Turning a gate off pays nothing back.
+    """
     if points <= 0:
         return 0
     if after_on and not before_on:
         return points
-    if before_on and not after_on:
-        return -points
     if changed and before_on and after_on:
         return EDIT_BONUS
     return 0
@@ -539,6 +542,21 @@ def build_tree(
     crags = sorted((spot for spot in spots if spot.level == "crag"), key=lambda spot: (spot.order_index, spot.name))
     sectors = [spot for spot in spots if spot.level == "sector"]
     areas = [spot for spot in spots if spot.level == "area"]
+    lines_by_area = defaultdict(list)
+    topos_by_area = defaultdict(list)
+    for line in lines:
+        lines_by_area[line.area_id].append(line)
+    for topo in topos:
+        topos_by_area[topo.area_id].append(topo)
+
+    def gathered(area_ids):
+        grouped_lines = []
+        grouped_topos = []
+        for area_id in area_ids:
+            grouped_lines.extend(lines_by_area.get(area_id, ()))
+            grouped_topos.extend(topos_by_area.get(area_id, ()))
+        return grouped_lines, grouped_topos
+
     crag_nodes = []
     for crag in crags:
         crag_sectors = sorted(
@@ -553,8 +571,8 @@ def build_tree(
             )
             area_nodes = []
             for area in sector_areas:
-                area_lines = [line for line in lines if line.area_id == area.id]
-                area_topos = [topo for topo in topos if topo.area_id == area.id]
+                area_lines = lines_by_area.get(area.id, [])
+                area_topos = topos_by_area.get(area.id, [])
                 area_nodes.append(
                     _node(
                         area.name,
@@ -564,9 +582,7 @@ def build_tree(
                         sectorSlug=sector.slug,
                     )
                 )
-            sector_area_ids = {area.id for area in sector_areas}
-            sector_lines = [line for line in lines if line.area_id in sector_area_ids]
-            sector_topos = [topo for topo in topos if topo.area_id in sector_area_ids]
+            sector_lines, sector_topos = gathered(area.id for area in sector_areas)
             sector_nodes.append(
                 _node(
                     sector.name,
@@ -577,10 +593,9 @@ def build_tree(
                 )
             )
         sector_ids = {sector.id for sector in crag_sectors}
-        crag_area_ids = {area.id for area in areas if area.parent_id in sector_ids}
-        crag_lines = [line for line in lines if line.area_id in crag_area_ids]
-        crag_topos = [topo for topo in topos if topo.area_id in crag_area_ids]
-        crag_spots = [crag, *crag_sectors, *(area for area in areas if area.id in crag_area_ids)]
+        crag_areas = [area for area in areas if area.parent_id in sector_ids]
+        crag_lines, crag_topos = gathered(area.id for area in crag_areas)
+        crag_spots = [crag, *crag_sectors, *crag_areas]
         crag_nodes.append(
             _node(
                 crag.name,

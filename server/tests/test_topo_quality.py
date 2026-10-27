@@ -5,8 +5,13 @@ from flask import g
 from app import app
 from extensions import db
 from models.area import Area
+from models.crag import Crag
+from models.enums.line_type_enum import LineTypeEnum
+from models.enums.publication_status_enum import PublicationStatusEnum
+from models.enums.starting_position_enum import StartingPositionEnum
 from models.file import File
 from models.line import Line
+from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
 from util.auth_session import SESSION_COOKIE_NAME
@@ -164,6 +169,17 @@ def test_quality_detail_lists_checks(client, member_token):
         assert line_items[0]["cragName"] == crag.name
         assert line_items[0]["sectorName"] == sector.name
         assert line_items[0]["areaName"] == area.name
+        assert {item["areaSlug"] for item in line_items} == {area.slug}
+
+    crag_detail = client.get(f"/api/topo-quality/crags/{crag.slug}", token=member_token)
+    assert crag_detail.status_code == 200, crag_detail.text
+    assert crag_detail.json["name"] == crag.name
+    sector_detail = client.get(
+        f"/api/topo-quality/crags/{crag.slug}/sectors/{sector.slug}",
+        token=member_token,
+    )
+    assert sector_detail.status_code == 200, sector_detail.text
+    assert sector_detail.json["name"] == sector.name
 
 
 def test_adding_topo_image_gps_awards_points(client, moderator_token):
@@ -468,6 +484,32 @@ def test_creating_a_topo_image_with_gps_awards_points(client, moderator_token):
     assert _header_points(pinned) == CREATE_ITEM + TOPO_GPS
 
 
+def test_deleting_a_topo_image_with_gps_keeps_the_editors_points(client, moderator_token):
+    user = User.find_by_email("moderator@localcrag.invalid.org")
+    image = File.query.first()
+    _clear_points_header()
+    created = client.post(
+        "/api/areas/shark-attack/topo-images",
+        token=moderator_token,
+        json={
+            "image": str(image.id),
+            "mapMarkers": [{"lat": 12.13, "lng": 42.42, "type": "TOPO_IMAGE", "description": None, "name": None}],
+            "title": "Pinned then deleted",
+            "description": None,
+        },
+    )
+    assert created.status_code == 201, created.text
+    db.session.refresh(user)
+    before = user.topo_points
+
+    _clear_points_header()
+    deleted = client.delete(f"/api/topo-images/{created.json['id']}", token=moderator_token)
+    assert deleted.status_code == 204, deleted.text
+    assert _header_points(deleted) == 0
+    db.session.refresh(user)
+    assert user.topo_points == before
+
+
 def test_publishing_a_draft_pays_the_author_for_fields_already_filled(client, member_token, moderator_token):
     author = User.find_by_email("member@localcrag.invalid.org")
     publisher = User.find_by_email("moderator@localcrag.invalid.org")
@@ -550,3 +592,120 @@ def test_backfill_credits_creators_without_raising(client):
     backfill_creator_points(db.session.connection())
     credited = User.query.filter(User.topo_points > 0).count()
     assert credited >= 0
+
+
+def _stored_line(area, name, created_by_id, when, description=None):
+    line = Line()
+    line.name = name
+    line.description = description
+    line.type = LineTypeEnum.BOULDER
+    line.area_id = area.id
+    line.grade_scale = "FB"
+    line.author_grade_value = 0
+    line.user_grade_value = 0
+    line.starting_position = StartingPositionEnum.FRENCH
+    line.created_by_id = created_by_id
+    line.time_created = when
+    line.publication_status = PublicationStatusEnum.PUBLISHED
+    db.session.add(line)
+    return line
+
+
+def _spot_chain(name, crag_status):
+    crag = Crag()
+    crag.name = name
+    crag.publication_status = crag_status
+    db.session.add(crag)
+    db.session.flush()
+    sector = Sector()
+    sector.name = f"{name} sector"
+    sector.crag_id = crag.id
+    sector.publication_status = PublicationStatusEnum.PUBLISHED
+    db.session.add(sector)
+    db.session.flush()
+    area = Area()
+    area.name = f"{name} area"
+    area.sector_id = sector.id
+    area.publication_status = PublicationStatusEnum.PUBLISHED
+    db.session.add(area)
+    db.session.flush()
+    return crag, sector, area
+
+
+def test_opening_a_description_slot_pays_the_line_author(client, moderator_token):
+    member = User.find_by_email("member@localcrag.invalid.org")
+    moderator = User.find_by_email("moderator@localcrag.invalid.org")
+    _crag, _sector, area = _spot_chain("Quota holder", PublicationStatusEnum.PUBLISHED)
+    for index in range(3):
+        _stored_line(
+            area,
+            f"Quota described {index}",
+            member.id,
+            datetime(2020, 1, index + 1),
+            description="<p>Already written.</p>",
+        )
+    for index in range(7):
+        _stored_line(area, f"Quota bare {index}", member.id, datetime(2020, 2, index + 1))
+    db.session.commit()
+    db.session.refresh(member)
+    db.session.refresh(moderator)
+    member_before = member.topo_points
+    moderator_before = moderator.topo_points
+
+    _clear_points_header()
+    created = client.post(
+        f"/api/areas/{area.slug}/lines",
+        token=moderator_token,
+        json=_line_payload(name="Quota opener"),
+    )
+    assert created.status_code == 201, created.text
+    assert _header_points(created) == CREATE_ITEM
+    db.session.refresh(member)
+    db.session.refresh(moderator)
+    assert member.topo_points == member_before + LINE_DESCRIPTION
+    assert moderator.topo_points == moderator_before + CREATE_ITEM
+
+
+def test_hidden_ancestor_earns_no_points_and_stays_out_of_backfill(client, moderator_token, member_token):
+    member = User.find_by_email("member@localcrag.invalid.org")
+    moderator = User.find_by_email("moderator@localcrag.invalid.org")
+    backfill_creator_points(db.session.connection())
+    db.session.commit()
+    db.session.refresh(member)
+    before_backfill = member.topo_points
+
+    crag, sector, area = _spot_chain("Hidden parent", PublicationStatusEnum.DRAFT)
+    _stored_line(
+        area,
+        "Hidden described line",
+        member.id,
+        datetime(2020, 3, 1),
+        description="<p>Not on the report.</p>",
+    )
+    db.session.commit()
+    backfill_creator_points(db.session.connection())
+    db.session.commit()
+    db.session.refresh(member)
+    assert member.topo_points == before_backfill
+
+    hidden = client.get(
+        f"/api/topo-quality/crags/{crag.slug}/sectors/{sector.slug}/areas/{area.slug}",
+        token=member_token,
+    )
+    assert hidden.status_code == 404
+
+    _clear_points_header()
+    db.session.refresh(moderator)
+    before = moderator.topo_points
+    created = client.post(
+        f"/api/areas/{area.slug}/lines",
+        token=moderator_token,
+        json=_line_payload(
+            name="Hidden new line",
+            videos=[{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "title": "Video"}],
+        ),
+    )
+    assert created.status_code == 201, created.text
+    assert _header_points(created) == 0
+    db.session.refresh(moderator)
+    assert moderator.topo_points == before
