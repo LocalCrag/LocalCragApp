@@ -111,6 +111,16 @@ export class PageTitleService {
    * microtask is dropped if a newer navigation already started.
    */
   private headerEpoch = 0;
+  /**
+   * Title state waiting for the next microtask. Tabs and breadcrumbs set in
+   * the same turn are folded in so the deferred apply does not wipe them.
+   */
+  private pendingTitle: {
+    applyId: number;
+    epoch: number;
+    state: PageTitleState;
+  } | null = null;
+  private titleApplyId = 0;
 
   readonly state$ = this.stateSubject.asObservable();
 
@@ -170,11 +180,19 @@ export class PageTitleService {
     // The header is checked before the new page's ngOnInit. Applying the title
     // in that same turn flips `loading` and throws NG0100.
     const epoch = this.headerEpoch;
+    const applyId = ++this.titleApplyId;
+    this.pendingTitle = { applyId, epoch, state: next };
     queueMicrotask(() => {
-      if (epoch !== this.headerEpoch) {
+      const pending = this.pendingTitle;
+      if (
+        !pending ||
+        pending.applyId !== applyId ||
+        pending.epoch !== this.headerEpoch
+      ) {
         return;
       }
-      this.stateSubject.next(next);
+      this.pendingTitle = null;
+      this.stateSubject.next(pending.state);
     });
   }
 
@@ -218,11 +236,13 @@ export class PageTitleService {
    */
   reset(): void {
     this.headerEpoch++;
+    this.pendingTitle = null;
     this.stateSubject.next({ ...initialState });
   }
 
   private beginLoading(nextRoot: ActivatedRouteSnapshot): void {
     this.headerEpoch++;
+    this.pendingTitle = null;
     const prev = this.stateSubject.value;
     const prevHero = !!prev.image || !!prev.heroDefaultBg || !!prev.loadingHero;
     const destinationHero = routePrefersHeroTitle(nextRoot);
@@ -237,6 +257,10 @@ export class PageTitleService {
   }
 
   private patch(partial: Partial<PageTitleState>): void {
+    if (this.pendingTitle && this.pendingTitle.epoch === this.headerEpoch) {
+      this.pendingTitle.state = { ...this.pendingTitle.state, ...partial };
+      return;
+    }
     this.stateSubject.next({
       ...this.stateSubject.value,
       ...partial,

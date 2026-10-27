@@ -176,6 +176,47 @@ describe('PageTitleService', () => {
     expect(state.loadingHero).toBeTrue();
   });
 
+  it('keeps tabs and breadcrumbs set in the same turn as the title', async () => {
+    service.setTitle('Shark Attack');
+    service.setBreadcrumbs([{ label: 'Brione' }], { icon: 'pi pi-map' });
+    service.setTabs([{ label: 'Lines' }]);
+
+    const state = await latestState();
+    expect(state.loading).toBeFalse();
+    expect(state.title).toBe('Shark Attack');
+    expect(state.breadcrumbs).toEqual([{ label: 'Brione' }]);
+    expect(state.breadcrumbHome).toEqual({ icon: 'pi pi-map' });
+    expect(state.tabs).toEqual([{ label: 'Lines' }]);
+  });
+
+  it('clears tabs when a later title replaces the header', async () => {
+    service.setTitle('Shark Attack');
+    service.setTabs([{ label: 'Lines' }]);
+    await latestState();
+
+    service.setTitle('Other');
+    const state = await latestState();
+    expect(state.title).toBe('Other');
+    expect(state.tabs).toBeNull();
+  });
+
+  it('drops a deferred title when navigation starts first', async () => {
+    service.setTitle('Shark Attack');
+    service.setTabs([{ label: 'Lines' }]);
+
+    const nextRoot = makeRoot('topo/:crag-slug');
+    routerEvents.next(
+      new RoutesRecognized(1, '/topo/foo', '/topo/foo', {
+        root: nextRoot,
+      } as never),
+    );
+
+    const state = await latestState();
+    expect(state.loading).toBeTrue();
+    expect(state.title).toBeNull();
+    expect(state.tabs).toBeNull();
+  });
+
   it('clears loading when setTitle is called', async () => {
     const nextRoot = makeRoot('scales');
     routerEvents.next(

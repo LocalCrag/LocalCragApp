@@ -1326,6 +1326,8 @@
   "menu.toolsCategory": "Outils",
   "menu.rockExplorer": "Explorateur de rochers",
   "menu.topoQuality": "Qualité du topo",
+  "topoQuality.ui.qualityTab": "Qualité",
+  "topoQuality.ui.rankingTab": "Modération",
   "menu.news": "Nouvelles",
   "menu.topo": "Topo",
   "menu.ascents": "Registre",

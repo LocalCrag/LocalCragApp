@@ -1326,6 +1326,8 @@
   "menu.toolsCategory": "Tools",
   "menu.rockExplorer": "Rock Explorer",
   "menu.topoQuality": "Topo-Qualität",
+  "topoQuality.ui.qualityTab": "Qualität",
+  "topoQuality.ui.rankingTab": "Moderation",
   "menu.news": "News",
   "menu.topo": "Topo",
   "menu.ascents": "Logbuch",
