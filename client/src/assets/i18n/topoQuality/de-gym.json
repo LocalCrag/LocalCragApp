@@ -1,6 +1,6 @@
 {
   "ui.legend": "Die Topo-Qualität wird anhand wichtiger Basisinformationen gemessen (z.B. vorhandene Bilder). Wichtige Zusatzinformationen, die nicht immer verfügbar sind, geben Bonuspunkte (z.B. Schrauberdaten / Videos).",
-  "ui.scoreHint": "Der Prozentwert sind die Pflichtpunkte dieses Spots und alles darunter, geteilt durch das Maximum.\n\nEine eingezeichnete Linie gibt 10 Punkte. Ein Linienstil gibt 5. Ein Portraitbild gibt 10. Eine Beschreibung für ein Gebiet, einen Sektor oder einen Bereich gibt 5.\n\nEin Video gibt 3 Bonuspunkte. Ein Schrauber mit Schraubdatum gibt 3 Bonuspunkte. Bonuspunkte stehen neben dem Balken und ändern den Prozentwert nicht.\n\nEin Spot, für den es keine Punkte mehr zu holen gibt, ist Platin.",
+  "ui.scoreHint": "Der Prozentwert sind die Pflichtpunkte dieses Spots und alles darunter, geteilt durch das Maximum.\n\nEine eingezeichnete Linie gibt 2 Punkte. Ein Linienstil gibt 5. Ein Portraitbild gibt 10. Eine Beschreibung für ein Gebiet, einen Sektor oder einen Bereich gibt 5.\n\nEin Video gibt 3 Bonuspunkte. Ein Schrauber mit Schraubdatum gibt 3 Bonuspunkte. Bonuspunkte stehen neben dem Balken und ändern den Prozentwert nicht.\n\nEin Spot, für den es keine Punkte mehr zu holen gibt, ist Platin.",
   "ui.checkHint.lineFa": "3 Bonuspunkte für jede veröffentlichte Linie mit Schrauber und Schraubdatum. Das ist für 100 % nicht nötig.",
   "ui.check.lineFa": "Schrauber mit Schraubdatum"
 }

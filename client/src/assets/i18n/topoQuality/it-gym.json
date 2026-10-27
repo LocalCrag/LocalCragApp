@@ -1,6 +1,6 @@
 {
   "ui.legend": "La qualità del topo si misura dalle informazioni di base importanti (per esempio le immagini). Le informazioni utili che non sono sempre disponibili danno punti bonus (per esempio le date del routesetter e i video).",
-  "ui.scoreHint": "La percentuale sono i punti obbligatori di questo spot e di tutto ciò che contiene, divisi per il massimo.\n\nUna linea disegnata vale 10 punti. Uno stile di linea vale 5. Un'immagine di ritratto vale 10. Una descrizione su falesia, settore o area vale 5.\n\nUn video vale 3 punti bonus. Un routesetter con data di chiodatura vale 3 punti bonus. I punti bonus stanno accanto alla barra e non cambiano la percentuale.\n\nUno spot senza nulla da valutare è Platino.",
+  "ui.scoreHint": "La percentuale sono i punti obbligatori di questo spot e di tutto ciò che contiene, divisi per il massimo.\n\nUna linea disegnata vale 2 punti. Uno stile di linea vale 5. Un'immagine di ritratto vale 10. Una descrizione su falesia, settore o area vale 5.\n\nUn video vale 3 punti bonus. Un routesetter con data di chiodatura vale 3 punti bonus. I punti bonus stanno accanto alla barra e non cambiano la percentuale.\n\nUno spot senza nulla da valutare è Platino.",
   "ui.checkHint.lineFa": "3 punti bonus per ogni linea pubblicata con routesetter e data di chiodatura. Non serve per arrivare al 100%.",
   "ui.check.lineFa": "Routesetter e data di chiodatura"
 }
