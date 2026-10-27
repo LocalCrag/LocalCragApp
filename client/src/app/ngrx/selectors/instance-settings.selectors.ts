@@ -94,6 +94,11 @@ export const selectSkippedHierarchyLayers = createSelector(
   (instanceSettingsState) => instanceSettingsState.skippedHierarchyLayers,
 );
 
+export const selectModeratorGameEnabled = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) => instanceSettingsState.moderatorGameEnabled,
+);
+
 export const selectInstanceLanguage = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.language,

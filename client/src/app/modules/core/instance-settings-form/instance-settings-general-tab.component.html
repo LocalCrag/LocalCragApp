@@ -189,6 +189,23 @@
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
+      <label class="form-label" for="moderator-game-enabled">{{
+        t("moderatorGameEnabledLabel")
+      }}</label>
+      <p-select
+        id="moderator-game-enabled"
+        [options]="[
+          { value: false, label: t('moderatorGameEnabledFalse') },
+          { value: true, label: t('moderatorGameEnabledTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="moderatorGameEnabled"
+        lcFormControl
+      />
+    </div>
+
+    <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="skippedHierarchicalLayers">{{
           t("skippedHierarchicalLayersLabel")

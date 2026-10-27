@@ -119,6 +119,8 @@ describe('PageTitleService', () => {
   });
 
   async function latestState(): Promise<PageTitleState> {
+    // setTitle applies on a microtask so it does not flip the header mid-check.
+    await Promise.resolve();
     return firstValueFrom(service.state$);
   }
 
@@ -174,6 +176,47 @@ describe('PageTitleService', () => {
     expect(state.loadingHero).toBeTrue();
   });
 
+  it('keeps tabs and breadcrumbs set in the same turn as the title', async () => {
+    service.setTitle('Shark Attack');
+    service.setBreadcrumbs([{ label: 'Brione' }], { icon: 'pi pi-map' });
+    service.setTabs([{ label: 'Lines' }]);
+
+    const state = await latestState();
+    expect(state.loading).toBeFalse();
+    expect(state.title).toBe('Shark Attack');
+    expect(state.breadcrumbs).toEqual([{ label: 'Brione' }]);
+    expect(state.breadcrumbHome).toEqual({ icon: 'pi pi-map' });
+    expect(state.tabs).toEqual([{ label: 'Lines' }]);
+  });
+
+  it('clears tabs when a later title replaces the header', async () => {
+    service.setTitle('Shark Attack');
+    service.setTabs([{ label: 'Lines' }]);
+    await latestState();
+
+    service.setTitle('Other');
+    const state = await latestState();
+    expect(state.title).toBe('Other');
+    expect(state.tabs).toBeNull();
+  });
+
+  it('drops a deferred title when navigation starts first', async () => {
+    service.setTitle('Shark Attack');
+    service.setTabs([{ label: 'Lines' }]);
+
+    const nextRoot = makeRoot('topo/:crag-slug');
+    routerEvents.next(
+      new RoutesRecognized(1, '/topo/foo', '/topo/foo', {
+        root: nextRoot,
+      } as never),
+    );
+
+    const state = await latestState();
+    expect(state.loading).toBeTrue();
+    expect(state.title).toBeNull();
+    expect(state.tabs).toBeNull();
+  });
+
   it('clears loading when setTitle is called', async () => {
     const nextRoot = makeRoot('scales');
     routerEvents.next(
@@ -215,4 +258,65 @@ describe('PageTitleService', () => {
 
     expect(getPrimaryPageHostKey(routerStateRoot)).toContain('history');
   });
+
+  it('keeps the header when a child route opts out of being a page host', async () => {
+    const tree = makeNestedRoot('');
+    const detail = makeNestedRoot('region');
+    expect(getPrimaryPageHostKey(tree)).toBe(getPrimaryPageHostKey(detail));
+
+    routerEvents.next(
+      new RoutesRecognized(1, '/topo-quality', '/topo-quality', {
+        root: tree,
+      } as never),
+    );
+    routerStateRoot = tree;
+    routerEvents.next(new NavigationEnd(1, '/topo-quality', '/topo-quality'));
+    service.setTitle('Topo quality', { heroDefaultBg: true });
+
+    routerEvents.next(
+      new RoutesRecognized(2, '/topo-quality/region', '/topo-quality/region', {
+        root: detail,
+      } as never),
+    );
+
+    const state = await latestState();
+    expect(state.loading).toBeFalse();
+    expect(state.title).toBe('Topo quality');
+  });
 });
+
+function makeNestedRoot(childPath: string): ActivatedRouteSnapshot {
+  const root = {} as ActivatedRouteSnapshot;
+  const parent = {} as ActivatedRouteSnapshot;
+  const child = {} as ActivatedRouteSnapshot;
+  Object.assign(root, {
+    data: {},
+    children: [parent],
+    outlet: 'primary',
+    routeConfig: { path: '' },
+    pathFromRoot: [root],
+  });
+  Object.assign(parent, {
+    data: { pageTitleHero: true },
+    children: [child],
+    outlet: 'primary',
+    routeConfig: {
+      path: 'topo-quality',
+      loadComponent: () => Promise.resolve(null),
+      data: { pageTitleHero: true },
+    },
+    pathFromRoot: [root, parent],
+  });
+  Object.assign(child, {
+    data: { pageTitleHost: false },
+    children: [],
+    outlet: 'primary',
+    routeConfig: {
+      path: childPath,
+      loadComponent: () => Promise.resolve(null),
+      data: { pageTitleHost: false },
+    },
+    pathFromRoot: [root, parent, child],
+  });
+  return root;
+}

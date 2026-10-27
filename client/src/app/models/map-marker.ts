@@ -4,7 +4,7 @@ import { Coordinates } from '../interfaces/coordinates.interface';
 import { Crag } from './crag';
 import { Sector } from './sector';
 import { Area } from './area';
-import { TopoImage } from './topo-image';
+import type { TopoImage } from './topo-image';
 
 export type MapMarkerProperties = {
   name: string;
@@ -38,6 +38,7 @@ export class MapMarker extends AbstractModel {
 
   public static serialize(mapMarker: MapMarker): any {
     return {
+      id: mapMarker.id,
       name: mapMarker.name,
       description: mapMarker.description,
       lat: mapMarker.coordinates.lat,

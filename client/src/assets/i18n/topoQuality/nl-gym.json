@@ -1,0 +1,6 @@
+{
+  "ui.legend": "De topokwaliteit wordt gemeten aan belangrijke basisinformatie (bijvoorbeeld aanwezige afbeeldingen). Belangrijke extra informatie die niet altijd beschikbaar is, geeft bonuspunten (bijvoorbeeld zetdatums en video's).",
+  "ui.scoreHint": "Het percentage is de verplichte punten van deze spot en alles daaronder, gedeeld door het maximum.\n\nEen getekende lijn is 2 punten. Een lijnstijl is 5. Een portretfoto is 10. Een beschrijving van een crag, sector of gebied is 5.\n\nEen video is 3 bonuspunten. Een zetter met zetdatum is 3 bonuspunten. Bonuspunten staan naast de balk en veranderen het percentage niet.\n\nEen spot zonder iets om te beoordelen is Platina.",
+  "ui.checkHint.lineFa": "3 bonuspunten voor elke gepubliceerde lijn met een zetter en een zetdatum. Dit is niet nodig voor 100%.",
+  "ui.check.lineFa": "Zetter en zetdatum"
+}

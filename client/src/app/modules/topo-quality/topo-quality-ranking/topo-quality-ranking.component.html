@@ -1,0 +1,53 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  @if (failed) {
+    <p-message severity="error" icon="pi pi-times-circle">{{
+      t("loadFailed")
+    }}</p-message>
+  }
+
+  @if (!loading && rows.length === 0) {
+    <p-message severity="info" icon="pi pi-info-circle">{{
+      t("rankingEmpty")
+    }}</p-message>
+  }
+
+  <ol class="quality-ranking">
+    @for (row of rows; track row.user.id) {
+      <li>
+        <span class="quality-rank">{{ row.rank }}</span>
+        <lc-user-avatar [user]="row.user" size="large" />
+        <a class="quality-user" [routerLink]="row.user.routerLink">
+          {{ row.user.fullname }}
+        </a>
+        <span class="quality-score">{{ row.points }}</span>
+      </li>
+    }
+  </ol>
+
+  @if (canRestart) {
+    <section class="quality-restart" data-cy="topo-quality-restart">
+      <h3>{{ t("restartTitle") }}</h3>
+      <p>{{ t("restartWarning") }}</p>
+      <label for="restart-confirmation">{{ t("restartHint") }}</label>
+      <input
+        pInputText
+        id="restart-confirmation"
+        [(ngModel)]="confirmation"
+        autocomplete="off"
+        data-cy="topo-quality-restart-input"
+      />
+      <p-button
+        [label]="t('restartButton')"
+        severity="danger"
+        [disabled]="confirmation !== 'RESTART'"
+        (onClick)="restart()"
+        data-cy="topo-quality-restart-button"
+      />
+      @if (restartFailed) {
+        <p-message severity="error" icon="pi pi-times-circle">{{
+          t("restartFailed")
+        }}</p-message>
+      }
+    </section>
+  }
+</ng-container>

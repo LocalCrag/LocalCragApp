@@ -1,0 +1,8 @@
+// The tooltip overlay is attached to the document body, outside this component.
+::ng-deep .p-tooltip.quality-hint {
+  max-width: 24rem;
+
+  .p-tooltip-text {
+    white-space: pre-line;
+  }
+}

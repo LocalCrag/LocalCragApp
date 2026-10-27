@@ -92,6 +92,10 @@ export class HeaderMenuService {
     if (this.activeItem) {
       this.deactivateItem(this.activeItem);
     }
+    // Outside clicks are not template events, so the OnPush menu would keep the
+    // open class. Nested flyouts still vanish because resetting their fixed
+    // position clips them; the first dropdown stays on screen until this runs.
+    this.cdr.detectChanges();
   }
 
   /**
@@ -141,6 +145,7 @@ export class HeaderMenuService {
   public collapseMobileMenu() {
     if (!this.preventNextMobileMenuCollapse) {
       this.headerMenu.mobileExpanded = false;
+      this.cdr.detectChanges();
     } else {
       this.preventNextMobileMenuCollapse = false;
     }

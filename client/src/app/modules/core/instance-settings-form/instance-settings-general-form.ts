@@ -13,6 +13,7 @@ export function createGeneralFormGroup(fb: FormBuilder): FormGroup {
     displayUserRatings: [null],
     noClosedProjects: [null],
     suggestionsEnabled: [true],
+    moderatorGameEnabled: [false],
     faDefaultFormat: [null],
     defaultStartingPosition: [null, [Validators.required]],
     rankingPastWeeks: [null],

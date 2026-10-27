@@ -1,0 +1,168 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  <p class="quality-legend">
+    {{ t("legend") }}
+    <span
+      class="pi pi-question-circle quality-hint-icon"
+      [pTooltip]="t('scoreHint')"
+      tooltipPosition="right"
+      tooltipStyleClass="quality-hint"
+    ></span>
+  </p>
+
+  @if (failed) {
+    <p-message severity="error" icon="pi pi-times-circle">{{
+      t("loadFailed")
+    }}</p-message>
+  }
+
+  @if (tree) {
+    <ul class="quality-tree">
+      <li>
+        <div class="quality-node">
+          <lc-topo-quality-bar
+            [earned]="tree.region.earned"
+            [max]="tree.region.max"
+            [bonus]="tree.region.bonus"
+            [percent]="tree.region.percent"
+            [tier]="tree.region.tier"
+          />
+          <a
+            class="quality-open"
+            routerLink="/topo-quality/region"
+            queryParamsHandling="preserve"
+            >{{ tree.region.name }}</a
+          >
+          <p-button
+            [icon]="
+              regionExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
+            "
+            [text]="true"
+            severity="secondary"
+            (onClick)="regionExpanded = !regionExpanded"
+          />
+        </div>
+
+        @if (regionExpanded) {
+          <ul>
+            @for (crag of tree.region.crags; track crag.slug) {
+              <li>
+                <div class="quality-node">
+                  <lc-topo-quality-bar
+                    [earned]="crag.earned"
+                    [max]="crag.max"
+                    [bonus]="crag.bonus"
+                    [percent]="crag.percent"
+                    [tier]="crag.tier"
+                  />
+                  <a
+                    class="quality-open"
+                    [routerLink]="['/topo-quality', 'crag', crag.slug]"
+                    queryParamsHandling="preserve"
+                    >{{ crag.name }}</a
+                  >
+                  <p-button
+                    [icon]="
+                      expandedCrags.has(crag.slug)
+                        ? 'pi pi-chevron-down'
+                        : 'pi pi-chevron-right'
+                    "
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="toggle(expandedCrags, crag.slug)"
+                  />
+                </div>
+                @if (expandedCrags.has(crag.slug)) {
+                  <ul>
+                    @for (sector of crag.sectors; track sector.slug) {
+                      <li>
+                        <div class="quality-node">
+                          <lc-topo-quality-bar
+                            [earned]="sector.earned"
+                            [max]="sector.max"
+                            [bonus]="sector.bonus"
+                            [percent]="sector.percent"
+                            [tier]="sector.tier"
+                          />
+                          <a
+                            class="quality-open"
+                            [routerLink]="[
+                              '/topo-quality',
+                              'crag',
+                              crag.slug,
+                              'sector',
+                              sector.slug,
+                            ]"
+                            queryParamsHandling="preserve"
+                            >{{ sector.name }}</a
+                          >
+                          <p-button
+                            [icon]="
+                              expandedSectors.has(
+                                sectorKey(crag.slug, sector.slug)
+                              )
+                                ? 'pi pi-chevron-down'
+                                : 'pi pi-chevron-right'
+                            "
+                            [text]="true"
+                            severity="secondary"
+                            (onClick)="
+                              toggle(
+                                expandedSectors,
+                                sectorKey(crag.slug, sector.slug)
+                              )
+                            "
+                          />
+                        </div>
+                        @if (
+                          expandedSectors.has(sectorKey(crag.slug, sector.slug))
+                        ) {
+                          <ul>
+                            @for (area of sector.areas; track area.slug) {
+                              <li>
+                                <div class="quality-node">
+                                  <lc-topo-quality-bar
+                                    [earned]="area.earned"
+                                    [max]="area.max"
+                                    [bonus]="area.bonus"
+                                    [percent]="area.percent"
+                                    [tier]="area.tier"
+                                  />
+                                  <a
+                                    class="quality-open"
+                                    [routerLink]="[
+                                      '/topo-quality',
+                                      'crag',
+                                      crag.slug,
+                                      'sector',
+                                      sector.slug,
+                                      'area',
+                                      area.slug,
+                                    ]"
+                                    queryParamsHandling="preserve"
+                                    >{{ area.name }}</a
+                                  >
+                                  <span class="quality-spacer"></span>
+                                </div>
+                              </li>
+                            }
+                          </ul>
+                        }
+                      </li>
+                    }
+                  </ul>
+                }
+              </li>
+            }
+            @if (tree.region.crags.length === 0) {
+              <li>
+                <p-message severity="info" icon="pi pi-info-circle">{{
+                  t("empty")
+                }}</p-message>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    </ul>
+  }
+</ng-container>

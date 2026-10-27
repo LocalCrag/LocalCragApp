@@ -17,6 +17,8 @@ export type NotificationDefinition = {
   type: NotificationType;
   title: string;
   message: string;
+  /** Extra class on the toast, used to show a face on topo-point messages. */
+  styleClass?: string;
 };
 
 /**
@@ -533,6 +535,18 @@ export const NOTIFICATIONS = {
     type: NotificationType.SUCCESS,
     title: marker('notifications.RULES_READ_THANKS_TITLE'),
     message: marker('notifications.RULES_READ_THANKS_REGION_MESSAGE'),
+  },
+  TOPO_POINTS_GAINED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TOPO_POINTS_GAINED_TITLE'),
+    message: marker('notifications.TOPO_POINTS_GAINED_MESSAGE'),
+    styleClass: 'topo-points-toast topo-points-toast--gain',
+  },
+  TOPO_POINTS_LOST: {
+    type: NotificationType.WARNING,
+    title: marker('notifications.TOPO_POINTS_LOST_TITLE'),
+    message: marker('notifications.TOPO_POINTS_LOST_MESSAGE'),
+    styleClass: 'topo-points-toast topo-points-toast--loss',
   },
 } satisfies { [key: string]: NotificationDefinition };
 

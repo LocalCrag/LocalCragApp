@@ -1,0 +1,74 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  <a
+    class="quality-back"
+    routerLink="/topo-quality"
+    queryParamsHandling="preserve"
+  >
+    <span class="pi pi-arrow-left"></span>
+    {{ t("back") }}
+  </a>
+
+  @if (failed) {
+    <p-message severity="error" icon="pi pi-times-circle">{{
+      t("loadFailed")
+    }}</p-message>
+  }
+
+  @if (detail) {
+    <h2 class="quality-detail-title">{{ detail.name }}</h2>
+    <lc-topo-quality-bar
+      [earned]="detail.earned"
+      [max]="detail.max"
+      [bonus]="detail.bonus"
+      [percent]="detail.percent"
+      [tier]="detail.tier"
+    />
+
+    <div class="quality-checks">
+      @for (check of detail.checks; track check.key) {
+        <section class="quality-check">
+          <header>
+            <strong>{{ t("check." + check.key) }}</strong>
+            <span
+              class="pi pi-question-circle quality-hint-icon"
+              [pTooltip]="t('checkHint.' + check.key)"
+              tooltipPosition="top"
+              tooltipStyleClass="quality-hint"
+            ></span>
+            @if (check.bonus) {
+              <span class="quality-bonus-tag">{{ t("bonusTag") }}</span>
+            }
+            <span class="quality-score"
+              >{{ check.earned }} / {{ check.max }}</span
+            >
+          </header>
+          @if (check.items.length === 0) {
+            <p class="quality-passed">{{ t("passed") }}</p>
+          } @else {
+            <p class="quality-improve">
+              {{
+                t("canImprove", {
+                  count: check.items.length + check.remaining,
+                })
+              }}
+            </p>
+            <ul>
+              @for (item of check.items; track $index) {
+                <li>
+                  @if (itemCrumbs(item).length > 0) {
+                    <span class="quality-crumbs">{{
+                      itemCrumbs(item).join(" / ")
+                    }}</span>
+                  }
+                  <a [routerLink]="itemLink(item)">{{
+                    itemName(item, t("untitledImage"))
+                  }}</a>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    </div>
+  }
+</ng-container>

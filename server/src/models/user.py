@@ -39,6 +39,7 @@ class User(HasSlug, IsSearchable, BaseEntity):
     admin = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
     moderator = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
     member = db.Column(db.Boolean, nullable=False, default=False, server_default="0")
+    topo_points = db.Column(db.Integer, nullable=False, default=0, server_default="0")
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     account_settings = db.relationship("AccountSettings", uselist=False, back_populates="user", cascade="all,delete")
