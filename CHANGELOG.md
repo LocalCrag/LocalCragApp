@@ -1,3 +1,17 @@
+# [1.65.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.2...v1.65.0) (2026-10-24)
+
+
+### Bug Fixes
+
+* **topo:** fix confusing button labels in topo image list ([#1325](https://github.com/LocalCrag/LocalCragApp/issues/1325)) ([9e23ebf](https://github.com/LocalCrag/LocalCragApp/commit/9e23ebf40906b67ed371db7340bda0abb5d3168d))
+
+
+### Features
+
+* **topo:** add create line button to the topo image actions ([#1323](https://github.com/LocalCrag/LocalCragApp/issues/1323)) ([f0edf52](https://github.com/LocalCrag/LocalCragApp/commit/f0edf5289bc147505cccad466c7b154b4813df4c)), closes [#791](https://github.com/LocalCrag/LocalCragApp/issues/791)
+* **topo:** allow image and line suggestions by non-moderators ([#1324](https://github.com/LocalCrag/LocalCragApp/issues/1324)) ([31fd2e8](https://github.com/LocalCrag/LocalCragApp/commit/31fd2e8d84183c267d5c794a3f50c4eebb86562d)), closes [#125](https://github.com/LocalCrag/LocalCragApp/issues/125)
+* **topo:** allow uploading multiple topo images at once outside of the batch editor ([#1322](https://github.com/LocalCrag/LocalCragApp/issues/1322)) ([c61b9d2](https://github.com/LocalCrag/LocalCragApp/commit/c61b9d29a35b90c7d1e2b94f65832276697f4f21)), closes [#898](https://github.com/LocalCrag/LocalCragApp/issues/898)
+
 ## [1.64.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.64.1...v1.64.2) (2026-10-19)
 
 
