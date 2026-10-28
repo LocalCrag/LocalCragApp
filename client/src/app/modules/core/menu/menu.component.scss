@@ -22,7 +22,17 @@ lc-menu {
   }
 
   .wide-menu {
-    width: 15rem;
+    width: max-content;
+    min-width: 15rem;
+    max-width: calc(100vw - 1rem);
+
+    .p-menu-item-icon {
+      flex: none;
+    }
+
+    .p-menu-item-label {
+      white-space: nowrap;
+    }
   }
 
   .navbar-icon-button {

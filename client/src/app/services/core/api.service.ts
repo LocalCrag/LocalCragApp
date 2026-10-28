@@ -355,6 +355,13 @@ export class ApiService {
     },
   };
 
+  public ratingControversies = {
+    list: (): string => `${this.apiHost}rating-controversies`,
+    dismiss: (lineId: string): string =>
+      `${this.apiHost}rating-controversies/${lineId}`,
+    reset: (): string => `${this.apiHost}rating-controversies/reset`,
+  };
+
   public health = {
     check: (): string => `${this.apiHost}health`,
   };
