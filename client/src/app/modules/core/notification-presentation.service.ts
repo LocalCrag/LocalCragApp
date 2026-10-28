@@ -143,7 +143,35 @@ export class NotificationPresentationService {
       );
     }
 
+    if (notification.type === 'topo_points_weekly') {
+      const week = this.formatWeek(
+        notification.properties.topoPointsWeek?.week,
+      );
+      const summary = (notification.properties.topoPointsWeek?.rows ?? [])
+        .map((row) => `${row.name} ${row.points}`)
+        .join(', ');
+      if (!summary) {
+        return this.translocoService
+          .translate('menu.notificationTextTopoPointsWeeklyEmpty', { week })
+          .trim();
+      }
+      return this.translocoService
+        .translate('menu.notificationTextTopoPointsWeekly', { week, summary })
+        .trim();
+    }
+
     return notification.actorName || notification.type;
+  }
+
+  private formatWeek(week: string | undefined): string {
+    if (!week) {
+      return '';
+    }
+    const [year, month, day] = week.split('-').map((part) => Number(part));
+    if (!year || !month || !day) {
+      return week;
+    }
+    return new Date(year, month - 1, day).toLocaleDateString();
   }
 
   private formatLineLabel(line: Line | null): string {

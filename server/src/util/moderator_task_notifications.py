@@ -1,7 +1,10 @@
 from models.enums.notification_type_enum import NotificationTypeEnum
 from models.moderator_task import ModeratorTask
 from models.user import User
-from util.notifications import create_notification_for_user
+from util.notifications import (
+    create_notification_for_user,
+    moderator_game_notifications_enabled,
+)
 
 MODERATOR_TASK_NOTIFICATION_TYPES = frozenset(
     {
@@ -18,6 +21,8 @@ def should_show_notification_to_user(user: User, notification_type: Notification
         return user.moderator
     if notification_type == NotificationTypeEnum.SUGGESTION_SUBMITTED:
         return user.moderator
+    if notification_type == NotificationTypeEnum.TOPO_POINTS_WEEKLY:
+        return user.moderator and moderator_game_notifications_enabled()
     return True
 
 

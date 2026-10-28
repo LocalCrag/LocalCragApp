@@ -1,0 +1,93 @@
+<ng-container *transloco="let t; read: 'topoQuality.ui'">
+  @if (failed) {
+    <p-message severity="error" icon="pi pi-times-circle">{{
+      t("loadFailed")
+    }}</p-message>
+  }
+
+  @if (loading) {
+    <div class="trends-range" aria-hidden="true">
+      <p-skeleton width="18rem" height="2.5rem" />
+      <p-skeleton width="14rem" height="2.5rem" />
+    </div>
+    <section class="trends-section">
+      <p-skeleton width="10rem" height="1.5rem" />
+      <p-skeleton width="24rem" height="1rem" styleClass="trends-skeleton-hint" />
+      <p-skeleton height="280px" />
+    </section>
+    @if (gameEnabled) {
+      <section class="trends-section">
+        <p-skeleton width="12rem" height="1.5rem" />
+        <p-skeleton width="28rem" height="1rem" styleClass="trends-skeleton-hint" />
+        <p-skeleton height="280px" />
+      </section>
+    }
+  }
+
+  @if (!loading && !failed) {
+    <div class="trends-range">
+      @if (rangeOptions.length > 1) {
+        <p-selectbutton
+          [options]="rangeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="range"
+          (ngModelChange)="paint()"
+          [allowEmpty]="false"
+          data-cy="topo-quality-trend-range"
+        />
+      }
+      <p-select
+        [options]="scopes"
+        optionLabel="name"
+        optionValue="key"
+        [(ngModel)]="scopeKey"
+        (ngModelChange)="paint()"
+        appendTo="body"
+        data-cy="topo-quality-trend-scope"
+      />
+    </div>
+    <section class="trends-section">
+      <div class="trends-toolbar">
+        <h3>{{ t("qualityHistory") }}</h3>
+      </div>
+      <p class="trends-hint">{{ t("qualityHistoryHint") }}</p>
+      @if (qualityEmpty) {
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t("rangeEmpty")
+        }}</p-message>
+      } @else if (qualityData) {
+        <div class="chart-wrap">
+          <p-chart type="line" [data]="qualityData" [options]="qualityOptions" />
+        </div>
+      }
+    </section>
+
+    @if (gameEnabled) {
+    <section class="trends-section">
+      <div class="trends-toolbar">
+        <h3>{{ t("pointsHistory") }}</h3>
+        <label class="trends-cumulative">
+          <p-toggleswitch
+            [(ngModel)]="cumulative"
+            (ngModelChange)="paint()"
+            inputId="topo-points-cumulative"
+            data-cy="topo-quality-points-cumulative"
+          />
+          {{ t("cumulative") }}
+        </label>
+      </div>
+      <p class="trends-hint">{{ t("pointsHistoryHint") }}</p>
+      @if (pointsEmpty) {
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t(pointsFilteredOut ? "rangeEmpty" : "pointsEmpty")
+        }}</p-message>
+      } @else {
+        <div class="chart-wrap">
+          <p-chart type="line" [data]="pointsData" [options]="pointsOptions" />
+        </div>
+      }
+    </section>
+    }
+  }
+</ng-container>

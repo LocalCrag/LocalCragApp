@@ -2,6 +2,13 @@ from models.enums.notification_type_enum import NotificationTypeEnum
 from models.notification import Notification
 
 
+def moderator_game_notifications_enabled() -> bool:
+    from models.instance_settings import InstanceSettings
+
+    settings = InstanceSettings.return_it()
+    return bool(settings and settings.moderator_game_enabled)
+
+
 def should_send_notification_mail(settings, notification_type: NotificationTypeEnum) -> bool:
     if not settings:
         return True
@@ -30,6 +37,8 @@ def should_send_notification_mail(settings, notification_type: NotificationTypeE
         return settings.moderator_task_notifications_enabled
     if notification_type == NotificationTypeEnum.ADMIN_MESSAGE:
         return settings.admin_message_notifications_enabled
+    if notification_type == NotificationTypeEnum.TOPO_POINTS_WEEKLY:
+        return settings.system_notifications_enabled and moderator_game_notifications_enabled()
     return True
 
 

@@ -4,6 +4,12 @@ Required checks are the 100% score. Videos and first-ascent info are bonus:
 they add points, and they are not part of the max. Gym instances skip GPS,
 parking, and the line-description quota. The gym stand-in for a first ascent
 is the routesetter plus the set date, which is where that data lives now.
+
+A project (open or closed) does not need a line style for 100%. Setting one
+still pays the editor, and those points stay out of the percent. Videos and
+first-ascent info on a project pay nothing. Parking on a parent spot covers
+the spots inside it: they are left out of the percent, and setting parking
+there still pays the editor.
 """
 
 from __future__ import annotations
@@ -87,6 +93,16 @@ def is_published(status) -> bool:
         return False
     value = status.value if hasattr(status, "value") else status
     return value == PublicationStatusEnum.PUBLISHED.value
+
+
+def is_project_grade(value) -> bool:
+    """True for an open or closed project. Ungraded is 0, so it is not a project."""
+    if value is None or isinstance(value, bool):
+        return False
+    try:
+        return int(value) < 0
+    except (TypeError, ValueError):
+        return False
 
 
 def is_styled(values) -> bool:
@@ -192,6 +208,7 @@ class LineRecord:
     crag_name: str = ""
     sector_name: str = ""
     area_name: str = ""
+    is_project: bool = False
 
 
 @dataclass
@@ -230,9 +247,34 @@ class SpotRecord:
     crag_name: str = ""
     sector_name: str = ""
     area_name: str = ""
+    parking_required: bool = True
+
+
+def mark_parking_requirements(spots: list[SpotRecord]) -> None:
+    """Drop parking from the percent when a parent spot already has it.
+
+    A flag that is already false stays false, so a detail page can waive a
+    child from an ancestor that is not part of the scored slice.
+    """
+    by_id = {spot.id: spot for spot in spots}
+    for spot in spots:
+        if not spot.parking_required:
+            continue
+        parent_id = spot.parent_id
+        seen = set()
+        while parent_id and parent_id not in seen:
+            seen.add(parent_id)
+            parent = by_id.get(parent_id)
+            if parent is None:
+                break
+            if parent.has_parking:
+                spot.parking_required = False
+                break
+            parent_id = parent.parent_id
 
 
 def score_scope(spots: list[SpotRecord], lines: list[LineRecord], topos: list[TopoRecord], gym: bool) -> dict:
+    mark_parking_requirements(spots)
     earned = 0
     maximum = 0
     bonus = 0
@@ -246,13 +288,15 @@ def score_scope(spots: list[SpotRecord], lines: list[LineRecord], topos: list[To
     for line in published_lines:
         if line.drawn:
             earned += LINE_DRAWN
-        if line.styled:
-            earned += LINE_STYLE
-        maximum += LINE_DRAWN + LINE_STYLE
-        if line.has_video:
-            bonus += LINE_VIDEO
-        if line.fa_complete:
-            bonus += LINE_FA
+        maximum += LINE_DRAWN
+        if not line.is_project:
+            maximum += LINE_STYLE
+            if line.styled:
+                earned += LINE_STYLE
+            if line.has_video:
+                bonus += LINE_VIDEO
+            if line.fa_complete:
+                bonus += LINE_FA
 
     lines_by_area = defaultdict(list)
     for line in published_lines:
@@ -284,24 +328,34 @@ def _spot_earned_max(spot: SpotRecord, gym: bool) -> tuple[int, int]:
     if spot.has_image:
         earned += SPOT_IMAGE
     if not gym:
-        maximum += SPOT_GPS + SPOT_PARKING
+        maximum += SPOT_GPS
         if spot.has_gps:
             earned += SPOT_GPS
-        if spot.has_parking:
-            earned += SPOT_PARKING
+        if spot.parking_required:
+            maximum += SPOT_PARKING
+            if spot.has_parking:
+                earned += SPOT_PARKING
     return earned, maximum
+
+
+def _spot_user_points(spot: SpotRecord, gym: bool) -> int:
+    """Points paid to an editor. Waived parking still pays, and stays out of the percent."""
+    earned, _maximum = _spot_earned_max(spot, gym)
+    if not gym and spot.has_parking and not spot.parking_required:
+        earned += SPOT_PARKING
+    return earned
 
 
 def creator_points(
     spots: list[SpotRecord], lines: list[LineRecord], topos: list[TopoRecord], gym: bool
 ) -> dict[str, int]:
     """Starting scores: each entity's current points go to its creator."""
+    mark_parking_requirements(spots)
     totals = defaultdict(int)
     for spot in spots:
         if not spot.published or not spot.created_by_id:
             continue
-        earned, _max = _spot_earned_max(spot, gym)
-        totals[spot.created_by_id] += earned + CREATE_ITEM
+        totals[spot.created_by_id] += _spot_user_points(spot, gym) + CREATE_ITEM
 
     published_lines = [line for line in lines if line.published]
     for line in published_lines:
@@ -312,9 +366,9 @@ def creator_points(
             totals[line.created_by_id] += LINE_DRAWN
         if line.styled:
             totals[line.created_by_id] += LINE_STYLE
-        if line.has_video:
+        if not line.is_project and line.has_video:
             totals[line.created_by_id] += LINE_VIDEO
-        if line.fa_complete:
+        if not line.is_project and line.fa_complete:
             totals[line.created_by_id] += LINE_FA
 
     if not gym:
@@ -397,6 +451,7 @@ def _check(key: str, earned: int, maximum: int, bonus: bool, items: list[dict]) 
 
 
 def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[TopoRecord], gym: bool) -> list[dict]:
+    mark_parking_requirements(spots)
     published_lines = sorted((line for line in lines if line.published), key=lambda line: line.name.lower())
     published_topos = sorted((topo for topo in topos if topo.published), key=lambda topo: topo.name.lower())
     published_spots = [spot for spot in spots if spot.published]
@@ -404,7 +459,8 @@ def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[T
 
     if published_lines:
         drawn = [line for line in published_lines if line.drawn]
-        styled = [line for line in published_lines if line.styled]
+        style_lines = [line for line in published_lines if not line.is_project]
+        styled = [line for line in style_lines if line.styled]
         checks.append(
             _check(
                 "lineDrawn",
@@ -414,15 +470,16 @@ def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[T
                 [_line_item(line) for line in published_lines if not line.drawn],
             )
         )
-        checks.append(
-            _check(
-                "lineStyle",
-                len(styled) * LINE_STYLE,
-                len(published_lines) * LINE_STYLE,
-                False,
-                [_line_item(line) for line in published_lines if not line.styled],
+        if style_lines:
+            checks.append(
+                _check(
+                    "lineStyle",
+                    len(styled) * LINE_STYLE,
+                    len(style_lines) * LINE_STYLE,
+                    False,
+                    [_line_item(line) for line in style_lines if not line.styled],
+                )
             )
-        )
 
     image_spots = [spot for spot in published_spots if spot.level in ("crag", "sector", "area")]
     if image_spots:
@@ -451,7 +508,8 @@ def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[T
 
     if not gym and image_spots:
         with_gps = [spot for spot in image_spots if spot.has_gps]
-        with_parking = [spot for spot in image_spots if spot.has_parking]
+        parking_spots = [spot for spot in image_spots if spot.parking_required]
+        with_parking = [spot for spot in parking_spots if spot.has_parking]
         checks.append(
             _check(
                 "spotGps",
@@ -461,15 +519,16 @@ def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[T
                 [_spot_item(spot) for spot in image_spots if not spot.has_gps],
             )
         )
-        checks.append(
-            _check(
-                "spotParking",
-                len(with_parking) * SPOT_PARKING,
-                len(image_spots) * SPOT_PARKING,
-                False,
-                [_spot_item(spot) for spot in image_spots if not spot.has_parking],
+        if parking_spots:
+            checks.append(
+                _check(
+                    "spotParking",
+                    len(with_parking) * SPOT_PARKING,
+                    len(parking_spots) * SPOT_PARKING,
+                    False,
+                    [_spot_item(spot) for spot in parking_spots if not spot.has_parking],
+                )
             )
-        )
 
     if image_spots:
         with_description = [spot for spot in image_spots if spot.has_description]
@@ -502,25 +561,26 @@ def build_checks(spots: list[SpotRecord], lines: list[LineRecord], topos: list[T
         if maximum:
             checks.append(_check("lineDescriptions", earned, maximum, False, missing))
 
-    if published_lines:
-        with_video = [line for line in published_lines if line.has_video]
-        with_fa = [line for line in published_lines if line.fa_complete]
+    scored_lines = [line for line in published_lines if not line.is_project]
+    if scored_lines:
+        with_video = [line for line in scored_lines if line.has_video]
+        with_fa = [line for line in scored_lines if line.fa_complete]
         checks.append(
             _check(
                 "lineVideo",
                 len(with_video) * LINE_VIDEO,
-                len(published_lines) * LINE_VIDEO,
+                len(scored_lines) * LINE_VIDEO,
                 True,
-                [_line_item(line) for line in published_lines if not line.has_video],
+                [_line_item(line) for line in scored_lines if not line.has_video],
             )
         )
         checks.append(
             _check(
                 "lineFa",
                 len(with_fa) * LINE_FA,
-                len(published_lines) * LINE_FA,
+                len(scored_lines) * LINE_FA,
                 True,
-                [_line_item(line) for line in published_lines if not line.fa_complete],
+                [_line_item(line) for line in scored_lines if not line.fa_complete],
             )
         )
     return checks
@@ -539,6 +599,7 @@ def build_tree(
     topos: list[TopoRecord],
     gym: bool,
 ) -> dict:
+    mark_parking_requirements(spots)
     crags = sorted((spot for spot in spots if spot.level == "crag"), key=lambda spot: (spot.order_index, spot.name))
     sectors = [spot for spot in spots if spot.level == "sector"]
     areas = [spot for spot in spots if spot.level == "area"]
@@ -659,6 +720,7 @@ def build_detail(
     topos: list[TopoRecord],
     gym: bool,
 ) -> dict | None:
+    mark_parking_requirements(spots)
     scoped_spots, scoped_lines, scoped_topos, target = scope_for(level, target_id, spots, lines, topos)
     if level != "region" and target is None:
         return None

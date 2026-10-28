@@ -207,8 +207,10 @@ from resources.topo_image_resources import (
     UpdateTopoImageOrder,
 )
 from resources.topo_quality_resources import (
+    GetTopoPointsHistory,
     GetTopoQuality,
     GetTopoQualityDetail,
+    GetTopoQualityHistory,
     GetTopoQualityRanking,
     RestartTopoQuality,
 )
@@ -298,6 +300,8 @@ def configure_api(app):
     topo_quality_bp = Blueprint("topo-quality", __name__)
     topo_quality_bp.add_url_rule("", view_func=GetTopoQuality.as_view("get_topo_quality"))
     topo_quality_bp.add_url_rule("ranking", view_func=GetTopoQualityRanking.as_view("get_topo_quality_ranking"))
+    topo_quality_bp.add_url_rule("history", view_func=GetTopoQualityHistory.as_view("get_topo_quality_history"))
+    topo_quality_bp.add_url_rule("points-history", view_func=GetTopoPointsHistory.as_view("get_topo_points_history"))
     topo_quality_bp.add_url_rule("restart", view_func=RestartTopoQuality.as_view("restart_topo_quality"))
     topo_quality_bp.add_url_rule("region", view_func=GetTopoQualityDetail.as_view("get_topo_quality_region"))
     topo_quality_bp.add_url_rule(

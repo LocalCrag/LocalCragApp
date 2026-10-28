@@ -1460,6 +1460,8 @@
   "accountSettingsForm.adminMessageNotificationsEnabledDescription": "Benachrichtigungen erhalten, wenn Admins Instanz-Nachrichten senden.",
   "menu.adminMessages": "Admin-Nachrichten",
   "menu.notificationTextAdminMessage": "Admin-Nachricht",
+  "menu.notificationTextTopoPointsWeekly": "Woche vom {{week}}: {{summary}}",
+  "menu.notificationTextTopoPointsWeeklyEmpty": "Topopunkte der Woche vom {{week}}",
   "adminMessages.list.noAdminMessagesFoundEmptyMessage": "Keine Admin-Nachrichten gefunden.",
   "adminMessages.list.newAdminMessageButtonLabel": "Neue Nachricht",
   "adminMessages.list.editAdminMessageButtonLabel": "Bearbeiten",

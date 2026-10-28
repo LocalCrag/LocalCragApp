@@ -1,4 +1,5 @@
 import html
+import json
 
 from i18n.notification_digest_mail import notification_digest_mail
 from models.admin_message import AdminMessage
@@ -53,6 +54,7 @@ def build_digest_items(
             NotificationTypeEnum.FA_MODERATION_REMOVED,
             NotificationTypeEnum.SUGGESTION_PUBLISHED,
             NotificationTypeEnum.SUGGESTION_REJECTED,
+            NotificationTypeEnum.TOPO_POINTS_WEEKLY,
         ):
             entry = _build_digest_item(
                 notification.type,
@@ -216,7 +218,43 @@ def _build_digest_item(
             target_link=target_link,
         )
         return {"html": body}
+    if notification_type == NotificationTypeEnum.TOPO_POINTS_WEEKLY:
+        week, summary = _weekly_points_text(notification)
+        href = frontend_url("topo-quality/trends")
+        target_link = _target_anchor(href, digest_i18n["topo_points_weekly_link"], quote=False)
+        if summary:
+            body = digest_i18n["topo_points_weekly_text"].format(
+                week=html.escape(week),
+                summary=html.escape(summary),
+                target_link=target_link,
+            )
+        else:
+            body = digest_i18n["topo_points_weekly_empty"].format(
+                week=html.escape(week),
+                target_link=target_link,
+            )
+        return {"html": body}
     return None
+
+
+def _weekly_points_text(notification: Notification | None) -> tuple[str, str]:
+    if notification is None or not notification.message:
+        return "", ""
+    try:
+        payload = json.loads(notification.message)
+    except json.JSONDecodeError:
+        return "", ""
+    if not isinstance(payload, dict):
+        return "", ""
+    week = str(payload.get("week") or "")
+    parts = []
+    for row in payload.get("rows") or []:
+        if not isinstance(row, dict):
+            continue
+        name = str(row.get("name") or "").strip()
+        if name:
+            parts.append(f"{name} {row.get('points')}")
+    return week, ", ".join(parts)
 
 
 def _build_reaction_digest_item(

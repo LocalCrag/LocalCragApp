@@ -74,6 +74,17 @@ export interface TopoQualityRankingRow {
   user: User;
 }
 
+export interface TopoQualityHistory {
+  scopes: { key: string; name: string }[];
+  weeks: string[];
+  series: Record<string, (number | null)[]>;
+}
+
+export interface TopoPointsHistory {
+  weeks: string[];
+  series: { user: User; points: number[] }[];
+}
+
 export function itemCrumbs(item: TopoQualityItem): string[] {
   const crumbs: string[] = [];
   if (item.kind !== 'crag' && item.cragSlug !== '_default' && item.cragName) {

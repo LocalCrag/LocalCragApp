@@ -1460,6 +1460,8 @@
   "accountSettingsForm.adminMessageNotificationsEnabledDescription": "Ontvang meldingen wanneer beheerders berichten van de instantie sturen.",
   "menu.adminMessages": "Beheerdersberichten",
   "menu.notificationTextAdminMessage": "Beheerdersbericht",
+  "menu.notificationTextTopoPointsWeekly": "Week van {{week}}: {{summary}}",
+  "menu.notificationTextTopoPointsWeeklyEmpty": "Topopunten voor de week van {{week}}",
   "adminMessages.list.noAdminMessagesFoundEmptyMessage": "Geen beheerdersberichten gevonden.",
   "adminMessages.list.newAdminMessageButtonLabel": "Nieuw bericht",
   "adminMessages.list.editAdminMessageButtonLabel": "Bewerken",

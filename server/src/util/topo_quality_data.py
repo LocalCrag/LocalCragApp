@@ -25,6 +25,7 @@ from util.topo_quality_score import (
     fa_complete,
     has_text,
     has_video,
+    is_project_grade,
     is_styled,
 )
 
@@ -43,6 +44,7 @@ _LINE_COLUMNS = (
     Line.description,
     Line.videos,
     Line.publication_status,
+    Line.author_grade_value,
     Line.fa_name,
     Line.fa_date,
     Line.fa_year,
@@ -77,6 +79,7 @@ def load_quality_snapshot(
 
     crag_by_id = {crag.id: crag for crag in visible_crags}
     sector_by_id = {sector.id: sector for sector in visible_sectors}
+    waived_parking = _parking_waived_ids()
 
     marker_flags = _marker_flags(visible_crag_ids, visible_sector_ids, visible_area_ids)
     spots = []
@@ -100,6 +103,7 @@ def load_quality_snapshot(
                 has_parking=parking,
                 has_description=has_text(crag.description) or has_text(crag.short_description),
                 has_image=crag.portrait_image_id is not None,
+                parking_required=True,
             )
         )
     for sector in visible_sectors:
@@ -124,6 +128,7 @@ def load_quality_snapshot(
                 has_parking=parking,
                 has_description=has_text(sector.description) or has_text(sector.short_description),
                 has_image=sector.portrait_image_id is not None,
+                parking_required=str(sector.id) not in waived_parking,
             )
         )
     for area in visible_areas:
@@ -150,6 +155,7 @@ def load_quality_snapshot(
                 has_parking=parking,
                 has_description=has_text(area.description) or has_text(area.short_description),
                 has_image=area.portrait_image_id is not None,
+                parking_required=str(area.id) not in waived_parking,
             )
         )
 
@@ -192,6 +198,7 @@ def load_quality_snapshot(
                     has_video=has_video(line.videos),
                     fa_complete=fa_complete(line, gym),
                     has_description=has_text(line.description),
+                    is_project=is_project_grade(line.author_grade_value),
                 )
             )
 
@@ -308,6 +315,32 @@ def _gps_topo_ids(area_ids) -> set:
         .all()
     )
     return {str(row[0]) for row in rows}
+
+
+def _parking_waived_ids() -> set[str]:
+    """Spot ids whose parking is covered by a parent, including a secret parent.
+
+    The quality page can hide secret spots. A hidden parent's parking still
+    covers the spots under it.
+    """
+    parking_rows = (
+        db.session.query(MapMarker.crag_id, MapMarker.sector_id, MapMarker.area_id)
+        .filter(
+            MapMarker.type == MapMarkerType.PARKING,
+            MapMarker.lat.isnot(None),
+            MapMarker.lng.isnot(None),
+        )
+        .all()
+    )
+    parking_crags = {str(crag_id) for crag_id, _sector_id, _area_id in parking_rows if crag_id is not None}
+    parking_sectors = {str(sector_id) for _crag_id, sector_id, _area_id in parking_rows if sector_id is not None}
+    sector_parent = {str(sector_id): str(crag_id) for sector_id, crag_id in db.session.query(Sector.id, Sector.crag_id)}
+    waived = {sector_id for sector_id, crag_id in sector_parent.items() if crag_id in parking_crags}
+    for area_id, sector_id in db.session.query(Area.id, Area.sector_id):
+        sector_key = str(sector_id)
+        if sector_key in parking_sectors or sector_parent.get(sector_key) in parking_crags:
+            waived.add(str(area_id))
+    return waived
 
 
 def _marker_flags(crag_ids, sector_ids, area_ids) -> dict[tuple[str, object], tuple[bool, bool]]:

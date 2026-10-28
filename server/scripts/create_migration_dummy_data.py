@@ -87,6 +87,9 @@ from models.tabu_area import TabuArea
 from models.tag import Tag
 from models.todo import Todo
 from models.topo_image import TopoImage
+from models.topo_point_event import TopoPointEvent
+from models.topo_quality_snapshot import TopoQualitySnapshot
+from models.topo_week_summary import TopoWeekSummary
 from models.user import User
 
 logger = logging.getLogger(__name__)
@@ -169,6 +172,7 @@ def create_migration_dummy_data():
         _create_todos(lines, users)
         _create_moderator_tasks(crags, sectors, areas, lines, users, admin)
         _create_notifications(users, admin)
+        _create_topo_quality_history(users, crags)
         _create_reactions(lines, posts, users)
         _create_recent_searches(lines, crags, areas, sectors, posts, users)
         _create_rules_read_status(region, crags, sectors, users)
@@ -884,6 +888,40 @@ def _create_notifications(users, admin: User):
             db.session.add(notification)
 
 
+def _create_topo_quality_history(users, crags):
+    week = datetime.date(2024, 1, 1)
+    for index, user in enumerate(users[:5]):
+        event = TopoPointEvent()
+        event.user_id = user.id
+        event.points = 4 + index
+        event.time_created = datetime.datetime(2024, 1, 3, 12, 0)
+        db.session.add(event)
+    region = TopoQualitySnapshot()
+    region.week_start = week
+    region.scope_key = "region"
+    region.name = "Region"
+    region.percent = 40
+    region.earned = 4
+    region.max_points = 10
+    region.bonus = 0
+    db.session.add(region)
+    if crags:
+        crag_row = TopoQualitySnapshot()
+        crag_row.week_start = week
+        crag_row.scope_key = str(crags[0].id)
+        crag_row.name = crags[0].name
+        crag_row.percent = 50
+        crag_row.earned = 5
+        crag_row.max_points = 10
+        crag_row.bonus = 1
+        db.session.add(crag_row)
+    summary = TopoWeekSummary()
+    summary.week_start = week
+    summary.notified_at = _naive_utc()
+    db.session.add(summary)
+    db.session.flush()
+
+
 def _create_reactions(lines, posts, users):
     for index, line in enumerate(lines[:60]):
         reaction = Reaction()
@@ -1109,6 +1147,9 @@ def _assert_counts(line_count: int):
         "todos": Todo.query.count(),
         "moderator_tasks": ModeratorTask.query.count(),
         "notifications": Notification.query.count(),
+        "topo_point_events": TopoPointEvent.query.count(),
+        "topo_quality_snapshots": TopoQualitySnapshot.query.count(),
+        "topo_week_summaries": TopoWeekSummary.query.count(),
         "reactions": Reaction.query.count(),
         "recent_searches": RecentSearch.query.count(),
         "rules_read_status": RulesReadStatus.query.count(),
@@ -1131,6 +1172,9 @@ def _assert_counts(line_count: int):
         "permissions": 1,
         "gallery_images": GALLERY_IMAGE_COUNT,
         "rock_explorer_features": ROCK_EXPLORER_COUNT,
+        "topo_point_events": 5,
+        "topo_quality_snapshots": 2,
+        "topo_week_summaries": 1,
     }
     for name, count in expected.items():
         if counts[name] != count:

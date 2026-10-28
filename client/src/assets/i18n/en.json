@@ -1460,6 +1460,8 @@
   "accountSettingsForm.adminMessageNotificationsEnabledDescription": "Get notified when admins send instance messages.",
   "menu.adminMessages": "Admin Messages",
   "menu.notificationTextAdminMessage": "Admin message",
+  "menu.notificationTextTopoPointsWeekly": "Week of {{week}}: {{summary}}",
+  "menu.notificationTextTopoPointsWeeklyEmpty": "Topo points for the week of {{week}}",
   "adminMessages.list.noAdminMessagesFoundEmptyMessage": "No admin messages found.",
   "adminMessages.list.newAdminMessageButtonLabel": "New message",
   "adminMessages.list.editAdminMessageButtonLabel": "Edit",

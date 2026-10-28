@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -10,10 +11,16 @@ from models.area import Area
 from models.crag import Crag
 from models.instance_settings import InstanceSettings
 from models.sector import Sector
+from models.topo_point_event import TopoPointEvent
 from models.user import User
 from util.auth_session import session_required
 from util.secret_service import SecretService
 from util.topo_quality_data import load_quality_snapshot
+from util.topo_quality_history import (
+    clear_topo_game_history,
+    points_history,
+    quality_history,
+)
 from util.topo_quality_score import build_detail, build_tree
 
 RESTART_CONFIRMATION = "RESTART"
@@ -64,27 +71,60 @@ class GetTopoQualityDetail(MethodView):
 class GetTopoQualityRanking(MethodView):
     @session_required(moderator=True)
     def get(self):
-        users = (
-            User.query.options(joinedload(User.avatar))
-            .filter(User.moderator.is_(True), User.topo_points != 0)
-            .order_by(User.topo_points.desc(), User.firstname.asc(), User.lastname.asc())
+        totals = (
+            db.session.query(TopoPointEvent.user_id, func.sum(TopoPointEvent.points).label("points"))
+            .group_by(TopoPointEvent.user_id)
+            .having(func.sum(TopoPointEvent.points) != 0)
+            .subquery()
+        )
+        rows = (
+            db.session.query(User, totals.c.points)
+            .options(joinedload(User.avatar))
+            .join(totals, totals.c.user_id == User.id)
+            .filter(User.moderator.is_(True))
+            .order_by(totals.c.points.desc(), User.firstname.asc(), User.lastname.asc())
             .all()
         )
         ranking = []
         last_points = None
         rank = 0
-        for index, user in enumerate(users, start=1):
-            if user.topo_points != last_points:
+        for index, (user, points) in enumerate(rows, start=1):
+            points = int(points)
+            if points != last_points:
                 rank = index
-                last_points = user.topo_points
+                last_points = points
             ranking.append(
                 {
                     "rank": rank,
-                    "points": user.topo_points,
+                    "points": points,
                     "user": user_min_with_avatar_schema.dump(user),
                 }
             )
         return jsonify(ranking)
+
+
+class GetTopoQualityHistory(MethodView):
+    @session_required(moderator=True)
+    def get(self):
+        return jsonify(quality_history())
+
+
+class GetTopoPointsHistory(MethodView):
+    @session_required(moderator=True)
+    def get(self):
+        payload = points_history()
+        return jsonify(
+            {
+                "weeks": payload["weeks"],
+                "series": [
+                    {
+                        "points": row["points"],
+                        "user": user_min_with_avatar_schema.dump(row["user"]),
+                    }
+                    for row in payload["series"]
+                ],
+            }
+        )
 
 
 class RestartTopoQuality(MethodView):
@@ -93,7 +133,7 @@ class RestartTopoQuality(MethodView):
         body = request.get_json(silent=True) or {}
         if body.get("confirmation") != RESTART_CONFIRMATION:
             raise BadRequest("Type RESTART to confirm.")
-        db.session.query(User).update({User.topo_points: 0})
+        clear_topo_game_history()
         db.session.commit()
         return jsonify({"restarted": True})
 
