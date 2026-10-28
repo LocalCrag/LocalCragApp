@@ -1,3 +1,10 @@
+# [1.67.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.66.0...v1.67.0) (2026-10-28)
+
+
+### Features
+
+* **topo-quality:** add quality history view and weekly reports ([#1328](https://github.com/LocalCrag/LocalCragApp/issues/1328)) ([8853539](https://github.com/LocalCrag/LocalCragApp/commit/88535393c0302e6d9048e92406cc9b01446fd7e1)), closes [#1327](https://github.com/LocalCrag/LocalCragApp/issues/1327)
+
 # [1.66.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.65.0...v1.66.0) (2026-10-27)
 
 
