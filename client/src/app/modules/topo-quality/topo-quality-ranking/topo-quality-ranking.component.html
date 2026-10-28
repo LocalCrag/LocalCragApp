@@ -24,7 +24,8 @@
     }
   </ol>
 
-  @if (canRestart) {
+  @if (canRestart && rows.length > 0) {
+    <p-divider />
     <section class="quality-restart" data-cy="topo-quality-restart">
       <h3>{{ t("restartTitle") }}</h3>
       <p>{{ t("restartWarning") }}</p>

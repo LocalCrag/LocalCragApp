@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Button } from 'primeng/button';
+import { Skeleton } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 import { EMPTY } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -18,6 +19,7 @@ import { TopoQualityBarComponent } from '../topo-quality-bar/topo-quality-bar.co
     RouterLink,
     Button,
     Message,
+    Skeleton,
     TooltipModule,
     TopoQualityBarComponent,
   ],
@@ -33,6 +35,7 @@ export class TopoQualityTreeComponent implements OnInit {
   loading = true;
   failed = false;
   regionExpanded = true;
+  readonly skeletonRows = ['10rem', '7rem', '12rem', '9rem'];
   expandedCrags = new Set<string>();
   expandedSectors = new Set<string>();
 

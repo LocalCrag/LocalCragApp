@@ -1,0 +1,59 @@
+.trends-section + .trends-section {
+  margin-top: 2.5rem;
+}
+
+.trends-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.trends-range p-select {
+  min-width: 14rem;
+  margin-left: auto;
+}
+
+.trends-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trends-toolbar h3 {
+  margin: 0;
+}
+
+.trends-cumulative {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trends-hint {
+  margin: 0.5rem 0 1rem;
+  color: var(--p-text-muted-color);
+}
+
+.trends-skeleton-hint {
+  display: block;
+  margin: 0.5rem 0 1rem;
+}
+
+.trends-section p-skeleton {
+  display: block;
+}
+
+.chart-wrap {
+  height: 280px;
+}
+
+.chart-wrap p-chart,
+.chart-wrap p-chart > div {
+  display: block;
+  height: 100%;
+}

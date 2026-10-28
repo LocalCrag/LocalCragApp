@@ -14,3 +14,4 @@ class NotificationTypeEnum(Enum):
     SUGGESTION_SUBMITTED = "suggestion_submitted"
     SUGGESTION_PUBLISHED = "suggestion_published"
     SUGGESTION_REJECTED = "suggestion_rejected"
+    TOPO_POINTS_WEEKLY = "topo_points_weekly"

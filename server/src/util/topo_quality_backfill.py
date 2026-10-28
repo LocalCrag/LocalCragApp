@@ -16,6 +16,7 @@ from util.topo_quality_score import (
     fa_complete,
     has_text,
     has_video,
+    is_project_grade,
     is_styled,
 )
 
@@ -53,7 +54,7 @@ def backfill_creator_points(connection) -> None:
             sa.text(
                 """
                 SELECT id, name, area_id, created_by_id, time_created, description, videos,
-                       publication_status, fa_name, fa_date, fa_year, routesetter, set_date,
+                       publication_status, author_grade_value, fa_name, fa_date, fa_year, routesetter, set_date,
                        roof, overhang, vertical, slab, traverse, dihedral, compression, arete, crack, dyno, mantle
                 FROM lines
                 WHERE publication_status = 'published' AND area_id IN :area_ids
@@ -82,6 +83,7 @@ def backfill_creator_points(connection) -> None:
                 has_video=has_video(row["videos"]),
                 fa_complete=fa_complete(values, gym),
                 has_description=has_text(row["description"]),
+                is_project=is_project_grade(row["author_grade_value"]),
             )
         )
 
@@ -114,11 +116,39 @@ def backfill_creator_points(connection) -> None:
             )
         )
 
+    inspector = sa.inspect(connection)
+    has_column = any(column["name"] == "topo_points" for column in inspector.get_columns("users"))
+    has_events = inspector.has_table("topo_point_events")
     for user_id, points in creator_points(spots, lines, topos, gym).items():
-        connection.execute(
-            sa.text("UPDATE users SET topo_points = :points WHERE id = :user_id"),
-            {"points": points, "user_id": user_id},
-        )
+        # The original migration still owns the column. Later databases keep the
+        # same total as an opening-balance event, replaced on each backfill so
+        # running it twice does not add the score again.
+        if has_column:
+            connection.execute(
+                sa.text("UPDATE users SET topo_points = :points WHERE id = :user_id"),
+                {"points": points, "user_id": user_id},
+            )
+        if has_events:
+            connection.execute(
+                sa.text(
+                    """
+                    DELETE FROM topo_point_events
+                    WHERE user_id = :user_id AND opening_balance IS TRUE
+                    """
+                ),
+                {"user_id": user_id},
+            )
+            if points:
+                connection.execute(
+                    sa.text(
+                        """
+                        INSERT INTO topo_point_events
+                            (id, user_id, points, time_created, opening_balance)
+                        VALUES (gen_random_uuid(), :user_id, :points, NOW(), TRUE)
+                        """
+                    ),
+                    {"points": points, "user_id": user_id},
+                )
 
 
 def _published_ids(connection, table: str, parent_column: str | None = None, parent_ids=None) -> list:

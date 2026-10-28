@@ -11,6 +11,7 @@ def register_jobs(app, scheduler: BackgroundScheduler) -> list[str]:
         closure_materialization,
         delete_unattached_files,
         notification_digests,
+        topo_quality_week,
     )
 
     return [
@@ -18,4 +19,5 @@ def register_jobs(app, scheduler: BackgroundScheduler) -> list[str]:
         notification_digests.register(app, scheduler),
         closure_materialization.register(app, scheduler),
         delete_unattached_files.register(app, scheduler),
+        topo_quality_week.register(app, scheduler),
     ]

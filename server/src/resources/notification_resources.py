@@ -1,3 +1,5 @@
+import json
+
 from flask import current_app, jsonify, request
 from flask.views import MethodView
 from sqlalchemy import text
@@ -83,6 +85,8 @@ def _notification_action_link(notification: Notification) -> str | None:
         return f"/notifications?adminMessage={notification.entity_id}"
     if notification.type == NotificationTypeEnum.SUGGESTION_SUBMITTED:
         return "/suggestions"
+    if notification.type == NotificationTypeEnum.TOPO_POINTS_WEEKLY:
+        return "/topo-quality/trends"
     if notification.type in (
         NotificationTypeEnum.SUGGESTION_PUBLISHED,
         NotificationTypeEnum.SUGGESTION_REJECTED,
@@ -167,6 +171,11 @@ def _serialize_notification(notification: Notification) -> dict:
         review["targetLink"] = published_suggestion_link(notification.entity_type, notification.entity_id)
         review["subject"] = suggestion_review_subject(notification.entity_type, notification.entity_id)
         properties["suggestionReview"] = review
+    if notification.type == NotificationTypeEnum.TOPO_POINTS_WEEKLY and notification.message:
+        try:
+            properties["topoPointsWeek"] = json.loads(notification.message)
+        except json.JSONDecodeError:
+            properties["topoPointsWeek"] = None
     return {
         "id": str(notification.id),
         "type": notification.type.value,

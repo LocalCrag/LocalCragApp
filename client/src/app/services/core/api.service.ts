@@ -335,6 +335,8 @@ export class ApiService {
   public topoQuality = {
     tree: (): string => `${this.apiHost}topo-quality`,
     ranking: (): string => `${this.apiHost}topo-quality/ranking`,
+    history: (): string => `${this.apiHost}topo-quality/history`,
+    pointsHistory: (): string => `${this.apiHost}topo-quality/points-history`,
     restart: (): string => `${this.apiHost}topo-quality/restart`,
     detail: (
       level: string,
