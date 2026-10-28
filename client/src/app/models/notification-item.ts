@@ -27,6 +27,16 @@ export interface NotificationFaRemovalProperties {
   message: string;
 }
 
+export interface NotificationTopoPointsWeekRow {
+  name: string;
+  points: number;
+}
+
+export interface NotificationTopoPointsWeekProperties {
+  week: string;
+  rows: NotificationTopoPointsWeekRow[];
+}
+
 export interface NotificationSuggestionReviewSubject {
   kind: 'line' | 'topoImage';
   name?: string;
@@ -53,6 +63,7 @@ export interface NotificationItemProperties {
   adminMessage?: NotificationAdminMessageProperties;
   faRemoval?: NotificationFaRemovalProperties;
   suggestionReview?: NotificationSuggestionReviewProperties;
+  topoPointsWeek?: NotificationTopoPointsWeekProperties | null;
 }
 
 export interface NotificationItem {

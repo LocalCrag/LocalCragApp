@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { Button } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { filter, take } from 'rxjs/operators';
@@ -21,6 +22,7 @@ import { UserAvatarComponent } from '../../shared/components/user-avatar/user-av
     RouterLink,
     FormsModule,
     Button,
+    DividerModule,
     InputText,
     Message,
     UserAvatarComponent,

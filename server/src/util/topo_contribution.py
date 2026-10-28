@@ -30,6 +30,7 @@ from models.line_path import LinePath
 from models.map_marker import MapMarker
 from models.sector import Sector
 from models.topo_image import TopoImage
+from models.topo_point_event import TopoPointEvent
 from models.user import User
 from util.topo_quality_score import (
     CREATE_ITEM,
@@ -51,6 +52,7 @@ from util.topo_quality_score import (
     gate_delta,
     has_text,
     has_video,
+    is_project_grade,
     is_published,
     is_styled,
     publish_delta,
@@ -78,12 +80,12 @@ def register_topo_contribution_listener(session: Session | None = None) -> None:
 
 
 def award_topo_points(session: Session, _flush_context, _instances) -> None:
-    """Write this flush's point changes onto user rows.
+    """Append this flush's point changes to the event log.
 
-    Credits that belong to the signed-in user are folded into their own
-    delta, which is also what the toast shows. Other users, such as the
-    author of a published draft, are updated here and get no toast. The flag
-    stops those user updates from being scored again.
+    The ranking reads that log. Credits that belong to the signed-in user are
+    folded into their own delta, which is also what the toast shows. Other
+    users, such as the author of a published draft, get an event and no toast.
+    The flag stops those inserts from being scored again.
     """
     if session.info.get("awarding_topo_points"):
         return
@@ -106,14 +108,14 @@ def award_topo_points(session: Session, _flush_context, _instances) -> None:
     try:
         account = session.get(User, actor_id)
         if account is not None and delta:
-            account.topo_points = int(account.topo_points or 0) + delta
+            session.add(TopoPointEvent(user_id=actor_id, points=delta))
         for user_id, points in credits.items():
             if not points:
                 continue
             author = session.get(User, user_id)
             if author is None:
                 continue
-            author.topo_points = int(author.topo_points or 0) + points
+            session.add(TopoPointEvent(user_id=user_id, points=points))
     finally:
         session.info["awarding_topo_points"] = False
     if not delta:
@@ -385,6 +387,16 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
         return 0, None, None
     state = inspect(line)
     deleting = _is_being_deleted(line)
+    if state.pending:
+        before_project = False
+        after_project = is_project_grade(line.author_grade_value)
+    elif deleting:
+        before_project = is_project_grade(line.author_grade_value)
+        after_project = False
+    else:
+        old_grade = _value_before(line, "author_grade_value")
+        before_project = is_project_grade(line.author_grade_value if old_grade is _MISSING else old_grade)
+        after_project = is_project_grade(line.author_grade_value)
     before_count, after_count = _path_counts(session, line_id)
     geometry_changed = _path_geometry_changed(session, line_id)
     if state.pending:
@@ -432,8 +444,8 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
                     line.created_by_id: (
                         gate_delta(False, prior["drawn"], False, LINE_DRAWN)
                         + gate_delta(False, prior["styled"], False, LINE_STYLE)
-                        + gate_delta(False, prior["video"], False, LINE_VIDEO)
-                        + gate_delta(False, prior["fa"], False, LINE_FA)
+                        + gate_delta(False, prior["video"], False, 0 if before_project else LINE_VIDEO)
+                        + gate_delta(False, prior["fa"], False, 0 if before_project else LINE_FA)
                     )
                 },
             )
@@ -450,8 +462,18 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
         delta = publish_delta(before["published"], after["published"])
     delta += gate_delta(before["drawn"], after["drawn"], drawn_changed, LINE_DRAWN)
     delta += gate_delta(before["styled"], after["styled"], style_changed, LINE_STYLE)
-    delta += gate_delta(before["video"], after["video"], video_changed, LINE_VIDEO)
-    delta += gate_delta(before["fa"], after["fa"], fa_changed, LINE_FA)
+    delta += gate_delta(
+        before["video"] and not before_project,
+        after["video"] and not after_project,
+        video_changed or before_project != after_project,
+        LINE_VIDEO,
+    )
+    delta += gate_delta(
+        before["fa"] and not before_project,
+        after["fa"] and not after_project,
+        fa_changed or before_project != after_project,
+        LINE_FA,
+    )
     # A line under a draft crag, sector, or area is hidden on the quality page.
     if after_area is not None and not _spot_chain_published(session, "area", after_area):
         delta = 0

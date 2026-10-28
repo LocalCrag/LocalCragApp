@@ -9,13 +9,36 @@
     ></span>
   </p>
 
+  @if (loading) {
+    <ul class="quality-tree" aria-hidden="true">
+      <li>
+        <div class="quality-node">
+          <p-skeleton height="1.25rem" />
+          <p-skeleton width="9rem" height="1.25rem" />
+          <p-skeleton width="2rem" height="2rem" />
+        </div>
+        <ul>
+          @for (width of skeletonRows; track width) {
+            <li>
+              <div class="quality-node">
+                <p-skeleton height="1.25rem" />
+                <p-skeleton [width]="width" height="1.25rem" />
+                <p-skeleton width="2rem" height="2rem" />
+              </div>
+            </li>
+          }
+        </ul>
+      </li>
+    </ul>
+  }
+
   @if (failed) {
     <p-message severity="error" icon="pi pi-times-circle">{{
       t("loadFailed")
     }}</p-message>
   }
 
-  @if (tree) {
+  @if (tree && !loading) {
     <ul class="quality-tree">
       <li>
         <div class="quality-node">

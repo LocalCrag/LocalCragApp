@@ -98,6 +98,12 @@ export class TopoQualityPageComponent implements OnInit {
     return this.router.url.includes('/topo-quality/ranking');
   }
 
+  catalogActive(): boolean {
+    return (
+      !this.rankingActive() && !this.router.url.includes('/topo-quality/trends')
+    );
+  }
+
   onExcludeSecret(value: boolean) {
     this.excludeSecret = value;
     this.router.navigate([], {
@@ -111,7 +117,7 @@ export class TopoQualityPageComponent implements OnInit {
     if (!this.titleReady || !this.router.url.startsWith('/topo-quality')) {
       return;
     }
-    if (!this.gameEnabled || !this.moderator) {
+    if (!this.moderator) {
       this.pageTitleService.setTabs(null);
       return;
     }
@@ -125,14 +131,23 @@ export class TopoQualityPageComponent implements OnInit {
         routerLinkActiveOptions: { exact: true },
         visible: true,
       },
-      {
+    ];
+    if (this.gameEnabled) {
+      tabs.push({
         label: this.transloco.translate(marker('topoQuality.ui.rankingTab')),
         icon: 'pi pi-fw pi-trophy',
         routerLink: '/topo-quality/ranking',
         queryParams,
         visible: true,
-      },
-    ];
+      });
+    }
+    tabs.push({
+      label: this.transloco.translate(marker('topoQuality.ui.trendsTab')),
+      icon: 'pi pi-fw pi-chart-line',
+      routerLink: '/topo-quality/trends',
+      queryParams,
+      visible: true,
+    });
     this.pageTitleService.setTabs(tabs);
   }
 }

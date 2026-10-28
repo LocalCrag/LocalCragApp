@@ -54,6 +54,15 @@ export const miscRoutes: Routes = [
         data: { pageTitleHost: false },
       },
       {
+        path: 'trends',
+        loadComponent: () =>
+          import('../../topo-quality/topo-quality-trends/topo-quality-trends.component').then(
+            (m) => m.TopoQualityTrendsComponent,
+          ),
+        canActivate: [isModerator],
+        data: { pageTitleHost: false },
+      },
+      {
         path: 'region',
         loadComponent: () =>
           import('../../topo-quality/topo-quality-detail/topo-quality-detail.component').then(

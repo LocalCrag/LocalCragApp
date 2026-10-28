@@ -3,11 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
+  TopoPointsHistory,
   TopoQualityDetail,
+  TopoQualityHistory,
   TopoQualityRankingRow,
   TopoQualityTree,
   rankingRows,
 } from '../../models/topo-quality';
+import { User } from '../../models/user';
 import { ApiService } from '../core/api.service';
 
 @Injectable({
@@ -38,6 +41,22 @@ export class TopoQualityService {
     return this.http
       .get<any[]>(this.api.topoQuality.ranking())
       .pipe(map((rows) => rankingRows(rows)));
+  }
+
+  history(): Observable<TopoQualityHistory> {
+    return this.http.get<TopoQualityHistory>(this.api.topoQuality.history());
+  }
+
+  pointsHistory(): Observable<TopoPointsHistory> {
+    return this.http.get<any>(this.api.topoQuality.pointsHistory()).pipe(
+      map((payload) => ({
+        weeks: payload?.weeks ?? [],
+        series: (payload?.series ?? []).map((row) => ({
+          points: row.points ?? [],
+          user: User.deserialize(row.user),
+        })),
+      })),
+    );
   }
 
   restart(confirmation: string): Observable<{ restarted: boolean }> {
