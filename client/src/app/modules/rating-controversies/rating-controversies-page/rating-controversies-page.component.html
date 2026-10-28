@@ -1,5 +1,8 @@
 <ng-container *transloco="let t; read: 'ratingControversies'">
-  <div class="content flex flex-col gap-4 p-4 sm:p-6" data-cy="rating-controversies">
+  <div
+    class="content flex flex-col gap-4 p-4 sm:p-6"
+    data-cy="rating-controversies"
+  >
     @if (failed && rows.length === 0) {
       <p-message severity="error" icon="pi pi-times-circle">
         {{ t("loadFailed") }}
@@ -52,10 +55,7 @@
         >
           <div class="controversy__head">
             <div class="flex min-w-0 flex-col gap-1">
-              <a
-                class="controversy__name"
-                [routerLink]="row.routerLink"
-              >
+              <a class="controversy__name" [routerLink]="row.routerLink">
                 {{ row.name }}
               </a>
               <lc-topo-hierarchy-breadcrumbs
@@ -71,8 +71,10 @@
           <div class="controversy__compare">
             <div class="controversy__side">
               <span class="controversy__label">{{ t("author") }}</span>
-              @if (kind === 'grade') {
-                <span class="controversy__grade">{{ row.authorGradeName }}</span>
+              @if (kind === "grade") {
+                <span class="controversy__grade">{{
+                  row.authorGradeName
+                }}</span>
               } @else if (row.authorRating === null) {
                 <span class="controversy__grade">{{ t("noRating") }}</span>
               } @else {
@@ -82,7 +84,7 @@
             <i class="pi pi-arrow-right controversy__arrow"></i>
             <div class="controversy__side controversy__side--end">
               <span class="controversy__label">{{ t("community") }}</span>
-              @if (kind === 'grade') {
+              @if (kind === "grade") {
                 <span class="controversy__grade">{{ row.userGradeName }}</span>
               } @else if (row.userRating === null) {
                 <span class="controversy__grade">{{ t("noRating") }}</span>
