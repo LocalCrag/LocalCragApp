@@ -146,6 +146,11 @@ from resources.post_resources import (
     UpdatePost,
 )
 from resources.ranking_resources import GetRanking
+from resources.rating_controversy_resources import (
+    DismissRatingControversy,
+    GetRatingControversies,
+    ResetRatingControversyDismissals,
+)
 from resources.reaction_resources import CreateReaction, DeleteReaction, UpdateReaction
 from resources.region_resources import GetRegion, GetRegionGrades, UpdateRegion
 from resources.release_note_resources import GetReleaseNoteBundle
@@ -317,6 +322,21 @@ def configure_api(app):
         view_func=GetTopoQualityDetail.as_view("get_topo_quality_area"),
     )
     app.register_blueprint(topo_quality_bp, url_prefix="/api/topo-quality")
+
+    rating_controversies_bp = Blueprint("rating-controversies", __name__)
+    rating_controversies_bp.add_url_rule(
+        "",
+        view_func=GetRatingControversies.as_view("get_rating_controversies"),
+    )
+    rating_controversies_bp.add_url_rule(
+        "reset",
+        view_func=ResetRatingControversyDismissals.as_view("reset_rating_controversies"),
+    )
+    rating_controversies_bp.add_url_rule(
+        "<string:line_id>",
+        view_func=DismissRatingControversy.as_view("dismiss_rating_controversy"),
+    )
+    app.register_blueprint(rating_controversies_bp, url_prefix="/api/rating-controversies")
 
     # Search API
     search_bp = Blueprint("search", __name__)

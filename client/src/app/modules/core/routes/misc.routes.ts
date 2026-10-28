@@ -105,6 +105,14 @@ export const miscRoutes: Routes = [
     data: { hidePageTitle: true },
   },
   {
+    path: 'rating-controversies',
+    loadComponent: () =>
+      import('../../rating-controversies/rating-controversies-page/rating-controversies-page.component').then(
+        (m) => m.RatingControversiesPageComponent,
+      ),
+    canActivate: [isModerator],
+  },
+  {
     path: 'todos',
     loadComponent: () =>
       import('../../todo/todo-list/todo-list.component').then(

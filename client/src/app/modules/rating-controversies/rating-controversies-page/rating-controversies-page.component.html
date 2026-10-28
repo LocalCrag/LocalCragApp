@@ -1,0 +1,184 @@
+<ng-container *transloco="let t; read: 'ratingControversies'">
+  <div
+    class="content flex flex-col gap-4 p-4 sm:p-6"
+    data-cy="rating-controversies"
+  >
+    @if (failed && rows.length === 0) {
+      <p-message severity="error" icon="pi pi-times-circle">
+        {{ t("loadFailed") }}
+      </p-message>
+    } @else if (unavailable) {
+      <p-message severity="info" icon="pi pi-info-circle">
+        {{ t("unavailable") }}
+      </p-message>
+    } @else if (!loaded) {
+      <ng-container *ngTemplateOutlet="listSkeleton" />
+    } @else if (loaded) {
+      <p class="m-0 text-surface-600 dark:text-surface-300">{{ t("intro") }}</p>
+      <div class="controversy-filters">
+        @if (compareGrades && compareRatings) {
+          <p-selectbutton
+            [options]="kindOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="kind"
+            (ngModelChange)="selectKind($event)"
+            [allowEmpty]="false"
+            data-cy="rating-controversy-kind"
+          />
+        }
+        <label class="controversy-min-ascents">
+          <span>{{ t("minAscents") }}</span>
+          <p-select
+            class="controversy-min-ascents__select"
+            [options]="minAscentOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="minAscents"
+            (ngModelChange)="selectMinAscents($event)"
+            data-cy="rating-controversy-min-ascents"
+          />
+        </label>
+      </div>
+      @if (loadingFirstPage) {
+        <ng-container *ngTemplateOutlet="listSkeleton" />
+      }
+      @if (rows.length === 0 && !loadingFirstPage) {
+        <p-message severity="info" icon="pi pi-info-circle">
+          {{ t("empty") }}
+        </p-message>
+      }
+      @for (row of rows; track row.id) {
+        <article
+          class="controversy"
+          [attr.data-cy]="'rating-controversy-' + row.slug"
+        >
+          <div class="controversy__head">
+            <div class="flex min-w-0 flex-col gap-1">
+              <a class="controversy__name" [routerLink]="row.routerLink">
+                {{ row.name }}
+              </a>
+              <lc-topo-hierarchy-breadcrumbs
+                [crag]="row.crag"
+                [sector]="row.sector"
+                [area]="row.area"
+              />
+            </div>
+            <span class="controversy__count">
+              {{ t("ascents", { count: row.ascentCount }) }}
+            </span>
+          </div>
+          <div class="controversy__compare">
+            <div class="controversy__side">
+              <span class="controversy__label">{{ t("author") }}</span>
+              @if (kind === "grade") {
+                <span class="controversy__grade">{{
+                  row.authorGradeName
+                }}</span>
+              } @else if (row.authorRating === null) {
+                <span class="controversy__grade">{{ t("noRating") }}</span>
+              } @else {
+                <p-rating [ngModel]="row.authorRating" [readonly]="true" />
+              }
+            </div>
+            <i class="pi pi-arrow-right controversy__arrow"></i>
+            <div class="controversy__side controversy__side--end">
+              <span class="controversy__label">{{ t("community") }}</span>
+              @if (kind === "grade") {
+                <span class="controversy__grade">{{ row.userGradeName }}</span>
+              } @else if (row.userRating === null) {
+                <span class="controversy__grade">{{ t("noRating") }}</span>
+              } @else {
+                <p-rating [ngModel]="row.userRating" [readonly]="true" />
+              }
+            </div>
+          </div>
+          @if (dismissFailedId === row.id) {
+            <p-message severity="error" icon="pi pi-times-circle">
+              {{ t("dismissFailed") }}
+            </p-message>
+          }
+          <div class="controversy__actions">
+            <p-button
+              [label]="t('dismiss')"
+              severity="secondary"
+              variant="outlined"
+              size="small"
+              [loading]="dismissingId === row.id"
+              (onClick)="dismiss(row)"
+              [attr.data-cy]="'rating-controversy-dismiss-' + row.slug"
+            />
+            <a
+              pButton
+              size="small"
+              [routerLink]="row.routerLink"
+              [attr.data-cy]="'rating-controversy-open-' + row.slug"
+            >
+              <span pButtonLabel>{{ t("open") }}</span>
+            </a>
+          </div>
+        </article>
+      }
+      @if (canReset) {
+        <section class="controversy-reset" data-cy="rating-controversy-reset">
+          <h2>{{ t("resetTitle") }}</h2>
+          <p>{{ t("resetWarning") }}</p>
+          <label for="rating-controversy-reset">{{ t("resetHint") }}</label>
+          <input
+            pInputText
+            id="rating-controversy-reset"
+            [(ngModel)]="resetConfirmation"
+            autocomplete="off"
+            data-cy="rating-controversy-reset-input"
+          />
+          <p-button
+            [label]="t('resetButton')"
+            severity="danger"
+            [disabled]="resetConfirmation !== 'RESTART'"
+            (onClick)="resetDismissals()"
+            data-cy="rating-controversy-reset-button"
+          />
+          @if (resetFailed) {
+            <p-message severity="error" icon="pi pi-times-circle">
+              {{ t("resetFailed") }}
+            </p-message>
+          }
+        </section>
+      }
+    }
+    @if (hasNextPage && !unavailable && !loadingFirstPage) {
+      <div class="flex justify-center">
+        <p-button
+          [label]="t('loadMore')"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          [loading]="loading === loadingStates.LOADING"
+        />
+      </div>
+    }
+  </div>
+</ng-container>
+
+<ng-template #listSkeleton>
+  <div class="flex flex-col gap-4" data-cy="rating-controversies-skeleton">
+    @for (row of skeletonRows; track row) {
+      <article class="controversy">
+        <div class="controversy__head">
+          <div class="flex flex-col gap-2">
+            <p-skeleton width="12rem" height="1.25rem" />
+            <p-skeleton width="9rem" height="0.75rem" />
+          </div>
+          <p-skeleton width="5.5rem" height="0.75rem" />
+        </div>
+        <p-skeleton width="100%" height="3.25rem" borderRadius="0.75rem" />
+        <div class="controversy__actions">
+          <p-skeleton width="100%" height="2.25rem" borderRadius="0.5rem" />
+          <p-skeleton width="100%" height="2.25rem" borderRadius="0.5rem" />
+        </div>
+      </article>
+    }
+  </div>
+</ng-template>

@@ -38,6 +38,7 @@ import {
   selectLogoImage,
   selectSkippedHierarchyLayers,
   selectGymMode,
+  selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { effectiveLogoImage } from '../../../utility/instance-settings-theme';
 import { ThemeService } from '../../../services/core/theme.service';
@@ -267,9 +268,10 @@ export class MenuComponent implements OnInit, AfterViewInit {
     combineLatest([
       this.store.select(selectAuthState),
       this.store.select(selectGymMode),
+      this.store.select(selectInstanceSettingsState),
     ])
       .pipe(take(1))
-      .subscribe(([authState, gymMode]) => {
+      .subscribe(([authState, gymMode, instanceSettings]) => {
         if (authState.user) {
           const items: MenuItem[] = [];
 
@@ -380,17 +382,17 @@ export class MenuComponent implements OnInit, AfterViewInit {
             items: accountItems,
           });
 
+          const toolItems: MenuItem[] = [];
+          if (authState.user.member && !gymMode) {
+            toolItems.push({
+              icon: 'pi pi-fw pi-map',
+              label: this.translocoService.translate(
+                marker('menu.rockExplorer'),
+              ),
+              routerLink: '/rock-explorer',
+            });
+          }
           if (authState.user.member) {
-            const toolItems: MenuItem[] = [];
-            if (!gymMode) {
-              toolItems.push({
-                icon: 'pi pi-fw pi-map',
-                label: this.translocoService.translate(
-                  marker('menu.rockExplorer'),
-                ),
-                routerLink: '/rock-explorer',
-              });
-            }
             toolItems.push({
               icon: 'pi pi-fw pi-chart-bar',
               label: this.translocoService.translate(
@@ -398,6 +400,24 @@ export class MenuComponent implements OnInit, AfterViewInit {
               ),
               routerLink: '/topo-quality',
             });
+          }
+          const authorGradesShown =
+            instanceSettings.loaded && !instanceSettings.displayUserGrades;
+          const authorRatingsShown =
+            instanceSettings.loaded && !instanceSettings.displayUserRatings;
+          if (
+            authState.user.moderator &&
+            (authorGradesShown || authorRatingsShown)
+          ) {
+            toolItems.push({
+              icon: 'pi pi-fw pi-exclamation-circle',
+              label: this.translocoService.translate(
+                marker('menu.ratingControversies'),
+              ),
+              routerLink: '/rating-controversies',
+            });
+          }
+          if (toolItems.length > 0) {
             items.push({
               label: this.translocoService.translate(
                 marker('menu.toolsCategory'),
