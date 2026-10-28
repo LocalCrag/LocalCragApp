@@ -7,7 +7,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { Button, ButtonDirective } from 'primeng/button';
+import { Button, ButtonDirective, ButtonLabel } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Rating } from 'primeng/rating';
@@ -49,6 +49,7 @@ interface ControversyRow extends RatingControversy {
     FormsModule,
     Button,
     ButtonDirective,
+    ButtonLabel,
     InputText,
     Message,
     Rating,

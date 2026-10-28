@@ -111,10 +111,11 @@
             <a
               pButton
               size="small"
-              [label]="t('open')"
               [routerLink]="row.routerLink"
               [attr.data-cy]="'rating-controversy-open-' + row.slug"
-            ></a>
+            >
+              <span pButtonLabel>{{ t("open") }}</span>
+            </a>
           </div>
         </article>
       }
