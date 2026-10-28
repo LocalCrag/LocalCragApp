@@ -12,13 +12,21 @@
     </div>
     <section class="trends-section">
       <p-skeleton width="10rem" height="1.5rem" />
-      <p-skeleton width="24rem" height="1rem" styleClass="trends-skeleton-hint" />
+      <p-skeleton
+        width="24rem"
+        height="1rem"
+        styleClass="trends-skeleton-hint"
+      />
       <p-skeleton height="280px" />
     </section>
     @if (gameEnabled) {
       <section class="trends-section">
         <p-skeleton width="12rem" height="1.5rem" />
-        <p-skeleton width="28rem" height="1rem" styleClass="trends-skeleton-hint" />
+        <p-skeleton
+          width="28rem"
+          height="1rem"
+          styleClass="trends-skeleton-hint"
+        />
         <p-skeleton height="280px" />
       </section>
     }
@@ -58,36 +66,44 @@
         }}</p-message>
       } @else if (qualityData) {
         <div class="chart-wrap">
-          <p-chart type="line" [data]="qualityData" [options]="qualityOptions" />
+          <p-chart
+            type="line"
+            [data]="qualityData"
+            [options]="qualityOptions"
+          />
         </div>
       }
     </section>
 
     @if (gameEnabled) {
-    <section class="trends-section">
-      <div class="trends-toolbar">
-        <h3>{{ t("pointsHistory") }}</h3>
-        <label class="trends-cumulative">
-          <p-toggleswitch
-            [(ngModel)]="cumulative"
-            (ngModelChange)="paint()"
-            inputId="topo-points-cumulative"
-            data-cy="topo-quality-points-cumulative"
-          />
-          {{ t("cumulative") }}
-        </label>
-      </div>
-      <p class="trends-hint">{{ t("pointsHistoryHint") }}</p>
-      @if (pointsEmpty) {
-        <p-message severity="info" icon="pi pi-info-circle">{{
-          t(pointsFilteredOut ? "rangeEmpty" : "pointsEmpty")
-        }}</p-message>
-      } @else {
-        <div class="chart-wrap">
-          <p-chart type="line" [data]="pointsData" [options]="pointsOptions" />
+      <section class="trends-section">
+        <div class="trends-toolbar">
+          <h3>{{ t("pointsHistory") }}</h3>
+          <label class="trends-cumulative">
+            <p-toggleswitch
+              [(ngModel)]="cumulative"
+              (ngModelChange)="paint()"
+              inputId="topo-points-cumulative"
+              data-cy="topo-quality-points-cumulative"
+            />
+            {{ t("cumulative") }}
+          </label>
         </div>
-      }
-    </section>
+        <p class="trends-hint">{{ t("pointsHistoryHint") }}</p>
+        @if (pointsEmpty) {
+          <p-message severity="info" icon="pi pi-info-circle">{{
+            t(pointsFilteredOut ? "rangeEmpty" : "pointsEmpty")
+          }}</p-message>
+        } @else {
+          <div class="chart-wrap">
+            <p-chart
+              type="line"
+              [data]="pointsData"
+              [options]="pointsOptions"
+            />
+          </div>
+        }
+      </section>
     }
   }
 </ng-container>
