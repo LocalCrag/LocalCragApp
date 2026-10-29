@@ -335,6 +335,61 @@ def test_grade_ranking_votes(client, user_token):
     assert line.user_rating == 5
 
 
+def test_ungraded_ascents_are_skipped_in_user_grade(client, user_token, member_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+
+    graded = {
+        "flash": False,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 5,
+        "comment": "",
+        "year": None,
+        "gradeValue": 22,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+    ungraded = {**graded, "gradeValue": 0, "rating": 1}
+
+    assert 200 <= client.post("/api/ascents", token=user_token, json=graded).status_code < 300
+    assert 200 <= client.post("/api/ascents", token=member_token, json=ungraded).status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.user_grade_value == 22
+    assert line.user_rating == 3
+
+
+def test_only_ungraded_ascents_keep_the_author_grade(client, user_token):
+    line_id = Line.get_id_by_slug("the-vessel")
+
+    ungraded = {
+        "flash": False,
+        "fa": False,
+        "soft": False,
+        "hard": False,
+        "withKneepad": False,
+        "rating": 4,
+        "comment": "",
+        "year": None,
+        "gradeValue": 0,
+        "line": line_id,
+        "date": "2024-04-13",
+    }
+
+    assert 200 <= client.post("/api/ascents", token=user_token, json=ungraded).status_code < 300
+
+    update_grades_and_rating(line_id)
+
+    line = Line.find_by_id(line_id)
+    assert line.author_grade_value == 20
+    assert line.user_grade_value == 20
+    assert line.user_rating == 4
+
+
 def test_grade_ranking_votes_top_of_scale(client, user_token):
     # Regression: an ascent graded at the highest grade of the scale (FB 9A+ = 29)
     # used to crash the recompute with IndexError, leaving user_grade_value stale.

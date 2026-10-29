@@ -29,28 +29,32 @@ def update_grades_and_rating(line_id: str):
                 return hard_vals[a.grade_value]
             return a.grade_value
 
-        grades = list(map(get_ascent_grade, ascents))
+        # Ungraded ticks (grade value 0) must not pull the community grade.
+        graded_ascents = [ascent for ascent in ascents if ascent.grade_value != 0]
+        if graded_ascents:
+            grades = list(map(get_ascent_grade, graded_ascents))
+            mean_grade = statistics.mean(grades)
+
+            # Round to nearest
+            lower_grade_index = bisect.bisect_left(all_grades, mean_grade)
+            if lower_grade_index > len(all_grades) - 1:
+                lower_grade_index = len(all_grades) - 1
+            candidate1 = all_grades[lower_grade_index]
+            if candidate1 <= mean_grade:
+                candidate2 = all_grades[
+                    lower_grade_index + 1 if lower_grade_index + 1 < len(all_grades) else len(all_grades) - 1
+                ]
+            else:
+                candidate2 = all_grades[lower_grade_index - 1 if lower_grade_index - 1 >= 0 else 0]
+            if abs(mean_grade - candidate1) < abs(mean_grade - candidate2):
+                line.user_grade_value = candidate1
+            else:
+                line.user_grade_value = candidate2
+        else:
+            line.user_grade_value = line.author_grade_value
+
         ratings = [ascent.rating for ascent in ascents]
-        mean_grade = statistics.mean(grades)
-        mean_rating = statistics.mean(ratings)
-
-        # Round to nearest
-        lower_grade_index = bisect.bisect_left(all_grades, mean_grade)
-        if lower_grade_index > len(all_grades) - 1:
-            lower_grade_index = len(all_grades) - 1
-        candidate1 = all_grades[lower_grade_index]
-        if candidate1 <= mean_grade:
-            candidate2 = all_grades[
-                lower_grade_index + 1 if lower_grade_index + 1 < len(all_grades) else len(all_grades) - 1
-            ]
-        else:
-            candidate2 = all_grades[lower_grade_index - 1 if lower_grade_index - 1 >= 0 else 0]
-        if abs(mean_grade - candidate1) < abs(mean_grade - candidate2):
-            line.user_grade_value = candidate1
-        else:
-            line.user_grade_value = candidate2
-
-        line.user_rating = round(mean_rating)
+        line.user_rating = round(statistics.mean(ratings))
 
         db.session.add(line)
         db.session.commit()
