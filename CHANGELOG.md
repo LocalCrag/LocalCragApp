@@ -1,3 +1,10 @@
+# [1.68.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.67.0...v1.68.0) (2026-10-29)
+
+
+### Features
+
+* **controversies:** add tool for analyzing rating and grade controversies between users and author ([#1329](https://github.com/LocalCrag/LocalCragApp/issues/1329)) ([9629c1e](https://github.com/LocalCrag/LocalCragApp/commit/9629c1e83ee9e3d47edae7c957fe84a0ecc37d56)), closes [#863](https://github.com/LocalCrag/LocalCragApp/issues/863)
+
 # [1.67.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.66.0...v1.67.0) (2026-10-28)
 
 
