@@ -11,6 +11,20 @@
   }
 }
 
+.line-context-menu {
+  .high-priority .pi {
+    color: red;
+  }
+
+  .medium-priority .pi {
+    color: blue;
+  }
+
+  .low-priority .pi {
+    color: grey;
+  }
+}
+
 lc-topo-image-list {
   .line-table {
     width: 100%;
@@ -101,9 +115,23 @@ lc-topo-image-list {
       border-top: 1px solid var(--p-content-border-color);
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
+      // Long-press opens the line menu instead of the browser link callout.
+      -webkit-touch-callout: none;
+
+      @media (pointer: coarse) {
+        -webkit-user-select: none;
+        user-select: none;
+      }
 
       &.ticked {
         background-color: var(--ticked-bg-color);
+      }
+
+      &.highlighted {
+        lc-line-number-badge .line-number-badge {
+          background-color: var(--arrow-highlight-color);
+          color: var(--arrow-highlight-text-color);
+        }
       }
 
       @media (hover: hover) and (pointer: fine) {

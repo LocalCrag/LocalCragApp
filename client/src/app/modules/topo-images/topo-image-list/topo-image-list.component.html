@@ -120,6 +120,7 @@
               >
                 <div
                   class="w-full sm:w-9/12 xl:w-5/12 self-start topo-image-column"
+                  [id]="'topo-image-' + topoImage.id"
                 >
                   <div class="relative">
                     <lc-topo-image
@@ -180,12 +181,17 @@
                       <ng-template #lineRow let-linePath>
                         <a
                           class="line-table-row"
-                          (mouseenter)="highlightLinePath(linePath, topoImage)"
-                          (mouseleave)="unhighlightLinePath(linePath)"
-                          [ngClass]="{ ticked: ticks.has(linePath.line.id) }"
-                          routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                            areaSlug
-                          }}/{{ linePath.line.slug }}"
+                          [href]="lineHref(linePath)"
+                          (click)="openLine($event, linePath)"
+                          (contextmenu)="
+                            openLineMenu($event, linePath, topoImage)
+                          "
+                          (mouseenter)="onLineEnter(linePath, topoImage)"
+                          (mouseleave)="onLineLeave(linePath)"
+                          [ngClass]="{
+                            ticked: ticks.has(linePath.line.id),
+                            highlighted: isLinePinned(linePath),
+                          }"
                           data-cy="line-row"
                         >
                           <div class="line-table-column-number">
@@ -382,5 +388,12 @@
     [popup]="true"
     appendTo="body"
   ></p-menu>
+  <p-contextmenu
+    #lineMenu
+    [model]="lineActionItems"
+    styleClass="line-context-menu"
+    appendTo="body"
+    data-cy="line-context-menu"
+  ></p-contextmenu>
   <p-confirmpopup></p-confirmpopup>
 </ng-container>
