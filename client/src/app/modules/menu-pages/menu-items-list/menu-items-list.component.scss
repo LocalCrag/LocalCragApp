@@ -35,10 +35,10 @@ h3 {
   pointer-events: none;
   z-index: 1;
   background:
-    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left center /
-      3px 11px no-repeat,
-    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left center /
-      100% 3px no-repeat;
+    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left
+      center / 3px 11px no-repeat,
+    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left
+      center / 100% 3px no-repeat;
 }
 
 .drop-full.drop-before::after,
