@@ -1,6 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { ConfirmationService } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -41,7 +40,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-area-list',
   templateUrl: './area-list.component.html',
   styleUrls: ['./area-list.component.scss'],
-  providers: [DialogService, ConfirmationService],
+  providers: [DialogService],
   imports: [
     TranslocoDirective,
     DataView,
