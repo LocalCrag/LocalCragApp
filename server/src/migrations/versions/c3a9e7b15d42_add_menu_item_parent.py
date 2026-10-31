@@ -1,7 +1,7 @@
 """Add a parent to menu items so header menus can nest.
 
 Revision ID: c3a9e7b15d42
-Revises: b6d2a9c41e18
+Revises: a7c3e9b41d20
 Create Date: 2026-10-31
 
 """
@@ -11,7 +11,7 @@ from alembic import op
 from sqlalchemy.dialects.postgresql import UUID
 
 revision = "c3a9e7b15d42"
-down_revision = "b6d2a9c41e18"
+down_revision = "a7c3e9b41d20"
 branch_labels = None
 depends_on = None
 
