@@ -200,106 +200,93 @@
                               [color]="linePath.line.color"
                             ></lc-line-number-badge>
                           </div>
-                          <div class="line-table-column-info">
-                            <div class="line-table-column-info-top-row">
-                              <div class="line-table-info-name">
-                                {{ linePath.line.name }}
-                              </div>
-                              <div class="line-table-info-grade">
-                                <div class="grade">
-                                  <div class="grade-ellipsis">
-                                    {{ linePath.line | lineGrade }}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="line-table-info-style gap-1">
-                                @if (
-                                  linePath.line.publicationStatus === "draft"
-                                ) {
-                                  <lc-draft-tag></lc-draft-tag>
-                                }
-                                @if (!linePath.line.closed) {
-                                  <lc-line-bool-prop-list
-                                    [line]="linePath.line"
-                                  ></lc-line-bool-prop-list>
-                                }
-                                @if (linePath.line.closed) {
-                                  <lc-closed-spot-tag
-                                    spotType="line"
-                                    [slug]="linePath.line.slug"
-                                    [closureIsPermanent]="
-                                      linePath.line.closureIsPermanent
-                                    "
-                                  ></lc-closed-spot-tag>
-                                }
-                              </div>
+                          <div class="line-table-info-name">
+                            {{ linePath.line.name }}
+                          </div>
+                          <div class="line-table-info-grade">
+                            <div class="grade-ellipsis">
+                              {{ linePath.line | lineGrade }}
                             </div>
-                            <div class="line-table-column-info-bottom-row">
-                              <div class="line-table-info-rating">
-                                <p-rating
-                                  [ngModel]="
-                                    displayUserRating
-                                      ? linePath.line.userRating
-                                      : linePath.line.authorRating
-                                  "
-                                  [readonly]="true"
-                                ></p-rating>
-                              </div>
-                              <div class="line-table-info-actions">
-                                @if (linePath.line.commentCount > 0) {
-                                  <p-button
-                                    icon="pi pi-comment"
-                                    styleClass="p-button-rounded p-button-text"
-                                    (click)="
-                                      openComments($event, linePath.line)
-                                    "
-                                  >
-                                  </p-button>
-                                }
-                                @if (linePath.line.videos?.length > 0) {
-                                  <p-button
-                                    icon="pi pi-video"
-                                    styleClass="p-button-rounded p-button-text"
-                                    (click)="openVideo($event, linePath.line)"
-                                  >
-                                  </p-button>
-                                }
-                                <ng-container *isLoggedIn="true">
-                                  @if (
-                                    linePath.line.publicationStatus ===
-                                      "published" ||
-                                    linePath.line.publicationStatus ===
-                                      "archived"
-                                  ) {
-                                    <lc-tick-button
-                                      [line]="linePath.line"
-                                      [ticked]="ticks.has(linePath.line.id)"
-                                    ></lc-tick-button>
-                                  }
-                                </ng-container>
-                                <ng-container *isModerator="true">
-                                  <p-button
-                                    icon="pi pi-trash"
-                                    styleClass="p-button-rounded p-button-danger p-button-text"
-                                    [loading]="
-                                      linePath.loadingState ===
-                                      loadingStates.LOADING
-                                    "
-                                    [disabled]="
-                                      topoImage.loadingState !==
-                                      loadingStates.DEFAULT
-                                    "
-                                    (click)="
-                                      confirmDeleteLinePath(
-                                        $event,
-                                        linePath,
-                                        topoImage
-                                      )
-                                    "
-                                  ></p-button>
-                                </ng-container>
-                              </div>
-                            </div>
+                          </div>
+                          <div class="line-table-info-style">
+                            @if (linePath.line.publicationStatus === "draft") {
+                              <lc-draft-tag></lc-draft-tag>
+                            }
+                            @if (!linePath.line.closed) {
+                              <lc-line-bool-prop-list
+                                [line]="linePath.line"
+                              ></lc-line-bool-prop-list>
+                            }
+                            @if (linePath.line.closed) {
+                              <lc-closed-spot-tag
+                                spotType="line"
+                                [slug]="linePath.line.slug"
+                                [closureIsPermanent]="
+                                  linePath.line.closureIsPermanent
+                                "
+                              ></lc-closed-spot-tag>
+                            }
+                          </div>
+                          <div class="line-table-info-rating">
+                            <p-rating
+                              [ngModel]="
+                                displayUserRating
+                                  ? linePath.line.userRating
+                                  : linePath.line.authorRating
+                              "
+                              [readonly]="true"
+                            ></p-rating>
+                          </div>
+                          <div class="line-table-info-actions">
+                            @if (linePath.line.commentCount > 0) {
+                              <p-button
+                                icon="pi pi-comment"
+                                styleClass="p-button-rounded p-button-text"
+                                (click)="openComments($event, linePath.line)"
+                              >
+                              </p-button>
+                            }
+                            @if (linePath.line.videos?.length > 0) {
+                              <p-button
+                                icon="pi pi-video"
+                                styleClass="p-button-rounded p-button-text"
+                                (click)="openVideo($event, linePath.line)"
+                              >
+                              </p-button>
+                            }
+                            <ng-container *isLoggedIn="true">
+                              @if (
+                                linePath.line.publicationStatus ===
+                                  "published" ||
+                                linePath.line.publicationStatus === "archived"
+                              ) {
+                                <lc-tick-button
+                                  [line]="linePath.line"
+                                  [ticked]="ticks.has(linePath.line.id)"
+                                ></lc-tick-button>
+                              }
+                            </ng-container>
+                            <ng-container *isModerator="true">
+                              <p-button
+                                icon="pi pi-trash"
+                                styleClass="p-button-rounded p-button-danger p-button-text"
+                                [loading]="
+                                  linePath.loadingState ===
+                                  loadingStates.LOADING
+                                "
+                                [disabled]="
+                                  topoImage.loadingState !==
+                                  loadingStates.DEFAULT
+                                "
+                                (click)="
+                                  confirmDeleteLinePath(
+                                    $event,
+                                    linePath,
+                                    topoImage
+                                  )
+                                "
+                              ></p-button>
+                            </ng-container>
                           </div>
                         </a>
                       </ng-template>
