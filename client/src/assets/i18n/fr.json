@@ -151,6 +151,8 @@
   "scale.scaleForm.valuesNotUnique": "Les valeurs de note doivent être uniques.",
   "scale.scaleForm.addGrade": "Ajouter une note",
   "scale.scaleForm.reorderGrades": "Trier les champs par valeur",
+  "scale.scaleForm.showDiagramsLabel": "Afficher les diagrammes",
+  "scale.scaleForm.showDiagramsDescription": "Décochez pour masquer les diagrammes de difficulté de cette échelle dans les listes, les pages d'information, les graphiques utilisateur et les statistiques. Utile lorsque des échelles sont mélangées et que l'une compte beaucoup plus de lignes que l'autre, pour qu'un diagramme presque vide ne s'affiche pas à côté du diagramme principal.",
   "scale.scaleForm.gradeBracketsLabel": "Intervalles de notes",
   "scale.scaleForm.stackedChartBrackets": "Graphique à barres empilées",
   "scale.scaleForm.gradeBracketsDescriptionStackedChart": "Les intervalles des graphiques à barres empilées sont définis ici. La vue des intervalles est construite comme suit. Supposons que les intervalles soient [5, 10, 15, 16]. Ensuite, la première section comprendra toutes les notes avec une valeur jusqu'à 5, la suivante celles entre 6 et 10, puis 11 à 15 et enfin tout à partir de 16. Les deux dernières valeurs doivent être consécutives et les intervalles doivent être triés. Les projets sont toujours regroupés séparément. Chaque intervalle a sa propre couleur.",

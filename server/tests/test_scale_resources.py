@@ -52,7 +52,30 @@ def test_successful_create_scale(client, admin_token):
     assert res["type"] == scale_data["type"]
     assert res["name"] == scale_data["name"]
     assert res["grades"] == scale_data["grades"]
-    assert res["gradeBrackets"] == scale_data["gradeBrackets"]
+    assert res["gradeBrackets"] == {
+        **scale_data["gradeBrackets"],
+        "showDiagrams": True,
+    }
+
+
+def test_scale_can_hide_diagrams(client, admin_token):
+    scale_data = {
+        "type": "SPORT",
+        "name": "UIAA",
+        "grades": GRADES[LineTypeEnum.SPORT]["UIAA"],
+        "gradeBrackets": {
+            **GRADE_BRACKETS[LineTypeEnum.SPORT]["UIAA"],
+            "showDiagrams": False,
+        },
+    }
+
+    rv = client.put("/api/scales/SPORT/UIAA", token=admin_token, json=scale_data)
+    assert rv.status_code == 200
+    assert rv.json["gradeBrackets"]["showDiagrams"] is False
+
+    rv = client.get("/api/scales/SPORT/UIAA")
+    assert rv.status_code == 200
+    assert rv.json["gradeBrackets"]["showDiagrams"] is False
 
 
 def test_successful_update_scale(client, admin_token):

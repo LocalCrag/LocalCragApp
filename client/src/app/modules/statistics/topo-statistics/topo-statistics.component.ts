@@ -96,6 +96,7 @@ const PIE_COLOR_VARS = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopoStatisticsComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public stats: TopoStatistics | null = null;
   public loading = true;
   public failed = false;

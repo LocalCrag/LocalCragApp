@@ -81,6 +81,7 @@ GRADES = {
 GRADE_BRACKETS = {
     LineTypeEnum.BOULDER: {
         "FB": {
+            "showDiagrams": True,
             "barChartBrackets": [
                 {"name": "1-3", "value": 3},
                 {"name": "4A", "value": 4},
@@ -107,6 +108,7 @@ GRADE_BRACKETS = {
     },
     LineTypeEnum.SPORT: {
         "UIAA": {
+            "showDiagrams": True,
             "barChartBrackets": [
                 {"name": "I-III", "value": 3},
                 {"name": "IV", "value": 6},
