@@ -37,6 +37,7 @@ import { DividerModule } from 'primeng/divider';
 import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { FormArrayDirective } from '../../shared/forms/form-array.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -69,6 +70,7 @@ import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bra
     Checkbox,
     Select,
     TranslateSpecialGradesPipe,
+    FormArrayDirective,
     FormControlDirective,
     IfErrorDirective,
     ControlGroupDirective,
