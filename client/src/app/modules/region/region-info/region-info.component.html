@@ -1,9 +1,12 @@
 <ng-container *transloco="let t; read: 'region.region'">
   <div class="p-6">
     @if (region) {
-      <h4>{{ t("gradeDistribution") }}:</h4>
+      @if (!gradeDiagramsSuppressed) {
+        <h4>{{ t("gradeDistribution") }}:</h4>
+      }
       <lc-grade-distribution-bar-chart
         [fetchingObservable]="fetchRegionGrades"
+        (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
       ></lc-grade-distribution-bar-chart>
       @if (region.description) {
         <h4>{{ t("description") }}:</h4>

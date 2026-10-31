@@ -151,6 +151,8 @@
   "scale.scaleForm.valuesNotUnique": "Die Schwierigkeitswerte müssen eindeutig sein.",
   "scale.scaleForm.addGrade": "Schwierigkeit hinzufügen",
   "scale.scaleForm.reorderGrades": "Felder nach Wert sortieren",
+  "scale.scaleForm.showDiagramsLabel": "Diagramme anzeigen",
+  "scale.scaleForm.showDiagramsDescription": "Deaktivieren, um die Schwierigkeitsdiagramme dieser Skala in Listen, auf Infoseiten, in Nutzerdiagrammen und in der Statistik auszublenden. Nützlich bei gemischten Skalen, wenn eine Skala deutlich mehr Linien hat als die andere und ein fast leeres Diagramm nicht neben dem Hauptdiagramm stehen soll.",
   "scale.scaleForm.gradeBracketsLabel": "Schwierigkeitsabschnitte",
   "scale.scaleForm.stackedChartBrackets": "Gestapeltes Balkendiagramm",
   "scale.scaleForm.gradeBracketsDescriptionStackedChart": "Hier werden die Grad-Abschnitte für gestapelte Balkendiagramme definiert. Die Übersicht der Abschnitte wird wie folgt gebildet. Angenommen, die Abschnitte sind [5, 10, 15, 16]. Dann werden im ersten Abschnitt alle Grade mit Wert bis 5 landen, im nächsten alle zwischen 6 und 10, dann 11 bis 15 und zuletzt alles ab 16. Es ist erforderlich, dass die letzten beiden Werte aufeinanderfolgen und die Abschnitte sortiert sind. Projekte werden immer getrennt gruppiert. Jeder Abschnitt hat eine eigene Farbe.",

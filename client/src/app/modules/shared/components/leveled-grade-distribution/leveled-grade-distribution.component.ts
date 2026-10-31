@@ -93,6 +93,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
             ),
           ]).pipe(
             map(([scale, gradeNameByValueMap]) => {
+              if (!scale.gradeBrackets.showDiagrams) {
+                return;
+              }
               const stackedBrackets = scale.gradeBrackets.stackedChartBrackets;
               const labels = Array(stackedBrackets.length).fill('');
               const sortedGrades = [...scale.grades].sort(

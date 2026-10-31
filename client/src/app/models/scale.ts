@@ -32,6 +32,7 @@ export class Scale {
   gradeBrackets: {
     stackedChartBrackets: StackedChartBrackets;
     barChartBrackets: BarChartBrackets;
+    showDiagrams: boolean;
   };
 
   public static deserialize(payload: any): Scale {

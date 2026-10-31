@@ -15,10 +15,13 @@
         [slug]="crag.slug"
         [level]="'crag'"
       ></lc-current-conditions>
-      <h4>{{ t("gradeDistribution") }}:</h4>
+      @if (!gradeDiagramsSuppressed) {
+        <h4>{{ t("gradeDistribution") }}:</h4>
+      }
       <lc-grade-distribution-bar-chart
         *isOutdoorMode="true"
         [fetchingObservable]="fetchCragGrades"
+        (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
       ></lc-grade-distribution-bar-chart>
       @if (crag.description) {
         <h4>{{ t("description") }}:</h4>
