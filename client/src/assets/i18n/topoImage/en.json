@@ -1,6 +1,7 @@
 {
   "topoImageList.hideArchive": "Hide archive",
   "topoImageList.showArchive": "Show archive",
+  "topoImageList.loadMore": "Load more images",
   "topoImageList.newTopoImageButtonLabel": "New Topo Image",
   "topoImageList.suggestTopoImageButtonLabel": "Suggest topo image",
 

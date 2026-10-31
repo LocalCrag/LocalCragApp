@@ -33,7 +33,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 
 import { NgClass, NgTemplateOutlet, ViewportScroller } from '@angular/common';
-import { filter, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import {
   selectCanContributeTopo,
@@ -61,6 +61,7 @@ import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/
 import { Rating } from 'primeng/rating';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
@@ -73,6 +74,13 @@ import {
   topoLinePathDisplayNumbers,
   variantTopoLinePaths,
 } from '../../../utility/topo/line-path-variants';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  failPaginatedPageLoad,
+  PaginatedListView,
+  resetPaginatedList,
+} from '../../../utility/paginated-list';
 
 /**
  * Component that lists all topo images in an area.
@@ -111,18 +119,21 @@ import {
     TopoImageViewerComponent,
     LineNumberBadgeComponent,
     DraftTagComponent,
+    InfiniteScrollDirective,
   ],
 })
-export class TopoImageListComponent implements OnInit {
+export class TopoImageListComponent implements OnInit, PaginatedListView {
   @ViewChild('topoImageMenu') topoImageMenu: Menu;
 
-  public topoImages: TopoImage[];
+  public topoImages: TopoImage[] = [];
+  public currentPage = 0;
+  public hasNextPage = false;
   public topoImageActionItems: MenuItem[] = [];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public sortOptions: SelectItem[];
   public sortKey: SelectItem;
-  public sortOrder: number;
+  public sortOrder = 1;
   public sortField: string;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
@@ -140,6 +151,9 @@ export class TopoImageListComponent implements OnInit {
   private expandedVariantImageIds = new Set<string>();
   /** Stays on screen after the menu closes, so confirm popups can anchor to it. */
   private actionAnchor: EventTarget | null = null;
+  /** Drops responses from a list load that a newer load has replaced. */
+  private loadGeneration = 0;
+  private readonly archivePageSize = 8;
 
   private scrollTarget: Scroll;
   private stopAnchorScroll: (() => void) | null = null;
@@ -302,47 +316,113 @@ export class TopoImageListComponent implements OnInit {
   }
 
   /**
-   * Loads new data.
+   * Loads the live wall in one request, or the first archive page.
    */
   refreshData() {
-    this.loading = LoadingState.LOADING;
-    const params: ApiQueryParams = {};
     if (this.showArchive) {
-      params.archived = '1';
+      this.loadFirstPage();
+      return;
     }
+    this.loadGeneration += 1;
+    const generation = this.loadGeneration;
+    this.currentPage = 1;
+    this.hasNextPage = false;
+    this.loading = LoadingState.LOADING;
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           return forkJoin([
-            this.topoImagesService.getTopoImages(this.areaSlug, params),
+            this.topoImagesService.getTopoImages(this.areaSlug),
             this.ticksService.getTicks(null, null, area.id),
           ]);
         }),
       )
       .subscribe(([topoImages, ticks]) => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
         this.ticks = ticks;
         this.topoImages = topoImages;
         this.loading = LoadingState.DEFAULT;
-        this.sortOptions = [
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-            label: this.translocoService.translate(marker('sortAscending')),
-            value: '!orderIndex',
-          },
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN,
-            label: this.translocoService.translate(marker('sortDescending')),
-            value: 'orderIndex',
-          },
-        ];
-        this.sortKey = this.sortOptions[0];
+        this.ensureSortOptions();
         if (this.scrollTarget) {
           this.restoreScrollPosition();
         } else {
           this.scrollToAnchor();
         }
       });
+  }
+
+  loadFirstPage() {
+    // Restart even when a previous request is still in flight (archive toggle, area change).
+    resetPaginatedList(this);
+    this.loadNextPage();
+  }
+
+  /**
+   * Loads the next page of archived topo images.
+   */
+  loadNextPage() {
+    const page = beginPaginatedPageLoad(this, () => {
+      this.topoImages = [];
+    });
+    if (page === null) {
+      return;
+    }
+    if (page === 1) {
+      this.loadGeneration += 1;
+    }
+    const generation = this.loadGeneration;
+    const params: ApiQueryParams = {
+      archived: '1',
+      page: this.currentPage,
+      per_page: this.archivePageSize,
+      order_direction: this.sortOrder === -1 ? 'desc' : 'asc',
+    };
+    const images$ = this.topoImagesService.getTopoImagesPaginated(
+      this.areaSlug,
+      params,
+    );
+    const request$ =
+      page === 1
+        ? this.areasService.getArea(this.areaSlug).pipe(
+            mergeMap((area) =>
+              forkJoin([
+                images$,
+                this.ticksService.getTicks(null, null, area.id),
+              ]),
+            ),
+            map(([images, ticks]) => ({ images, ticks })),
+          )
+        : images$.pipe(map((images) => ({ images, ticks: null })));
+
+    request$.subscribe({
+      next: ({ images, ticks }) => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
+        this.topoImages.push(...images.items);
+        if (ticks) {
+          this.ticks = ticks;
+        }
+        completePaginatedPageLoad(this, images.hasNext);
+        this.ensureSortOptions();
+        if (page === 1) {
+          if (this.scrollTarget) {
+            this.restoreScrollPosition();
+          } else {
+            this.scrollToAnchor();
+          }
+        }
+      },
+      error: () => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
+        failPaginatedPageLoad(this);
+      },
+    });
   }
 
   restoreScrollPosition() {
@@ -366,6 +446,10 @@ export class TopoImageListComponent implements OnInit {
   scrollToAnchor() {
     this.stopAnchorScroll?.();
     this.stopAnchorScroll = null;
+
+    if (this.showArchive) {
+      return;
+    }
 
     const fragment = this.route.snapshot.fragment;
     if (!fragment) {
@@ -429,6 +513,28 @@ export class TopoImageListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+    if (this.showArchive) {
+      this.loadFirstPage();
+    }
+  }
+
+  private ensureSortOptions() {
+    if (this.sortOptions?.length) {
+      return;
+    }
+    this.sortOptions = [
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscending')),
+        value: '!orderIndex',
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescending')),
+        value: 'orderIndex',
+      },
+    ];
+    this.sortKey = this.sortOptions[0];
   }
 
   /**

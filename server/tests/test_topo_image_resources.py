@@ -1,5 +1,7 @@
+from extensions import db
 from models.area import Area
 from models.enums.map_marker_type_enum import MapMarkerType
+from models.enums.publication_status_enum import PublicationStatusEnum
 from models.file import File
 from models.line import Line
 from models.line_path import LinePath
@@ -276,3 +278,65 @@ def test_successful_order_topo_images(client, moderator_token):
     assert res[0]["orderIndex"] == 0
     assert res[1]["id"] == str(topo_images[0].id)
     assert res[1]["orderIndex"] == 1
+
+
+def test_archived_topo_images_are_paginated(client):
+    area_id = Area.get_id_by_slug("shark-attack")
+    existing = TopoImage.query.filter_by(area_id=area_id).order_by(TopoImage.order_index.asc()).all()
+    assert len(existing) == 2
+    for image in existing:
+        image.publication_status = PublicationStatusEnum.ARCHIVED
+
+    created_titles = []
+    for index in range(3):
+        image = TopoImage()
+        image.file_id = existing[0].file_id
+        image.area_id = area_id
+        image.order_index = 2 + index
+        image.publication_status = PublicationStatusEnum.ARCHIVED
+        image.title = f"Archived wall {index}"
+        db.session.add(image)
+        created_titles.append(image.title)
+    db.session.commit()
+
+    full = client.get("/api/areas/shark-attack/topo-images?archived=1")
+    assert full.status_code == 200
+    assert isinstance(full.json, list)
+    assert len(full.json) == 5
+    assert full.json[0]["orderIndex"] == 0
+    assert len(full.json[0]["linePaths"]) > 0
+
+    live = client.get("/api/areas/shark-attack/topo-images")
+    assert live.status_code == 200
+    assert live.json == []
+
+    page_one = client.get("/api/areas/shark-attack/topo-images?archived=1&page=1&per_page=2")
+    assert page_one.status_code == 200
+    assert [item["orderIndex"] for item in page_one.json["items"]] == [0, 1]
+    assert page_one.json["hasNext"] is True
+    assert len(page_one.json["items"][0]["linePaths"]) > 0
+
+    page_two = client.get("/api/areas/shark-attack/topo-images?archived=1&page=2&per_page=2")
+    assert page_two.status_code == 200
+    assert [item["title"] for item in page_two.json["items"]] == created_titles[:2]
+    assert page_two.json["hasNext"] is True
+
+    page_three = client.get("/api/areas/shark-attack/topo-images?archived=1&page=3&per_page=2")
+    assert page_three.status_code == 200
+    assert [item["title"] for item in page_three.json["items"]] == created_titles[2:]
+    assert page_three.json["hasNext"] is False
+
+    descending = client.get("/api/areas/shark-attack/topo-images?archived=1&page=1&per_page=2&order_direction=desc")
+    assert descending.status_code == 200
+    assert [item["orderIndex"] for item in descending.json["items"]] == [4, 3]
+
+    invalid_order = client.get("/api/areas/shark-attack/topo-images?archived=1&page=1&order_direction=sideways")
+    assert invalid_order.status_code == 400
+
+    invalid_page = client.get("/api/areas/shark-attack/topo-images?archived=1&page=0")
+    assert invalid_page.status_code == 400
+
+    empty_live_page = client.get("/api/areas/shark-attack/topo-images?page=1&per_page=2")
+    assert empty_live_page.status_code == 200
+    assert empty_live_page.json["items"] == []
+    assert empty_live_page.json["hasNext"] is False
