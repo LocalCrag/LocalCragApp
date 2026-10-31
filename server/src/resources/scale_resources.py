@@ -2,6 +2,7 @@ from typing import Optional
 
 from flask import jsonify, request
 from flask.views import MethodView
+from sqlalchemy import or_
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -55,6 +56,30 @@ class CreateScale(MethodView):
         return jsonify(scale_schema.dump(scale)), 201
 
 
+def _scale_has_lines(line_type, name) -> bool:
+    return db.session.query(Line.id).filter(Line.grade_scale == name, Line.type == line_type).first() is not None
+
+
+def _scale_drops_grade_in_use(line_type, name, values: set) -> bool:
+    if not _scale_has_lines(line_type, name):
+        return False
+    if not values:
+        return True
+    return (
+        db.session.query(Line.id)
+        .filter(
+            Line.grade_scale == name,
+            Line.type == line_type,
+            or_(
+                Line.author_grade_value.notin_(values),
+                Line.user_grade_value.notin_(values),
+            ),
+        )
+        .first()
+        is not None
+    )
+
+
 class UpdateScale(MethodView):
     @session_required(admin=True)
     def put(self, line_type, name):
@@ -64,17 +89,14 @@ class UpdateScale(MethodView):
 
         scale_data = parser.parse(scale_args, request)
 
-        lines = Line.query.filter(Line.grade_scale == name, Line.type == line_type).all()
-
-        # Line Type may only be changed if no lines use this scale
-        if str(scale.type) != str(scale_data["type"]) and len(lines) > 0:
+        # Line type and used grade values are checked in SQL so a large area
+        # does not load every line and its ascents into the session.
+        if str(scale.type) != str(scale_data["type"]) and _scale_has_lines(line_type, name):
             raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
-        # All values set on lines must still be there
         values = {s["value"] for s in scale_data["grades"]}
-        for line in lines:
-            if line.author_grade_value not in values or line.user_grade_value not in values:
-                raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
+        if _scale_drops_grade_in_use(line_type, name, values):
+            raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
         # All values used in the grade brackets must be in the grades
         all_grades = set(g["value"] for g in scale_data["grades"])
@@ -83,14 +105,17 @@ class UpdateScale(MethodView):
         if any(gb.get("value") not in all_grades for gb in scale_data["gradeBrackets"]["barChartBrackets"]):
             raise BadRequest(ResponseMessage.INVALID_BAR_CHART_BRACKETS)
 
-        scale.name = scale_data["name"]
+        new_name = scale_data["name"]
+        if new_name != name:
+            Line.query.filter(Line.grade_scale == name, Line.type == line_type).update(
+                {Line.grade_scale: new_name},
+                synchronize_session=False,
+            )
+
+        scale.name = new_name
         scale.type = scale_data["type"]
         scale.grades = scale_data["grades"]
         scale.grade_brackets = scale_data["gradeBrackets"]
-
-        for line in lines:
-            line.grade_scale = scale.name
-            db.session.add(line)
 
         db.session.add(scale)
         db.session.commit()

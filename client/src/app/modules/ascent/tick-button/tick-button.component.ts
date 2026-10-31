@@ -4,12 +4,13 @@ import { NgClass } from '@angular/common';
 import { Line } from '../../../models/line';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ProjectClimbedFormComponent } from '../project-climbed-form/project-climbed-form.component';
 import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'lc-tick-button',
@@ -24,44 +25,51 @@ export class TickButtonComponent {
   @Input() ticked: boolean;
   @Input() showLabel: boolean;
 
-  public ref: DynamicDialogRef | undefined;
-
   private dialogService = inject(DialogService);
   private store = inject(Store);
 
   addAscent(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.store
-      .select(selectInstanceSettingsState)
-      .subscribe((instanceSettings) => {
-        if (
-          (instanceSettings.displayUserGrades
-            ? this.line.userGradeValue
-            : this.line.authorGradeValue) >= 0
-        ) {
-          this.ref = this.dialogService.open(AscentFormComponent, {
-            modal: true,
-            focusOnShow: false,
-            templates: {
-              header: AscentFormTitleComponent,
-            },
-            data: {
-              line: this.line,
-            },
-          });
-        } else {
-          this.ref = this.dialogService.open(ProjectClimbedFormComponent, {
-            modal: true,
-            focusOnShow: false,
-            templates: {
-              header: ProjectClimbedFormTitleComponent,
-            },
-            data: {
-              line: this.line,
-            },
-          });
-        }
-      });
+    openTickDialog(this.dialogService, this.store, this.line);
   }
+}
+
+/** Opens the ascent dialog, or the project-climbed dialog when the line has no grade. */
+export function openTickDialog(
+  dialogService: DialogService,
+  store: Store,
+  line: Line,
+): void {
+  store
+    .select(selectInstanceSettingsState)
+    .pipe(take(1))
+    .subscribe((instanceSettings) => {
+      const gradeValue = instanceSettings.displayUserGrades
+        ? line.userGradeValue
+        : line.authorGradeValue;
+      if (gradeValue >= 0) {
+        dialogService.open(AscentFormComponent, {
+          modal: true,
+          focusOnShow: false,
+          templates: {
+            header: AscentFormTitleComponent,
+          },
+          data: {
+            line,
+          },
+        });
+        return;
+      }
+      dialogService.open(ProjectClimbedFormComponent, {
+        modal: true,
+        focusOnShow: false,
+        templates: {
+          header: ProjectClimbedFormTitleComponent,
+        },
+        data: {
+          line,
+        },
+      });
+    });
 }

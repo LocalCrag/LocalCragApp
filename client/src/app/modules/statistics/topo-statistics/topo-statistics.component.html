@@ -94,12 +94,15 @@
       </div>
 
       @if (!isLine && gradeDistribution$) {
-        <h3 class="section-title section-title--grades">
-          {{ t("topoStatistics.gradeDistribution") }}
-        </h3>
-        <div class="chart-box">
+        @if (!gradeDiagramsSuppressed) {
+          <h3 class="section-title section-title--grades">
+            {{ t("topoStatistics.gradeDistribution") }}
+          </h3>
+        }
+        <div class="chart-box" [hidden]="gradeDiagramsSuppressed">
           <lc-grade-distribution-bar-chart
             [fetchingObservable]="gradeDistribution$"
+            (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
           />
         </div>
       }

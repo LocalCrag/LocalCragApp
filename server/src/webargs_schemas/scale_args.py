@@ -36,6 +36,7 @@ stacked_chart_bracket_args = {
 }
 
 grade_bracket_args = {
+    "showDiagrams": fields.Boolean(required=False, load_default=True),
     "barChartBrackets": fields.List(
         fields.Nested(bar_chart_bracket_args),
         required=True,
