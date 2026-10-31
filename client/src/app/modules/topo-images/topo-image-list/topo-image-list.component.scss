@@ -64,7 +64,20 @@ lc-topo-image-list {
   }
 
   .line-table-wrapper {
+    display: grid;
+    // One set of tracks for every line, so names, grades and actions line up.
+    grid-template-columns:
+      2rem
+      minmax(0, 1.3fr)
+      minmax(4rem, 0.7fr)
+      minmax(0, 1.6fr)
+      max-content
+      max-content;
+    column-gap: 0.5rem;
+    align-items: center;
+
     .variant-toggle {
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -95,7 +108,11 @@ lc-topo-image-list {
     }
 
     .line-table-row {
-      display: flex;
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      column-gap: 0.5rem;
+      align-items: center;
       color: inherit;
       text-decoration: inherit;
       border-top: 1px solid var(--p-content-border-color);
@@ -117,153 +134,103 @@ lc-topo-image-list {
           }
         }
       }
+    }
+
+    .line-table-column-number {
+      display: flex;
+      align-items: center;
+    }
+
+    .line-table-info-name {
+      min-width: 0;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .line-table-info-grade {
+      min-width: 0;
+      font-weight: 500;
+
+      .grade-ellipsis {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .line-table-info-style {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-width: 0;
+      overflow: hidden;
+
+      lc-line-bool-prop-list {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .line-table-info-rating,
+    .line-table-info-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .line-table-info-actions {
+      justify-content: flex-end;
+
+      p-button {
+        margin-right: -0.75rem;
+      }
+    }
+
+    // Same cells, stacked under the name once the table is too narrow for one row.
+    @include container-650 {
+      grid-template-columns: 2rem minmax(0, 1fr) max-content;
+
+      .line-table-row {
+        row-gap: 0.15rem;
+      }
 
       .line-table-column-number {
-        flex-basis: 2rem;
-        display: flex;
-        justify-content: left;
-        align-items: center;
+        grid-column: 1;
+        grid-row: 1 / span 3;
+        align-self: start;
+        padding-top: 0.2rem;
       }
 
-      .line-table-column-info {
-        flex-basis: calc(100% - 2rem);
-        display: flex;
-        flex-wrap: wrap;
-
-        .line-table-column-info-top-row {
-          flex-basis: calc(100% - 16rem);
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-
-          .line-table-info-name {
-            font-weight: 500;
-            flex-basis: 40%;
-            display: flex;
-            justify-content: left;
-            align-items: center;
-            hyphens: auto;
-            overflow-wrap: anywhere;
-          }
-
-          .line-table-info-grade {
-            font-weight: 500;
-            display: flex;
-            justify-content: left;
-            align-items: center;
-            text-align: left;
-            flex-basis: 20%;
-
-            .grade-ellipsis {
-              max-width: min-content;
-            }
-          }
-
-          .line-table-info-style {
-            display: flex;
-            align-items: center;
-            flex-basis: 40%;
-            padding-right: 0.5rem;
-          }
-        }
-
-        .line-table-column-info-bottom-row {
-          flex-basis: 16rem;
-          display: flex;
-          flex-direction: row;
-          overflow: hidden;
-
-          .line-table-info-rating {
-            display: flex;
-            align-items: center;
-            flex-basis: calc(100% - 12rem);
-          }
-
-          .line-table-info-actions {
-            display: flex;
-            flex-direction: row;
-            flex-basis: 12rem;
-            justify-content: right;
-            align-items: center;
-
-            p-button {
-              margin-right: -0.75rem;
-            }
-          }
-        }
+      .line-table-info-name {
+        grid-column: 2;
+        grid-row: 1;
+        font-weight: 700;
       }
 
-      @include container-650 {
-        .line-table-column-number {
-          flex-basis: 2rem;
-          display: flex;
-          align-items: flex-start;
-          padding-top: 0.125rem;
-        }
-        .line-table-column-info {
-          flex-basis: calc(100% - 2rem);
-          display: flex;
-          flex-wrap: wrap;
+      .line-table-info-grade {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+        text-align: right;
+      }
 
-          .line-table-column-info-top-row {
-            padding-top: 0.125rem;
-            flex-basis: 100%;
-            display: flex;
-            flex-direction: row;
+      .line-table-info-style {
+        grid-column: 2 / -1;
+        grid-row: 2;
+        font-size: 10px;
+      }
 
-            .line-table-info-name {
-              font-weight: bold;
-              flex-basis: calc(100% - 8rem);
-              display: flex;
-              align-items: center;
-            }
+      .line-table-info-rating {
+        grid-column: 2;
+        grid-row: 3;
+      }
 
-            .line-table-info-grade {
-              font-weight: 500;
-              display: flex;
-              justify-content: right;
-              text-align: right;
-              flex-basis: 8rem;
-
-              .grade-ellipsis {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 7rem;
-              }
-            }
-
-            .line-table-info-style {
-              margin-top: 0.5rem;
-              font-size: 10px;
-              padding-right: 0;
-              flex-basis: 100%;
-            }
-          }
-
-          .line-table-column-info-bottom-row {
-            flex-basis: 100%;
-            display: flex;
-            flex-direction: row;
-
-            .line-table-info-rating {
-              display: flex;
-              align-items: center;
-              flex-basis: calc(100% - 11rem);
-            }
-
-            .line-table-info-actions {
-              display: flex;
-              flex-direction: row;
-              flex-basis: 11rem;
-              justify-content: right;
-
-              p-button {
-                margin-right: -0.75rem;
-              }
-            }
-          }
-        }
+      .line-table-info-actions {
+        grid-column: 3;
+        grid-row: 3;
+        justify-self: end;
       }
     }
   }
