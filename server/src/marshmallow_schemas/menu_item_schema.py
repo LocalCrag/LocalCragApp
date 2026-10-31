@@ -14,6 +14,7 @@ class MenuItemSchema(BaseEntityMinSchema):
     url = fields.String()
     title = fields.String()
     menuPage = fields.Nested(menu_page_min_schema, attribute="menu_page")
+    parent = fields.Function(lambda obj: str(obj.parent_id) if obj.parent_id else None)
     orderIndex = fields.Int(attribute="order_index")
 
 

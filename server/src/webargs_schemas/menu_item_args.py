@@ -11,4 +11,5 @@ menu_item_args = {
     "icon": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
     "url": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
     "title": fields.String(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "parent": fields.UUID(required=False, allow_none=True, load_default=None),
 }

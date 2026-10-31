@@ -48,6 +48,11 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  buildMenuItemTree,
+  descendantIds,
+  flattenMenuItemTree,
+} from '../../../utility/menu-item-tree';
 
 @Component({
   selector: 'lc-menu-items-form',
@@ -78,8 +83,13 @@ export class MenuItemsFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public menuItem: MenuItem;
   public menuPages: MenuPage[];
+  public menuItems: MenuItem[] = [];
+  public parentOptions: MenuItem[] = [];
+  public topPosition = MenuItemPosition.TOP;
   public editMode = false;
+  public containerType = MenuItemType.CONTAINER;
   public types = [
+    MenuItemType.CONTAINER,
     MenuItemType.MENU_PAGE,
     MenuItemType.TOPO,
     MenuItemType.ASCENTS,
@@ -106,6 +116,7 @@ export class MenuItemsFormComponent implements OnInit {
     marker('pi-shopping-bag'),
     marker('pi-instagram'),
     marker('pi-youtube'),
+    marker('pi-folder'),
   ];
 
   private destroyRef = inject(DestroyRef);
@@ -137,33 +148,38 @@ export class MenuItemsFormComponent implements OnInit {
         }),
       );
     }
-    forkJoin([menuItemRequest, this.menuPagesService.getMenuPages()]).subscribe(
-      ([menuItem, menuPages]) => {
-        this.menuPages = menuPages;
-        this.buildForm();
-        if (menuItem) {
-          this.store.select(selectInstanceName).subscribe((instanceName) => {
-            this.title.setTitle(
-              `${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${instanceName}`,
-            );
-          });
-          this.editMode = true;
-          this.setPageTitle();
-          this.menuItemForm.disable();
-          this.menuItem = menuItem;
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-        } else {
-          this.setPageTitle();
-          this.store.select(selectInstanceName).subscribe((instanceName) => {
-            this.title.setTitle(
-              `${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`,
-            );
-          });
-          this.loadingState = LoadingState.DEFAULT;
-        }
-      },
-    );
+    forkJoin([
+      menuItemRequest,
+      this.menuPagesService.getMenuPages(),
+      this.menuItemsService.getMenuItems(),
+    ]).subscribe(([menuItem, menuPages, menuItems]) => {
+      this.menuPages = menuPages;
+      this.menuItems = menuItems;
+      this.buildForm();
+      if (menuItem) {
+        this.store.select(selectInstanceName).subscribe((instanceName) => {
+          this.title.setTitle(
+            `${this.translocoService.translate(marker('editMenuItemFormBrowserTitle'))} - ${instanceName}`,
+          );
+        });
+        this.editMode = true;
+        this.setPageTitle();
+        this.menuItemForm.disable();
+        this.menuItem = menuItem;
+        this.refreshParentOptions();
+        this.setFormValue();
+        this.loadingState = LoadingState.DEFAULT;
+      } else {
+        this.refreshParentOptions();
+        this.setPageTitle();
+        this.store.select(selectInstanceName).subscribe((instanceName) => {
+          this.title.setTitle(
+            `${this.translocoService.translate(marker('menuItemFormBrowserTitle'))} - ${instanceName}`,
+          );
+        });
+        this.loadingState = LoadingState.DEFAULT;
+      }
+    });
   }
 
   private setPageTitle(): void {
@@ -190,6 +206,7 @@ export class MenuItemsFormComponent implements OnInit {
       icon: [null],
       url: [null],
       title: [null],
+      parent: [null],
     });
     this.menuItemForm
       .get('type')
@@ -197,7 +214,88 @@ export class MenuItemsFormComponent implements OnInit {
       .subscribe(() => {
         this.setValidators();
       });
+    this.menuItemForm
+      .get('position')
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.syncParentControl();
+      });
     this.setValidators();
+    this.syncParentControl();
+  }
+
+  menuItemOptionLabel(menuItem: MenuItem): string {
+    const typeLabel = this.translocoService.translate(menuItem.type);
+    const indent = '\u00a0\u00a0'.repeat(menuItem.depth ?? 0);
+    if (menuItem.type === MenuItemType.MENU_PAGE && menuItem.menuPage) {
+      return `${indent}${typeLabel} (${menuItem.menuPage.title})`;
+    }
+    if (
+      (menuItem.type === MenuItemType.URL ||
+        menuItem.type === MenuItemType.CONTAINER) &&
+      menuItem.title
+    ) {
+      return `${indent}${typeLabel} (${menuItem.title})`;
+    }
+    return `${indent}${typeLabel}`;
+  }
+
+  get detachesChildren(): boolean {
+    return (
+      this.editMode &&
+      this.hasChildren &&
+      this.menuItemForm?.get('position')?.value !== MenuItemPosition.TOP
+    );
+  }
+
+  private get hasChildren(): boolean {
+    if (!this.menuItem?.id) {
+      return false;
+    }
+    return this.menuItems.some((item) => item.parentId === this.menuItem.id);
+  }
+
+  private refreshParentOptions() {
+    const topItems = this.menuItems.filter(
+      (item) => item.position === MenuItemPosition.TOP,
+    );
+    const excluded = new Set<string>();
+    if (this.menuItem?.id) {
+      excluded.add(this.menuItem.id);
+      descendantIds(this.menuItems, this.menuItem.id).forEach((id) =>
+        excluded.add(id),
+      );
+    }
+    this.parentOptions = flattenMenuItemTree(buildMenuItemTree(topItems))
+      .filter(
+        (row) =>
+          !excluded.has(row.item.id) && row.item.type !== MenuItemType.TOPO,
+      )
+      .map((row) => {
+        row.item.depth = row.depth;
+        row.item.selectLabel = this.menuItemOptionLabel(row.item);
+        return row.item;
+      });
+  }
+
+  /**
+   * A container only exists to hold nested header items, so the footer is not available.
+   */
+  get positionOptions(): MenuItemPosition[] {
+    return this.menuItemForm?.get('type')?.value === MenuItemType.CONTAINER
+      ? [MenuItemPosition.TOP]
+      : this.positions;
+  }
+
+  /** Nesting is header-only. Footer items keep a null parent. */
+  private syncParentControl() {
+    const parent = this.menuItemForm.get('parent');
+    if (this.menuItemForm.get('position').value !== MenuItemPosition.TOP) {
+      parent.setValue(null, { emitEvent: false });
+      parent.disable({ emitEvent: false });
+      return;
+    }
+    parent.enable({ emitEvent: false });
   }
 
   private setValidators() {
@@ -239,6 +337,25 @@ export class MenuItemsFormComponent implements OnInit {
       this.menuItemForm.get('menuPage').setValidators([]);
       this.menuItemForm.get('menuPage').disable();
       this.menuItemForm.get('menuPage').setValue(null);
+    } else if (this.menuItemForm.get('type').value === MenuItemType.CONTAINER) {
+      if (this.menuItemForm.get('position').value !== MenuItemPosition.TOP) {
+        this.menuItemForm.get('position').setValue(MenuItemPosition.TOP);
+      }
+      this.menuItemForm
+        .get('title')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
+      this.menuItemForm.get('title').enable();
+      this.menuItemForm
+        .get('icon')
+        .setValidators([Validators.required, Validators.maxLength(120)]);
+      this.menuItemForm.get('icon').enable();
+      this.menuItemForm.get('icon').setValue('pi-folder');
+      this.menuItemForm.get('url').setValidators([]);
+      this.menuItemForm.get('url').disable();
+      this.menuItemForm.get('url').setValue(null);
+      this.menuItemForm.get('menuPage').setValidators([]);
+      this.menuItemForm.get('menuPage').disable();
+      this.menuItemForm.get('menuPage').setValue(null);
     } else {
       this.menuItemForm.get('menuPage').setValidators([]);
       this.menuItemForm.get('menuPage').disable();
@@ -270,7 +387,11 @@ export class MenuItemsFormComponent implements OnInit {
         this.menuItem.menuPage,
         this.menuPages,
       ),
+      parent:
+        this.parentOptions.find((item) => item.id === this.menuItem.parentId) ??
+        null,
     });
+    this.syncParentControl();
   }
 
   /**
@@ -293,6 +414,7 @@ export class MenuItemsFormComponent implements OnInit {
       menuItem.icon = this.menuItemForm.get('icon').value;
       menuItem.url = this.menuItemForm.get('url').value;
       menuItem.title = this.menuItemForm.get('title').value;
+      menuItem.parentId = this.menuItemForm.get('parent').value?.id ?? null;
       if (this.menuItem) {
         menuItem.id = this.menuItem.id;
         this.menuItemsService.updateMenuItem(menuItem).subscribe(() => {
