@@ -38,6 +38,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   ],
 })
 export class SectorInfoComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public sector: Sector;
   public fetchSectorGrades: Observable<GradeDistribution>;
   public sectorCoordinates: Coordinates;

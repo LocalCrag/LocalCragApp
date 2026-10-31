@@ -26,6 +26,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   styleUrl: './region-info.component.scss',
 })
 export class RegionInfoComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public region: Region;
   public fetchRegionGrades: Observable<GradeDistribution>;
 

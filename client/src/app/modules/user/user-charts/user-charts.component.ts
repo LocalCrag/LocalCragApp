@@ -41,6 +41,7 @@ import { ThemeService } from '../../../services/core/theme.service';
   styleUrl: './user-charts.component.scss',
 })
 export class UserChartsComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public user: User;
   public fetchUserGrades: Observable<GradeDistribution>;
   public fetchUserFlashGrades: Observable<GradeDistribution>;

@@ -193,15 +193,21 @@
         [ascentsPerYear]="stats.ascentsPerYear"
         [barChartColor]="barChartColor"
       />
-      <h3 class="charts-section-title charts-section-title--gradeDistribution">
-        {{ t("gradeDistribution") }}
-      </h3>
-      <div class="charts-section-box charts-section-box--blue">
+      @if (!gradeDiagramsSuppressed) {
+        <h3 class="charts-section-title charts-section-title--gradeDistribution">
+          {{ t("gradeDistribution") }}
+        </h3>
+      }
+      <div
+        class="charts-section-box charts-section-box--blue"
+        [hidden]="gradeDiagramsSuppressed"
+      >
         <lc-grade-distribution-bar-chart
           [fetchingObservable]="fetchUserGrades"
           [fetchingFlashObservable]="fetchUserFlashGrades"
           [excludeProjects]="true"
           [showDetailedTooltip]="true"
+          (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
         ></lc-grade-distribution-bar-chart>
       </div>
       <h3 class="charts-section-title charts-section-title--completion">
