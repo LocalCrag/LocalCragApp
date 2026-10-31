@@ -33,7 +33,7 @@ import {
 } from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap, take } from 'rxjs/operators';
@@ -117,7 +117,7 @@ import {
     TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
   ],
-  providers: [ConfirmationService, DialogService],
+  providers: [DialogService],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,

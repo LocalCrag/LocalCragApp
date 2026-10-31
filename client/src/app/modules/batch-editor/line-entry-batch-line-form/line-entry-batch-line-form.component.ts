@@ -44,7 +44,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AreasService } from '../../../services/crud/areas.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
-import { ConfirmationService } from 'primeng/api';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
@@ -82,7 +81,6 @@ import { Tag } from 'primeng/tag';
     Button,
   ],
   providers: [
-    ConfirmationService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => LineEntryBatchLineFormComponent),
