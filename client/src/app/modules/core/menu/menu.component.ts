@@ -29,8 +29,10 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
+import { MenuItem as NavMenuItem } from '../../../models/menu-item';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
+import { nestHeaderMenuItems } from '../../../utility/menu-item-tree';
 import { Crag } from '../../../models/crag';
 import {
   selectInstanceName,
@@ -448,74 +450,78 @@ export class MenuComponent implements OnInit, AfterViewInit {
       const skippedHierarchyLayersSlug = `${environment.skippedSlug}/`.repeat(
         skippedHierarchyLayers,
       );
-      const items: MenuItem[] = [];
       const menuItemsTop = menuItems.filter(
         (menuItem) => menuItem.position === MenuItemPosition.TOP,
       );
-      menuItemsTop.forEach((menuItem) => {
-        switch (menuItem.type) {
-          case MenuItemType.MENU_PAGE:
-            items.push({
-              label: menuItem.menuPage.title,
-              icon: `pi pi-fw ${menuItem.icon}`,
-              routerLink: '/pages/' + menuItem.menuPage.slug,
-            });
-            break;
-          case MenuItemType.NEWS:
-            items.push({
-              label: this.translocoService.translate(marker('menu.news')),
-              icon: 'pi pi-fw pi-megaphone',
-              routerLink: '/news',
-            });
-            break;
-          case MenuItemType.URL:
-            items.push({
-              label: menuItem.title,
-              url: menuItem.url,
-              icon: `pi pi-fw ${menuItem.icon}`,
-            });
-            break;
-          case MenuItemType.TOPO:
-            items.push({
-              label: this.translocoService.translate(marker('menu.topo')),
-              icon: 'pi pi-fw pi-map',
-              routerLink: '/topo/crags',
-              items: this.buildCragNavigationMenu(crags),
-            });
-            break;
-          case MenuItemType.ASCENTS:
-            items.push({
-              label: this.translocoService.translate(marker('menu.ascents')),
-              icon: 'pi pi-fw pi-check-square',
-              routerLink: '/ascents',
-            });
-            break;
-          case MenuItemType.RANKING:
-            items.push({
-              label: this.translocoService.translate(marker('menu.ranking')),
-              icon: 'pi pi-fw pi-trophy',
-              routerLink: '/ranking',
-            });
-            break;
-          case MenuItemType.GALLERY:
-            items.push({
-              label: this.translocoService.translate(marker('menu.gallery')),
-              icon: 'pi pi-fw pi-images',
-              routerLink: `/topo/${skippedHierarchyLayersSlug}gallery`,
-            });
-            break;
-          case MenuItemType.HISTORY:
-            items.push({
-              label: this.translocoService.translate(marker('menu.history')),
-              icon: 'pi pi-fw pi-clock',
-              routerLink: '/history',
-            });
-            break;
-        }
-      });
-      this.items = items;
+      this.items = nestHeaderMenuItems(
+        menuItemsTop,
+        (menuItem) =>
+          this.toPrimeMenuItem(menuItem, skippedHierarchyLayersSlug),
+        this.buildCragNavigationMenu(crags),
+      );
       queueMicrotask(() => this.reconcileNavbarOverflow());
     });
+  }
+
+  private toPrimeMenuItem(
+    menuItem: NavMenuItem,
+    skippedHierarchyLayersSlug: string,
+  ): MenuItem {
+    switch (menuItem.type) {
+      case MenuItemType.MENU_PAGE:
+        return {
+          label: menuItem.menuPage.title,
+          icon: `pi pi-fw ${menuItem.icon}`,
+          routerLink: '/pages/' + menuItem.menuPage.slug,
+        };
+      case MenuItemType.NEWS:
+        return {
+          label: this.translocoService.translate(marker('menu.news')),
+          icon: 'pi pi-fw pi-megaphone',
+          routerLink: '/news',
+        };
+      case MenuItemType.URL:
+        return {
+          label: menuItem.title,
+          url: menuItem.url,
+          icon: `pi pi-fw ${menuItem.icon}`,
+        };
+      case MenuItemType.CONTAINER:
+        return {
+          label: menuItem.title,
+          icon: menuItem.icon ? `pi pi-fw ${menuItem.icon}` : undefined,
+        };
+      case MenuItemType.TOPO:
+        return {
+          label: this.translocoService.translate(marker('menu.topo')),
+          icon: 'pi pi-fw pi-map',
+          routerLink: '/topo/crags',
+        };
+      case MenuItemType.ASCENTS:
+        return {
+          label: this.translocoService.translate(marker('menu.ascents')),
+          icon: 'pi pi-fw pi-check-square',
+          routerLink: '/ascents',
+        };
+      case MenuItemType.RANKING:
+        return {
+          label: this.translocoService.translate(marker('menu.ranking')),
+          icon: 'pi pi-fw pi-trophy',
+          routerLink: '/ranking',
+        };
+      case MenuItemType.GALLERY:
+        return {
+          label: this.translocoService.translate(marker('menu.gallery')),
+          icon: 'pi pi-fw pi-images',
+          routerLink: `/topo/${skippedHierarchyLayersSlug}gallery`,
+        };
+      case MenuItemType.HISTORY:
+        return {
+          label: this.translocoService.translate(marker('menu.history')),
+          icon: 'pi pi-fw pi-clock',
+          routerLink: '/history',
+        };
+    }
   }
 
   buildCragNavigationMenu(crags: Crag[]) {

@@ -8,8 +8,13 @@
       </ng-template>
       <ng-template #header>
         <div class="flex flex-row justify-between">
-          <div class="flex items-center">
+          <div class="flex flex-col justify-center">
             <h3>{{ t("topMenu") }}</h3>
+            @if (!isMobile && menuItemsTop?.length > 1) {
+              <p class="text-sm text-surface-500 m-0 mt-1">
+                {{ t("nestByDragHint") }}
+              </p>
+            }
           </div>
           <div class="lc-button-group justify-end">
             <p-button
@@ -19,15 +24,17 @@
               routerLink="/menu-items/create-menu-item/top"
               class="responsive-button"
             ></p-button>
-            <p-button
-              label="{{ t('reorderMenuItemsButtonLabel') }}"
-              icon="pi pi-sort"
-              (click)="reorderMenuItems(positions.TOP)"
-              [disabled]="
-                menuItemsTop?.length < 2 || loading === loadingStates.LOADING
-              "
-              class="responsive-button"
-            ></p-button>
+            @if (isMobile) {
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.TOP)"
+                [disabled]="
+                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+                "
+                class="responsive-button"
+              ></p-button>
+            }
           </div>
         </div>
       </ng-template>
@@ -37,21 +44,64 @@
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
-            @for (menuItem of menuItems; track menuItem; let first = $first) {
+            @for (
+              menuItem of menuItems;
+              track menuItem.id;
+              let first = $first;
+              let last = $last
+            ) {
               <div class="col-span-12">
                 <div
-                  class="flex flex-col xl:items-start p-6 gap-2"
-                  [ngClass]="{ 'border-t border-surface': !first }"
+                  class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
+                  [attr.data-menu-item-id]="menuItem.id"
+                  [style.padding-left.rem]="1.5 + (menuItem.depth || 0) * 1.5"
+                  [style.--drop-indent.rem]="dropLineIndent(menuItem)"
+                  [ngClass]="{
+                    'border-t border-surface': !first,
+                    'nest-target':
+                      dropTargetId === menuItem.id &&
+                      dropPlacement === 'inside',
+                    'drop-before':
+                      dropTargetId === menuItem.id &&
+                      dropPlacement === 'before',
+                    'drop-after':
+                      dropTargetId === menuItem.id && dropPlacement === 'after',
+                    'drop-end':
+                      last &&
+                      dropTargetId === menuItem.id &&
+                      dropPlacement === 'after',
+                    'drop-full':
+                      dropTargetId === menuItem.id &&
+                      isFullWidthDrop(menuItem),
+                    'is-dragging': draggedItem?.id === menuItem.id,
+                  }"
                 >
                   <div
-                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full"
+                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
                   >
+                    @if (!isMobile) {
+                      <div
+                        class="menu-item-drag-handle"
+                        role="button"
+                        tabindex="0"
+                        [attr.aria-label]="t('orderDragHandleLabel')"
+                        (pointerdown)="onPointerDown(menuItem, $event)"
+                        (pointermove)="onPointerMove($event)"
+                        (pointerup)="onPointerUp($event)"
+                        (pointercancel)="endDrag()"
+                      >
+                        <i class="pi pi-bars"></i>
+                      </div>
+                    }
                     <div class="grow flex items-center">
                       {{ menuItem.type | transloco }}
                       @if (menuItem.type === menuItemTypes.MENU_PAGE) {
                         <span>&nbsp;({{ menuItem.menuPage.title }})</span>
                       }
-                      @if (menuItem.type === menuItemTypes.URL) {
+                      @if (
+                        menuItem.type === menuItemTypes.URL ||
+                        menuItem.type === menuItemTypes.CONTAINER
+                      ) {
                         <span>&nbsp;({{ menuItem.title }})</span>
                       }
                     </div>
@@ -82,8 +132,13 @@
       </ng-template>
       <ng-template #header>
         <div class="flex flex-row justify-between">
-          <div class="flex items-center">
+          <div class="flex flex-col justify-center">
             <h3>{{ t("bottomMenu") }}</h3>
+            @if (!isMobile && menuItemsBottom?.length > 1) {
+              <p class="text-sm text-surface-500 m-0 mt-1">
+                {{ t("orderByDragHint") }}
+              </p>
+            }
           </div>
           <div class="lc-button-group justify-end">
             <p-button
@@ -93,15 +148,18 @@
               routerLink="/menu-items/create-menu-item/bottom"
               class="responsive-button"
             ></p-button>
-            <p-button
-              label="{{ t('reorderMenuItemsButtonLabel') }}"
-              icon="pi pi-sort"
-              (click)="reorderMenuItems(positions.BOTTOM)"
-              [disabled]="
-                menuItemsTop?.length < 2 || loading === loadingStates.LOADING
-              "
-              class="responsive-button"
-            ></p-button>
+            @if (isMobile) {
+              <p-button
+                label="{{ t('reorderMenuItemsButtonLabel') }}"
+                icon="pi pi-sort"
+                (click)="reorderMenuItems(positions.BOTTOM)"
+                [disabled]="
+                  menuItemsBottom?.length < 2 ||
+                  loading === loadingStates.LOADING
+                "
+                class="responsive-button"
+              ></p-button>
+            }
           </div>
         </div>
       </ng-template>
@@ -111,15 +169,51 @@
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
-            @for (menuItem of menuItems; track menuItem; let first = $first) {
+            @for (
+              menuItem of menuItems;
+              track menuItem.id;
+              let first = $first;
+              let last = $last
+            ) {
               <div class="col-span-12">
                 <div
-                  class="flex flex-col xl:items-start p-6 gap-2"
-                  [ngClass]="{ 'border-t border-surface': !first }"
+                  class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
+                  [attr.data-menu-item-id]="menuItem.id"
+                  [style.--drop-indent.rem]="dropLineIndent(menuItem)"
+                  [ngClass]="{
+                    'border-t border-surface': !first,
+                    'drop-before':
+                      dropTargetId === menuItem.id &&
+                      dropPlacement === 'before',
+                    'drop-after':
+                      dropTargetId === menuItem.id && dropPlacement === 'after',
+                    'drop-end':
+                      last &&
+                      dropTargetId === menuItem.id &&
+                      dropPlacement === 'after',
+                    'drop-full':
+                      dropTargetId === menuItem.id &&
+                      isFullWidthDrop(menuItem),
+                    'is-dragging': draggedItem?.id === menuItem.id,
+                  }"
                 >
                   <div
-                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full"
+                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
                   >
+                    @if (!isMobile) {
+                      <div
+                        class="menu-item-drag-handle"
+                        role="button"
+                        tabindex="0"
+                        [attr.aria-label]="t('orderDragHandleLabel')"
+                        (pointerdown)="onPointerDown(menuItem, $event)"
+                        (pointermove)="onPointerMove($event)"
+                        (pointerup)="onPointerUp($event)"
+                        (pointercancel)="endDrag()"
+                      >
+                        <i class="pi pi-bars"></i>
+                      </div>
+                    }
                     <div class="grow flex items-center">
                       {{ menuItem.type | transloco }}
                       @if (menuItem.type === menuItemTypes.MENU_PAGE) {

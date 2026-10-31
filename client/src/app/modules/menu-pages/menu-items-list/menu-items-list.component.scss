@@ -2,3 +2,76 @@ h3 {
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.menu-item-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.75rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  color: var(--p-text-muted-color);
+}
+
+.menu-item-drag-handle:active {
+  cursor: grabbing;
+}
+
+.menu-item-row {
+  position: relative;
+}
+
+/* The 11px box centers a 3px stroke. -6px puts that stroke on the 1px
+   border between rows, so "after" the upper row and "before" the lower
+   row are the same line. The last row keeps its after-line inside the
+   row, where the list cannot clip it. */
+.drop-before::after,
+.drop-after::after {
+  content: "";
+  position: absolute;
+  left: var(--drop-indent, 1.5rem);
+  right: 1.5rem;
+  height: 11px;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left center /
+      3px 11px no-repeat,
+    linear-gradient(var(--p-primary-color), var(--p-primary-color)) left center /
+      100% 3px no-repeat;
+}
+
+.drop-full.drop-before::after,
+.drop-full.drop-after::after {
+  left: 0;
+  right: 0;
+}
+
+.drop-before::after {
+  top: -6px;
+}
+
+.drop-after::after {
+  bottom: -6px;
+}
+
+.drop-after.drop-end::after {
+  bottom: 8px;
+}
+
+.nest-target::after {
+  content: "";
+  position: absolute;
+  left: var(--drop-indent, 3rem);
+  right: 1.5rem;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  pointer-events: none;
+  border: 2px solid var(--p-primary-color);
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--p-primary-color) 14%, transparent);
+}
+
+.is-dragging {
+  opacity: 0.45;
+}

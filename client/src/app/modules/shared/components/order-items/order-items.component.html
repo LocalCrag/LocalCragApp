@@ -18,10 +18,19 @@
         </div>
       }
       @if (showMenuItemTitle) {
-        <div class="flex flex-wrap p-2 items-center gap-6">
+        <div
+          class="flex flex-wrap p-2 items-center gap-6"
+          [style.margin-left.rem]="(item.depth || 0) * 1.5"
+        >
           {{ item.type | transloco }}
           @if (item.type === menuItemTypes.MENU_PAGE) {
             <span>({{ item.menuPage.title }})</span>
+          }
+          @if (
+            item.type === menuItemTypes.URL ||
+            item.type === menuItemTypes.CONTAINER
+          ) {
+            <span>({{ item.title }})</span>
           }
         </div>
       }

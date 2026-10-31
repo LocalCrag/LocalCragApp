@@ -22,6 +22,10 @@ class MenuItem(HasOrderIndex, BaseEntity):
     icon = db.Column(db.String(120), nullable=True)
     menu_page_id: Mapped[UUID] = mapped_column(db.ForeignKey("menu_pages.id"), nullable=True)
     menu_page: Mapped[MenuPage] = relationship()
+    parent_id: Mapped[UUID] = mapped_column(
+        db.ForeignKey("menu_items.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     url = db.Column(db.String(120), nullable=True)
     title = db.Column(db.String(120), nullable=True)
 

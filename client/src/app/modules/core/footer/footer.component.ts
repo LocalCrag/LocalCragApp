@@ -96,6 +96,8 @@ export class FooterComponent implements OnInit {
               link: null,
             });
             break;
+          case MenuItemType.CONTAINER:
+            break;
           case MenuItemType.URL:
             this.menuItems.push({
               title: menuItem.title,
