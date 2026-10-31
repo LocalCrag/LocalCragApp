@@ -30,25 +30,46 @@ const tilesUrlTemplateValidator: ValidatorFn = (
   return null;
 };
 
-const mapOverlayTypeValidator: ValidatorFn = (
-  group: AbstractControl,
+const vectorLayersValidator: ValidatorFn = (
+  control: AbstractControl,
 ): ValidationErrors | null => {
-  if (group.get('type')?.value !== 'vector') {
+  if (control.parent?.get('type')?.value !== 'vector') {
     return null;
   }
-  const layers = group.get('layers') as FormArray | null;
-  const entries = layers?.controls ?? [];
-  if (entries.length === 0) {
+  const layers = control as FormArray;
+  if (layers.length === 0) {
     return { vectorLayersRequired: true };
   }
-  const names = entries
-    .map((control) => String(control.get('sourceLayer')?.value ?? '').trim())
+  const names = layers.controls
+    .map((entry) => String(entry.get('sourceLayer')?.value ?? '').trim())
     .filter((name) => name.length > 0);
   if (names.length === 0) {
     return { vectorLayersRequired: true };
   }
   if (new Set(names).size !== names.length) {
     return { vectorLayersDuplicate: true };
+  }
+  return null;
+};
+
+const categoricalStopsValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  if (control.parent?.get('paintMode')?.value !== 'categorical') {
+    return null;
+  }
+  const stops = control as FormArray;
+  if (stops.length === 0) {
+    return { categoricalStopsRequired: true };
+  }
+  const values = stops.controls
+    .map((entry) => String(entry.get('value')?.value ?? '').trim())
+    .filter((value) => value.length > 0);
+  if (values.length === 0) {
+    return { categoricalStopsRequired: true };
+  }
+  if (new Set(values).size !== values.length) {
+    return { categoricalStopsDuplicate: true };
   }
   return null;
 };
@@ -62,19 +83,6 @@ const vectorLayerPaintValidator: ValidatorFn = (
   const property = String(group.get('categoricalProperty')?.value ?? '').trim();
   if (!property) {
     return { categoricalPropertyRequired: true };
-  }
-  const stops = group.get('categoricalStops') as FormArray | null;
-  if (!stops?.length) {
-    return { categoricalStopsRequired: true };
-  }
-  const values = stops.controls
-    .map((control) => String(control.get('value')?.value ?? '').trim())
-    .filter((value) => value.length > 0);
-  if (values.length === 0) {
-    return { categoricalStopsRequired: true };
-  }
-  if (new Set(values).size !== values.length) {
-    return { categoricalStopsDuplicate: true };
   }
   return null;
 };
@@ -124,7 +132,7 @@ function createVectorLayerGroup(
 ): FormGroup {
   const paintMode: MapOverlayPaintMode =
     layer?.paintMode === 'categorical' ? 'categorical' : 'solid';
-  return fb.group(
+  const group = fb.group(
     {
       name: [
         layer?.name ?? '',
@@ -144,11 +152,14 @@ function createVectorLayerGroup(
         (layer?.categoricalStops ?? []).map((stop) =>
           createCategoricalStopGroup(fb, stop),
         ),
+        { validators: [categoricalStopsValidator] },
       ),
       defaultActive: [layer?.defaultActive !== false],
     },
     { validators: [vectorLayerPaintValidator] },
   );
+  group.get('categoricalStops')?.updateValueAndValidity({ onlySelf: true });
+  return group;
 }
 
 function createMapLayerGroup(
@@ -163,8 +174,9 @@ function createMapLayerGroup(
         ? [MapOverlayVectorLayer.deserialize({})]
         : []
     ).map((item) => createVectorLayerGroup(fb, item)),
+    { validators: [vectorLayersValidator] },
   );
-  return fb.group(
+  const group = fb.group(
     {
       id: [layer?.id ?? crypto.randomUUID()],
       name: [
@@ -184,8 +196,10 @@ function createMapLayerGroup(
       tileSize: [layer?.tileSize ?? 256, [Validators.required]],
       layers: vectorLayers,
     },
-    { validators: [tilesUrlTemplateValidator, mapOverlayTypeValidator] },
+    { validators: [tilesUrlTemplateValidator] },
   );
+  group.get('layers')?.updateValueAndValidity({ onlySelf: true });
+  return group;
 }
 
 function createBaseLayerGroup(

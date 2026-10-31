@@ -184,14 +184,16 @@
             </div>
           </div>
         }
-        <div class="col-span-12 mt-2">
-          @if (gradeControls().hasError("not_unique")) {
-            <p-message
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-6"
-            />
-          }
+        <div class="col-span-12 mt-2" lcControlGroup>
+          <ng-container formArrayName="grades" lcFormArray>
+            <ng-container *lcIfError="'not_unique'">
+              <p-message
+                severity="error"
+                text="{{ t('valuesNotUnique') }}"
+                styleClass="min-w-full mb-6"
+              />
+            </ng-container>
+          </ng-container>
         </div>
         <div class="lc-button-group col-span-12 mt-2">
           <p-button
@@ -303,27 +305,31 @@
         </div>
       }
 
-      @if (gradeControls().hasError("not_unique")) {
-        <p-message
-          severity="error"
-          text="{{ t('valuesNotUnique') }}"
-          styleClass="min-w-full mb-6"
-        />
-      }
-      @if (stackedChartBracketsControls().hasError("semantic_error")) {
-        <p-message
-          severity="error"
-          text="{{ t('gradeBracketsErrorMsg') }}"
-          styleClass="min-w-full mb-6"
-        />
-      }
-      @if (stackedChartBracketsControls().hasError("invalid_length")) {
-        <p-message
-          severity="error"
-          text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-          styleClass="min-w-full mb-6"
-        />
-      }
+      <div lcControlGroup>
+        <ng-container formArrayName="stackedChartBrackets" lcFormArray>
+          <ng-container *lcIfError="'not_unique'">
+            <p-message
+              severity="error"
+              text="{{ t('valuesNotUnique') }}"
+              styleClass="min-w-full mb-6"
+            />
+          </ng-container>
+          <ng-container *lcIfError="'semantic_error'">
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsErrorMsg') }}"
+              styleClass="min-w-full mb-6"
+            />
+          </ng-container>
+          <ng-container *lcIfError="'invalid_length'">
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
+              styleClass="min-w-full mb-6"
+            />
+          </ng-container>
+        </ng-container>
+      </div>
 
       <div class="lc-button-group mt-2">
         <p-button
@@ -415,27 +421,31 @@
         </div>
       }
 
-      @if (barChartBracketsControls().hasError("not_unique")) {
-        <p-message
-          severity="error"
-          text="{{ t('valuesNotUnique') }}"
-          styleClass="min-w-full mb-6"
-        />
-      }
-      @if (barChartBracketsControls().hasError("semantic_error")) {
-        <p-message
-          severity="error"
-          text="{{ t('gradeBracketsErrorMsg') }}"
-          class="min-w-full mb-6"
-        />
-      }
-      @if (barChartBracketsControls().hasError("invalid_length")) {
-        <p-message
-          severity="error"
-          text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-          class="min-w-full mb-6"
-        />
-      }
+      <div lcControlGroup>
+        <ng-container formArrayName="barChartBrackets" lcFormArray>
+          <ng-container *lcIfError="'not_unique'">
+            <p-message
+              severity="error"
+              text="{{ t('valuesNotUnique') }}"
+              styleClass="min-w-full mb-6"
+            />
+          </ng-container>
+          <ng-container *lcIfError="'semantic_error'">
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsErrorMsg') }}"
+              class="min-w-full mb-6"
+            />
+          </ng-container>
+          <ng-container *lcIfError="'invalid_length'">
+            <p-message
+              severity="error"
+              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
+              class="min-w-full mb-6"
+            />
+          </ng-container>
+        </ng-container>
+      </div>
 
       <div class="lc-button-group mt-2">
         <p-button

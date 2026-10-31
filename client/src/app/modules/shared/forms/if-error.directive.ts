@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ControlGroupService } from './control-group.service';
 import { Subscription } from 'rxjs';
-import { NgControl } from '@angular/forms';
+import { AbstractControl, NgControl } from '@angular/forms';
 
 /**
  * Directive for rendering lc control messages depending on the error state of the control. If the specified error
@@ -23,7 +23,7 @@ export class IfErrorDirective implements OnInit, OnDestroy {
   @Input() lcIfError: string; // Name of the error to react on
 
   private hasView = false;
-  private control: NgControl;
+  private control: NgControl | AbstractControl;
   private touched = false;
   private controlElementTouchedChangesSubscription: Subscription;
   private statusChangesSubscription: Subscription;
