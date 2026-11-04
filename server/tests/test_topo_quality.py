@@ -412,9 +412,6 @@ def _crag_payload(**overrides):
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }

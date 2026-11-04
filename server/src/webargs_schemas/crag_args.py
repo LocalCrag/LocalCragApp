@@ -16,9 +16,6 @@ class CragArgsSchema(Schema):
     portraitImage = fields.String(required=True, allow_none=True)
     secret = fields.Boolean(required=True, allow_none=False)
     mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)
-    defaultBoulderScale = fields.Str(required=True, allow_none=True, validate=validate.Length(max=32))
-    defaultSportScale = fields.Str(required=True, allow_none=True, validate=validate.Length(max=32))
-    defaultTradScale = fields.Str(required=True, allow_none=True, validate=validate.Length(max=32))
     blocweatherUrl = fields.Str(required=True, allow_none=True, validate=blocweather_url_validator)
     closureSchedules = closure_schedules_field
 

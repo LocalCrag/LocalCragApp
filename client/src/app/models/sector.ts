@@ -39,9 +39,6 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   secret: boolean;
   publicationStatus: string;
   mapMarkers: MapMarker[];
-  defaultBoulderScale: string | null = null;
-  defaultSportScale: string | null = null;
-  defaultTradScale: string | null = null;
   blocweatherUrl: string | null = null;
 
   /**
@@ -79,9 +76,6 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     sector.routerLink = topoSectorRouterLink(sector);
-    sector.defaultBoulderScale = payload.defaultBoulderScale;
-    sector.defaultSportScale = payload.defaultSportScale;
-    sector.defaultTradScale = payload.defaultTradScale;
     sector.blocweatherUrl = payload.blocweatherUrl ?? null;
     return sector;
   }
@@ -106,9 +100,6 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         mapMarkers: sector.mapMarkers
           ? sector.mapMarkers.map(MapMarker.serialize)
           : null,
-        defaultBoulderScale: sector.defaultBoulderScale,
-        defaultSportScale: sector.defaultSportScale,
-        defaultTradScale: sector.defaultTradScale,
         blocweatherUrl: sector.blocweatherUrl,
       },
     };

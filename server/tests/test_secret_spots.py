@@ -95,9 +95,6 @@ def test_change_crag_to_secret_then_create_public_line_in_it(client, moderator_t
             }
         ],
         "secret": True,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
@@ -236,9 +233,6 @@ def test_users_that_are_not_logged_in_or_not_at_least_members_cannot_view_secret
             }
         ],
         "secret": True,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
@@ -283,9 +277,6 @@ def test_secret_property_doesnt_change(client, moderator_token, any_file):
             }
         ],
         "secret": True,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }

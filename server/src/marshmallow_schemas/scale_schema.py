@@ -10,6 +10,7 @@ class ScaleSchema(ma.SQLAlchemySchema):
     type = EnumField(LineTypeEnum, by_value=True)
     grades = fields.List(fields.Dict)
     gradeBrackets = fields.Dict(attribute="grade_brackets")
+    isDefault = fields.Boolean(attribute="is_default")
 
 
 scale_schema = ScaleSchema()

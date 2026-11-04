@@ -14,9 +14,11 @@ import { AscentsPerYearChartComponent } from '../ascents-per-year-chart/ascents-
 import { GradeDistribution } from '../../../models/scale';
 import { SkeletonModule } from 'primeng/skeleton';
 import {
+  GlobalRank,
   HardestGradeBucket,
   UserStatistics,
 } from '../../../models/user-statistics';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { LineType } from '../../../enums/line-type';
@@ -50,7 +52,6 @@ export class UserChartsComponent implements OnInit {
   public hardestFlashLabel$: Observable<string> = of('');
   public hardestFaLabel$: Observable<string> = of('');
   public barChartColor: string | null = null;
-  public lineTypes = [LineType.BOULDER, LineType.SPORT, LineType.TRAD];
 
   private route = inject(ActivatedRoute);
   private usersService = inject(UsersService);
@@ -141,12 +142,16 @@ export class UserChartsComponent implements OnInit {
     return this.transloco.translate(lt);
   }
 
+  rankLabel(rank: GlobalRank): string {
+    return scaleChoiceLabel(this.lineTypeLabel(rank.lineType), rank.gradeScale);
+  }
+
   hasRankingTiles(stats: UserStatistics): boolean {
-    return this.lineTypes.some(
-      (lt) =>
-        stats.globalRankByLineType[lt] != null ||
-        stats.globalRankTop50ByLineType[lt] != null ||
-        stats.globalRankTotalCountByLineType[lt] != null,
+    return stats.globalRanks.some(
+      (rank) =>
+        rank.rankTop10 != null ||
+        rank.rankTop50 != null ||
+        rank.rankTotalCount != null,
     );
   }
 

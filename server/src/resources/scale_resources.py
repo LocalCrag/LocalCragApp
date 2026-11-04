@@ -12,6 +12,8 @@ from extensions import db
 from marshmallow_schemas.scale_schema import scale_schema, scales_schema
 from messages.messages import ResponseMessage
 from models.line import Line
+from models.ranking import Ranking
+from models.rock_explorer_feature import RockExplorerFeature
 from models.scale import Scale
 from util.auth_session import session_required
 from webargs_schemas.scale_args import scale_args
@@ -80,6 +82,21 @@ def _scale_drops_grade_in_use(line_type, name, values: set) -> bool:
     )
 
 
+def _rename_scale_references(line_type: str, old_name: str, new_name: str) -> None:
+    Line.query.filter(Line.grade_scale == old_name, Line.type == line_type).update(
+        {Line.grade_scale: new_name},
+        synchronize_session=False,
+    )
+    Ranking.query.filter(Ranking.scale == old_name, Ranking.type == line_type).update(
+        {Ranking.scale: new_name},
+        synchronize_session=False,
+    )
+    RockExplorerFeature.query.filter(
+        RockExplorerFeature.grade_scale == old_name,
+        RockExplorerFeature.grade_line_type == line_type,
+    ).update({RockExplorerFeature.grade_scale: new_name}, synchronize_session=False)
+
+
 class UpdateScale(MethodView):
     @session_required(admin=True)
     def put(self, line_type, name):
@@ -88,6 +105,9 @@ class UpdateScale(MethodView):
             raise NotFound()
 
         scale_data = parser.parse(scale_args, request)
+
+        if scale.is_default and str(scale.type) != str(scale_data["type"]):
+            raise Conflict(ResponseMessage.CANNOT_CHANGE_DEFAULT_SCALE.value)
 
         # Line type and used grade values are checked in SQL so a large area
         # does not load every line and its ascents into the session.
@@ -107,10 +127,7 @@ class UpdateScale(MethodView):
 
         new_name = scale_data["name"]
         if new_name != name:
-            Line.query.filter(Line.grade_scale == name, Line.type == line_type).update(
-                {Line.grade_scale: new_name},
-                synchronize_session=False,
-            )
+            _rename_scale_references(line_type, name, new_name)
 
         scale.name = new_name
         scale.type = scale_data["type"]
@@ -129,6 +146,8 @@ class DeleteScale(MethodView):
         scale = Scale.query.filter_by(name=name, type=line_type).first()
         if scale is None:
             raise NotFound()
+        if scale.is_default:
+            raise Conflict(ResponseMessage.CANNOT_CHANGE_DEFAULT_SCALE.value)
         if Line.query.filter(Line.grade_scale == name, Line.type == line_type).count() > 0:
             raise Conflict(ResponseMessage.CANNOT_CHANGE_SCALES_CONFLICTING_LINES.value)
 
@@ -136,3 +155,20 @@ class DeleteScale(MethodView):
         db.session.commit()
 
         return jsonify(None), 204
+
+
+class SetDefaultScale(MethodView):
+    @session_required(admin=True)
+    def put(self, line_type, name):
+        scale: Optional[Scale] = Scale.query.filter_by(name=name, type=line_type).first()
+        if scale is None:
+            raise NotFound()
+
+        Scale.query.filter(Scale.type == line_type, Scale.name != name).update(
+            {Scale.is_default: False},
+            synchronize_session=False,
+        )
+        scale.is_default = True
+        db.session.commit()
+
+        return jsonify(scale_schema.dump(scale)), 200

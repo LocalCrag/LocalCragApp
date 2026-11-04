@@ -37,9 +37,6 @@ class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 class AreaDetailSchema(AreaSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     description = fields.String(attribute="description")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    defaultBoulderScale = fields.String(attribute="default_boulder_scale")
-    defaultSportScale = fields.String(attribute="default_sport_scale")
-    defaultTradScale = fields.String(attribute="default_trad_scale")
     blocweatherUrl = fields.String(attribute="blocweather_url")
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")

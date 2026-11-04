@@ -8,7 +8,6 @@ from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
-from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.search_schema import (
     sector_search_schema,
@@ -43,7 +42,7 @@ from util.scheduled_closure import (
 from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_sector_counts
-from util.validators import validate_default_scales, validate_order_payload
+from util.validators import validate_order_payload
 from webargs_schemas.move_args import move_sector_args
 from webargs_schemas.sector_args import sector_args
 
@@ -144,10 +143,6 @@ class CreateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         created_by = User.find_by_email(get_session_identity())
 
-        valid, error = validate_default_scales(sector_data)
-        if not valid:
-            raise NotFound(error)
-
         new_sector: Sector = Sector()
         new_sector.name = sector_data["name"].strip()
         new_sector.description = sanitize_wysiwyg_html(sector_data["description"])
@@ -160,9 +155,6 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
-        new_sector.default_boulder_scale = sector_data["defaultBoulderScale"]
-        new_sector.default_sport_scale = sector_data["defaultSportScale"]
-        new_sector.default_trad_scale = sector_data["defaultTradScale"]
         new_sector.blocweather_url = sector_data["blocweatherUrl"]
 
         apply_closable_configuration(new_sector, sector_data, "sector_id")
@@ -186,10 +178,6 @@ class UpdateSector(MethodView):
         sector_data = parser.parse(sector_args, request)
         sector: Sector = Sector.find_by_slug(sector_slug)
 
-        valid, error = validate_default_scales(sector_data)
-        if not valid:
-            raise NotFound(error)
-
         sector.name = sector_data["name"].strip()
         sector.description = sanitize_wysiwyg_html(sector_data["description"])
         sector.short_description = sanitize_wysiwyg_html(sector_data["shortDescription"])
@@ -199,9 +187,6 @@ class UpdateSector(MethodView):
         )
         update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
         apply_closable_configuration(sector, sector_data, "sector_id")
-        sector.default_boulder_scale = sector_data["defaultBoulderScale"]
-        sector.default_sport_scale = sector_data["defaultSportScale"]
-        sector.default_trad_scale = sector_data["defaultTradScale"]
         sector.blocweather_url = sector_data["blocweatherUrl"]
 
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)

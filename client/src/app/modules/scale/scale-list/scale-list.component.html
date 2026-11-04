@@ -1,45 +1,29 @@
 <ng-container *transloco="let t; read: 'scale.scaleList'">
   <div class="content">
     <div class="p-6">
-      <div class="flex justify-end mb-6">
-        <p-button
-          [disabled]="loadingState === LoadingState.LOADING"
-          icon="pi pi-plus"
-          (click)="router.navigate(['/scales/create'])"
-          label="{{ t('createScale') }}"
-          class="responsive-button"
-        />
-      </div>
       @if (loadingState === LoadingState.LOADING) {
         <lc-scale-list-skeleton></lc-scale-list-skeleton>
       }
       @if (loadingState !== LoadingState.LOADING) {
-        <p-table [value]="scales" styleClass="scale-list-table">
-          <ng-template #header>
-            <tr>
-              <th>{{ "scale.scaleForm.lineTypeLabel" | transloco }}</th>
-              <th>{{ "scale.scaleForm.nameInputLabel" | transloco }}</th>
-              <th class="scale-list-actions-header"></th>
-            </tr>
-          </ng-template>
-          <ng-template #body let-scale>
-            <tr data-cy="scale-list-item">
-              <td>{{ scale.lineType | transloco }}</td>
-              <td>{{ scale.name }}</td>
-              <td class="scale-list-actions-cell">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          @for (lineType of lineTypes; track lineType) {
+            <section class="border border-surface rounded-border overflow-hidden">
+              <h4
+                class="m-0! flex items-center justify-between gap-2 ps-4 pe-2 min-h-12 border-b border-surface"
+              >
+                <span>{{ lineType | transloco }}</span>
                 <p-button
-                  icon="pi pi-file-edit"
-                  label="{{ 'scale.scaleForm.editScale' | transloco }}"
-                  class="responsive-button"
-                  [routerLink]="['/scales', scale.lineType, scale.name]"
+                  icon="pi pi-plus"
                   [text]="true"
+                  [rounded]="true"
+                  size="small"
+                  [ariaLabel]="t('createScale')"
+                  [pTooltip]="t('createScale')"
+                  tooltipPosition="left"
+                  (click)="createScale(lineType)"
                 />
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template #emptymessage>
-            <tr>
-              <td colspan="3">
+              </h4>
+              @if (scalesByType[lineType].length === 0) {
                 <p-message
                   severity="info"
                   icon="pi pi-info-circle"
@@ -47,10 +31,55 @@
                 >
                   {{ t("noScalesFoundEmptyMessage") }}
                 </p-message>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+              } @else {
+                @for (
+                  scale of scalesByType[lineType];
+                  track scale.name;
+                  let first = $first
+                ) {
+                  <div
+                    class="flex items-center justify-between gap-2 ps-4 pe-2"
+                    [class.border-t]="!first"
+                    [class.border-surface]="!first"
+                    data-cy="scale-list-item"
+                  >
+                    <span class="min-w-0">{{ scale.name }}</span>
+                    <div class="flex items-center">
+                      <p-button
+                        [icon]="
+                          scale.isDefault ? 'pi pi-star-fill' : 'pi pi-star'
+                        "
+                        [text]="true"
+                        [rounded]="true"
+                        size="small"
+                        [severity]="scale.isDefault ? 'warn' : 'secondary'"
+                        [ariaLabel]="
+                          scale.isDefault ? t('defaultScale') : t('makeDefault')
+                        "
+                        [pTooltip]="
+                          scale.isDefault ? t('defaultScale') : t('makeDefault')
+                        "
+                        tooltipPosition="left"
+                        [disabled]="makingDefault && !scale.isDefault"
+                        (click)="makeDefault(scale)"
+                      />
+                      <p-button
+                        icon="pi pi-file-edit"
+                        [ariaLabel]="'scale.scaleForm.editScale' | transloco"
+                        [pTooltip]="'scale.scaleForm.editScale' | transloco"
+                        tooltipPosition="left"
+                        [routerLink]="['/scales', scale.lineType, scale.name]"
+                        [text]="true"
+                        [rounded]="true"
+                        size="small"
+                      />
+                    </div>
+                  </div>
+                }
+              }
+            </section>
+          }
+        </div>
       }
     </div>
   </div>

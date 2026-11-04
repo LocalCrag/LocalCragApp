@@ -196,7 +196,7 @@ def test_exclude_from_rankings_hides_user_until_turned_off(client, admin_token):
     assert rv.status_code == 200, rv.text
     assert rv.json["excludeFromRankings"] is True
 
-    rv = client.get("/api/ranking?line_type=BOULDER")
+    rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
     assert rv.status_code == 200
     assert rv.json == []
 
@@ -209,7 +209,7 @@ def test_exclude_from_rankings_hides_user_until_turned_off(client, admin_token):
         json=_account_settings_payload(excludeFromRankings=False),
     )
     assert rv.status_code == 200, rv.text
-    rv = client.get("/api/ranking?line_type=BOULDER")
+    rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
     assert len(rv.json) == 1
     assert rv.json[0]["user"]["slug"] == "admin-admin"
     assert rv.json[0]["rankTop10"] == 1

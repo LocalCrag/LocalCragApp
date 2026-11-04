@@ -22,6 +22,7 @@ class Ranking(db.Model):
     rank_top_50 = db.Column(db.Integer(), nullable=True)
     rank_total_count = db.Column(db.Integer(), nullable=True)
     type = db.Column(db.Enum(LineTypeEnum), nullable=False)
+    scale = db.Column(db.String(120), nullable=False)
     secret = db.Column(db.Boolean(), nullable=False, server_default="0")
 
     @classmethod
@@ -33,10 +34,11 @@ class Ranking(db.Model):
         return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
-    def get_new_ranking(cls, user_id, type, crag_id=None, sector_id=None, secret=False):
+    def get_new_ranking(cls, user_id, type, scale, crag_id=None, sector_id=None, secret=False):
         ranking = Ranking()
         ranking.user_id = user_id
         ranking.type = type
+        ranking.scale = scale
         ranking.crag_id = crag_id
         ranking.sector_id = sector_id
         ranking.top_values = []

@@ -37,9 +37,6 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   secret: boolean;
   publicationStatus: string;
   mapMarkers: MapMarker[];
-  defaultBoulderScale: string | null = null;
-  defaultSportScale: string | null = null;
-  defaultTradScale: string | null = null;
   blocweatherUrl: string | null = null;
 
   /**
@@ -78,9 +75,6 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     crag.routerLink = topoCragRouterLink(crag);
-    crag.defaultBoulderScale = payload.defaultBoulderScale;
-    crag.defaultSportScale = payload.defaultSportScale;
-    crag.defaultTradScale = payload.defaultTradScale;
     crag.blocweatherUrl = payload.blocweatherUrl ?? null;
     return crag;
   }
@@ -105,9 +99,6 @@ export class Crag extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         mapMarkers: crag.mapMarkers
           ? crag.mapMarkers.map(MapMarker.serialize)
           : null,
-        defaultBoulderScale: crag.defaultBoulderScale,
-        defaultSportScale: crag.defaultSportScale,
-        defaultTradScale: crag.defaultTradScale,
         blocweatherUrl: crag.blocweatherUrl,
       },
     };

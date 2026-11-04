@@ -168,6 +168,7 @@ from resources.scale_resources import (
     DeleteScale,
     GetScale,
     GetScales,
+    SetDefaultScale,
     UpdateScale,
 )
 from resources.search_resources import CreateRecentSearch, GetRecentSearches, Search
@@ -661,6 +662,9 @@ def configure_api(app):
     # Scale API
     scale_bp = Blueprint("scales", __name__)
     scale_bp.add_url_rule("", view_func=GetScales.as_view("get_scales"))
+    scale_bp.add_url_rule(
+        "/<string:line_type>/<string:name>/default", view_func=SetDefaultScale.as_view("set_default_scale")
+    )
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=GetScale.as_view("get_scale"))
     scale_bp.add_url_rule("", view_func=CreateScale.as_view("create_scale"))
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateScale.as_view("update_scale"))

@@ -20,9 +20,6 @@ def test_successful_create_crag(client, moderator_token, any_file):
             }
         ],
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": "UIAA",
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
         "closureSchedules": [],
     }
@@ -47,9 +44,6 @@ def test_successful_create_crag(client, moderator_token, any_file):
     assert res["closed"] is False
     assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] is None
-    assert res["defaultSportScale"] == "UIAA"
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
 
 
@@ -63,9 +57,6 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
         "closureSchedules": [],
     }
@@ -118,9 +109,6 @@ def test_successful_get_crag(client):
     assert res["closed"] == crag.closed
     assert res["closedReasons"] == []
     assert "upcomingClosureWarnings" in res
-    assert res["defaultBoulderScale"] is None
-    assert res["defaultSportScale"] is None
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == crag.blocweather_url
 
 
@@ -154,9 +142,6 @@ def test_successful_edit_crag(client, moderator_token, any_file):
             }
         ],
         "secret": False,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
         "closureSchedules": [],
     }
@@ -180,9 +165,6 @@ def test_successful_edit_crag(client, moderator_token, any_file):
     assert res["closed"] is False
     assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] == "FB"
-    assert res["defaultSportScale"] is None
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
 
 

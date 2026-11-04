@@ -17,7 +17,7 @@ from util.build_rankings import (
 
 
 def test_successful_get_ranking_boulder(client):
-    rv = client.get("/api/ranking?line_type=BOULDER")
+    rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 1
@@ -26,7 +26,7 @@ def test_successful_get_ranking_boulder(client):
     assert res[0]["top50"] == 22
     assert res[0]["totalCount"] == 1
 
-    rv = client.get(f'/api/ranking?line_type=BOULDER&sector_id={Sector.get_id_by_slug("pampelmousse")}')
+    rv = client.get(f'/api/ranking?line_type=BOULDER&scale=FB&sector_id={Sector.get_id_by_slug("pampelmousse")}')
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 1
@@ -35,7 +35,7 @@ def test_successful_get_ranking_boulder(client):
     assert res[0]["top50"] == 22
     assert res[0]["totalCount"] == 1
 
-    rv = client.get(f'/api/ranking?line_type=BOULDER&crag_id={Crag.get_id_by_slug("brione")}')
+    rv = client.get(f'/api/ranking?line_type=BOULDER&scale=FB&crag_id={Crag.get_id_by_slug("brione")}')
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 1
@@ -52,14 +52,14 @@ def test_successful_get_ranking_invalid_type(client):
 
 def test_successful_get_ranking_invalid_crag_and_sector_query_params(client):
     rv = client.get(
-        f'/api/ranking?line_type=BOULDER&crag_id={Crag.get_id_by_slug("brione")}'
+        f'/api/ranking?line_type=BOULDER&scale=FB&crag_id={Crag.get_id_by_slug("brione")}'
         f'&sector_id={Sector.get_id_by_slug("pampelmousse")}'
     )
     assert rv.status_code == 400
 
 
 def test_successful_get_ranking_sport(client):
-    rv = client.get("/api/ranking?line_type=SPORT")
+    rv = client.get("/api/ranking?line_type=SPORT&scale=UIAA")
     assert rv.status_code == 200
     res = rv.json
     assert len(res) == 0
@@ -94,7 +94,7 @@ def test_successful_update_ranking(client, admin_token):
     total_wait_time = 0
 
     while total_wait_time < max_wait_time:
-        rv = client.get("/api/ranking?line_type=BOULDER")
+        rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
         if rv.status_code == 200:
             res = rv.json
             if (
@@ -132,7 +132,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     wait_time = 0.5
     total_wait_time = 0
     while total_wait_time < max_wait_time:
-        rv = client.get("/api/ranking?line_type=BOULDER")
+        rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
         if rv.status_code == 200 and rv.json == []:
             break
         time.sleep(wait_time)
@@ -166,7 +166,7 @@ def test_ranking_respects_past_weeks_setting(client, admin_token):
     total_wait_time = 0
     res = None
     while total_wait_time < max_wait_time:
-        rv = client.get("/api/ranking?line_type=BOULDER")
+        rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
         if rv.status_code == 200:
             res = rv.json
             if len(res) == 1 and res[0]["totalCount"] == 1:
@@ -234,6 +234,7 @@ def test_assign_competition_ranks_persists_shared_ranks(client):
         ranking.top_values = [top_10]
         ranking.total_count = 1
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.secret = False
         db.session.add(ranking)
     db.session.commit()
@@ -246,6 +247,7 @@ def test_assign_competition_ranks_persists_shared_ranks(client):
         Ranking.sector_id.is_(None),
         Ranking.secret.is_(False),
         Ranking.type == LineTypeEnum.BOULDER,
+        Ranking.scale == "FB",
     ).one()
     member_rank = Ranking.query.filter(
         Ranking.user_id == member.id,
@@ -253,6 +255,7 @@ def test_assign_competition_ranks_persists_shared_ranks(client):
         Ranking.sector_id.is_(None),
         Ranking.secret.is_(False),
         Ranking.type == LineTypeEnum.BOULDER,
+        Ranking.scale == "FB",
     ).one()
     other_rank = Ranking.query.filter(
         Ranking.user_id == other.id,
@@ -260,12 +263,13 @@ def test_assign_competition_ranks_persists_shared_ranks(client):
         Ranking.sector_id.is_(None),
         Ranking.secret.is_(False),
         Ranking.type == LineTypeEnum.BOULDER,
+        Ranking.scale == "FB",
     ).one()
     assert admin_rank.rank_top_10 == 1
     assert member_rank.rank_top_10 == 1
     assert other_rank.rank_top_10 == 3
 
-    rv = client.get("/api/ranking?line_type=BOULDER")
+    rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
     assert rv.status_code == 200
     by_slug = {row["user"]["slug"]: row for row in rv.json}
     assert by_slug["admin-admin"]["rankTop10"] == 1
@@ -287,6 +291,7 @@ def test_excluded_user_does_not_take_a_ranking_slot(client):
         ranking.top_values = [top_10]
         ranking.total_count = 1
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.secret = False
         db.session.add(ranking)
     db.session.commit()
@@ -299,10 +304,11 @@ def test_excluded_user_does_not_take_a_ranking_slot(client):
         Ranking.sector_id.is_(None),
         Ranking.secret.is_(False),
         Ranking.type == LineTypeEnum.BOULDER,
+        Ranking.scale == "FB",
     ).one()
     assert other_rank.rank_top_10 is None
 
-    rv = client.get("/api/ranking?line_type=BOULDER")
+    rv = client.get("/api/ranking?line_type=BOULDER&scale=FB")
     by_slug = {row["user"]["slug"]: row for row in rv.json}
     assert "user-user" not in by_slug
     # Other would be first if counted. Admin and member stay tied for first.
@@ -311,4 +317,59 @@ def test_excluded_user_does_not_take_a_ranking_slot(client):
 
     stats = client.get(f"/api/users/{other.slug}/statistics").json
     assert stats["globalRankByLineType"]["BOULDER"] is None
+    assert stats["globalRanks"] == []
     assert client.get(f"/api/users/{admin.slug}/statistics").json["globalRankByLineType"]["BOULDER"] == 1
+
+
+def test_get_ranking_requires_scale(client):
+    rv = client.get("/api/ranking?line_type=BOULDER")
+    assert rv.status_code == 400
+
+
+def test_get_ranking_filters_by_scale(client):
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+    ranking = Ranking()
+    ranking.user_id = admin.id
+    ranking.top_10 = 5
+    ranking.top_50 = 5
+    ranking.top_values = [5]
+    ranking.total_count = 1
+    ranking.type = LineTypeEnum.BOULDER
+    ranking.scale = "V"
+    ranking.secret = False
+    db.session.add(ranking)
+    db.session.commit()
+
+    fontainebleau = client.get("/api/ranking?line_type=BOULDER&scale=FB")
+    assert fontainebleau.status_code == 200
+    assert [row["top10"] for row in fontainebleau.json] == [22]
+
+    v_scale = client.get("/api/ranking?line_type=BOULDER&scale=V")
+    assert v_scale.status_code == 200
+    assert len(v_scale.json) == 1
+    assert v_scale.json[0]["top10"] == 5
+
+
+def test_build_rankings_keeps_scales_separate(client):
+    line = Line.query.filter_by(slug="super-spreader").one()
+    original_scale = line.grade_scale
+    line.grade_scale = "V"
+    db.session.commit()
+    try:
+        build_rankings()
+
+        fontainebleau = client.get("/api/ranking?line_type=BOULDER&scale=FB")
+        assert fontainebleau.status_code == 200
+        assert fontainebleau.json == []
+
+        v_scale = client.get("/api/ranking?line_type=BOULDER&scale=V")
+        assert v_scale.status_code == 200
+        assert len(v_scale.json) == 1
+        assert v_scale.json[0]["user"]["slug"] == "admin-admin"
+        assert v_scale.json[0]["top10"] == 22
+        assert v_scale.json[0]["totalCount"] == 1
+    finally:
+        line = Line.query.filter_by(slug="super-spreader").one()
+        line.grade_scale = original_scale
+        db.session.commit()
+        build_rankings()

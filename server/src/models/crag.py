@@ -44,9 +44,6 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     )
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     map_markers = db.relationship("MapMarker", back_populates="crag")
-    default_boulder_scale = db.Column(db.String(32), nullable=True)
-    default_sport_scale = db.Column(db.String(32), nullable=True)
-    default_trad_scale = db.Column(db.String(32), nullable=True)
     blocweather_url = db.Column(db.String(255), nullable=True)
     publication_status = db.Column(
         publication_status_type,

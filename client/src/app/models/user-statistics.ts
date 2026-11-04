@@ -31,6 +31,14 @@ export type UserModerationStats = {
   postsWritten: number;
 };
 
+export type GlobalRank = {
+  lineType: LineType;
+  gradeScale: string;
+  rankTop10: number | null;
+  rankTop50: number | null;
+  rankTotalCount: number | null;
+};
+
 export type UserStatistics = {
   ascentsPerYear: Record<string, number>;
   ascentTotals: UserAscentTotals;
@@ -39,6 +47,8 @@ export type UserStatistics = {
   globalRankTop50ByLineType: Partial<Record<LineType, number | null>>;
   /** Global rank when leaderboard is sorted by total ascent count (then top 10, top 50). */
   globalRankTotalCountByLineType: Partial<Record<LineType, number | null>>;
+  /** One global rank per line type and grade scale. */
+  globalRanks: GlobalRank[];
   social: {
     commentsCount: number;
     reactionsCount: number;
@@ -74,6 +84,7 @@ export class UserStatisticsModel {
       globalRankTop50ByLineType: payload.globalRankTop50ByLineType ?? {},
       globalRankTotalCountByLineType:
         payload.globalRankTotalCountByLineType ?? {},
+      globalRanks: (payload.globalRanks ?? []) as GlobalRank[],
       social: {
         commentsCount: payload.social?.commentsCount ?? 0,
         reactionsCount: payload.social?.reactionsCount ?? 0,
