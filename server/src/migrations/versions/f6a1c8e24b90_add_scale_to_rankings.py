@@ -17,14 +17,23 @@ branch_labels = None
 depends_on = None
 
 
+def _has_column(table_name, column_name):
+    columns = sa.inspect(op.get_bind()).get_columns(table_name)
+    return any(column["name"] == column_name for column in columns)
+
+
 def upgrade():
-    with op.batch_alter_table("rankings", schema=None) as batch_op:
-        batch_op.add_column(sa.Column("scale", sa.String(length=120), nullable=False, server_default=""))
+    # Added earlier with the competition ranks. Databases that already ran that
+    # revision before this column existed still need it here.
+    if not _has_column("rankings", "scale"):
+        op.add_column(
+            "rankings",
+            sa.Column("scale", sa.String(length=120), nullable=False, server_default=""),
+        )
     op.execute("DELETE FROM rankings")
-    with op.batch_alter_table("rankings", schema=None) as batch_op:
-        batch_op.alter_column("scale", server_default=None)
+    op.alter_column("rankings", "scale", server_default=None)
 
 
 def downgrade():
-    with op.batch_alter_table("rankings", schema=None) as batch_op:
-        batch_op.drop_column("scale")
+    if _has_column("rankings", "scale"):
+        op.drop_column("rankings", "scale")

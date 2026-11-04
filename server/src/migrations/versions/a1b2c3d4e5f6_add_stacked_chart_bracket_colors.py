@@ -34,7 +34,11 @@ DEFAULT_STACKED_CHART_BRACKET_COLORS = [
 class Scale(Base):
     __tablename__ = "scales"
     name = sa.Column(sa.String(32), nullable=False, primary_key=True)
-    type = sa.Column(sa.Enum("BOULDER", "SPORT", name="linetypeenum"), nullable=False, primary_key=True)
+    type = sa.Column(
+        sa.Enum("BOULDER", "SPORT", "TRAD", name="linetypeenum", create_type=False),
+        nullable=False,
+        primary_key=True,
+    )
     grades = sa.Column(postgresql.JSON, nullable=False)
     grade_brackets = sa.Column(postgresql.JSON, nullable=False)
 
