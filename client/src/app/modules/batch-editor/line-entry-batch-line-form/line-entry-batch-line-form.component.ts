@@ -37,13 +37,11 @@ import {
 import { Line } from '../../../models/line';
 import { StartingPosition } from '../../../enums/starting-position';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
-import { Grade, Scale } from '../../../models/scale';
+import { defaultScaleName, Grade, Scale } from '../../../models/scale';
 import { LineType } from '../../../enums/line-type';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
 import { AreasService } from '../../../services/crud/areas.service';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { CragsService } from '../../../services/crud/crags.service';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { forkJoin } from 'rxjs';
@@ -130,16 +128,12 @@ export class LineEntryBatchLineFormComponent
   };
   public typeOptions = null;
 
-  private cragSlug: string;
-  private sectorSlug: string;
   private areaSlug: string;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private route = inject(ActivatedRoute);
   private areasService = inject(AreasService);
-  private sectorsService = inject(SectorsService);
-  private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
@@ -157,17 +151,13 @@ export class LineEntryBatchLineFormComponent
   ngOnInit() {
     this.buildForm();
 
-    this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
-    this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     this.areaSlug = this.route.snapshot.paramMap.get('area-slug');
 
     forkJoin([
-      this.cragsService.getCrag(this.cragSlug),
-      this.sectorsService.getSector(this.sectorSlug),
       this.areasService.getArea(this.areaSlug),
       this.closureStateService.getAreaClosureState(this.areaSlug),
       this.scalesService.getScales(),
-    ]).subscribe(([crag, sector, area, parentClosureState, scales]) => {
+    ]).subscribe(([area, parentClosureState, scales]) => {
       this.parentSecret = area.secret;
       this.parentClosed = parentClosureState.closed;
 
@@ -180,18 +170,18 @@ export class LineEntryBatchLineFormComponent
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach((scale) => this.groupedScales[scale.lineType].push(scale));
 
-      this.defaultScales[LineType.BOULDER] =
-        area.defaultBoulderScale ??
-        sector.defaultBoulderScale ??
-        crag.defaultBoulderScale;
-      this.defaultScales[LineType.SPORT] =
-        area.defaultSportScale ??
-        sector.defaultSportScale ??
-        crag.defaultSportScale;
-      this.defaultScales[LineType.TRAD] =
-        area.defaultTradScale ??
-        sector.defaultTradScale ??
-        crag.defaultTradScale;
+      this.defaultScales[LineType.BOULDER] = defaultScaleName(
+        scales,
+        LineType.BOULDER,
+      );
+      this.defaultScales[LineType.SPORT] = defaultScaleName(
+        scales,
+        LineType.SPORT,
+      );
+      this.defaultScales[LineType.TRAD] = defaultScaleName(
+        scales,
+        LineType.TRAD,
+      );
 
       this.buildTypeOptions();
       this.languageService.renderedLanguage$

@@ -307,8 +307,6 @@ def _create_topo_tree(admin: User):
         crag.rules_title = "Rules" if crag.rules else None
         crag.rules_updated_at = _naive_utc() if crag.rules else None
         crag.order_index = crag_index
-        crag.default_boulder_scale = "FB"
-        crag.default_sport_scale = "UIAA"
         crag.secret = secret
         crag.created_by_id = admin.id
         crag.sectors_plan = plan
@@ -989,6 +987,7 @@ def _ranking(user, line_type, index, secret, crag_id=None):
     ranking = Ranking()
     ranking.user_id = user.id
     ranking.type = line_type
+    ranking.scale = "FB" if line_type == LineTypeEnum.BOULDER else "UIAA"
     ranking.crag_id = crag_id
     ranking.secret = secret
     ranking.top_10 = 20 - (index % 5)

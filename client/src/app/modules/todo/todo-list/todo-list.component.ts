@@ -22,6 +22,7 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
@@ -226,7 +227,10 @@ export class TodoListComponent implements OnInit, PaginatedListView {
       for (const gradeScale in gradeDistribution[lineType]) {
         if (gradeDistribution[lineType][gradeScale]) {
           this.availableScales.push({
-            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            label: scaleChoiceLabel(
+              this.translocoService.translate(lineType),
+              gradeScale,
+            ),
             value: { lineType: lineType as LineType, gradeScale },
           });
         }
@@ -248,7 +252,10 @@ export class TodoListComponent implements OnInit, PaginatedListView {
         };
       const v = s.value as { lineType: LineType; gradeScale: string };
       return {
-        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        label: scaleChoiceLabel(
+          this.translocoService.translate(v.lineType),
+          v.gradeScale,
+        ),
         value: v,
       };
     });

@@ -43,9 +43,6 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     sector_slug = association_proxy("sector", "slug")
     crag_slug = association_proxy("sector", "crag_slug")
     map_markers = db.relationship("MapMarker", back_populates="area")
-    default_boulder_scale = db.Column(db.String(32), nullable=True)
-    default_sport_scale = db.Column(db.String(32), nullable=True)
-    default_trad_scale = db.Column(db.String(32), nullable=True)
     blocweather_url = db.Column(db.String(255), nullable=True)
     publication_status = db.Column(
         publication_status_type,

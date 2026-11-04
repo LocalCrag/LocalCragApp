@@ -10,9 +10,6 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
@@ -102,9 +99,6 @@ def test_history_respects_secret_flag(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": True,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }

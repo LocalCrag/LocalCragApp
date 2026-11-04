@@ -21,11 +21,15 @@ class GetRanking(MethodView):
             raise Unauthorized("No permission to view secret rankings.")
 
         line_type = request.args.get("line_type")
+        scale = (request.args.get("scale") or "").strip()
         crag_id = request.args.get("crag_id")
         sector_id = request.args.get("sector_id")
 
         if line_type not in set(item.value for item in LineTypeEnum):
             raise BadRequest("Invalid line type")
+
+        if not scale:
+            raise BadRequest("Scale is required")
 
         if crag_id and sector_id:
             raise BadRequest("Can either fetch crag OR sector OR global ranking.")
@@ -35,6 +39,7 @@ class GetRanking(MethodView):
         query = query.join(AccountSettings, AccountSettings.user_id == Ranking.user_id)
         query = query.filter(AccountSettings.exclude_from_rankings.is_(False))
         query = query.filter(Ranking.type == line_type)
+        query = query.filter(Ranking.scale == scale)
         query = query.filter(Ranking.crag_id == crag_id)
         query = query.filter(Ranking.sector_id == sector_id)
         query = query.filter(Ranking.secret == secret_ranking)

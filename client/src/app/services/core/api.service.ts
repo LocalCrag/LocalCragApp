@@ -305,13 +305,15 @@ export class ApiService {
 
   public scales = {
     get: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
     getList: () => `${this.apiHost}scales`,
     create: () => `${this.apiHost}scales`,
     update: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
     delete: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
+    setDefault: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}/default`,
   };
 
   // Comments API

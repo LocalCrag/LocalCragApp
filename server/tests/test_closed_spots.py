@@ -106,9 +106,6 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
                 "reason": "Aggressive hunting leaseholder",
             }
         ],
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
     }
 
@@ -154,9 +151,6 @@ def test_remove_closure_schedule_from_crag(client, moderator_token, any_file):
                 "reason": "Temporary works",
             }
         ],
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
     }
 
@@ -198,9 +192,6 @@ def test_secret_property_doesnt_change(client, moderator_token, any_file):
                 "reason": "Naturschutzgebiet",
             }
         ],
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
     }
 
@@ -411,9 +402,6 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
             }
         ],
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [
             {

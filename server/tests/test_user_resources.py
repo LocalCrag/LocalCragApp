@@ -407,6 +407,15 @@ def test_successful_get_user_statistics(client):
     assert res["globalRankByLineType"]["BOULDER"] == 1
     assert res["globalRankTop50ByLineType"]["BOULDER"] == 1
     assert res["globalRankTotalCountByLineType"]["BOULDER"] == 1
+    assert res["globalRanks"] == [
+        {
+            "lineType": "BOULDER",
+            "gradeScale": "FB",
+            "rankTop10": 1,
+            "rankTop50": 1,
+            "rankTotalCount": 1,
+        }
+    ]
     assert "social" in res
     assert "galleryImagesUploaded" in res["social"]
     assert "moderation" in res
@@ -436,6 +445,7 @@ def test_user_statistics_shared_ranks_on_tied_scores(client):
         ranking.top_values = [top_10]
         ranking.total_count = total_count
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.secret = False
         db.session.add(ranking)
     db.session.commit()

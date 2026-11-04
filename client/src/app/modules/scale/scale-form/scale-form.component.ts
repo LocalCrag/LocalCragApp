@@ -89,6 +89,7 @@ export class ScaleFormComponent implements OnInit {
   public loadingState = LoadingState.INITIAL_LOADING;
   public scale: Scale;
   public editMode = true;
+  private initialLineType: LineType | null = null;
 
   private fb = inject(FormBuilder);
   private scalesService = inject(ScalesService);
@@ -108,6 +109,13 @@ export class ScaleFormComponent implements OnInit {
     if (!lineType) {
       this.editMode = false;
     }
+
+    const requestedType = this.route.snapshot.queryParamMap.get('type');
+    this.initialLineType = Object.values(LineType).includes(
+      requestedType as LineType,
+    )
+      ? (requestedType as LineType)
+      : null;
 
     this.buildForm();
     this.scaleForm.disable();
@@ -178,7 +186,9 @@ export class ScaleFormComponent implements OnInit {
     };
 
     this.scaleForm = this.fb.group({
-      lineType: this.editMode ? undefined : [null, Validators.required],
+      lineType: this.editMode
+        ? undefined
+        : [this.initialLineType, Validators.required],
       name: this.editMode
         ? undefined
         : ['', [Validators.required, Validators.maxLength(32)]],

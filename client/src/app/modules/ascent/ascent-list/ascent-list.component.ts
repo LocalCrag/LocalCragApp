@@ -38,6 +38,7 @@ import { DowngradePipe } from '../pipes/downgrade.pipe';
 import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
 import { TagModule } from 'primeng/tag';
 import { Store } from '@ngrx/store';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
@@ -640,7 +641,10 @@ export class AscentListComponent
       for (const gradeScale in gradeDistribution[lineType]) {
         if (gradeDistribution[lineType][gradeScale]) {
           this.availableScales.push({
-            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            label: scaleChoiceLabel(
+              this.translocoService.translate(lineType),
+              gradeScale,
+            ),
             value: { lineType: lineType as LineType, gradeScale },
           });
         }
@@ -662,7 +666,10 @@ export class AscentListComponent
         };
       const v = s.value as { lineType: LineType; gradeScale: string };
       return {
-        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        label: scaleChoiceLabel(
+          this.translocoService.translate(v.lineType),
+          v.gradeScale,
+        ),
         value: v,
       };
     });

@@ -22,8 +22,8 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService, SelectItem } from 'primeng/api';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { environment } from '../../../../environments/environment';
@@ -43,13 +43,9 @@ import {
   MapMarkerType,
 } from '../../../enums/map-marker-type';
 
-import { ScalesService } from '../../../services/crud/scales.service';
-import { LineType } from '../../../enums/line-type';
-
 import { InputText } from 'primeng/inputtext';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -85,7 +81,6 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
-    Select,
     Message,
     Button,
     ConfirmPopup,
@@ -112,9 +107,6 @@ export class SectorFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public sector: Sector;
   public editMode = false;
-  public boulderScales: SelectItem<string | null>[] = [];
-  public sportScales: SelectItem<string | null>[] = [];
-  public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
   public parentCrag: Crag;
   public parentClosureState: ClosureState | null = null;
@@ -131,7 +123,6 @@ export class SectorFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
-  private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
 
@@ -148,22 +139,6 @@ export class SectorFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    const scalesPopulated = this.scalesService
-      .getFormScaleSelectors([
-        {
-          label: this.translocoService.translate(marker('defaultScalesLabel')),
-          value: null,
-        },
-      ])
-      .pipe(
-        map((groupedScales) => {
-          this.boulderScales = groupedScales[LineType.BOULDER];
-          this.sportScales = groupedScales[LineType.SPORT];
-          this.tradScales = groupedScales[LineType.TRAD];
-          return true;
-        }),
-      );
-
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
 
@@ -178,8 +153,9 @@ export class SectorFormComponent implements OnInit {
         this.editMode = true;
         this.setPageTitle();
         this.sectorForm.disable();
-        forkJoin([
-          this.sectorsService.getSector(sectorSlug).pipe(
+        this.sectorsService
+          .getSector(sectorSlug)
+          .pipe(
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
@@ -187,16 +163,15 @@ export class SectorFormComponent implements OnInit {
               }
               return throwError(() => e);
             }),
-          ),
-          scalesPopulated,
-        ]).subscribe(([sector, _]) => {
-          this.sector = sector;
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-          this.editors?.map((editor) => {
-            editor.getQuill()?.enable();
+          )
+          .subscribe((sector) => {
+            this.sector = sector;
+            this.setFormValue();
+            this.loadingState = LoadingState.DEFAULT;
+            this.editors?.map((editor) => {
+              editor.getQuill()?.enable();
+            });
           });
-        });
       } else {
         this.setPageTitle();
         this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -204,12 +179,8 @@ export class SectorFormComponent implements OnInit {
             `${this.translocoService.translate(marker('sectorFormBrowserTitle'))} - ${instanceName}`,
           );
         });
-        this.sectorForm.disable();
-        scalesPopulated.subscribe(() => {
-          this.sectorForm.get('secret').setValue(this.parentCrag.secret);
-          this.sectorForm.enable();
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.sectorForm.get('secret').setValue(this.parentCrag.secret);
+        this.loadingState = LoadingState.DEFAULT;
       }
     });
   }
@@ -238,9 +209,6 @@ export class SectorFormComponent implements OnInit {
       rulesTitle: [null, [Validators.maxLength(255)]],
       secret: [false],
       mapMarkers: [[]],
-      defaultBoulderScale: [null],
-      defaultSportScale: [null],
-      defaultTradScale: [null],
       blocweatherUrl: [
         null,
         [blocweatherUrlValidator, Validators.maxLength(255)],
@@ -263,9 +231,6 @@ export class SectorFormComponent implements OnInit {
       rulesTitle: this.sector.rulesTitle,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
-      defaultBoulderScale: this.sector.defaultBoulderScale,
-      defaultSportScale: this.sector.defaultSportScale,
-      defaultTradScale: this.sector.defaultTradScale,
       blocweatherUrl: this.sector.blocweatherUrl,
       closureSchedules: this.sector.closureSchedules ?? [],
     });
@@ -299,11 +264,6 @@ export class SectorFormComponent implements OnInit {
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
       sector.closureSchedules =
         this.sectorForm.get('closureSchedules').value ?? [];
-      sector.defaultBoulderScale = this.sectorForm.get(
-        'defaultBoulderScale',
-      ).value;
-      sector.defaultSportScale = this.sectorForm.get('defaultSportScale').value;
-      sector.defaultTradScale = this.sectorForm.get('defaultTradScale').value;
       sector.blocweatherUrl =
         this.sectorForm.get('blocweatherUrl').value || null;
       if (this.sector) {

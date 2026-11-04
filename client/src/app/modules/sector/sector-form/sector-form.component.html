@@ -266,57 +266,6 @@
             {{ t("closedBecauseParentIsClosed") }}
           </p-message>
         }
-        <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6 items-center">
-          <h4 class="col-span-12">{{ "defaultScalesLabel" | transloco }}</h4>
-          <label
-            for="defaultBoulderScale"
-            class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
-          >
-            {{ "BOULDER" | transloco }}:
-          </label>
-          <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
-            <p-select
-              id="defaultBoulderScale"
-              [options]="boulderScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultBoulderScale"
-              lcFormControl
-            ></p-select>
-          </div>
-          <label
-            for="defaultSportScale"
-            class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
-          >
-            {{ "SPORT" | transloco }}:
-          </label>
-          <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
-            <p-select
-              id="defaultSportScale"
-              [options]="sportScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultSportScale"
-              lcFormControl
-            ></p-select>
-          </div>
-          <label
-            for="defaultTradScale"
-            class="xl:col-span-1 md:col-span-2 sm:col-span-3 col-span-4"
-          >
-            {{ "TRAD" | transloco }}:
-          </label>
-          <div class="xl:col-span-11 md:col-span-10 sm:col-span-9 col-span-8">
-            <p-select
-              id="defaultTradScale"
-              [options]="tradScales"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="defaultTradScale"
-              lcFormControl
-            ></p-select>
-          </div>
-        </div>
         @if (parentCrag?.secret && !sectorForm.get("secret").value) {
           <p-message severity="warn" icon="pi pi-info-circle">
             {{ t("aPublicSectorWillSetParentsToPublic") }}
