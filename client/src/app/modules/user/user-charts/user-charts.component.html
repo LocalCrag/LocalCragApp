@@ -95,7 +95,10 @@
           {{ t("rankings") }}
         </h3>
         <div class="stat-grid stat-grid--rankings">
-          @for (rank of stats.globalRanks; track rank.lineType + rank.gradeScale) {
+          @for (
+            rank of stats.globalRanks;
+            track rank.lineType + rank.gradeScale
+          ) {
             @if (rank.rankTop10 !== null && rank.rankTop10 !== undefined) {
               <div class="stat-card">
                 <div class="stat-label">
@@ -125,8 +128,7 @@
             track rank.lineType + rank.gradeScale + "-count"
           ) {
             @if (
-              rank.rankTotalCount !== null &&
-              rank.rankTotalCount !== undefined
+              rank.rankTotalCount !== null && rank.rankTotalCount !== undefined
             ) {
               <div class="stat-card">
                 <div class="stat-label">

@@ -7,7 +7,9 @@
       @if (loadingState !== LoadingState.LOADING) {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
           @for (lineType of lineTypes; track lineType) {
-            <section class="border border-surface rounded-border overflow-hidden">
+            <section
+              class="border border-surface rounded-border overflow-hidden"
+            >
               <h4
                 class="m-0! flex items-center justify-between gap-2 ps-4 pe-2 min-h-12 border-b border-surface"
               >
