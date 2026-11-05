@@ -586,6 +586,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Pfeil-Textfarbe",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Pfeilfarbe hervorgehoben",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Pfeil-Textfarbe hervorgehoben",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleLabel": "Topolinien nach Schwierigkeit färben",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleTooltip": "Topolinien verwenden die Farbe des gestapelten Gradintervalls der angezeigten Schwierigkeit statt der eigenen Linienfarbe. Projekte erhalten dieselbe Farbe wie die Projekt-Chips.",
   "instanceSettings.instanceSettingsForm.chartSettings": "Diagramme",
   "instanceSettings.instanceSettingsForm.barChartColorLabel": "Balkendiagrammfarbe",
   "instanceSettings.instanceSettingsForm.darkBarChartColorLabel": "Balkendiagrammfarbe (Dark Mode)",

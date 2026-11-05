@@ -586,6 +586,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Pijltekstkleur",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Pijlkleur gemarkeerd",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Pijl tekstkleur gemarkeerd",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleLabel": "Lijnen op topo's kleuren op moeilijkheid",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleTooltip": "Lijnen op topo's gebruiken de kleur van het gestapelde interval van de getoonde graad in plaats van hun eigen kleur. Projecten gebruiken dezelfde kleur als de projectlabels.",
   "instanceSettings.instanceSettingsForm.chartSettings": "Diagrammen",
   "instanceSettings.instanceSettingsForm.barChartColorLabel": "Balkdiagram Kleur",
   "instanceSettings.instanceSettingsForm.darkBarChartColorLabel": "Balkdiagramkleur (donkere modus)",

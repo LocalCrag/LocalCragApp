@@ -8,9 +8,8 @@ import {
 import { LinePath } from '../../../../models/line-path';
 import { Label } from './point-feature-label-placement';
 import Konva from 'konva';
-import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
-import { take } from 'rxjs/operators';
 import { Skeleton } from 'primeng/skeleton';
+import { TopoLinePaint } from '../../../../utility/scale/topo-line-color';
 import {
   linePathsForTopoCanvas,
   topoLinePathDisplayNumbers,
@@ -40,6 +39,8 @@ export class TopoImageViewerComponent
 
   /** Layer used to bring a hovered line + label above others. */
   private focusLayer: Konva.Layer;
+  /** Drops a line draw that was superseded by a newer one on the same stage. */
+  private visibleLineDraw = 0;
 
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -86,27 +87,36 @@ export class TopoImageViewerComponent
   }
 
   private drawVisibleLines() {
-    const labels: Label[] = [];
+    const stage = this.stage;
+    const generation = ++this.visibleLineDraw;
     const orderedLinePaths = linePathsForTopoCanvas(
       this.topoImage.linePaths,
       this.includeVariants,
     );
     const displayNumbers = topoLinePathDisplayNumbers(this.topoImage.linePaths);
-    orderedLinePaths.forEach((linePath) => {
-      this.drawTabuHolds(linePath, {
-        visible: this.tabuHoldsVisibility === 'always',
-      });
-      this.drawLine(linePath, 1);
-      if (this.showLineNumbers) {
-        labels.push(
-          this.getLineLabel(linePath, displayNumbers.get(linePath) ?? '1'),
-        );
-      }
-    });
+    this.paintsFor(orderedLinePaths.map((linePath) => linePath.line)).subscribe(
+      (paints) => {
+        if (this.stage !== stage || generation !== this.visibleLineDraw) {
+          return;
+        }
+        const labels: Label[] = [];
+        orderedLinePaths.forEach((linePath, index) => {
+          this.drawTabuHolds(linePath, {
+            visible: this.tabuHoldsVisibility === 'always',
+          });
+          this.drawLine(linePath, 1, paints[index]);
+          if (this.showLineNumbers) {
+            labels.push(
+              this.getLineLabel(linePath, displayNumbers.get(linePath) ?? '1'),
+            );
+          }
+        });
 
-    if (this.showLineNumbers) {
-      this.placeLineLabels(orderedLinePaths, labels, false);
-    }
+        if (this.showLineNumbers) {
+          this.placeLineLabels(orderedLinePaths, labels, false, paints);
+        }
+      },
+    );
   }
 
   private createKonvaStageAndLayer() {
@@ -136,36 +146,23 @@ export class TopoImageViewerComponent
     this.lineLayer.add(background);
   }
 
-  private drawLine(linePath: LinePath, opacity: number) {
-    this.store
-      .select(selectInstanceSettingsState)
-      .pipe(take(1))
-      .subscribe((instanceSettingsState) => {
-        const strokeColor =
-          linePath.line?.color ??
-          this.color ??
-          instanceSettingsState.arrowColor;
-        const line = new Konva.Arrow({
-          points: getAbsoluteCoordinates(
-            linePath.path,
-            this.width,
-            this.height,
-          ),
-          stroke: strokeColor,
-          fill: strokeColor,
-          strokeWidth: 2 * this.lineSizeMultiplicator,
-          lineCap: 'square',
-          tension: 0,
-          pointerLength: 6 * this.lineSizeMultiplicator,
-          pointerWidth: 6 * this.lineSizeMultiplicator,
-          opacity,
-          listening: false,
-        });
-        this.lineLayer.add(line);
-        linePath.konvaLine = line;
-        linePath.konvaFocusLayer = this.focusLayer;
-        linePath.konvaNumberLayer = this.numberLayer;
-        linePath.konvaLineLayer = this.lineLayer;
-      });
+  private drawLine(linePath: LinePath, opacity: number, paint: TopoLinePaint) {
+    const line = new Konva.Arrow({
+      points: getAbsoluteCoordinates(linePath.path, this.width, this.height),
+      stroke: paint.color,
+      fill: paint.color,
+      strokeWidth: 2 * this.lineSizeMultiplicator,
+      lineCap: 'square',
+      tension: 0,
+      pointerLength: 6 * this.lineSizeMultiplicator,
+      pointerWidth: 6 * this.lineSizeMultiplicator,
+      opacity,
+      listening: false,
+    });
+    this.lineLayer.add(line);
+    linePath.konvaLine = line;
+    linePath.konvaFocusLayer = this.focusLayer;
+    linePath.konvaNumberLayer = this.numberLayer;
+    linePath.konvaLineLayer = this.lineLayer;
   }
 }

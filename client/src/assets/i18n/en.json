@@ -586,6 +586,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Arrow text color",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Highlighted arrow color",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Highlighted arrow text color",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleLabel": "Color topo lines by grade",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleTooltip": "Topo lines use the stacked chart color of the shown grade instead of each line's own color. Projects use the same color as the project chips.",
   "instanceSettings.instanceSettingsForm.chartSettings": "Charts",
   "instanceSettings.instanceSettingsForm.barChartColorLabel": "Bar Chart Color",
   "instanceSettings.instanceSettingsForm.darkBarChartColorLabel": "Bar Chart Color (Dark Mode)",

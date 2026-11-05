@@ -51,7 +51,8 @@ import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
-import { highlightColor, textColor } from '../../../utility/misc/color';
+import { highlightColor } from '../../../utility/misc/color';
+import { topoLinePaint$ } from '../../../utility/scale/topo-line-color';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
@@ -76,6 +77,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoLineColorPipe } from '../../shared/pipes/topo-line-color.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
@@ -134,6 +136,7 @@ import {
     ConfirmPopup,
     LineBoolPropListComponent,
     LineGradePipe,
+    TopoLineColorPipe,
     TopoImageViewerComponent,
     LineNumberBadgeComponent,
     DraftTagComponent,
@@ -1035,27 +1038,14 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
-      this.store
-        .select(selectInstanceSettingsState)
+      topoLinePaint$(this.store, this.scalesService, linePath.line)
         .pipe(take(1))
-        .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
-          linePath.konvaLine.stroke(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
+        .subscribe((paint) => {
+          linePath.konvaLine.fill(paint.highlight);
+          linePath.konvaLine.stroke(paint.highlight);
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
-          linePath.konvaRect.fill(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
-          linePath.konvaText.fill(
-            textColor(highlightColor(linePath.line?.color)) ??
-              instanceSettingsState.arrowHighlightTextColor,
-          );
+          linePath.konvaRect.fill(paint.highlight);
+          linePath.konvaText.fill(paint.highlightText);
           linePath.konvaFocusLayer.add(linePath.konvaLine);
           linePath.konvaFocusLayer.add(linePath.konvaNumberGroup);
           linePath.konvaTabuShapes?.forEach((shape) => {
@@ -1073,24 +1063,14 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
-      this.store
-        .select(selectInstanceSettingsState)
+      topoLinePaint$(this.store, this.scalesService, linePath.line)
         .pipe(take(1))
-        .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
-          linePath.konvaLine.stroke(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
+        .subscribe((paint) => {
+          linePath.konvaLine.fill(paint.color);
+          linePath.konvaLine.stroke(paint.color);
           linePath.konvaLine.zIndex(1); // 0 is the BG image
-          linePath.konvaRect.fill(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
-          linePath.konvaText.fill(
-            textColor(linePath.line?.color) ??
-              instanceSettingsState.arrowTextColor,
-          );
+          linePath.konvaRect.fill(paint.color);
+          linePath.konvaText.fill(paint.text);
           linePath.konvaLineLayer.add(linePath.konvaLine);
           linePath.konvaNumberLayer.add(linePath.konvaNumberGroup);
           linePath.konvaTabuShapes?.forEach((shape) => {

@@ -32,6 +32,7 @@ def _base_post_data(instance_settings=None, **overrides):
         "mapOverlays": [],
         "gymMode": True,
         "displayUserGrades": True,
+        "colorLinesByScale": True,
         "displayUserRatings": True,
         "noClosedProjects": True,
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
@@ -78,6 +79,7 @@ def test_successful_get_instance_settings(client):
     assert res["landingPageSlug"] == instance_settings.landing_page_slug
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserGrades"] == instance_settings.display_user_grades
+    assert res["colorLinesByScale"] == instance_settings.color_lines_by_scale
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
     assert res["noClosedProjects"] == instance_settings.no_closed_projects
     assert res["moderatorGameEnabled"] == instance_settings.moderator_game_enabled
@@ -134,6 +136,7 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert res["skippedHierarchicalLayers"] == instance_settings.skipped_hierarchical_layers
     assert res["displayUserRatings"] is True
     assert res["displayUserGrades"] is True
+    assert res["colorLinesByScale"] is True
     assert res["noClosedProjects"] is True
     assert res["faDefaultFormat"] == FaDefaultFormatEnum.DATE.value
     assert res["defaultStartingPosition"] == StartingPositionEnum.SIT.value

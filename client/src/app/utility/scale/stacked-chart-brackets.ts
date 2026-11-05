@@ -1,5 +1,8 @@
 import { StackedChartBracket } from '../../models/scale';
 
+/** Gray used by the project chips under stacked grade charts. */
+export const STACKED_CHART_PROJECT_COLOR = '#e5e7eb';
+
 export const DEFAULT_STACKED_CHART_BRACKET_COLORS = [
   '#eab308',
   '#3b82f6',

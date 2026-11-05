@@ -68,6 +68,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "landingPageSlug": instance_settings.landing_page_slug,
         "skippedHierarchicalLayers": instance_settings.skipped_hierarchical_layers,
         "displayUserGrades": instance_settings.display_user_grades,
+        "colorLinesByScale": instance_settings.color_lines_by_scale,
         "displayUserRatings": instance_settings.display_user_ratings,
         "noClosedProjects": instance_settings.no_closed_projects,
         "suggestionsEnabled": instance_settings.suggestions_enabled,
@@ -117,6 +118,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.gym_mode = instance_settings_data["gymMode"]
     apply_landing_page(instance_settings, instance_settings_data)
     instance_settings.display_user_grades = instance_settings_data["displayUserGrades"]
+    instance_settings.color_lines_by_scale = instance_settings_data["colorLinesByScale"]
     instance_settings.display_user_ratings = instance_settings_data["displayUserRatings"]
     instance_settings.no_closed_projects = instance_settings_data["noClosedProjects"]
     instance_settings.suggestions_enabled = instance_settings_data["suggestionsEnabled"]

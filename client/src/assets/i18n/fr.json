@@ -586,6 +586,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Couleur du texte de la flèche",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Couleur de la flèche en surbrillance",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Couleur du texte de la flèche en surbrillance",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleLabel": "Colorer les lignes du topo selon la cotation",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleTooltip": "Les lignes du topo utilisent la couleur du diagramme empilé de la cotation affichée à la place de leur propre couleur. Les projets utilisent la même couleur que les pastilles de projet.",
   "instanceSettings.instanceSettingsForm.chartSettings": "Graphiques",
   "instanceSettings.instanceSettingsForm.barChartColorLabel": "Couleur du graphique à barres",
   "instanceSettings.instanceSettingsForm.darkBarChartColorLabel": "Couleur du graphique à barres (mode sombre)",

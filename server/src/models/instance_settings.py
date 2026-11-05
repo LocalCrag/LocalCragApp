@@ -55,6 +55,7 @@ class InstanceSettings(db.Model):
     skipped_hierarchical_layers = db.Column(db.Integer, nullable=False, server_default="0")
     display_user_ratings = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     display_user_grades = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    color_lines_by_scale = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     no_closed_projects = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
     suggestions_enabled = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
     moderator_game_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default="false")

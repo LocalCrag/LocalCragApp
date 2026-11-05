@@ -34,6 +34,7 @@ export interface InstanceSettingsState {
   landingPageSlug: string | null;
   skippedHierarchyLayers: number;
   displayUserGrades: boolean;
+  colorLinesByScale: boolean;
   displayUserRatings: boolean;
   noClosedProjects: boolean;
   suggestionsEnabled: boolean;
@@ -72,6 +73,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   landingPageSlug: null,
   skippedHierarchyLayers: 0,
   displayUserGrades: false,
+  colorLinesByScale: false,
   displayUserRatings: false,
   noClosedProjects: false,
   suggestionsEnabled: true,
@@ -113,6 +115,7 @@ const instanceSettingsReducer = createReducer(
     landingPageSlug: action.settings.landingPageSlug ?? null,
     skippedHierarchyLayers: action.settings.skippedHierarchicalLayers,
     displayUserGrades: action.settings.displayUserGrades,
+    colorLinesByScale: action.settings.colorLinesByScale === true,
     displayUserRatings: action.settings.displayUserRatings,
     noClosedProjects: action.settings.noClosedProjects,
     suggestionsEnabled: action.settings.suggestionsEnabled,

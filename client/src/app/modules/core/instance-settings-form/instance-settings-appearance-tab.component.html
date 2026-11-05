@@ -56,6 +56,23 @@
     >
 
     <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label for="color-lines-by-scale">{{
+          t("colorLinesByScaleLabel")
+        }}</label>
+        <span
+          class="pi pi-question-circle ml-2"
+          [pTooltip]="t('colorLinesByScaleTooltip')"
+          tooltipPosition="right"
+        ></span>
+      </div>
+      <p-toggleswitch
+        inputId="color-lines-by-scale"
+        formControlName="colorLinesByScale"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="arrow-color">{{
         t("arrowColorLabel")
       }}</label>

@@ -4,6 +4,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { DividerModule } from 'primeng/divider';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -17,6 +18,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
     ButtonModule,
     ColorPickerModule,
     DividerModule,
+    ToggleSwitch,
     TooltipModule,
     SingleImageUploadComponent,
     ControlGroupDirective,

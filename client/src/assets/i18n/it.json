@@ -586,6 +586,8 @@
   "instanceSettings.instanceSettingsForm.arrowTextColorLabel": "Colore testo freccia",
   "instanceSettings.instanceSettingsForm.arrowHighlightColorLabel": "Colore freccia evidenziato",
   "instanceSettings.instanceSettingsForm.arrowHighlightTextColorLabel": "Colore testo freccia evidenziato",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleLabel": "Colora le linee del topo in base al grado",
+  "instanceSettings.instanceSettingsForm.colorLinesByScaleTooltip": "Le linee del topo usano il colore dell'intervallo del grado mostrato al posto del colore proprio. I progetti usano lo stesso colore delle etichette progetto.",
   "instanceSettings.instanceSettingsForm.chartSettings": "Grafici",
   "instanceSettings.instanceSettingsForm.barChartColorLabel": "Colore grafico a barre",
   "instanceSettings.instanceSettingsForm.darkBarChartColorLabel": "Colore grafico a barre (modalità scura)",
