@@ -1,3 +1,17 @@
+# [1.69.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.68.0...v1.69.0) (2026-11-06)
+
+
+### Features
+
+* **core:** add option to nest header menus ([#1334](https://github.com/LocalCrag/LocalCragApp/issues/1334)) ([f94c58c](https://github.com/LocalCrag/LocalCragApp/commit/f94c58c540fc21ce642cd6f047016aba1c069d3a)), closes [#432](https://github.com/LocalCrag/LocalCragApp/issues/432)
+* **core:** add passkey support and TOTP 2FA support ([#1338](https://github.com/LocalCrag/LocalCragApp/issues/1338)) ([b814e91](https://github.com/LocalCrag/LocalCragApp/commit/b814e91502fd906f761e83b53a77d67ff1e48b12)), closes [#644](https://github.com/LocalCrag/LocalCragApp/issues/644)
+* **ranking:** introduce ranking separated by scale ([#1337](https://github.com/LocalCrag/LocalCragApp/issues/1337)) ([6ce7c22](https://github.com/LocalCrag/LocalCragApp/commit/6ce7c227fe199afbc55a39b47193a4ac42e5ed7d)), closes [#590](https://github.com/LocalCrag/LocalCragApp/issues/590)
+* **topo:** add context menu for lines in topo image list view ([#1332](https://github.com/LocalCrag/LocalCragApp/issues/1332)) ([f7c487f](https://github.com/LocalCrag/LocalCragApp/commit/f7c487ff06f9784e4da74c1a942a6006559f01e4)), closes [#415](https://github.com/LocalCrag/LocalCragApp/issues/415)
+* **topo:** add option to color lines by the scales stacked chart colors ([16234db](https://github.com/LocalCrag/LocalCragApp/commit/16234db7991f5704a167e2741277d4680b17b66b))
+* **topo:** add option to hide diagrams for a scale ([#1333](https://github.com/LocalCrag/LocalCragApp/issues/1333)) ([ff93725](https://github.com/LocalCrag/LocalCragApp/commit/ff937258f56a9a727d5921d8958321fc68ab0ea6))
+* **topo:** implement pagination for archived topo images ([#1330](https://github.com/LocalCrag/LocalCragApp/issues/1330)) ([ffef968](https://github.com/LocalCrag/LocalCragApp/commit/ffef9683d6e6712d9a0e0ec43cfa208e21c59ad7)), closes [#584](https://github.com/LocalCrag/LocalCragApp/issues/584)
+* **topo:** optimize ui of topo image list view line property lists ([#1331](https://github.com/LocalCrag/LocalCragApp/issues/1331)) ([448cc44](https://github.com/LocalCrag/LocalCragApp/commit/448cc44854ce814241aeb6f2c9d1e1c9d5b4e2f3)), closes [#434](https://github.com/LocalCrag/LocalCragApp/issues/434)
+
 # [1.68.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.67.0...v1.68.0) (2026-10-29)
 
 
