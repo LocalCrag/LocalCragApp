@@ -1,0 +1,159 @@
+<ng-container *transloco="let t; read: 'accountPasskeys'">
+  <p-divider align="center" class="mt-20">
+    <b>{{ t("title") }}</b>
+  </p-divider>
+
+  <p class="passkey-description">{{ t("description") }}</p>
+
+  @if (!supported) {
+    <p-message severity="info" class="mt-4 w-full">{{
+      t("unsupported")
+    }}</p-message>
+  } @else {
+    @if (!loading && passkeys.length === 0) {
+      <div class="passkey-empty">
+        <i class="pi pi-key" aria-hidden="true"></i>
+        <p>{{ t("empty") }}</p>
+      </div>
+    }
+
+    @if (passkeys.length > 0) {
+      <div class="passkey-list">
+        @for (passkey of passkeys; track passkey.id) {
+          <article class="passkey-card">
+            <div class="passkey-icon" aria-hidden="true">
+              <i class="pi pi-key"></i>
+            </div>
+
+            <div class="passkey-main">
+              @if (editingId === passkey.id) {
+                <div class="passkey-edit">
+                  <input
+                    pInputText
+                    class="passkey-name-input"
+                    [value]="draftName"
+                    (input)="draftName = $any($event.target).value"
+                    [attr.aria-label]="t('namePlaceholder')"
+                    [attr.data-cy]="'account-passkey-name-' + passkey.id"
+                  />
+                  <p-button
+                    icon="pi pi-check"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    [ariaLabel]="t('saveName')"
+                    [pTooltip]="t('saveName')"
+                    tooltipPosition="top"
+                    (click)="saveRename(passkey)"
+                    [attr.data-cy]="'account-passkey-save-' + passkey.id"
+                  ></p-button>
+                  <p-button
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                    size="small"
+                    [ariaLabel]="t('cancelRename')"
+                    [pTooltip]="t('cancelRename')"
+                    tooltipPosition="top"
+                    (click)="editingId = null"
+                  ></p-button>
+                </div>
+              } @else {
+                <div class="passkey-name">{{ passkey.name }}</div>
+                <div class="passkey-meta">
+                  <span>
+                    @if (lastUsed(passkey); as usedAt) {
+                      {{ t("lastUsed") }} {{ usedAt | date: "datetime" }}
+                    } @else {
+                      {{ t("neverUsed") }}
+                    }
+                  </span>
+                  @if (passkey.backedUp) {
+                    <span class="passkey-badge">
+                      <i class="pi pi-cloud" aria-hidden="true"></i>
+                      {{ t("backedUp") }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (editingId !== passkey.id) {
+              <div class="passkey-actions">
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  size="small"
+                  [ariaLabel]="t('rename')"
+                  [pTooltip]="t('rename')"
+                  tooltipPosition="top"
+                  (click)="startRename(passkey)"
+                  [attr.data-cy]="'account-passkey-rename-' + passkey.id"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  size="small"
+                  [disabled]="cannotDelete()"
+                  [ariaLabel]="t('delete')"
+                  [pTooltip]="t('delete')"
+                  tooltipPosition="top"
+                  (click)="confirmDelete(passkey)"
+                  [attr.data-cy]="'account-passkey-delete-' + passkey.id"
+                ></p-button>
+              </div>
+            }
+          </article>
+        }
+      </div>
+    }
+
+    @if (cannotDelete() && passkeys.length > 0) {
+      <p-message severity="warn" class="passkey-hint">{{
+        t("lastPasskeyHint")
+      }}</p-message>
+    }
+
+    <p-button
+      class="passkey-add"
+      icon="pi pi-plus"
+      [label]="t('add')"
+      (click)="add()"
+      [loading]="adding"
+      data-cy="account-passkey-add"
+    ></p-button>
+
+    @if (!hasPassword) {
+      <div class="passkey-panel">
+        <i class="pi pi-shield passkey-panel-icon" aria-hidden="true"></i>
+        <p class="passkey-panel-copy">{{ t("passkeyOnly") }}</p>
+        <p-button
+          [label]="t('setPassword')"
+          severity="secondary"
+          (click)="setPassword()"
+          data-cy="account-passkey-set-password"
+        ></p-button>
+      </div>
+    } @else if (passkeys.length > 0) {
+      <div class="passkey-panel">
+        <i class="pi pi-lock passkey-panel-icon" aria-hidden="true"></i>
+        <p class="passkey-panel-copy">{{ t("removePasswordHint") }}</p>
+        <p-button
+          [label]="t('removePassword')"
+          severity="danger"
+          [outlined]="true"
+          (click)="confirmRemovePassword()"
+          [loading]="removingPassword"
+          data-cy="account-passkey-remove-password"
+        ></p-button>
+      </div>
+    }
+  }
+
+  <p-confirmDialog [style]="{ maxWidth: '800px' }"></p-confirmDialog>
+</ng-container>

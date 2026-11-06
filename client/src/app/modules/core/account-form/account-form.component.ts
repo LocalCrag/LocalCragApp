@@ -50,6 +50,8 @@ import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-o
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AccountSettingsFormComponent } from '../account-settings-form/account-settings-form.component';
+import { AccountPasskeysComponent } from '../account-passkeys/account-passkeys.component';
+import { AccountTwoFactorComponent } from '../account-two-factor/account-two-factor.component';
 import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user-role-tag.component';
 
 @Component({
@@ -70,6 +72,8 @@ import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user
     HasPermissionDirective,
     HasPermissionDirective,
     AccountSettingsFormComponent,
+    AccountPasskeysComponent,
+    AccountTwoFactorComponent,
     UserRoleTagComponent,
   ],
   templateUrl: './account-form.component.html',

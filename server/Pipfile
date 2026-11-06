@@ -30,6 +30,8 @@ sentry-sdk = {extras = ["flask"], version = "==2.*"}
 sqlalchemy-utils = "==0.*"
 apscheduler = "==3.*"
 html2text = "==2024.*"
+webauthn = "<3,>=2.6"
+qrcode = "<9,>=8"
 
 [dev-packages]
 flake8 = "==7.*"

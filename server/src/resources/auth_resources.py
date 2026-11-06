@@ -23,9 +23,18 @@ from util.auth_session import (
     set_session_cookies,
 )
 from util.email import send_forgot_password_email
+from util.two_factor import begin_password_two_factor, user_has_two_factor
 from webargs_schemas.forgot_password_args import forgot_password_args
 from webargs_schemas.login_args import login_args
 from webargs_schemas.reset_password_args import reset_password_args
+
+
+def mark_user_activated(user: User):
+    """A user becomes activated after the first successful sign-in."""
+    if not user.activated:
+        user.activated = True
+        user.activated_at = datetime.now(pytz.utc)
+        db.session.add(user)
 
 
 def _auth_response(message: str, user: User, status: int = 200):
@@ -48,13 +57,11 @@ class UserLogin(MethodView):
         if not current_user:
             raise Unauthorized(ResponseMessage.WRONG_CREDENTIALS.value)
 
-        if User.verify_hash(data["password"], current_user.password):
-            # A user becomes activated after first login
-            if not current_user.activated:
-                current_user.activated = True
-                current_user.activated_at = datetime.now(pytz.utc)
-                db.session.add(current_user)
+        if current_user.password and User.verify_hash(data["password"], current_user.password):
+            mark_user_activated(current_user)
+            if user_has_two_factor(current_user):
                 db.session.commit()
+                return jsonify(begin_password_two_factor(current_user)), 202
 
             session = create_session_for_user(current_user)
             db.session.commit()
@@ -141,6 +148,8 @@ class ResetPassword(MethodView):
 
         db.session.add(user)
         db.session.commit()
+        if user_has_two_factor(user):
+            return jsonify(begin_password_two_factor(user)), 202
         session = create_session_for_user(user)
         db.session.commit()
         response = _auth_response(ResponseMessage.PASSWORD_RESET.value, user, status=202)

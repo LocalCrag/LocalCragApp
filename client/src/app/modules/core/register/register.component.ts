@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import {
@@ -24,9 +25,12 @@ import { Router, RouterLink } from '@angular/router';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
+import { firstValueFrom } from 'rxjs';
 import { AppState } from '../../../ngrx/reducers';
 import { User } from '../../../models/user';
+import { loginSuccess } from '../../../ngrx/actions/auth.actions';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { PasskeyService } from '../../../services/crud/passkey.service';
 import { UsersService } from '../../../services/crud/users.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -38,11 +42,17 @@ import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import {
+  createPasskey,
+  isPasskeyCancellation,
+  isPasskeySupported,
+} from '../../../utility/webauthn';
 
 @Component({
   selector: 'lc-register',
   imports: [
     ButtonModule,
+    DividerModule,
     InputTextModule,
     PasswordModule,
     ReactiveFormsModule,
@@ -67,9 +77,12 @@ export class RegisterComponent implements OnInit {
   public loadingStates = LoadingState;
   public loadingState: LoadingState = LoadingState.DEFAULT;
   public registerPressed = false;
+  public passkeySupported = isPasskeySupported();
+  public passkeyLoading = false;
 
   private router = inject(Router);
   private usersService = inject(UsersService);
+  private passkeys = inject(PasskeyService);
   private store = inject<Store<AppState>>(Store);
   private title = inject(Title);
   private userValidators = inject(UserValidatorsService);
@@ -102,6 +115,45 @@ export class RegisterComponent implements OnInit {
       });
     } else {
       this.formDirective.markAsTouched();
+    }
+  }
+
+  /**
+   * Creates an account that can sign in with the new passkey and no password.
+   */
+  public async registerWithPasskey() {
+    this.registerPressed = true;
+    if (!this.registrationForm.valid) {
+      this.formDirective.markAsTouched();
+      return;
+    }
+    this.passkeyLoading = true;
+    try {
+      const options = await firstValueFrom(
+        this.passkeys.signupOptions({
+          firstname: this.registrationForm.get('firstname').value,
+          lastname: this.registrationForm.get('lastname').value,
+          email: (
+            this.registrationForm.get('emails.email').value as string
+          ).toLowerCase(),
+        }),
+      );
+      const credential = await createPasskey(options);
+      const loginResponse = await firstValueFrom(
+        this.passkeys.signupVerify(
+          credential,
+          this.translocoService.translate(
+            marker('accountPasskeys.defaultName'),
+          ),
+        ),
+      );
+      this.store.dispatch(loginSuccess({ loginResponse }));
+    } catch (error) {
+      if (!isPasskeyCancellation(error)) {
+        this.store.dispatch(toastNotification('PASSKEY_ERROR'));
+      }
+    } finally {
+      this.passkeyLoading = false;
     }
   }
 

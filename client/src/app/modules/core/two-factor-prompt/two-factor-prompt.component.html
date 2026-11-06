@@ -1,0 +1,54 @@
+<ng-container *transloco="let t; read: 'twoFactor'">
+  <p class="two-factor-description">{{ t(descriptionKey()) }}</p>
+
+  @if (challenge?.emailSent) {
+    <p class="two-factor-description">{{ t("emailSent") }}</p>
+  }
+
+  <form [formGroup]="form" lcForm>
+    <div class="card-container block" lcControlGroup>
+      <input
+        type="text"
+        pInputText
+        formControlName="code"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        maxlength="6"
+        placeholder="{{ t('codePlaceholder') }}"
+        lcFormControl
+        data-cy="two-factor-code"
+      />
+      <small class="lc-error" *lcIfError="'required'">{{
+        "validation.required" | transloco
+      }}</small>
+      <small class="lc-error" *lcIfError="'pattern'">{{
+        t("codeInvalid")
+      }}</small>
+    </div>
+  </form>
+
+  <p-button
+    [label]="t('submit')"
+    (click)="submit()"
+    [loading]="submitting"
+    data-cy="two-factor-submit"
+  ></p-button>
+
+  @if (challenge?.emailTwoFactorEnabled) {
+    <p-button
+      [label]="challenge?.emailSent ? t('resendEmail') : t('sendEmail')"
+      severity="secondary"
+      (click)="sendEmail()"
+      [loading]="sending"
+      data-cy="two-factor-email"
+    ></p-button>
+  }
+
+  <p-button
+    [label]="t('back')"
+    styleClass="p-button-link"
+    class="link-button"
+    (click)="back()"
+    data-cy="two-factor-back"
+  ></p-button>
+</ng-container>

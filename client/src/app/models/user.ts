@@ -25,6 +25,9 @@ export class User extends HasSlug(AbstractModel) {
   accountLanguage: LanguageCode;
   accountColorScheme: ColorScheme;
   todoListPrivate: boolean;
+  hasPassword: boolean;
+  totpEnabled: boolean;
+  emailTwoFactorEnabled: boolean;
 
   fullname: string;
   routerLink: string;
@@ -57,6 +60,9 @@ export class User extends HasSlug(AbstractModel) {
     user.accountLanguage = payload.accountLanguage;
     user.accountColorScheme = payload.accountColorScheme ?? 'system';
     user.todoListPrivate = payload.todoListPrivate === true;
+    user.hasPassword = payload.hasPassword !== false;
+    user.totpEnabled = payload.totpEnabled === true;
+    user.emailTwoFactorEnabled = payload.emailTwoFactorEnabled === true;
     return user;
   }
 

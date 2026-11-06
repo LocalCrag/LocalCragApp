@@ -32,10 +32,22 @@ class UserSchema(BaseEntitySchema):
     suggestionsEnabled = fields.Method("get_suggestions_enabled")
     activated = fields.Boolean()
     activatedAt = fields.DateTime(attribute="activated_at")
+    hasPassword = fields.Method("get_has_password")
+    totpEnabled = fields.Method("get_totp_enabled")
+    emailTwoFactorEnabled = fields.Method("get_email_two_factor_enabled")
     avatar = ma.Nested(FileSchema)
 
     def get_suggestions_enabled(self, obj):
         return suggestions_enabled(obj)
+
+    def get_has_password(self, obj):
+        return obj.password is not None
+
+    def get_totp_enabled(self, obj):
+        return obj.totp_secret is not None
+
+    def get_email_two_factor_enabled(self, obj):
+        return bool(obj.email_two_factor_enabled)
 
 
 user_list_schema = UserSchema(many=True)

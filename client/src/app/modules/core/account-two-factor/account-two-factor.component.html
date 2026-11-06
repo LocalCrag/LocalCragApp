@@ -1,0 +1,184 @@
+<ng-container *transloco="let t; read: 'accountTwoFactor'">
+  <p-divider align="center" class="mt-20">
+    <b>{{ t("title") }}</b>
+  </p-divider>
+
+  <p class="two-factor-description">{{ t("description") }}</p>
+
+  @if (!hasPassword) {
+    <p class="two-factor-description">{{ t("noPasswordHint") }}</p>
+  }
+
+  @if (passwordWithoutTwoFactor) {
+    <p-message severity="warn" class="mt-4 w-full" data-cy="two-factor-warning">
+      {{ t("warning") }}
+    </p-message>
+  }
+
+  <div class="two-factor-list">
+    <article class="two-factor-card">
+      <div class="two-factor-icon" aria-hidden="true">
+        <i class="pi pi-mobile"></i>
+      </div>
+      <div class="two-factor-main">
+        <div class="two-factor-name">{{ t("authenticatorTitle") }}</div>
+        <div class="two-factor-meta">
+          {{ t("authenticatorHint") }}
+          <span class="two-factor-badge">{{
+            totpEnabled ? t("enabled") : t("disabled")
+          }}</span>
+        </div>
+
+        @if (totpSecret) {
+          <img
+            class="two-factor-qr"
+            [src]="totpQr"
+            [alt]="t('qrAlt')"
+            width="180"
+            height="180"
+          />
+          <p class="two-factor-secret">
+            {{ t("secretLabel") }}
+            <code>{{ totpSecret }}</code>
+          </p>
+          <div class="two-factor-actions">
+            <input
+              pInputText
+              class="two-factor-code"
+              [value]="totpCode"
+              (input)="totpCode = $any($event.target).value"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+              [attr.aria-label]="t('codePlaceholder')"
+              [placeholder]="t('codePlaceholder')"
+              data-cy="account-totp-code"
+            />
+            <p-button
+              [label]="t('confirm')"
+              (click)="confirmTotp()"
+              [loading]="busy"
+              data-cy="account-totp-confirm"
+            ></p-button>
+            <p-button
+              [label]="t('cancel')"
+              severity="secondary"
+              [text]="true"
+              (click)="cancelSetup()"
+            ></p-button>
+          </div>
+        } @else if (disabling === "totp") {
+          <div class="two-factor-actions">
+            <p-password
+              [(ngModel)]="disablePassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              [placeholder]="t('passwordPlaceholder')"
+              data-cy="account-totp-password"
+            ></p-password>
+            <p-button
+              [label]="t('disable')"
+              severity="danger"
+              (click)="disable('totp')"
+              [loading]="busy"
+            ></p-button>
+            <p-button
+              [label]="t('cancel')"
+              severity="secondary"
+              [text]="true"
+              (click)="cancelSetup()"
+            ></p-button>
+          </div>
+          <p class="two-factor-meta">{{ t("passwordHint") }}</p>
+        }
+      </div>
+      @if (!totpSecret && disabling !== "totp") {
+        <p-button
+          [label]="totpEnabled ? t('disable') : t('enable')"
+          [severity]="totpEnabled ? 'danger' : 'secondary'"
+          [outlined]="totpEnabled"
+          (click)="totpEnabled ? disable('totp') : startTotp()"
+          [loading]="busy"
+          data-cy="account-totp-toggle"
+        ></p-button>
+      }
+    </article>
+
+    <article class="two-factor-card">
+      <div class="two-factor-icon" aria-hidden="true">
+        <i class="pi pi-envelope"></i>
+      </div>
+      <div class="two-factor-main">
+        <div class="two-factor-name">{{ t("emailTitle") }}</div>
+        <div class="two-factor-meta">
+          {{ t("emailHint") }}
+          <span class="two-factor-badge">{{
+            emailEnabled ? t("enabled") : t("disabled")
+          }}</span>
+        </div>
+
+        @if (emailSetup) {
+          <div class="two-factor-actions">
+            <input
+              pInputText
+              class="two-factor-code"
+              [value]="emailCode"
+              (input)="emailCode = $any($event.target).value"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+              [attr.aria-label]="t('codePlaceholder')"
+              [placeholder]="t('codePlaceholder')"
+              data-cy="account-email-code"
+            />
+            <p-button
+              [label]="t('confirm')"
+              (click)="confirmEmail()"
+              [loading]="busy"
+              data-cy="account-email-confirm"
+            ></p-button>
+            <p-button
+              [label]="t('cancel')"
+              severity="secondary"
+              [text]="true"
+              (click)="cancelSetup()"
+            ></p-button>
+          </div>
+        } @else if (disabling === "email") {
+          <div class="two-factor-actions">
+            <p-password
+              [(ngModel)]="disablePassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              [placeholder]="t('passwordPlaceholder')"
+              data-cy="account-email-password"
+            ></p-password>
+            <p-button
+              [label]="t('disable')"
+              severity="danger"
+              (click)="disable('email')"
+              [loading]="busy"
+            ></p-button>
+            <p-button
+              [label]="t('cancel')"
+              severity="secondary"
+              [text]="true"
+              (click)="cancelSetup()"
+            ></p-button>
+          </div>
+          <p class="two-factor-meta">{{ t("passwordHint") }}</p>
+        }
+      </div>
+      @if (!emailSetup && disabling !== "email") {
+        <p-button
+          [label]="emailEnabled ? t('disable') : t('enable')"
+          [severity]="emailEnabled ? 'danger' : 'secondary'"
+          [outlined]="emailEnabled"
+          (click)="emailEnabled ? disable('email') : startEmail()"
+          [loading]="busy"
+          data-cy="account-email-toggle"
+        ></p-button>
+      }
+    </article>
+  </div>
+</ng-container>

@@ -91,16 +91,19 @@ class ChangePassword(MethodView):
         user = User.find_by_email(get_session_identity())
         if not user:
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
-        if User.verify_hash(data["oldPassword"], user.password):
-            if len(data["newPassword"]) < 8:
-                raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
-            user.password = User.generate_hash(data["newPassword"])
-            db.session.add(user)
-            db.session.commit()
-            simple_message = SimpleMessage(ResponseMessage.PASSWORD_CHANGED.value)
-            return simple_message_schema.dump(simple_message), 201
-        else:
+        old_password = data.get("oldPassword") or ""
+        if user.password is None:
+            if old_password:
+                raise Unauthorized(ResponseMessage.OLD_PASSWORD_INCORRECT.value)
+        elif not User.verify_hash(old_password, user.password):
             raise Unauthorized(ResponseMessage.OLD_PASSWORD_INCORRECT.value)
+        if len(data["newPassword"]) < 8:
+            raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
+        user.password = User.generate_hash(data["newPassword"])
+        db.session.add(user)
+        db.session.commit()
+        simple_message = SimpleMessage(ResponseMessage.PASSWORD_CHANGED.value)
+        return simple_message_schema.dump(simple_message), 201
 
 
 class GetUsers(MethodView):

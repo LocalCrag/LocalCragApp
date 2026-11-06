@@ -1,5 +1,6 @@
 import * as AuthActions from './../actions/auth.actions';
 import { Action, createReducer, on } from '@ngrx/store';
+import { TwoFactorChallenge } from '../../models/two-factor-challenge';
 import { User } from '../../models/user';
 import { LoadingState } from '../../enums/loading-state';
 
@@ -12,6 +13,7 @@ export interface AuthState {
   resetPasswordLoadingState: LoadingState;
   forgotPasswordLoadingState: LoadingState;
   user: User;
+  twoFactorChallenge: TwoFactorChallenge | null;
   /** False until session restore via /me finishes (or fails). Guards must wait. */
   authResolved: boolean;
   refreshLoginModalOpen: boolean;
@@ -25,6 +27,7 @@ export const initialAuthState: AuthState = {
   resetPasswordLoadingState: LoadingState.DEFAULT,
   forgotPasswordLoadingState: LoadingState.DEFAULT,
   user: null,
+  twoFactorChallenge: null,
   authResolved: false,
   refreshLoginLoadingState: LoadingState.DEFAULT,
   refreshLoginModalOpen: false,
@@ -43,6 +46,22 @@ const authReducer = createReducer(
     loginLoadingState: LoadingState.DEFAULT,
     refreshLoginLoadingState: LoadingState.DEFAULT,
     refreshLoginModalOpen: false,
+    twoFactorChallenge: null,
+  })),
+  on(AuthActions.loginTwoFactorRequired, (state, action) => ({
+    ...state,
+    loginLoadingState: LoadingState.DEFAULT,
+    refreshLoginLoadingState: LoadingState.DEFAULT,
+    resetPasswordLoadingState: LoadingState.DEFAULT,
+    twoFactorChallenge: action.challenge,
+  })),
+  on(AuthActions.updateTwoFactorChallenge, (state, action) => ({
+    ...state,
+    twoFactorChallenge: action.challenge,
+  })),
+  on(AuthActions.clearTwoFactorChallenge, (state) => ({
+    ...state,
+    twoFactorChallenge: null,
   })),
   on(AuthActions.cleanupCredentials, (state) => ({
     ...state,
@@ -52,6 +71,7 @@ const authReducer = createReducer(
     ...state,
     loginLoadingState: LoadingState.DEFAULT,
     refreshLoginLoadingState: LoadingState.DEFAULT,
+    twoFactorChallenge: null,
   })),
   on(AuthActions.newAuthCredentials, (state, action) => ({
     ...state,
@@ -99,6 +119,7 @@ const authReducer = createReducer(
     ...state,
     refreshLoginLoadingState: LoadingState.DEFAULT,
     refreshLoginModalOpen: false,
+    twoFactorChallenge: null,
   })),
 );
 
