@@ -24,6 +24,12 @@ CSRF_EXEMPT_ENDPOINTS = {
     "auth.login_api",
     "auth.forgot_password_api",
     "auth.reset_password_api",
+    "auth.passkey_login_options",
+    "auth.passkey_login_verify",
+    "auth.passkey_signup_options",
+    "auth.passkey_signup_verify",
+    "auth.login_two_factor",
+    "auth.login_two_factor_email",
 }
 
 

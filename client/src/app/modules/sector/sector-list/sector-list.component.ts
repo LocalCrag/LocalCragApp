@@ -8,7 +8,6 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import {
   buildTopoListOrderDirectionOptions,
@@ -41,7 +40,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-sector-list',
   templateUrl: './sector-list.component.html',
   styleUrls: ['./sector-list.component.scss'],
-  providers: [DialogService, ConfirmationService],
+  providers: [DialogService],
   imports: [
     DataView,
     Select,

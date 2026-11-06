@@ -32,6 +32,7 @@ import {
   buildStackedBracketPreview,
   StackedBracketPreview,
 } from '../../../utility/scale/bracket-preview';
+import { STACKED_CHART_PROJECT_COLOR } from '../../../utility/scale/stacked-chart-brackets';
 import { ThemeService } from '../../../services/core/theme.service';
 
 type PreviewMode = 'stacked' | 'bar';
@@ -101,6 +102,8 @@ export class ScaleBracketPreviewComponent implements OnChanges {
       .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.rebuild());
   }
+
+  protected readonly stackedChartProjectColor = STACKED_CHART_PROJECT_COLOR;
 
   tagTextColor(color: string): string {
     if (/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(color)) {

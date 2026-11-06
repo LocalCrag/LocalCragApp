@@ -688,6 +688,7 @@ def fill_db_with_sample_data():
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.top_values = [22]
         ranking.total_count = 1
         ranking.rank_top_10 = 1
@@ -702,6 +703,7 @@ def fill_db_with_sample_data():
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.top_values = [22]
         ranking.total_count = 1
         ranking.rank_top_10 = 1
@@ -716,6 +718,7 @@ def fill_db_with_sample_data():
         ranking.top_10 = 22
         ranking.top_50 = 22
         ranking.type = LineTypeEnum.BOULDER
+        ranking.scale = "FB"
         ranking.top_values = [22]
         ranking.total_count = 1
         ranking.rank_top_10 = 1

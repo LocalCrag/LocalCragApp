@@ -12,7 +12,7 @@ import { Label } from './point-feature-label-placement';
 import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
-import { highlightColor } from '../../../../utility/misc/color';
+import { TopoLinePaint } from '../../../../utility/scale/topo-line-color';
 import { Skeleton } from 'primeng/skeleton';
 import {
   sortLinePathsByOrderIndex,
@@ -72,6 +72,8 @@ export class TopoImageEditorComponent
 
   private focusLayer: Konva.Layer;
   private anchorLayer: Konva.Layer;
+  /** Invalidates a redraw that loses the race with a full canvas rebuild. */
+  private inProgressDrawToken = 0;
   private editableAnchors: Konva.Circle[] = [];
   private magneticAnchorHighlight: Konva.Circle | null = null;
   private tabuInProgressShape: Konva.Line | null = null;
@@ -109,56 +111,99 @@ export class TopoImageEditorComponent
     this.syncCanvasDimensionsFromImage();
     this.createKonvaStageAndLayer();
 
-    const labels: Label[] = [];
+    const stage = this.stage;
     const orderedLinePaths = sortLinePathsByOrderIndex(
       this.topoImage.linePaths,
     );
-    const backgroundOpacity = this.linePathInProgress ? 0.2 : 1;
-    orderedLinePaths.forEach((linePath, index) => {
-      this.drawLine(linePath, backgroundOpacity);
-      labels.push(
-        this.getLineLabel(linePath, getLinePathDisplayNumber(linePath, index)),
-      );
-    });
-
-    this.placeLineLabels(orderedLinePaths, labels, true);
-
-    this.drawUnassignedTabuHolds();
+    const lines = orderedLinePaths.map((linePath) => linePath.line);
     if (this.linePathInProgress) {
-      this.drawTabuHolds(this.linePathInProgress, {
-        visible: true,
-        targetLayer: this.focusLayer,
-      });
+      lines.push(this.linePathInProgress.line);
     }
-
-    const editingLine = this.drawMode === 'line';
-    if (this.linePathInProgress && this.linePathInProgress.path.length >= 4) {
-      this.drawLine(this.linePathInProgress, 1, editingLine, this.focusLayer);
-      if (this.linePathInProgressNumber != null) {
-        const inProgressLabel = this.getLineLabel(
-          this.linePathInProgress,
-          String(this.linePathInProgressNumber),
-        );
-        this.placeLineLabel(this.linePathInProgress, inProgressLabel, true);
+    this.paintsFor(lines).subscribe((paints) => {
+      if (this.stage !== stage) {
+        return;
       }
-    }
-
-    this.drawTabuInProgress();
-
-    if (this.drawMode === 'line') {
-      this.topoImage.linePaths.forEach((linePath) => {
-        this.drawAnchors(linePath);
+      this.inProgressDrawToken++;
+      const labels: Label[] = [];
+      const backgroundOpacity = this.linePathInProgress ? 0.2 : 1;
+      orderedLinePaths.forEach((linePath, index) => {
+        this.drawLine(
+          linePath,
+          backgroundOpacity,
+          false,
+          undefined,
+          paints[index],
+        );
+        labels.push(
+          this.getLineLabel(
+            linePath,
+            getLinePathDisplayNumber(linePath, index),
+          ),
+        );
       });
-    }
-    if (
-      editingLine &&
-      this.linePathInProgress &&
-      this.linePathInProgress.path.length >= 2
-    ) {
-      this.drawEditableAnchors(this.linePathInProgress);
-    } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
-      this.drawEditableTabuAnchors();
-    }
+
+      this.placeLineLabels(
+        orderedLinePaths,
+        labels,
+        true,
+        paints.slice(0, orderedLinePaths.length),
+      );
+
+      this.drawUnassignedTabuHolds();
+      if (this.linePathInProgress) {
+        this.drawTabuHolds(this.linePathInProgress, {
+          visible: true,
+          targetLayer: this.focusLayer,
+        });
+      }
+
+      const editingLine = this.drawMode === 'line';
+      const inProgressPaint = this.linePathInProgress
+        ? paints[orderedLinePaths.length]
+        : undefined;
+      if (
+        this.linePathInProgress &&
+        this.linePathInProgress.path.length >= 4 &&
+        inProgressPaint
+      ) {
+        this.drawLine(
+          this.linePathInProgress,
+          1,
+          editingLine,
+          this.focusLayer,
+          inProgressPaint,
+        );
+        if (this.linePathInProgressNumber != null) {
+          const inProgressLabel = this.getLineLabel(
+            this.linePathInProgress,
+            String(this.linePathInProgressNumber),
+          );
+          this.placeLineLabel(
+            this.linePathInProgress,
+            inProgressLabel,
+            true,
+            inProgressPaint,
+          );
+        }
+      }
+
+      this.drawTabuInProgress();
+
+      if (this.drawMode === 'line') {
+        orderedLinePaths.forEach((linePath, index) => {
+          this.drawAnchors(linePath, paints[index]);
+        });
+      }
+      if (
+        editingLine &&
+        this.linePathInProgress &&
+        this.linePathInProgress.path.length >= 2
+      ) {
+        this.drawEditableAnchors(this.linePathInProgress);
+      } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
+        this.drawEditableTabuAnchors();
+      }
+    });
   }
 
   /**
@@ -217,80 +262,66 @@ export class TopoImageEditorComponent
     linePath: LinePath,
     opacity: number,
     highlighted = false,
-    targetLayer?: Konva.Layer,
+    targetLayer: Konva.Layer | undefined,
+    paint: TopoLinePaint,
   ) {
-    this.store
-      .select(selectInstanceSettingsState)
-      .pipe(take(1))
-      .subscribe((instanceSettingsState) => {
-        const baseColor =
-          linePath.line?.color ??
-          this.color ??
-          instanceSettingsState.arrowColor;
-        const strokeColor = highlighted
-          ? instanceSettingsState.arrowHighlightColor
-          : baseColor;
-        const layer = targetLayer ?? this.lineLayer;
-        const isActiveEditableLine = highlighted;
-        const line = new Konva.Arrow({
-          points: getAbsoluteCoordinates(
-            linePath.path,
-            this.width,
-            this.height,
-          ),
-          stroke: strokeColor,
-          fill: strokeColor,
-          strokeWidth: 2 * this.lineSizeMultiplicator,
-          lineCap: 'square',
-          tension: 0,
-          pointerLength: 6 * this.lineSizeMultiplicator,
-          pointerWidth: 6 * this.lineSizeMultiplicator,
-          opacity,
-          listening: isActiveEditableLine,
-          hitStrokeWidth: isActiveEditableLine ? 20 * this.mobileSizeFactor : 0,
-          preventDefault: true,
-        });
-        if (isActiveEditableLine) {
-          const emitSegmentClick = (event: Konva.KonvaEventObject<Event>) => {
-            event.cancelBubble = true;
-            const pointer = this.stage.getPointerPosition();
-            if (!pointer) {
-              return;
-            }
-            const point = [
-              pointer.x * (1 / this.scale),
-              pointer.y * (1 / this.scale),
-            ];
-            const segmentHit = getClosestSegmentHit(
-              linePath.path,
-              point,
-              this.width,
-              this.height,
-              12 * this.mobileSizeFactor * this.lineSizeMultiplicator,
-            );
-            if (!segmentHit) {
-              return;
-            }
-            this.lineSegmentClick.emit({
-              point: segmentHit.point,
-              insertAfterIndex: segmentHit.insertAfterIndex,
-            });
-          };
-          line.on('click', emitSegmentClick);
-          line.on('tap', emitSegmentClick);
-          line.on('mouseenter', () => {
-            this.stage.container().style.cursor = 'copy';
-          });
-          line.on('mouseleave', () => {
-            this.stage.container().style.cursor = 'default';
-          });
+    const strokeColor = highlighted ? paint.editingHighlight : paint.color;
+    const layer = targetLayer ?? this.lineLayer;
+    const isActiveEditableLine = highlighted;
+    const line = new Konva.Arrow({
+      points: getAbsoluteCoordinates(linePath.path, this.width, this.height),
+      stroke: strokeColor,
+      fill: strokeColor,
+      strokeWidth: 2 * this.lineSizeMultiplicator,
+      lineCap: 'square',
+      tension: 0,
+      pointerLength: 6 * this.lineSizeMultiplicator,
+      pointerWidth: 6 * this.lineSizeMultiplicator,
+      opacity,
+      listening: isActiveEditableLine,
+      hitStrokeWidth: isActiveEditableLine ? 20 * this.mobileSizeFactor : 0,
+      preventDefault: true,
+    });
+    if (isActiveEditableLine) {
+      const emitSegmentClick = (event: Konva.KonvaEventObject<Event>) => {
+        event.cancelBubble = true;
+        const pointer = this.stage.getPointerPosition();
+        if (!pointer) {
+          return;
         }
-        layer.add(line);
-        linePath.konvaLine = line;
-        linePath.konvaFocusLayer = this.focusLayer;
-        linePath.konvaNumberLayer = this.numberLayer;
-        linePath.konvaLineLayer = this.lineLayer;
+        const point = [
+          pointer.x * (1 / this.scale),
+          pointer.y * (1 / this.scale),
+        ];
+        const segmentHit = getClosestSegmentHit(
+          linePath.path,
+          point,
+          this.width,
+          this.height,
+          12 * this.mobileSizeFactor * this.lineSizeMultiplicator,
+        );
+        if (!segmentHit) {
+          return;
+        }
+        this.lineSegmentClick.emit({
+          point: segmentHit.point,
+          insertAfterIndex: segmentHit.insertAfterIndex,
+        });
+      };
+      line.on('click', emitSegmentClick);
+      line.on('tap', emitSegmentClick);
+      line.on('mouseenter', () => {
+        this.stage.container().style.cursor = 'copy';
       });
+      line.on('mouseleave', () => {
+        this.stage.container().style.cursor = 'default';
+      });
+    }
+    layer.add(line);
+    linePath.konvaLine = line;
+    linePath.konvaFocusLayer = this.focusLayer;
+    linePath.konvaNumberLayer = this.numberLayer;
+    linePath.konvaLineLayer = this.lineLayer;
   }
 
   /**
@@ -694,58 +725,50 @@ export class TopoImageEditorComponent
    * (or pass through) an existing anchor — e.g. a sit-start congruent to a stand-start.
    * @param linePath Existing line path whose anchors become magnetic snap points.
    */
-  private drawAnchors(linePath: LinePath) {
-    this.store
-      .select(selectInstanceSettingsState)
-      .pipe(take(1))
-      .subscribe((instanceSettingsState) => {
-        const absoluteCoordinates = getAbsoluteCoordinates(
-          linePath.path,
-          this.width,
-          this.height,
-        );
-        const normalFill =
-          linePath.line?.color ?? instanceSettingsState.arrowColor;
-        const highlightFill =
-          highlightColor(linePath.line?.color) ??
-          instanceSettingsState.arrowHighlightColor;
-        for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
-          const anchor = new Konva.Circle({
-            x: absoluteCoordinates[i * 2],
-            y: absoluteCoordinates[i * 2 + 1],
-            radius: 10 * this.mobileSizeFactor,
-            fill: normalFill,
-            stroke: instanceSettingsState.arrowTextColor,
-            strokeWidth: 1,
-            preventDefault: true,
-          });
-          anchor.on('click', (event) => {
-            event.cancelBubble = true;
-            this.anchorClick.emit([
-              absoluteCoordinates[i * 2],
-              absoluteCoordinates[i * 2 + 1],
-            ]);
-          });
-          anchor.on('tap', (event) => {
-            event.cancelBubble = true;
-            this.anchorClick.emit([
-              absoluteCoordinates[i * 2],
-              absoluteCoordinates[i * 2 + 1],
-            ]);
-          });
-          anchor.on('mouseenter', () => {
-            anchor.fill(highlightFill);
-            this.showMagneticAnchorHighlight(anchor, highlightFill);
-            this.stage.container().style.cursor = 'pointer';
-          });
-          anchor.on('mouseleave', () => {
-            anchor.fill(normalFill);
-            this.clearMagneticAnchorHighlight();
-            this.stage.container().style.cursor = 'default';
-          });
-          this.lineLayer.add(anchor);
-        }
+  private drawAnchors(linePath: LinePath, paint: TopoLinePaint) {
+    const absoluteCoordinates = getAbsoluteCoordinates(
+      linePath.path,
+      this.width,
+      this.height,
+    );
+    const normalFill = paint.color;
+    const highlightFill = paint.highlight;
+    for (let i = 0; i < absoluteCoordinates.length / 2; i++) {
+      const anchor = new Konva.Circle({
+        x: absoluteCoordinates[i * 2],
+        y: absoluteCoordinates[i * 2 + 1],
+        radius: 10 * this.mobileSizeFactor,
+        fill: normalFill,
+        stroke: paint.arrowTextColor,
+        strokeWidth: 1,
+        preventDefault: true,
       });
+      anchor.on('click', (event) => {
+        event.cancelBubble = true;
+        this.anchorClick.emit([
+          absoluteCoordinates[i * 2],
+          absoluteCoordinates[i * 2 + 1],
+        ]);
+      });
+      anchor.on('tap', (event) => {
+        event.cancelBubble = true;
+        this.anchorClick.emit([
+          absoluteCoordinates[i * 2],
+          absoluteCoordinates[i * 2 + 1],
+        ]);
+      });
+      anchor.on('mouseenter', () => {
+        anchor.fill(highlightFill);
+        this.showMagneticAnchorHighlight(anchor, highlightFill);
+        this.stage.container().style.cursor = 'pointer';
+      });
+      anchor.on('mouseleave', () => {
+        anchor.fill(normalFill);
+        this.clearMagneticAnchorHighlight();
+        this.stage.container().style.cursor = 'default';
+      });
+      this.lineLayer.add(anchor);
+    }
   }
 
   /**
@@ -778,32 +801,42 @@ export class TopoImageEditorComponent
    * Redraws the line path currently being edited without a full canvas rebuild.
    */
   redrawLinePathInProgress() {
-    if (!this.linePathInProgress) {
+    if (!this.linePathInProgress || !this.stage) {
       return;
     }
-    if (this.linePathInProgress.konvaLine) {
-      this.linePathInProgress.konvaLine.destroy();
-      this.linePathInProgress.konvaLine = null;
-    }
-    this.destroyEditableAnchors();
-    this.destroyTabuInProgress();
-    this.drawUnassignedTabuHolds();
-    if (this.linePathInProgress) {
-      this.drawTabuHolds(this.linePathInProgress, {
+    const stage = this.stage;
+    const linePath = this.linePathInProgress;
+    const token = ++this.inProgressDrawToken;
+    this.paintsFor([linePath.line]).subscribe(([paint]) => {
+      if (
+        this.stage !== stage ||
+        token !== this.inProgressDrawToken ||
+        this.linePathInProgress !== linePath
+      ) {
+        return;
+      }
+      if (linePath.konvaLine) {
+        linePath.konvaLine.destroy();
+        linePath.konvaLine = null;
+      }
+      this.destroyEditableAnchors();
+      this.destroyTabuInProgress();
+      this.drawUnassignedTabuHolds();
+      this.drawTabuHolds(linePath, {
         visible: true,
         targetLayer: this.focusLayer,
       });
-    }
-    const editingLine = this.drawMode === 'line';
-    if (this.linePathInProgress.path.length >= 4) {
-      this.drawLine(this.linePathInProgress, 1, editingLine, this.focusLayer);
-    }
-    this.drawTabuInProgress();
-    if (editingLine && this.linePathInProgress.path.length >= 2) {
-      this.drawEditableAnchors(this.linePathInProgress);
-    } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
-      this.drawEditableTabuAnchors();
-    }
+      const editingLine = this.drawMode === 'line';
+      if (linePath.path.length >= 4) {
+        this.drawLine(linePath, 1, editingLine, this.focusLayer, paint);
+      }
+      this.drawTabuInProgress();
+      if (editingLine && linePath.path.length >= 2) {
+        this.drawEditableAnchors(linePath);
+      } else if (this.drawMode === 'tabu' && this.tabuInProgress?.length >= 2) {
+        this.drawEditableTabuAnchors();
+      }
+    });
   }
 
   private drawUnassignedTabuHolds() {

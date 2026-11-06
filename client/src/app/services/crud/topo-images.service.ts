@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { HttpClient } from '@angular/common/http';
 import { TopoImage } from '../../models/topo-image';
+import { Paginated } from '../../models/paginated';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemOrder } from '../../interfaces/item-order.interface';
@@ -67,6 +68,21 @@ export class TopoImagesService {
         map((topoImageListJson: any) =>
           topoImageListJson.map(TopoImage.deserialize),
         ),
+      );
+  }
+
+  /**
+   * Returns one page of topo images. Used for the gym archive, which can hold
+   * hundreds of images with lines.
+   */
+  public getTopoImagesPaginated(
+    areaSlug: string,
+    params?: ApiQueryParams,
+  ): Observable<Paginated<TopoImage>> {
+    return this.http
+      .get(this.api.topoImages.getList(areaSlug), httpGetOptions(params))
+      .pipe(
+        map((payload) => Paginated.deserialize(payload, TopoImage.deserialize)),
       );
   }
 

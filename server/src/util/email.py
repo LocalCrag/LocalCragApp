@@ -14,6 +14,7 @@ from i18n.mail_common import merge_mail_translations
 from i18n.notification_digest_mail import notification_digest_mail
 from i18n.project_climbed_mail import project_climbed_mail
 from i18n.reset_password_mail import reset_password_mail
+from i18n.two_factor_mail import two_factor_mail
 from i18n.user_registered_mail import user_registered_mail
 from models.comment import Comment
 from models.enums.notification_digest_frequency_enum import (
@@ -128,6 +129,23 @@ def send_forgot_password_email(user: User):
     )
     msg.attach(MIMEText(template, "html"))
 
+    send_generic_mail(msg)
+
+
+def send_two_factor_email(user: User, code: str):
+    """
+    Sends a one-time code for password two-factor authentication or for turning email codes on.
+    """
+    msg, i18n_keyword_arg_dict = prepare_message(user, two_factor_mail)
+    msg["To"] = user.email
+    template = render_template(
+        "two-factor-mail.html",
+        name="{} {}".format(user.firstname, user.lastname),
+        code=code,
+        frontend_host=current_app.config["FRONTEND_HOST"],
+        **i18n_keyword_arg_dict,
+    )
+    msg.attach(MIMEText(template, "html"))
     send_generic_mail(msg)
 
 

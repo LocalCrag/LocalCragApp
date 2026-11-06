@@ -36,7 +36,7 @@
           <p-select
             id="position"
             formControlName="position"
-            [options]="positions"
+            [options]="positionOptions"
             lcFormControl
           >
             <ng-template let-position #item>
@@ -51,7 +51,40 @@
           <small class="lc-error" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>
+          @if (detachesChildren) {
+            <small class="text-sm text-surface-500">{{
+              t("parentDetachedHelp")
+            }}</small>
+          }
         </div>
+        @if (menuItemForm.get("position").value === topPosition) {
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label" for="parent">{{
+              t("parentLabel")
+            }}</label>
+            <p-select
+              id="parent"
+              formControlName="parent"
+              [options]="parentOptions"
+              optionLabel="selectLabel"
+              [showClear]="true"
+              [placeholder]="t('parentPlaceholder')"
+              lcFormControl
+            >
+              <ng-template let-menuItem #item>
+                <div>{{ menuItemOptionLabel(menuItem) }}</div>
+              </ng-template>
+              <ng-template let-selectedItem #selectedItem>
+                {{ menuItemOptionLabel(selectedItem) }}
+              </ng-template>
+            </p-select>
+            <small class="text-sm text-surface-500">{{
+              menuItemForm.get("type").value === containerType
+                ? t("containerHelp")
+                : t("parentHelp")
+            }}</small>
+          </div>
+        }
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="menu-page">{{
             t("menuPageLabel")

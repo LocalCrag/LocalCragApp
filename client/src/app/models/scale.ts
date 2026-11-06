@@ -25,19 +25,32 @@ export function deserializeGradeList(payload: any): GradeDistribution {
   return payload;
 }
 
+export function defaultScaleName(
+  scales: Scale[],
+  lineType: LineType,
+): string | null {
+  return (
+    scales.find((scale) => scale.lineType === lineType && scale.isDefault)
+      ?.name ?? null
+  );
+}
+
 export class Scale {
   lineType: LineType;
   name: string;
+  isDefault: boolean;
   grades?: Grade[];
   gradeBrackets: {
     stackedChartBrackets: StackedChartBrackets;
     barChartBrackets: BarChartBrackets;
+    showDiagrams: boolean;
   };
 
   public static deserialize(payload: any): Scale {
     const scale = new Scale();
     scale.lineType = payload.type;
     scale.name = payload.name;
+    scale.isDefault = payload.isDefault;
     scale.grades = payload.grades;
     scale.gradeBrackets = payload.gradeBrackets;
 
@@ -49,6 +62,7 @@ export class Scale {
     const scale = new Scale();
     scale.lineType = payload.type;
     scale.name = payload.name;
+    scale.isDefault = payload.isDefault;
     scale.grades = payload.grades;
     scale.gradeBrackets = payload.gradeBrackets;
 

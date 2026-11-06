@@ -28,6 +28,9 @@ def upgrade():
         batch_op.add_column(sa.Column("rank_top_10", sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column("rank_top_50", sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column("rank_total_count", sa.Integer(), nullable=True))
+        # The shared rank SQL partitions by scale. Databases that already passed
+        # this revision get the column from the later scale migration instead.
+        batch_op.add_column(sa.Column("scale", sa.String(length=120), nullable=False, server_default=""))
 
     # Must use Alembic's connection — db.session would deadlock waiting on the
     # uncommitted ALTER TABLE lock held by this migration transaction.
@@ -39,6 +42,9 @@ def downgrade():
         batch_op.drop_column("rank_total_count")
         batch_op.drop_column("rank_top_50")
         batch_op.drop_column("rank_top_10")
+    ranking_columns = sa.inspect(op.get_bind()).get_columns("rankings")
+    if any(column["name"] == "scale" for column in ranking_columns):
+        op.drop_column("rankings", "scale")
     columns = sa.inspect(op.get_bind()).get_columns("account_settings")
     if any(column["name"] == "exclude_from_rankings" for column in columns):
         op.drop_column("account_settings", "exclude_from_rankings")

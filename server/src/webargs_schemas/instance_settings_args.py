@@ -162,6 +162,7 @@ instance_settings_args = {
         required=True, validate=validate.Range(min=0, max=2, min_inclusive=True, max_inclusive=True)
     ),
     "displayUserGrades": fields.Boolean(required=True),
+    "colorLinesByScale": fields.Boolean(required=True),
     "displayUserRatings": fields.Boolean(required=True),
     "noClosedProjects": fields.Boolean(required=True),
     "suggestionsEnabled": fields.Boolean(required=True),

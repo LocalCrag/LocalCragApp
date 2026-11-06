@@ -33,11 +33,12 @@ import {
 } from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap, take } from 'rxjs/operators';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
@@ -117,7 +118,7 @@ import {
     TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
   ],
-  providers: [ConfirmationService, DialogService],
+  providers: [DialogService],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -409,7 +410,10 @@ export class LineListComponent implements OnInit, PaginatedListView {
       for (const gradeScale in gradeDistribution[lineType]) {
         if (gradeDistribution[lineType][gradeScale]) {
           this.availableScales.push({
-            label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+            label: scaleChoiceLabel(
+              this.translocoService.translate(lineType),
+              gradeScale,
+            ),
             value: { lineType: lineType as LineType, gradeScale },
           });
         }
@@ -428,7 +432,10 @@ export class LineListComponent implements OnInit, PaginatedListView {
         };
       const v = s.value as { lineType: LineType; gradeScale: string };
       return {
-        label: `${this.translocoService.translate(v.lineType)} ${v.gradeScale}`,
+        label: scaleChoiceLabel(
+          this.translocoService.translate(v.lineType),
+          v.gradeScale,
+        ),
         value: v,
       };
     });

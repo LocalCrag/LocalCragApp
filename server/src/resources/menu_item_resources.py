@@ -52,13 +52,8 @@ class CreateMenuItem(MethodView):
         new_menu_item: MenuItem = MenuItem()
         new_menu_item.type = menu_item_data["type"]
         new_menu_item.position = menu_item_data["position"]
-        new_menu_item.menu_page_id = menu_item_data["menuPage"]
-        if new_menu_item.type == MenuItemTypeEnum.MENU_PAGE:
-            new_menu_item.icon = menu_item_data["icon"]
-        if new_menu_item.type == MenuItemTypeEnum.URL:
-            new_menu_item.url = menu_item_data["url"]
-            new_menu_item.icon = menu_item_data["icon"]
-            new_menu_item.title = menu_item_data["title"]
+        _apply_type_fields(new_menu_item, menu_item_data)
+        _apply_parent(new_menu_item, menu_item_data.get("parent"), new_menu_item.position)
         new_menu_item.order_index = MenuItem.find_max_order_index_at_position(new_menu_item.position) + 1
 
         db.session.add(new_menu_item)
@@ -79,16 +74,11 @@ class UpdateMenuItem(MethodView):
 
         if menu_item.position != menu_item_data["position"]:
             menu_item.order_index = MenuItem.find_max_order_index_at_position(menu_item_data["position"]) + 1
-        if menu_item.type == MenuItemTypeEnum.MENU_PAGE:
-            menu_item.icon = menu_item_data["icon"]
-        if menu_item.type == MenuItemTypeEnum.URL:
-            menu_item.url = menu_item_data["url"]
-            menu_item.icon = menu_item_data["icon"]
-            menu_item.title = menu_item_data["title"]
 
         menu_item.type = menu_item_data["type"]
         menu_item.position = menu_item_data["position"]
-        menu_item.menu_page_id = menu_item_data["menuPage"]
+        _apply_type_fields(menu_item, menu_item_data)
+        _apply_parent(menu_item, menu_item_data.get("parent"), menu_item.position)
 
         db.session.add(menu_item)
         db.session.commit()
@@ -237,3 +227,87 @@ class GetCragMenuStructure(MethodView):
                     }
                 )
         return jsonify(crags), 200
+
+
+def _apply_type_fields(menu_item: MenuItem, data):
+    """
+    Copies the fields that belong to this type and clears the rest.
+    A container is a header label for nested items. It has no page and no link.
+    """
+    menu_item.icon = None
+    menu_item.url = None
+    menu_item.title = None
+    menu_item.menu_page_id = None
+
+    if data["type"] == MenuItemTypeEnum.CONTAINER:
+        title = (data.get("title") or "").strip()
+        if not title:
+            raise BadRequest("A container menu item needs a title.")
+        if data["position"] != MenuItemPositionEnum.TOP:
+            raise BadRequest("Container menu items can only be used in the header.")
+        menu_item.title = title
+        menu_item.icon = data["icon"]
+        return
+
+    if data["type"] == MenuItemTypeEnum.MENU_PAGE:
+        menu_item.icon = data["icon"]
+        menu_item.menu_page_id = data["menuPage"]
+    elif data["type"] == MenuItemTypeEnum.URL:
+        menu_item.url = data["url"]
+        menu_item.icon = data["icon"]
+        menu_item.title = data["title"]
+
+
+def _apply_parent(menu_item: MenuItem, parent_id, position):
+    """
+    Header items can nest under other header items. Footer items stay flat.
+    Leaving the header promotes this item's children back to the top level.
+    """
+    if position != MenuItemPositionEnum.TOP:
+        if parent_id is not None:
+            raise BadRequest("Only header menu items can be nested.")
+        menu_item.parent_id = None
+        if menu_item.id is not None:
+            _promote_children(menu_item.id)
+        return
+
+    if parent_id is None:
+        menu_item.parent_id = None
+        return
+
+    if menu_item.id is not None and parent_id == menu_item.id:
+        raise BadRequest("A menu item cannot be nested under itself.")
+
+    parent = MenuItem.query.filter_by(id=parent_id).first()
+    if parent is None:
+        raise BadRequest("Parent menu item not found.")
+    if parent.position != MenuItemPositionEnum.TOP:
+        raise BadRequest("Menu items can only be nested under header items.")
+    if parent.type == MenuItemTypeEnum.TOPO:
+        raise BadRequest("Topo menu items cannot have nested children.")
+    if menu_item.id is not None and _parent_chain_contains(parent, menu_item.id):
+        raise BadRequest("Menu items cannot be nested in a cycle.")
+
+    menu_item.parent_id = parent_id
+
+
+def _parent_chain_contains(parent: MenuItem, item_id) -> bool:
+    seen = set()
+    current = parent
+    while current is not None:
+        if current.id == item_id:
+            return True
+        if current.id in seen:
+            return False
+        seen.add(current.id)
+        if current.parent_id is None:
+            return False
+        current = MenuItem.query.filter_by(id=current.parent_id).first()
+    return False
+
+
+def _promote_children(menu_item_id):
+    children = MenuItem.query.filter_by(parent_id=menu_item_id).all()
+    for child in children:
+        child.parent_id = None
+        db.session.add(child)

@@ -34,8 +34,10 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { MessageModule } from 'primeng/message';
 import { DividerModule } from 'primeng/divider';
+import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { FormArrayDirective } from '../../shared/forms/form-array.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -65,8 +67,10 @@ import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bra
     ConfirmPopupModule,
     MessageModule,
     DividerModule,
+    Checkbox,
     Select,
     TranslateSpecialGradesPipe,
+    FormArrayDirective,
     FormControlDirective,
     IfErrorDirective,
     ControlGroupDirective,
@@ -85,6 +89,7 @@ export class ScaleFormComponent implements OnInit {
   public loadingState = LoadingState.INITIAL_LOADING;
   public scale: Scale;
   public editMode = true;
+  private initialLineType: LineType | null = null;
 
   private fb = inject(FormBuilder);
   private scalesService = inject(ScalesService);
@@ -104,6 +109,13 @@ export class ScaleFormComponent implements OnInit {
     if (!lineType) {
       this.editMode = false;
     }
+
+    const requestedType = this.route.snapshot.queryParamMap.get('type');
+    this.initialLineType = Object.values(LineType).includes(
+      requestedType as LineType,
+    )
+      ? (requestedType as LineType)
+      : null;
 
     this.buildForm();
     this.scaleForm.disable();
@@ -174,11 +186,14 @@ export class ScaleFormComponent implements OnInit {
     };
 
     this.scaleForm = this.fb.group({
-      lineType: this.editMode ? undefined : [null, Validators.required],
+      lineType: this.editMode
+        ? undefined
+        : [this.initialLineType, Validators.required],
       name: this.editMode
         ? undefined
         : ['', [Validators.required, Validators.maxLength(32)]],
       grades: this.fb.array([], [notUniqueValidator]),
+      showDiagrams: [true],
       stackedChartBrackets: this.fb.array(
         [],
         [
@@ -215,6 +230,9 @@ export class ScaleFormComponent implements OnInit {
           this.createBarChartBracketGroup(bracket.value, bracket.name),
         )
         .forEach((ctl) => this.barChartBracketsControls().push(ctl));
+      this.scaleForm.patchValue({
+        showDiagrams: this.scale.gradeBrackets.showDiagrams,
+      });
     } else {
       this.gradeControls().push(
         this.createGradeGroup(marker('CLOSED_PROJECT'), -2, false),
@@ -295,6 +313,24 @@ export class ScaleFormComponent implements OnInit {
 
   barChartBracketsControls() {
     return this.scaleForm.controls.barChartBrackets as FormArray;
+  }
+
+  private gradeBracketsFromForm(): Scale['gradeBrackets'] {
+    return {
+      showDiagrams: !!this.scaleForm.get('showDiagrams')?.value,
+      stackedChartBrackets: this.stackedChartBracketsControls().value.map(
+        (gb) => ({
+          value: gb.value,
+          color: gb.color,
+        }),
+      ),
+      barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
+        return {
+          value: gb.value,
+          name: gb.name,
+        };
+      }),
+    };
   }
 
   private reorderControlsByValue(
@@ -396,20 +432,7 @@ export class ScaleFormComponent implements OnInit {
 
     if (this.editMode) {
       this.scale.grades = this.gradeControls().value;
-      this.scale.gradeBrackets = {
-        stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-          (gb) => ({
-            value: gb.value,
-            color: gb.color,
-          }),
-        ),
-        barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
-          return {
-            value: gb.value,
-            name: gb.name,
-          };
-        }),
-      };
+      this.scale.gradeBrackets = this.gradeBracketsFromForm();
       this.scalesService.updateScale(this.scale).subscribe({
         next: () => {
           this.store.dispatch(toastNotification('SCALE_UPDATED'));
@@ -427,20 +450,7 @@ export class ScaleFormComponent implements OnInit {
       scale.lineType = this.scaleForm.get('lineType').value;
       scale.name = this.scaleForm.get('name').value;
       scale.grades = this.gradeControls().value;
-      scale.gradeBrackets = {
-        stackedChartBrackets: this.stackedChartBracketsControls().value.map(
-          (gb) => ({
-            value: gb.value,
-            color: gb.color,
-          }),
-        ),
-        barChartBrackets: this.barChartBracketsControls().value.map((gb) => {
-          return {
-            value: gb.value,
-            name: gb.name,
-          };
-        }),
-      };
+      scale.gradeBrackets = this.gradeBracketsFromForm();
       this.scalesService.createScale(scale).subscribe({
         next: () => {
           this.store.dispatch(toastNotification('SCALE_CREATED'));

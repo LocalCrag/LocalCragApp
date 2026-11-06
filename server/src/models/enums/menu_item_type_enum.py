@@ -14,3 +14,4 @@ class MenuItemTypeEnum(Enum):
     GALLERY = "GALLERY"
     HISTORY = "HISTORY"
     URL = "URL"
+    CONTAINER = "CONTAINER"

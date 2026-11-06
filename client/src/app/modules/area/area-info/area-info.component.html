@@ -16,9 +16,12 @@
         [slug]="area.slug"
         [level]="'area'"
       ></lc-current-conditions>
-      <h4>{{ t("gradeDistribution") }}:</h4>
+      @if (!gradeDiagramsSuppressed) {
+        <h4>{{ t("gradeDistribution") }}:</h4>
+      }
       <lc-grade-distribution-bar-chart
         [fetchingObservable]="fetchAreaGrades"
+        (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
       ></lc-grade-distribution-bar-chart>
       @if (area.description) {
         <h4>{{ t("description") }}:</h4>

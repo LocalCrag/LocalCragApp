@@ -27,13 +27,17 @@ import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-l
 import { Message } from 'primeng/message';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
+import { RegionService } from '../../../services/crud/region.service';
+import { ScalesService } from '../../../services/crud/scales.service';
 import { GradeDistribution } from '../../../models/scale';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { Store } from '@ngrx/store';
 import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-settings.selectors';
 import { Observable } from 'rxjs';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { RankingExample, rankingExampleFromGrades } from './ranking-example';
 
 @Component({
   selector: 'lc-ranking-list',
@@ -74,13 +78,21 @@ export class RankingListComponent implements OnInit {
   public showInfoPopup = false;
   public lineTypes: SelectItem<LineType>[] = null;
   public lineType: SelectItem<LineType> = null;
+  public scales: SelectItem<string>[] = [];
+  public scale: SelectItem<string> = null;
+  public rankingExample: RankingExample = null;
   public rankingPastWeeks: Observable<number | null>;
 
   private rankingService = inject(RankingService);
   private translocoService = inject(TranslocoService);
   private cragsService = inject(CragsService);
   private sectorsService = inject(SectorsService);
+  private regionService = inject(RegionService);
+  private scalesService = inject(ScalesService);
   private store = inject(Store);
+  private scalesByLineType: Partial<Record<LineType, SelectItem<string>[]>> =
+    {};
+  private exampleRequest = 0;
 
   private static readonly RANK_FIELD_BY_SORT: Record<
     string,
@@ -129,12 +141,10 @@ export class RankingListComponent implements OnInit {
           this.loadRanking();
         });
     } else {
-      this.lineType = {
-        label: this.translocoService.translate(LineType.BOULDER),
-        value: LineType.BOULDER,
-      };
-      this.lineTypes = [this.lineType];
-      this.loadRanking();
+      this.regionService.getRegionGrades().subscribe((gradeDistribution) => {
+        this.interpretGradeDistribution(gradeDistribution);
+        this.loadRanking();
+      });
     }
   }
 
@@ -145,12 +155,30 @@ export class RankingListComponent implements OnInit {
       SPORT: 0,
       TRAD: 0,
     };
+    const scalesByLineType: Partial<Record<LineType, SelectItem<string>[]>> =
+      {};
     for (const lineType in gradeDistribution) {
-      for (const scale in gradeDistribution[lineType]) {
-        for (const count of Object.values(gradeDistribution[lineType][scale])) {
-          typeCounts[lineType] += count;
+      const scaleCounts: Record<string, number> = {};
+      for (const scaleName in gradeDistribution[lineType]) {
+        let scaleCount = 0;
+        for (const count of Object.values(
+          gradeDistribution[lineType][scaleName],
+        )) {
+          const numericCount = Number(count);
+          typeCounts[lineType] += numericCount;
+          scaleCount += numericCount;
+        }
+        if (scaleCount > 0) {
+          scaleCounts[scaleName] = scaleCount;
         }
       }
+      const lineTypeLabel = this.translocoService.translate(lineType);
+      scalesByLineType[lineType as LineType] = Object.entries(scaleCounts)
+        .sort(([, left], [, right]) => right - left)
+        .map(([name]) => ({
+          label: scaleChoiceLabel(lineTypeLabel, name),
+          value: name,
+        }));
     }
     Object.entries(typeCounts)
       .filter(([, count]) => count > 0)
@@ -163,17 +191,28 @@ export class RankingListComponent implements OnInit {
       });
     this.lineType = lineTypes[0] ?? null;
     this.lineTypes = lineTypes;
+    this.scalesByLineType = scalesByLineType;
+    this.applyScalesForLineType();
+  }
+
+  onLineTypeChange() {
+    this.applyScalesForLineType();
+    this.loadRanking();
   }
 
   loadRanking() {
-    if (!this.lineType) {
+    if (!this.lineType || !this.scale) {
       // There will be no line type if there is no line yet in an instance
+      this.rankings = [];
+      this.rankingExample = null;
       this.loading = LoadingState.DEFAULT;
       return;
     }
+    this.refreshRankingExample();
     this.loading = LoadingState.LOADING;
     const params: ApiQueryParams = {
       line_type: this.lineType.value.toString(),
+      scale: this.scale.value,
     };
     if (this.crag) {
       params.crag_id = this.crag.id;
@@ -213,5 +252,28 @@ export class RankingListComponent implements OnInit {
 
   showDialog() {
     this.showInfoPopup = true;
+  }
+
+  private applyScalesForLineType() {
+    this.scales = this.lineType
+      ? (this.scalesByLineType[this.lineType.value] ?? [])
+      : [];
+    this.scale = this.scales[0] ?? null;
+  }
+
+  private refreshRankingExample() {
+    const lineType = this.lineType?.value;
+    const scaleName = this.scale?.value;
+    this.rankingExample = null;
+    if (!lineType || !scaleName) {
+      return;
+    }
+    const request = ++this.exampleRequest;
+    this.scalesService.getScale(lineType, scaleName).subscribe((scale) => {
+      if (request !== this.exampleRequest) {
+        return;
+      }
+      this.rankingExample = rankingExampleFromGrades(scale.grades);
+    });
   }
 }

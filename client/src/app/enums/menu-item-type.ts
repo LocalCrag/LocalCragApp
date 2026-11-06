@@ -7,4 +7,5 @@ export enum MenuItemType {
   GALLERY = 'GALLERY' /** t(GALLERY) **/,
   HISTORY = 'HISTORY' /** t(HISTORY) **/,
   URL = 'URL' /** t(URL) **/,
+  CONTAINER = 'CONTAINER' /** t(CONTAINER) **/,
 }

@@ -21,7 +21,6 @@ import { LoadingState } from '../../../enums/loading-state';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { forkJoin } from 'rxjs';
 import {
   selectGymMode,
   selectInstanceName,
@@ -41,11 +40,8 @@ import { LineEntryBatchLineFormComponent } from '../line-entry-batch-line-form/l
 import { AsyncPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { AreasService } from '../../../services/crud/areas.service';
-import { SectorsService } from '../../../services/crud/sectors.service';
-import { CragsService } from '../../../services/crud/crags.service';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { Scale } from '../../../models/scale';
+import { defaultScaleName, Scale } from '../../../models/scale';
 import { LineType } from '../../../enums/line-type';
 import { DatePicker } from 'primeng/datepicker';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
@@ -125,9 +121,6 @@ export class LineEntryBatchEditorComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private router = inject(Router);
-  private areasService = inject(AreasService);
-  private sectorsService = inject(SectorsService);
-  private cragsService = inject(CragsService);
   private scalesService = inject(ScalesService);
   private languageService = inject(LanguageService);
   private batchEditorService = inject(BatchEditorService);
@@ -162,12 +155,7 @@ export class LineEntryBatchEditorComponent implements OnInit {
 
     this.loadingState = LoadingState.DEFAULT;
 
-    forkJoin([
-      this.cragsService.getCrag(this.cragSlug),
-      this.sectorsService.getSector(this.sectorSlug),
-      this.areasService.getArea(this.areaSlug),
-      this.scalesService.getScales(),
-    ]).subscribe(([crag, sector, area, scales]) => {
+    this.scalesService.getScales().subscribe((scales) => {
       this.groupedScales = {
         [LineType.BOULDER]: [],
         [LineType.SPORT]: [],
@@ -177,18 +165,18 @@ export class LineEntryBatchEditorComponent implements OnInit {
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach((scale) => this.groupedScales[scale.lineType].push(scale));
 
-      this.defaultScales[LineType.BOULDER] =
-        area.defaultBoulderScale ??
-        sector.defaultBoulderScale ??
-        crag.defaultBoulderScale;
-      this.defaultScales[LineType.SPORT] =
-        area.defaultSportScale ??
-        sector.defaultSportScale ??
-        crag.defaultSportScale;
-      this.defaultScales[LineType.TRAD] =
-        area.defaultTradScale ??
-        sector.defaultTradScale ??
-        crag.defaultTradScale;
+      this.defaultScales[LineType.BOULDER] = defaultScaleName(
+        scales,
+        LineType.BOULDER,
+      );
+      this.defaultScales[LineType.SPORT] = defaultScaleName(
+        scales,
+        LineType.SPORT,
+      );
+      this.defaultScales[LineType.TRAD] = defaultScaleName(
+        scales,
+        LineType.TRAD,
+      );
 
       this.buildTypeOptions();
       this.languageService.renderedLanguage$

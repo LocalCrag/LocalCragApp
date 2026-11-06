@@ -36,6 +36,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   ],
 })
 export class AreaInfoComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public area: Area;
   public fetchAreaGrades: Observable<GradeDistribution>;
   public areaCoordinates: Coordinates;

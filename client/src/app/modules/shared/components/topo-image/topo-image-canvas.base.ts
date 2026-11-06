@@ -12,16 +12,20 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, forkJoin, Observable, of, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import Konva from 'konva';
 import { take } from 'rxjs/operators';
 import { TopoImage } from '../../../../models/topo-image';
 import { LinePath } from '../../../../models/line-path';
+import { Line } from '../../../../models/line';
 import { selectIsMobile } from '../../../../ngrx/selectors/device.selectors';
-import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
-import { textColor } from '../../../../utility/misc/color';
+import { ScalesService } from '../../../../services/crud/scales.service';
+import {
+  TopoLinePaint,
+  topoLinePaint$,
+} from '../../../../utility/scale/topo-line-color';
 import {
   Label,
   PointFeatureLabelPlacement,
@@ -100,6 +104,7 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   protected el = inject(ElementRef);
   protected store = inject(Store);
+  protected scales = inject(ScalesService);
 
   @HostListener('window:resize')
   onResize() {
@@ -237,10 +242,28 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Resolves one paint per line. Empty input completes with an empty list.
+   * Callers must ignore the result when the stage has been replaced.
+   */
+  protected paintsFor(
+    lines: Array<Line | undefined>,
+  ): Observable<TopoLinePaint[]> {
+    if (lines.length === 0) {
+      return of([]);
+    }
+    return forkJoin(
+      lines.map((line) =>
+        topoLinePaint$(this.store, this.scales, line, this.color).pipe(take(1)),
+      ),
+    ).pipe(takeUntilDestroyed(this.destroyRef));
+  }
+
   protected placeLineLabels(
     orderedLinePaths: LinePath[],
     labels: Label[],
     editorMode: boolean,
+    paints: TopoLinePaint[],
   ) {
     if (labels.length === 0) {
       return;
@@ -252,7 +275,7 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
     );
     PFLP.discreteGradientDescent();
     orderedLinePaths.forEach((linePath, index) => {
-      this.placeLineLabel(linePath, labels[index], editorMode);
+      this.placeLineLabel(linePath, labels[index], editorMode, paints[index]);
     });
   }
 
@@ -260,50 +283,41 @@ export abstract class TopoImageCanvasBase implements OnInit, OnDestroy {
     linePath: LinePath,
     label: Label,
     editorMode: boolean,
+    paint: TopoLinePaint,
   ) {
-    this.store
-      .select(selectInstanceSettingsState)
-      .pipe(take(1))
-      .subscribe((instanceSettingsState) => {
-        const rectangleGroup = new Konva.Group({
-          x: label.position.x - label.width / 2,
-          y: label.position.y - label.height / 2,
-          width: label.width,
-          height: label.height,
-          ...(editorMode
-            ? { listening: false, preventDefault: true }
-            : { preventDefault: false }),
-        });
-        const rectangle = new Konva.Rect({
-          width: label.width,
-          height: label.height,
-          fill:
-            linePath.line?.color ??
-            this.color ??
-            instanceSettingsState.arrowColor,
-          cornerRadius: label.height / 6,
-          preventDefault: editorMode,
-        });
-        rectangleGroup.add(rectangle);
-        const konvaText = new Konva.Text({
-          text: label.text,
-          fontSize: label.height / 1.2,
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-          fill:
-            textColor(linePath.line?.color ?? this.color) ??
-            instanceSettingsState.arrowTextColor,
-          width: label.width,
-          padding: label.height / 8,
-          align: 'center',
-          preventDefault: editorMode,
-        });
-        rectangleGroup.add(konvaText);
-        this.numberLayer.add(rectangleGroup);
-        linePath.konvaRect = rectangle;
-        linePath.konvaText = konvaText;
-        linePath.konvaNumberGroup = rectangleGroup;
-      });
+    const rectangleGroup = new Konva.Group({
+      x: label.position.x - label.width / 2,
+      y: label.position.y - label.height / 2,
+      width: label.width,
+      height: label.height,
+      ...(editorMode
+        ? { listening: false, preventDefault: true }
+        : { preventDefault: false }),
+    });
+    const rectangle = new Konva.Rect({
+      width: label.width,
+      height: label.height,
+      fill: paint.color,
+      cornerRadius: label.height / 6,
+      preventDefault: editorMode,
+    });
+    rectangleGroup.add(rectangle);
+    const konvaText = new Konva.Text({
+      text: label.text,
+      fontSize: label.height / 1.2,
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      fill: paint.text,
+      width: label.width,
+      padding: label.height / 8,
+      align: 'center',
+      preventDefault: editorMode,
+    });
+    rectangleGroup.add(konvaText);
+    this.numberLayer.add(rectangleGroup);
+    linePath.konvaRect = rectangle;
+    linePath.konvaText = konvaText;
+    linePath.konvaNumberGroup = rectangleGroup;
   }
 
   protected fitStage() {

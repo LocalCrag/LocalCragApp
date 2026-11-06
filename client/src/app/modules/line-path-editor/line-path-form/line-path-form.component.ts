@@ -42,6 +42,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { Select } from 'primeng/select';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoLineColorPipe } from '../../shared/pipes/topo-line-color.pipe';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { Button } from 'primeng/button';
 import { TopoImage } from '../../../models/topo-image';
@@ -89,6 +90,7 @@ interface LinePathDraft {
     Select,
     FormControlDirective,
     LineGradePipe,
+    TopoLineColorPipe,
     IfErrorDirective,
     LinePathEditorComponent,
     Button,

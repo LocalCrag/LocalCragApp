@@ -23,8 +23,8 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService, SelectItem } from 'primeng/api';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -41,16 +41,12 @@ import {
   disabledMarkerTypesArea,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-import { ScalesService } from '../../../services/crud/scales.service';
-import { LineType } from '../../../enums/line-type';
-
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -87,7 +83,6 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
-    Select,
     Message,
     Button,
     ConfirmPopup,
@@ -110,9 +105,6 @@ export class AreaFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public area: Area;
   public editMode = false;
-  public boulderScales: SelectItem<string | null>[] = [];
-  public sportScales: SelectItem<string | null>[] = [];
-  public tradScales: SelectItem<string | null>[] = [];
   public quillModules: any;
   public parentSector: Sector;
   public parentClosureState: ClosureState | null = null;
@@ -130,7 +122,6 @@ export class AreaFormComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
-  private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
 
@@ -147,22 +138,6 @@ export class AreaFormComponent implements OnInit {
    * Builds the form on component initialization.
    */
   ngOnInit() {
-    const scalesPopulated = this.scalesService
-      .getFormScaleSelectors([
-        {
-          label: this.translocoService.translate(marker('defaultScalesLabel')),
-          value: null,
-        },
-      ])
-      .pipe(
-        map((groupedScales) => {
-          this.boulderScales = groupedScales[LineType.BOULDER];
-          this.sportScales = groupedScales[LineType.SPORT];
-          this.tradScales = groupedScales[LineType.TRAD];
-          return true;
-        }),
-      );
-
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
     const areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -178,8 +153,9 @@ export class AreaFormComponent implements OnInit {
         this.editMode = true;
         this.setPageTitle();
         this.areaForm.disable();
-        forkJoin([
-          this.areasService.getArea(areaSlug).pipe(
+        this.areasService
+          .getArea(areaSlug)
+          .pipe(
             catchError((e) => {
               if (e.status === 404) {
                 this.router.navigate(['/not-found']);
@@ -187,16 +163,15 @@ export class AreaFormComponent implements OnInit {
               }
               return throwError(() => e);
             }),
-          ),
-          scalesPopulated,
-        ]).subscribe(([area, _]) => {
-          this.area = area;
-          this.setFormValue();
-          this.loadingState = LoadingState.DEFAULT;
-          this.editors?.map((editor) => {
-            editor.getQuill()?.enable();
+          )
+          .subscribe((area) => {
+            this.area = area;
+            this.setFormValue();
+            this.loadingState = LoadingState.DEFAULT;
+            this.editors?.map((editor) => {
+              editor.getQuill()?.enable();
+            });
           });
-        });
       } else {
         this.setPageTitle();
         this.store.select(selectInstanceName).subscribe((instanceName) => {
@@ -204,12 +179,8 @@ export class AreaFormComponent implements OnInit {
             `${this.translocoService.translate(marker('areaFormBrowserTitle'))} - ${instanceName}`,
           );
         });
-        this.areaForm.disable();
-        scalesPopulated.subscribe(() => {
-          this.areaForm.enable();
-          this.areaForm.get('secret').setValue(this.parentSector.secret);
-          this.loadingState = LoadingState.DEFAULT;
-        });
+        this.areaForm.get('secret').setValue(this.parentSector.secret);
+        this.loadingState = LoadingState.DEFAULT;
       }
     });
   }
@@ -236,9 +207,6 @@ export class AreaFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      defaultBoulderScale: [null],
-      defaultSportScale: [null],
-      defaultTradScale: [null],
       blocweatherUrl: [
         null,
         [blocweatherUrlValidator, Validators.maxLength(255)],
@@ -259,9 +227,6 @@ export class AreaFormComponent implements OnInit {
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
       mapMarkers: this.area.mapMarkers,
-      defaultBoulderScale: this.area.defaultBoulderScale,
-      defaultSportScale: this.area.defaultSportScale,
-      defaultTradScale: this.area.defaultTradScale,
       blocweatherUrl: this.area.blocweatherUrl,
       closureSchedules: this.area.closureSchedules ?? [],
     });
@@ -297,9 +262,6 @@ export class AreaFormComponent implements OnInit {
       area.secret = this.areaForm.get('secret').value;
       area.mapMarkers = this.areaForm.get('mapMarkers').value;
       area.closureSchedules = this.areaForm.get('closureSchedules').value ?? [];
-      area.defaultBoulderScale = this.areaForm.get('defaultBoulderScale').value;
-      area.defaultSportScale = this.areaForm.get('defaultSportScale').value;
-      area.defaultTradScale = this.areaForm.get('defaultTradScale').value;
       area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
       if (this.area) {
         area.slug = this.area.slug;

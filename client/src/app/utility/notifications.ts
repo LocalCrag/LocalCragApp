@@ -140,6 +140,71 @@ export const NOTIFICATIONS = {
     title: marker('notifications.LOGIN_ERROR_TITLE'),
     message: marker('notifications.LOGIN_ERROR_MESSAGE'),
   },
+  PASSKEY_LOGIN_ERROR: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.PASSKEY_LOGIN_ERROR_TITLE'),
+    message: marker('notifications.PASSKEY_LOGIN_ERROR_MESSAGE'),
+  },
+  PASSKEY_ADDED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PASSKEY_ADDED_TITLE'),
+    message: marker('notifications.PASSKEY_ADDED_MESSAGE'),
+  },
+  PASSKEY_REMOVED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PASSKEY_REMOVED_TITLE'),
+    message: marker('notifications.PASSKEY_REMOVED_MESSAGE'),
+  },
+  PASSKEY_ERROR: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.PASSKEY_ERROR_TITLE'),
+    message: marker('notifications.PASSKEY_ERROR_MESSAGE'),
+  },
+  PASSKEY_RENAMED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PASSKEY_RENAMED_TITLE'),
+    message: marker('notifications.PASSKEY_RENAMED_MESSAGE'),
+  },
+  PASSWORD_REMOVED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.PASSWORD_REMOVED_TITLE'),
+    message: marker('notifications.PASSWORD_REMOVED_MESSAGE'),
+  },
+  CANNOT_REMOVE_LAST_PASSKEY: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.CANNOT_REMOVE_LAST_PASSKEY_TITLE'),
+    message: marker('notifications.CANNOT_REMOVE_LAST_PASSKEY_MESSAGE'),
+  },
+  CANNOT_REMOVE_PASSWORD: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.CANNOT_REMOVE_PASSWORD_TITLE'),
+    message: marker('notifications.CANNOT_REMOVE_PASSWORD_MESSAGE'),
+  },
+  TWO_FACTOR_ENABLED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TWO_FACTOR_ENABLED_TITLE'),
+    message: marker('notifications.TWO_FACTOR_ENABLED_MESSAGE'),
+  },
+  TWO_FACTOR_DISABLED: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TWO_FACTOR_DISABLED_TITLE'),
+    message: marker('notifications.TWO_FACTOR_DISABLED_MESSAGE'),
+  },
+  TWO_FACTOR_EMAIL_SENT: {
+    type: NotificationType.SUCCESS,
+    title: marker('notifications.TWO_FACTOR_EMAIL_SENT_TITLE'),
+    message: marker('notifications.TWO_FACTOR_EMAIL_SENT_MESSAGE'),
+  },
+  TWO_FACTOR_CODE_INVALID: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.TWO_FACTOR_CODE_INVALID_TITLE'),
+    message: marker('notifications.TWO_FACTOR_CODE_INVALID_MESSAGE'),
+  },
+  TWO_FACTOR_CHALLENGE_INVALID: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.TWO_FACTOR_CHALLENGE_INVALID_TITLE'),
+    message: marker('notifications.TWO_FACTOR_CHALLENGE_INVALID_MESSAGE'),
+  },
   USER_PROMOTED: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.USER_PROMOTED_TITLE'),

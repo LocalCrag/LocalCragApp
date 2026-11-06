@@ -2,9 +2,11 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   ViewEncapsulation,
   inject,
@@ -70,6 +72,9 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
   public gradeDistribution: GradeDistribution;
   public flashDistribution: GradeDistribution | null = null;
   public chartData: BarChartData[] = [];
+  /** True when every scale in the distribution opted out of diagrams. */
+  public diagramsSuppressed = false;
+  @Output() diagramsSuppressedChange = new EventEmitter<boolean>();
   public options: any;
 
   private isCondensed: boolean | null = null;
@@ -241,6 +246,10 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
                 darkBarChartAccentColor,
                 scale,
               ]) => {
+                if (!scale.gradeBrackets.showDiagrams) {
+                  return null;
+                }
+
                 const usedScale = condensed
                   ? [...scale.gradeBrackets.barChartBrackets]
                   : [...scale.grades];
@@ -525,10 +534,33 @@ export class GradeDistributionBarChartComponent implements OnChanges, OnInit {
       }
     }
 
+    if (scaleObservers.length === 0) {
+      this.chartData = [];
+      this.setDiagramsSuppressed(false);
+      this.cdr.markForCheck();
+      return;
+    }
+
     forkJoin(scaleObservers).subscribe((chartData) => {
-      this.chartData = chartData.sort((a, b) => a.totalCount - b.totalCount);
+      const visibleCharts = chartData.filter(
+        (chart): chart is BarChartData => chart !== null,
+      );
+      this.setDiagramsSuppressed(
+        chartData.length > 0 && visibleCharts.length === 0,
+      );
+      this.chartData = visibleCharts.sort(
+        (a, b) => a.totalCount - b.totalCount,
+      );
       this.cdr.markForCheck();
     });
+  }
+
+  private setDiagramsSuppressed(suppressed: boolean) {
+    if (this.diagramsSuppressed === suppressed) {
+      return;
+    }
+    this.diagramsSuppressed = suppressed;
+    this.diagramsSuppressedChange.emit(suppressed);
   }
 
   /**

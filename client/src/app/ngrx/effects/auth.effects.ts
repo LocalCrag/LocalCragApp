@@ -13,7 +13,7 @@ import { AuthCrudService } from '../../services/crud/auth-crud.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { toastNotification } from '../actions/notifications.actions';
-import { LoginResponse } from '../../models/login-response';
+import { isTwoFactorChallenge } from '../../models/two-factor-challenge';
 import { removeLocalStorageItem } from '../../utility/local-storage';
 
 // noinspection JSUnusedGlobalSymbols
@@ -72,7 +72,12 @@ export class AuthEffects {
         this.authCrud
           .resetPassword(action.password, action.resetPasswordHash)
           .pipe(
-            map((response: LoginResponse) => {
+            map((response) => {
+              if (isTwoFactorChallenge(response)) {
+                return AuthActions.loginTwoFactorRequired({
+                  challenge: response,
+                });
+              }
               this.store.dispatch(
                 newAuthCredentials({
                   loginResponse: response,
@@ -116,7 +121,11 @@ export class AuthEffects {
       ofType(AuthActions.login),
       mergeMap((action) =>
         this.authCrud.login(action.email, action.password).pipe(
-          map((loginResponse) => AuthActions.loginSuccess({ loginResponse })),
+          map((loginResponse) =>
+            isTwoFactorChallenge(loginResponse)
+              ? AuthActions.loginTwoFactorRequired({ challenge: loginResponse })
+              : AuthActions.loginSuccess({ loginResponse }),
+          ),
           catchError(() => of(AuthActions.loginError())),
         ),
       ),

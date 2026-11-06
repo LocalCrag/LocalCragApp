@@ -17,19 +17,10 @@ from models.user import User
 
 
 class UserRankingMap:
-    user_id = None
-    map = {}
-    map_secret = {}
-
     def __init__(self, user_id):
         self.user_id = user_id
-        for type in LineTypeEnum:
-            for map in [self.map, self.map_secret]:
-                map[type] = {
-                    "global": None,
-                    "crags": {},
-                    "sectors": {},
-                }
+        self.map = {}
+        self.map_secret = {}
 
     def get_map(self, secret=False):
         if not secret:
@@ -37,35 +28,56 @@ class UserRankingMap:
         else:
             return self.map_secret
 
+    def _bucket(self, line_type: LineTypeEnum, scale: str, secret: bool):
+        type_map = self.get_map(secret).setdefault(line_type, {})
+        return type_map.setdefault(
+            scale,
+            {
+                "global": None,
+                "crags": {},
+                "sectors": {},
+            },
+        )
+
     def add(self, ranking: Ranking):
         ranking.reset()
-        map = self.get_map(ranking.secret)
+        bucket = self._bucket(ranking.type, ranking.scale, ranking.secret)
         if not ranking.crag_id and not ranking.sector_id:
-            map[ranking.type]["global"] = ranking
+            bucket["global"] = ranking
         if ranking.crag_id:
-            map[ranking.type]["crags"][ranking.crag_id] = ranking
+            bucket["crags"][ranking.crag_id] = ranking
         if ranking.sector_id:
-            map[ranking.type]["sectors"][ranking.sector_id] = ranking
+            bucket["sectors"][ranking.sector_id] = ranking
 
-    def get_global(self, type: LineTypeEnum, secret: bool):
-        map = self.get_map(secret)
-        if not map[type]["global"]:
-            map[type]["global"] = Ranking.get_new_ranking(self.user_id, type, secret=secret)
-        return map[type]["global"]
+    def get_global(self, line_type: LineTypeEnum, scale: str, secret: bool):
+        bucket = self._bucket(line_type, scale, secret)
+        if not bucket["global"]:
+            bucket["global"] = Ranking.get_new_ranking(self.user_id, line_type, scale, secret=secret)
+        return bucket["global"]
 
-    def get_crag(self, type: LineTypeEnum, crag_id, secret: bool):
-        map = self.get_map(secret)
-        if crag_id not in map[type]["crags"]:
-            map[type]["crags"][crag_id] = Ranking.get_new_ranking(self.user_id, type, crag_id=crag_id, secret=secret)
-        return map[type]["crags"][crag_id]
-
-    def get_sector(self, type: LineTypeEnum, sector_id, secret: bool):
-        map = self.get_map(secret)
-        if sector_id not in map[type]["sectors"]:
-            map[type]["sectors"][sector_id] = Ranking.get_new_ranking(
-                self.user_id, type, sector_id=sector_id, secret=secret
+    def get_crag(self, line_type: LineTypeEnum, scale: str, crag_id, secret: bool):
+        bucket = self._bucket(line_type, scale, secret)
+        if crag_id not in bucket["crags"]:
+            bucket["crags"][crag_id] = Ranking.get_new_ranking(
+                self.user_id, line_type, scale, crag_id=crag_id, secret=secret
             )
-        return map[type]["sectors"][sector_id]
+        return bucket["crags"][crag_id]
+
+    def get_sector(self, line_type: LineTypeEnum, scale: str, sector_id, secret: bool):
+        bucket = self._bucket(line_type, scale, secret)
+        if sector_id not in bucket["sectors"]:
+            bucket["sectors"][sector_id] = Ranking.get_new_ranking(
+                self.user_id, line_type, scale, sector_id=sector_id, secret=secret
+            )
+        return bucket["sectors"][sector_id]
+
+    def iter_rankings(self, secret: bool):
+        for type_map in self.get_map(secret).values():
+            for bucket in type_map.values():
+                if bucket["global"] is not None:
+                    yield bucket["global"]
+                yield from bucket["crags"].values()
+                yield from bucket["sectors"].values()
 
 
 def _push_top_value_sorted(top_values: list, value, limit: int = 50) -> None:
@@ -119,7 +131,7 @@ FROM (
         CASE
             WHEN account_settings.exclude_from_rankings THEN NULL
             ELSE RANK() OVER (
-                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                PARTITION BY rankings.type, rankings.scale, rankings.secret, rankings.crag_id, rankings.sector_id,
                     account_settings.exclude_from_rankings
                 ORDER BY COALESCE(rankings.top_10, 0) DESC
             )
@@ -127,7 +139,7 @@ FROM (
         CASE
             WHEN account_settings.exclude_from_rankings THEN NULL
             ELSE RANK() OVER (
-                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                PARTITION BY rankings.type, rankings.scale, rankings.secret, rankings.crag_id, rankings.sector_id,
                     account_settings.exclude_from_rankings
                 ORDER BY COALESCE(rankings.top_50, 0) DESC
             )
@@ -135,7 +147,7 @@ FROM (
         CASE
             WHEN account_settings.exclude_from_rankings THEN NULL
             ELSE RANK() OVER (
-                PARTITION BY rankings.type, rankings.secret, rankings.crag_id, rankings.sector_id,
+                PARTITION BY rankings.type, rankings.scale, rankings.secret, rankings.crag_id, rankings.sector_id,
                     account_settings.exclude_from_rankings
                 ORDER BY COALESCE(rankings.total_count, 0) DESC
             )
@@ -190,6 +202,7 @@ def build_rankings():
             select(
                 Line.id.label("line_id"),
                 Line.type.label("line_type"),
+                Line.grade_scale.label("grade_scale"),
                 Line.secret.label("line_secret"),
                 grade_col.label("grade_value"),
                 Sector.crag_id.label("crag_id"),
@@ -214,6 +227,7 @@ def build_rankings():
             ascent_counter += 1
 
             line_type = row.line_type
+            grade_scale = row.grade_scale
             line_is_secret = row.line_secret
             ascent_value = row.grade_value
             crag_id = row.crag_id
@@ -223,9 +237,9 @@ def build_rankings():
                 if (not secret) and line_is_secret:
                     continue
 
-                global_ranking = ranking_map.get_global(line_type, secret)
-                crag_ranking = ranking_map.get_crag(line_type, crag_id, secret)
-                sector_ranking = ranking_map.get_sector(line_type, sector_id, secret)
+                global_ranking = ranking_map.get_global(line_type, grade_scale, secret)
+                crag_ranking = ranking_map.get_crag(line_type, grade_scale, crag_id, secret)
+                sector_ranking = ranking_map.get_sector(line_type, grade_scale, sector_id, secret)
 
                 for ranking in (global_ranking, crag_ranking, sector_ranking):
                     ranking.total_count += 1
@@ -236,21 +250,13 @@ def build_rankings():
                 db.session.flush()
 
         # Finalize derived sums once per ranking.
-        for type in LineTypeEnum:
-            for secret in (False, True):
-                m = ranking_map.get_map(secret)[type]
-                candidates = []
-                if m["global"] is not None:
-                    candidates.append(m["global"])
-                candidates.extend(m["crags"].values())
-                candidates.extend(m["sectors"].values())
-
-                for ranking in candidates:
-                    # top_values are kept sorted ascending.
-                    ranking.top_50 = sum(ranking.top_values)
-                    ranking.top_10 = sum(ranking.top_values[-10:])
-                    db.session.add(ranking)
-                    flag_modified(ranking, "top_values")
+        for secret in (False, True):
+            for ranking in ranking_map.iter_rankings(secret):
+                # top_values are kept sorted ascending.
+                ranking.top_50 = sum(ranking.top_values)
+                ranking.top_10 = sum(ranking.top_values[-10:])
+                db.session.add(ranking)
+                flag_modified(ranking, "top_values")
 
         # Delete rankings if they don't contain any ascents anymore - can happen when all ascents become secret
         for ranking in rankings:

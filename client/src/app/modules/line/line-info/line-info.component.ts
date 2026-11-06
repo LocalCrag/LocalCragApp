@@ -39,7 +39,6 @@ import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
-import { ConfirmationService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GalleriaModule } from 'primeng/galleria';
 import {
@@ -55,7 +54,7 @@ import {
   selector: 'lc-line-info',
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
-  providers: [DialogService, ConfirmationService],
+  providers: [DialogService],
   imports: [
     ClosedSpotAlertComponent,
     UpcomingClosureAlertComponent,

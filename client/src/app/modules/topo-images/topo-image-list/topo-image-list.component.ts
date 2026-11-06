@@ -32,18 +32,27 @@ import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 
-import { NgClass, NgTemplateOutlet, ViewportScroller } from '@angular/common';
-import { filter, take } from 'rxjs/operators';
+import {
+  Location,
+  NgClass,
+  NgTemplateOutlet,
+  ViewportScroller,
+} from '@angular/common';
+import { filter, map, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
 import {
   selectCanContributeTopo,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { TicksService } from '../../../services/crud/ticks.service';
+import { IsTodoService } from '../../../services/crud/is-todo.service';
+import { TodosService } from '../../../services/crud/todos.service';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
-import { highlightColor, textColor } from '../../../utility/misc/color';
+import { todoAdded } from '../../../ngrx/actions/todo.actions';
+import { highlightColor } from '../../../utility/misc/color';
+import { topoLinePaint$ } from '../../../utility/scale/topo-line-color';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
@@ -51,6 +60,7 @@ import { FormsModule } from '@angular/forms';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
+import { ContextMenu } from 'primeng/contextmenu';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
@@ -59,10 +69,15 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
 import { ArchiveService } from '../../../services/crud/archive.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { Rating } from 'primeng/rating';
-import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
+import {
+  openTickDialog,
+  TickButtonComponent,
+} from '../../ascent/tick-button/tick-button.component';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { TopoLineColorPipe } from '../../shared/pipes/topo-line-color.pipe';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
@@ -73,6 +88,18 @@ import {
   topoLinePathDisplayNumbers,
   variantTopoLinePaths,
 } from '../../../utility/topo/line-path-variants';
+import {
+  beginPaginatedPageLoad,
+  completePaginatedPageLoad,
+  failPaginatedPageLoad,
+  PaginatedListView,
+  resetPaginatedList,
+} from '../../../utility/paginated-list';
+import { TodoPriority } from '../../../enums/todo-priority';
+import {
+  buildLineContextMenuItems,
+  LineContextMenuLabels,
+} from '../../../utility/topo/line-context-menu';
 
 /**
  * Component that lists all topo images in an area.
@@ -95,6 +122,7 @@ import {
     GymModeDirective,
     Button,
     Menu,
+    ContextMenu,
     HasPermissionDirective,
     RouterLink,
     Message,
@@ -108,28 +136,35 @@ import {
     ConfirmPopup,
     LineBoolPropListComponent,
     LineGradePipe,
+    TopoLineColorPipe,
     TopoImageViewerComponent,
     LineNumberBadgeComponent,
     DraftTagComponent,
+    InfiniteScrollDirective,
   ],
 })
-export class TopoImageListComponent implements OnInit {
+export class TopoImageListComponent implements OnInit, PaginatedListView {
   @ViewChild('topoImageMenu') topoImageMenu: Menu;
+  @ViewChild('lineMenu') lineMenu: ContextMenu;
 
-  public topoImages: TopoImage[];
+  public topoImages: TopoImage[] = [];
+  public currentPage = 0;
+  public hasNextPage = false;
   public topoImageActionItems: MenuItem[] = [];
+  public lineActionItems: MenuItem[] = [];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public sortOptions: SelectItem[];
   public sortKey: SelectItem;
-  public sortOrder: number;
+  public sortOrder = 1;
   public sortField: string;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
   public areaSlug: string;
   public ref: DynamicDialogRef | undefined;
-  public ticks: Set<string>;
+  public ticks: Set<string> = new Set();
+  public isTodo: Set<string> = new Set();
   public showArchive = false;
   public displayUserRating = false;
   public currentUserId: string | null = null;
@@ -138,8 +173,17 @@ export class TopoImageListComponent implements OnInit {
   public gymMode = false;
   /** Topo image ids whose variant lines are expanded in the list and drawing. */
   private expandedVariantImageIds = new Set<string>();
+  /** Line kept highlighted after the pointer leaves the row. */
+  private pinnedHighlight: { linePath: LinePath; topoImage: TopoImage } | null =
+    null;
+  private hoveredLinePath: LinePath | null = null;
+  /** Ignores the click that can follow a long-press on a touch screen. */
+  private suppressLineNavigationUntil = 0;
   /** Stays on screen after the menu closes, so confirm popups can anchor to it. */
   private actionAnchor: EventTarget | null = null;
+  /** Drops responses from a list load that a newer load has replaced. */
+  private loadGeneration = 0;
+  private readonly archivePageSize = 8;
 
   private scrollTarget: Scroll;
   private stopAnchorScroll: (() => void) | null = null;
@@ -149,6 +193,9 @@ export class TopoImageListComponent implements OnInit {
   private store = inject(Store);
   private confirmationService = inject(ConfirmationService);
   private ticksService = inject(TicksService);
+  private isTodoService = inject(IsTodoService);
+  private todosService = inject(TodosService);
+  private location = inject(Location);
   private areasService = inject(AreasService);
   private actions$ = inject(Actions);
   private dialogService = inject(DialogService);
@@ -195,6 +242,11 @@ export class TopoImageListComponent implements OnInit {
       .pipe(ofType(reloadAfterAscent), takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.ticks.add(action.ascendedLineId);
+      });
+    this.actions$
+      .pipe(ofType(todoAdded), takeUntilDestroyed(this.destroyRef))
+      .subscribe((action) => {
+        this.isTodo.add(action.todoLineId);
       });
     this.store
       .select(selectInstanceSettingsState)
@@ -302,47 +354,123 @@ export class TopoImageListComponent implements OnInit {
   }
 
   /**
-   * Loads new data.
+   * Loads the live wall in one request, or the first archive page.
    */
   refreshData() {
-    this.loading = LoadingState.LOADING;
-    const params: ApiQueryParams = {};
     if (this.showArchive) {
-      params.archived = '1';
+      this.loadFirstPage();
+      return;
     }
+    this.loadGeneration += 1;
+    const generation = this.loadGeneration;
+    this.currentPage = 1;
+    this.hasNextPage = false;
+    this.loading = LoadingState.LOADING;
+    this.clearPinnedHighlight();
     this.areasService
       .getArea(this.areaSlug)
       .pipe(
         mergeMap((area) => {
           return forkJoin([
-            this.topoImagesService.getTopoImages(this.areaSlug, params),
+            this.topoImagesService.getTopoImages(this.areaSlug),
             this.ticksService.getTicks(null, null, area.id),
+            this.isTodoService.getIsTodo(null, null, area.id),
           ]);
         }),
       )
-      .subscribe(([topoImages, ticks]) => {
+      .subscribe(([topoImages, ticks, isTodo]) => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
         this.ticks = ticks;
+        this.isTodo = isTodo;
         this.topoImages = topoImages;
         this.loading = LoadingState.DEFAULT;
-        this.sortOptions = [
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
-            label: this.translocoService.translate(marker('sortAscending')),
-            value: '!orderIndex',
-          },
-          {
-            icon: PrimeIcons.SORT_AMOUNT_DOWN,
-            label: this.translocoService.translate(marker('sortDescending')),
-            value: 'orderIndex',
-          },
-        ];
-        this.sortKey = this.sortOptions[0];
+        this.ensureSortOptions();
         if (this.scrollTarget) {
           this.restoreScrollPosition();
         } else {
           this.scrollToAnchor();
         }
       });
+  }
+
+  loadFirstPage() {
+    // Restart even when a previous request is still in flight (archive toggle, area change).
+    resetPaginatedList(this);
+    this.loadNextPage();
+  }
+
+  /**
+   * Loads the next page of archived topo images.
+   */
+  loadNextPage() {
+    const page = beginPaginatedPageLoad(this, () => {
+      this.topoImages = [];
+    });
+    if (page === null) {
+      return;
+    }
+    if (page === 1) {
+      this.loadGeneration += 1;
+      this.clearPinnedHighlight();
+    }
+    const generation = this.loadGeneration;
+    const params: ApiQueryParams = {
+      archived: '1',
+      page: this.currentPage,
+      per_page: this.archivePageSize,
+      order_direction: this.sortOrder === -1 ? 'desc' : 'asc',
+    };
+    const images$ = this.topoImagesService.getTopoImagesPaginated(
+      this.areaSlug,
+      params,
+    );
+    const request$ =
+      page === 1
+        ? this.areasService.getArea(this.areaSlug).pipe(
+            mergeMap((area) =>
+              forkJoin([
+                images$,
+                this.ticksService.getTicks(null, null, area.id),
+                this.isTodoService.getIsTodo(null, null, area.id),
+              ]),
+            ),
+            map(([images, ticks, isTodo]) => ({ images, ticks, isTodo })),
+          )
+        : images$.pipe(
+            map((images) => ({ images, ticks: null, isTodo: null })),
+          );
+
+    request$.subscribe({
+      next: ({ images, ticks, isTodo }) => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
+        this.topoImages.push(...images.items);
+        if (ticks) {
+          this.ticks = ticks;
+        }
+        if (isTodo) {
+          this.isTodo = isTodo;
+        }
+        completePaginatedPageLoad(this, images.hasNext);
+        this.ensureSortOptions();
+        if (page === 1) {
+          if (this.scrollTarget) {
+            this.restoreScrollPosition();
+          } else {
+            this.scrollToAnchor();
+          }
+        }
+      },
+      error: () => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
+        failPaginatedPageLoad(this);
+      },
+    });
   }
 
   restoreScrollPosition() {
@@ -366,6 +494,10 @@ export class TopoImageListComponent implements OnInit {
   scrollToAnchor() {
     this.stopAnchorScroll?.();
     this.stopAnchorScroll = null;
+
+    if (this.showArchive) {
+      return;
+    }
 
     const fragment = this.route.snapshot.fragment;
     if (!fragment) {
@@ -429,6 +561,28 @@ export class TopoImageListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+    if (this.showArchive) {
+      this.loadFirstPage();
+    }
+  }
+
+  private ensureSortOptions() {
+    if (this.sortOptions?.length) {
+      return;
+    }
+    this.sortOptions = [
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
+        label: this.translocoService.translate(marker('sortAscending')),
+        value: '!orderIndex',
+      },
+      {
+        icon: PrimeIcons.SORT_AMOUNT_DOWN,
+        label: this.translocoService.translate(marker('sortDescending')),
+        value: 'orderIndex',
+      },
+    ];
+    this.sortKey = this.sortOptions[0];
   }
 
   /**
@@ -771,6 +925,112 @@ export class TopoImageListComponent implements OnInit {
     return topoLinePathDisplayNumbers(topoImage.linePaths).get(linePath) ?? '1';
   }
 
+  lineHref(linePath: LinePath): string {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([
+        '/topo',
+        this.cragSlug,
+        this.sectorSlug,
+        this.areaSlug,
+        linePath.line.slug,
+      ]),
+    );
+    return this.location.prepareExternalUrl(url);
+  }
+
+  /**
+   * Follows the line link. Modified clicks keep the browser's new-tab behavior.
+   * A click right after a long-press is ignored.
+   */
+  openLine(event: MouseEvent, linePath: LinePath) {
+    if (Date.now() < this.suppressLineNavigationUntil) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    if (
+      event.button !== 0 ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+    event.preventDefault();
+    void this.router.navigate([
+      '/topo',
+      this.cragSlug,
+      this.sectorSlug,
+      this.areaSlug,
+      linePath.line.slug,
+    ]);
+  }
+
+  openLineMenu(event: MouseEvent, linePath: LinePath, topoImage: TopoImage) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      this.suppressLineNavigationUntil = Date.now() + 400;
+      this.swallowFollowingClick();
+    }
+    this.lineActionItems = buildLineContextMenuItems(
+      {
+        loggedIn: this.currentUserId !== null,
+        isTodo: this.isTodo.has(linePath.line.id),
+        ticked: this.ticks.has(linePath.line.id),
+        highlighted: this.isLinePinned(linePath),
+        publicationStatus: linePath.line.publicationStatus,
+      },
+      this.lineMenuLabels(),
+      {
+        openInNewTab: () => {
+          window.open(this.lineHref(linePath), '_blank', 'noopener');
+        },
+        addTodo: (priority) => this.addLineTodo(linePath.line, priority),
+        openTodoList: () => {
+          void this.router.navigate(['/todos']);
+        },
+        tick: () =>
+          openTickDialog(this.dialogService, this.store, linePath.line),
+        toggleHighlight: () => this.togglePinnedHighlight(linePath, topoImage),
+      },
+    );
+    this.lineMenu?.show(this.contextMenuEvent(event));
+  }
+
+  onLineEnter(linePath: LinePath, topoImage: TopoImage) {
+    if (this.hoveredLinePath && this.hoveredLinePath !== linePath) {
+      if (this.pinnedHighlight?.linePath !== this.hoveredLinePath) {
+        this.unhighlightLinePath(this.hoveredLinePath);
+      }
+    }
+    if (this.pinnedHighlight && this.pinnedHighlight.linePath !== linePath) {
+      this.unhighlightLinePath(this.pinnedHighlight.linePath);
+    }
+    this.hoveredLinePath = linePath;
+    this.highlightLinePath(linePath, topoImage);
+  }
+
+  onLineLeave(linePath: LinePath) {
+    if (this.hoveredLinePath === linePath) {
+      this.hoveredLinePath = null;
+    }
+    if (this.pinnedHighlight?.linePath !== linePath) {
+      this.unhighlightLinePath(linePath);
+    }
+    if (this.pinnedHighlight && this.pinnedHighlight.linePath !== linePath) {
+      this.highlightLinePath(
+        this.pinnedHighlight.linePath,
+        this.pinnedHighlight.topoImage,
+      );
+    }
+  }
+
+  isLinePinned(linePath: LinePath): boolean {
+    return this.pinnedHighlight?.linePath === linePath;
+  }
+
   /**
    * Highlights the passes line path on the topo image.
    * @param linePath Line path to highlight.
@@ -778,27 +1038,14 @@ export class TopoImageListComponent implements OnInit {
    */
   highlightLinePath(linePath: LinePath, topoImage: TopoImage) {
     if (linePath.konvaLine) {
-      this.store
-        .select(selectInstanceSettingsState)
+      topoLinePaint$(this.store, this.scalesService, linePath.line)
         .pipe(take(1))
-        .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
-          linePath.konvaLine.stroke(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
+        .subscribe((paint) => {
+          linePath.konvaLine.fill(paint.highlight);
+          linePath.konvaLine.stroke(paint.highlight);
           linePath.konvaLine.zIndex(topoImage.linePaths.length);
-          linePath.konvaRect.fill(
-            highlightColor(linePath.line?.color) ??
-              instanceSettingsState.arrowHighlightColor,
-          );
-          linePath.konvaText.fill(
-            textColor(highlightColor(linePath.line?.color)) ??
-              instanceSettingsState.arrowHighlightTextColor,
-          );
+          linePath.konvaRect.fill(paint.highlight);
+          linePath.konvaText.fill(paint.highlightText);
           linePath.konvaFocusLayer.add(linePath.konvaLine);
           linePath.konvaFocusLayer.add(linePath.konvaNumberGroup);
           linePath.konvaTabuShapes?.forEach((shape) => {
@@ -816,24 +1063,14 @@ export class TopoImageListComponent implements OnInit {
    */
   unhighlightLinePath(linePath: LinePath) {
     if (linePath.konvaLine) {
-      this.store
-        .select(selectInstanceSettingsState)
+      topoLinePaint$(this.store, this.scalesService, linePath.line)
         .pipe(take(1))
-        .subscribe((instanceSettingsState) => {
-          linePath.konvaLine.fill(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
-          linePath.konvaLine.stroke(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
+        .subscribe((paint) => {
+          linePath.konvaLine.fill(paint.color);
+          linePath.konvaLine.stroke(paint.color);
           linePath.konvaLine.zIndex(1); // 0 is the BG image
-          linePath.konvaRect.fill(
-            linePath.line?.color ?? instanceSettingsState.arrowColor,
-          );
-          linePath.konvaText.fill(
-            textColor(linePath.line?.color) ??
-              instanceSettingsState.arrowTextColor,
-          );
+          linePath.konvaRect.fill(paint.color);
+          linePath.konvaText.fill(paint.text);
           linePath.konvaLineLayer.add(linePath.konvaLine);
           linePath.konvaNumberLayer.add(linePath.konvaNumberGroup);
           linePath.konvaTabuShapes?.forEach((shape) => {
@@ -900,6 +1137,103 @@ export class TopoImageListComponent implements OnInit {
     this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
+  }
+
+  private togglePinnedHighlight(linePath: LinePath, topoImage: TopoImage) {
+    if (this.pinnedHighlight?.linePath === linePath) {
+      this.pinnedHighlight = null;
+      if (this.hoveredLinePath !== linePath) {
+        this.unhighlightLinePath(linePath);
+      }
+      return;
+    }
+    if (
+      this.pinnedHighlight &&
+      this.pinnedHighlight.linePath !== this.hoveredLinePath
+    ) {
+      this.unhighlightLinePath(this.pinnedHighlight.linePath);
+    }
+    this.pinnedHighlight = { linePath, topoImage };
+    this.highlightLinePath(linePath, topoImage);
+    document
+      .getElementById(`topo-image-${topoImage.id}`)
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  private addLineTodo(line: Line, priority: TodoPriority) {
+    this.todosService.createTodo(line, priority).subscribe({
+      next: () => {
+        this.store.dispatch(todoAdded({ todoLineId: line.id }));
+        this.store.dispatch(toastNotification('TODO_ADDED'));
+      },
+      error: () => {
+        this.store.dispatch(toastNotification('TODO_ADD_ERROR'));
+      },
+    });
+  }
+
+  private lineMenuLabels(): LineContextMenuLabels {
+    const translate = (key: string) => this.translocoService.translate(key);
+    return {
+      openInNewTab: translate(marker('topoImage.topoImageList.openInNewTab')),
+      addTodo: translate(marker('todoButton.addTodo')),
+      onTodoList: translate(marker('todoButton.onTodoList')),
+      highPriority: translate(marker('todos.priorityButton.highPriority')),
+      mediumPriority: translate(marker('todos.priorityButton.mediumPriority')),
+      lowPriority: translate(marker('todos.priorityButton.lowPriority')),
+      addAscent: translate(marker('tickButton.addAscent')),
+      lineClimbed: translate(marker('tickButton.lineClimbed')),
+      highlightOnImage: translate(
+        marker('topoImage.topoImageList.highlightOnImage'),
+      ),
+      removeHighlight: translate(
+        marker('topoImage.topoImageList.removeHighlight'),
+      ),
+    };
+  }
+
+  private clearPinnedHighlight() {
+    this.pinnedHighlight = null;
+    this.hoveredLinePath = null;
+  }
+
+  /**
+   * Drops the click that a long-press can emit on the menu item under the finger.
+   */
+  private swallowFollowingClick() {
+    const until = this.suppressLineNavigationUntil;
+    const stop = (event: Event) => {
+      document.removeEventListener('click', stop, true);
+      if (Date.now() < until) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    document.addEventListener('click', stop, true);
+  }
+
+  /**
+   * PrimeNG positions the menu from page coordinates. A touch context menu
+   * sometimes only has the touch point.
+   */
+  private contextMenuEvent(event: MouseEvent): MouseEvent {
+    if (event.pageX || event.pageY) {
+      return event;
+    }
+    const touchEvent = event as MouseEvent & {
+      touches?: TouchList;
+      changedTouches?: TouchList;
+    };
+    const touch = touchEvent.touches?.[0] ?? touchEvent.changedTouches?.[0];
+    if (!touch) {
+      return event;
+    }
+    return {
+      pageX: touch.pageX,
+      pageY: touch.pageY,
+      preventDefault: () => event.preventDefault(),
+      stopPropagation: () => event.stopPropagation(),
+    } as MouseEvent;
   }
 
   protected readonly highlightColor = highlightColor;

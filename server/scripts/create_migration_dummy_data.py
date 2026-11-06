@@ -67,6 +67,7 @@ from models.menu_item import MenuItem
 from models.menu_page import MenuPage
 from models.moderator_task import ModeratorTask
 from models.notification import Notification
+from models.passkey_credential import PasskeyCredential
 from models.permission import SUGGESTION_CREATE, Permission
 from models.post import Post
 from models.ranking import Ranking
@@ -90,7 +91,9 @@ from models.topo_image import TopoImage
 from models.topo_point_event import TopoPointEvent
 from models.topo_quality_snapshot import TopoQualitySnapshot
 from models.topo_week_summary import TopoWeekSummary
+from models.two_factor_challenge import TwoFactorChallenge
 from models.user import User
+from models.webauthn_challenge import WebAuthnChallenge
 
 logger = logging.getLogger(__name__)
 
@@ -181,6 +184,8 @@ def create_migration_dummy_data():
         _create_admin_messages(users, admin)
         _create_permissions(users)
         _create_sessions(users)
+        _create_passkeys(admin)
+        _create_two_factor_challenge(admin)
         _create_release_notes()
         timer.mark("remaining entities")
         _assert_counts(len(lines))
@@ -307,8 +312,6 @@ def _create_topo_tree(admin: User):
         crag.rules_title = "Rules" if crag.rules else None
         crag.rules_updated_at = _naive_utc() if crag.rules else None
         crag.order_index = crag_index
-        crag.default_boulder_scale = "FB"
-        crag.default_sport_scale = "UIAA"
         crag.secret = secret
         crag.created_by_id = admin.id
         crag.sectors_plan = plan
@@ -989,6 +992,7 @@ def _ranking(user, line_type, index, secret, crag_id=None):
     ranking = Ranking()
     ranking.user_id = user.id
     ranking.type = line_type
+    ranking.scale = "FB" if line_type == LineTypeEnum.BOULDER else "UIAA"
     ranking.crag_id = crag_id
     ranking.secret = secret
     ranking.top_10 = 20 - (index % 5)
@@ -1069,6 +1073,41 @@ def _create_sessions(users):
             expires_at=expires_at,
         )
         db.session.add(auth_session)
+
+
+def _create_passkeys(admin: User):
+    credential = PasskeyCredential(
+        user_id=admin.id,
+        credential_id=b"migration-passkey-credential-id",
+        public_key=b"migration-passkey-public-key",
+        sign_count=0,
+        name="Migration passkey",
+        transports="internal",
+        aaguid="00000000-0000-0000-0000-000000000000",
+        backed_up=False,
+        backup_eligible=False,
+    )
+    db.session.add(credential)
+    challenge = WebAuthnChallenge(
+        id="migration-webauthn-challenge",
+        challenge=b"migration-webauthn-challenge",
+        user_id=admin.id,
+        kind="registration",
+        expires_at=datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1),
+    )
+    db.session.add(challenge)
+
+
+def _create_two_factor_challenge(admin: User):
+    challenge = TwoFactorChallenge(
+        id="migration-two-factor-challenge",
+        user_id=admin.id,
+        email_code_hash="migration$deadbeef",
+        email_code_expires_at=datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=1),
+        expires_at=datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=1),
+        attempts=1,
+    )
+    db.session.add(challenge)
 
 
 def _create_release_notes():
@@ -1157,6 +1196,9 @@ def _assert_counts(line_count: int):
         "app_alerts": AppAlert.query.count(),
         "admin_messages": AdminMessage.query.count(),
         "sessions": AuthSession.query.count(),
+        "passkey_credentials": PasskeyCredential.query.count(),
+        "webauthn_challenges": WebAuthnChallenge.query.count(),
+        "two_factor_challenges": TwoFactorChallenge.query.count(),
         "permissions": Permission.query.count(),
         "file_links": FileLink.query.count(),
         "secret_topo_entities": SecretTopoEntity.query.count(),
@@ -1170,6 +1212,9 @@ def _assert_counts(line_count: int):
         "ascents": USER_COUNT * ASCENTS_PER_USER,
         "posts": POST_COUNT,
         "permissions": 1,
+        "passkey_credentials": 1,
+        "webauthn_challenges": 1,
+        "two_factor_challenges": 1,
         "gallery_images": GALLERY_IMAGE_COUNT,
         "rock_explorer_features": ROCK_EXPLORER_COUNT,
         "topo_point_events": 5,

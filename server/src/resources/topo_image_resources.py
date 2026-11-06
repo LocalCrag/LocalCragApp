@@ -2,7 +2,7 @@ from typing import List
 
 from flask import jsonify, request
 from flask.views import MethodView
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.orm import joinedload, selectinload
 from webargs.flaskparser import parser
 
@@ -41,6 +41,35 @@ from util.suggestions import (
 from util.validators import validate_order_payload
 from webargs_schemas.move_args import move_topo_image_args
 from webargs_schemas.topo_image_args import topo_image_args
+
+# Archive pages stay small: each image includes its line paths.
+DEFAULT_TOPO_IMAGE_PAGE_SIZE = 8
+MAX_TOPO_IMAGE_PAGE_SIZE = 50
+_TOPO_IMAGE_LOAD_OPTIONS = (
+    joinedload(TopoImage.file),
+    selectinload(TopoImage.line_paths).joinedload(LinePath.line),
+    selectinload(TopoImage.map_markers),
+)
+
+
+def _dump_listed_topo_images(topo_images, viewer):
+    """Serialize topo images and drop line paths the viewer should not see."""
+    lines = [line_path.line for topo_image in topo_images for line_path in topo_image.line_paths]
+    SecretService.attach_secret_flags(lines)
+    include_secret = SecretService.can_view_secrets()
+    payloads = topo_images_schema.dump(topo_images)
+    if not include_secret:
+        for topo_image in payloads:
+            topo_image["linePaths"] = [
+                line_path for line_path in topo_image["linePaths"] if not line_path["line"]["secret"]
+            ]
+    for topo_image in payloads:
+        topo_image["linePaths"] = [
+            line_path
+            for line_path in topo_image["linePaths"]
+            if line_path_listed(topo_image.get("publicationStatus"), line_path["line"], viewer)
+        ]
+    return payloads
 
 
 class AddTopoImage(MethodView):
@@ -189,9 +218,16 @@ class GetTopoImages(MethodView):
 
     def get(self, area_slug):
         """
-        Returns all topo images of an area.
+        Returns topo images of an area.
+
+        Without ``page``, the response is the full list (the live wall). With ``page``,
+        the response is ``{"items", "hasNext"}`` so a large archive can be loaded in chunks.
         """
         archived = request.args.get("archived", False, type=bool)  # default: hide archived topo images
+        page = request.args.get("page", type=int)
+        order_direction = request.args.get("order_direction") or "asc"
+        if order_direction not in ("asc", "desc"):
+            raise BadRequest("Invalid order by query parameters")
 
         area_id = Area.get_id_by_slug(area_slug)
         viewer = optional_request_user()
@@ -200,33 +236,41 @@ class GetTopoImages(MethodView):
             if archived
             else publication_visibility_clause(TopoImage, viewer)
         )
-        topo_images: List[TopoImage] = TopoImage.return_all(
-            filter=lambda: [
-                status_filter,
-                TopoImage.area_id == area_id,
-            ],
-            order_by=lambda: TopoImage.order_index.asc(),
-            options=(
-                joinedload(TopoImage.file),
-                selectinload(TopoImage.line_paths).joinedload(LinePath.line),
-                selectinload(TopoImage.map_markers),
-            ),
-        )
-        lines = [line_path.line for topo_image in topo_images for line_path in topo_image.line_paths]
-        SecretService.attach_secret_flags(lines)
-        include_secret = True
-        if not SecretService.can_view_secrets():
-            include_secret = False
-        unfiltered_response = topo_images_schema.dump(topo_images)
-        if not include_secret:
-            for ti in unfiltered_response:
-                ti["linePaths"] = [lp for lp in ti["linePaths"] if not lp["line"]["secret"]]
-        for ti in unfiltered_response:
-            ti["linePaths"] = [
-                lp for lp in ti["linePaths"] if line_path_listed(ti.get("publicationStatus"), lp["line"], viewer)
-            ]
 
-        return jsonify(unfiltered_response), 200
+        if page is None:
+            topo_images: List[TopoImage] = TopoImage.return_all(
+                filter=lambda: [
+                    status_filter,
+                    TopoImage.area_id == area_id,
+                ],
+                order_by=lambda: TopoImage.order_index.asc(),
+                options=_TOPO_IMAGE_LOAD_OPTIONS,
+            )
+            return jsonify(_dump_listed_topo_images(topo_images, viewer)), 200
+
+        if page < 1:
+            raise BadRequest("Invalid page")
+        per_page = request.args.get("per_page", type=int) or DEFAULT_TOPO_IMAGE_PAGE_SIZE
+        if per_page < 1 or per_page > MAX_TOPO_IMAGE_PAGE_SIZE:
+            raise BadRequest("Invalid per_page")
+
+        order_column = TopoImage.order_index.asc() if order_direction == "asc" else TopoImage.order_index.desc()
+        query = (
+            select(TopoImage)
+            .where(status_filter, TopoImage.area_id == area_id)
+            .options(*_TOPO_IMAGE_LOAD_OPTIONS)
+            .order_by(order_column, TopoImage.id.asc())
+        )
+        paginated = db.paginate(query, page=page, per_page=per_page, error_out=False)
+        return (
+            jsonify(
+                {
+                    "items": _dump_listed_topo_images(paginated.items, viewer),
+                    "hasNext": paginated.has_next,
+                }
+            ),
+            200,
+        )
 
 
 class GetTopoImage(MethodView):

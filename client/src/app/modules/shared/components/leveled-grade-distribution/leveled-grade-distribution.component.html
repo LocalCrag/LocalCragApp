@@ -59,8 +59,8 @@
                   <p-tag
                     [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
-                      backgroundColor: '#e5e7eb',
-                      color: textColor('#e5e7eb', '#2e3132'),
+                      backgroundColor: stackedChartProjectColor,
+                      color: textColor(stackedChartProjectColor, '#2e3132'),
                     }"
                     (click)="onGradeRangeClick($event, data, 0, 0)"
                   >
@@ -84,8 +84,8 @@
                   <p-tag
                     [class.leveled-grade-tag--clickable]="!!linesListUrl"
                     [style]="{
-                      backgroundColor: '#e5e7eb',
-                      color: textColor('#e5e7eb', '#2e3132'),
+                      backgroundColor: stackedChartProjectColor,
+                      color: textColor(stackedChartProjectColor, '#2e3132'),
                     }"
                     (click)="onGradeRangeClick($event, data, -2, -1)"
                   >

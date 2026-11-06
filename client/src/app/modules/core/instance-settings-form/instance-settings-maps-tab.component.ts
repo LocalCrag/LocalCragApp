@@ -28,6 +28,7 @@ import {
 } from '../../../models/map-overlay';
 import { FormEntryRowComponent } from '../../shared/components/form-entry-row/form-entry-row.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { FormArrayDirective } from '../../shared/forms/form-array.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import {
@@ -68,6 +69,7 @@ type TileJsonOverlayMeta = {
     TooltipModule,
     FormEntryRowComponent,
     ControlGroupDirective,
+    FormArrayDirective,
     FormControlDirective,
     IfErrorDirective,
   ],
@@ -244,6 +246,7 @@ export class InstanceSettingsMapsTabComponent implements OnInit {
     if (group.get('type')?.value === 'vector' && layers.length === 0) {
       layers.push(createVectorLayerGroup(this.fb));
     }
+    layers.updateValueAndValidity();
     group.updateValueAndValidity();
   }
 
@@ -297,6 +300,7 @@ export class InstanceSettingsMapsTabComponent implements OnInit {
 
   onVectorPaintModeChange(overlayIndex: number, layerIndex: number): void {
     const group = this.vectorLayersControls(overlayIndex).at(layerIndex);
+    group.get('categoricalStops')?.updateValueAndValidity();
     group.updateValueAndValidity();
     this.mapOverlaysControls().at(overlayIndex).updateValueAndValidity();
   }

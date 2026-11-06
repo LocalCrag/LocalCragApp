@@ -25,6 +25,11 @@ export const selectLoginLoadingState = createSelector(
   (authState) => authState.loginLoadingState,
 );
 
+export const selectTwoFactorChallenge = createSelector(
+  selectAuthState,
+  (authState) => authState.twoFactorChallenge,
+);
+
 export const selectAuthResolved = createSelector(
   selectAuthState,
   (authState) => authState.authResolved,

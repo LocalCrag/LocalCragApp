@@ -297,9 +297,6 @@ def test_permission_levels(client, user_token, member_token, moderator_token, an
             }
         ],
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }

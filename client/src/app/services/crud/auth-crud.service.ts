@@ -3,6 +3,10 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../core/api.service';
 import { LoginResponse } from '../../models/login-response';
+import {
+  deserializePasswordAuth,
+  PasswordAuthResult,
+} from '../../models/two-factor-challenge';
 import { map } from 'rxjs/operators';
 
 /**
@@ -29,10 +33,39 @@ export class AuthCrudService {
    * @param password Password to log in with.
    * @return Returns an Observable that resolves to a login response.
    */
-  public login(email: string, password: string): Observable<LoginResponse> {
+  public login(
+    email: string,
+    password: string,
+  ): Observable<PasswordAuthResult> {
     return this.http
       .post(this.api.auth.login(), { email, password })
+      .pipe(map((res) => deserializePasswordAuth(res)));
+  }
+
+  /**
+   * Completes a password login with an authenticator or email code.
+   */
+  public verifyTwoFactor(
+    challengeToken: string,
+    code: string,
+  ): Observable<LoginResponse> {
+    return this.http
+      .post(this.api.auth.loginTwoFactor(), { challengeToken, code })
       .pipe(map((res) => LoginResponse.deserialize(res)));
+  }
+
+  /**
+   * Asks the server to email a login code for the current challenge.
+   */
+  public sendTwoFactorEmail(
+    challengeToken: string,
+  ): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(
+      this.api.auth.loginTwoFactorEmail(),
+      {
+        challengeToken,
+      },
+    );
   }
 
   /**
@@ -77,10 +110,10 @@ export class AuthCrudService {
   public resetPassword(
     newPassword: string,
     resetPasswordHash: string,
-  ): Observable<LoginResponse> {
+  ): Observable<PasswordAuthResult> {
     return this.http
       .post(this.api.auth.resetPassword(), { newPassword, resetPasswordHash })
-      .pipe(map((res) => LoginResponse.deserialize(res)));
+      .pipe(map((res) => deserializePasswordAuth(res)));
   }
 
   /**
@@ -90,7 +123,7 @@ export class AuthCrudService {
    * @param newPassword The new password.
    */
   public changePassword(
-    oldPassword: string,
+    oldPassword: string | null,
     newPassword: string,
   ): Observable<MessageResponse> {
     return this.http.put<MessageResponse>(this.api.auth.changePassword(), {

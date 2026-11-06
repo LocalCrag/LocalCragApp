@@ -155,6 +155,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         arrowTextColor: [null],
         arrowHighlightColor: [null],
         arrowHighlightTextColor: [null],
+        colorLinesByScale: [false],
         barChartColor: [null],
         barChartAccentColor: [null],
         darkBarChartColor: [null],
@@ -201,6 +202,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         arrowTextColor: this.instanceSettings.arrowTextColor,
         arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
         arrowHighlightTextColor: this.instanceSettings.arrowHighlightTextColor,
+        colorLinesByScale: this.instanceSettings.colorLinesByScale,
         barChartColor: getRgbObject(this.instanceSettings.barChartColor),
         barChartAccentColor: getRgbObject(
           this.instanceSettings.barChartAccentColor,

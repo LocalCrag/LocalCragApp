@@ -9,27 +9,21 @@
           tooltipPosition="right"
         ></span>
       </div>
-      @if (
-        mapBaseLayersControls().hasError("baseLayerDefaultsRequired") ||
-        mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") ||
-        mapBaseLayersControls().hasError("baseLayerRockExplorerDefaultRequired")
-      ) {
-        <small class="lc-error">{{
-          mapBaseLayersControls().hasError("baseLayerTopoDefaultRequired") &&
-          !mapBaseLayersControls().hasError(
-            "baseLayerRockExplorerDefaultRequired"
-          )
-            ? t("baseLayerTopoDefaultRequired")
-            : mapBaseLayersControls().hasError(
-                  "baseLayerRockExplorerDefaultRequired"
-                ) &&
-                !mapBaseLayersControls().hasError(
-                  "baseLayerTopoDefaultRequired"
-                )
-              ? t("baseLayerRockExplorerDefaultRequired")
-              : t("baseLayerDefaultsRequired")
-        }}</small>
-      }
+      <div lcControlGroup>
+        <ng-container formArrayName="mapBaseLayers" lcFormArray>
+          <small class="lc-error" *lcIfError="'baseLayerTopoDefaultRequired'">{{
+            t("baseLayerTopoDefaultRequired")
+          }}</small>
+          <small
+            class="lc-error"
+            *lcIfError="'baseLayerRockExplorerDefaultRequired'"
+            >{{ t("baseLayerRockExplorerDefaultRequired") }}</small
+          >
+          <small class="lc-error" *lcIfError="'baseLayerDefaultsRequired'">{{
+            t("baseLayerDefaultsRequired")
+          }}</small>
+        </ng-container>
+      </div>
     </div>
 
     <div formArrayName="mapBaseLayers">
@@ -296,6 +290,20 @@
                     t("mapLayerVectorLayersLabel")
                   }}</label>
                   <div formArrayName="layers" class="flex flex-col gap-3">
+                    <div lcControlGroup>
+                      <ng-container lcFormArray>
+                        <small
+                          class="lc-error"
+                          *lcIfError="'vectorLayersRequired'"
+                          >{{ t("mapLayerVectorLayersRequired") }}</small
+                        >
+                        <small
+                          class="lc-error"
+                          *lcIfError="'vectorLayersDuplicate'"
+                          >{{ t("mapLayerVectorLayersDuplicate") }}</small
+                        >
+                      </ng-container>
+                    </div>
                     @for (
                       _ of vectorLayersControls(i).controls;
                       track _;
@@ -594,6 +602,24 @@
                                     />
                                   </div>
                                 }
+                                <div lcControlGroup>
+                                  <ng-container lcFormArray>
+                                    <small
+                                      class="lc-error"
+                                      *lcIfError="'categoricalStopsRequired'"
+                                      >{{
+                                        t("mapLayerCategoricalStopsRequired")
+                                      }}</small
+                                    >
+                                    <small
+                                      class="lc-error"
+                                      *lcIfError="'categoricalStopsDuplicate'"
+                                      >{{
+                                        t("mapLayerCategoricalStopsDuplicate")
+                                      }}</small
+                                    >
+                                  </ng-container>
+                                </div>
                               </div>
                               <p-button
                                 label="{{ t('mapLayerAddCategoricalStop') }}"

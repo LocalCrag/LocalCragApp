@@ -95,44 +95,46 @@
           {{ t("rankings") }}
         </h3>
         <div class="stat-grid stat-grid--rankings">
-          @for (lt of lineTypes; track lt) {
-            @if (
-              stats.globalRankByLineType[lt] !== null &&
-              stats.globalRankByLineType[lt] !== undefined
-            ) {
+          @for (
+            rank of stats.globalRanks;
+            track rank.lineType + rank.gradeScale
+          ) {
+            @if (rank.rankTop10 !== null && rank.rankTop10 !== undefined) {
               <div class="stat-card">
-                <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-                <div class="stat-value">
-                  {{ stats.globalRankByLineType[lt] }}.
+                <div class="stat-label">
+                  {{ rankLabel(rank) }}
                 </div>
+                <div class="stat-value">{{ rank.rankTop10 }}.</div>
                 <p class="stat-note">{{ t("globalRankTop10Short") }}</p>
               </div>
             }
           }
-          @for (lt of lineTypes; track lt) {
-            @if (
-              stats.globalRankTop50ByLineType[lt] !== null &&
-              stats.globalRankTop50ByLineType[lt] !== undefined
-            ) {
+          @for (
+            rank of stats.globalRanks;
+            track rank.lineType + rank.gradeScale + "-top50"
+          ) {
+            @if (rank.rankTop50 !== null && rank.rankTop50 !== undefined) {
               <div class="stat-card">
-                <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-                <div class="stat-value">
-                  {{ stats.globalRankTop50ByLineType[lt] }}.
+                <div class="stat-label">
+                  {{ rankLabel(rank) }}
                 </div>
+                <div class="stat-value">{{ rank.rankTop50 }}.</div>
                 <p class="stat-note">{{ t("globalRankTop50Short") }}</p>
               </div>
             }
           }
-          @for (lt of lineTypes; track lt) {
+          @for (
+            rank of stats.globalRanks;
+            track rank.lineType + rank.gradeScale + "-count"
+          ) {
             @if (
-              stats.globalRankTotalCountByLineType[lt] !== null &&
-              stats.globalRankTotalCountByLineType[lt] !== undefined
+              rank.rankTotalCount !== null && rank.rankTotalCount !== undefined
             ) {
               <div class="stat-card">
-                <div class="stat-label">{{ lineTypeLabel(lt) }}</div>
-                <div class="stat-value">
-                  {{ stats.globalRankTotalCountByLineType[lt] }}.
+                <div class="stat-label">
+                  {{ rankLabel(rank) }}
                 </div>
+                <div class="stat-value">{{ rank.rankTotalCount }}.</div>
                 <p class="stat-note">{{ t("globalRankTotalCountShort") }}</p>
               </div>
             }
@@ -193,15 +195,23 @@
         [ascentsPerYear]="stats.ascentsPerYear"
         [barChartColor]="barChartColor"
       />
-      <h3 class="charts-section-title charts-section-title--gradeDistribution">
-        {{ t("gradeDistribution") }}
-      </h3>
-      <div class="charts-section-box charts-section-box--blue">
+      @if (!gradeDiagramsSuppressed) {
+        <h3
+          class="charts-section-title charts-section-title--gradeDistribution"
+        >
+          {{ t("gradeDistribution") }}
+        </h3>
+      }
+      <div
+        class="charts-section-box charts-section-box--blue"
+        [hidden]="gradeDiagramsSuppressed"
+      >
         <lc-grade-distribution-bar-chart
           [fetchingObservable]="fetchUserGrades"
           [fetchingFlashObservable]="fetchUserFlashGrades"
           [excludeProjects]="true"
           [showDetailedTooltip]="true"
+          (diagramsSuppressedChange)="gradeDiagramsSuppressed = $event"
         ></lc-grade-distribution-bar-chart>
       </div>
       <h3 class="charts-section-title charts-section-title--completion">

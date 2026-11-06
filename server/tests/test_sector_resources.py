@@ -49,9 +49,6 @@ def test_successful_create_sector(client, moderator_token, any_file):
         "rules": "test rules",
         "rulesTitle": "Important rules",
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": "UIAA",
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
         "closureSchedules": [],
     }
@@ -74,9 +71,6 @@ def test_successful_create_sector(client, moderator_token, any_file):
     assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] is None
-    assert res["defaultSportScale"] == "UIAA"
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
 
 
@@ -90,9 +84,6 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "rules": None,
         "rulesTitle": None,
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione?x=1",
         "closureSchedules": [],
     }
@@ -141,9 +132,6 @@ def test_successful_get_sector(client):
     assert res["secret"] is False
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] is None
-    assert res["defaultSportScale"] is None
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == Sector.find_by_slug("pampelmousse").blocweather_url
 
 
@@ -177,9 +165,6 @@ def test_successful_edit_sector(client, moderator_token, any_file):
         "rules": "test rules",
         "rulesTitle": "Important rules",
         "secret": False,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
         "closureSchedules": [],
     }
@@ -202,9 +187,6 @@ def test_successful_edit_sector(client, moderator_token, any_file):
     assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] == "FB"
-    assert res["defaultSportScale"] is None
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
 
 

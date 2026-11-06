@@ -6,7 +6,6 @@ from sqlalchemy import func, text
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
-from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.crag_schema import crag_schema, crags_schema
 from marshmallow_schemas.search_schema import crags_search_schema
@@ -36,7 +35,7 @@ from util.scheduled_closure import (
 from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_crag_counts
-from util.validators import validate_default_scales, validate_order_payload
+from util.validators import validate_order_payload
 from webargs_schemas.crag_args import crag_args
 
 
@@ -90,10 +89,6 @@ class CreateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         created_by = User.find_by_email(get_session_identity())
 
-        valid, error = validate_default_scales(crag_data)
-        if not valid:
-            raise NotFound(error)
-
         new_crag: Crag = Crag()
         new_crag.name = crag_data["name"].strip()
         new_crag.description = sanitize_wysiwyg_html(crag_data["description"])
@@ -105,9 +100,6 @@ class CreateCrag(MethodView):
         new_crag.secret = crag_data["secret"]
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
-        new_crag.default_boulder_scale = crag_data["defaultBoulderScale"]
-        new_crag.default_sport_scale = crag_data["defaultSportScale"]
-        new_crag.default_trad_scale = crag_data["defaultTradScale"]
         new_crag.blocweather_url = crag_data["blocweatherUrl"]
 
         apply_closable_configuration(new_crag, crag_data, "crag_id")
@@ -129,10 +121,6 @@ class UpdateCrag(MethodView):
         crag_data = parser.parse(crag_args, request)
         crag: Crag = Crag.find_by_slug(crag_slug)
 
-        valid, error = validate_default_scales(crag_data)
-        if not valid:
-            raise NotFound(error)
-
         crag.name = crag_data["name"].strip()
         crag.description = sanitize_wysiwyg_html(crag_data["description"])
         crag.short_description = sanitize_wysiwyg_html(crag_data["shortDescription"])
@@ -140,9 +128,6 @@ class UpdateCrag(MethodView):
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")
-        crag.default_boulder_scale = crag_data["defaultBoulderScale"]
-        crag.default_sport_scale = crag_data["defaultSportScale"]
-        crag.default_trad_scale = crag_data["defaultTradScale"]
         crag.blocweather_url = crag_data["blocweatherUrl"]
 
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)

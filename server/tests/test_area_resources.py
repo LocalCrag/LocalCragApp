@@ -46,9 +46,6 @@ def test_successful_create_area(client, moderator_token, any_file):
         ],
         "portraitImage": str(any_file.id),
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": "UIAA",
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
         "closureSchedules": [],
     }
@@ -69,9 +66,6 @@ def test_successful_create_area(client, moderator_token, any_file):
     assert res["id"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] is None
-    assert res["defaultSportScale"] == "UIAA"
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
 
 
@@ -91,9 +85,6 @@ def test_create_area_invalid_lat(client, moderator_token):
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": "UIAA",
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
@@ -118,9 +109,6 @@ def test_create_area_invalid_lng(client, moderator_token):
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": "UIAA",
-        "defaultTradScale": None,
         "blocweatherUrl": None,
         "closureSchedules": [],
     }
@@ -137,9 +125,6 @@ def test_create_area_invalid_blocweather_url(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
-        "defaultBoulderScale": None,
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
         "closureSchedules": [],
     }
@@ -225,9 +210,6 @@ def test_successful_edit_area(client, moderator_token):
         ],
         "portraitImage": None,
         "secret": False,
-        "defaultBoulderScale": "FB",
-        "defaultSportScale": None,
-        "defaultTradScale": None,
         "blocweatherUrl": "https://blocweather.com/france/fontainebleau/bas-cuvier",
         "closureSchedules": [],
     }
@@ -248,9 +230,6 @@ def test_successful_edit_area(client, moderator_token):
     assert res["id"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["defaultBoulderScale"] == "FB"
-    assert res["defaultSportScale"] is None
-    assert res["defaultTradScale"] is None
     assert res["blocweatherUrl"] == "https://blocweather.com/france/fontainebleau/bas-cuvier"
 
 

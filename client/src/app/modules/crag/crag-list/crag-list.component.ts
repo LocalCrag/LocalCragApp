@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { CragsService } from '../../../services/crud/crags.service';
 import { LoadingState } from '../../../enums/loading-state';
-import { ConfirmationService } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { forkJoin, Observable } from 'rxjs';
@@ -41,7 +40,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-crag-list',
   templateUrl: './crag-list.component.html',
   styleUrls: ['./crag-list.component.scss'],
-  providers: [DialogService, ConfirmationService],
+  providers: [DialogService],
   imports: [
     TranslocoDirective,
     DataView,

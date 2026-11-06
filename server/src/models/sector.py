@@ -46,9 +46,6 @@ class Sector(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEnt
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     crag_slug = association_proxy("crag", "slug")
     map_markers = db.relationship("MapMarker", back_populates="sector")
-    default_boulder_scale = db.Column(db.String(32), nullable=True)
-    default_sport_scale = db.Column(db.String(32), nullable=True)
-    default_trad_scale = db.Column(db.String(32), nullable=True)
     blocweather_url = db.Column(db.String(255), nullable=True)
     publication_status = db.Column(
         publication_status_type,

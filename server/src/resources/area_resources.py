@@ -8,7 +8,6 @@ from sqlalchemy.orm import joinedload
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
-from error_handling.http_exceptions.not_found import NotFound
 from extensions import db
 from marshmallow_schemas.area_schema import area_schema, areas_schema
 from marshmallow_schemas.search_schema import area_search_schema, areas_search_schema
@@ -38,7 +37,7 @@ from util.scheduled_closure import (
 from util.secret_service import SecretService
 from util.security_util import check_secret_spot_permission
 from util.topo_entity_counts import attach_area_counts
-from util.validators import validate_default_scales, validate_order_payload
+from util.validators import validate_order_payload
 from webargs_schemas.area_args import area_args
 from webargs_schemas.move_args import move_area_args
 
@@ -141,10 +140,6 @@ class CreateArea(MethodView):
         area_data = parser.parse(area_args, request)
         created_by = User.find_by_email(get_session_identity())
 
-        valid, error = validate_default_scales(area_data)
-        if not valid:
-            raise NotFound(error)
-
         new_area: Area = Area()
         new_area.name = area_data["name"].strip()
         new_area.description = sanitize_wysiwyg_html(area_data["description"])
@@ -154,9 +149,6 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
-        new_area.default_boulder_scale = area_data["defaultBoulderScale"]
-        new_area.default_sport_scale = area_data["defaultSportScale"]
-        new_area.default_trad_scale = area_data["defaultTradScale"]
         new_area.blocweather_url = area_data["blocweatherUrl"]
 
         apply_closable_configuration(new_area, area_data, "area_id")
@@ -181,19 +173,12 @@ class UpdateArea(MethodView):
         area_data = parser.parse(area_args, request)
         area: Area = Area.find_by_slug(area_slug)
 
-        valid, error = validate_default_scales(area_data)
-        if not valid:
-            raise NotFound(error)
-
         area.name = area_data["name"].strip()
         area.description = sanitize_wysiwyg_html(area_data["description"])
         area.short_description = sanitize_wysiwyg_html(area_data["shortDescription"])
         area.portrait_image_id = area_data["portraitImage"]
         update_area_propagating_boolean_attr(area, area_data["secret"], "secret")
         apply_closable_configuration(area, area_data, "area_id")
-        area.default_boulder_scale = area_data["defaultBoulderScale"]
-        area.default_sport_scale = area_data["defaultSportScale"]
-        area.default_trad_scale = area_data["defaultTradScale"]
         area.blocweather_url = area_data["blocweatherUrl"]
 
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)

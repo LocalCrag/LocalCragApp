@@ -91,16 +91,19 @@ class ChangePassword(MethodView):
         user = User.find_by_email(get_session_identity())
         if not user:
             raise Unauthorized(ResponseMessage.UNAUTHORIZED.value)
-        if User.verify_hash(data["oldPassword"], user.password):
-            if len(data["newPassword"]) < 8:
-                raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
-            user.password = User.generate_hash(data["newPassword"])
-            db.session.add(user)
-            db.session.commit()
-            simple_message = SimpleMessage(ResponseMessage.PASSWORD_CHANGED.value)
-            return simple_message_schema.dump(simple_message), 201
-        else:
+        old_password = data.get("oldPassword") or ""
+        if user.password is None:
+            if old_password:
+                raise Unauthorized(ResponseMessage.OLD_PASSWORD_INCORRECT.value)
+        elif not User.verify_hash(old_password, user.password):
             raise Unauthorized(ResponseMessage.OLD_PASSWORD_INCORRECT.value)
+        if len(data["newPassword"]) < 8:
+            raise BadRequest(ResponseMessage.PASSWORD_TOO_SHORT.value)
+        user.password = User.generate_hash(data["newPassword"])
+        db.session.add(user)
+        db.session.commit()
+        simple_message = SimpleMessage(ResponseMessage.PASSWORD_CHANGED.value)
+        return simple_message_schema.dump(simple_message), 201
 
 
 class GetUsers(MethodView):
@@ -390,19 +393,41 @@ class GetUserStatistics(MethodView):
         global_rank_top10_by_line_type = {}
         global_rank_top50_by_line_type = {}
         global_rank_total_count_by_line_type = {}
+        global_ranks = []
+        rankings_by_type = defaultdict(list)
+        if not excluded_from_rankings:
+            ranking_rows = (
+                Ranking.query.filter(
+                    Ranking.user_id == user_id,
+                    Ranking.crag_id.is_(None),
+                    Ranking.sector_id.is_(None),
+                    Ranking.secret.is_(False),
+                )
+                .order_by(Ranking.type, Ranking.scale)
+                .all()
+            )
+            for ranking in ranking_rows:
+                rankings_by_type[ranking.type].append(ranking)
+                if ranking.rank_top_10 is None and ranking.rank_top_50 is None and ranking.rank_total_count is None:
+                    continue
+                global_ranks.append(
+                    {
+                        "lineType": ranking.type.value,
+                        "gradeScale": ranking.scale,
+                        "rankTop10": ranking.rank_top_10,
+                        "rankTop50": ranking.rank_top_50,
+                        "rankTotalCount": ranking.rank_total_count,
+                    }
+                )
         for lt in LineTypeEnum:
             if excluded_from_rankings:
                 global_rank_top10_by_line_type[lt.value] = None
                 global_rank_top50_by_line_type[lt.value] = None
                 global_rank_total_count_by_line_type[lt.value] = None
                 continue
-            ranking = Ranking.query.filter(
-                Ranking.user_id == user_id,
-                Ranking.crag_id.is_(None),
-                Ranking.sector_id.is_(None),
-                Ranking.secret.is_(False),
-                Ranking.type == lt,
-            ).first()
+            # One number per line type only when that type has a single scale.
+            rows = rankings_by_type[lt]
+            ranking = rows[0] if len(rows) == 1 else None
             global_rank_top10_by_line_type[lt.value] = ranking.rank_top_10 if ranking else None
             global_rank_top50_by_line_type[lt.value] = ranking.rank_top_50 if ranking else None
             global_rank_total_count_by_line_type[lt.value] = ranking.rank_total_count if ranking else None
@@ -449,6 +474,7 @@ class GetUserStatistics(MethodView):
             "globalRankByLineType": global_rank_top10_by_line_type,
             "globalRankTop50ByLineType": global_rank_top50_by_line_type,
             "globalRankTotalCountByLineType": global_rank_total_count_by_line_type,
+            "globalRanks": global_ranks,
             "social": {
                 "commentsCount": int(comments_count or 0),
                 "reactionsCount": int(reactions_count or 0),

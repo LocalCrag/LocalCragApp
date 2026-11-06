@@ -1,0 +1,22 @@
+{% extends "email-base.html" %}
+
+{% block preheader %}
+<span class="preheader"
+      style="box-sizing: border-box; display: none !important; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 1px; line-height: 1px; max-height: 0; max-width: 0; mso-hide: all; opacity: 0; overflow: hidden; visibility: hidden;">{{ i18n_intro_text }}</span>
+{% endblock %}
+
+{% block content %}
+<h1 style="box-sizing: border-box; color: #2F3133; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 19px; font-weight: bold; margin-top: 0;"
+    align="left">{{ i18n_hello }} {{ name }},</h1>
+<p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+   align="left">{{ i18n_text_1 }}</p>
+<p style="box-sizing: border-box; color: #2F3133; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 28px; font-weight: bold; letter-spacing: 0.3em; margin: 24px 0;"
+   align="left">{{ code }}</p>
+<p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+   align="left">{{ i18n_text_2 }}</p>
+<p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+   align="left">{{ i18n_thanks }}<br>{{ i18n_greetings }}</p>
+<p class="sub"
+   style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 24px;"
+   align="left">{{ i18n_hint }}</p>
+{% endblock %}

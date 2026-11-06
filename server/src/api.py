@@ -138,6 +138,17 @@ from resources.notification_resources import (
     GetNotifications,
     GetNotificationsCount,
 )
+from resources.passkey_resources import (
+    DeletePasskey,
+    GetPasskeys,
+    PasskeyLoginOptions,
+    PasskeyLoginVerify,
+    PasskeyRegisterOptions,
+    PasskeyRegisterVerify,
+    PasskeySignupOptions,
+    PasskeySignupVerify,
+    RemovePassword,
+)
 from resources.post_resources import (
     CreatePost,
     DeletePost,
@@ -168,6 +179,7 @@ from resources.scale_resources import (
     DeleteScale,
     GetScale,
     GetScales,
+    SetDefaultScale,
     UpdateScale,
 )
 from resources.search_resources import CreateRecentSearch, GetRecentSearches, Search
@@ -218,6 +230,14 @@ from resources.topo_quality_resources import (
     GetTopoQualityHistory,
     GetTopoQualityRanking,
     RestartTopoQuality,
+)
+from resources.two_factor_resources import (
+    EmailTwoFactor,
+    EmailTwoFactorConfirm,
+    LoginTwoFactor,
+    LoginTwoFactorEmail,
+    TotpConfirm,
+    TotpTwoFactor,
 )
 from resources.upload_resources import UploadFile
 from resources.user_resources import (
@@ -379,6 +399,34 @@ def configure_api(app):
     auth_bp.add_url_rule("/forgot-password", view_func=ForgotPassword.as_view("forgot_password_api"))
     auth_bp.add_url_rule("/reset-password", view_func=ResetPassword.as_view("reset_password_api"))
     auth_bp.add_url_rule("/change-password", view_func=ChangePassword.as_view("change_password"))
+    auth_bp.add_url_rule(
+        "/passkeys/register/options",
+        view_func=PasskeyRegisterOptions.as_view("passkey_register_options"),
+    )
+    auth_bp.add_url_rule(
+        "/passkeys/register/verify",
+        view_func=PasskeyRegisterVerify.as_view("passkey_register_verify"),
+    )
+    auth_bp.add_url_rule("/passkeys", view_func=GetPasskeys.as_view("get_passkeys"))
+    auth_bp.add_url_rule("/passkeys/<uuid:passkey_id>", view_func=DeletePasskey.as_view("delete_passkey"))
+    auth_bp.add_url_rule(
+        "/passkeys/signup/options",
+        view_func=PasskeySignupOptions.as_view("passkey_signup_options"),
+    )
+    auth_bp.add_url_rule(
+        "/passkeys/signup/verify",
+        view_func=PasskeySignupVerify.as_view("passkey_signup_verify"),
+    )
+    auth_bp.add_url_rule(
+        "/passkeys/login/options",
+        view_func=PasskeyLoginOptions.as_view("passkey_login_options"),
+    )
+    auth_bp.add_url_rule(
+        "/passkeys/login/verify",
+        view_func=PasskeyLoginVerify.as_view("passkey_login_verify"),
+    )
+    auth_bp.add_url_rule("/login/two-factor", view_func=LoginTwoFactor.as_view("login_two_factor"))
+    auth_bp.add_url_rule("/login/two-factor/email", view_func=LoginTwoFactorEmail.as_view("login_two_factor_email"))
     app.register_blueprint(auth_bp, url_prefix="/api")
 
     # User API
@@ -404,6 +452,14 @@ def configure_api(app):
     account_bp = Blueprint("account", __name__)
     account_bp.add_url_rule("", view_func=UpdateAccount.as_view("update_account"))
     account_bp.add_url_rule("/change-email", view_func=ChangeEmail.as_view("change_email"))
+    account_bp.add_url_rule("/password", view_func=RemovePassword.as_view("remove_password"))
+    account_bp.add_url_rule("/two-factor/totp", view_func=TotpTwoFactor.as_view("totp_two_factor"))
+    account_bp.add_url_rule("/two-factor/totp/confirm", view_func=TotpConfirm.as_view("totp_confirm"))
+    account_bp.add_url_rule("/two-factor/email", view_func=EmailTwoFactor.as_view("email_two_factor"))
+    account_bp.add_url_rule(
+        "/two-factor/email/confirm",
+        view_func=EmailTwoFactorConfirm.as_view("email_two_factor_confirm"),
+    )
     account_bp.add_url_rule("/delete-own-user", view_func=DeleteOwnUser.as_view("delete_own_user"))
     account_bp.add_url_rule("/settings", view_func=GetAccountSettings.as_view("get_account_settings"))
     account_bp.add_url_rule("/settings", view_func=UpdateAccountSettings.as_view("update_account_settings"))
@@ -661,6 +717,9 @@ def configure_api(app):
     # Scale API
     scale_bp = Blueprint("scales", __name__)
     scale_bp.add_url_rule("", view_func=GetScales.as_view("get_scales"))
+    scale_bp.add_url_rule(
+        "/<string:line_type>/<string:name>/default", view_func=SetDefaultScale.as_view("set_default_scale")
+    )
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=GetScale.as_view("get_scale"))
     scale_bp.add_url_rule("", view_func=CreateScale.as_view("create_scale"))
     scale_bp.add_url_rule("/<string:line_type>/<string:name>", view_func=UpdateScale.as_view("update_scale"))

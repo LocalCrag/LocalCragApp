@@ -84,6 +84,20 @@ export class ScalesService {
       );
   }
 
+  public setDefault(scale: Scale): Observable<FullScale> {
+    return this.http
+      .put(this.api.scales.setDefault(scale.lineType, scale.name), {})
+      .pipe(
+        map(Scale.deserializeFull),
+        map((updated) => {
+          for (const name of Object.keys(CACHE[updated.lineType])) {
+            CACHE[updated.lineType][name][2].isDefault = name === updated.name;
+          }
+          return this.updateCache(updated);
+        }),
+      );
+  }
+
   public deleteScale(scale: Scale): Observable<null> {
     return this.http
       .delete(this.api.scales.delete(scale.lineType, scale.name))
@@ -138,36 +152,5 @@ export class ScalesService {
       scale,
     ];
     return scale;
-  }
-
-  public getFormScaleSelectors<T>(
-    listInitializer: { label: string; value: T | string }[],
-  ) {
-    return this.getScales().pipe(
-      map((scales) => {
-        const boulderScales = listInitializer.slice();
-        const sportScales = listInitializer.slice();
-        const tradScales = listInitializer.slice();
-
-        scales.forEach((scale) => {
-          switch (scale.lineType) {
-            case LineType.BOULDER:
-              boulderScales.push({ label: scale.name, value: scale.name });
-              break;
-            case LineType.SPORT:
-              sportScales.push({ label: scale.name, value: scale.name });
-              break;
-            case LineType.TRAD:
-              tradScales.push({ label: scale.name, value: scale.name });
-          }
-        });
-
-        return {
-          [LineType.BOULDER]: boulderScales,
-          [LineType.SPORT]: sportScales,
-          [LineType.TRAD]: tradScales,
-        };
-      }),
-    );
   }
 }

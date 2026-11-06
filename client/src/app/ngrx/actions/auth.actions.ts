@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { LoginResponse } from '../../models/login-response';
+import { TwoFactorChallenge } from '../../models/two-factor-challenge';
 import { User } from '../../models/user';
 
 export const forgotPassword = createAction(
@@ -44,6 +45,20 @@ export const loginSuccess = createAction(
 );
 
 export const loginError = createAction('[Login Page] Login error');
+
+export const loginTwoFactorRequired = createAction(
+  '[Login Page] Two-factor required',
+  props<{ challenge: TwoFactorChallenge }>(),
+);
+
+export const updateTwoFactorChallenge = createAction(
+  '[Login Page] Update two-factor challenge',
+  props<{ challenge: TwoFactorChallenge }>(),
+);
+
+export const clearTwoFactorChallenge = createAction(
+  '[Login Page] Clear two-factor challenge',
+);
 
 export const newAuthCredentials = createAction(
   '[Auth] New auth credentials',

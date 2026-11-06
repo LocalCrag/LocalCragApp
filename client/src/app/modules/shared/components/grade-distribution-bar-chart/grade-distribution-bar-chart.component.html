@@ -1,5 +1,5 @@
 <ng-container *transloco="let t">
-  @if (!gradeDistribution || chartData.length === 0) {
+  @if ((!gradeDistribution || chartData.length === 0) && !diagramsSuppressed) {
     <p-message
       severity="info"
       icon="pi pi-info-circle"

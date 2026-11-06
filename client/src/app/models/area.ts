@@ -31,9 +31,6 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   secret: boolean;
   publicationStatus: string;
   mapMarkers: MapMarker[];
-  defaultBoulderScale: string | null = null;
-  defaultSportScale: string | null = null;
-  defaultTradScale: string | null = null;
   blocweatherUrl: string | null = null;
 
   sector: Sector | null;
@@ -70,9 +67,6 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     area.routerLink = topoAreaRouterLink(area);
-    area.defaultBoulderScale = payload.defaultBoulderScale;
-    area.defaultSportScale = payload.defaultSportScale;
-    area.defaultTradScale = payload.defaultTradScale;
     area.blocweatherUrl = payload.blocweatherUrl ?? null;
     return area;
   }
@@ -95,9 +89,6 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         mapMarkers: area.mapMarkers
           ? area.mapMarkers.map(MapMarker.serialize)
           : null,
-        defaultBoulderScale: area.defaultBoulderScale,
-        defaultSportScale: area.defaultSportScale,
-        defaultTradScale: area.defaultTradScale,
         blocweatherUrl: area.blocweatherUrl,
       },
     };

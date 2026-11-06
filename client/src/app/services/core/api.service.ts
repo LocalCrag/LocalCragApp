@@ -11,11 +11,24 @@ import { LineType } from '../../enums/line-type';
 export class ApiService {
   public auth = {
     login: (): string => `${this.apiHost}login`,
+    loginTwoFactor: (): string => `${this.apiHost}login/two-factor`,
+    loginTwoFactorEmail: (): string => `${this.apiHost}login/two-factor/email`,
     logout: (): string => `${this.apiHost}logout`,
     me: (): string => `${this.apiHost}me`,
     forgotPassword: (): string => `${this.apiHost}forgot-password`,
     resetPassword: (): string => `${this.apiHost}reset-password`,
     changePassword: (): string => `${this.apiHost}change-password`,
+    passkeyLoginOptions: (): string => `${this.apiHost}passkeys/login/options`,
+    passkeyLoginVerify: (): string => `${this.apiHost}passkeys/login/verify`,
+    passkeyRegisterOptions: (): string =>
+      `${this.apiHost}passkeys/register/options`,
+    passkeyRegisterVerify: (): string =>
+      `${this.apiHost}passkeys/register/verify`,
+    passkeys: (): string => `${this.apiHost}passkeys`,
+    passkey: (id: string): string => `${this.apiHost}passkeys/${id}`,
+    passkeySignupOptions: (): string =>
+      `${this.apiHost}passkeys/signup/options`,
+    passkeySignupVerify: (): string => `${this.apiHost}passkeys/signup/verify`,
   };
 
   public instanceSettings = {
@@ -26,6 +39,12 @@ export class ApiService {
   public account = {
     update: (): string => `${this.apiHost}account`,
     changeEmail: (): string => `${this.apiHost}account/change-email`,
+    removePassword: (): string => `${this.apiHost}account/password`,
+    totp: (): string => `${this.apiHost}account/two-factor/totp`,
+    totpConfirm: (): string => `${this.apiHost}account/two-factor/totp/confirm`,
+    emailTwoFactor: (): string => `${this.apiHost}account/two-factor/email`,
+    emailTwoFactorConfirm: (): string =>
+      `${this.apiHost}account/two-factor/email/confirm`,
     deleteOwnUser: (): string => `${this.apiHost}account/delete-own-user`,
     getSettings: (): string => `${this.apiHost}account/settings`,
     updateSettings: (): string => `${this.apiHost}account/settings`,
@@ -305,13 +324,15 @@ export class ApiService {
 
   public scales = {
     get: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
     getList: () => `${this.apiHost}scales`,
     create: () => `${this.apiHost}scales`,
     update: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
     delete: (lineType: LineType, name: string) =>
-      `${this.apiHost}scales/${lineType}/${name}`,
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}`,
+    setDefault: (lineType: LineType, name: string) =>
+      `${this.apiHost}scales/${lineType}/${encodeURIComponent(name)}/default`,
   };
 
   // Comments API

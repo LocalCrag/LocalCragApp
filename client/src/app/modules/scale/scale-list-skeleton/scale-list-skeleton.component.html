@@ -1,11 +1,22 @@
-<table class="scale-list-skeleton w-full">
-  <tbody>
-    @for (_ of [1, 2, 3, 4]; track _) {
-      <tr>
-        <td><p-skeleton height="1.25rem" /></td>
-        <td><p-skeleton height="1.25rem" /></td>
-        <td><p-skeleton height="1.25rem" width="4rem" /></td>
-      </tr>
-    }
-  </tbody>
-</table>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  @for (group of [1, 2, 3]; track group) {
+    <div class="border border-surface rounded-border overflow-hidden">
+      <div
+        class="flex items-center justify-between px-4 min-h-12 border-b border-surface"
+      >
+        <p-skeleton height="1.25rem" width="6rem" />
+        <p-skeleton height="1.25rem" width="1.25rem" />
+      </div>
+      @for (row of [1, 2, 3]; track row) {
+        <div
+          class="flex items-center justify-between px-4 py-3"
+          [class.border-t]="row > 1"
+          [class.border-surface]="row > 1"
+        >
+          <p-skeleton height="1.25rem" width="40%" />
+          <p-skeleton height="1.25rem" width="4rem" />
+        </div>
+      }
+    </div>
+  }
+</div>

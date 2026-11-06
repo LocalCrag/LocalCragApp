@@ -16,7 +16,7 @@
           <p-select
             [options]="lineTypes"
             [(ngModel)]="lineType"
-            (ngModelChange)="loadRanking()"
+            (ngModelChange)="onLineTypeChange()"
             optionLabel="label"
             styleClass="md:mb-0 md:mr-2"
             [disabled]="loading === loadingStates.LOADING"
@@ -25,6 +25,29 @@
               @if (lineType) {
                 <div class="flex items-center gap-2">
                   <div>{{ lineType.label }}</div>
+                </div>
+              }
+            </ng-template>
+            <ng-template let-option #item>
+              <div class="flex items-center gap-2">
+                <div>{{ option.label }}</div>
+              </div>
+            </ng-template>
+          </p-select>
+        }
+        @if (scales?.length > 1) {
+          <p-select
+            [options]="scales"
+            [(ngModel)]="scale"
+            (ngModelChange)="loadRanking()"
+            optionLabel="label"
+            styleClass="md:mb-0 md:mr-2"
+            [disabled]="loading === loadingStates.LOADING"
+          >
+            <ng-template #selectedItem>
+              @if (scale) {
+                <div class="flex items-center gap-2">
+                  <div>{{ scale.label }}</div>
                 </div>
               }
             </ng-template>
@@ -81,6 +104,18 @@
           [modal]="true"
         >
           <p>{{ t("aboutRankingsText") }}</p>
+          @if (rankingExample) {
+            <p>
+              {{
+                t("aboutRankingsExample", {
+                  grade: rankingExample.grade,
+                  points: rankingExample.points,
+                  nextGrade: rankingExample.nextGrade,
+                  nextPoints: rankingExample.nextPoints,
+                })
+              }}
+            </p>
+          }
           @if (rankingPastWeeks | async; as weeks) {
             <p>
               {{

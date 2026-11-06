@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
 import {
   getStackedChartBracketColor,
   getStackedChartBracketValue,
+  STACKED_CHART_PROJECT_COLOR,
 } from '../../../../utility/scale/stacked-chart-brackets';
 import { textColor } from '../../../../utility/misc/color';
 import { Tag } from 'primeng/tag';
@@ -93,6 +94,9 @@ export class LeveledGradeDistributionComponent implements OnInit {
             ),
           ]).pipe(
             map(([scale, gradeNameByValueMap]) => {
+              if (!scale.gradeBrackets.showDiagrams) {
+                return;
+              }
               const stackedBrackets = scale.gradeBrackets.stackedChartBrackets;
               const labels = Array(stackedBrackets.length).fill('');
               const sortedGrades = [...scale.grades].sort(
@@ -256,4 +260,5 @@ export class LeveledGradeDistributionComponent implements OnInit {
   }
 
   protected readonly textColor = textColor;
+  protected readonly stackedChartProjectColor = STACKED_CHART_PROJECT_COLOR;
 }

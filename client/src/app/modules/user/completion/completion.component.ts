@@ -25,6 +25,7 @@ import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { Checkbox } from 'primeng/checkbox';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 
 @Component({
   selector: 'lc-completion',
@@ -182,7 +183,10 @@ export class CompletionComponent implements OnInit {
           for (const gradeScale in gradeDistribution[lineType]) {
             if (gradeDistribution[lineType][gradeScale]) {
               this.availableScales.push({
-                label: `${this.translocoService.translate(lineType)} ${gradeScale}`,
+                label: scaleChoiceLabel(
+                  this.translocoService.translate(lineType),
+                  gradeScale,
+                ),
                 value: { lineType: lineType as LineType, gradeScale },
               });
             }

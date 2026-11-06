@@ -14,6 +14,12 @@ export class MenuItem extends HasOrderIndex(AbstractModel) {
   type: MenuItemType;
   position: MenuItemPosition;
   menuPage: MenuPage;
+  /** Header item this entry is nested under. Footer items stay null. */
+  parentId: string;
+  /** Display depth in the menu editor. Not persisted. */
+  depth = 0;
+  /** Label for the parent dropdown. Not persisted. */
+  selectLabel: string;
   icon: string;
   url: string;
   title: string;
@@ -34,6 +40,7 @@ export class MenuItem extends HasOrderIndex(AbstractModel) {
     menuItem.menuPage = payload.menuPage
       ? MenuPage.deserialize(payload.menuPage)
       : null;
+    menuItem.parentId = payload.parent ?? null;
     menuItem.url = payload.url;
     menuItem.title = payload.title;
     return menuItem;
@@ -51,6 +58,7 @@ export class MenuItem extends HasOrderIndex(AbstractModel) {
       position: menuItem.position,
       icon: menuItem.icon,
       menuPage: menuItem.menuPage ? menuItem.menuPage.id : null,
+      parent: menuItem.parentId ?? null,
       url: menuItem.url,
       title: menuItem.title,
     };

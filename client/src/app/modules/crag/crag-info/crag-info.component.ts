@@ -44,6 +44,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   ],
 })
 export class CragInfoComponent implements OnInit {
+  public gradeDiagramsSuppressed = false;
   public crag: Crag;
   public fetchCragGrades: Observable<GradeDistribution>;
   public cragCoordinates: Coordinates;

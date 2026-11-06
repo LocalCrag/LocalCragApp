@@ -34,6 +34,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     landingPageSlug = fields.Method("get_landing_page_slug")
     skippedHierarchicalLayers = fields.Integer(attribute="skipped_hierarchical_layers")
     displayUserGrades = fields.Boolean(attribute="display_user_grades")
+    colorLinesByScale = fields.Boolean(attribute="color_lines_by_scale")
     displayUserRatings = fields.Boolean(attribute="display_user_ratings")
     noClosedProjects = fields.Boolean(attribute="no_closed_projects")
     suggestionsEnabled = fields.Boolean(attribute="suggestions_enabled")

@@ -105,6 +105,20 @@
         [loading]="loadingState === loadingStates.LOADING"
       ></p-button>
 
+      @if (passkeySupported) {
+        <p-divider align="center" class="w-full">
+          {{ t("passkeyOr") }}
+        </p-divider>
+
+        <p-button
+          label="{{ t('passkeyButtonLabel') }}"
+          severity="secondary"
+          (click)="registerWithPasskey()"
+          data-cy="register-form-passkey"
+          [loading]="passkeyLoading"
+        ></p-button>
+      }
+
       <p-button
         label="{{ t('cancelButtonLabel') }}"
         class="link-button w-min"

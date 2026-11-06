@@ -165,6 +165,192 @@ def test_successful_get_crag_menu_structure(client):
     assert res[0]["sectors"][0]["areas"][1]["name"] == "Another Area"
 
 
+def _url_payload(position="TOP", parent=None, title="Example"):
+    return {
+        "type": "URL",
+        "position": position,
+        "menuPage": None,
+        "url": "https://example.com",
+        "title": title,
+        "icon": "pi-globe",
+        "parent": parent,
+    }
+
+
+def test_create_nested_menu_item(client, moderator_token):
+    parent = MenuItem.query.filter_by(type=MenuItemTypeEnum.NEWS).first()
+
+    rv = client.post("/api/menu-items", token=moderator_token, json=_url_payload(parent=str(parent.id)))
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["parent"] == str(parent.id)
+    assert res["position"] == "TOP"
+
+    child_id = res["id"]
+    grandchild = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(parent=child_id, title="Nested example"),
+    )
+    assert grandchild.status_code == 201
+    assert grandchild.json["parent"] == child_id
+
+
+def test_topo_menu_item_cannot_be_a_parent(client, moderator_token):
+    topo = MenuItem.query.filter_by(type=MenuItemTypeEnum.TOPO, position=MenuItemPositionEnum.TOP).first()
+
+    nested = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(parent=str(topo.id)),
+    )
+    assert nested.status_code == 400
+    assert MenuItem.query.filter_by(parent_id=topo.id).count() == 0
+
+
+def test_nested_menu_item_rejects_footer_self_cycle_and_unknown_parent(client, moderator_token):
+    parent = MenuItem.query.filter_by(type=MenuItemTypeEnum.NEWS).first()
+
+    footer = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(position="BOTTOM", parent=str(parent.id)),
+    )
+    assert footer.status_code == 400
+
+    self_parent = client.put(
+        f"/api/menu-items/{parent.id}",
+        token=moderator_token,
+        json={
+            "type": "NEWS",
+            "position": "TOP",
+            "menuPage": None,
+            "icon": None,
+            "title": None,
+            "url": None,
+            "parent": str(parent.id),
+        },
+    )
+    assert self_parent.status_code == 400
+
+    child = client.post("/api/menu-items", token=moderator_token, json=_url_payload(parent=str(parent.id)))
+    assert child.status_code == 201
+    cycle = client.put(
+        f"/api/menu-items/{parent.id}",
+        token=moderator_token,
+        json={
+            "type": "NEWS",
+            "position": "TOP",
+            "menuPage": None,
+            "icon": None,
+            "title": None,
+            "url": None,
+            "parent": child.json["id"],
+        },
+    )
+    assert cycle.status_code == 400
+
+    unknown = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(parent="6b99766e-4597-492f-a8f1-450f1af7cfa2"),
+    )
+    assert unknown.status_code == 400
+
+
+def test_leaving_header_or_deleting_parent_promotes_children(client, moderator_token):
+    parent = MenuItem.query.filter_by(type=MenuItemTypeEnum.NEWS).first()
+    child = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(parent=str(parent.id)),
+    )
+    assert child.status_code == 201
+    child_id = child.json["id"]
+
+    moved = client.put(
+        f"/api/menu-items/{parent.id}",
+        token=moderator_token,
+        json={
+            "type": "NEWS",
+            "position": "BOTTOM",
+            "menuPage": None,
+            "icon": None,
+            "title": None,
+            "url": None,
+            "parent": None,
+        },
+    )
+    assert moved.status_code == 200
+    assert moved.json["parent"] is None
+    assert moved.json["position"] == "BOTTOM"
+
+    db.session.expire_all()
+    assert MenuItem.find_by_id(child_id).parent_id is None
+
+    parent.position = MenuItemPositionEnum.TOP
+    parent.parent_id = None
+    nested = MenuItem.find_by_id(child_id)
+    nested.parent_id = parent.id
+    nested.position = MenuItemPositionEnum.TOP
+    db.session.add(parent)
+    db.session.add(nested)
+    db.session.commit()
+
+    deleted = client.delete(f"/api/menu-items/{parent.id}", token=moderator_token)
+    assert deleted.status_code == 204
+    db.session.expire_all()
+    assert MenuItem.find_by_id(child_id).parent_id is None
+
+
+def _container_payload(position="TOP", parent=None, title="Areas"):
+    return {
+        "type": "CONTAINER",
+        "position": position,
+        "menuPage": None,
+        "url": None,
+        "title": title,
+        "icon": "pi-folder",
+        "parent": parent,
+    }
+
+
+def test_create_container_menu_item(client, moderator_token):
+    rv = client.post("/api/menu-items", token=moderator_token, json=_container_payload())
+    assert rv.status_code == 201
+    res = rv.json
+    assert res["type"] == "CONTAINER"
+    assert res["position"] == "TOP"
+    assert res["title"] == "Areas"
+    assert res["icon"] == "pi-folder"
+    assert res["url"] is None
+    assert res["menuPage"] is None
+
+    child = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_url_payload(parent=res["id"]),
+    )
+    assert child.status_code == 201
+    assert child.json["parent"] == res["id"]
+
+
+def test_container_rejects_footer_and_blank_title(client, moderator_token):
+    footer = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_container_payload(position="BOTTOM"),
+    )
+    assert footer.status_code == 400
+
+    blank = client.post(
+        "/api/menu-items",
+        token=moderator_token,
+        json=_container_payload(title="  "),
+    )
+    assert blank.status_code == 400
+
+
 def test_get_crag_menu_structure_excludes_closed_with_filter(client):
     area = Area.find_by_slug("shark-attack")
     area.closed = True

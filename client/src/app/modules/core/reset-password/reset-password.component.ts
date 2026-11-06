@@ -13,7 +13,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -21,7 +21,10 @@ import { AppState } from '../../../ngrx/reducers';
 import {
   selectIsLoggedIn,
   selectResetPasswordLoadingState,
+  selectTwoFactorChallenge,
 } from '../../../ngrx/selectors/auth.selectors';
+import { TwoFactorPromptComponent } from '../two-factor-prompt/two-factor-prompt.component';
+import { TwoFactorChallenge } from '../../../models/two-factor-challenge';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { resetPassword } from 'src/app/ngrx/actions/auth.actions';
@@ -58,6 +61,7 @@ import { Button } from 'primeng/button';
     Message,
     Button,
     AsyncPipe,
+    TwoFactorPromptComponent,
   ],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
@@ -68,6 +72,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   public resetPasswordForm: FormGroup;
   public loadingState$: Observable<LoadingState>;
   public loadingStates = LoadingState;
+  public challenge$: Observable<TwoFactorChallenge | null> = of(null);
   public resetPasswordPressed = false;
   public routeParamSubscription: Subscription;
 
@@ -83,6 +88,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
    * Builds the form on component initialization.
    */
   ngOnInit() {
+    this.challenge$ = this.store.pipe(select(selectTwoFactorChallenge));
     // Only logged-out users can use this: Redirect to home if logged in
     this.store
       .pipe(select(selectIsLoggedIn), take(1))

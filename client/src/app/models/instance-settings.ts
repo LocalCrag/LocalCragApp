@@ -38,6 +38,7 @@ export class InstanceSettings {
   landingPage: LandingPage;
   landingPageSlug: string | null;
   displayUserGrades: boolean;
+  colorLinesByScale: boolean;
   displayUserRatings: boolean;
   noClosedProjects: boolean;
   suggestionsEnabled: boolean;
@@ -91,6 +92,7 @@ export class InstanceSettings {
     instanceSettings.landingPage = payload.landingPage ?? LandingPage.NEWS;
     instanceSettings.landingPageSlug = payload.landingPageSlug ?? null;
     instanceSettings.displayUserGrades = payload.displayUserGrades;
+    instanceSettings.colorLinesByScale = payload.colorLinesByScale === true;
     instanceSettings.displayUserRatings = payload.displayUserRatings;
     instanceSettings.noClosedProjects = payload.noClosedProjects;
     instanceSettings.suggestionsEnabled = payload.suggestionsEnabled !== false;
@@ -141,6 +143,7 @@ export class InstanceSettings {
       landingPage: instanceSettings.landingPage,
       landingPageSlug: instanceSettings.landingPageSlug,
       displayUserGrades: instanceSettings.displayUserGrades,
+      colorLinesByScale: instanceSettings.colorLinesByScale,
       displayUserRatings: instanceSettings.displayUserRatings,
       noClosedProjects: instanceSettings.noClosedProjects,
       suggestionsEnabled: instanceSettings.suggestionsEnabled,
@@ -185,6 +188,7 @@ export class InstanceSettings {
     arrowTextColor: string;
     arrowHighlightColor: string;
     arrowHighlightTextColor: string;
+    colorLinesByScale: boolean;
     barChartColor: string;
     barChartAccentColor: string;
     darkBarChartColor: string;
@@ -199,6 +203,7 @@ export class InstanceSettings {
       arrowTextColor: payload.arrowTextColor,
       arrowHighlightColor: payload.arrowHighlightColor,
       arrowHighlightTextColor: payload.arrowHighlightTextColor,
+      colorLinesByScale: payload.colorLinesByScale,
       barChartColor: payload.barChartColor,
       barChartAccentColor: payload.barChartAccentColor,
       darkBarChartColor: payload.darkBarChartColor,

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { NgControl } from '@angular/forms';
+import { AbstractControl, NgControl } from '@angular/forms';
 import { FormService } from './form.service';
 import { ControlElement } from './control-element.interface';
 
@@ -60,7 +60,7 @@ export class ControlGroupService {
    *
    * @param name Name of the control to get.
    */
-  public getControl(name: string = null): NgControl {
+  public getControl(name: string = null): NgControl | AbstractControl {
     const controlElementValues = Object.values(this.controlElements);
     if (controlElementValues.length === 1 && name === null) {
       return controlElementValues[0].control;
@@ -133,9 +133,23 @@ export class ControlGroupService {
    */
   public markAsTouched() {
     Object.values(this.controlElements).map((controlElement) => {
-      controlElement.control.control?.markAllAsTouched();
-      controlElement.control.control?.markAsDirty();
+      const abstractControl = this.toAbstractControl(controlElement.control);
+      abstractControl?.markAllAsTouched();
+      abstractControl?.markAsDirty();
       controlElement.touchedChangedSubject.next(true);
     });
+  }
+
+  /**
+   * Form controls are registered as NgControl. Form arrays are registered as the
+   * AbstractControl itself, because FormArrayName is not an NgControl.
+   */
+  private toAbstractControl(
+    control: NgControl | AbstractControl,
+  ): AbstractControl | null {
+    if (control instanceof AbstractControl) {
+      return control;
+    }
+    return control.control;
   }
 }
