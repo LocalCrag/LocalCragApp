@@ -1,0 +1,157 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.passkey-description {
+  margin: 0;
+  color: var(--p-text-muted-color);
+}
+
+.passkey-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.passkey-card,
+.passkey-empty,
+.passkey-panel {
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius, 0.75rem);
+  background: var(--p-content-background);
+}
+
+.passkey-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.passkey-icon,
+.passkey-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+  color: var(--p-primary-color);
+}
+
+.passkey-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.passkey-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passkey-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.8125rem;
+}
+
+.passkey-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+  color: var(--p-primary-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.passkey-actions,
+.passkey-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.passkey-edit {
+  width: 100%;
+  gap: 0.25rem;
+}
+
+.passkey-name-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.passkey-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-style: dashed;
+  color: var(--p-text-muted-color);
+}
+
+.passkey-empty p {
+  margin: 0;
+}
+
+.passkey-empty .pi {
+  font-size: 1.25rem;
+}
+
+.passkey-hint {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.passkey-add {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.passkey-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.875rem;
+}
+
+.passkey-panel-copy {
+  margin: 0;
+  flex: 1;
+  min-width: 12rem;
+  color: var(--p-text-muted-color);
+}
+
+@media (max-width: 640px) {
+  .passkey-card,
+  .passkey-panel {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .passkey-actions {
+    margin-left: auto;
+  }
+
+  .passkey-panel p-button {
+    margin-left: 3.25rem;
+  }
+}

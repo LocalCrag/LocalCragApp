@@ -6,31 +6,37 @@
       [modal]="true"
       [closable]="false"
     >
-      <form [formGroup]="refreshLoginForm" lcForm>
-        <div class="card-container block" lcControlGroup>
-          <p-password
-            formControlName="password"
-            [toggleMask]="true"
-            [feedback]="false"
-            lcFormControl
-            placeholder="{{ t('passwordPlaceholder') }}"
-          ></p-password>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
+      @if (challenge$ | async) {
+        <lc-two-factor-prompt></lc-two-factor-prompt>
+      } @else {
+        <form [formGroup]="refreshLoginForm" lcForm>
+          <div class="card-container block" lcControlGroup>
+            <p-password
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              lcFormControl
+              placeholder="{{ t('passwordPlaceholder') }}"
+            ></p-password>
+            <small class="lc-error" *lcIfError="'required'">{{
+              "validation.required" | transloco
+            }}</small>
+          </div>
+        </form>
+        <div class="form-actions mt-6 justify-end">
+          <p-button
+            label="{{ t('refreshLoginButtonLabel') }}"
+            (click)="refreshLogin()"
+            [loading]="(isLoading$ | async) === loadingStates.LOADING"
+          ></p-button>
         </div>
-      </form>
+      }
       <div class="form-actions mt-6 justify-end">
         <p-button
           label="{{ t('logoutButtonLabel') }}"
           (click)="logout()"
           styleClass="p-button-outlined p-button-secondary"
           [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
-        ></p-button>
-        <p-button
-          label="{{ t('refreshLoginButtonLabel') }}"
-          (click)="refreshLogin()"
-          [loading]="(isLoading$ | async) === loadingStates.LOADING"
         ></p-button>
       </div>
     </p-dialog>

@@ -8,7 +8,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import {
   FormBuilder,
@@ -23,7 +23,10 @@ import {
   selectRefreshLoginLoadingState,
   selectRefreshLoginModalLogoutLoadingState,
   selectRefreshLoginModalOpen,
+  selectTwoFactorChallenge,
 } from '../../../ngrx/selectors/auth.selectors';
+import { TwoFactorPromptComponent } from '../two-factor-prompt/two-factor-prompt.component';
+import { TwoFactorChallenge } from '../../../models/two-factor-challenge';
 import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
@@ -55,6 +58,7 @@ import { Button } from 'primeng/button';
     IfErrorDirective,
     Button,
     AsyncPipe,
+    TwoFactorPromptComponent,
   ],
 })
 export class RefreshLoginModalComponent implements OnInit {
@@ -67,6 +71,7 @@ export class RefreshLoginModalComponent implements OnInit {
   public logoutIsLoading$: Observable<LoadingState>;
   public refreshLoginForm: FormGroup;
   public loadingStates = LoadingState;
+  public challenge$: Observable<TwoFactorChallenge | null> = of(null);
 
   private email: string;
   private fb = inject(FormBuilder);
@@ -76,6 +81,7 @@ export class RefreshLoginModalComponent implements OnInit {
    * Loads the logged-in user to fetch the email for the re-login.
    */
   ngOnInit(): void {
+    this.challenge$ = this.store.pipe(select(selectTwoFactorChallenge));
     this.store
       .pipe(
         select(selectCurrentUser),

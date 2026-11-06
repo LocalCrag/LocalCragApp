@@ -23,6 +23,10 @@
     {
       "key": "topoStatistics",
       "type": "FEATURE"
+    },
+    {
+      "key": "passkeysAndTwoFactor",
+      "type": "FEATURE"
     }
   ]
 }

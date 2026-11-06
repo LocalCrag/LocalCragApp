@@ -22,7 +22,13 @@ class User(HasSlug, IsSearchable, BaseEntity):
     search_name_target_columns = ["firstname", "lastname"]
     searchable_type = SearchableItemTypeEnum.USER
 
-    password = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(120), nullable=True)
+    totp_secret = db.Column(db.String(64), nullable=True)
+    totp_pending_secret = db.Column(db.String(64), nullable=True)
+    totp_last_counter = db.Column(db.Integer, nullable=True)
+    email_two_factor_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    email_two_factor_setup_hash = db.Column(db.String(120), nullable=True)
+    email_two_factor_setup_expires = db.Column(db.DateTime(timezone=True), nullable=True)
     email = db.Column(db.String(120), nullable=False, unique=True)
     new_email = db.Column(db.String(120), nullable=True, unique=True)
     new_email_hash = db.Column(db.String(120), nullable=True, default=None)
@@ -42,6 +48,9 @@ class User(HasSlug, IsSearchable, BaseEntity):
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="created_by")
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     account_settings = db.relationship("AccountSettings", uselist=False, back_populates="user", cascade="all,delete")
+    passkeys = db.relationship("PasskeyCredential", back_populates="user", cascade="all,delete")
+    webauthn_challenges = db.relationship("WebAuthnChallenge", back_populates="user", cascade="all,delete")
+    two_factor_challenges = db.relationship("TwoFactorChallenge", back_populates="user", cascade="all,delete")
 
     @staticmethod
     def generate_hash(password):

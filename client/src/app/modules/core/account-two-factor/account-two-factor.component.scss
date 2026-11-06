@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.two-factor-description {
+  margin: 0 0 0.75rem;
+  color: var(--p-text-muted-color);
+}
+
+.two-factor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.two-factor-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius, 0.75rem);
+  background: var(--p-content-background);
+}
+
+.two-factor-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+  color: var(--p-primary-color);
+}
+
+.two-factor-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.two-factor-name {
+  font-weight: 600;
+}
+
+.two-factor-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.8125rem;
+}
+
+.two-factor-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+  color: var(--p-primary-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.two-factor-qr {
+  width: 180px;
+  height: 180px;
+  border-radius: 0.5rem;
+  background: white;
+}
+
+.two-factor-secret {
+  margin: 0;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.two-factor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.two-factor-code {
+  width: 8rem;
+}
+
+@media (max-width: 640px) {
+  .two-factor-card {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,42 @@
+two_factor_mail = {
+    "de": {
+        "title": "Sicherheitscode für {instance_name}",
+        "intro_text": "Dein Sicherheitscode ist 10 Minuten gültig.",
+        "text_1": "Nutze diesen Code, um dich bei {instance_name} anzumelden oder die E-Mail-Bestätigung zu aktivieren.",
+        "text_2": "Der Code ist 10 Minuten gültig. Wenn du das nicht warst, ignoriere diese E-Mail.",
+        "hint": "Gib den Code nur auf der {instance_name}-Seite ein, auf der du ihn angefordert hast.",
+        "subject": "{instance_name} Sicherheitscode",
+    },
+    "en": {
+        "title": "Security code for {instance_name}",
+        "intro_text": "Your security code is valid for 10 minutes.",
+        "text_1": "Use this code to sign in to {instance_name} or to turn on email confirmation.",
+        "text_2": "The code is valid for 10 minutes. If this was not you, ignore this email.",
+        "hint": "Enter the code only on the {instance_name} page where you requested it.",
+        "subject": "{instance_name} security code",
+    },
+    "fr": {
+        "title": "Code de sécurité pour {instance_name}",
+        "intro_text": "Votre code de sécurité est valable 10 minutes.",
+        "text_1": "Utilisez ce code pour vous connecter à {instance_name} ou pour activer la confirmation par e-mail.",
+        "text_2": "Le code est valable 10 minutes. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.",
+        "hint": "Saisissez le code uniquement sur la page {instance_name} où vous l'avez demandé.",
+        "subject": "Code de sécurité {instance_name}",
+    },
+    "it": {
+        "title": "Codice di sicurezza per {instance_name}",
+        "intro_text": "Il codice di sicurezza è valido per 10 minuti.",
+        "text_1": "Usa questo codice per accedere a {instance_name} o per attivare la conferma via e-mail.",
+        "text_2": "Il codice è valido per 10 minuti. Se non sei stato tu, ignora questa e-mail.",
+        "hint": "Inserisci il codice solo nella pagina {instance_name} in cui lo hai richiesto.",
+        "subject": "Codice di sicurezza {instance_name}",
+    },
+    "nl": {
+        "title": "Beveiligingscode voor {instance_name}",
+        "intro_text": "Je beveiligingscode is 10 minuten geldig.",
+        "text_1": "Gebruik deze code om in te loggen bij {instance_name} of om e-mailbevestiging in te schakelen.",
+        "text_2": "De code is 10 minuten geldig. Als jij dit niet was, kun je deze e-mail negeren.",
+        "hint": "Voer de code alleen in op de {instance_name}-pagina waar je hem hebt aangevraagd.",
+        "subject": "{instance_name}-beveiligingscode",
+    },
+}
