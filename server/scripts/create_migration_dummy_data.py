@@ -93,6 +93,7 @@ from models.topo_quality_snapshot import TopoQualitySnapshot
 from models.topo_week_summary import TopoWeekSummary
 from models.two_factor_challenge import TwoFactorChallenge
 from models.user import User
+from models.video import Video
 from models.webauthn_challenge import WebAuthnChallenge
 
 logger = logging.getLogger(__name__)
@@ -418,7 +419,7 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
             line.athletic = sequence % 4 == 0
             line.color = "#C2410C" if sequence % 6 == 0 else None
             if sequence % 12 == 0:
-                line.videos = [{"url": "https://example.invalid/watch?v=dummy", "title": "Dummy"}]
+                line.videos = [Video.from_dict({"url": "https://example.invalid/watch?v=dummy", "title": "Dummy"}, 0)]
             db.session.add(line)
             lines.append(line)
             sequence += 1

@@ -163,6 +163,8 @@ def _serialize_notification(notification: Notification) -> dict:
             }
     if notification.type == NotificationTypeEnum.FA_MODERATION_REMOVED and notification.message:
         properties["faRemoval"] = {"message": notification.message}
+    if notification.type == NotificationTypeEnum.ASCENT_VIDEO_REMOVED and notification.message:
+        properties["ascentVideoRemoval"] = {"message": notification.message}
     if notification.type in (
         NotificationTypeEnum.SUGGESTION_PUBLISHED,
         NotificationTypeEnum.SUGGESTION_REJECTED,

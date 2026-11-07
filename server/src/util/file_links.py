@@ -211,19 +211,23 @@ def _collect_file_link_sync(session: Session, _flush_context, _instances) -> Non
             continue
         fields = _changed_embedded_fields(obj, is_new=obj in session.new, fields_by_model=fields_by_model)
         if fields:
-            pending.append((obj, fields))
+            pending.append(("html", obj, fields))
+        if _line_videos_changed(obj, is_new=obj in session.new):
+            pending.append(("videos", obj, None))
     for obj in session.deleted:
         if type(obj) not in fields_by_model or getattr(obj, "id", None) is None:
             continue
-        pending.append((obj, None))
+        pending.append(("html", obj, None))
 
 
 def _apply_file_link_sync(session: Session, _flush_context) -> None:
     pending = session.info.pop(_PENDING_LINK_SYNC, None)
     if not pending:
         return
-    for obj, fields in pending:
-        if fields is None:
+    for kind, obj, fields in pending:
+        if kind == "videos":
+            _sync_line_video_links(session, obj)
+        elif fields is None:
             _delete_owner_links(session, obj)
         else:
             _sync_owner_fields(session, obj, fields)
@@ -268,5 +272,61 @@ def _sync_owner_fields(session: Session, owner, fields: tuple[str, ...]) -> None
 
 def _delete_owner_links(session: Session, owner) -> None:
     links = session.query(FileLink).filter_by(object_type=type(owner).__name__, object_id=owner.id).all()
+    video_file_ids = {link.file_id for link in links if link.field_name == "videos"}
     for link in links:
         session.delete(link)
+    _delete_unreferenced_files(session, video_file_ids)
+
+
+def _line_videos_changed(obj, is_new: bool) -> bool:
+    if type(obj).__name__ != "Line":
+        return False
+    if is_new:
+        return bool(getattr(obj, "videos", None))
+    state = inspect(obj)
+    if "videos" not in state.attrs:
+        return False
+    return state.attrs.videos.history.has_changes()
+
+
+def _sync_line_video_links(session: Session, line) -> None:
+    """Keep file_links for videos uploaded onto a line so cleanup does not delete them."""
+    if line.id is None:
+        return
+    desired = {video.file_id for video in line.videos if video.file_id}
+    existing = session.query(FileLink).filter_by(object_type="Line", object_id=line.id, field_name="videos").all()
+    removed = set()
+    for link in existing:
+        if link.file_id not in desired:
+            removed.add(link.file_id)
+            session.delete(link)
+    present = {link.file_id for link in existing}
+    for file_id in desired - present:
+        link = FileLink(file_id=file_id, field_name="videos")
+        link.object = line
+        session.add(link)
+    _delete_unreferenced_files(session, removed)
+
+
+def _delete_unreferenced_files(session: Session, file_ids: set[uuid.UUID]) -> None:
+    """Delete uploaded files nothing else uses. Storage is removed when the row commits."""
+    for file_id in file_ids:
+        if _file_still_referenced(session, file_id):
+            continue
+        file = session.get(File, file_id)
+        if file is not None:
+            session.delete(file)
+
+
+def _file_still_referenced(session: Session, file_id: uuid.UUID) -> bool:
+    links = session.query(FileLink).filter_by(file_id=file_id).all()
+    if any(link not in session.deleted for link in links):
+        return True
+    for table, column in file_reference_tables():
+        found = session.execute(
+            text(f"SELECT 1 FROM {table} WHERE {column} = :file_id LIMIT 1"),
+            {"file_id": file_id},
+        ).first()
+        if found:
+            return True
+    return False

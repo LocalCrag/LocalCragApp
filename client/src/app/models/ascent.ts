@@ -1,5 +1,6 @@
 import { AbstractModel } from './abstract-model';
 import { Line } from './line';
+import { Video } from './video';
 import {
   formatLocalCalendarDate,
   parseLocalCalendarDate,
@@ -19,6 +20,7 @@ export class Ascent extends AbstractModel {
   gradeValue: number;
   rating: number;
   comment: string;
+  video: Video | null;
   year: number;
   date: Date;
   line: Line;
@@ -47,6 +49,7 @@ export class Ascent extends AbstractModel {
     ascent.withKneepad = payload.withKneepad;
     ascent.rating = payload.rating;
     ascent.comment = payload.comment;
+    ascent.video = payload.video ? Video.deserialize(payload.video) : null;
     ascent.year = payload.year;
     ascent.date = payload.date ? parseLocalCalendarDate(payload.date) : null;
     ascent.line = payload.line ? Line.deserialize(payload.line) : null;
@@ -77,6 +80,7 @@ export class Ascent extends AbstractModel {
       withKneepad: ascent.withKneepad,
       rating: ascent.rating,
       comment: ascent.comment,
+      video: ascent.video ? Video.serialize(ascent.video) : null,
       year: ascent.year,
       gradeValue: ascent.gradeValue,
       line: ascent.line.id,

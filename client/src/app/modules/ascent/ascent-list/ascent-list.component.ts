@@ -17,6 +17,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { Ascent } from '../../../models/ascent';
+import { Video } from '../../../models/video';
 import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { DataViewModule } from 'primeng/dataview';
@@ -64,10 +65,13 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs/operators';
 import { LanguageService } from '../../../services/core/language.service';
 import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { CommentsDialogComponent } from '../../comments/comments-dialog/comments-dialog.component';
+import { AscentVideoMarksComponent } from './ascent-video-marks/ascent-video-marks.component';
+import { openAscentVideoModerationDialog } from '../../line/ascent-video-moderation-dialog/ascent-video-moderation-dialog.component';
 import { RemoveFaDialogComponent } from '../remove-fa-dialog/remove-fa-dialog.component';
 
 @Component({
@@ -102,6 +106,7 @@ import { RemoveFaDialogComponent } from '../remove-fa-dialog/remove-fa-dialog.co
     SocialInteractionWrapperComponent,
     TopoHierarchyBreadcrumbsComponent,
     GymModeDirective,
+    AscentVideoMarksComponent,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
@@ -534,6 +539,9 @@ export class AscentListComponent
     if (this.currentUser.id === ascent.createdBy.id) {
       return true;
     }
+    if (this.currentUser.moderator && ascent.video) {
+      return true;
+    }
     return !!(this.currentUser.moderator && ascent.fa);
   }
 
@@ -541,6 +549,24 @@ export class AscentListComponent
     this.clickedAscentForAction = ascent;
     this.ascentActionItems = this.buildAscentActionItemsFor(ascent);
     menu.toggle(event);
+  }
+
+  public openAscentVideoDialog(ascent: Ascent): void {
+    const ref = openAscentVideoModerationDialog(
+      this.dialogService,
+      this.translocoService,
+      {
+        ascentId: ascent.id,
+        video: ascent.video,
+      },
+    );
+    ref?.onClose.pipe(take(1)).subscribe((video: Video | null | undefined) => {
+      if (video === undefined) {
+        return;
+      }
+      ascent.video = video;
+      this.cdr.markForCheck();
+    });
   }
 
   public openRemoveFaDialog(ascent: Ascent) {
@@ -579,6 +605,22 @@ export class AscentListComponent
           },
         },
       );
+    }
+    if (
+      this.currentUser?.moderator &&
+      ascent.video &&
+      ascent.createdBy?.id !== this.currentUser.id
+    ) {
+      items.push({
+        label: this.translocoService.translate(
+          marker('line.line.editAscentVideos'),
+        ),
+        icon: 'pi pi-video',
+        id: 'edit-ascent-video',
+        command: () => {
+          this.openAscentVideoDialog(this.clickedAscentForAction);
+        },
+      });
     }
     if (
       this.currentUser?.moderator &&

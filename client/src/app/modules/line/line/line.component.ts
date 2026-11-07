@@ -242,6 +242,13 @@ export class LineComponent implements OnInit {
         badge: this.tabBadge(this.line.ascentCount),
       },
       {
+        label: this.translocoService.translate(marker('line.videos')),
+        icon: 'pi pi-fw pi-video',
+        routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/videos`,
+        visible: true,
+        badge: this.tabBadge(this.videoCount()),
+      },
+      {
         label: this.translocoService.translate(marker('line.gallery')),
         icon: 'pi pi-fw pi-images',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/${this.line.slug}/gallery`,
@@ -286,6 +293,14 @@ export class LineComponent implements OnInit {
 
   private tabBadge(count: number): string {
     return String(count);
+  }
+
+  private videoCount(): number {
+    const lineVideos = this.line.videos?.length ?? 0;
+    const ascentVideos = (this.line.ascentVideos ?? []).filter(
+      (group) => group.video,
+    ).length;
+    return lineVideos + ascentVideos;
   }
 
   /** Moderators review someone else's draft in the suggestions queue instead of the editor. */

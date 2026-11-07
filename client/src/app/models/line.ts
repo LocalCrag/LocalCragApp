@@ -8,6 +8,7 @@ import { Area } from './area';
 import { Crag } from './crag';
 import { Sector } from './sector';
 import { User } from './user';
+import { Video } from './video';
 import {
   deserializeClosableAttributes,
   IsClosable,
@@ -20,9 +21,15 @@ import {
   parseLocalCalendarDate,
 } from '../utility/local-calendar-date';
 
-export interface LineVideo {
-  url: string;
-  title: string;
+export type AscentVideoUser = Pick<
+  User,
+  'id' | 'slug' | 'firstname' | 'lastname'
+>;
+
+export interface AscentVideoGroup {
+  ascentId: string;
+  user: AscentVideoUser;
+  video: Video | null;
 }
 
 /** Registered FA climber plus their FA ascent year/date. */
@@ -39,7 +46,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   name: string;
   description: string;
   color?: string;
-  videos: LineVideo[];
+  videos: Video[];
+  ascentVideos: AscentVideoGroup[] = [];
   gradeScale: string;
   authorGradeValue: number;
   userGradeValue: number;
@@ -134,7 +142,11 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     deserializeSlugAttributes(line, payload);
     line.name = payload.name;
     line.description = payload.description;
-    line.videos = payload.videos ? payload.videos : [];
+    line.videos = (payload.videos ?? []).map(Video.deserialize);
+    line.ascentVideos = (payload.ascentVideos ?? []).map((group) => ({
+      ...group,
+      video: group.video ? Video.deserialize(group.video) : null,
+    }));
     line.color = payload.color;
 
     line.gradeScale = payload.gradeScale;
@@ -252,7 +264,7 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
         name: line.name,
         description: line.description,
         color: line.color,
-        videos: line.videos ? line.videos : null,
+        videos: line.videos ? line.videos.map(Video.serialize) : null,
         gradeScale: line.gradeScale,
         authorGradeValue: line.authorGradeValue,
         assumedGradeMin:

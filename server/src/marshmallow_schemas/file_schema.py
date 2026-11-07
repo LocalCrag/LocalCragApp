@@ -14,6 +14,7 @@ class FileSchema(BaseEntityMinSchema):
     thumbnailL = fields.Boolean(attribute="thumbnail_l")
     thumbnailXL = fields.Boolean(attribute="thumbnail_xl")
     focusY = fields.Float(attribute="focus_y", allow_none=True)
+    fileSize = fields.Integer(attribute="file_size")
     createdById = fields.String(attribute="created_by_id", allow_none=True)
 
 

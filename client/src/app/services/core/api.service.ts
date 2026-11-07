@@ -34,6 +34,7 @@ export class ApiService {
   public instanceSettings = {
     getDetail: (): string => `${this.apiHost}instance-settings`,
     update: (): string => `${this.apiHost}instance-settings`,
+    storage: (): string => `${this.apiHost}instance-settings/storage`,
   };
 
   public account = {
@@ -256,6 +257,7 @@ export class ApiService {
   public ascents = {
     create: (): string => `${this.apiHost}ascents`,
     update: (id: string): string => `${this.apiHost}ascents/${id}`,
+    updateVideos: (id: string): string => `${this.apiHost}ascents/${id}/videos`,
     clearFa: (id: string): string => `${this.apiHost}ascents/${id}/clear-fa`,
     delete: (id: string): string => `${this.apiHost}ascents/${id}`,
     getList: (): string => `${this.apiHost}ascents`,

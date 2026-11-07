@@ -18,7 +18,7 @@ import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { AdminMessageDialogService } from '../admin-message-dialog/admin-message-dialog.service';
-import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-removal-message-dialog.service';
+import { ModerationMessageDialogService } from '../moderation-message-dialog/moderation-message-dialog.service';
 import { SuggestionReviewMessageDialogService } from '../suggestion-review-message-dialog/suggestion-review-message-dialog.service';
 
 @Component({
@@ -32,7 +32,7 @@ import { SuggestionReviewMessageDialogService } from '../suggestion-review-messa
     NotificationPresentationService,
     DialogService,
     AdminMessageDialogService,
-    FaRemovalMessageDialogService,
+    ModerationMessageDialogService,
     SuggestionReviewMessageDialogService,
   ],
 })
@@ -52,7 +52,7 @@ export class NotificationListComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
   private adminMessageDialog = inject(AdminMessageDialogService);
-  private faRemovalDialog = inject(FaRemovalMessageDialogService);
+  private moderationMessageDialog = inject(ModerationMessageDialogService);
   private suggestionReviewDialog = inject(SuggestionReviewMessageDialogService);
 
   readonly unreadCount = toSignal(
@@ -79,10 +79,20 @@ export class NotificationListComponent implements OnInit {
       }
       const faRemovalId = params.get('faRemoval');
       if (faRemovalId) {
-        this.faRemovalDialog.openById(faRemovalId);
+        this.moderationMessageDialog.openById(faRemovalId);
         void this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { faRemoval: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+      const ascentVideoRemovalId = params.get('ascentVideoRemoval');
+      if (ascentVideoRemovalId) {
+        this.moderationMessageDialog.openById(ascentVideoRemovalId);
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { ascentVideoRemoval: null },
           queryParamsHandling: 'merge',
           replaceUrl: true,
         });
@@ -134,7 +144,7 @@ export class NotificationListComponent implements OnInit {
 
   public openNotification(notification: NotificationItem): void {
     const go = (): void => {
-      if (this.faRemovalDialog.openFromNotification(notification)) {
+      if (this.moderationMessageDialog.openFromNotification(notification)) {
         return;
       }
       if (this.suggestionReviewDialog.openFromNotification(notification)) {

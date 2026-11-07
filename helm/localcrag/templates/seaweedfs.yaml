@@ -82,6 +82,8 @@ spec:
               containerPort: 8888
             - name: master
               containerPort: 9333
+            - name: volume
+              containerPort: 9340
           volumeMounts:
             - name: data
               mountPath: /data
@@ -134,3 +136,6 @@ spec:
     - name: s3
       port: 8333
       targetPort: s3
+    - name: volume
+      port: 9340
+      targetPort: volume

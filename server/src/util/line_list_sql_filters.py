@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import and_, false, func, not_, or_, select
+from sqlalchemy import and_, false, func, not_, select
 
 from models.ascent import Ascent
 from models.instance_settings import InstanceSettings
@@ -91,12 +91,10 @@ def apply_get_lines_advanced_filters(
     if filters.drying is not None:
         query = query.filter(Line.drying == filters.drying)
 
-    # JSON array column: non-null with length > 0 counts as having a video.
-    video_len = func.coalesce(func.json_array_length(Line.videos), 0)
     if filters.has_video == "yes":
-        query = query.filter(and_(Line.videos.isnot(None), video_len > 0))
+        query = query.filter(Line.videos.any())
     elif filters.has_video == "no":
-        query = query.filter(or_(Line.videos.is_(None), video_len == 0))
+        query = query.filter(~Line.videos.any())
 
     # FA year bounds only apply to lines that have fa_year set.
     if filters.fa_year_from is not None:

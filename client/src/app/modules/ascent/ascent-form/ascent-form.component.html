@@ -151,6 +151,96 @@
       ></textarea>
     </div>
 
+    @if (videoFormOpen) {
+      <p-divider align="center" type="dotted">
+        <b>{{ t("video") }}</b>
+      </p-divider>
+
+      <p class="mt-0 text-center">{{ t("videoHint") }}</p>
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <input
+          type="text"
+          pInputText
+          formControlName="videoUrl"
+          [placeholder]="t('videoUrlPlaceholder')"
+          lcFormControl
+          data-cy="ascent-video-url"
+        />
+        <small class="lc-error" *lcIfError="'unsupportedVideoUrl'">{{
+          t("unsupportedVideoUrl")
+        }}</small>
+      </div>
+      <div class="flex flex-col gap-2 mt-2" lcControlGroup>
+        <input
+          type="text"
+          pInputText
+          formControlName="videoTitle"
+          [placeholder]="t('videoTitlePlaceholder')"
+          lcFormControl
+        />
+      </div>
+      @if (allowsVideoStart()) {
+        @if (videoStartOpen) {
+          <div class="flex flex-col gap-2 mt-2" lcControlGroup>
+            <label class="video-start-label" for="ascent-video-start">{{
+              t("videoStartLabel")
+            }}</label>
+            <input
+              id="ascent-video-start"
+              type="number"
+              min="0"
+              pInputText
+              formControlName="videoStartSeconds"
+              lcFormControl
+            />
+            <small>{{ t("videoStartHint") }}</small>
+            <small class="lc-error" *lcIfError="'startSeconds'">{{
+              t("invalidStartSeconds")
+            }}</small>
+            <div>
+              <p-button
+                [label]="t('clearVideoStart')"
+                severity="secondary"
+                [text]="true"
+                size="small"
+                (click)="hideVideoStart()"
+              ></p-button>
+            </div>
+          </div>
+        } @else {
+          <div class="mt-2">
+            <p-button
+              [label]="t('setVideoStart')"
+              icon="pi pi-clock"
+              severity="secondary"
+              [text]="true"
+              size="small"
+              (click)="showVideoStart()"
+            ></p-button>
+          </div>
+        }
+      }
+      <div class="flex justify-center mt-2">
+        <p-button
+          [label]="t('removeVideo')"
+          severity="secondary"
+          [text]="true"
+          (click)="hideVideoForm()"
+        ></p-button>
+      </div>
+    } @else {
+      <div class="flex justify-center">
+        <p-button
+          [label]="t('addVideo')"
+          icon="pi pi-plus"
+          severity="secondary"
+          [text]="true"
+          data-cy="ascent-add-video"
+          (click)="showVideoForm()"
+        ></p-button>
+      </div>
+    }
+
     <p-divider align="center" type="dotted">
       <b>{{ t("otherInfo") }}</b>
     </p-divider>

@@ -13,6 +13,7 @@ from error_handling.http_exceptions.not_found import NotFound
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from extensions import db
 from marshmallow_schemas.ascent_schema import ascent_schema, paginated_ascents_schema
+from marshmallow_schemas.video_schema import video_schema
 from models.area import Area
 from models.ascent import Ascent
 from models.comment import Comment
@@ -24,6 +25,7 @@ from models.line import Line
 from models.sector import Sector
 from models.todo import Todo
 from models.user import User
+from models.video import Video
 from util.auth_session import (
     get_session_identity,
     session_required,
@@ -34,13 +36,39 @@ from util.reactions import get_reactions_by_user
 from util.secret_service import SecretService
 from util.suggestions import can_view_publication
 from util.validators import cross_validate_grade
+from util.videos import (
+    VideoValidationError,
+    moderate_ascent_video,
+    normalize_ascent_video,
+)
 from util.voting import update_grades_and_rating
 from webargs_schemas.ascent_args import (
     ascent_args,
     clear_ascent_fa_args,
     cross_validate_ascent_args,
+    moderate_ascent_videos_args,
     project_climbed_args,
 )
+
+
+def _ascent_video_from_payload(ascent_data: dict):
+    """The validated ascent video, or None when the payload clears it."""
+    try:
+        video = normalize_ascent_video(ascent_data.get("video"))
+    except VideoValidationError as error:
+        raise BadRequest(str(error)) from error
+    if video is None:
+        return None
+    return Video.from_dict(video, 0)
+
+
+def _apply_ascent_video(ascent: Ascent, video: Video | None) -> None:
+    if video is None:
+        ascent.video = None
+        return
+    if ascent.video is not None and video_schema.dump(ascent.video) == video_schema.dump(video):
+        return
+    ascent.video = video
 
 
 def _attach_ascent_comment_counts(ascents: list[Ascent]) -> None:
@@ -237,6 +265,7 @@ class CreateAscent(MethodView):
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]
         ascent.date = ascent_data["date"]
+        _apply_ascent_video(ascent, _ascent_video_from_payload(ascent_data) if "video" in ascent_data else None)
 
         # Set ascent date for ordering
         if ascent.date:
@@ -273,7 +302,6 @@ class UpdateAscent(MethodView):
             raise BadRequest("Cannot propose project status.")
         if not cross_validate_grade(ascent_data["gradeValue"], line.grade_scale, line.type):
             raise BadRequest("Grade scale, name and line type do not match.")
-
         ascent.flash = ascent_data["flash"]
         # First ascents don't apply to gym mode, so force the FA flag false
         if InstanceSettings.return_it().gym_mode:
@@ -288,6 +316,8 @@ class UpdateAscent(MethodView):
         ascent.comment = ascent_data["comment"]
         ascent.year = ascent_data["year"]
         ascent.date = ascent_data["date"]
+        if "video" in ascent_data:
+            _apply_ascent_video(ascent, _ascent_video_from_payload(ascent_data))
 
         # Set ascent date for ordering
         if ascent.date:
@@ -302,6 +332,39 @@ class UpdateAscent(MethodView):
         thread.start()
 
         return ascent_schema.dump(ascent), 201
+
+
+class UpdateAscentVideos(MethodView):
+    @session_required(moderator=True)
+    def put(self, ascent_id):
+        """Remove an ascent video or set the timestamp where the send starts."""
+        moderator = User.find_by_email(get_session_identity())
+        ascent: Ascent = Ascent.find_by_id(ascent_id)
+        payload = parser.parse(moderate_ascent_videos_args, request)
+        had_video = ascent.video is not None
+        current = video_schema.dump(ascent.video) if had_video else None
+        try:
+            video = moderate_ascent_video(current, payload.get("video"))
+        except VideoValidationError as error:
+            raise BadRequest(str(error)) from error
+        _apply_ascent_video(ascent, Video.from_dict(video, 0) if video else None)
+        db.session.add(ascent)
+        if had_video and video is None:
+            message = (payload.get("message") or "").strip() or None
+            owner = User.find_by_id(ascent.created_by_id) if ascent.created_by_id else None
+            if owner and owner.id != moderator.id:
+                db.session.add(
+                    create_notification_for_user(
+                        owner.id,
+                        NotificationTypeEnum.ASCENT_VIDEO_REMOVED,
+                        actor_id=moderator.id,
+                        entity_type="ascent",
+                        entity_id=ascent.id,
+                        message=message,
+                    )
+                )
+        db.session.commit()
+        return ascent_schema.dump(ascent), 200
 
 
 class ClearAscentFa(MethodView):

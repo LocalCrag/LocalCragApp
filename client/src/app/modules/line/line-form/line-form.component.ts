@@ -24,14 +24,26 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { ConfirmationService } from 'primeng/api';
-import { catchError, map, take } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  pairwise,
+  startWith,
+  take,
+} from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Line } from '../../../models/line';
+import { Video } from '../../../models/video';
 import { LinesService } from '../../../services/crud/lines.service';
 import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year-not-in-future.validator';
-import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
+import { externalVideoUrlValidator } from '../../../utility/validators/external-video-url.validator';
+import { startSecondsValidator } from '../../../utility/validators/start-seconds.validator';
+import { providerForUrl } from '../../../utility/video-source';
+import { UploadService } from '../../../services/crud/upload.service';
+import { ProgressBar } from 'primeng/progressbar';
 
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
@@ -138,6 +150,7 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    ProgressBar,
   ],
 })
 export class LineFormComponent implements OnInit {
@@ -182,7 +195,12 @@ export class LineFormComponent implements OnInit {
 
   public typeOptions = null;
   public scaleOptions = null;
+  public videoUploadsEnabled = false;
+  public uploadingVideoIndex: number | null = null;
+  public videoUploadProgress: number | null = null;
+  public videoUploadIndeterminate = false;
 
+  private uploadService = inject(UploadService);
   private cragSlug: string;
   private sectorSlug: string;
   private areaSlug: string;
@@ -217,6 +235,12 @@ export class LineFormComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((auth) => {
         this.viewerIsModerator = !!auth.user?.moderator;
+      });
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((settings) => {
+        this.videoUploadsEnabled = settings.videoUploadsEnabled === true;
       });
     this.cragSlug = this.route.snapshot.paramMap.get('crag-slug');
     this.sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
@@ -549,16 +573,134 @@ export class LineFormComponent implements OnInit {
   /**
    * Adds a new line video control to the videos form array.
    */
-  public addLineVideoFormControl() {
-    (this.lineForm.get('videos') as FormArray).push(
-      this.fb.group({
-        url: [null, [Validators.required, httpUrlValidator()]],
-        title: [
-          this.translocoService.translate(marker('videoTitle')),
-          [Validators.required],
-        ],
-      }),
-    );
+  public addLineVideoFormControl(video?: {
+    url?: string;
+    title?: string;
+    source?: string | null;
+    fileId?: string | null;
+    startSeconds?: number | null;
+  }) {
+    const source =
+      video?.fileId || video?.source === 'upload' ? 'upload' : 'link';
+    const instagram =
+      source !== 'upload' && providerForUrl(video?.url) === 'instagram';
+    const legacyUrl =
+      source === 'link' && video?.url && !providerForUrl(video.url)
+        ? video.url
+        : null;
+    const group = this.fb.group({
+      source: [source],
+      url: [video?.url ?? null],
+      title: [
+        video?.title ?? this.translocoService.translate(marker('videoTitle')),
+        [Validators.required, Validators.maxLength(120)],
+      ],
+      fileId: [video?.fileId ?? null],
+      startSeconds: [
+        instagram ? null : (video?.startSeconds ?? null),
+        [startSecondsValidator()],
+      ],
+      showStart: [!instagram && (video?.startSeconds ?? 0) > 0],
+      legacyUrl: [legacyUrl],
+      fileLabel: [source === 'upload' ? video?.title || video?.url || '' : ''],
+    });
+    this.applyVideoValidators(group);
+    const sourceControl = group.get('source');
+    sourceControl.valueChanges
+      .pipe(
+        startWith(sourceControl.value),
+        pairwise(),
+        filter(([previous, next]) => previous !== next),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(([, source]) => {
+        if (source === 'link') {
+          group.patchValue(
+            {
+              fileId: null,
+              fileLabel: '',
+              url: group.get('legacyUrl').value,
+            },
+            { emitEvent: false },
+          );
+        } else {
+          group.patchValue(
+            { url: null, fileId: null, fileLabel: '' },
+            { emitEvent: false },
+          );
+          group.get('fileId').markAsUntouched();
+        }
+        this.applyVideoValidators(group);
+      });
+    group
+      .get('url')
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((url) => {
+        if (providerForUrl(url) === 'instagram') {
+          group.patchValue(
+            { showStart: false, startSeconds: null },
+            { emitEvent: false },
+          );
+        }
+      });
+    (this.lineForm.get('videos') as FormArray).push(group);
+  }
+
+  public uploadLineVideo(index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (
+      !file ||
+      !this.videoUploadsEnabled ||
+      this.uploadingVideoIndex !== null
+    ) {
+      return;
+    }
+    const group = (this.lineForm.get('videos') as FormArray).at(
+      index,
+    ) as FormGroup;
+    this.uploadingVideoIndex = index;
+    this.videoUploadProgress = 0;
+    this.videoUploadIndeterminate = false;
+    group.patchValue({ fileLabel: file.name });
+    this.uploadService
+      .uploadFileWithProgress(file)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (update) => {
+          if (update.file) {
+            group.patchValue({
+              source: 'upload',
+              fileId: update.file.id,
+              url: update.file.path,
+              fileLabel: update.file.originalFilename || file.name,
+            });
+            this.applyVideoValidators(group);
+            this.clearVideoUploadProgress();
+            return;
+          }
+          if (!update.total || update.loaded >= update.total) {
+            this.videoUploadIndeterminate = true;
+            this.videoUploadProgress = null;
+            return;
+          }
+          this.videoUploadIndeterminate = false;
+          this.videoUploadProgress = Math.round(
+            (100 * update.loaded) / update.total,
+          );
+        },
+        error: () => {
+          this.clearVideoUploadProgress();
+          this.store.dispatch(toastNotification('UNKNOWN_ERROR'));
+        },
+      });
+  }
+
+  private clearVideoUploadProgress() {
+    this.uploadingVideoIndex = null;
+    this.videoUploadProgress = null;
+    this.videoUploadIndeterminate = false;
   }
 
   /**
@@ -571,13 +713,24 @@ export class LineFormComponent implements OnInit {
       this.faFormat = FaDefaultFormat.YEAR;
     }
 
-    this.line.videos.map(() => {
-      this.addLineVideoFormControl();
-    });
+    for (const video of this.line.videos ?? []) {
+      this.addLineVideoFormControl(video);
+    }
     this.lineForm.patchValue({
       name: this.line.name,
       description: this.line.description,
-      videos: this.line.videos,
+      videos: (this.line.videos ?? []).map((video) => ({
+        url: video.url,
+        title: video.title,
+        source: video.fileId || video.source === 'upload' ? 'upload' : 'link',
+        fileId: video.fileId ?? null,
+        startSeconds:
+          video.fileId ||
+          video.source === 'upload' ||
+          providerForUrl(video.url) !== 'instagram'
+            ? (video.startSeconds ?? null)
+            : null,
+      })),
       type: this.line.type,
       scale: this.line.gradeScale,
       grade: this.line.authorGradeValue,
@@ -668,7 +821,22 @@ export class LineFormComponent implements OnInit {
       line.name = this.lineForm.get('name').value;
       line.description = this.lineForm.get('description').value;
       line.color = this.lineForm.get('color').value;
-      line.videos = this.lineForm.get('videos').value;
+      line.videos = this.lineForm.get('videos').value.map((video) =>
+        Video.deserialize({
+          url: video.source === 'upload' ? video.url : (video.url || '').trim(),
+          title: (video.title || '').trim(),
+          source: video.source,
+          fileId: video.source === 'upload' ? video.fileId : null,
+          startSeconds:
+            (video.source !== 'upload' &&
+              providerForUrl(video.url) === 'instagram') ||
+            !video.showStart ||
+            video.startSeconds === null ||
+            video.startSeconds === ''
+              ? null
+              : Number(video.startSeconds),
+        }),
+      );
       line.type = this.lineForm.get('type').value;
       line.authorGradeValue = this.lineForm.get('grade').value;
       line.assumedGradeMin =
@@ -780,6 +948,9 @@ export class LineFormComponent implements OnInit {
       }
     } else {
       this.formDirective.markAsTouched();
+      for (const video of (this.lineForm.get('videos') as FormArray).controls) {
+        video.get('fileId').markAsTouched();
+      }
     }
   }
 
@@ -826,6 +997,43 @@ export class LineFormComponent implements OnInit {
    */
   public deleteLineVideoControl(index: number) {
     (this.lineForm.get('videos') as FormArray).removeAt(index);
+  }
+
+  public allowsVideoStart(group: FormGroup): boolean {
+    return (
+      group.get('source').value === 'upload' ||
+      providerForUrl(group.get('url').value) !== 'instagram'
+    );
+  }
+
+  public showVideoStart(index: number) {
+    this.videoGroup(index).get('showStart').setValue(true);
+  }
+
+  public hideVideoStart(index: number) {
+    this.videoGroup(index).patchValue({ showStart: false, startSeconds: null });
+  }
+
+  private videoGroup(index: number): FormGroup {
+    return (this.lineForm.get('videos') as FormArray).at(index) as FormGroup;
+  }
+
+  private applyVideoValidators(group: FormGroup) {
+    const upload = group.get('source').value === 'upload';
+    const url = group.get('url');
+    const fileId = group.get('fileId');
+    if (upload) {
+      url.setValidators([]);
+      fileId.setValidators([Validators.required]);
+    } else {
+      url.setValidators([
+        Validators.required,
+        externalVideoUrlValidator(group.get('legacyUrl').value),
+      ]);
+      fileId.setValidators([]);
+    }
+    url.updateValueAndValidity({ emitEvent: false });
+    fileId.updateValueAndValidity({ emitEvent: false });
   }
 
   public getDisplayUserGrades() {

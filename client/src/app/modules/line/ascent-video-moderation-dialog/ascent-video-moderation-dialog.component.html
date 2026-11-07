@@ -1,0 +1,63 @@
+<ng-container *transloco="let t; read: 'line.line'">
+  @if (removing) {
+    <p class="remove-intro">{{ t("removeAscentVideoIntro") }}</p>
+    <label class="message-label" for="remove-ascent-video-message">
+      {{ t("removeAscentVideoMessageLabel") }}
+    </label>
+    <textarea
+      id="remove-ascent-video-message"
+      pTextarea
+      rows="5"
+      class="w-full"
+      [attr.maxlength]="maxMessageLength"
+      [(ngModel)]="message"
+      [disabled]="saving"
+      [placeholder]="t('removeAscentVideoMessagePlaceholder')"
+    ></textarea>
+    <small class="message-hint">{{ t("removeAscentVideoMessageHint") }}</small>
+  } @else if (draft) {
+    <div class="videos">
+      <div class="video-row">
+        <div class="video-title">{{ draft.title }}</div>
+        @if (allowsStart(draft)) {
+          <label>
+            {{ t("videoStartLabel") }}
+            <input
+              pInputText
+              type="number"
+              min="0"
+              step="1"
+              [disabled]="saving"
+              [(ngModel)]="draft.startSeconds"
+            />
+          </label>
+        }
+        <p-button
+          [label]="t('removeAscentVideo')"
+          severity="danger"
+          [outlined]="true"
+          size="small"
+          [disabled]="saving"
+          (click)="startRemove()"
+        ></p-button>
+      </div>
+    </div>
+  }
+  @if (startInvalid) {
+    <p class="error">{{ t("videoStartInvalid") }}</p>
+  }
+  <div class="actions">
+    <p-button
+      [label]="t('removeAscentVideoReject')"
+      [text]="true"
+      [disabled]="saving"
+      (click)="cancel()"
+    ></p-button>
+    <p-button
+      [label]="removing ? t('removeAscentVideoAccept') : t('saveAscentVideos')"
+      [severity]="removing ? 'warn' : undefined"
+      [loading]="saving"
+      (click)="save()"
+    ></p-button>
+  </div>
+</ng-container>

@@ -62,6 +62,7 @@ export interface NotificationItemProperties {
   releaseNotes?: NotificationReleaseNotesProperties;
   adminMessage?: NotificationAdminMessageProperties;
   faRemoval?: NotificationFaRemovalProperties;
+  ascentVideoRemoval?: NotificationFaRemovalProperties;
   suggestionReview?: NotificationSuggestionReviewProperties;
   topoPointsWeek?: NotificationTopoPointsWeekProperties | null;
 }

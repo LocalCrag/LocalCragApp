@@ -21,6 +21,13 @@ class Ascent(BaseEntity):
     year = db.Column(db.Integer, nullable=True)
     date = db.Column(db.Date(), nullable=True)
     created_by_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=False)
+    video = db.relationship(
+        "Video",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+        back_populates="ascent",
+        uselist=False,
+    )
 
     ascent_date = db.Column(db.Date(), nullable=False)
 

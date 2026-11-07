@@ -17,6 +17,7 @@ from models.region import Region
 from models.secret_topo_entity import SecretTopoEntity
 from models.sector import Sector
 from models.topo_image import TopoImage
+from models.video import Video
 from util.topo_quality_score import (
     STYLE_FIELDS,
     LineRecord,
@@ -24,7 +25,6 @@ from util.topo_quality_score import (
     TopoRecord,
     fa_complete,
     has_text,
-    has_video,
     is_project_grade,
     is_styled,
 )
@@ -42,7 +42,6 @@ _LINE_COLUMNS = (
     Line.created_by_id,
     Line.time_created,
     Line.description,
-    Line.videos,
     Line.publication_status,
     Line.author_grade_value,
     Line.fa_name,
@@ -170,6 +169,9 @@ def load_quality_snapshot(
 
     lines = []
     if visible_area_ids:
+        video_line_ids = {
+            line_id for (line_id,) in db.session.query(Video.line_id).filter(Video.line_id.isnot(None)).distinct()
+        }
         line_query = Line.query.options(load_only(*_LINE_COLUMNS)).filter(
             Line.publication_status == PublicationStatusEnum.PUBLISHED,
             Line.area_id.in_(visible_area_ids),
@@ -195,7 +197,7 @@ def load_quality_snapshot(
                     published=True,
                     drawn=str(line.id) in drawn_line_ids,
                     styled=is_styled(line),
-                    has_video=has_video(line.videos),
+                    has_video=line.id in video_line_ids,
                     fa_complete=fa_complete(line, gym),
                     has_description=has_text(line.description),
                     is_project=is_project_grade(line.author_grade_value),

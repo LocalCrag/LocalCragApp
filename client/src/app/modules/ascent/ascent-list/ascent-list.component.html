@@ -280,6 +280,11 @@
                           data-cy="kneepadtag"
                         ></p-tag>
                       }
+                      @if (ascent.video) {
+                        <lc-ascent-video-marks
+                          [ascent]="ascent"
+                        ></lc-ascent-video-marks>
+                      }
                     </div>
                     <div class="ascent-table-date" data-cy="ascent-date">
                       <i class="pi pi-calendar"></i>
@@ -406,6 +411,11 @@
                           data-cy="kneepadtag"
                         ></p-tag>
                       }
+                      @if (ascent.video) {
+                        <lc-ascent-video-marks
+                          [ascent]="ascent"
+                        ></lc-ascent-video-marks>
+                      }
                     </div>
                     <div class="ascent-table-date" data-cy="ascent-date">
                       <i class="pi pi-calendar"></i>
@@ -508,6 +518,11 @@
                           data-cy="kneepadtag"
                         ></p-tag>
                       }
+                      @if (ascent.video) {
+                        <lc-ascent-video-marks
+                          [ascent]="ascent"
+                        ></lc-ascent-video-marks>
+                      }
                     </div>
                     <div class="ascent-table-bottom-row">
                       <div class="ascent-table-properties">
@@ -566,6 +581,12 @@
                             icon="pi pi-ticket"
                             data-cy="kneepadtag"
                           ></p-tag>
+                        }
+                        @if (ascent.video) {
+                          <lc-ascent-video-marks
+                            class="property-small"
+                            [ascent]="ascent"
+                          ></lc-ascent-video-marks>
                         }
                       </div>
                       <div class="ascent-table-rating">

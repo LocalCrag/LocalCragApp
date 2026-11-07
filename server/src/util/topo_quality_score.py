@@ -83,7 +83,8 @@ def has_video(videos) -> bool:
     for item in items:
         if isinstance(item, str) and item.strip():
             return True
-        if isinstance(item, dict) and str(item.get("url") or "").strip():
+        url = item.get("url") if isinstance(item, dict) else getattr(item, "url", None)
+        if str(url or "").strip():
             return True
     return False
 

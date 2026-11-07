@@ -52,6 +52,7 @@ def build_digest_items(
     for notification in notifications:
         if notification.type in (
             NotificationTypeEnum.FA_MODERATION_REMOVED,
+            NotificationTypeEnum.ASCENT_VIDEO_REMOVED,
             NotificationTypeEnum.SUGGESTION_PUBLISHED,
             NotificationTypeEnum.SUGGESTION_REJECTED,
             NotificationTypeEnum.TOPO_POINTS_WEEKLY,
@@ -188,6 +189,28 @@ def _build_digest_item(
                 if notification is not None and notification.message:
                     message_href = frontend_url(f"notifications?faRemoval={notification.id}")
                     message_link = _target_anchor(message_href, digest_i18n["fa_removed_message_link"])
+                    body = f"{body} {message_link}"
+                return {"html": body}
+        return None
+    if notification_type == NotificationTypeEnum.ASCENT_VIDEO_REMOVED:
+        if entity_type == "ascent" and entity_id:
+            ascent = Ascent.query.filter_by(id=entity_id).first()
+            if ascent and ascent.line:
+                line = ascent.line
+                line_link = frontend_url(
+                    f"topo/{line.area.sector.crag.slug}/{line.area.sector.slug}/{line.area.slug}/{line.slug}"
+                )
+                moderator_name = f"{notification.actor.firstname} {notification.actor.lastname}".strip()
+                moderator_email = notification.actor.email
+                target_link = _target_anchor(line_link, line.name, quote=True)
+                body = digest_i18n["ascent_video_removed_text"].format(
+                    moderator_name=html.escape(moderator_name),
+                    moderator_email=html.escape(moderator_email),
+                    target_link=target_link,
+                )
+                if notification is not None and notification.message:
+                    message_href = frontend_url(f"notifications?ascentVideoRemoval={notification.id}")
+                    message_link = _target_anchor(message_href, digest_i18n["ascent_video_removed_message_link"])
                     body = f"{body} {message_link}"
                 return {"html": body}
         return None
