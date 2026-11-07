@@ -254,18 +254,15 @@
                               >
                               </p-button>
                             }
-                            <ng-container *isLoggedIn="true">
-                              @if (
-                                linePath.line.publicationStatus ===
-                                  "published" ||
-                                linePath.line.publicationStatus === "archived"
-                              ) {
-                                <lc-tick-button
-                                  [line]="linePath.line"
-                                  [ticked]="ticks.has(linePath.line.id)"
-                                ></lc-tick-button>
-                              }
-                            </ng-container>
+                            @if (
+                              linePath.line.publicationStatus === "published" ||
+                              linePath.line.publicationStatus === "archived"
+                            ) {
+                              <lc-tick-button
+                                [line]="linePath.line"
+                                [ticked]="ticks.has(linePath.line.id)"
+                              ></lc-tick-button>
+                            }
                             <ng-container *isModerator="true">
                               <p-button
                                 icon="pi pi-trash"

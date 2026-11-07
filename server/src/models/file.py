@@ -32,6 +32,7 @@ class File(BaseEntity):
     thumbnail_l = db.Column(db.Boolean, nullable=True)
     thumbnail_xl = db.Column(db.Boolean, nullable=True)
     focus_y = db.Column(db.Float, nullable=True)
+    file_size = db.Column(db.BigInteger, nullable=False, default=0, server_default="0")
     exif_lat = db.Column(db.Float, nullable=True)
     exif_lng = db.Column(db.Float, nullable=True)
 

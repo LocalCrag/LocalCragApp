@@ -22,6 +22,7 @@ from sqlalchemy import event, inspect, text
 from sqlalchemy.orm import Session
 
 from extensions import db
+from marshmallow_schemas.video_schema import video_schema
 from models.area import Area
 from models.crag import Crag
 from models.instance_settings import InstanceSettings
@@ -32,6 +33,7 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 from models.topo_point_event import TopoPointEvent
 from models.user import User
+from models.video import Video
 from util.topo_quality_score import (
     CREATE_ITEM,
     EDIT_BONUS,
@@ -244,6 +246,32 @@ def _actor_id():
     return user.id
 
 
+def _videos_before(line):
+    """Video dicts from before this flush."""
+    state = inspect(line)
+    if state.pending or state.transient:
+        return _MISSING
+    history = state.attrs.videos.history
+    if not history.has_changes():
+        return video_schema.dump(line.videos, many=True)
+    previous = [*history.unchanged, *history.deleted]
+    previous.sort(key=lambda item: item.order_index or 0)
+    return video_schema.dump(previous, many=True)
+
+
+def _videos_changed(session: Session, line) -> bool:
+    """True when this flush adds, removes, or replaces a line video."""
+    state = inspect(line)
+    if state.pending or state.transient or _is_being_deleted(line):
+        return True
+    if state.attrs.videos.history.has_changes():
+        return True
+    for obj in list(session.new) + list(session.deleted) + list(session.dirty):
+        if isinstance(obj, Video) and obj.line_id == line.id:
+            return True
+    return False
+
+
 def _value_before(obj, attr):
     """Column value from before this flush. A new row has none."""
     state = inspect(obj)
@@ -322,6 +350,8 @@ def _affected_line_ids(session: Session) -> set:
         if isinstance(obj, Line):
             ids.add(obj.id)
         elif isinstance(obj, LinePath) and obj.line_id is not None:
+            ids.add(obj.line_id)
+        elif isinstance(obj, Video) and obj.line_id is not None:
             ids.add(obj.line_id)
     return ids
 
@@ -423,15 +453,16 @@ def _line_delta(session: Session, line_id, gym: bool, credits: dict) -> tuple[in
         after_published = is_published(line.publication_status)
         before_values = {
             field: _value_before(line, field)
-            for field in ("videos", *STYLE_FIELDS, "fa_name", "fa_date", "fa_year", "routesetter", "set_date")
+            for field in (*STYLE_FIELDS, "fa_name", "fa_date", "fa_year", "routesetter", "set_date")
         }
+        before_values["videos"] = _videos_before(line)
         before_obj = _AttrBag(before_values, line, use_before=True)
         before = _facts(before_obj, before_count > 0, gym, before_published)
         after = _facts(line, after_count > 0, gym, after_published)
         before_area = _value_before(line, "area_id")
         after_area = line.area_id
         style_changed = _changed(line, *STYLE_FIELDS)
-        video_changed = _changed(line, "videos")
+        video_changed = _videos_changed(session, line)
         fa_fields = ("routesetter", "set_date") if gym else ("fa_name", "fa_date", "fa_year")
         fa_changed = _changed(line, *fa_fields)
         if _publishing_draft(line):

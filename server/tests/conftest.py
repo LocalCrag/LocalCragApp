@@ -47,6 +47,7 @@ from models.session import Session
 from models.tag import Tag
 from models.topo_image import TopoImage
 from models.user import User
+from models.video import Video
 from util.auth_session import CSRF_COOKIE_NAME, SESSION_COOKIE_NAME
 from util.topo_contribution import award_topo_points
 
@@ -422,7 +423,7 @@ def fill_db_with_sample_data():
     line.cruxy = True
     line.sloper = True
     line.compression = True
-    line.videos = [{"url": "https://www.youtube.com/watch?v=8A_9oHuTkQA", "title": ""}]
+    line.videos = [Video.from_dict({"url": "https://www.youtube.com/watch?v=8A_9oHuTkQA", "title": ""}, 0)]
     db.session.add(line)
 
     ascent = Ascent()

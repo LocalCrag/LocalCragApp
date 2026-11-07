@@ -21,6 +21,7 @@ This document provides an overview of the environment variables used in the serv
 | `S3_BUCKET`               | `string`                                                  | Name of the bucket in object storage.                                                  |
 | `S3_ACCESS_ENDPOINT`      | `string` (e.g., `http://localhost:9000`)                  | Endpoint for accessing object storage from the client (may differ from `S3_ENDPOINT`). |
 | `S3_ADDRESSING`           | `string` (`path`, `virtual`)                              | Addressing style for object storage (path-based or virtual-hosted).                    |
+| `STORAGE_DISK_SPACE`      | `string` (e.g., `100Gi`, `100GB`, or a byte count)        | Total size of the upload disk for installations that do not use SeaweedFS. Scales the admin storage bar. Uploads are not rejected against this value. |
 | `FRONTEND_HOST`           | `string` (e.g., `http://localhost:4200`)                  | Base URL of the frontend application                                                   |
 | `SENTRY_DSN`              | `string`                                                  | Data Source Name (DSN) for Sentry error tracking (server + client).                    |
 | `SENTRY_ENABLED`          | `boolean` (`true`, `false`)                               | Enable or disable Sentry for server and client.                                        |

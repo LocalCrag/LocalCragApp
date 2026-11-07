@@ -43,6 +43,7 @@ from resources.ascent_resources import (
     GetTicks,
     SendProjectClimbedMessage,
     UpdateAscent,
+    UpdateAscentVideos,
 )
 from resources.auth_resources import (
     CurrentUser,
@@ -87,6 +88,7 @@ from resources.health_resources import Health
 from resources.history_resources import GetHistory
 from resources.instance_settings_resources import (
     GetInstanceSettings,
+    GetStorageUsage,
     UpdateInstanceSettings,
 )
 from resources.line_path_resources import (
@@ -296,6 +298,7 @@ def configure_api(app):
     instance_settings_bp = Blueprint("instance-settings", __name__)
     instance_settings_bp.add_url_rule("", view_func=GetInstanceSettings.as_view("get_instance_settings"))
     instance_settings_bp.add_url_rule("", view_func=UpdateInstanceSettings.as_view("update_instance_settings"))
+    instance_settings_bp.add_url_rule("/storage", view_func=GetStorageUsage.as_view("get_storage_usage"))
     app.register_blueprint(instance_settings_bp, url_prefix="/api/instance-settings")
 
     # Upload API
@@ -532,6 +535,7 @@ def configure_api(app):
     )
     ascent_bp.add_url_rule("/<string:ascent_id>", view_func=DeleteAscent.as_view("delete_ascent"))
     ascent_bp.add_url_rule("/<string:ascent_id>", view_func=UpdateAscent.as_view("update_ascent"))
+    ascent_bp.add_url_rule("/<string:ascent_id>/videos", view_func=UpdateAscentVideos.as_view("update_ascent_videos"))
     ascent_bp.add_url_rule(
         "/send-project-climbed-message", view_func=SendProjectClimbedMessage.as_view("send_project_climbed_message")
     )

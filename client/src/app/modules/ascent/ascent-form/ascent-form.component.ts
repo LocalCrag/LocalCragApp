@@ -32,6 +32,7 @@ import { AscentsService } from '../../../services/crud/ascents.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
+import { startSecondsValidator } from '../../../utility/validators/start-seconds.validator';
 import { DividerModule } from 'primeng/divider';
 
 import { filter, take } from 'rxjs/operators';
@@ -55,6 +56,9 @@ import {
   daysBackToLastSunday,
   subtractLocalCalendarDays,
 } from './ascent-quick-preset-dates';
+import { externalVideoUrlValidator } from '../../../utility/validators/external-video-url.validator';
+import { providerForUrl } from '../../../utility/video-source';
+import { Video } from '../../../models/video';
 
 @Component({
   selector: 'lc-ascent-form',
@@ -98,6 +102,8 @@ export class AscentFormComponent implements OnInit {
   public today: Date;
   public gradeDifferenceWarning = false;
   public editMode = false;
+  public videoFormOpen = false;
+  public videoStartOpen = false;
   public toggleButtonDt = {
     checkedBackground: '{primary.500}',
     contentCheckedBackground: '{primary.500}',
@@ -135,6 +141,10 @@ export class AscentFormComponent implements OnInit {
     this.ascentForm.disable();
     if (this.ascent) {
       this.editMode = true;
+      this.videoFormOpen = !!this.ascent.video?.url;
+      this.videoStartOpen =
+        (this.ascent.video?.startSeconds ?? 0) > 0 &&
+        providerForUrl(this.ascent.video?.url) !== 'instagram';
       this.setFormValue();
     } else {
       this.store
@@ -179,7 +189,21 @@ export class AscentFormComponent implements OnInit {
       withKneepad: [false],
       comment: [null],
       yearOnly: [false],
+      videoUrl: [null, [externalVideoUrlValidator()]],
+      videoTitle: [null, [Validators.maxLength(120)]],
+      videoStartSeconds: [null, [startSecondsValidator()]],
     });
+    this.ascentForm
+      .get('videoUrl')
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((url) => {
+        if (providerForUrl(url) === 'instagram') {
+          this.videoStartOpen = false;
+          this.ascentForm
+            .get('videoStartSeconds')
+            .setValue(null, { emitEvent: false });
+        }
+      });
     this.ascentForm
       .get('soft')
       .valueChanges.pipe(
@@ -235,6 +259,12 @@ export class AscentFormComponent implements OnInit {
           flash: this.ascent.flash,
           withKneepad: this.ascent.withKneepad,
           comment: this.ascent.comment,
+          videoUrl: this.ascent.video?.url ?? null,
+          videoTitle: this.ascent.video?.title ?? null,
+          videoStartSeconds:
+            providerForUrl(this.ascent.video?.url) === 'instagram'
+              ? null
+              : (this.ascent.video?.startSeconds ?? null),
           year: this.ascent.year
             ? new Date(this.ascent.year, 1, 1)
             : this.ascent.date,
@@ -265,6 +295,7 @@ export class AscentFormComponent implements OnInit {
       ascent.flash = this.ascentForm.get('flash').value;
       ascent.withKneepad = this.ascentForm.get('withKneepad').value;
       ascent.comment = this.ascentForm.get('comment').value;
+      ascent.video = this.ascentVideo();
       ascent.line = this.line;
       if (!this.editMode) {
         this.ascentsService.createAscent(ascent).subscribe(() => {
@@ -289,6 +320,56 @@ export class AscentFormComponent implements OnInit {
     } else {
       this.formDirective.markAsTouched();
     }
+  }
+
+  showVideoForm() {
+    this.videoFormOpen = true;
+  }
+
+  hideVideoForm() {
+    this.videoFormOpen = false;
+    this.videoStartOpen = false;
+    this.ascentForm.patchValue({
+      videoUrl: null,
+      videoTitle: null,
+      videoStartSeconds: null,
+    });
+  }
+
+  allowsVideoStart(): boolean {
+    return (
+      providerForUrl(this.ascentForm.get('videoUrl').value) !== 'instagram'
+    );
+  }
+
+  showVideoStart() {
+    this.videoStartOpen = true;
+  }
+
+  hideVideoStart() {
+    this.videoStartOpen = false;
+    this.ascentForm.patchValue({ videoStartSeconds: null });
+  }
+
+  private ascentVideo(): Video | null {
+    if (!this.videoFormOpen) {
+      return null;
+    }
+    const url = (this.ascentForm.get('videoUrl').value || '').trim();
+    if (!url) {
+      return null;
+    }
+    const title = (this.ascentForm.get('videoTitle').value || '').trim();
+    const start =
+      this.videoStartOpen && this.allowsVideoStart()
+        ? this.ascentForm.get('videoStartSeconds').value
+        : null;
+    const startSeconds = start === null || start === '' ? null : Number(start);
+    return Video.deserialize({
+      url,
+      title: title || 'Video',
+      startSeconds: startSeconds > 0 ? startSeconds : null,
+    });
   }
 
   setToLastSunday() {

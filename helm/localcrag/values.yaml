@@ -59,6 +59,11 @@ s3:
   # from the current PVC. Set seaweedfs after copying objects (see MIGRATION-MINIO-SEAWEEDFS.md).
   backend: minio
 
+  # Total size of the upload disk, shown on the admin storage bar when the
+  # backend is not SeaweedFS. Example: 10Gi. SeaweedFS reports its own disk.
+  # Uploads are not rejected against this value.
+  diskSpace: ""
+
   # DESTRUCTIVE WHEN DISABLED. Setting this to false uninstalls the MinIO
   # subchart, and because its PVC carries no keep-policy, Helm deletes
   # `{release}-s3` along with it. If the StorageClass reclaims with Delete, the

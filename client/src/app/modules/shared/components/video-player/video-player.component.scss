@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.player {
+  width: 100%;
+  overflow: hidden;
+  background: #111;
+
+  iframe,
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #111;
+  }
+}
+
+.player--wide {
+  aspect-ratio: 16 / 9;
+}
+
+.player--instagram {
+  aspect-ratio: 4 / 5;
+}
+
+.player--link {
+  display: flex;
+  align-items: center;
+  min-height: 4.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--p-content-background);
+
+  a {
+    color: var(--p-primary-color);
+    overflow-wrap: anywhere;
+  }
+}

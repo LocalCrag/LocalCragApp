@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../core/api.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { File } from '../../models/file';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { DeleteAction, ImageSpec, ResizeAction } from 'quill-blot-formatter';
 import {
   ImageEditRequest,
@@ -40,6 +40,12 @@ class CustomImageSpec extends ImageSpec {
   }
 }
 
+export interface FileUploadProgress {
+  loaded: number;
+  total: number | null;
+  file?: File;
+}
+
 /**
  * Service for uploading a file.
  */
@@ -61,6 +67,41 @@ export class UploadService {
     return this.http
       .post<File[]>(this.api.uploader.uploadFile(), formData)
       .pipe(map((response: File[]) => File.deserialize(response[0])));
+  }
+
+  /**
+   * Uploads a file and reports how much of it has been sent.
+   * `file` is set on the final event, once the server has stored it.
+   */
+  public uploadFileWithProgress(file: Blob): Observable<FileUploadProgress> {
+    const formData = new FormData();
+    formData.append('upload', file);
+    return this.http
+      .post<File[]>(this.api.uploader.uploadFile(), formData, {
+        reportProgress: true,
+        observe: 'events',
+      })
+      .pipe(
+        filter(
+          (event) =>
+            event.type === HttpEventType.UploadProgress ||
+            event.type === HttpEventType.Response,
+        ),
+        map((event) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            return {
+              loaded: event.loaded,
+              total: event.total ?? null,
+            };
+          }
+          const response = event as HttpResponse<File[]>;
+          return {
+            loaded: 0,
+            total: null,
+            file: File.deserialize(response.body[0]),
+          };
+        }),
+      );
   }
 
   /**

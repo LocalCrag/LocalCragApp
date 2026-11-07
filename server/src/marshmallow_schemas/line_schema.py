@@ -13,6 +13,7 @@ from marshmallow_schemas.mixins.moderator_task_count import (
     ModeratorTaskCountSchemaMixin,
 )
 from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
+from marshmallow_schemas.video_schema import VideoSchema
 from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.publication_status_enum import PublicationStatusEnum
@@ -22,6 +23,21 @@ from models.enums.starting_position_enum import StartingPositionEnum
 def _created_by_id(obj):
     created_by_id = getattr(obj, "created_by_id", None)
     return str(created_by_id) if created_by_id else None
+
+
+def _user_min_schema():
+    """Imported on dump. ``user_schema`` imports this module through line paths."""
+    from marshmallow_schemas.user_schema import UserMinSchema
+
+    return UserMinSchema
+
+
+class AscentVideoGroupSchema(ma.Schema):
+    """One ascent on a line, with its climber and single video."""
+
+    ascentId = fields.String(attribute="id")
+    user = fields.Nested(_user_min_schema, attribute="created_by", allow_none=True)
+    video = fields.Nested(VideoSchema, allow_none=True)
 
 
 class LineFaUserSchema(ma.Schema):
@@ -72,7 +88,7 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
     area = fields.Nested(AscentAndTodoAreaSchema())
     sector = fields.Nested(AscentAndTodoSectorSchema(), attribute="area.sector")
     crag = fields.Nested(AscentAndTodoCragSchema(), attribute="area.sector.crag")
-    videos = fields.List(fields.Dict)
+    videos = fields.List(fields.Nested(VideoSchema))
     type = EnumField(LineTypeEnum, by_value=True)
     authorRating = fields.Integer(attribute="author_rating")
     userRating = fields.Integer(attribute="user_rating")
@@ -136,6 +152,10 @@ class LineSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     imageCount = fields.Integer(attribute="image_count")
     faUsers = fields.Method("get_fa_users")
+    ascentVideos = fields.Method("get_ascent_videos")
+
+    def get_ascent_videos(self, obj):
+        return AscentVideoGroupSchema(many=True).dump(obj.ascent_video_groups())
 
     def get_fa_users(self, obj):
         return LineFaUserSchema(many=True).dump(obj.get_fa_users())

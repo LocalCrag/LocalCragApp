@@ -2,6 +2,7 @@ from marshmallow import validate
 from webargs import fields
 
 from webargs_schemas.line_args import validate_fa_date, validate_fa_year
+from webargs_schemas.video_args import AscentVideoArgsSchema
 
 FA_REMOVAL_MESSAGE_MAX_LENGTH = 2000
 
@@ -22,12 +23,23 @@ ascent_args = {
     "gradeValue": fields.Integer(required=True),
     "rating": fields.Integer(required=True, allow_none=True),
     "comment": fields.Str(required=True, allow_none=True),
+    "video": fields.Nested(AscentVideoArgsSchema(), required=False, allow_none=True),
     "year": fields.Integer(required=True, allow_none=True, validate=validate_fa_year),
     "date": fields.Date(
         required=True,
         allow_none=True,
         format="iso8601",
         validate=validate_fa_date,
+    ),
+}
+
+moderate_ascent_videos_args = {
+    "video": fields.Nested(AscentVideoArgsSchema(), required=True, allow_none=True),
+    "message": fields.Str(
+        required=False,
+        allow_none=True,
+        load_default=None,
+        validate=validate.Length(max=FA_REMOVAL_MESSAGE_MAX_LENGTH),
     ),
 }
 

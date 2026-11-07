@@ -1,16 +1,23 @@
 import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
 import { Line } from '../../../models/line';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
 import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ProjectClimbedFormComponent } from '../project-climbed-form/project-climbed-form.component';
 import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
 import { Store } from '@ngrx/store';
-import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
+import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import {
+  selectInstanceSettingsState,
+  selectSoftGating,
+} from '../../../ngrx/selectors/instance-settings.selectors';
+import { combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
 
 @Component({
   selector: 'lc-tick-button',
@@ -25,13 +32,38 @@ export class TickButtonComponent {
   @Input() ticked: boolean;
   @Input() showLabel: boolean;
 
+  public visible = false;
+
+  private loggedIn = false;
   private dialogService = inject(DialogService);
   private store = inject(Store);
+  private translocoService = inject(TranslocoService);
+
+  constructor() {
+    combineLatest([
+      this.store.select(selectIsLoggedIn),
+      this.store.select(selectSoftGating),
+    ])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([loggedIn, softGating]) => {
+        this.loggedIn = loggedIn;
+        this.visible = loggedIn || softGating;
+      });
+  }
 
   addAscent(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    openTickDialog(this.dialogService, this.store, this.line);
+    if (!this.loggedIn) {
+      openAccountPrompt(this.dialogService, this.translocoService);
+      return;
+    }
+    openTickDialog(
+      this.dialogService,
+      this.store,
+      this.translocoService,
+      this.line,
+    );
   }
 }
 
@@ -39,12 +71,19 @@ export class TickButtonComponent {
 export function openTickDialog(
   dialogService: DialogService,
   store: Store,
+  translocoService: TranslocoService,
   line: Line,
 ): void {
-  store
-    .select(selectInstanceSettingsState)
+  combineLatest([
+    store.select(selectIsLoggedIn),
+    store.select(selectInstanceSettingsState),
+  ])
     .pipe(take(1))
-    .subscribe((instanceSettings) => {
+    .subscribe(([loggedIn, instanceSettings]) => {
+      if (!loggedIn) {
+        openAccountPrompt(dialogService, translocoService);
+        return;
+      }
       const gradeValue = instanceSettings.displayUserGrades
         ? line.userGradeValue
         : line.authorGradeValue;

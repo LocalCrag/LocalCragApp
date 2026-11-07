@@ -1,0 +1,67 @@
+:host {
+  display: block;
+}
+
+.videos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.video-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.video-title {
+  flex: 1 1 8rem;
+  min-width: 0;
+  font-weight: 600;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input {
+  width: 6rem;
+}
+
+.remove-intro {
+  margin-top: 0;
+}
+
+.message-label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.message-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--p-text-muted-color);
+}
+
+.error {
+  margin: 0;
+}
+
+.error {
+  margin-top: 0.75rem;
+  color: var(--p-red-500);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

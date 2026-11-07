@@ -43,6 +43,8 @@ export class InstanceSettings {
   noClosedProjects: boolean;
   suggestionsEnabled: boolean;
   moderatorGameEnabled: boolean;
+  videoUploadsEnabled: boolean;
+  softGating: boolean;
   skippedHierarchicalLayers: number;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
@@ -98,6 +100,8 @@ export class InstanceSettings {
     instanceSettings.suggestionsEnabled = payload.suggestionsEnabled !== false;
     instanceSettings.moderatorGameEnabled =
       payload.moderatorGameEnabled === true;
+    instanceSettings.videoUploadsEnabled = payload.videoUploadsEnabled === true;
+    instanceSettings.softGating = payload.softGating === true;
     instanceSettings.skippedHierarchicalLayers =
       payload.skippedHierarchicalLayers;
     instanceSettings.faDefaultFormat = payload.faDefaultFormat;
@@ -148,6 +152,8 @@ export class InstanceSettings {
       noClosedProjects: instanceSettings.noClosedProjects,
       suggestionsEnabled: instanceSettings.suggestionsEnabled,
       moderatorGameEnabled: instanceSettings.moderatorGameEnabled,
+      videoUploadsEnabled: instanceSettings.videoUploadsEnabled,
+      softGating: instanceSettings.softGating,
       skippedHierarchicalLayers: instanceSettings.skippedHierarchicalLayers,
       faDefaultFormat: instanceSettings.faDefaultFormat,
       defaultStartingPosition: instanceSettings.defaultStartingPosition,
@@ -170,6 +176,7 @@ export class InstanceSettings {
     noClosedProjects: boolean;
     suggestionsEnabled: boolean;
     moderatorGameEnabled: boolean;
+    softGating: boolean;
     faDefaultFormat: FaDefaultFormat;
     defaultStartingPosition: StartingPosition;
     rankingPastWeeks: number | null;
@@ -209,6 +216,12 @@ export class InstanceSettings {
       darkBarChartColor: payload.darkBarChartColor,
       darkBarChartAccentColor: payload.darkBarChartAccentColor,
     };
+  }
+
+  public static serializeStoragePatch(payload: {
+    videoUploadsEnabled: boolean;
+  }): InstanceSettingsPatch {
+    return { videoUploadsEnabled: payload.videoUploadsEnabled };
   }
 
   public static serializeAnalyticsPatch(payload: {

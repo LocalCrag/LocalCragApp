@@ -46,10 +46,13 @@ def get_s3_client():
     return client
 
 
-def upload_file(client, bytes, filename):
-    client.put_object(
-        Bucket=current_app.config["S3_BUCKET"],
-        Key=filename,
-        Body=bytes,
-        ACL="public-read",
-    )
+def upload_file(client, bytes, filename, content_type=None):
+    params = {
+        "Bucket": current_app.config["S3_BUCKET"],
+        "Key": filename,
+        "Body": bytes,
+        "ACL": "public-read",
+    }
+    if content_type:
+        params["ContentType"] = content_type
+    client.put_object(**params)

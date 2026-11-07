@@ -7,6 +7,7 @@
           <p-tab value="appearance">{{ t("imagesSettings") }}</p-tab>
           <p-tab value="analytics">{{ t("matomoSettings") }}</p-tab>
           <p-tab value="maps">{{ t("mapSettings") }}</p-tab>
+          <p-tab value="storage">{{ t("storageSettings") }}</p-tab>
         </p-tablist>
       </p-tabs>
 
@@ -39,6 +40,14 @@
           [group]="mapsGroup()"
           [loading]="loadingState === loadingStates.LOADING"
           [save]="saveMapsTab"
+        />
+      }
+
+      @if (activeTab === "storage") {
+        <lc-instance-settings-storage-tab
+          [group]="storageGroup()"
+          [loading]="loadingState === loadingStates.LOADING"
+          [save]="saveStorageTab"
         />
       }
     </form>

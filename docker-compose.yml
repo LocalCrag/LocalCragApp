@@ -174,6 +174,7 @@ services:
       # Defaults to MinIO so existing installations keep serving their own data.
       # Set S3_ENDPOINT=http://seaweedfs:8333 in .env once objects are copied.
       S3_ENDPOINT: ${S3_ENDPOINT:-http://storage:9000}
+      STORAGE_DISK_SPACE: ${STORAGE_DISK_SPACE:-}
       S3_BUCKET: ${S3_BUCKET}
       S3_ACCESS_ENDPOINT: ${S3_ACCESS_ENDPOINT}
       S3_ADDRESSING: path

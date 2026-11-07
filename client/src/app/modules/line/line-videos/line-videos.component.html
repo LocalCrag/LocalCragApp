@@ -1,0 +1,129 @@
+<ng-container *transloco="let t; read: 'line.line'">
+  @if (line && items.length) {
+    <section class="line-videos">
+      @if (selected) {
+        <article
+          class="stage"
+          [class.stage--portrait]="selected.source === 'instagram'"
+        >
+          <lc-video-player
+            [url]="selected.url"
+            [title]="selected.title"
+            [source]="selected.source"
+            [fileId]="selected.fileId"
+            [startSeconds]="selected.startSeconds"
+          ></lc-video-player>
+          <div class="caption">
+            <div class="caption-copy">
+              <div class="caption-kicker">
+                <i [class]="sourceIcon(selected.source)" aria-hidden="true"></i>
+                <span class="badge">{{
+                  selected.kind === "line"
+                    ? t("lineVideoBadge")
+                    : t("ascentVideoBadge")
+                }}</span>
+              </div>
+              <h2>{{ selected.title }}</h2>
+              @if (
+                selected.climberName ||
+                (selected.source !== "instagram" &&
+                  startLabel(selected.startSeconds))
+              ) {
+                <p class="caption-meta">
+                  @if (selected.climberName) {
+                    @if (selected.climberLink) {
+                      <a [routerLink]="selected.climberLink">{{
+                        selected.climberName
+                      }}</a>
+                    } @else {
+                      <span>{{ selected.climberName }}</span>
+                    }
+                  }
+                  @if (
+                    selected.source !== "instagram" &&
+                      startLabel(selected.startSeconds);
+                    as start
+                  ) {
+                    <span>{{ t("videoStartsAt", { time: start }) }}</span>
+                  }
+                </p>
+              }
+            </div>
+            @if (selected.source !== "upload") {
+              <a
+                class="open-link"
+                [href]="selected.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="pi pi-external-link" aria-hidden="true"></i>
+                <span>{{ t("videoOpenExternal") }}</span>
+              </a>
+            }
+          </div>
+        </article>
+      }
+      <div class="playlist" role="list">
+        @for (item of items; track item.key) {
+          <div
+            class="video-choice"
+            role="listitem"
+            [class.video-choice--active]="selected?.key === item.key"
+          >
+            <button
+              type="button"
+              class="choice-main"
+              [attr.aria-pressed]="selected?.key === item.key"
+              (click)="select(item)"
+            >
+              <i
+                [class]="'choice-icon ' + sourceIcon(item.source)"
+                aria-hidden="true"
+              ></i>
+              <span class="badge">{{
+                item.kind === "line"
+                  ? t("lineVideoBadge")
+                  : t("ascentVideoBadge")
+              }}</span>
+              <span class="choice-title">{{ item.title }}</span>
+              @if (
+                item.climberName ||
+                (item.source !== "instagram" && startLabel(item.startSeconds))
+              ) {
+                <span class="choice-climber">
+                  @if (item.climberName) {
+                    <span>{{ item.climberName }}</span>
+                  }
+                  @if (
+                    item.source !== "instagram" &&
+                      startLabel(item.startSeconds);
+                    as start
+                  ) {
+                    <span>{{ start }}</span>
+                  }
+                </span>
+              }
+            </button>
+            @if (item.kind === "ascent") {
+              <button
+                *isModerator="true"
+                type="button"
+                class="edit-video"
+                [attr.aria-label]="t('editAscentVideos')"
+                [attr.title]="t('editAscentVideos')"
+                (click)="openModeration(item)"
+              >
+                <i class="pi pi-pencil" aria-hidden="true"></i>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  } @else if (line) {
+    <div class="empty">
+      <i class="pi pi-video" aria-hidden="true"></i>
+      <p>{{ t("noVideos") }}</p>
+    </div>
+  }
+</ng-container>

@@ -207,6 +207,28 @@
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
+        <label for="soft-gating">{{ t("softGatingLabel") }}</label>
+        <span
+          class="pi pi-question-circle ml-2"
+          [pTooltip]="t('softGatingTooltip')"
+          tooltipPosition="right"
+        ></span>
+      </div>
+      <p-select
+        id="soft-gating"
+        [options]="[
+          { value: false, label: t('softGatingFalse') },
+          { value: true, label: t('softGatingTrue') },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="softGating"
+        lcFormControl
+      />
+    </div>
+
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
         <label for="skippedHierarchicalLayers">{{
           t("skippedHierarchicalLayersLabel")
         }}</label>

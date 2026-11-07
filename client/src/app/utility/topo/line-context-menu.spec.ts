@@ -53,6 +53,15 @@ function menu(state: Partial<LineContextMenuState>, menuActions = actions()) {
 }
 
 describe('topo line context menu', () => {
+  it('offers tick to a logged-out visitor when soft gating is on', () => {
+    const built = menu({ loggedIn: false, softGating: true });
+    expect(item(built.items, 'line-add-todo')).toBeUndefined();
+    const tick = item(built.items, 'line-tick');
+    expect(tick?.label).toBe('tick');
+    tick?.command?.({} as never);
+    expect(built.actions.tick).toHaveBeenCalled();
+  });
+
   it('offers open and highlight to a logged-out visitor', () => {
     const built = menu({ loggedIn: false });
     expect(built.items.map((entry) => entry.id)).toEqual([

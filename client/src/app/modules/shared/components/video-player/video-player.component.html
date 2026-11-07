@@ -1,0 +1,39 @@
+<ng-container *transloco="let t; read: 'line.line'">
+  <div
+    class="player"
+    [class.player--wide]="provider !== 'instagram' && provider !== 'link'"
+    [class.player--instagram]="provider === 'instagram'"
+    [class.player--link]="provider === 'link'"
+  >
+    @if (embedUrl) {
+      <iframe
+        [src]="embedUrl"
+        [title]="title || t('videosTitle')"
+        allow="
+          accelerometer;
+          autoplay;
+          clipboard-write;
+          encrypted-media;
+          gyroscope;
+          picture-in-picture;
+          web-share;
+        "
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"
+      ></iframe>
+    } @else if (provider === "upload") {
+      <video
+        #playback
+        controls
+        playsinline
+        [src]="url"
+        (loadedmetadata)="onPlaybackReady()"
+      ></video>
+    } @else {
+      <a [href]="url" target="_blank" rel="noopener noreferrer">{{
+        title || url
+      }}</a>
+    }
+  </div>
+</ng-container>

@@ -19,6 +19,7 @@ from models.sector import Sector
 from models.topo_image import TopoImage
 from models.topo_point_event import TopoPointEvent
 from models.user import User
+from models.video import Video
 from util.auth_session import SESSION_COOKIE_NAME
 from util.topo_quality_backfill import backfill_creator_points
 from util.topo_quality_score import (
@@ -822,7 +823,7 @@ def test_project_video_awards_nothing_and_style_still_pays(client, admin_token):
     line = Line.find_by_slug("super-spreader")
     line.author_grade_value = -1
     line.user_grade_value = -1
-    line.videos = None
+    line.videos = []
     line.fa_name = None
     line.fa_date = None
     line.fa_year = None
@@ -833,7 +834,7 @@ def test_project_video_awards_nothing_and_style_still_pays(client, admin_token):
     before = _points(user)
 
     with app.test_request_context("/", headers={"Cookie": f"{SESSION_COOKIE_NAME}={admin_token.session_id}"}):
-        line.videos = [{"url": "https://example.com/project-video"}]
+        line.videos = [Video.from_dict({"url": "https://example.com/project-video"}, 0)]
         line.fa_name = "Someone"
         line.fa_year = 2020
         db.session.flush()

@@ -5,6 +5,29 @@ from flask import current_app
 from werkzeug.datastructures import FileStorage
 
 
+def test_upload_file_stores_video_content_type(s3_mock):
+    from uploader.do_s3 import upload_file
+
+    upload_file(s3_mock, b"\x00\x00", "clip.mp4", content_type="video/mp4")
+    stored = s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key="clip.mp4")
+    assert stored["ContentType"] == "video/mp4"
+
+
+def test_arbitrary_upload_rejects_video_extension(client, clean_test_uploads, s3_mock, moderator_token):
+    upload_file = (
+        FileStorage(
+            stream=open(os.path.join("../tests/assets/test_pdf.pdf"), "rb"),
+            filename="clip.mp4",
+            content_type="application/pdf",
+        ),
+    )
+    rv = client.post(
+        "/api/upload", token=moderator_token, data={"upload": upload_file}, content_type="multipart/form-data"
+    )
+    assert rv.status_code == 400
+    assert rv.json["message"] == "INVALID_FILETYPE_UPLOADED"
+
+
 def test_successful_file_upload(client, clean_test_uploads, s3_mock, moderator_token):
     upload_file = (
         FileStorage(
@@ -32,6 +55,7 @@ def test_successful_file_upload(client, clean_test_uploads, s3_mock, moderator_t
     assert file_info["thumbnailM"] is None
     assert file_info["thumbnailL"] is None
     assert file_info["thumbnailXL"] is None
+    assert file_info["fileSize"] == os.path.getsize("../tests/assets/test_pdf.pdf")
 
 
 def test_file_upload_too_large_file(client, clean_test_uploads, s3_mock, moderator_token):
@@ -79,6 +103,14 @@ def test_successful_upload_small(client, clean_test_uploads, s3_mock, moderator_
     assert file_info["thumbnailL"] is False
     assert file_info["thumbnailXL"] is False
     filename_parts = file_info["filename"].split(".")
+    stored_keys = [
+        file_info["filename"],
+        "{}_xs.{}".format(filename_parts[0], filename_parts[1]),
+        "{}_s.{}".format(filename_parts[0], filename_parts[1]),
+    ]
+    assert file_info["fileSize"] == sum(
+        s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=key)["ContentLength"] for key in stored_keys
+    )
     assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=file_info["filename"]) is not None
     assert (
         s3_mock.get_object(

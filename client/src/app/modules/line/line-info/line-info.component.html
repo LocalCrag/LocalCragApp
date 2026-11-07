@@ -74,21 +74,6 @@
             }
           }
 
-          @if (line.videos?.length > 0) {
-            <div>
-              {{ t("videoBeta") }}:
-              <span class="link-list">
-                @for (video of line.videos; track video) {
-                  <span
-                    ><a [href]="video.url" target="_blank">{{
-                      video.title
-                    }}</a></span
-                  >
-                }
-              </span>
-            </div>
-          }
-
           <div>
             {{ t("rating") }}:
             <p-rating
@@ -185,7 +170,6 @@
               [line]="line"
               [ticked]="ticks.has(line.id)"
               [showLabel]="true"
-              *isLoggedIn="true"
             ></lc-tick-button>
           }
         </div>

@@ -1,7 +1,7 @@
 """Backfill rich-text file links and delete unattached file rows.
 
 Revision ID: f5c2a8e1b4d7
-Revises: e1b7c4a90d32
+Revises: d0e5a2c84b17
 Create Date: 2026-09-27
 
 Existing rich text embeds image URLs. This creates a file_links row for each
@@ -23,7 +23,7 @@ from uploader.file_storage import (
 from util.file_links import backfill_file_links, delete_unattached_file_rows
 
 revision = "f5c2a8e1b4d7"
-down_revision = "e1b7c4a90d32"
+down_revision = "d0e5a2c84b17"
 branch_labels = None
 depends_on = None
 

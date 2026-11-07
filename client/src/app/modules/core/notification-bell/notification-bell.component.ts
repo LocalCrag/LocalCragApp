@@ -20,7 +20,7 @@ import { NotificationPresentationService } from '../notification-presentation.se
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
 import { loadUnreadNotificationCount } from '../../../ngrx/actions/notifications.actions';
 import { selectUnreadNotificationCount } from '../../../ngrx/selectors/account-notifications.selectors';
-import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-removal-message-dialog.service';
+import { ModerationMessageDialogService } from '../moderation-message-dialog/moderation-message-dialog.service';
 
 @Component({
   selector: 'lc-notification-bell',
@@ -32,7 +32,7 @@ import { FaRemovalMessageDialogService } from '../fa-removal-message-dialog/fa-r
     LineGradePipe,
     NotificationPresentationService,
     DialogService,
-    FaRemovalMessageDialogService,
+    ModerationMessageDialogService,
   ],
 })
 export class NotificationBellComponent implements OnInit {
@@ -50,7 +50,7 @@ export class NotificationBellComponent implements OnInit {
   private router = inject(Router);
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
-  private faRemovalDialog = inject(FaRemovalMessageDialogService);
+  private moderationMessageDialog = inject(ModerationMessageDialogService);
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -105,7 +105,7 @@ export class NotificationBellComponent implements OnInit {
 
     const go = (): void => {
       popover.hide();
-      if (this.faRemovalDialog.openFromNotification(item)) {
+      if (this.moderationMessageDialog.openFromNotification(item)) {
         return;
       }
       if (link) {

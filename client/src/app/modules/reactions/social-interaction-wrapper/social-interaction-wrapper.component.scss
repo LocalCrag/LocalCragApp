@@ -64,7 +64,8 @@
   }
 
   @media (hover: hover) {
-    .social-interaction-wrapper:hover &:not(.has-comments).logged-in {
+    .social-interaction-wrapper:hover &:not(.has-comments).logged-in,
+    .social-interaction-wrapper:hover &:not(.has-comments).promptable {
       opacity: 1;
       pointer-events: auto;
       background: var(--p-content-hover-background);
@@ -75,7 +76,8 @@
       }
     }
 
-    &.logged-in.has-comments:hover {
+    &.logged-in.has-comments:hover,
+    &.promptable.has-comments:hover {
       background: var(--p-content-hover-background);
     }
   }

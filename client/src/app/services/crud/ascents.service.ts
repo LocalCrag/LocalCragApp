@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Ascent } from '../../models/ascent';
+import { Video } from '../../models/video';
 import { Paginated } from '../../models/paginated';
 import {
   ApiQueryParams,
@@ -28,6 +29,19 @@ export class AscentsService {
   public createAscent(ascent: Ascent): Observable<Ascent> {
     return this.http
       .post(this.api.ascents.create(), Ascent.serialize(ascent))
+      .pipe(map(Ascent.deserialize));
+  }
+
+  public updateAscentVideo(
+    ascentId: string,
+    video: Video | null,
+    message: string | null = null,
+  ): Observable<Ascent> {
+    return this.http
+      .put(this.api.ascents.updateVideos(ascentId), {
+        video: video ? Video.serialize(video) : null,
+        message,
+      })
       .pipe(map(Ascent.deserialize));
   }
 

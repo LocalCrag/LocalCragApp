@@ -5,12 +5,12 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { NotificationItem } from '../../../models/notification-item';
 import { NotificationsService } from '../../../services/crud/notifications.service';
 import {
-  FaRemovalMessageDialogComponent,
-  FaRemovalMessageDialogData,
-} from './fa-removal-message-dialog.component';
+  ModerationMessageDialogComponent,
+  ModerationMessageDialogData,
+} from './moderation-message-dialog.component';
 
 @Injectable()
-export class FaRemovalMessageDialogService {
+export class ModerationMessageDialogService {
   private dialogService = inject(DialogService);
   private notificationsService = inject(NotificationsService);
   private translocoService = inject(TranslocoService);
@@ -18,15 +18,29 @@ export class FaRemovalMessageDialogService {
   private openRef: DynamicDialogRef | undefined;
 
   public openFromNotification(notification: NotificationItem): boolean {
-    const message = notification.properties.faRemoval?.message;
-    if (notification.type !== 'fa_moderation_removed' || !message) {
-      return false;
+    if (notification.type === 'fa_moderation_removed') {
+      const message = notification.properties.faRemoval?.message;
+      if (!message) {
+        return false;
+      }
+      this.open(
+        { message, ascentLink: notification.actionLink },
+        marker('faRemoval.dialog.title'),
+      );
+      return true;
     }
-    this.open({
-      message,
-      ascentLink: notification.actionLink,
-    });
-    return true;
+    if (notification.type === 'ascent_video_removed') {
+      const message = notification.properties.ascentVideoRemoval?.message;
+      if (!message) {
+        return false;
+      }
+      this.open(
+        { message, ascentLink: notification.actionLink },
+        marker('ascentVideoRemoval.dialog.title'),
+      );
+      return true;
+    }
+    return false;
   }
 
   public openById(notificationId: string): void {
@@ -46,18 +60,21 @@ export class FaRemovalMessageDialogService {
     });
   }
 
-  public open(data: FaRemovalMessageDialogData): void {
+  public open(
+    data: ModerationMessageDialogData,
+    titleKey: string = marker('faRemoval.dialog.title'),
+  ): void {
     this.openRef?.close();
     const headerKey = data.unavailable
       ? marker('faRemoval.dialog.unavailableTitle')
-      : marker('faRemoval.dialog.title');
-    this.openRef = this.dialogService.open(FaRemovalMessageDialogComponent, {
+      : titleKey;
+    this.openRef = this.dialogService.open(ModerationMessageDialogComponent, {
       header: this.translocoService.translate(headerKey),
       data,
       modal: true,
       dismissableMask: true,
       closeOnEscape: true,
-      styleClass: 'fa-removal-message-dialog-host',
+      styleClass: 'moderation-message-dialog-host',
       width: '36rem',
       breakpoints: { '640px': '95vw' },
     });
