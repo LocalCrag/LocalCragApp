@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { Editor, EditorModule } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
   FormBuilder,
   FormGroup,
@@ -10,7 +10,6 @@ import {
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UploadService } from '../../../services/crud/upload.service';
 import { Title } from '@angular/platform-browser';
 import {
   TranslocoDirective,
@@ -41,7 +40,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   imports: [
     ButtonModule,
     ConfirmPopupModule,
-    EditorModule,
+    WysiwygEditorComponent,
     InputTextModule,
     PaginatorModule,
     ReactiveFormsModule,
@@ -58,29 +57,22 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 })
 export class MenuPagesFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChild(Editor) editor: Editor;
 
   public menuPageForm: FormGroup;
   public loadingState = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public menuPage: MenuPage;
   public editMode = false;
-  public quillModules: any;
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private menuPagesService = inject(MenuPagesService);
-  private uploadService = inject(UploadService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
   private pageTitleService = inject(PageTitleService);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -112,9 +104,6 @@ export class MenuPagesFormComponent implements OnInit {
           this.menuPage = menuPage;
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
-          if (this.editor) {
-            this.editor.getQuill()?.enable();
-          }
         });
     } else {
       this.setPageTitle();

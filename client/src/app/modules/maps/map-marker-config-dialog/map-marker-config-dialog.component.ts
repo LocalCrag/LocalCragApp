@@ -7,10 +7,8 @@ import {
   OnChanges,
   OnInit,
   Output,
-  QueryList,
   SimpleChanges,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -24,7 +22,7 @@ import {
   TranslocoDirective,
   TranslocoPipe,
 } from '@jsverse/transloco';
-import { Editor, EditorModule } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { ToggleButtonModule } from 'primeng/togglebutton';
@@ -50,7 +48,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     InputTextModule,
     TranslocoDirective,
     TranslocoPipe,
-    EditorModule,
+    WysiwygEditorComponent,
     CoordinatesComponent,
     ColorPickerModule,
     ToggleButtonModule,
@@ -68,7 +66,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   @Output() newMarker = new EventEmitter<MapMarker>();
 

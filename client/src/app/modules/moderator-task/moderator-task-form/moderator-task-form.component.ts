@@ -15,7 +15,7 @@ import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { EditorModule } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { LoadingState } from '../../../enums/loading-state';
@@ -30,7 +30,6 @@ import { LinesService } from '../../../services/crud/lines.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
-import { UploadService } from '../../../services/crud/upload.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -42,7 +41,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   imports: [
     ButtonModule,
     ConfirmPopupModule,
-    EditorModule,
+    WysiwygEditorComponent,
     InputTextModule,
     Select,
     ReactiveFormsModule,
@@ -64,7 +63,6 @@ export class ModeratorTaskFormComponent implements OnInit {
   public loadingState = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public editMode = false;
-  public quillModules: any;
   public listLink: string;
   public assigneeUsers: User[] = [];
   public usersLoading = true;
@@ -84,13 +82,11 @@ export class ModeratorTaskFormComponent implements OnInit {
   private areasService = inject(AreasService);
   private linesService = inject(LinesService);
   private usersService = inject(UsersService);
-  private uploadService = inject(UploadService);
   private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
 
   constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
     this.buildForm();
   }
 

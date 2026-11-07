@@ -1,13 +1,6 @@
-import {
-  Component,
-  OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { Editor, EditorModule } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
   FormBuilder,
   FormGroup,
@@ -48,7 +41,7 @@ import { Tooltip } from 'primeng/tooltip';
   selector: 'lc-region-form',
   imports: [
     ReactiveFormsModule,
-    EditorModule,
+    WysiwygEditorComponent,
     ButtonModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -65,14 +58,12 @@ import { Tooltip } from 'primeng/tooltip';
 })
 export class RegionFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   public regionForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public region: Region;
   public editMode = false;
-  public quillModules: any;
   public instanceSettings: InstanceSettings;
 
   private fb = inject(FormBuilder);
@@ -83,10 +74,6 @@ export class RegionFormComponent implements OnInit {
   private instanceSettingsService = inject(InstanceSettingsService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -117,9 +104,6 @@ export class RegionFormComponent implements OnInit {
       this.instanceSettings = instanceSettings;
       this.setFormValue();
       this.loadingState = LoadingState.DEFAULT;
-      this.editors?.map((editor) => {
-        editor.getQuill()?.enable();
-      });
     });
   }
 

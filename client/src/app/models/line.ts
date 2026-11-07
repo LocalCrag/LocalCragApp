@@ -32,6 +32,22 @@ export interface AscentVideoGroup {
   video: Video | null;
 }
 
+/** How many ascents proposed each grade value. Grade 0 is an ungraded tick. */
+export interface LineGradeVotes {
+  gradeScale: string;
+  lineType: LineType;
+  authorGradeValue: number;
+  userGradeValue: number;
+  votes: Record<string, number>;
+}
+
+/** How many ascents gave each star rating, from 1 to 5. */
+export interface LineRatingDistribution {
+  average: number | null;
+  count: number;
+  distribution: Record<string, number>;
+}
+
 /** Registered FA climber plus their FA ascent year/date. */
 export interface LineFaUser {
   user: User;
@@ -111,6 +127,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
   imageCount: number;
   commentCount: number;
   taskCount?: number;
+  gradeVotes: LineGradeVotes | null;
+  ratingDistribution: LineRatingDistribution | null;
 
   areaSlug: string;
   sectorSlug: string;
@@ -235,6 +253,8 @@ export class Line extends IsClosable(HasSlug(AbstractModel)) {
     line.imageCount = payload.imageCount;
     line.commentCount = payload.commentCount;
     line.taskCount = payload.taskCount;
+    line.gradeVotes = payload.gradeVotes ?? null;
+    line.ratingDistribution = payload.ratingDistribution ?? null;
 
     if (line.cragSlug && line.sectorSlug && line.areaSlug) {
       line.routerLinkCrag = `/topo/${line.cragSlug}`;

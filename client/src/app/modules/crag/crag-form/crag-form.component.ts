@@ -3,9 +3,7 @@ import {
   DestroyRef,
   inject,
   OnInit,
-  QueryList,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -31,7 +29,7 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import {
@@ -73,7 +71,7 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
     InputText,
     FormControlDirective,
     IfErrorDirective,
-    Editor,
+    WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
@@ -88,14 +86,12 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
 })
 export class CragFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
 
   public cragForm: FormGroup;
   public loadingState = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public crag: Crag;
   public editMode = false;
-  public quillModules: any;
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
@@ -114,10 +110,6 @@ export class CragFormComponent implements OnInit {
     name: string,
     excludeId: string | null = null,
   ): Observable<Crag[]> => this.cragsService.findByName(name, excludeId);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -153,9 +145,6 @@ export class CragFormComponent implements OnInit {
           this.crag = crag;
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
-          this.editors?.map((editor) => {
-            editor.getQuill()?.enable();
-          });
         });
     } else {
       this.setPageTitle();

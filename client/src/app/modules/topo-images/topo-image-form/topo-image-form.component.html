@@ -57,43 +57,16 @@
               <label class="form-label" for="description">{{
                 t("topoImageDescriptionLabel")
               }}</label>
-              <p-editor
-                class="lc-wysiwyg-editor"
+              <lc-wysiwyg-editor
                 id="description"
                 formControlName="description"
                 lcFormControl
-                placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
-                [style]="{ height: '200px' }"
+                [placeholder]="t('topoImageDescriptionPlaceholder')"
+                height="200px"
+                toolbar="basic"
                 [readonly]="loadingState === loadingStates.INITIAL_LOADING"
                 data-cy="topo-image-form-description"
-              >
-                <ng-template #header>
-                  <span class="ql-formats">
-                    <button
-                      type="button"
-                      class="ql-bold"
-                      aria-label="Bold"
-                    ></button>
-                    <button
-                      type="button"
-                      class="ql-italic"
-                      aria-label="Italic"
-                    ></button>
-                    <button
-                      type="button"
-                      class="ql-underline"
-                      aria-label="Underline"
-                    ></button>
-                  </span>
-                  <span class="ql-formats">
-                    <button
-                      type="button"
-                      class="ql-link"
-                      aria-label="Link"
-                    ></button>
-                  </span>
-                </ng-template>
-              </p-editor>
+              />
             </div>
 
             <div class="flex flex-col gap-2" lcControlGroup>
@@ -196,45 +169,18 @@
                     <label class="form-label" [attr.for]="'description-' + i">{{
                       t("topoImageDescriptionLabel")
                     }}</label>
-                    <p-editor
-                      class="lc-wysiwyg-editor"
+                    <lc-wysiwyg-editor
                       [id]="'description-' + i"
                       formControlName="description"
                       lcFormControl
-                      placeholder="{{ t('topoImageDescriptionPlaceholder') }}"
-                      [style]="{ height: '200px' }"
+                      [placeholder]="t('topoImageDescriptionPlaceholder')"
+                      height="200px"
+                      toolbar="basic"
                       [readonly]="
                         loadingState === loadingStates.INITIAL_LOADING
                       "
                       data-cy="topo-image-form-description"
-                    >
-                      <ng-template #header>
-                        <span class="ql-formats">
-                          <button
-                            type="button"
-                            class="ql-bold"
-                            aria-label="Bold"
-                          ></button>
-                          <button
-                            type="button"
-                            class="ql-italic"
-                            aria-label="Italic"
-                          ></button>
-                          <button
-                            type="button"
-                            class="ql-underline"
-                            aria-label="Underline"
-                          ></button>
-                        </span>
-                        <span class="ql-formats">
-                          <button
-                            type="button"
-                            class="ql-link"
-                            aria-label="Link"
-                          ></button>
-                        </span>
-                      </ng-template>
-                    </p-editor>
+                    />
                   </div>
 
                   <div class="flex flex-col gap-2" lcControlGroup>

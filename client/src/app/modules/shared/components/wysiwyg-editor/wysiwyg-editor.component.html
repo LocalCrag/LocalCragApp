@@ -1,0 +1,434 @@
+<input
+  #imageInput
+  type="file"
+  accept="image/jpeg,image/png,image/gif,image/bmp"
+  hidden
+  (change)="onImageSelected($event)"
+/>
+<input
+  #videoInput
+  type="file"
+  accept="video/mp4,video/webm,video/quicktime,video/ogg"
+  hidden
+  (change)="onVideoSelected($event)"
+/>
+
+<div class="lc-wysiwyg-toolbar" role="toolbar">
+  <button
+    type="button"
+    class="fmt"
+    [class.active]="bold"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.bold' | transloco"
+    [pTooltip]="'wysiwygEditor.bold' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatText('bold')"
+  >
+    <b>B</b>
+  </button>
+  <button
+    type="button"
+    class="fmt"
+    [class.active]="italic"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.italic' | transloco"
+    [pTooltip]="'wysiwygEditor.italic' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatText('italic')"
+  >
+    <i>I</i>
+  </button>
+  <button
+    type="button"
+    class="fmt"
+    [class.active]="underline"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.underline' | transloco"
+    [pTooltip]="'wysiwygEditor.underline' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatText('underline')"
+  >
+    <u>U</u>
+  </button>
+
+  @if (lists) {
+    <span class="sep"></span>
+    <button
+      type="button"
+      class="fmt"
+      [disabled]="!editable"
+      [attr.aria-label]="'wysiwygEditor.orderedList' | transloco"
+      [pTooltip]="'wysiwygEditor.orderedList' | transloco"
+      tooltipPosition="bottom"
+      (mousedown)="$event.preventDefault()"
+      (click)="insertList(true)"
+    >
+      <svg class="list-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="fmt"
+      [disabled]="!editable"
+      [attr.aria-label]="'wysiwygEditor.bulletList' | transloco"
+      [pTooltip]="'wysiwygEditor.bulletList' | transloco"
+      tooltipPosition="bottom"
+      (mousedown)="$event.preventDefault()"
+      (click)="insertList(false)"
+    >
+      <i class="pi pi-list"></i>
+    </button>
+  }
+
+  <span class="sep"></span>
+  <button
+    type="button"
+    class="fmt"
+    [class.active]="linkActive"
+    [disabled]="!editable"
+    [attr.aria-pressed]="linkActive"
+    [attr.aria-label]="'wysiwygEditor.link' | transloco"
+    [pTooltip]="'wysiwygEditor.link' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="togglePanel('link')"
+  >
+    <i class="pi pi-link"></i>
+  </button>
+  @if (images) {
+    <button
+      type="button"
+      class="fmt"
+      [disabled]="!editable || uploading"
+      [attr.aria-label]="'wysiwygEditor.image' | transloco"
+      [pTooltip]="'wysiwygEditor.image' | transloco"
+      tooltipPosition="bottom"
+      (mousedown)="$event.preventDefault()"
+      (click)="openFilePicker(imageInput)"
+    >
+      <i class="pi pi-image"></i>
+    </button>
+  }
+  @if (videos) {
+    <button
+      type="button"
+      class="fmt"
+      [disabled]="!editable || uploading"
+      [attr.aria-label]="'wysiwygEditor.video' | transloco"
+      [pTooltip]="'wysiwygEditor.video' | transloco"
+      tooltipPosition="bottom"
+      (mousedown)="$event.preventDefault()"
+      (click)="openVideoMenu($event, videoMenu)"
+    >
+      <i class="pi pi-video"></i>
+    </button>
+    <p-menu
+      #videoMenu
+      [model]="videoMenuItems"
+      [popup]="true"
+      appendTo="body"
+    />
+  }
+  <p-contextmenu #mediaMenu [model]="mediaMenuItems" appendTo="body" />
+
+  <span class="sep"></span>
+  <label
+    class="fmt color"
+    [attr.aria-label]="'wysiwygEditor.textColor' | transloco"
+  >
+    <i class="pi pi-palette"></i>
+    <input
+      type="color"
+      [disabled]="!editable"
+      [value]="color || '#222222'"
+      [pTooltip]="'wysiwygEditor.textColor' | transloco"
+      tooltipPosition="bottom"
+      (input)="setColor($any($event.target).value)"
+    />
+  </label>
+  <button
+    type="button"
+    class="fmt"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.clearColor' | transloco"
+    [pTooltip]="'wysiwygEditor.clearColor' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="setColor(null)"
+  >
+    <i class="pi pi-eraser"></i>
+  </button>
+
+  <span class="sep"></span>
+  <button
+    type="button"
+    class="fmt"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.alignLeft' | transloco"
+    [pTooltip]="'wysiwygEditor.alignLeft' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatAlign('left')"
+  >
+    <i class="pi pi-align-left"></i>
+  </button>
+  <button
+    type="button"
+    class="fmt"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.alignCenter' | transloco"
+    [pTooltip]="'wysiwygEditor.alignCenter' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatAlign('center')"
+  >
+    <i class="pi pi-align-center"></i>
+  </button>
+  <button
+    type="button"
+    class="fmt"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.alignRight' | transloco"
+    [pTooltip]="'wysiwygEditor.alignRight' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatAlign('right')"
+  >
+    <i class="pi pi-align-right"></i>
+  </button>
+  <button
+    type="button"
+    class="fmt"
+    [disabled]="!editable"
+    [attr.aria-label]="'wysiwygEditor.alignJustify' | transloco"
+    [pTooltip]="'wysiwygEditor.alignJustify' | transloco"
+    tooltipPosition="bottom"
+    (mousedown)="$event.preventDefault()"
+    (click)="formatAlign('justify')"
+  >
+    <i class="pi pi-align-justify"></i>
+  </button>
+</div>
+
+@if (panel === "link") {
+  <p-dialog
+    [header]="'wysiwygEditor.link' | transloco"
+    [visible]="true"
+    (onHide)="closePanel('link')"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closable]="true"
+    appendTo="body"
+    [style]="{ width: '28rem' }"
+  >
+    <form [formGroup]="linkForm" lcForm novalidate (ngSubmit)="applyLink()">
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <input
+          pInputText
+          type="text"
+          class="w-full"
+          formControlName="url"
+          lcFormControl
+          [attr.placeholder]="'wysiwygEditor.linkUrl' | transloco"
+          [attr.aria-label]="'wysiwygEditor.linkUrl' | transloco"
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'invalidUrl'">{{
+          "wysiwygEditor.invalidUrl" | transloco
+        }}</small>
+      </div>
+      <div class="form-actions justify-end">
+        <p-button
+          type="button"
+          [label]="'wysiwygEditor.removeLink' | transloco"
+          severity="secondary"
+          [disabled]="!canRemoveLink"
+          (onClick)="removeLink()"
+        />
+        <p-button type="submit" [label]="'wysiwygEditor.apply' | transloco" />
+      </div>
+    </form>
+  </p-dialog>
+}
+
+@if (panel === "video" && videoSource === "link") {
+  <p-dialog
+    [header]="'wysiwygEditor.videoLink' | transloco"
+    [visible]="true"
+    (onHide)="closePanel('video')"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closable]="true"
+    appendTo="body"
+    [style]="{ width: '28rem' }"
+  >
+    <form [formGroup]="videoForm" lcForm novalidate (ngSubmit)="insertVideo()">
+      <div class="flex flex-col gap-2" lcControlGroup>
+        <input
+          pInputText
+          type="text"
+          class="w-full"
+          formControlName="url"
+          lcFormControl
+          [attr.placeholder]="'wysiwygEditor.videoUrlPlaceholder' | transloco"
+          [attr.aria-label]="'wysiwygEditor.videoUrl' | transloco"
+        />
+        <small class="lc-error" *lcIfError="'required'">{{
+          "validation.required" | transloco
+        }}</small>
+        <small class="lc-error" *lcIfError="'unsupportedVideoUrl'">{{
+          "ascentForm.unsupportedVideoUrl" | transloco
+        }}</small>
+      </div>
+      <div class="form-actions justify-end">
+        <p-button type="submit" [label]="'wysiwygEditor.insert' | transloco" />
+      </div>
+    </form>
+  </p-dialog>
+}
+
+@if (panel === "size") {
+  <p-dialog
+    [header]="'wysiwygEditor.size' | transloco"
+    [visible]="true"
+    (onHide)="closePanel('size')"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closable]="true"
+    appendTo="body"
+    [style]="{ width: '28rem' }"
+  >
+    <form [formGroup]="sizeForm" lcForm novalidate (ngSubmit)="applySize()">
+      <div class="flex flex-col gap-3">
+        <p-selectbutton
+          formControlName="mode"
+          [options]="sizeModeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [allowEmpty]="false"
+        />
+        @if (sizeForm.controls.mode.value === "px") {
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <input
+              pInputText
+              type="number"
+              class="w-full"
+              formControlName="width"
+              lcFormControl
+              min="48"
+              [attr.aria-label]="'wysiwygEditor.widthPx' | transloco"
+            />
+            <small class="lc-error" *lcIfError="'required'">{{
+              "validation.required" | transloco
+            }}</small>
+            <small class="lc-error" *lcIfError="'invalidWidth'">{{
+              "wysiwygEditor.invalidWidth" | transloco
+            }}</small>
+          </div>
+        }
+      </div>
+      <div class="form-actions justify-end">
+        <p-button type="submit" [label]="'wysiwygEditor.apply' | transloco" />
+      </div>
+    </form>
+  </p-dialog>
+}
+
+@if (panel === "video" && videoSource === "upload") {
+  <p-dialog
+    [header]="'wysiwygEditor.uploadVideo' | transloco"
+    [visible]="true"
+    (onHide)="closePanel('video')"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closable]="true"
+    appendTo="body"
+    [style]="{ width: '28rem' }"
+  >
+    @if (videoUploadsEnabled) {
+      <div class="form-actions justify-end">
+        <p-button
+          [label]="'wysiwygEditor.uploadVideo' | transloco"
+          [disabled]="uploading"
+          [loading]="uploading"
+          (onClick)="openFilePicker(videoInput)"
+        />
+      </div>
+    } @else {
+      <small class="text-muted-color">{{
+        "wysiwygEditor.videoUploadsDisabled" | transloco
+      }}</small>
+    }
+  </p-dialog>
+}
+
+<div #surface class="lc-wysiwyg-surface" [style.height]="height">
+  @if (showPlaceholder && placeholder) {
+    <div class="lc-wysiwyg-placeholder">{{ placeholder }}</div>
+  }
+  <div
+    #editorRoot
+    class="ql-editor"
+    [id]="editorId"
+    role="textbox"
+    [attr.aria-multiline]="true"
+    [attr.contenteditable]="editable ? 'true' : 'false'"
+    (contextmenu)="onMediaContextMenu($event)"
+    (focusout)="markTouched()"
+  ></div>
+  @if (chrome) {
+    <button
+      type="button"
+      class="lc-wysiwyg-delete"
+      [style.top.px]="chrome.top"
+      [style.left.px]="chrome.right - 28"
+      [attr.aria-label]="'wysiwygEditor.deleteMedia' | transloco"
+      [pTooltip]="'wysiwygEditor.deleteMedia' | transloco"
+      tooltipPosition="top"
+      (mousedown)="$event.preventDefault()"
+      (click)="deleteSelected()"
+    >
+      <i class="pi pi-trash"></i>
+    </button>
+    @if (chrome.resizable) {
+      <div
+        class="lc-wysiwyg-resize-box"
+        [style.top.px]="chrome.top"
+        [style.left.px]="chrome.left"
+        [style.width.px]="chrome.right - chrome.left"
+        [style.height.px]="chrome.bottom - chrome.top"
+      >
+        @for (corner of resizeCorners; track corner) {
+          <button
+            type="button"
+            class="lc-wysiwyg-resize"
+            [class]="'lc-wysiwyg-resize lc-wysiwyg-resize--' + corner"
+            [attr.aria-label]="
+              (chrome.image
+                ? 'wysiwygEditor.resizeImage'
+                : 'wysiwygEditor.resizeVideo'
+              ) | transloco
+            "
+            [pTooltip]="
+              (chrome.image
+                ? 'wysiwygEditor.resizeImage'
+                : 'wysiwygEditor.resizeVideo'
+              ) | transloco
+            "
+            tooltipPosition="top"
+            (pointerdown)="startResize($event, corner)"
+          ></button>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,10 +1,75 @@
 @use "../../../styles/media-queries" as m;
+@use "./line-facts" as facts;
+
+.line-info {
+  padding: 1rem;
+
+  @media (min-width: 1001px) {
+    padding: 1.5rem;
+  }
+}
+
+.line-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: stretch;
+
+  @media (min-width: 1001px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.line-detail__media {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+
+  @media (min-width: 1001px) {
+    flex: 1 1 20rem;
+    max-width: 36rem;
+  }
+}
+
+.line-detail__topo,
+.line-detail__placeholder {
+  width: 100%;
+}
+
+.line-detail__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+  padding: 1.15rem 1.25rem 0.85rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius, 8px);
+  background: var(--p-content-background);
+
+  @media (min-width: 1001px) {
+    flex: 1.2 1 22rem;
+  }
+}
+
+.line-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--p-content-border-color);
+}
+
+@include facts.line-fact-rows;
 
 .fa,
 .routesetter,
 .bolter {
-  font-size: 11px;
-
   > span:nth-of-type(n + 2)::before {
     content: ", ";
   }
@@ -26,21 +91,36 @@
   }
 }
 
-lc-archive-button,
-lc-tick-button,
-lc-todo-button {
-  margin-left: -1.45rem;
-}
+.line-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  // Text buttons pad the icon. Pull that padding back so the icon lines up
+  // with the description and the fact labels.
+  margin-inline-start: -0.75rem;
 
-lc-line-bool-prop-list {
-  @include m.on-mobile {
-    text-align: center;
+  &:not(:has(lc-archive-button, lc-tick-button, lc-todo-button)) {
+    display: none;
   }
-}
 
-.line-description {
-  @include m.on-mobile {
-    text-align: center;
+  lc-archive-button,
+  lc-tick-button,
+  lc-todo-button {
+    display: flex;
+    margin: 0;
+  }
+
+  ::ng-deep .p-button {
+    padding-block: 0.3rem;
+  }
+
+  ::ng-deep .p-button:has(.ticked-icon) {
+    color: var(--ticked-color);
+  }
+
+  ::ng-deep .p-button:has(.is-todo-icon) {
+    color: var(--p-blue-500);
   }
 }
 
@@ -56,4 +136,10 @@ lc-line-bool-prop-list {
 
 .topo-preview__nav {
   z-index: 1;
+}
+
+@include m.on-mobile {
+  .line-detail__panel {
+    padding-inline: 1rem;
+  }
 }

@@ -1110,6 +1110,15 @@ def test_successful_get_line(client):
     assert res["type"] == "BOULDER"
     assert res["authorRating"] == 5
     assert res["ascentCount"] == 1
+    assert res["gradeVotes"]["gradeScale"] == "FB"
+    assert res["gradeVotes"]["lineType"] == "BOULDER"
+    assert res["gradeVotes"]["authorGradeValue"] == 22
+    assert res["gradeVotes"]["userGradeValue"] == 22
+    assert res["gradeVotes"]["votes"] == {"22": 1}
+    assert res["ratingDistribution"]["count"] == 1
+    assert res["ratingDistribution"]["average"] == 3
+    assert res["ratingDistribution"]["distribution"]["3"] == 1
+    assert res["ratingDistribution"]["distribution"]["5"] == 0
     assert res["faYear"] == 2024
     assert res["faDate"] is None
     assert res["faName"] == "Felix Engelmann"

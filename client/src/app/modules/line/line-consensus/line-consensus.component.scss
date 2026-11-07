@@ -1,0 +1,153 @@
+@use "../line-info/line-facts" as facts;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+@include facts.line-fact-rows;
+
+.consensus-grade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+
+  &.is-inline {
+    margin-bottom: 0;
+    font-size: inherit;
+  }
+}
+
+.consensus-value,
+.consensus-caption {
+  line-height: 1;
+}
+
+.consensus-caption {
+  color: var(--p-text-muted-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: end;
+}
+
+.proposed-grade {
+  margin: 0.65rem 0 0;
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}
+
+.vote-rows,
+.rating-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) auto;
+  column-gap: 0.6rem;
+  row-gap: 0.4rem;
+  align-items: center;
+}
+
+.vote-row,
+.rating-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.vote-grade,
+.vote-count,
+.rating-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.vote-grade {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.vote-count,
+.rating-count {
+  font-size: 0.85rem;
+  text-align: end;
+}
+
+.vote-track,
+.rating-track {
+  height: 0.55rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--p-content-border-color);
+}
+
+.vote-fill,
+.rating-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(
+    in srgb,
+    var(--p-primary-color) 42%,
+    var(--p-content-border-color)
+  );
+}
+
+.vote-row.is-consensus .vote-fill {
+  background: var(--p-primary-color);
+}
+
+.rating-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+
+  p-rating {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.rating-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  border: 0;
+  border-radius: var(--p-content-border-radius, 6px);
+  background: transparent;
+  color: var(--p-primary-color);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--p-content-hover-background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--p-primary-color);
+    outline-offset: 2px;
+  }
+}
+
+.rating-stars {
+  display: inline-flex;
+  justify-content: flex-start;
+  gap: 0.05rem;
+  color: var(--p-primary-color);
+  font-size: 0.85rem;
+
+  .pi-star {
+    opacity: 0.35;
+  }
+}

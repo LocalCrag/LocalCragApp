@@ -36,110 +36,31 @@
           <label class="form-label" for="short-description">{{
             t("areaShortDescriptionLabel")
           }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
+          <lc-wysiwyg-editor
             id="short-description"
             formControlName="shortDescription"
             lcFormControl
             data-cy="area-form-shortDescription"
-            placeholder="{{ t('areaShortDescriptionPlaceholder') }}"
-            [style]="{ height: '200px' }"
+            [placeholder]="t('areaShortDescriptionPlaceholder')"
+            height="200px"
+            toolbar="basic"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
             t("areaDescriptionLabel")
           }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
+          <lc-wysiwyg-editor
             id="description"
             formControlName="description"
             lcFormControl
-            placeholder="{{ t('areaDescriptionPlaceholder') }}"
-            [modules]="quillModules"
+            [placeholder]="t('areaDescriptionPlaceholder')"
+            height="200px"
+            toolbar="rich"
             data-cy="area-form-description"
-            [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="portrait-image">{{

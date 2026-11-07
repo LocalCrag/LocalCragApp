@@ -47,53 +47,14 @@
         <label class="form-label" for="description">{{
           t("descriptionLabel")
         }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
+        <lc-wysiwyg-editor
           id="description"
           formControlName="description"
           lcFormControl
-          [modules]="quillModules"
-          [style]="{ height: '320px' }"
+          height="320px"
+          toolbar="rich-no-video"
           [readonly]="loadingState === loadingStates.LOADING"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button
-                type="button"
-                value="ordered"
-                class="ql-list"
-                aria-label="Ordered List"
-              ></button>
-              <button
-                type="button"
-                value="bullet"
-                class="ql-list"
-                aria-label="Unordered List"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-              <button
-                type="button"
-                class="ql-image"
-                aria-label="Image"
-              ></button>
-            </span>
-          </ng-template>
-        </p-editor>
+        />
       </div>
     </form>
 

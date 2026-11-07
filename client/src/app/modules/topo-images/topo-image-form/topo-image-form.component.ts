@@ -37,7 +37,7 @@ import { Line } from '../../../models/line';
 import { File } from '../../../models/file';
 import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
   selectInstanceName,
   selectInstanceSettingsState,
@@ -78,7 +78,7 @@ import { DividerModule } from 'primeng/divider';
     FormControlDirective,
     IfErrorDirective,
     InputText,
-    Editor,
+    WysiwygEditorComponent,
     CoordinatesComponent,
     Button,
     MoveObjectDialogComponent,
@@ -91,7 +91,6 @@ import { DividerModule } from 'primeng/divider';
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
   @ViewChildren(CoordinatesComponent)
   coordinateFields: QueryList<CoordinatesComponent>;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
@@ -180,9 +179,6 @@ export class TopoImageFormComponent implements OnInit {
         this.parentArea = area;
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
-        this.editors?.map((editor) => {
-          editor.getQuill()?.enable();
-        });
       });
       this.store.select(selectInstanceName).subscribe((instanceName) => {
         this.title.setTitle(

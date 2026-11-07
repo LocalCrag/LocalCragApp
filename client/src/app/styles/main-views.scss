@@ -4,11 +4,14 @@ lc-page-title {
   }
 }
 
-.quill-content {
+.wysiwyg-content {
+  // Flex rows use align-items: flex-start, which otherwise shrinks this box
+  // to the media inside it. A full-width video then stays at that width.
+  align-self: stretch;
+  width: 100%;
   overflow-wrap: break-word;
 
-  // Quill doesn't support <br>, so we need to match up the displayed paragraph styles with quill's to not
-  // get confusing behaviour...
+  // Stored editor HTML uses tight paragraphs. Keep that spacing when the page renders it.
   p,
   h1,
   h2,
@@ -19,17 +22,31 @@ lc-page-title {
     margin: 0;
   }
 
-  // Restricts the maximum size of quill editor HTML content's images so the containers don't overflow
+  ul,
+  ol {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
   img,
-  iframe {
+  iframe,
+  video {
     max-width: 100%;
     object-fit: contain;
     height: auto;
   }
 
-  // Default iframe size
-  iframe {
+  iframe,
+  video {
     width: 100%;
-    min-height: 500px;
+    aspect-ratio: 16 / 9;
   }
 }

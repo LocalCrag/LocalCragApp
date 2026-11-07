@@ -350,6 +350,8 @@ class GetUserStatistics(MethodView):
         hardest_fa: dict = {}
 
         ascents_per_year: dict[str, int] = {}
+        # Ranking points per session day and scale. Projects (grade <= 0) are not points.
+        session_grades: dict[tuple[str, str, str], list[int]] = defaultdict(list)
         total = 0
         flash_count = 0
         fa_count = 0
@@ -378,6 +380,14 @@ class GetUserStatistics(MethodView):
                 ascents_per_year[y] = ascents_per_year.get(y, 0) + 1
 
             ref = line.user_grade_value if display_user_grades else line.author_grade_value
+            if (
+                ascent.ascent_date is not None
+                and ref is not None
+                and ref > 0
+                and line.type is not None
+                and line.grade_scale
+            ):
+                session_grades[(ascent.ascent_date.isoformat(), line.type.value, line.grade_scale)].append(int(ref))
             if ref > 0 and ascent.grade_value > 0:
                 if ascent.grade_value > ref:
                     upgrades += 1
@@ -456,6 +466,15 @@ class GetUserStatistics(MethodView):
 
         payload = {
             "ascentsPerYear": dict(sorted(ascents_per_year.items(), key=lambda kv: kv[0])),
+            "sessions": [
+                {
+                    "date": date,
+                    "lineType": line_type,
+                    "gradeScale": grade_scale,
+                    "grades": sorted(grades, reverse=True),
+                }
+                for (date, line_type, grade_scale), grades in sorted(session_grades.items())
+            ],
             "ascentTotals": {
                 "total": total,
                 "flashCount": flash_count,
