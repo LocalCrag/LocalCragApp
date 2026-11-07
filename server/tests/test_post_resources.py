@@ -18,7 +18,7 @@ def test_successful_create_post(client, moderator_token):
     assert res["commentCount"] == 0
 
 
-def test_create_post_strips_inline_colors(client, moderator_token):
+def test_create_post_keeps_text_color(client, moderator_token):
     post_data = {
         "title": "Color test post",
         "text": '<p><span style="color: rgb(230, 0, 0);">Red text</span></p>',
@@ -26,10 +26,10 @@ def test_create_post_strips_inline_colors(client, moderator_token):
 
     rv = client.post("/api/posts", token=moderator_token, json=post_data)
     assert rv.status_code == 201
-    assert rv.json["text"] == "<p><span>Red text</span></p>"
+    assert rv.json["text"] == post_data["text"]
 
     stored = Post.find_by_id(rv.json["id"])
-    assert stored.text == "<p><span>Red text</span></p>"
+    assert stored.text == post_data["text"]
 
 
 def test_successful_get_posts(client):

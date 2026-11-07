@@ -27,7 +27,7 @@
         <h4>{{ t("description") }}:</h4>
         <section
           [innerHTML]="crag.description | sanitizeHtml"
-          class="quill-content"
+          class="wysiwyg-content"
         ></section>
       }
       @if (cragCoordinates) {

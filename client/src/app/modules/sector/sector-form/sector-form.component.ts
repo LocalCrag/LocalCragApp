@@ -3,9 +3,7 @@ import {
   DestroyRef,
   inject,
   OnInit,
-  QueryList,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -34,7 +32,7 @@ import { Line } from '../../../models/line';
 import { TopoImage } from '../../../models/topo-image';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -77,7 +75,7 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
     TranslocoDirective,
     ReactiveFormsModule,
     InputText,
-    Editor,
+    WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
@@ -99,7 +97,6 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
 })
 export class SectorFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public sectorForm: FormGroup;
@@ -107,7 +104,6 @@ export class SectorFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public sector: Sector;
   public editMode = false;
-  public quillModules: any;
   public parentCrag: Crag;
   public parentClosureState: ClosureState | null = null;
 
@@ -130,10 +126,6 @@ export class SectorFormComponent implements OnInit {
     name: string,
     excludeId: string | null = null,
   ): Observable<Sector[]> => this.sectorsService.findByName(name, excludeId);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -168,9 +160,6 @@ export class SectorFormComponent implements OnInit {
             this.sector = sector;
             this.setFormValue();
             this.loadingState = LoadingState.DEFAULT;
-            this.editors?.map((editor) => {
-              editor.getQuill()?.enable();
-            });
           });
       } else {
         this.setPageTitle();

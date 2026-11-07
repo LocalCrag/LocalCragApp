@@ -7,7 +7,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 import {
   FormBuilder,
@@ -63,7 +62,6 @@ import { Video } from '../../../models/video';
 @Component({
   selector: 'lc-ascent-form',
   imports: [
-    EditorModule,
     InputTextModule,
     ReactiveFormsModule,
     CheckboxModule,

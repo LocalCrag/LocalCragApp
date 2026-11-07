@@ -48,7 +48,7 @@ import { ProgressBar } from 'primeng/progressbar';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
 import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
   selectInstanceName,
   selectInstanceSettingsState,
@@ -128,7 +128,7 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
     InputText,
     FormControlDirective,
     IfErrorDirective,
-    Editor,
+    WysiwygEditorComponent,
     AdvancedColorPickerComponent,
     GymModeDirective,
     OutdoorModeDirective,
@@ -155,7 +155,6 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
 })
 export class LineFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChild(Editor) editor: Editor;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public lineForm: FormGroup;
@@ -372,9 +371,6 @@ export class LineFormComponent implements OnInit {
 
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
-          if (this.editor) {
-            this.editor.getQuill()?.enable();
-          }
         });
         // Rebuild type/scale labels on language change
         this.languageService.renderedLanguage$

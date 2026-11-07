@@ -6,7 +6,6 @@ import {
   inject,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { EditorModule } from 'primeng/editor';
 import {
   FormBuilder,
   FormGroup,
@@ -59,7 +58,6 @@ type SettingsTabId =
   imports: [
     ButtonModule,
     ConfirmPopupModule,
-    EditorModule,
     InputTextModule,
     InputNumberModule,
     PaginatorModule,

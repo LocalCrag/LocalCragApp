@@ -4,41 +4,12 @@ import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { File } from '../../models/file';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DeleteAction, ImageSpec, ResizeAction } from 'quill-blot-formatter';
 import {
   ImageEditRequest,
   ImageRotation,
   PixelCrop,
 } from '../../utility/image-edit';
 import { ImageFocusY, normalizeImageFocusY } from '../../utility/image-focus';
-
-/**
- * Adds event listeners for Blot Formatters ImageSpec to fix scrolling issues.
- * Taken from: https://github.com/Fandom-OSS/quill-blot-formatter/issues/7
- */
-class CustomImageSpec extends ImageSpec {
-  override getActions() {
-    return [DeleteAction, ResizeAction];
-  }
-
-  override init() {
-    this.formatter.quill.root.addEventListener('click', this.onClick);
-
-    // handling scroll event
-    this.formatter.quill.root.addEventListener('scroll', () => {
-      this.formatter.repositionOverlay();
-    });
-
-    // handling align
-    this.formatter.quill.on('editor-change', (eventName, ...args) => {
-      if (eventName === 'selection-change' && args[2] === 'api') {
-        setTimeout(() => {
-          this.formatter.repositionOverlay();
-        }, 10);
-      }
-    });
-  }
-}
 
 export interface FileUploadProgress {
   loaded: number;
@@ -147,25 +118,5 @@ export class UploadService {
     }
 
     return this.updateFileFocus(file.id, nextFocusY);
-  }
-
-  /**
-   * Returns a Quill module object containing the image uploader module.
-   */
-  public getQuillFileUploadModules() {
-    return {
-      imageUploader: {
-        upload: (file: any) => {
-          return new Promise((resolve) => {
-            this.uploadFile(file).subscribe((uploadedFile) => {
-              resolve(uploadedFile.thumbnailXL);
-            });
-          });
-        },
-      },
-      blotFormatter: {
-        specs: [CustomImageSpec],
-      },
-    };
   }
 }

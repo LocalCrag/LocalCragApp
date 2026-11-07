@@ -3,7 +3,7 @@
     @if (menuPage) {
       <div
         [innerHTML]="menuPage.text | sanitizeHtml"
-        class="quill-content"
+        class="wysiwyg-content"
       ></div>
     }
     @if (!menuPage) {

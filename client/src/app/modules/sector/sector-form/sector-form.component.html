@@ -38,152 +38,46 @@
           <label class="form-label" for="shortDescription">{{
             t("sectorShortDescriptionLabel")
           }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
+          <lc-wysiwyg-editor
             id="shortDescription"
             formControlName="shortDescription"
             lcFormControl
-            placeholder="{{ t('sectorShortDescriptionPlaceholder') }}"
-            [style]="{ height: '200px' }"
+            [placeholder]="t('sectorShortDescriptionPlaceholder')"
+            height="200px"
+            toolbar="basic"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="sector-form-shortDescription"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="description">{{
             t("sectorDescriptionLabel")
           }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
+          <lc-wysiwyg-editor
             id="description"
             formControlName="description"
             lcFormControl
-            placeholder="{{ t('sectorDescriptionPlaceholder') }}"
-            [modules]="quillModules"
+            [placeholder]="t('sectorDescriptionPlaceholder')"
+            height="200px"
+            toolbar="rich"
             data-cy="sector-form-description"
-            [style]="{ height: '200px' }"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-          >
-            <ng-template #header>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  value="ordered"
-                  class="ql-list"
-                  aria-label="Ordered List"
-                ></button>
-                <button
-                  type="button"
-                  value="bullet"
-                  class="ql-list"
-                  aria-label="Unordered List"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-image"
-                  aria-label="Image"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-video"
-                  aria-label="Video"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rules">{{
             t("sectorRulesLabel")
           }}</label>
-          <p-editor
-            class="lc-wysiwyg-editor"
+          <lc-wysiwyg-editor
             id="rules"
             formControlName="rules"
             lcFormControl
-            placeholder="{{ t('sectorRulesPlaceholder') }}"
-            [style]="{ height: '200px' }"
+            [placeholder]="t('sectorRulesPlaceholder')"
+            height="200px"
+            toolbar="basic"
             [readonly]="loadingState === loadingStates.INITIAL_LOADING"
             data-cy="sector-form-rules"
-          >
-            <ng-template #header2>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-bold"
-                  aria-label="Bold"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-italic"
-                  aria-label="Italic"
-                ></button>
-                <button
-                  type="button"
-                  class="ql-underline"
-                  aria-label="Underline"
-                ></button>
-              </span>
-              <span class="ql-formats">
-                <button
-                  type="button"
-                  class="ql-link"
-                  aria-label="Link"
-                ></button>
-              </span>
-            </ng-template>
-          </p-editor>
+          />
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <div class="form-label flex items-center">

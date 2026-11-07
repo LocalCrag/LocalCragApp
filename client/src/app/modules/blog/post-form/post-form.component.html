@@ -21,58 +21,14 @@
 
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="text">{{ t("postTextLabel") }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
+        <lc-wysiwyg-editor
           id="text"
           formControlName="text"
           lcFormControl
-          [modules]="quillModules"
-          [style]="{ height: '500px' }"
+          height="500px"
+          toolbar="rich"
           [readonly]="loadingState === loadingStates.LOADING"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button
-                type="button"
-                value="ordered"
-                class="ql-list"
-                aria-label="Ordered List"
-              ></button>
-              <button
-                type="button"
-                value="bullet"
-                class="ql-list"
-                aria-label="Unordered List"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-              <button
-                type="button"
-                class="ql-image"
-                aria-label="Image"
-              ></button>
-              <button
-                type="button"
-                class="ql-video"
-                aria-label="Video"
-              ></button>
-            </span>
-          </ng-template>
-        </p-editor>
+        />
         <small class="lc-error" *lcIfError="'required'">{{
           "validation.required" | transloco
         }}</small>
