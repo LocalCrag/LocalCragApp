@@ -18,9 +18,12 @@
                 t('gradeVoteRow', { grade: bar.name, count: bar.count })
               "
             >
-              <span class="vote-grade" aria-hidden="true" [attr.title]="bar.name">{{
-                bar.name
-              }}</span>
+              <span
+                class="vote-grade"
+                aria-hidden="true"
+                [attr.title]="bar.name"
+                >{{ bar.name }}</span
+              >
               <span class="vote-track" aria-hidden="true">
                 <span class="vote-fill" [style.width.%]="bar.width"></span>
               </span>
@@ -38,8 +41,13 @@
   } @else if (showSimpleGrade) {
     <div class="line-fact">
       <dt>{{ displayUserGrades ? t("proposedAs") : t("userGrade") }}</dt>
-      <dd [class.consensus-grade]="!displayUserGrades" [class.is-inline]="!displayUserGrades">
-        <span class="consensus-value">{{ line | lineGrade: (displayUserGrades ? "author" : "user") }}</span>
+      <dd
+        [class.consensus-grade]="!displayUserGrades"
+        [class.is-inline]="!displayUserGrades"
+      >
+        <span class="consensus-value">{{
+          line | lineGrade: (displayUserGrades ? "author" : "user")
+        }}</span>
         @if (!displayUserGrades) {
           <span class="consensus-caption">{{ t("consensusGrade") }}</span>
         }
@@ -96,7 +104,9 @@
               <span class="rating-track" aria-hidden="true">
                 <span class="rating-fill" [style.width.%]="row.width"></span>
               </span>
-              <span class="rating-count" aria-hidden="true">{{ row.count }}</span>
+              <span class="rating-count" aria-hidden="true">{{
+                row.count
+              }}</span>
             </li>
           }
         </ul>

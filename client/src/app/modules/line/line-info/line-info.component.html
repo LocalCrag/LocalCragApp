@@ -152,7 +152,9 @@
               </ng-container>
             }
 
-            @if (line.publicationStatus === "published" && !ticks.has(line.id)) {
+            @if (
+              line.publicationStatus === "published" && !ticks.has(line.id)
+            ) {
               <lc-todo-button
                 [line]="line"
                 [isTodo]="todos.has(line.id)"
