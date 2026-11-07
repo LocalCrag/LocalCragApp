@@ -72,42 +72,15 @@
             <label class="form-label" for="description">{{
               t("markerDescriptionLabel")
             }}</label>
-            <p-editor
-              class="lc-wysiwyg-editor"
+            <lc-wysiwyg-editor
               id="description"
               formControlName="description"
               lcFormControl
-              placeholder="{{ t('markerDescriptionPlaceholder') }}"
-              [style]="{ height: '200px' }"
+              [placeholder]="t('markerDescriptionPlaceholder')"
+              height="200px"
+              toolbar="basic"
               data-cy="marker-form-description"
-            >
-              <ng-template #header>
-                <span class="ql-formats">
-                  <button
-                    type="button"
-                    class="ql-bold"
-                    aria-label="Bold"
-                  ></button>
-                  <button
-                    type="button"
-                    class="ql-italic"
-                    aria-label="Italic"
-                  ></button>
-                  <button
-                    type="button"
-                    class="ql-underline"
-                    aria-label="Underline"
-                  ></button>
-                </span>
-                <span class="ql-formats">
-                  <button
-                    type="button"
-                    class="ql-link"
-                    aria-label="Link"
-                  ></button>
-                </span>
-              </ng-template>
-            </p-editor>
+            />
           </div>
         }
       </form>

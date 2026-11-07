@@ -3,9 +3,7 @@ import {
   DestroyRef,
   inject,
   OnInit,
-  QueryList,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -34,7 +32,7 @@ import { Line } from '../../../models/line';
 import { TopoImage } from '../../../models/topo-image';
 import { AreasService } from '../../../services/crud/areas.service';
 import { Title } from '@angular/platform-browser';
-import { Editor } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import {
@@ -79,7 +77,7 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
     InputText,
     FormControlDirective,
     IfErrorDirective,
-    Editor,
+    WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
     Checkbox,
     TranslocoPipe,
@@ -97,7 +95,6 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
 })
 export class AreaFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChildren(Editor) editors: QueryList<Editor>;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
   public areaForm: FormGroup;
@@ -105,7 +102,6 @@ export class AreaFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public area: Area;
   public editMode = false;
-  public quillModules: any;
   public parentSector: Sector;
   public parentClosureState: ClosureState | null = null;
 
@@ -129,10 +125,6 @@ export class AreaFormComponent implements OnInit {
     name: string,
     excludeId: string | null = null,
   ): Observable<Area[]> => this.areasService.findByName(name, excludeId);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -168,9 +160,6 @@ export class AreaFormComponent implements OnInit {
             this.area = area;
             this.setFormValue();
             this.loadingState = LoadingState.DEFAULT;
-            this.editors?.map((editor) => {
-              editor.getQuill()?.enable();
-            });
           });
       } else {
         this.setPageTitle();

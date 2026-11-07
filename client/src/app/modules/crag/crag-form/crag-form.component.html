@@ -36,148 +36,46 @@
         <label class="form-label" for="short-description">{{
           t("cragShortDescriptionLabel")
         }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
+        <lc-wysiwyg-editor
           id="short-description"
           formControlName="shortDescription"
           lcFormControl
-          placeholder="{{ t('cragShortDescriptionPlaceholder') }}"
-          [style]="{ height: '200px' }"
+          [placeholder]="t('cragShortDescriptionPlaceholder')"
+          height="200px"
+          toolbar="basic"
           [readonly]="loadingState === loadingStates.INITIAL_LOADING"
           data-cy="crag-form-shortDescription"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-            </span>
-          </ng-template>
-        </p-editor>
+        />
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="description">{{
           t("cragDescriptionLabel")
         }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
+        <lc-wysiwyg-editor
           id="description"
           formControlName="description"
           lcFormControl
-          placeholder="{{ t('cragDescriptionPlaceholder') }}"
-          [modules]="quillModules"
+          [placeholder]="t('cragDescriptionPlaceholder')"
+          height="200px"
+          toolbar="rich"
           data-cy="crag-form-description"
-          [style]="{ height: '200px' }"
           [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button
-                type="button"
-                value="ordered"
-                class="ql-list"
-                aria-label="Ordered List"
-              ></button>
-              <button
-                type="button"
-                value="bullet"
-                class="ql-list"
-                aria-label="Unordered List"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-              <button
-                type="button"
-                class="ql-image"
-                aria-label="Image"
-              ></button>
-              <button
-                type="button"
-                class="ql-video"
-                aria-label="Video"
-              ></button>
-            </span>
-          </ng-template>
-        </p-editor>
+        />
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="rules">{{ t("cragRulesLabel") }}</label>
-        <p-editor
-          class="lc-wysiwyg-editor"
+        <lc-wysiwyg-editor
           formControlName="rules"
           id="rules"
           lcFormControl
-          placeholder="{{ t('cragRulesPlaceholder') }}"
-          [modules]="quillModules"
+          [placeholder]="t('cragRulesPlaceholder')"
+          height="200px"
+          toolbar="rich-no-video"
           data-cy="crag-form-rules"
-          [style]="{ height: '200px' }"
           [readonly]="loadingState === loadingStates.INITIAL_LOADING"
-        >
-          <ng-template #header>
-            <span class="ql-formats">
-              <button type="button" class="ql-bold" aria-label="Bold"></button>
-              <button
-                type="button"
-                class="ql-italic"
-                aria-label="Italic"
-              ></button>
-              <button
-                type="button"
-                class="ql-underline"
-                aria-label="Underline"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button
-                type="button"
-                value="ordered"
-                class="ql-list"
-                aria-label="Ordered List"
-              ></button>
-              <button
-                type="button"
-                value="bullet"
-                class="ql-list"
-                aria-label="Unordered List"
-              ></button>
-            </span>
-            <span class="ql-formats">
-              <button type="button" class="ql-link" aria-label="Link"></button>
-              <button
-                type="button"
-                class="ql-image"
-                aria-label="Image"
-              ></button>
-            </span>
-          </ng-template>
-        </p-editor>
+        />
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>

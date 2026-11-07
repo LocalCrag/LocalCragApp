@@ -24,10 +24,9 @@ import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { Editor, EditorModule } from 'primeng/editor';
+import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { UploadService } from '../../../services/crud/upload.service';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -42,7 +41,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   imports: [
     ButtonModule,
     ConfirmPopupModule,
-    EditorModule,
+    WysiwygEditorComponent,
     InputTextModule,
     ReactiveFormsModule,
     TranslocoDirective,
@@ -58,29 +57,21 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 })
 export class PostFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
-  @ViewChild(Editor) editor: Editor;
 
   public postForm: FormGroup;
   public loadingState = LoadingState.LOADING;
   public loadingStates = LoadingState;
   public post: Post;
   public editMode = false;
-  public quillModules: any;
-
   private fb = inject(FormBuilder);
   private store = inject(Store);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private postsService = inject(PostsService);
-  private uploadService = inject(UploadService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
   private pageTitleService = inject(PageTitleService);
-
-  constructor() {
-    this.quillModules = this.uploadService.getQuillFileUploadModules();
-  }
 
   /**
    * Builds the form on component initialization.
@@ -112,9 +103,6 @@ export class PostFormComponent implements OnInit {
           this.post = post;
           this.setFormValue();
           this.loadingState = LoadingState.DEFAULT;
-          if (this.editor) {
-            this.editor.getQuill()?.enable();
-          }
         });
     } else {
       this.setPageTitle();

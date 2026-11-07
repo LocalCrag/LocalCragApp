@@ -44,20 +44,16 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
-              "quill",
               "konva",
-              "quill-blot-formatter",
               "@ngneat/transloco-keys-manager/marker"
             ],
             "assets": ["src/favicon.ico", "src/.htaccess", "src/assets"],
             "styles": [
               "src/tailwind.generated.css",
               "src/styles.scss",
-              "node_modules/maplibre-gl/dist/maplibre-gl.css",
-              "node_modules/quill/dist/quill.snow.css",
-              "node_modules/quill-image-uploader/dist/quill.imageUploader.min.css"
+              "node_modules/maplibre-gl/dist/maplibre-gl.css"
             ],
-            "scripts": ["node_modules/quill/dist/quill.js"],
+            "scripts": [],
             "sourceMap": true,
             "browser": "src/main.ts"
           },
