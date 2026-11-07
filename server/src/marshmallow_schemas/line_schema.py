@@ -18,6 +18,7 @@ from models.enums.drying_enum import DryingEnum
 from models.enums.line_type_enum import LineTypeEnum
 from models.enums.publication_status_enum import PublicationStatusEnum
 from models.enums.starting_position_enum import StartingPositionEnum
+from util.topo_statistics import _grade_votes, _ratings
 
 
 def _created_by_id(obj):
@@ -153,12 +154,20 @@ class LineDetailSchema(LineSchema, IsClosableDetailSchemaMixin, ModeratorTaskCou
     imageCount = fields.Integer(attribute="image_count")
     faUsers = fields.Method("get_fa_users")
     ascentVideos = fields.Method("get_ascent_videos")
+    gradeVotes = fields.Method("get_grade_votes")
+    ratingDistribution = fields.Method("get_rating_distribution")
 
     def get_ascent_videos(self, obj):
         return AscentVideoGroupSchema(many=True).dump(obj.ascent_video_groups())
 
     def get_fa_users(self, obj):
         return LineFaUserSchema(many=True).dump(obj.get_fa_users())
+
+    def get_grade_votes(self, obj):
+        return _grade_votes(obj)
+
+    def get_rating_distribution(self, obj):
+        return _ratings([obj.id])
 
 
 class PaginatedLinesSchema(ma.SQLAlchemySchema):

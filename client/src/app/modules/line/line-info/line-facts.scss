@@ -1,0 +1,26 @@
+@mixin line-fact-rows {
+  .line-fact {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 8.75rem) minmax(0, 1fr);
+    gap: 0.2rem 0.75rem;
+    align-items: start;
+    margin: 0;
+
+    @media (max-width: 640px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .line-fact dt {
+    margin: 0;
+    padding-top: 0.15rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--p-text-muted-color);
+  }
+
+  .line-fact dd {
+    margin: 0;
+    min-width: 0;
+  }
+}

@@ -25,11 +25,10 @@ import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-al
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { Button } from 'primeng/button';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { Rating } from 'primeng/rating';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
-import { FormsModule } from '@angular/forms';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { Skeleton } from 'primeng/skeleton';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
@@ -38,8 +37,8 @@ import { TopoImageViewerComponent } from '../../shared/components/topo-image/top
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { DatePipe } from '../../shared/pipes/date.pipe';
-import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LineConsensusComponent } from '../line-consensus/line-consensus.component';
 import { GalleriaModule } from 'primeng/galleria';
 import {
   GalleryPreviewDirection,
@@ -62,18 +61,17 @@ import {
     TopoImageDetailsComponent,
     Button,
     HasPermissionDirective,
-    Rating,
+    GymModeDirective,
     ArchiveButtonComponent,
     TodoButtonComponent,
-    FormsModule,
     TickButtonComponent,
     Skeleton,
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     TopoImageViewerComponent,
     DatePipe,
-    LineGradePipe,
     RouterLink,
+    LineConsensusComponent,
     GalleriaModule,
   ],
 })
