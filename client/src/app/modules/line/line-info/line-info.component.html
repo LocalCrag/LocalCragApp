@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'line.line'">
-  <div class="p-6">
+  <div class="line-info">
     @if (line?.closedReasons?.length) {
       <lc-closed-spot-alert
         [reasons]="line.closedReasons"
@@ -12,16 +12,14 @@
     }
 
     @if (line && ticks) {
-      <div class="flex flex-col xl:flex-row xl:items-start gap-6">
-        <div
-          class="w-full sm:w-9/12 xl:w-5/12 flex flex-col mx-auto pt-6 gap-4"
-        >
+      <div class="line-detail">
+        <div class="line-detail__media">
           @for (
             topoImage of line.topoImages;
             track topoImage;
             let index = $index
           ) {
-            <div>
+            <div class="line-detail__topo">
               <lc-topo-image
                 class="shadow flex rounded-border"
                 [topoImage]="topoImage"
@@ -37,24 +35,23 @@
           }
           @if (line.topoImages.length === 0) {
             <img
-              class="block rounded-border"
+              class="line-detail__placeholder rounded-border"
               [src]="'assets/placeholder.png'"
               [alt]="line.name"
             />
           }
-          <p-button
-            label="{{ t('reorderLinePathsForLineButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderLinePaths()"
-            [disabled]="line.topoImages?.length < 2"
-            styleClass="p-button-sm"
-            *isModerator="true"
-          ></p-button>
+          @if (line.topoImages.length > 1) {
+            <p-button
+              label="{{ t('reorderLinePathsForLineButtonLabel') }}"
+              icon="pi pi-sort"
+              (click)="reorderLinePaths()"
+              styleClass="p-button-sm p-button-outlined p-button-secondary"
+              *isModerator="true"
+            ></p-button>
+          }
         </div>
 
-        <div
-          class="flex flex-col justify-between items-center xl:items-start flex-1 gap-6 pt-6"
-        >
+        <section class="line-detail__panel">
           <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
 
           @if (line.description) {
@@ -64,115 +61,120 @@
             ></div>
           }
 
-          <div>{{ t("ascentCount") }}: {{ line.ascentCount }}</div>
+          <div class="line-facts">
+            <div class="line-fact">
+              <dt>{{ t("ascentCount") }}</dt>
+              <dd>{{ line.ascentCount }}</dd>
+            </div>
 
-          @if (line.ascentCount > 0) {
-            @if (!displayUserGrades) {
-              <div>{{ t("userGrade") }}: {{ line | lineGrade: "user" }}</div>
-            } @else {
-              <div>{{ t("proposedAs") }}: {{ line | lineGrade: "author" }}</div>
+            <lc-line-consensus
+              [line]="line"
+              [displayUserGrades]="displayUserGrades"
+              [displayUserRating]="displayUserRating"
+            ></lc-line-consensus>
+
+            @if (
+              line.faUsers?.length || line.faName || line.faYear || line.faDate
+            ) {
+              <div class="line-fact">
+                <dt>{{ t("FA") }}</dt>
+                <dd class="fa">
+                  @if (line.faUsers?.length) {
+                    <span class="link-list">
+                      @for (fa of line.faUsers; track fa.user.id) {
+                        <span>
+                          @if (fa.date) {
+                            {{ fa.date | date }}{{ " " }}
+                          } @else if (fa.year) {
+                            {{ fa.year }}{{ " " }}
+                          }
+                          <a [routerLink]="fa.user.routerLink">{{
+                            fa.user.fullname
+                          }}</a>
+                        </span>
+                      }
+                    </span>
+                  } @else {
+                    @if (line.faYear) {
+                      <span>{{ line.faYear }}</span>
+                    }
+                    @if (line.faDate) {
+                      <span>{{ line.faDate | date }}</span>
+                    }
+                    @if (line.faName) {
+                      <span>{{ line.faName }}</span>
+                    }
+                  }
+                </dd>
+              </div>
             }
-          }
 
-          <div>
-            {{ t("rating") }}:
-            <p-rating
-              [ngModel]="
-                displayUserRating ? line.userRating : line.authorRating
-              "
-              [readonly]="true"
-            ></p-rating>
+            @if (line.routesetter || line.setDate) {
+              <div class="line-fact">
+                <dt>{{ t("routesetter") }}</dt>
+                <dd class="routesetter">
+                  @if (line.routesetter) {
+                    <span>{{ line.routesetter }}</span>
+                  }
+                  @if (line.setDate) {
+                    <span>{{ line.setDate | date }}</span>
+                  }
+                </dd>
+              </div>
+            }
+
+            @if (line.bolter || line.boltDate) {
+              <div class="line-fact">
+                <dt>{{ t("bolter") }}</dt>
+                <dd class="bolter">
+                  @if (line.bolter) {
+                    <span>{{ line.bolter }}</span>
+                  }
+                  @if (line.boltDate) {
+                    <span>{{ line.boltDate | date }}</span>
+                  }
+                </dd>
+              </div>
+            }
           </div>
 
-          @if (
-            line.faUsers?.length || line.faName || line.faYear || line.faDate
-          ) {
-            <div class="fa">
-              {{ t("FA") }}
-              @if (line.faUsers?.length) {
-                <span class="link-list">
-                  @for (fa of line.faUsers; track fa.user.id) {
-                    <span>
-                      @if (fa.date) {
-                        {{ fa.date | date }}{{ " " }}
-                      } @else if (fa.year) {
-                        {{ fa.year }}{{ " " }}
-                      }
-                      <a [routerLink]="fa.user.routerLink">{{
-                        fa.user.fullname
-                      }}</a></span
-                    >
-                  }
-                </span>
-              } @else {
-                @if (line.faYear) {
-                  <span>{{ line.faYear }}</span>
-                }
-                @if (line.faDate) {
-                  <span>{{ line.faDate | date }}</span>
-                }
-                @if (line.faName) {
-                  <span>{{ line.faName }}</span>
-                }
-              }
-            </div>
-          }
+          <div class="line-actions">
+            @if (
+              line.publicationStatus === "published" ||
+              line.publicationStatus === "archived"
+            ) {
+              <ng-container *isGymMode="true">
+                <lc-archive-button
+                  [line]="line"
+                  [showLabel]="true"
+                  *isModerator="true"
+                ></lc-archive-button>
+              </ng-container>
+            }
 
-          @if (line.routesetter || line.setDate) {
-            <div class="routesetter">
-              {{ t("routesetter") }}
-              @if (line.routesetter) {
-                <span>{{ line.routesetter }}</span>
-              }
-              @if (line.setDate) {
-                <span>{{ line.setDate | date }}</span>
-              }
-            </div>
-          }
+            @if (
+              line.publicationStatus === "published" && !ticks.has(line.id)
+            ) {
+              <lc-todo-button
+                [line]="line"
+                [isTodo]="todos.has(line.id)"
+                [showLabel]="true"
+                *isLoggedIn="true"
+              ></lc-todo-button>
+            }
 
-          @if (line.bolter || line.boltDate) {
-            <div class="bolter">
-              {{ t("bolter") }}
-              @if (line.bolter) {
-                <span>{{ line.bolter }}</span>
-              }
-              @if (line.boltDate) {
-                <span>{{ line.boltDate | date }}</span>
-              }
-            </div>
-          }
-
-          @if (
-            line.publicationStatus === "published" ||
-            line.publicationStatus === "archived"
-          ) {
-            <lc-archive-button
-              [line]="line"
-              [showLabel]="true"
-              *isModerator="true"
-            ></lc-archive-button>
-          }
-
-          @if (line.publicationStatus === "published" && !ticks.has(line.id)) {
-            <lc-todo-button
-              [line]="line"
-              [isTodo]="todos.has(line.id)"
-              [showLabel]="true"
-              *isLoggedIn="true"
-            ></lc-todo-button>
-          }
-
-          @if (
-            line.publicationStatus === "published" ||
-            line.publicationStatus === "archived"
-          ) {
-            <lc-tick-button
-              [line]="line"
-              [ticked]="ticks.has(line.id)"
-              [showLabel]="true"
-            ></lc-tick-button>
-          }
-        </div>
+            @if (
+              line.publicationStatus === "published" ||
+              line.publicationStatus === "archived"
+            ) {
+              <lc-tick-button
+                [line]="line"
+                [ticked]="ticks.has(line.id)"
+                [showLabel]="true"
+              ></lc-tick-button>
+            }
+          </div>
+        </section>
       </div>
     }
 

@@ -1,0 +1,116 @@
+<ng-container *transloco="let t; read: 'line.line'">
+  @if (showGradeDiagram) {
+    <div class="line-fact">
+      <dt>{{ t("gradeVotes") }}</dt>
+      <dd>
+        @if (!displayUserGrades) {
+          <div class="consensus-grade">
+            <span class="consensus-value">{{ line | lineGrade: "user" }}</span>
+            <span class="consensus-caption">{{ t("consensusGrade") }}</span>
+          </div>
+        }
+        <ul class="vote-rows" data-cy="line-grade-votes">
+          @for (bar of gradeBars; track bar.value) {
+            <li
+              class="vote-row"
+              [class.is-consensus]="bar.consensus"
+              [attr.aria-label]="
+                t('gradeVoteRow', { grade: bar.name, count: bar.count })
+              "
+            >
+              <span
+                class="vote-grade"
+                aria-hidden="true"
+                [attr.title]="bar.name"
+                >{{ bar.name }}</span
+              >
+              <span class="vote-track" aria-hidden="true">
+                <span class="vote-fill" [style.width.%]="bar.width"></span>
+              </span>
+              <span class="vote-count" aria-hidden="true">{{ bar.count }}</span>
+            </li>
+          }
+        </ul>
+        @if (displayUserGrades) {
+          <p class="proposed-grade">
+            {{ t("proposedAs") }}: {{ line | lineGrade: "author" }}
+          </p>
+        }
+      </dd>
+    </div>
+  } @else if (showSimpleGrade) {
+    <div class="line-fact">
+      <dt>{{ displayUserGrades ? t("proposedAs") : t("userGrade") }}</dt>
+      <dd
+        [class.consensus-grade]="!displayUserGrades"
+        [class.is-inline]="!displayUserGrades"
+      >
+        <span class="consensus-value">{{
+          line | lineGrade: (displayUserGrades ? "author" : "user")
+        }}</span>
+        @if (!displayUserGrades) {
+          <span class="consensus-caption">{{ t("consensusGrade") }}</span>
+        }
+      </dd>
+    </div>
+  }
+
+  <div class="line-fact">
+    <dt>{{ t("rating") }}</dt>
+    <dd>
+      <div class="rating-summary">
+        <p-rating [ngModel]="displayedRating" [readonly]="true"></p-rating>
+        @if (ratingCount > 0) {
+          <button
+            type="button"
+            class="rating-toggle"
+            data-cy="line-rating-toggle"
+            [attr.aria-expanded]="ratingsOpen"
+            [attr.aria-controls]="ratingBreakdownId"
+            (click)="toggleRatings()"
+          >
+            {{ t("userRatingsCount", { count: ratingCount }) }}
+            <i
+              class="pi"
+              [class.pi-chevron-down]="!ratingsOpen"
+              [class.pi-chevron-up]="ratingsOpen"
+              aria-hidden="true"
+            ></i>
+          </button>
+        }
+      </div>
+      @if (ratingsOpen) {
+        <ul
+          class="rating-rows"
+          [id]="ratingBreakdownId"
+          data-cy="line-rating-breakdown"
+        >
+          @for (row of ratingRows; track row.stars) {
+            <li
+              class="rating-row"
+              [attr.aria-label]="
+                t('ratingRow', { stars: row.stars, count: row.count })
+              "
+            >
+              <span class="rating-stars" aria-hidden="true">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <i
+                    class="pi"
+                    [class.pi-star-fill]="star <= row.stars"
+                    [class.pi-star]="star > row.stars"
+                  ></i>
+                }
+              </span>
+              <span class="rating-track" aria-hidden="true">
+                <span class="rating-fill" [style.width.%]="row.width"></span>
+              </span>
+              <span class="rating-count" aria-hidden="true">{{
+                row.count
+              }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </dd>
+  </div>
+</ng-container>
