@@ -22,7 +22,7 @@ import { CommentsService } from '../../../services/crud/comments.service';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { CommentsContextService } from '../comments-context.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, Observable, timer } from 'rxjs';
+import { combineLatest, forkJoin, Observable, timer } from 'rxjs';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -37,6 +37,9 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { LanguageService } from '../../../services/core/language.service';
 import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { DialogService } from 'primeng/dynamicdialog';
+import { selectSoftGating } from '../../../ngrx/selectors/instance-settings.selectors';
+import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
 
 @Component({
   selector: 'lc-comment',
@@ -56,6 +59,7 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',
   encapsulation: ViewEncapsulation.None,
+  providers: [DialogService],
 })
 export class CommentComponent implements OnInit {
   @Input() comment: Comment;
@@ -76,6 +80,7 @@ export class CommentComponent implements OnInit {
   public ellipsisMenuItems: MenuItem[] = [];
   public editModeActive = false;
   public isLoggedIn$: Observable<boolean>;
+  public showReplyButton = false;
 
   private pageSize = 10;
   private commentsService = inject(CommentsService);
@@ -85,6 +90,8 @@ export class CommentComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private languageService = inject(LanguageService);
+  private dialogService = inject(DialogService);
+  private loggedIn = false;
 
   ngOnInit() {
     // Build ellipsis menu based on permissions
@@ -116,6 +123,23 @@ export class CommentComponent implements OnInit {
         }
       });
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn), take(1));
+    combineLatest([
+      this.store.select(selectIsLoggedIn),
+      this.store.select(selectSoftGating),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([loggedIn, softGating]) => {
+        this.loggedIn = loggedIn;
+        this.showReplyButton = loggedIn || softGating;
+      });
+  }
+
+  public onReplyClick(): void {
+    if (!this.loggedIn) {
+      openAccountPrompt(this.dialogService, this.translocoService);
+      return;
+    }
+    this.setReplyActive();
   }
 
   public setReplyActive(): void {

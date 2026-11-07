@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   inject,
@@ -24,6 +25,9 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { LCObject } from '../../../models/object';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { selectSoftGating } from '../../../ngrx/selectors/instance-settings.selectors';
+import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
 
 @Component({
   selector: 'lc-social-interaction-wrapper',
@@ -49,6 +53,7 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉', '😀'];
   myReaction: string | null = null;
   isPickerOpen = false;
+  softGating = false;
 
   private currentUser: User | null = null;
   private longPressTimer: ReturnType<typeof setTimeout> | null = null;
@@ -58,6 +63,7 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   private store = inject(Store);
   private dialogService = inject(DialogService);
   private translocoService = inject(TranslocoService);
+  private destroyRef = inject(DestroyRef);
   private ref: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
@@ -67,6 +73,12 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
       .subscribe((user) => {
         this.currentUser = user;
         this.syncMyReaction();
+      });
+    this.store
+      .select(selectSoftGating)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((softGating) => {
+        this.softGating = softGating;
       });
   }
 
@@ -115,6 +127,10 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
     return !!this.currentUser;
   }
 
+  get promptForAccount(): boolean {
+    return !this.isLoggedIn && this.softGating;
+  }
+
   get totalReactions(): number {
     return this.reactions?.length ?? 0;
   }
@@ -133,6 +149,9 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
       return;
     }
     if (!this.isLoggedIn && this.commentCount === 0) {
+      if (this.softGating) {
+        openAccountPrompt(this.dialogService, this.translocoService);
+      }
       return;
     }
     this.commentClick.emit();

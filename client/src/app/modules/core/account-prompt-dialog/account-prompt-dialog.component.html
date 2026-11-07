@@ -1,0 +1,14 @@
+<ng-container *transloco="let t; read: 'accountPrompt'">
+  <div class="account-prompt">
+    <p>{{ t('message') }}</p>
+    <div class="lc-button-group justify-end">
+      <p-button
+        [label]="t('login')"
+        severity="secondary"
+        variant="outlined"
+        (click)="goToLogin()"
+      ></p-button>
+      <p-button [label]="t('register')" (click)="goToRegister()"></p-button>
+    </div>
+  </div>
+</ng-container>

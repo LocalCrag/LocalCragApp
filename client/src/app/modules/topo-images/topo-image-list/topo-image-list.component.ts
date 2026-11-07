@@ -171,6 +171,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
   public viewerIsModerator = false;
   public canContributeTopo = false;
   public gymMode = false;
+  public softGating = false;
   /** Topo image ids whose variant lines are expanded in the list and drawing. */
   private expandedVariantImageIds = new Set<string>();
   /** Line kept highlighted after the pointer leaves the row. */
@@ -253,6 +254,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
       .subscribe((instanceSettings) => {
         this.displayUserRating = instanceSettings.displayUserRatings;
         this.gymMode = instanceSettings.gymMode;
+        this.softGating = instanceSettings.softGating;
       });
     this.store
       .select(selectCurrentUser)
@@ -977,6 +979,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
     this.lineActionItems = buildLineContextMenuItems(
       {
         loggedIn: this.currentUserId !== null,
+        softGating: this.softGating,
         isTodo: this.isTodo.has(linePath.line.id),
         ticked: this.ticks.has(linePath.line.id),
         highlighted: this.isLinePinned(linePath),
@@ -992,7 +995,12 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
           void this.router.navigate(['/todos']);
         },
         tick: () =>
-          openTickDialog(this.dialogService, this.store, linePath.line),
+          openTickDialog(
+            this.dialogService,
+            this.store,
+            this.translocoService,
+            linePath.line,
+          ),
         toggleHighlight: () => this.togglePinnedHighlight(linePath, topoImage),
       },
     );

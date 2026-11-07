@@ -83,6 +83,7 @@ def test_successful_get_instance_settings(client):
     assert res["displayUserRatings"] == instance_settings.display_user_ratings
     assert res["noClosedProjects"] == instance_settings.no_closed_projects
     assert res["moderatorGameEnabled"] == instance_settings.moderator_game_enabled
+    assert res["softGating"] is False
     assert res["faDefaultFormat"] == instance_settings.fa_default_format.value
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks
@@ -143,6 +144,17 @@ def test_successful_patch_instance_settings(client, moderator_token, any_file):
     assert res["rankingPastWeeks"] == 12
     assert res["language"] == "de"
     assert res["timezone"] == "Europe/Berlin"
+    assert res["softGating"] is False
+
+
+def test_soft_gating_can_be_enabled(client, moderator_token):
+    rv = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"softGating": True},
+    )
+    assert rv.status_code == 200, rv.json
+    assert rv.json["softGating"] is True
 
 
 def test_successful_patch_nullable_instance_settings_fields(client, moderator_token, any_file):

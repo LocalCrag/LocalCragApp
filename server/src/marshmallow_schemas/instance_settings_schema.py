@@ -40,6 +40,7 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     suggestionsEnabled = fields.Boolean(attribute="suggestions_enabled")
     moderatorGameEnabled = fields.Boolean(attribute="moderator_game_enabled")
     videoUploadsEnabled = fields.Boolean(attribute="video_uploads_enabled")
+    softGating = fields.Boolean(attribute="soft_gating")
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)
