@@ -4,19 +4,19 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-export interface FaRemovalMessageDialogData {
+export interface ModerationMessageDialogData {
   message: string;
   ascentLink: string | null;
   unavailable?: boolean;
 }
 
 @Component({
-  selector: 'lc-fa-removal-message-dialog',
+  selector: 'lc-moderation-message-dialog',
   imports: [ButtonModule, TranslocoDirective],
-  templateUrl: './fa-removal-message-dialog.component.html',
-  styleUrl: './fa-removal-message-dialog.component.scss',
+  templateUrl: './moderation-message-dialog.component.html',
+  styleUrl: './moderation-message-dialog.component.scss',
 })
-export class FaRemovalMessageDialogComponent {
+export class ModerationMessageDialogComponent {
   private config = inject(DynamicDialogConfig);
   private ref = inject(DynamicDialogRef);
   private router = inject(Router);

@@ -167,6 +167,7 @@ instance_settings_args = {
     "noClosedProjects": fields.Boolean(required=True),
     "suggestionsEnabled": fields.Boolean(required=True),
     "moderatorGameEnabled": fields.Boolean(required=True),
+    "videoUploadsEnabled": fields.Boolean(required=True),
     "faDefaultFormat": fields.Enum(FaDefaultFormatEnum, required=True, allow_none=False),
     "defaultStartingPosition": fields.Enum(StartingPositionEnum, required=True, allow_none=False),
     "rankingPastWeeks": fields.Integer(

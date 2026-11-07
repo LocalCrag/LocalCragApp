@@ -112,3 +112,26 @@ def _row_value(row, name: str):
     if isinstance(row, Mapping):
         return row.get(name)
     return getattr(row, name)
+
+
+def object_sizes_in_bucket() -> dict[str, int]:
+    """Key to byte size for every object currently in the configured bucket."""
+    bucket = current_app.config["S3_BUCKET"]
+    client = get_s3_client()
+    sizes: dict[str, int] = {}
+    paginator = client.get_paginator("list_objects_v2")
+    for page in paginator.paginate(Bucket=bucket):
+        for obj in page.get("Contents") or []:
+            sizes[obj["Key"]] = int(obj["Size"])
+    return sizes
+
+
+def stored_bytes_for_file(sizes: Mapping[str, int], filename: str | None, thumbnail_flags: Mapping) -> int:
+    """Original object plus the thumbnail variants this row says it has."""
+    if not filename:
+        return 0
+    total = int(sizes.get(filename, 0))
+    for size in THUMBNAIL_SIZES:
+        if thumbnail_flags.get(f"thumbnail_{size}"):
+            total += int(sizes.get(thumbnail_storage_key(filename, size), 0))
+    return total

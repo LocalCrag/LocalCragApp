@@ -39,6 +39,7 @@ export interface InstanceSettingsState {
   noClosedProjects: boolean;
   suggestionsEnabled: boolean;
   moderatorGameEnabled: boolean;
+  videoUploadsEnabled: boolean;
   faDefaultFormat: FaDefaultFormat;
   defaultStartingPosition: StartingPosition;
   rankingPastWeeks: number | null;
@@ -78,6 +79,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   noClosedProjects: false,
   suggestionsEnabled: true,
   moderatorGameEnabled: false,
+  videoUploadsEnabled: false,
   faDefaultFormat: FaDefaultFormat.YEAR,
   defaultStartingPosition: StartingPosition.STAND,
   rankingPastWeeks: null,
@@ -120,6 +122,7 @@ const instanceSettingsReducer = createReducer(
     noClosedProjects: action.settings.noClosedProjects,
     suggestionsEnabled: action.settings.suggestionsEnabled,
     moderatorGameEnabled: action.settings.moderatorGameEnabled,
+    videoUploadsEnabled: action.settings.videoUploadsEnabled === true,
     faDefaultFormat: action.settings.faDefaultFormat,
     defaultStartingPosition: action.settings.defaultStartingPosition,
     rankingPastWeeks: action.settings.rankingPastWeeks,

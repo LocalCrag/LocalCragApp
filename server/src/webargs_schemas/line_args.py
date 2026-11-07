@@ -1,6 +1,5 @@
 import datetime
 
-import validators
 from marshmallow import Schema, ValidationError, validate
 from webargs import fields
 
@@ -9,6 +8,7 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.enums.starting_position_enum import StartingPositionEnum
 from util.validators import color_validator
 from webargs_schemas.closure_schedule_args import closure_schedules_field
+from webargs_schemas.video_args import VideosArgsSchema
 
 
 def validate_fa_year(year: int):
@@ -32,19 +32,9 @@ def validate_bolt_date(bolt_date: datetime.date):
         raise ValidationError("Bolt date cannot be in the future.")
 
 
-def validate_video_url(url: str):
-    if not validators.url(url):
-        raise ValidationError(f"Invalid URL: {url}")
-
-
 def validate_rating(value: int):
     if not (1 <= value <= 5):
         raise ValidationError("Rating must be between 1 and 5.")
-
-
-class VideosArgsSchema(Schema):
-    url = fields.Str(required=True, allow_none=False, validate=validate_video_url)
-    title = fields.Str(required=True, allow_none=False)
 
 
 class BatchLineArgsSchema(Schema):

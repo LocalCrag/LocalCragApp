@@ -13,6 +13,7 @@ from marshmallow_schemas.line_schema import (
     paginated_lines_schema,
 )
 from marshmallow_schemas.search_schema import line_search_schema, lines_search_schema
+from marshmallow_schemas.video_schema import video_schema
 from messages.messages import ResponseMessage
 from models.area import Area
 from models.ascent import Ascent
@@ -27,6 +28,7 @@ from models.line_path import LinePath
 from models.sector import Sector
 from models.topo_image import TopoImage
 from models.user import User
+from models.video import Video
 from util.assumed_grade import normalize_assumed_grade_bounds
 from util.auth_session import (
     get_current_user,
@@ -59,8 +61,17 @@ from util.suggestions import (
 )
 from util.topo_entity_counts import attach_line_ascent_counts
 from util.validators import cross_validate_grade
+from util.videos import VideoValidationError, normalize_line_videos
 from webargs_schemas.line_args import cross_validate_line_args, line_args
 from webargs_schemas.move_args import move_line_args
+
+
+def _apply_line_videos(line: Line, normalized) -> None:
+    """Replace the line's videos when the validated list actually changed."""
+    incoming = [Video.from_dict(item, index) for index, item in enumerate(normalized or [])]
+    if video_schema.dump(line.videos, many=True) == video_schema.dump(incoming, many=True):
+        return
+    line.videos = incoming
 
 
 class MoveLine(MethodView):
@@ -303,7 +314,10 @@ class CreateLine(MethodView):
         new_line.name = line_data["name"].strip()
         new_line.description = sanitize_wysiwyg_html(line_data["description"])
         new_line.color = line_data.get("color", None)
-        new_line.videos = line_data["videos"]
+        try:
+            _apply_line_videos(new_line, normalize_line_videos(line_data["videos"], existing=None))
+        except VideoValidationError as error:
+            raise BadRequest(str(error)) from error
         new_line.type = line_data["type"]
         new_line.grade_scale = line_data["gradeScale"]
         new_line.author_grade_value = line_data["authorGradeValue"]
@@ -418,7 +432,13 @@ class UpdateLine(MethodView):
         line.name = line_data["name"].strip()
         line.description = sanitize_wysiwyg_html(line_data["description"])
         line.color = line_data.get("color", None)
-        line.videos = line_data["videos"]
+        try:
+            _apply_line_videos(
+                line,
+                normalize_line_videos(line_data["videos"], existing=video_schema.dump(line.videos, many=True)),
+            )
+        except VideoValidationError as error:
+            raise BadRequest(str(error)) from error
         line.type = line_data["type"]
         line.grade_scale = line_data["gradeScale"]
         if line.publication_status == PublicationStatusEnum.PUBLISHED:

@@ -28,4 +28,17 @@ export class InstanceSettingsService {
       .patch(this.api.instanceSettings.update(), patch)
       .pipe(map(InstanceSettings.deserialize));
   }
+
+  public getStorageUsage(): Observable<StorageUsage> {
+    return this.http.get<StorageUsage>(this.api.instanceSettings.storage());
+  }
+}
+
+export interface StorageUsage {
+  videos: number;
+  galleryImages: number;
+  topoImages: number;
+  other: number;
+  /** Total data-disk bytes. Present for SeaweedFS, or when STORAGE_DISK_SPACE is set. */
+  capacity: number | null;
 }

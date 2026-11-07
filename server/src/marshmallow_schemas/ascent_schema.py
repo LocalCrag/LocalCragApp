@@ -7,6 +7,7 @@ from marshmallow_schemas.crag_schema import AscentAndTodoCragSchema
 from marshmallow_schemas.line_schema import AscentAndTodoLineSchema
 from marshmallow_schemas.reactions_schema import ReactionUserListSchema
 from marshmallow_schemas.sector_schema import AscentAndTodoSectorSchema
+from marshmallow_schemas.video_schema import VideoSchema
 
 
 class AscentSchema(BaseEntitySchema):
@@ -18,6 +19,7 @@ class AscentSchema(BaseEntitySchema):
     gradeValue = fields.Integer(attribute="grade_value")
     rating = fields.Integer()
     comment = fields.String()
+    video = fields.Nested(VideoSchema, allow_none=True)
     year = fields.Integer()
     date = fields.Date()
     line = fields.Nested(AscentAndTodoLineSchema())

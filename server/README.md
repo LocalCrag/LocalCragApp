@@ -31,6 +31,7 @@ For the full local toolchain (Docker vs native, Husky, object storage), see [doc
     - `S3_BUCKET` S3 object storage bucket name
     - `S3_ACCESS_ENDPOINT` Access endpoint of the S3 object storage
     - `S3_ADDRESSING` S3 object storage addressing mode: `virtual` or `path`
+    - `STORAGE_DISK_SPACE` Total upload-disk size for the admin storage bar when SeaweedFS is not reporting it (for example `100Gi`). Uploads are not checked against this value.
     - `SENTRY_DSN` DSN for Sentry error tracking (used by server and exposed to the client)
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN on server and client
     - `LOG_LEVEL` Application log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Defaults to `INFO`. Logs are written to stdout.

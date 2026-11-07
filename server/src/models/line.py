@@ -1,7 +1,8 @@
 from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import joinedload
 
 from extensions import db
 from models.ascent import Ascent
@@ -33,7 +34,6 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
     color = db.Column(db.String(7), nullable=True)
-    videos = db.Column(JSON, nullable=True)
     grade_scale = db.Column(db.String(120), nullable=False)
     author_grade_value = db.Column(db.Integer, nullable=False)
     user_grade_value = db.Column(db.Integer, nullable=False)
@@ -97,6 +97,13 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
     )
 
     ascents = db.relationship("Ascent", cascade="all,delete", lazy="select", overlaps="line")
+    videos = db.relationship(
+        "Video",
+        cascade="all, delete-orphan",
+        order_by="Video.order_index",
+        lazy="selectin",
+        back_populates="line",
+    )
 
     area_slug = association_proxy("area", "slug")
     sector_slug = association_proxy("area", "sector_slug")
@@ -148,3 +155,14 @@ class Line(HasSlug, IsSearchable, IsClosable, IsSecret, BaseEntity):
             .all()
         )
         return [{"user": user, "year": year, "date": date} for user, year, date in rows]
+
+    def ascent_video_groups(self):
+        """Ascents on this line that include a video link, oldest created first."""
+        if self.id is None:
+            return []
+        return (
+            Ascent.query.options(joinedload(Ascent.created_by))
+            .filter(Ascent.line_id == self.id, Ascent.video.has())
+            .order_by(Ascent.time_created.asc(), Ascent.id.asc())
+            .all()
+        )

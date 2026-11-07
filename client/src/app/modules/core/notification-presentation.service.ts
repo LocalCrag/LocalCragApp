@@ -57,6 +57,15 @@ export class NotificationPresentationService {
         .trim();
     }
 
+    if (notification.type === 'ascent_video_removed') {
+      return this.translocoService
+        .translate('menu.notificationTextAscentVideoRemoved', {
+          actor: notification.actorName || '',
+          label: lineLabel,
+        })
+        .trim();
+    }
+
     if (notification.type === 'moderator_task_completed') {
       return this.translocoService
         .translate('menu.notificationTextModeratorTaskCompleted', {

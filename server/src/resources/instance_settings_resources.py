@@ -25,6 +25,7 @@ from scheduler_jobs.delete_unattached_files import (
 from scheduler_jobs.topo_quality_week import reschedule_topo_quality_week_job
 from util.auth_session import session_required
 from util.scheduled_closure import request_closure_materialization
+from util.storage_usage import category_bytes, storage_capacity_bytes
 from webargs_schemas.instance_settings_args import (
     instance_settings_schema_cls,
 )
@@ -73,6 +74,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "noClosedProjects": instance_settings.no_closed_projects,
         "suggestionsEnabled": instance_settings.suggestions_enabled,
         "moderatorGameEnabled": instance_settings.moderator_game_enabled,
+        "videoUploadsEnabled": instance_settings.video_uploads_enabled,
         "faDefaultFormat": instance_settings.fa_default_format.value,
         "defaultStartingPosition": instance_settings.default_starting_position.value,
         "rankingPastWeeks": instance_settings.ranking_past_weeks,
@@ -123,6 +125,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.no_closed_projects = instance_settings_data["noClosedProjects"]
     instance_settings.suggestions_enabled = instance_settings_data["suggestionsEnabled"]
     instance_settings.moderator_game_enabled = instance_settings_data["moderatorGameEnabled"]
+    instance_settings.video_uploads_enabled = instance_settings_data["videoUploadsEnabled"]
     instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
     instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
     instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]
@@ -201,6 +204,14 @@ def update_instance_settings_from_payload(instance_settings: InstanceSettings, i
         reschedule_unattached_file_cleanup_job(app)
         reschedule_topo_quality_week_job(app)
         request_closure_materialization()
+
+
+class GetStorageUsage(MethodView):
+    @session_required(admin=True)
+    def get(self):
+        usage = category_bytes(db.session.connection())
+        usage["capacity"] = storage_capacity_bytes()
+        return usage, 200
 
 
 class GetInstanceSettings(MethodView):

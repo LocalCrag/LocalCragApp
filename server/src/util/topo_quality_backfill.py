@@ -15,7 +15,6 @@ from util.topo_quality_score import (
     creator_points,
     fa_complete,
     has_text,
-    has_video,
     is_project_grade,
     is_styled,
 )
@@ -53,7 +52,11 @@ def backfill_creator_points(connection) -> None:
         line_rows = connection.execute(
             sa.text(
                 """
-                SELECT id, name, area_id, created_by_id, time_created, description, videos,
+                SELECT id, name, area_id, created_by_id, time_created, description,
+                       EXISTS (
+                           SELECT 1 FROM videos
+                           WHERE videos.line_id = lines.id AND COALESCE(videos.url, '') <> ''
+                       ) AS has_video,
                        publication_status, author_grade_value, fa_name, fa_date, fa_year, routesetter, set_date,
                        roof, overhang, vertical, slab, traverse, dihedral, compression, arete, crack, dyno, mantle
                 FROM lines
@@ -80,7 +83,7 @@ def backfill_creator_points(connection) -> None:
                 published=True,
                 drawn=row["id"] in drawn_ids,
                 styled=is_styled(values),
-                has_video=has_video(row["videos"]),
+                has_video=bool(row["has_video"]),
                 fa_complete=fa_complete(values, gym),
                 has_description=has_text(row["description"]),
                 is_project=is_project_grade(row["author_grade_value"]),

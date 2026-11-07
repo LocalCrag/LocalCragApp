@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LineComponent } from '../../../line/line/line.component';
 import { LineInfoComponent } from '../../../line/line-info/line-info.component';
 import { LineAscentsComponent } from '../../../line/line-ascents/line-ascents.component';
+import { LineVideosComponent } from '../../../line/line-videos/line-videos.component';
 import { canContributeTopo } from '../../../../guards/can-contribute-topo';
 import { isModerator } from '../../../../guards/is-moderator';
 import { ObjectType } from '../../../../models/object';
@@ -37,6 +38,7 @@ export const topoLineRoutes: Routes = [
         { data: { objectType: ObjectType.Line } },
       ),
       outletRoute('ascents', LineAscentsComponent, 'lineContent'),
+      outletRoute('videos', LineVideosComponent, 'lineContent'),
       lazyOutletRoute('gallery', loadGalleryComponent, 'lineContent', {
         data: { objectType: ObjectType.Line },
       }),

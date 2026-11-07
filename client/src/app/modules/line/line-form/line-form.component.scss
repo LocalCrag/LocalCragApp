@@ -1,3 +1,71 @@
-.video-input-container {
-  min-width: calc((100% - 5rem) / 2); // 2*gap (1rem) + button width (3rem)
+.video-row {
+  position: relative;
+  padding: 1rem 3.25rem 1rem 1rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius, 0.75rem);
+
+  .form-label {
+    margin-top: 0;
+  }
+}
+
+.video-upload-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.video-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.video-delete {
+  position: absolute;
+  top: 1rem;
+  right: 0.4rem;
+}
+
+.video-delete--labeled {
+  top: 2.75rem;
+}
+
+.video-title-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.video-source {
+  flex: none;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: 11rem;
+  }
+}
+
+.video-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-start {
+  max-width: 16rem;
+}
+
+.video-start-label {
+  color: var(--p-text-muted-color);
+  font-size: 0.875rem;
+}
+
+.hidden {
+  display: none;
 }

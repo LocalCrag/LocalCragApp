@@ -315,52 +315,200 @@
             track lineVideoGroup;
             let i = $index
           ) {
-            <div
-              [formGroup]="lineVideoGroup | asFormGroup"
-              class="flex flex-row gap-6"
-            >
-              <div
-                lcControlGroup
-                class="flex flex-col flex-1 video-input-container"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  formControlName="title"
-                  placeholder="{{ t('lineVideoTitlePlaceholder') }}"
-                  lcFormControl
-                />
-                <div>
-                  <small class="lc-error" *lcIfError="'required'">{{
-                    "validation.required" | transloco
-                  }}</small>
-                </div>
-              </div>
-              <div
-                lcControlGroup
-                class="flex flex-col flex-1 video-input-container"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  formControlName="url"
-                  placeholder="{{ t('lineVideoUrlPlaceholder') }}"
-                  lcFormControl
-                />
-                <div>
-                  <small class="lc-error" *lcIfError="'required'">{{
-                    "validation.required" | transloco
-                  }}</small>
-                  <small class="lc-error" *lcIfError="'invalidHttpUrl'">{{
-                    t("invalidHttpUrlValidationError")
-                  }}</small>
-                </div>
-              </div>
+            <div [formGroup]="lineVideoGroup | asFormGroup" class="video-row">
               <p-button
-                (click)="deleteLineVideoControl(i)"
+                class="video-delete"
+                [class.video-delete--labeled]="
+                  videoUploadsEnabled ||
+                  (lineVideoGroup | asFormGroup).get('source').value ===
+                    'upload'
+                "
                 icon="pi pi-trash"
-                styleClass="p-button-danger"
+                severity="danger"
+                [rounded]="true"
+                [text]="true"
+                [ariaLabel]="t('deleteVideoButtonLabel')"
+                (click)="deleteLineVideoControl(i)"
               ></p-button>
+              <div class="video-fields">
+                @if (
+                  videoUploadsEnabled ||
+                  (lineVideoGroup | asFormGroup).get("source").value ===
+                    "upload"
+                ) {
+                  <div class="video-title-row">
+                    <div
+                      class="video-source flex flex-col gap-2"
+                      lcControlGroup
+                    >
+                      <label class="form-label">{{
+                        t("videoSourceLabel")
+                      }}</label>
+                      <p-select
+                        formControlName="source"
+                        [options]="[
+                          { value: 'link', label: t('videoSourceLink') },
+                          { value: 'upload', label: t('videoSourceUpload') },
+                        ]"
+                        optionLabel="label"
+                        optionValue="value"
+                        [disabled]="
+                          !videoUploadsEnabled &&
+                          (lineVideoGroup | asFormGroup).get('source').value !==
+                            'upload'
+                        "
+                        lcFormControl
+                      ></p-select>
+                    </div>
+                    <div lcControlGroup class="video-title flex flex-col gap-2">
+                      <label class="form-label">{{
+                        t("lineVideoTitleLabel")
+                      }}</label>
+                      <input
+                        type="text"
+                        pInputText
+                        formControlName="title"
+                        placeholder="{{ t('lineVideoTitlePlaceholder') }}"
+                        lcFormControl
+                      />
+                      <small class="lc-error" *lcIfError="'required'">{{
+                        "validation.required" | transloco
+                      }}</small>
+                    </div>
+                  </div>
+                } @else {
+                  <div lcControlGroup class="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      pInputText
+                      formControlName="title"
+                      placeholder="{{ t('lineVideoTitlePlaceholder') }}"
+                      lcFormControl
+                    />
+                    <small class="lc-error" *lcIfError="'required'">{{
+                      "validation.required" | transloco
+                    }}</small>
+                  </div>
+                }
+                @if (
+                  (lineVideoGroup | asFormGroup).get("source").value ===
+                  "upload"
+                ) {
+                  <div class="flex flex-col gap-2" lcControlGroup>
+                    <div class="flex flex-wrap items-center gap-3">
+                      <label
+                        class="p-button p-button-secondary"
+                        [class.p-disabled]="uploadingVideoIndex !== null"
+                      >
+                        {{ t("uploadVideoButtonLabel") }}
+                        <input
+                          class="hidden"
+                          type="file"
+                          accept="video/mp4,video/webm,video/quicktime,video/ogg"
+                          [disabled]="
+                            !videoUploadsEnabled || uploadingVideoIndex !== null
+                          "
+                          (change)="uploadLineVideo(i, $event)"
+                        />
+                      </label>
+                      @if (
+                        (lineVideoGroup | asFormGroup).get("fileLabel").value
+                      ) {
+                        <span>{{
+                          (lineVideoGroup | asFormGroup).get("fileLabel").value
+                        }}</span>
+                      }
+                    </div>
+                    @if (uploadingVideoIndex === i) {
+                      <div class="video-upload-progress">
+                        <p-progressbar
+                          [value]="videoUploadProgress"
+                          [mode]="
+                            videoUploadIndeterminate
+                              ? 'indeterminate'
+                              : 'determinate'
+                          "
+                          [showValue]="!videoUploadIndeterminate"
+                        ></p-progressbar>
+                        <small>{{ t("uploadingVideo") }}</small>
+                      </div>
+                    }
+                    @if (
+                      (lineVideoGroup | asFormGroup).get("fileId").invalid &&
+                      (lineVideoGroup | asFormGroup).get("fileId").touched
+                    ) {
+                      <small class="lc-error">{{
+                        "validation.required" | transloco
+                      }}</small>
+                    }
+                    @if (!videoUploadsEnabled) {
+                      <small>{{ t("videoUploadsDisabled") }}</small>
+                    }
+                  </div>
+                } @else {
+                  <div lcControlGroup class="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      pInputText
+                      formControlName="url"
+                      placeholder="{{ t('lineVideoUrlPlaceholder') }}"
+                      lcFormControl
+                    />
+                    <small>{{ t("lineVideoUrlHint") }}</small>
+                    <div>
+                      <small class="lc-error" *lcIfError="'required'">{{
+                        "validation.required" | transloco
+                      }}</small>
+                      <small
+                        class="lc-error"
+                        *lcIfError="'unsupportedVideoUrl'"
+                        >{{ t("unsupportedVideoUrl") }}</small
+                      >
+                    </div>
+                  </div>
+                }
+                @if (allowsVideoStart(lineVideoGroup | asFormGroup)) {
+                  @if ((lineVideoGroup | asFormGroup).get("showStart").value) {
+                    <div class="video-start flex flex-col gap-2" lcControlGroup>
+                      <label
+                        class="video-start-label"
+                        [attr.for]="'video-start-' + i"
+                        >{{ t("lineVideoStartLabel") }}</label
+                      >
+                      <input
+                        [id]="'video-start-' + i"
+                        type="number"
+                        min="0"
+                        pInputText
+                        formControlName="startSeconds"
+                        lcFormControl
+                      />
+                      <small>{{ t("lineVideoStartHint") }}</small>
+                      <small class="lc-error" *lcIfError="'startSeconds'">{{
+                        t("invalidStartSeconds")
+                      }}</small>
+                      <p-button
+                        [label]="t('lineVideoStartClear')"
+                        severity="secondary"
+                        [text]="true"
+                        size="small"
+                        (click)="hideVideoStart(i)"
+                      ></p-button>
+                    </div>
+                  } @else {
+                    <div>
+                      <p-button
+                        [label]="t('lineVideoStartToggle')"
+                        icon="pi pi-clock"
+                        severity="secondary"
+                        [text]="true"
+                        size="small"
+                        (click)="showVideoStart(i)"
+                      ></p-button>
+                    </div>
+                  }
+                }
+              </div>
             </div>
           }
           <div>

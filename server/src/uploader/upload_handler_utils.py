@@ -69,6 +69,17 @@ def remove_temp_folder(temp_folder):
         shutil.rmtree(temp_folder)
 
 
+def payload_size(payload) -> int:
+    """Byte length of an upload body without consuming it."""
+    if isinstance(payload, (bytes, bytearray)):
+        return len(payload)
+    position = payload.tell()
+    payload.seek(0, os.SEEK_END)
+    size = payload.tell()
+    payload.seek(position)
+    return size
+
+
 def get_image_bytes(img):
     in_mem_file = io.BytesIO()
     img.save(in_mem_file, format=img.format)

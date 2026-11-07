@@ -1,0 +1,30 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.video-mark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--p-blue-500);
+  font-size: 0.95rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--p-blue-600);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

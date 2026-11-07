@@ -67,6 +67,7 @@ services:
       S3_USER: localcrag
       S3_PASSWORD: password
       S3_ENDPOINT: http://storage:8333
+      STORAGE_DISK_SPACE: ${STORAGE_DISK_SPACE:-}
       S3_BUCKET: localcrag
       S3_ACCESS_ENDPOINT: http://localhost:8333
       S3_ADDRESSING: path

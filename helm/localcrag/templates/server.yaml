@@ -56,6 +56,13 @@ spec:
 
             - name: S3_ENDPOINT
               value: {{ printf "http://%s:%s" (include "localcrag.s3.fullname" .) (include "localcrag.s3.port" .) | quote }}
+            {{- if eq (include "localcrag.s3.backend" .) "seaweedfs" }}
+            - name: STORAGE_CAPACITY_URL
+              value: {{ printf "http://%s:9340/status" (include "localcrag.seaweedfs.fullname" .) | quote }}
+            {{- else if .Values.s3.diskSpace }}
+            - name: STORAGE_DISK_SPACE
+              value: {{ .Values.s3.diskSpace | quote }}
+            {{- end }}
             - name: S3_BUCKET
               value: "{{ .Values.appS3.bucket }}"
             - name: S3_ACCESS_ENDPOINT

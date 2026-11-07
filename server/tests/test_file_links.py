@@ -72,6 +72,7 @@ def test_file_owners_are_discovered_from_mapped_models(client):
         ("instance_settings", "dark_logo_image_id"),
         ("instance_settings", "favicon_image_id"),
         ("instance_settings", "bg_image_id"),
+        ("videos", "file_id"),
     }
 
 

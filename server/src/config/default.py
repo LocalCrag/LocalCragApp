@@ -21,8 +21,8 @@ class DefaultConfig(object):
     SUPERADMIN_FIRSTNAME = ""
     SUPERADMIN_LASTNAME = ""
     SUPERADMIN_EMAIL = ""
-    CLIENT_MAX_BODY_SIZE = 200
-    MAX_FILE_SIZE = 200
+    CLIENT_MAX_BODY_SIZE = 2048
+    MAX_FILE_SIZE = 2048
     MAX_IMAGE_SIZE = 50
     S3_PASSWORD = None
     S3_USER = None
@@ -31,6 +31,13 @@ class DefaultConfig(object):
     S3_BUCKET = None
     S3_ACCESS_ENDPOINT = None
     S3_ADDRESSING = "virtual"
+    # Set on Kubernetes when SeaweedFS is the object store. Points at the
+    # volume server status endpoint, which reports the data disk size.
+    STORAGE_CAPACITY_URL = None
+    # Total size of the upload disk for every other installation, for example
+    # "100Gi". Scales the admin storage bar only. Uploads are not checked
+    # against it.
+    STORAGE_DISK_SPACE = None
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
     LOG_LEVEL = "INFO"

@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.storage-usage-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.storage-usage-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.storage-usage-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+}
+
+.storage-usage-capacity {
+  margin: 0.5rem 0 0;
+}

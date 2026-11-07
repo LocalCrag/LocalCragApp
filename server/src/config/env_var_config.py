@@ -34,6 +34,8 @@ def overwrite_config_by_env_vars(app):
         "S3_BUCKET",
         "S3_ACCESS_ENDPOINT",
         "S3_ADDRESSING",
+        "STORAGE_CAPACITY_URL",
+        "STORAGE_DISK_SPACE",
         "FRONTEND_HOST",
         "SENTRY_DSN",
         "SENTRY_ENABLED",

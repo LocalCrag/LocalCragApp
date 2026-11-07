@@ -43,6 +43,7 @@ import { InstanceSettingsGeneralTabComponent } from './instance-settings-general
 import { InstanceSettingsAppearanceTabComponent } from './instance-settings-appearance-tab.component';
 import { InstanceSettingsAnalyticsTabComponent } from './instance-settings-analytics-tab.component';
 import { InstanceSettingsMapsTabComponent } from './instance-settings-maps-tab.component';
+import { InstanceSettingsStorageTabComponent } from './instance-settings-storage-tab.component';
 import { createGeneralFormGroup } from './instance-settings-general-form';
 import {
   createMapsFormGroup,
@@ -50,7 +51,8 @@ import {
   serializeMapsFormGroup,
 } from './instance-settings-maps-form';
 
-type SettingsTabId = 'general' | 'appearance' | 'analytics' | 'maps';
+type SettingsTabId =
+  'general' | 'storage' | 'appearance' | 'analytics' | 'maps';
 
 @Component({
   selector: 'lc-instance-settings-form',
@@ -74,6 +76,7 @@ type SettingsTabId = 'general' | 'appearance' | 'analytics' | 'maps';
     InstanceSettingsAppearanceTabComponent,
     InstanceSettingsAnalyticsTabComponent,
     InstanceSettingsMapsTabComponent,
+    InstanceSettingsStorageTabComponent,
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
@@ -88,6 +91,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   public instanceSettings: InstanceSettings;
   public activeTab: SettingsTabId = 'general';
   public saveGeneralTab = () => this.saveTab('general');
+  public saveStorageTab = () => this.saveTab('storage');
   public saveAppearanceTab = () => this.saveTab('appearance');
   public saveAnalyticsTab = () => this.saveTab('analytics');
   public saveMapsTab = () => this.saveTab('maps');
@@ -135,6 +139,10 @@ export class InstanceSettingsFormComponent implements OnInit {
     return this.instanceSettingsForm.get('general') as FormGroup;
   }
 
+  storageGroup(): FormGroup {
+    return this.instanceSettingsForm.get('storage') as FormGroup;
+  }
+
   appearanceGroup(): FormGroup {
     return this.instanceSettingsForm.get('appearance') as FormGroup;
   }
@@ -146,6 +154,9 @@ export class InstanceSettingsFormComponent implements OnInit {
   private buildForm() {
     this.instanceSettingsForm = this.fb.group({
       general: createGeneralFormGroup(this.fb),
+      storage: this.fb.group({
+        videoUploadsEnabled: [false],
+      }),
       appearance: this.fb.group({
         logoImage: [null],
         darkLogoImage: [null],
@@ -192,6 +203,9 @@ export class InstanceSettingsFormComponent implements OnInit {
         rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
         language: this.instanceSettings.language,
         timezone: this.instanceSettings.timezone,
+      },
+      storage: {
+        videoUploadsEnabled: this.instanceSettings.videoUploadsEnabled,
       },
       appearance: {
         logoImage: this.instanceSettings.logoImage,
@@ -272,6 +286,11 @@ export class InstanceSettingsFormComponent implements OnInit {
     if (tab === 'general') {
       return InstanceSettings.serializeGeneralPatch(
         this.generalGroup().getRawValue(),
+      );
+    }
+    if (tab === 'storage') {
+      return InstanceSettings.serializeStoragePatch(
+        this.storageGroup().getRawValue(),
       );
     }
     if (tab === 'appearance') {
