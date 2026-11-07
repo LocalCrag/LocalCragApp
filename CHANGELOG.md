@@ -1,3 +1,11 @@
+# [1.71.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.70.0...v1.71.0) (2026-11-07)
+
+
+### Features
+
+* **account:** add session progression chart in gym mode ([#1342](https://github.com/LocalCrag/LocalCragApp/issues/1342)) ([335ff7d](https://github.com/LocalCrag/LocalCragApp/commit/335ff7d5674f266a1b1413c18544c7c6172d3b2f)), closes [#595](https://github.com/LocalCrag/LocalCragApp/issues/595)
+* **topo:** add community grade diagram and rating breakdown for lines ([#1343](https://github.com/LocalCrag/LocalCragApp/issues/1343)) ([b14a664](https://github.com/LocalCrag/LocalCragApp/commit/b14a6641c977436cb1750d2536e99c5c602796d4)), closes [#688](https://github.com/LocalCrag/LocalCragApp/issues/688)
+
 # [1.70.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.69.0...v1.70.0) (2026-11-07)
 
 
