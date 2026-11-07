@@ -129,7 +129,7 @@
     >
       <i class="pi pi-video"></i>
     </button>
-      <p-menu
+    <p-menu
       #videoMenu
       [model]="videoMenuItems"
       [popup]="true"
@@ -217,7 +217,7 @@
   </button>
 </div>
 
-@if (panel === 'link') {
+@if (panel === "link") {
   <p-dialog
     [header]="'wysiwygEditor.link' | transloco"
     [visible]="true"
@@ -260,7 +260,7 @@
   </p-dialog>
 }
 
-@if (panel === 'video' && videoSource === 'link') {
+@if (panel === "video" && videoSource === "link") {
   <p-dialog
     [header]="'wysiwygEditor.videoLink' | transloco"
     [visible]="true"
@@ -296,7 +296,7 @@
   </p-dialog>
 }
 
-@if (panel === 'size') {
+@if (panel === "size") {
   <p-dialog
     [header]="'wysiwygEditor.size' | transloco"
     [visible]="true"
@@ -316,7 +316,7 @@
           optionValue="value"
           [allowEmpty]="false"
         />
-        @if (sizeForm.controls.mode.value === 'px') {
+        @if (sizeForm.controls.mode.value === "px") {
           <div class="flex flex-col gap-2" lcControlGroup>
             <input
               pInputText
@@ -343,7 +343,7 @@
   </p-dialog>
 }
 
-@if (panel === 'video' && videoSource === 'upload') {
+@if (panel === "video" && videoSource === "upload") {
   <p-dialog
     [header]="'wysiwygEditor.uploadVideo' | transloco"
     [visible]="true"
