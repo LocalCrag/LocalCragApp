@@ -1,3 +1,11 @@
+# [1.70.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.69.0...v1.70.0) (2026-11-07)
+
+
+### Features
+
+* **core:** add option to activate soft gating ([#1340](https://github.com/LocalCrag/LocalCragApp/issues/1340)) ([a81248d](https://github.com/LocalCrag/LocalCragApp/commit/a81248d5a3172141c451ab60b2675dd98d8af98c)), closes [#858](https://github.com/LocalCrag/LocalCragApp/issues/858)
+* **topo:** allow videos for ascents and allow video file upload ([#1339](https://github.com/LocalCrag/LocalCragApp/issues/1339)) ([d03fbd8](https://github.com/LocalCrag/LocalCragApp/commit/d03fbd85ac0feb7c8bcc03cdb02068469901a511)), closes [#765](https://github.com/LocalCrag/LocalCragApp/issues/765)
+
 # [1.69.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.68.0...v1.69.0) (2026-11-06)
 
 
