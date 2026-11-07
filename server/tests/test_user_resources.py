@@ -390,6 +390,7 @@ def test_successful_get_user_statistics(client):
     assert rv.status_code == 200
     res = rv.json
     assert res["ascentsPerYear"] == {"2024": 1}
+    assert res["sessions"] == [{"date": "2024-04-16", "lineType": "BOULDER", "gradeScale": "FB", "grades": [22]}]
     totals = res["ascentTotals"]
     assert totals["total"] == 1
     assert totals["flashCount"] == 0
@@ -420,6 +421,54 @@ def test_successful_get_user_statistics(client):
     assert "galleryImagesUploaded" in res["social"]
     assert "moderation" in res
     assert res["moderation"]["cragsCreated"] >= 0
+
+
+def test_user_statistics_sessions_group_ranking_points(client):
+    """A session is one day. Points are the ranking grade, not the personal opinion."""
+    from models.area import Area
+    from models.ascent import Ascent
+    from models.enums.line_type_enum import LineTypeEnum
+    from models.enums.starting_position_enum import StartingPositionEnum
+    from models.line import Line
+
+    admin = User.find_by_email("admin@localcrag.invalid.org")
+    area_id = Area.get_id_by_slug("shark-attack")
+
+    def add_ascent(name, line_type, scale, author_grade, user_grade, ascent_date):
+        line = Line()
+        line.name = name
+        line.type = line_type
+        line.area_id = area_id
+        line.grade_scale = scale
+        line.author_grade_value = author_grade
+        line.user_grade_value = user_grade
+        line.starting_position = StartingPositionEnum.STAND
+        db.session.add(line)
+        db.session.flush()
+
+        ascent = Ascent()
+        ascent.grade_value = 1
+        ascent.date = ascent_date
+        ascent.ascent_date = ascent_date
+        ascent.created_by_id = admin.id
+        ascent.line_id = line.id
+        db.session.add(ascent)
+
+    add_ascent("Session Hard", LineTypeEnum.BOULDER, "FB", 18, 8, "2024-05-01")
+    add_ascent("Session Easy", LineTypeEnum.BOULDER, "FB", 10, 4, "2024-05-01")
+    add_ascent("Session Project", LineTypeEnum.BOULDER, "FB", -1, -1, "2024-05-01")
+    add_ascent("Session Route", LineTypeEnum.SPORT, "UIAA", 15, 12, "2024-05-01")
+    add_ascent("Session Later", LineTypeEnum.BOULDER, "FB", 30, 30, "2024-06-02")
+    db.session.commit()
+
+    sessions = {
+        (row["date"], row["lineType"], row["gradeScale"]): row["grades"]
+        for row in client.get(f"/api/users/{admin.slug}/statistics").json["sessions"]
+    }
+    assert sessions[("2024-04-16", "BOULDER", "FB")] == [22]
+    assert sessions[("2024-05-01", "BOULDER", "FB")] == [18, 10]
+    assert sessions[("2024-05-01", "SPORT", "UIAA")] == [15]
+    assert sessions[("2024-06-02", "BOULDER", "FB")] == [30]
 
 
 def test_user_statistics_shared_ranks_on_tied_scores(client):

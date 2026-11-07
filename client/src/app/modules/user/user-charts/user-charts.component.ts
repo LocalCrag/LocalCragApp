@@ -11,6 +11,8 @@ import { UsersService } from '../../../services/crud/users.service';
 import { User } from '../../../models/user';
 import { CompletionComponent } from '../completion/completion.component';
 import { AscentsPerYearChartComponent } from '../ascents-per-year-chart/ascents-per-year-chart.component';
+import { SessionPointsChartComponent } from '../session-points-chart/session-points-chart.component';
+import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { GradeDistribution } from '../../../models/scale';
 import { SkeletonModule } from 'primeng/skeleton';
 import {
@@ -35,6 +37,8 @@ import { ThemeService } from '../../../services/core/theme.service';
     AsyncPipe,
     GradeDistributionBarChartComponent,
     AscentsPerYearChartComponent,
+    SessionPointsChartComponent,
+    GymModeDirective,
     TranslocoDirective,
     SkeletonModule,
     CompletionComponent,
