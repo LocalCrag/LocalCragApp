@@ -39,8 +39,18 @@ export type GlobalRank = {
   rankTotalCount: number | null;
 };
 
+/** Ranking-point grades climbed on one day, for one line type and scale. */
+export type UserSession = {
+  date: string;
+  lineType: LineType;
+  gradeScale: string;
+  /** Highest ranking grade first. Projects are omitted. */
+  grades: number[];
+};
+
 export type UserStatistics = {
   ascentsPerYear: Record<string, number>;
+  sessions: UserSession[];
   ascentTotals: UserAscentTotals;
   globalRankByLineType: Partial<Record<LineType, number | null>>;
   /** Global rank when leaderboard is sorted by top-50 score (then top 10, then total). */
@@ -61,6 +71,7 @@ export class UserStatisticsModel {
   public static deserialize(payload: any): UserStatistics {
     return {
       ascentsPerYear: payload.ascentsPerYear ?? {},
+      sessions: (payload.sessions ?? []) as UserSession[],
       ascentTotals: {
         total: payload.ascentTotals?.total ?? 0,
         flashCount: payload.ascentTotals?.flashCount ?? 0,

@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.session-hint {
+  margin: 0 0 0.75rem;
+  color: var(--p-text-muted-color);
+}
+
+.session-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.session-chart-scroll {
+  overflow-x: auto;
+  height: auto;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--p-border-radius-md, 6px);
+  border: 1px solid var(--p-content-border-color);
+  border-left: 4px solid var(--p-blue-500);
+  background: color-mix(
+    in srgb,
+    var(--p-blue-500) 12%,
+    var(--p-content-background)
+  );
+  box-sizing: border-box;
+}
+
+.session-chart-wrap {
+  height: 260px;
+  min-width: 100%;
+}
+
+.session-chart-wrap p-chart,
+.session-chart-wrap p-chart > div {
+  display: block;
+  height: 100%;
+}
+
+.session-breakdown {
+  margin-top: 0.75rem;
+}
+
+.session-breakdown-title {
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+
+.session-breakdown ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
