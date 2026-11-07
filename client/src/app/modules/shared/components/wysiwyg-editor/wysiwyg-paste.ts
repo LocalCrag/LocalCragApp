@@ -90,6 +90,7 @@ export function stripFontSizeAndHeadings(html: string): string {
       }
       element.replaceWith(paragraph);
       changed = cleanElementStyle(paragraph) || changed;
+      changed = moveBlockColorOntoText(paragraph) || changed;
       changed = true;
       continue;
     }
@@ -102,6 +103,7 @@ export function stripFontSizeAndHeadings(html: string): string {
       }
     }
     changed = cleanElementStyle(element) || changed;
+    changed = moveBlockColorOntoText(element) || changed;
   }
   return changed ? doc.body.innerHTML : html;
 }
@@ -475,6 +477,27 @@ function wrapInStrong(element: HTMLElement) {
   const strong = document.createElement('strong');
   strong.append(...element.childNodes);
   element.append(strong);
+}
+
+/** Paragraph color is not a Lexical block style, so keep it on the text. */
+function moveBlockColorOntoText(element: HTMLElement): boolean {
+  const tag = element.tagName.toLowerCase();
+  if (tag === 'span' || tag === 'font' || element.childNodes.length === 0) {
+    return false;
+  }
+  const color = element.style.color;
+  if (!color) {
+    return false;
+  }
+  const span = element.ownerDocument.createElement('span');
+  span.style.color = color;
+  span.append(...element.childNodes);
+  element.append(span);
+  element.style.removeProperty('color');
+  if (!element.getAttribute('style')?.trim()) {
+    element.removeAttribute('style');
+  }
+  return true;
 }
 
 function cleanElementStyle(element: HTMLElement): boolean {
