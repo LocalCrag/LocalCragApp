@@ -148,8 +148,7 @@
       }
     </div>
     @if (
-      !replyActive && !comment.isDeleted && !editModeActive && isLoggedIn$
-        | async
+      !replyActive && !comment.isDeleted && !editModeActive && showReplyButton
     ) {
       <div>
         <p-button
@@ -157,7 +156,7 @@
           size="small"
           severity="primary"
           styleClass="reply-button"
-          (click)="setReplyActive()"
+          (click)="onReplyClick()"
         >
           {{ t("reply") }}
         </p-button>

@@ -24,13 +24,19 @@ import {
 import { CommentsService } from '../../../services/crud/comments.service';
 import { Button } from 'primeng/button';
 import { CommentsSkeletonComponent } from '../comments-skeleton/comments-skeleton.component';
-import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CommentComponent } from '../comment/comment.component';
 import { CommentsContextService } from '../comments-context.service';
 import { ApiQueryParams } from '../../../utility/http/query-params';
+import { Store } from '@ngrx/store';
+import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
+import { selectSoftGating } from '../../../ngrx/selectors/instance-settings.selectors';
+import { combineLatest } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
+import { TranslocoService } from '@jsverse/transloco';
+import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
 
 @Component({
   selector: 'lc-comments',
@@ -38,7 +44,6 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
     CommentEditorComponent,
     Button,
     CommentsSkeletonComponent,
-    HasPermissionDirective,
     InfiniteScrollDirective,
     Message,
     TranslocoDirective,
@@ -46,7 +51,7 @@ import { ApiQueryParams } from '../../../utility/http/query-params';
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
-  providers: [CommentsContextService],
+  providers: [CommentsContextService, DialogService],
 })
 export class CommentsComponent implements OnChanges, PaginatedListView {
   /** Target entity to list/create comments for. */
@@ -61,10 +66,27 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.DEFAULT;
   public commentsContextService = inject(CommentsContextService);
+  public loggedIn = false;
+  public softGating = false;
 
   private destroyRef = inject(DestroyRef);
+  private dialogService = inject(DialogService);
+  private translocoService = inject(TranslocoService);
+  private store = inject(Store);
   private commentsService = inject(CommentsService);
   private cdr = inject(ChangeDetectorRef);
+
+  constructor() {
+    combineLatest([
+      this.store.select(selectIsLoggedIn),
+      this.store.select(selectSoftGating),
+    ])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([loggedIn, softGating]) => {
+        this.loggedIn = loggedIn;
+        this.softGating = softGating;
+      });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['object'] || !this.object?.id) {
@@ -114,6 +136,10 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
           this.cdr.detectChanges();
         },
       });
+  }
+
+  promptForAccount(): void {
+    openAccountPrompt(this.dialogService, this.translocoService);
   }
 
   onCommentCreated(comment: Comment): void {

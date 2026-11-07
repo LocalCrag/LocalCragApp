@@ -75,6 +75,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "suggestionsEnabled": instance_settings.suggestions_enabled,
         "moderatorGameEnabled": instance_settings.moderator_game_enabled,
         "videoUploadsEnabled": instance_settings.video_uploads_enabled,
+        "softGating": instance_settings.soft_gating,
         "faDefaultFormat": instance_settings.fa_default_format.value,
         "defaultStartingPosition": instance_settings.default_starting_position.value,
         "rankingPastWeeks": instance_settings.ranking_past_weeks,
@@ -126,6 +127,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.suggestions_enabled = instance_settings_data["suggestionsEnabled"]
     instance_settings.moderator_game_enabled = instance_settings_data["moderatorGameEnabled"]
     instance_settings.video_uploads_enabled = instance_settings_data["videoUploadsEnabled"]
+    instance_settings.soft_gating = instance_settings_data["softGating"]
     instance_settings.fa_default_format = instance_settings_data["faDefaultFormat"]
     instance_settings.default_starting_position = instance_settings_data["defaultStartingPosition"]
     instance_settings.ranking_past_weeks = instance_settings_data["rankingPastWeeks"]

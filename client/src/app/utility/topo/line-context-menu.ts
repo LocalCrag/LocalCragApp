@@ -24,6 +24,7 @@ export interface LineContextMenuActions {
 
 export interface LineContextMenuState {
   loggedIn: boolean;
+  softGating?: boolean;
   isTodo: boolean;
   ticked: boolean;
   highlighted: boolean;
@@ -91,7 +92,7 @@ export function buildLineContextMenuItems(
   }
 
   const canTick =
-    state.loggedIn &&
+    (state.loggedIn || state.softGating === true) &&
     (state.publicationStatus === 'published' ||
       state.publicationStatus === 'archived');
 

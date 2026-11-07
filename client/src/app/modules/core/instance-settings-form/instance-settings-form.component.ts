@@ -198,6 +198,7 @@ export class InstanceSettingsFormComponent implements OnInit {
         noClosedProjects: this.instanceSettings.noClosedProjects,
         suggestionsEnabled: this.instanceSettings.suggestionsEnabled,
         moderatorGameEnabled: this.instanceSettings.moderatorGameEnabled,
+        softGating: this.instanceSettings.softGating,
         faDefaultFormat: this.instanceSettings.faDefaultFormat,
         defaultStartingPosition: this.instanceSettings.defaultStartingPosition,
         rankingPastWeeks: this.instanceSettings.rankingPastWeeks,
