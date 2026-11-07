@@ -35,6 +35,8 @@ _listeners_registered = False
 _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 _ATTR_URLS = re.compile(r"""(?:src|srcset)\s*=\s*["']([^"']+)["']""", re.I)
+# Text columns that are plain values, not HTML that can embed a file.
+_PLAIN_TEXT_COLUMNS = {("videos", "url")}
 _UUID_STEM = re.compile(
     r"^(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
 )
@@ -80,6 +82,7 @@ def embedded_file_fields() -> dict[type, tuple[str, ...]]:
             and attr.columns[0].table is table
             and isinstance(attr.columns[0].type, Text)
             and _IDENTIFIER.match(attr.key)
+            and (table.name, attr.key) not in _PLAIN_TEXT_COLUMNS
         )
         if not fields:
             continue

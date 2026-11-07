@@ -5,8 +5,9 @@ Revises: a7c3e1b94d20
 Create Date: 2026-11-06
 
 Existing JSON entries on lines are copied in their original order. An ascent
-has at most one video, enforced when the table is created. The JSON column is
-then removed.
+has at most one video. The JSON column is then removed. Fresh databases already
+have the table from d0e5a2c84b17; databases that passed that point before this
+branch create it here.
 """
 
 import sqlalchemy as sa
@@ -60,38 +61,39 @@ _COPY_LINE_VIDEOS = sa.text(
 
 
 def upgrade():
-    op.create_table(
-        "videos",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("line_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("ascent_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("order_index", sa.Integer(), server_default="0", nullable=False),
-        sa.Column("url", sa.Text(), nullable=False),
-        sa.Column("title", sa.String(length=120), server_default="Video", nullable=False),
-        sa.Column("source", sa.String(length=20), nullable=True),
-        sa.Column("file_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("start_seconds", sa.Integer(), nullable=True),
-        sa.Column("created_by_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("time_created", sa.DateTime(), nullable=True),
-        sa.Column("time_updated", sa.DateTime(), nullable=True),
-        sa.CheckConstraint(
-            "(line_id IS NOT NULL AND ascent_id IS NULL) OR (line_id IS NULL AND ascent_id IS NOT NULL)",
-            name="videos_one_owner",
-        ),
-        sa.UniqueConstraint(
-            "ascent_id",
-            name="uq_videos_one_per_ascent",
-            deferrable=True,
-            initially="DEFERRED",
-        ),
-        sa.ForeignKeyConstraint(["ascent_id"], ["ascents.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["created_by_id"], ["users.id"], ondelete="SET NULL"),
-        sa.ForeignKeyConstraint(["file_id"], ["files.id"], ondelete="SET NULL"),
-        sa.ForeignKeyConstraint(["line_id"], ["lines.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index("ix_videos_line_id", "videos", ["line_id"])
-    op.create_index("ix_videos_ascent_id", "videos", ["ascent_id"])
+    if not sa.inspect(op.get_bind()).has_table("videos"):
+        op.create_table(
+            "videos",
+            sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
+            sa.Column("line_id", postgresql.UUID(as_uuid=True), nullable=True),
+            sa.Column("ascent_id", postgresql.UUID(as_uuid=True), nullable=True),
+            sa.Column("order_index", sa.Integer(), server_default="0", nullable=False),
+            sa.Column("url", sa.Text(), nullable=False),
+            sa.Column("title", sa.String(length=120), server_default="Video", nullable=False),
+            sa.Column("source", sa.String(length=20), nullable=True),
+            sa.Column("file_id", postgresql.UUID(as_uuid=True), nullable=True),
+            sa.Column("start_seconds", sa.Integer(), nullable=True),
+            sa.Column("created_by_id", postgresql.UUID(as_uuid=True), nullable=True),
+            sa.Column("time_created", sa.DateTime(), nullable=True),
+            sa.Column("time_updated", sa.DateTime(), nullable=True),
+            sa.CheckConstraint(
+                "(line_id IS NOT NULL AND ascent_id IS NULL) OR (line_id IS NULL AND ascent_id IS NOT NULL)",
+                name="videos_one_owner",
+            ),
+            sa.UniqueConstraint(
+                "ascent_id",
+                name="uq_videos_one_per_ascent",
+                deferrable=True,
+                initially="DEFERRED",
+            ),
+            sa.ForeignKeyConstraint(["ascent_id"], ["ascents.id"], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(["created_by_id"], ["users.id"], ondelete="SET NULL"),
+            sa.ForeignKeyConstraint(["file_id"], ["files.id"], ondelete="SET NULL"),
+            sa.ForeignKeyConstraint(["line_id"], ["lines.id"], ondelete="CASCADE"),
+            sa.PrimaryKeyConstraint("id"),
+        )
+        op.create_index("ix_videos_line_id", "videos", ["line_id"])
+        op.create_index("ix_videos_ascent_id", "videos", ["ascent_id"])
     op.execute(_COPY_LINE_VIDEOS)
     op.drop_column("lines", "videos")
 
