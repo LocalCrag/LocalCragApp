@@ -1,0 +1,66 @@
+<ng-container *transloco="let t; read: 'user.charts'">
+  @if (sessions?.length) {
+    <p class="session-hint">{{ t("sessionsHint") }}</p>
+    <div class="session-controls">
+      <p-selectbutton
+        [options]="metricOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="metric"
+        (ngModelChange)="onControlsChange()"
+        [allowEmpty]="false"
+        data-cy="session-points-metric"
+      />
+      @if (rangeOptions.length > 1) {
+        <p-selectbutton
+          [options]="rangeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="range"
+          (ngModelChange)="onControlsChange()"
+          [allowEmpty]="false"
+          data-cy="session-points-range"
+        />
+      }
+      @if (scaleOptions.length > 1) {
+        <p-select
+          [options]="scaleOptions"
+          optionLabel="label"
+          optionValue="key"
+          [(ngModel)]="scaleKey"
+          (ngModelChange)="onScaleChange()"
+          appendTo="body"
+          [attr.aria-label]="t('sessionScale')"
+          data-cy="session-points-scale"
+        />
+      }
+    </div>
+  }
+
+  @if (bars.length && chartData) {
+    <div
+      class="session-chart-scroll charts-section-box charts-section-box--blue"
+      data-cy="session-points-chart"
+    >
+      <div class="session-chart-wrap" [style.minWidth.px]="chartMinWidth">
+        <p-chart type="line" [data]="chartData" [options]="chartOptions" />
+      </div>
+      @if (selectedBar()) {
+        <div class="session-breakdown" data-cy="session-points-breakdown">
+          <p class="session-breakdown-title">{{ selectedTitle() }}</p>
+          <ul>
+            @for (row of selectedRows(); track row.gradeValue) {
+              <li>{{ gradeCountLabel(row) }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  } @else {
+    <p-message
+      severity="info"
+      icon="pi pi-info-circle"
+      [text]="t('noSessionData')"
+    />
+  }
+</ng-container>

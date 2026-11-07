@@ -188,6 +188,16 @@
         </div>
       }
 
+      <ng-container *isGymMode="true">
+        <h3 class="charts-section-title charts-section-title--sessions">
+          {{ t("sessions") }}
+        </h3>
+        <lc-session-points-chart
+          [sessions]="stats.sessions"
+          [barChartColor]="barChartColor"
+        />
+      </ng-container>
+
       <h3 class="charts-section-title charts-section-title--ascentsPerYear">
         {{ t("ascentsPerYear") }}
       </h3>
@@ -246,6 +256,15 @@
           </div>
         }
       </div>
+
+      <ng-container *isGymMode="true">
+        <h3 class="charts-section-title charts-section-title--sessions">
+          <p-skeleton width="12rem" height="1.2rem" />
+        </h3>
+        <div class="charts-section-box charts-section-box--blue">
+          <p-skeleton width="100%" height="220px" />
+        </div>
+      </ng-container>
 
       <h3 class="charts-section-title charts-section-title--ascentsPerYear">
         <p-skeleton width="11rem" height="1.2rem" />
