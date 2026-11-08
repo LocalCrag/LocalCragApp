@@ -1,3 +1,10 @@
+## [1.71.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.71.0...v1.71.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **topo:** update tabu hold opacity for better visibility ([#1346](https://github.com/LocalCrag/LocalCragApp/issues/1346)) ([563d085](https://github.com/LocalCrag/LocalCragApp/commit/563d085d012bc904f732c30363f2922f9ae8c4a5)), closes [#1344](https://github.com/LocalCrag/LocalCragApp/issues/1344)
+
 # [1.71.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.70.0...v1.71.0) (2026-11-07)
 
 
