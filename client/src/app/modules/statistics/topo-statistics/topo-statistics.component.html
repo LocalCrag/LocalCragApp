@@ -1,9 +1,9 @@
 <ng-container *transloco="let t">
   <div class="p-6" data-cy="topo-statistics">
     @if (failed) {
-      <p-message
-        severity="error"
-        icon="pi pi-times-circle">{{ t('topoStatistics.loadError') }}</p-message>
+      <p-message severity="error" icon="pi pi-times-circle">{{
+        t("topoStatistics.loadError")
+      }}</p-message>
     } @else if (loading || !stats) {
       <div class="stat-grid">
         @for (_ of [1, 2, 3, 4]; track $index) {
@@ -34,9 +34,9 @@
             <div class="completion-percent">{{ completionPercent }}%</div>
           </div>
         } @else {
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle">{{ t('topoStatistics.completionEmpty') }}</p-message>
+          <p-message severity="info" icon="pi pi-info-circle">{{
+            t("topoStatistics.completionEmpty")
+          }}</p-message>
         }
       }
 
@@ -116,9 +116,9 @@
             />
           </div>
         } @else {
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle">{{ t('topoStatistics.noGradeVotes') }}</p-message>
+          <p-message severity="info" icon="pi pi-info-circle">{{
+            t("topoStatistics.noGradeVotes")
+          }}</p-message>
         }
       }
 
@@ -142,9 +142,9 @@
           />
         </div>
       } @else {
-        <p-message
-          severity="info"
-          icon="pi pi-info-circle">{{ t('topoStatistics.noRatings') }}</p-message>
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t("topoStatistics.noRatings")
+        }}</p-message>
       }
 
       <h3 class="section-title section-title--heatmap">
@@ -190,9 +190,9 @@
           </div>
         </div>
       } @else {
-        <p-message
-          severity="info"
-          icon="pi pi-info-circle">{{ t('topoStatistics.heatmapEmpty') }}</p-message>
+        <p-message severity="info" icon="pi pi-info-circle">{{
+          t("topoStatistics.heatmapEmpty")
+        }}</p-message>
       }
 
       <h3 class="section-title section-title--years">
@@ -281,9 +281,9 @@
             }
           </ul>
         } @else {
-          <p-message
-            severity="info"
-            icon="pi pi-info-circle">{{ t('topoStatistics.noPopularLines') }}</p-message>
+          <p-message severity="info" icon="pi pi-info-circle">{{
+            t("topoStatistics.noPopularLines")
+          }}</p-message>
         }
       }
 

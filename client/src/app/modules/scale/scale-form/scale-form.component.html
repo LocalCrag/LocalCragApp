@@ -188,10 +188,9 @@
         <div class="col-span-12 mt-2" lcControlGroup>
           <ng-container formArrayName="grades" lcFormArray>
             <ng-container *lcIfError="'not_unique'">
-              <p-message
-                severity="error"
-               
-                styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
+              <p-message severity="error" styleClass="min-w-full mb-6">{{
+                t("valuesNotUnique")
+              }}</p-message>
             </ng-container>
           </ng-container>
         </div>
@@ -308,22 +307,19 @@
       <div lcControlGroup>
         <ng-container formArrayName="stackedChartBrackets" lcFormArray>
           <ng-container *lcIfError="'not_unique'">
-            <p-message
-              severity="error"
-             
-              styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
+            <p-message severity="error" styleClass="min-w-full mb-6">{{
+              t("valuesNotUnique")
+            }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
-            <p-message
-              severity="error"
-             
-              styleClass="min-w-full mb-6">{{ t('gradeBracketsErrorMsg') }}</p-message>
+            <p-message severity="error" styleClass="min-w-full mb-6">{{
+              t("gradeBracketsErrorMsg")
+            }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
-            <p-message
-              severity="error"
-             
-              styleClass="min-w-full mb-6">{{ t('gradeBracketsInvalidLength', { min: 2 }) }}</p-message>
+            <p-message severity="error" styleClass="min-w-full mb-6">{{
+              t("gradeBracketsInvalidLength", { min: 2 })
+            }}</p-message>
           </ng-container>
         </ng-container>
       </div>
@@ -421,22 +417,19 @@
       <div lcControlGroup>
         <ng-container formArrayName="barChartBrackets" lcFormArray>
           <ng-container *lcIfError="'not_unique'">
-            <p-message
-              severity="error"
-             
-              styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
+            <p-message severity="error" styleClass="min-w-full mb-6">{{
+              t("valuesNotUnique")
+            }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
-            <p-message
-              severity="error"
-             
-              class="min-w-full mb-6">{{ t('gradeBracketsErrorMsg') }}</p-message>
+            <p-message severity="error" class="min-w-full mb-6">{{
+              t("gradeBracketsErrorMsg")
+            }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
-            <p-message
-              severity="error"
-             
-              class="min-w-full mb-6">{{ t('gradeBracketsInvalidLength', { min: 2 }) }}</p-message>
+            <p-message severity="error" class="min-w-full mb-6">{{
+              t("gradeBracketsInvalidLength", { min: 2 })
+            }}</p-message>
           </ng-container>
         </ng-container>
       </div>

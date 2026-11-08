@@ -11,9 +11,9 @@
       </div>
 
       @if (notifications.length === 0) {
-        <p-message
-          severity="info"
-          styleClass="w-full">{{ t('notificationsEmpty') }}</p-message>
+        <p-message severity="info" styleClass="w-full">{{
+          t("notificationsEmpty")
+        }}</p-message>
       } @else {
         <div class="notifications-page-list">
           @for (notification of notifications; track notification.id) {

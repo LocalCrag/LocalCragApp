@@ -146,10 +146,8 @@
                       class="flex table-header flex-col sm:flex-row gap-2 items-center"
                     >
                       @if (topoImage.linePaths.length === 0) {
-                        <p-message
-                          severity="info"
-                         
-                        >{{ t('noLineAssignedToTopoImage') }}
+                        <p-message severity="info"
+                          >{{ t("noLineAssignedToTopoImage") }}
                         </p-message>
                       }
                       @if (topoImage.linePaths.length > 0) {

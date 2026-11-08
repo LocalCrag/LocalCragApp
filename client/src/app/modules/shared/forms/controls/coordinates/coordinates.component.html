@@ -50,29 +50,22 @@
   @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
     <div class="mt-6">
       @if (coordinatesLoadingSuccess && !positionLoading) {
-        <p-message
-          severity="success"
-         
-        >{{
-            t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
-          }}</p-message>
+        <p-message severity="success">{{
+          t("coordinatesLoadedSuccessfullyWithAccuracyX", { x: accuracy })
+        }}</p-message>
       }
       @if (coordinatesLoadingSuccess && positionLoading) {
-        <p-message
-          severity="success"
-         
-        >{{
-            t(
-              'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
-              { x: accuracy }
-            )
-          }}</p-message>
+        <p-message severity="success">{{
+          t(
+            "coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement",
+            { x: accuracy }
+          )
+        }}</p-message>
       }
       @if (coordinatesLoadingError) {
-        <p-message
-          severity="error"
-         
-        >{{ t('coordinatesCouldNotBeLoaded') }}</p-message>
+        <p-message severity="error">{{
+          t("coordinatesCouldNotBeLoaded")
+        }}</p-message>
       }
     </div>
   }

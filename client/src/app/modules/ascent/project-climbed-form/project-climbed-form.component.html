@@ -1,9 +1,6 @@
 <ng-container *transloco="let t; read: 'projectClimbedForm'">
   <form [formGroup]="projectClimbedForm" lcForm>
-    <p-message
-      severity="info"
-     
-    >{{ t('projectClimbedInfoMessage') }}</p-message>
+    <p-message severity="info">{{ t("projectClimbedInfoMessage") }}</p-message>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <textarea

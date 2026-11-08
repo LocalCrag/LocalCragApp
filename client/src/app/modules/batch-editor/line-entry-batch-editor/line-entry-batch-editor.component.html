@@ -132,9 +132,9 @@
                   ></p-button>
                 </div>
                 @if (getDisplayUserGrades() | async) {
-                  <p-message
-                    styleClass="mt-12"
-                    severity="warn">{{ t('displayUserGradesActive') }}</p-message>
+                  <p-message styleClass="mt-12" severity="warn">{{
+                    t("displayUserGradesActive")
+                  }}</p-message>
                 }
                 <div class="flex pt-6 justify-between">
                   <div class="lc-button-group">

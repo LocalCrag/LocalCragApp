@@ -3,10 +3,8 @@
     <p-chart type="line" [data]="data" [options]="options" />
   }
   @if (seasonEmpty) {
-    <p-message
-      severity="info"
-      icon="pi pi-info-circle"
-     
-    >{{ t('noDataAvailable') }}</p-message>
+    <p-message severity="info" icon="pi pi-info-circle">{{
+      t("noDataAvailable")
+    }}</p-message>
   }
 </ng-container>

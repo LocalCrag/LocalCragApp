@@ -77,13 +77,13 @@
       (mode === "stacked" && stacked && stacked.gradedCount === 0) ||
       (mode === "bar" && bar && bar.gradedCount === 0)
     ) {
-      <p-message
-        severity="info"
-        icon="pi pi-info-circle">{{ t('scale.scaleForm.bracketPreviewNoGrades') }}</p-message>
+      <p-message severity="info" icon="pi pi-info-circle">{{
+        t("scale.scaleForm.bracketPreviewNoGrades")
+      }}</p-message>
     } @else {
-      <p-message
-        severity="info"
-        icon="pi pi-info-circle">{{ t('scale.scaleForm.bracketPreviewUnavailable') }}</p-message>
+      <p-message severity="info" icon="pi pi-info-circle">{{
+        t("scale.scaleForm.bracketPreviewUnavailable")
+      }}</p-message>
     }
   </div>
 </ng-container>

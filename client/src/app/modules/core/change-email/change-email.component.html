@@ -8,16 +8,13 @@
       }
 
       @if (!loading && !error) {
-        <p-message
-          severity="success"
-         
-        >{{ t('emailChangedSuccessfully') }}
+        <p-message severity="success"
+          >{{ t("emailChangedSuccessfully") }}
         </p-message>
       }
 
       @if (!loading && error) {
-        <p-message severity="error">{{ t('emailChangeError') }}
-        </p-message>
+        <p-message severity="error">{{ t("emailChangeError") }} </p-message>
       }
 
       @if (!loading && !error) {

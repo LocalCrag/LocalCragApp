@@ -126,9 +126,9 @@
             "validation.required" | transloco
           }}</small>
           @if (getDisplayUserGrades() | async) {
-            <p-message
-              styleClass="mt-2"
-              severity="warn">{{ t('displayUserGradesActive') }}</p-message>
+            <p-message styleClass="mt-2" severity="warn">{{
+              t("displayUserGradesActive")
+            }}</p-message>
           }
         </div>
         @if (showAssumedGradeBounds) {
@@ -272,9 +272,9 @@
             data-cy="rating"
           ></p-rating>
           @if (getDisplayUserRatings() | async) {
-            <p-message
-              styleClass="mt-2"
-              severity="warn">{{ t('displayUserRatingsActive') }}</p-message>
+            <p-message styleClass="mt-2" severity="warn">{{
+              t("displayUserRatingsActive")
+            }}</p-message>
           }
         </div>
         <div class="flex flex-col gap-2">

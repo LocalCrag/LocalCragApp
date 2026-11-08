@@ -4,8 +4,8 @@
       <p-chart type="bar" [data]="yearChartData" [options]="yearChartOptions" />
     </div>
   } @else {
-    <p-message
-      severity="info"
-      icon="pi pi-info-circle">{{ emptyText || t('noAscentYearData') }}</p-message>
+    <p-message severity="info" icon="pi pi-info-circle">{{
+      emptyText || t("noAscentYearData")
+    }}</p-message>
   }
 </ng-container>

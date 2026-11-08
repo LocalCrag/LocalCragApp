@@ -4,11 +4,9 @@
       warning of warnings;
       track warning.startsOn + (warning.reason ?? "")
     ) {
-      <p-message
-        severity="warn"
-       
-        styleClass="w-full"
-      >{{ warningText(warning) }}</p-message>
+      <p-message severity="warn" styleClass="w-full">{{
+        warningText(warning)
+      }}</p-message>
     }
   </div>
 </ng-container>
