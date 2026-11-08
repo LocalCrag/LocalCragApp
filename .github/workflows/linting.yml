@@ -96,3 +96,13 @@ jobs:
             helm template localcrag helm/localcrag -f "$values" > /dev/null
             echo "::endgroup::"
           done
+
+      # The backup job must use the published image and must not apt-get at runtime.
+      - name: Assert backup image
+        run: |
+          rendered=$(helm template localcrag helm/localcrag -f helm/localcrag/ci/seaweedfs-values.yaml -s templates/backup-cronjob.yaml)
+          echo "$rendered" | grep -q 'image: "ghcr.io/localcrag/localcrag-backup:'
+          if echo "$rendered" | grep -q 'apt-get'; then
+            echo "backup CronJob still installs packages at runtime"
+            exit 1
+          fi

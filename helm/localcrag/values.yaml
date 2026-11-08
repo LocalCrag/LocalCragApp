@@ -177,11 +177,21 @@ client:
 # Scheduled backups for Postgres and object storage.
 #
 # This creates a single CronJob that backs up both the database and files together.
-# The backup container uses the postgres image (includes pg_dump) and installs rclone at runtime.
+# The backup image already contains pg_dump and rclone (see backup/Dockerfile).
 # Set backups.enabled=true to enable backups, backups.enabled=false to disable.
 # You must provide S3 credentials in your Secret (see README for required keys).
 backups:
   enabled: true
+
+  # Published by .github/workflows/publish-docker.yml.
+  # Built FROM postgres:${postgres.image.tag} so pg_dump matches the database.
+  # The app version tag is bumped on release. The same image is also published
+  # under the Postgres tag (for example 17.7). If you change postgres.image.tag,
+  # point this tag at an image built from that Postgres version.
+  image:
+    repository: ghcr.io/localcrag/localcrag-backup
+    tag: 1.71.0
+    pullPolicy: IfNotPresent
 
   # Combined backup schedule (single CronJob / single Pod).
   schedule: "0 2 * * *"
