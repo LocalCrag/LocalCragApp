@@ -15,6 +15,9 @@ jobs:
 
   build-and-publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     if: >
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
@@ -69,5 +72,46 @@ jobs:
           else
             TAG=next
             docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+            docker push $IMAGE_NAME:$TAG
+          fi
+
+      - name: Build and push backup Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/localcrag/localcrag-backup
+          POSTGRES_TAG=$(awk '
+            /^postgres:/ { in_pg=1; next }
+            in_pg && /^[^ ]/ { exit }
+            in_pg && /^  image:/ { in_img=1; next }
+            in_img && /^  [^ ]/ { exit }
+            in_img && /tag:/ {
+              gsub(/"/, "", $2)
+              print $2
+              exit
+            }
+          ' helm/localcrag/values.yaml)
+          if [ -z "$POSTGRES_TAG" ]; then
+            echo "Could not read postgres.image.tag from helm/localcrag/values.yaml"
+            exit 1
+          fi
+          echo "Building backup image from postgres:${POSTGRES_TAG}"
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
+            TAG=$VERSION
+            docker build \
+              --build-arg POSTGRES_TAG="$POSTGRES_TAG" \
+              -t $IMAGE_NAME:$TAG \
+              -t $IMAGE_NAME:latest \
+              -t $IMAGE_NAME:$POSTGRES_TAG \
+              -f backup/Dockerfile \
+              backup
+            docker push $IMAGE_NAME:$TAG
+            docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$POSTGRES_TAG
+          else
+            TAG=next
+            docker build \
+              --build-arg POSTGRES_TAG="$POSTGRES_TAG" \
+              -t $IMAGE_NAME:$TAG \
+              -f backup/Dockerfile \
+              backup
             docker push $IMAGE_NAME:$TAG
           fi

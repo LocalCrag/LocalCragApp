@@ -201,6 +201,8 @@ This chart can create a **CronJob** that backs up both:
 
 The backup job bundles both database and files into a single snapshot per run.
 
+The CronJob uses `backups.image` (default `ghcr.io/localcrag/localcrag-backup`). If you change `postgres.image.tag`, set `backups.image.tag` to an image built from that same Postgres version so `pg_dump` stays compatible.
+
 ### Enable backups
 
 To enable backups, set `backups.enabled=true` in your values file:
