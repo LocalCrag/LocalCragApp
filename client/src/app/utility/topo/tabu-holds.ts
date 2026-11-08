@@ -2,7 +2,7 @@ import { polygonRingSelfIntersects } from '../geometry/polygon-self-intersection
 
 export const MIN_TABU_POLYGON_VALUES = 6;
 
-export const TABU_HOLD_FILL = 'rgba(198, 40, 40, 0.35)';
+export const TABU_HOLD_FILL = 'rgba(198, 40, 40, 0.6)';
 export const TABU_HOLD_STROKE = '#c62828';
 export const TABU_HOLD_UNASSIGNED_OPACITY = 0.35;
 

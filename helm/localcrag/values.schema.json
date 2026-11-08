@@ -162,6 +162,26 @@
           "type": "boolean",
           "description": "Enable or disable backups"
         },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Backup image repository (pg_dump and rclone preinstalled)"
+            },
+            "tag": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Backup image tag. Must be built from the same Postgres version as postgres.image.tag."
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": ["Always", "IfNotPresent", "Never"],
+              "description": "Kubernetes image pull policy for the backup container"
+            }
+          }
+        },
         "retention": {
           "type": "object",
           "properties": {

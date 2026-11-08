@@ -26,8 +26,8 @@ spec:
           {{- end }}
           containers:
             - name: backup
-              image: {{ printf "postgres:%s" .Values.postgres.image.tag | quote }}
-              imagePullPolicy: IfNotPresent
+              image: "{{ .Values.backups.image.repository }}:{{ .Values.backups.image.tag }}"
+              imagePullPolicy: {{ .Values.backups.image.pullPolicy }}
               env:
                 - name: BACKUP_RETENTION_KEEP
                   value: {{ default 3 .Values.backups.retention.keep | int | quote }}
@@ -125,11 +125,7 @@ spec:
 
                   TS="$(date -u +%Y%m%dT%H%M%SZ)"
 
-                  # Ensure required tools are available (postgres image is Debian-based)
-                  export DEBIAN_FRONTEND=noninteractive
-                  apt-get update -y
-                  apt-get install -y --no-install-recommends ca-certificates rclone
-                  rm -rf /var/lib/apt/lists/*
+                  # pg_dump, gzip, and rclone are provided by the backup image.
 
                   # Two S3 remotes. rclone streams objects between them, so the
                   # bucket is not staged on the pod's disk.
