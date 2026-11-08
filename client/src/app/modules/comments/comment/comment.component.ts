@@ -8,6 +8,7 @@ import {
   OnInit,
   Output,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Comment } from '../../../models/comment';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
@@ -59,6 +60,7 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DialogService],
 })
 export class CommentComponent implements OnInit {

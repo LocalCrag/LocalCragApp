@@ -1,5 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -60,6 +66,7 @@ interface ControversyRow extends RatingControversy {
     TopoHierarchyBreadcrumbsComponent,
   ],
   templateUrl: './rating-controversies-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rating-controversies-page.component.scss',
 })
 export class RatingControversiesPageComponent

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -37,6 +43,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     IfErrorDirective,
   ],
   templateUrl: './project-climbed-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-climbed-form.component.scss',
 })
 export class ProjectClimbedFormComponent implements OnInit {

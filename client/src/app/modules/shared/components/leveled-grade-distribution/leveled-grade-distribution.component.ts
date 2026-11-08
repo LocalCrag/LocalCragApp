@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
@@ -53,6 +54,7 @@ type StackChartData = {
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [Tag, MeterGroup, Skeleton, TranslocoDirective],
 })
 export class LeveledGradeDistributionComponent implements OnInit {

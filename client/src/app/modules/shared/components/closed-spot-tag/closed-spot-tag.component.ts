@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TagModule } from 'primeng/tag';
 import { Popover } from 'primeng/popover';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -20,6 +26,7 @@ import { ClosureReasonAlert } from '../../../../models/closure-reason-alert';
     ClosedSpotAlertComponent,
   ],
   templateUrl: './closed-spot-tag.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './closed-spot-tag.component.scss',
 })
 export class ClosedSpotTagComponent {

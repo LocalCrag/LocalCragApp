@@ -7,3 +7,11 @@ span:nth-of-type(n + 2) {
 :host {
   font-style: italic;
 }
+
+.clip {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

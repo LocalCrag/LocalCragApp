@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -53,6 +59,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   ],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ConfirmationService],
 })
 export class PostFormComponent implements OnInit {

@@ -3,9 +3,7 @@
     @if (failed) {
       <p-message
         severity="error"
-        icon="pi pi-times-circle"
-        [text]="t('topoStatistics.loadError')"
-      />
+        icon="pi pi-times-circle">{{ t('topoStatistics.loadError') }}</p-message>
     } @else if (loading || !stats) {
       <div class="stat-grid">
         @for (_ of [1, 2, 3, 4]; track $index) {
@@ -32,15 +30,13 @@
                 })
               }}
             </div>
-            <p-progressBar [value]="completionPercent" [showValue]="false" />
+            <p-progress-bar [value]="completionPercent" [showValue]="false" />
             <div class="completion-percent">{{ completionPercent }}%</div>
           </div>
         } @else {
           <p-message
             severity="info"
-            icon="pi pi-info-circle"
-            [text]="t('topoStatistics.completionEmpty')"
-          />
+            icon="pi pi-info-circle">{{ t('topoStatistics.completionEmpty') }}</p-message>
         }
       }
 
@@ -122,9 +118,7 @@
         } @else {
           <p-message
             severity="info"
-            icon="pi pi-info-circle"
-            [text]="t('topoStatistics.noGradeVotes')"
-          />
+            icon="pi pi-info-circle">{{ t('topoStatistics.noGradeVotes') }}</p-message>
         }
       }
 
@@ -150,9 +144,7 @@
       } @else {
         <p-message
           severity="info"
-          icon="pi pi-info-circle"
-          [text]="t('topoStatistics.noRatings')"
-        />
+          icon="pi pi-info-circle">{{ t('topoStatistics.noRatings') }}</p-message>
       }
 
       <h3 class="section-title section-title--heatmap">
@@ -200,9 +192,7 @@
       } @else {
         <p-message
           severity="info"
-          icon="pi pi-info-circle"
-          [text]="t('topoStatistics.heatmapEmpty')"
-        />
+          icon="pi pi-info-circle">{{ t('topoStatistics.heatmapEmpty') }}</p-message>
       }
 
       <h3 class="section-title section-title--years">
@@ -293,9 +283,7 @@
         } @else {
           <p-message
             severity="info"
-            icon="pi pi-info-circle"
-            [text]="t('topoStatistics.noPopularLines')"
-          />
+            icon="pi pi-info-circle">{{ t('topoStatistics.noPopularLines') }}</p-message>
         }
       }
 

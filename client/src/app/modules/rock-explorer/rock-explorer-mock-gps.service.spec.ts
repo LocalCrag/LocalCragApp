@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import {
   offsetLatLng,
   RockExplorerMockGpsService,
@@ -8,7 +9,7 @@ describe('RockExplorerMockGpsService helpers', () => {
     const start = { lat: 48.0, lng: 11.0 };
     const north = offsetLatLng(start.lat, start.lng, 0, 100);
     // ~111.32 m per degree latitude
-    const dLatM = (north.lat - start.lat) * 111_320;
+    const dLatM = (north.lat - start.lat) * 111320;
     expect(dLatM).toBeGreaterThan(95);
     expect(dLatM).toBeLessThan(105);
     expect(Math.abs(north.lng - start.lng)).toBeLessThan(0.00001);
@@ -17,7 +18,7 @@ describe('RockExplorerMockGpsService helpers', () => {
   it('offsetLatLng moves roughly the requested distance east', () => {
     const start = { lat: 48.0, lng: 11.0 };
     const east = offsetLatLng(start.lat, start.lng, Math.PI / 2, 100);
-    const metersPerDegLng = 111_320 * Math.cos((start.lat * Math.PI) / 180);
+    const metersPerDegLng = 111320 * Math.cos((start.lat * Math.PI) / 180);
     const dLngM = (east.lng - start.lng) * metersPerDegLng;
     expect(dLngM).toBeGreaterThan(95);
     expect(dLngM).toBeLessThan(105);
@@ -27,13 +28,14 @@ describe('RockExplorerMockGpsService helpers', () => {
 
 describe('RockExplorerMockGpsService seed races', () => {
   let mock: RockExplorerMockGpsService;
-  let nativeGetCurrentPosition: jasmine.Spy;
+  let nativeGetCurrentPosition: Mock;
 
   beforeEach(() => {
     mock = new RockExplorerMockGpsService();
-    nativeGetCurrentPosition = jasmine
-      .createSpy('getCurrentPosition')
-      .and.callFake(
+    nativeGetCurrentPosition = vi
+      .fn()
+      .mockName('getCurrentPosition')
+      .mockImplementation(
         (success: PositionCallback, _error?: PositionErrorCallback | null) => {
           // Async native fix so resetSeed can race the in-flight seedOnce.
           queueMicrotask(() =>
@@ -59,10 +61,18 @@ describe('RockExplorerMockGpsService seed races', () => {
         },
       );
 
-    spyOnProperty(navigator, 'geolocation', 'get').and.returnValue({
+    // jsdom does not implement Geolocation, so the getter has to exist first.
+    if (!('geolocation' in navigator)) {
+      Object.defineProperty(navigator, 'geolocation', {
+        configurable: true,
+        get: () => undefined,
+      });
+    }
+
+    vi.spyOn(navigator, 'geolocation', 'get').mockReturnValue({
       getCurrentPosition: nativeGetCurrentPosition,
-      watchPosition: jasmine.createSpy('watchPosition'),
-      clearWatch: jasmine.createSpy('clearWatch'),
+      watchPosition: vi.fn().mockName('watchPosition'),
+      clearWatch: vi.fn().mockName('clearWatch'),
     } as unknown as Geolocation);
 
     mock.installNavigatorShim(() => ({ lat: 50, lng: 10 }));
@@ -73,7 +83,10 @@ describe('RockExplorerMockGpsService seed races', () => {
   });
 
   it('does not emit [0,0] when resetSeed aborts an in-flight ensureSeeded', async () => {
-    const positions: Array<{ lat: number; lng: number }> = [];
+    const positions: Array<{
+      lat: number;
+      lng: number;
+    }> = [];
 
     // Start watch while native getCurrentPosition is still pending.
     const firstFix = new Promise<void>((resolve) => {

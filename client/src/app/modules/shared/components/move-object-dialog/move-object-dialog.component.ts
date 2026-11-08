@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Sector } from '../../../../models/sector';
 import { Area } from '../../../../models/area';
@@ -55,6 +56,7 @@ import { Message } from 'primeng/message';
     Message,
   ],
   templateUrl: './move-object-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './move-object-dialog.component.scss',
 })
 export class MoveObjectDialogComponent {

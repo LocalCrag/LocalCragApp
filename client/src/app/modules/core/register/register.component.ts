@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
@@ -66,6 +67,7 @@ import {
     IfErrorDirective,
   ],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {

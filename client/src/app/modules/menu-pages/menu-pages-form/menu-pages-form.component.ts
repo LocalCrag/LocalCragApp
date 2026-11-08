@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
@@ -53,6 +59,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   ],
   templateUrl: './menu-pages-form.component.html',
   styleUrl: './menu-pages-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ConfirmationService],
 })
 export class MenuPagesFormComponent implements OnInit {

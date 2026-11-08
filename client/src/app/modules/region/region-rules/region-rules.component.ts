@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { Region } from '../../../models/region';
@@ -14,6 +19,7 @@ import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/
   selector: 'lc-region-rules',
   imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './region-rules.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-rules.component.scss',
 })
 export class RegionRulesComponent implements OnInit {

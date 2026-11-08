@@ -1,4 +1,11 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MeterGroup } from 'primeng/metergroup';
@@ -18,6 +25,7 @@ interface StorageSegment {
   selector: 'lc-storage-usage',
   imports: [TranslocoDirective, MeterGroup, Skeleton],
   templateUrl: './storage-usage.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './storage-usage.component.scss',
 })
 export class StorageUsageComponent implements OnInit {

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
@@ -54,6 +60,7 @@ import { Tooltip } from 'primeng/tooltip';
     Tooltip,
   ],
   templateUrl: './region-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-form.component.scss',
 })
 export class RegionFormComponent implements OnInit {

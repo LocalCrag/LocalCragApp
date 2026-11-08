@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -16,6 +16,7 @@ export const FA_REMOVAL_MESSAGE_MAX_LENGTH = 2000;
   selector: 'lc-remove-fa-dialog',
   imports: [FormsModule, TranslocoDirective, ButtonModule, Textarea],
   templateUrl: './remove-fa-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './remove-fa-dialog.component.scss',
 })
 export class RemoveFaDialogComponent {

@@ -88,7 +88,7 @@
           }
           @if (editorDrawMode === "line" && (isMobile$ | async) === false) {
             <div class="line-path-order-panel w-72 flex-none">
-              <p-orderList
+              <p-order-list
                 [value]="orderedDrafts"
                 [header]="t('drawnLinesHeader')"
                 [dragdrop]="!canOnlyDrawOwnDrafts"
@@ -118,7 +118,7 @@
                     </div>
                   </div>
                 </ng-template>
-              </p-orderList>
+              </p-order-list>
               @if (orderedDrafts.length === 0) {
                 <p class="drawn-lines-empty">{{ t("noDrawnLinesYet") }}</p>
               }

@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormArray,
@@ -84,6 +85,7 @@ import { Grade } from '../../../models/scale';
     Image,
   ],
   templateUrl: './line-entry-batch-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './line-entry-batch-editor.component.scss',
 })
 export class LineEntryBatchEditorComponent implements OnInit {

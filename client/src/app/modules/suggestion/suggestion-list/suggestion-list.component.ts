@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -55,6 +60,7 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
     TopoHierarchyBreadcrumbsComponent,
   ],
   templateUrl: './suggestion-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './suggestion-list.component.scss',
 })
 export class SuggestionListComponent implements OnInit {

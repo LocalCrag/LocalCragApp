@@ -5,6 +5,7 @@ import {
   OnChanges,
   SimpleChanges,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormArray } from '@angular/forms';
@@ -15,6 +16,7 @@ import { MeterGroup } from 'primeng/metergroup';
 import { Tag } from 'primeng/tag';
 import { Store } from '@ngrx/store';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { ChartData } from 'chart.js';
 import { combineLatest, merge } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {
@@ -45,6 +47,7 @@ type PreviewMode = 'stacked' | 'bar';
   selector: 'lc-scale-bracket-preview',
   templateUrl: './scale-bracket-preview.component.html',
   styleUrl: './scale-bracket-preview.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoDirective, ChartModule, Message, MeterGroup, Tag],
 })
 export class ScaleBracketPreviewComponent implements OnChanges {
@@ -54,7 +57,7 @@ export class ScaleBracketPreviewComponent implements OnChanges {
 
   public stacked: StackedBracketPreview | null = null;
   public bar: BarBracketPreview | null = null;
-  public chartData: unknown = null;
+  public chartData: ChartData | null = null;
   public chartOptions: unknown = null;
   public readonly chartPlugins = [ChartDataLabels];
 

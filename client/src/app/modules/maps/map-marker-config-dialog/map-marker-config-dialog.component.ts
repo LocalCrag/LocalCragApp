@@ -9,6 +9,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -62,6 +63,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ],
   templateUrl: './map-marker-config-dialog.component.html',
   styleUrl: './map-marker-config-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'maps' }],
 })
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {

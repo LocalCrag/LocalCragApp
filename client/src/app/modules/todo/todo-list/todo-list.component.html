@@ -5,7 +5,7 @@
         {{ t("privateListMessage") }}
       </p-message>
     } @else {
-      <p-dataView #dv [value]="todos">
+      <p-data-view #dv [value]="todos">
         <ng-template #emptymessage>
           @if (
             todos?.length === 0 &&
@@ -342,7 +342,7 @@
             </div>
           }
         </ng-template>
-      </p-dataView>
+      </p-data-view>
 
       @if (hasNextPage) {
         <div class="flex justify-center mt-20">

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -28,6 +34,7 @@ import { UserAvatarComponent } from '../../shared/components/user-avatar/user-av
     UserAvatarComponent,
   ],
   templateUrl: './topo-quality-ranking.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './topo-quality-ranking.component.scss',
 })
 export class TopoQualityRankingComponent implements OnInit {

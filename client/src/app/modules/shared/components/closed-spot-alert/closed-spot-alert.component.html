@@ -3,9 +3,9 @@
     @for (alert of displayAlerts; track $index) {
       <p-message
         severity="error"
-        [text]="alertText(alert)"
+       
         styleClass="w-full"
-      ></p-message>
+      >{{ alertText(alert) }}</p-message>
     }
   </div>
 </ng-container>

@@ -29,7 +29,7 @@
           }}</small>
           <lc-duplicate-name-warning
             [nameControl]="sectorForm.get('name')"
-            [excludeId]="sector?.id"
+            [excludeId]="$safeNavigationMigration(sector?.id)"
             entityType="sector"
             [findByName]="findSectorsByName"
           />

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   BlocWeatherConfig,
   BlocWeatherReportStatus,
@@ -59,6 +65,7 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
     IfErrorDirective,
   ],
   templateUrl: './report-conditions-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './report-conditions-dialog.component.scss',
 })
 export class ReportConditionsDialogComponent {

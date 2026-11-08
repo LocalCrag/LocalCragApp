@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
@@ -46,6 +47,7 @@ const SECTION_HEADER_KEY: Record<RulesAlertLevel, string> = {
   templateUrl: './rules-alert.component.html',
   styleUrl: './rules-alert.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AsyncPipe,
     TranslocoDirective,

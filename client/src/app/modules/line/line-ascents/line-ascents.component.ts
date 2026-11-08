@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { TranslocoService } from '@jsverse/transloco';
@@ -22,6 +28,7 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
   selector: 'lc-line-ascents',
   imports: [AscentListComponent],
   templateUrl: './line-ascents.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './line-ascents.component.scss',
 })
 export class LineAscentsComponent implements OnInit {

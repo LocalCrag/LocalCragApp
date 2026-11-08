@@ -12,8 +12,8 @@ describe('buildGradeVoteBars', () => {
 
     expect(bars.map((bar) => bar.value)).toEqual([18, 22]);
     expect(bars.map((bar) => bar.name)).toEqual(['6A', '6C']);
-    expect(bars[0].consensus).toBeTrue();
-    expect(bars[1].consensus).toBeFalse();
+    expect(bars[0].consensus).toBe(true);
+    expect(bars[1].consensus).toBe(false);
     expect(bars[0].width).toBe(100);
     expect(bars[1].width).toBe(50);
   });

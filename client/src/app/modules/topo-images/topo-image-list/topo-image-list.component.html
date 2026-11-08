@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'topoImage.topoImageList'">
-  <p-dataView
+  <p-data-view
     #dv
     [value]="topoImages"
     [sortField]="showArchive ? null : sortField"
@@ -148,8 +148,8 @@
                       @if (topoImage.linePaths.length === 0) {
                         <p-message
                           severity="info"
-                          text="{{ t('noLineAssignedToTopoImage') }}"
-                        >
+                         
+                        >{{ t('noLineAssignedToTopoImage') }}
                         </p-message>
                       }
                       @if (topoImage.linePaths.length > 0) {
@@ -350,7 +350,7 @@
         </div>
       }
     </ng-template>
-  </p-dataView>
+  </p-data-view>
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">

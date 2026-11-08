@@ -92,9 +92,9 @@
       @if (registerPressed && emailsDontMatch()) {
         <p-message
           severity="error"
-          text="{{ t('emailsDontMatchAlertText') }}"
+         
           class="mt-6"
-        >
+        >{{ t('emailsDontMatchAlertText') }}
         </p-message>
       }
 

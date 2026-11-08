@@ -5,8 +5,8 @@ import {
   Input,
   NgZone,
   OnDestroy,
-  SimpleChange,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Line } from '../../../models/line';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
@@ -20,17 +20,16 @@ import { Tooltip } from 'primeng/tooltip';
   selector: 'lc-line-bool-prop-list',
   templateUrl: './line-bool-prop-list.component.html',
   styleUrls: ['./line-bool-prop-list.component.scss'],
-  imports: [TranslocoDirective, TranslocoPipe],
-  hostDirectives: [Tooltip],
+  imports: [TranslocoDirective, TranslocoPipe, Tooltip],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class LineBoolPropListComponent implements AfterViewInit, OnDestroy {
   @Input() line: Line;
 
   private elementRef = inject(ElementRef<HTMLElement>);
   private zone = inject(NgZone);
-  private tooltip = inject(Tooltip);
   private mutationObserver: MutationObserver;
-  private fullLabel = '';
+  protected fullLabel = '';
 
   ngAfterViewInit() {
     const host = this.elementRef.nativeElement;
@@ -59,14 +58,5 @@ export class LineBoolPropListComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.fullLabel = label;
-    // PrimeNG only copies these fields into the overlay options from ngOnChanges.
-    this.tooltip.content = label;
-    this.tooltip.showOnEllipsis = true;
-    this.tooltip.tooltipPosition = 'top';
-    this.tooltip.ngOnChanges({
-      content: new SimpleChange(undefined, label, false),
-      showOnEllipsis: new SimpleChange(undefined, true, false),
-      tooltipPosition: new SimpleChange(undefined, 'top', false),
-    });
   }
 }

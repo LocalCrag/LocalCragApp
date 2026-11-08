@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -42,6 +47,7 @@ import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
     Checkbox,
   ],
   templateUrl: './completion.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './completion.component.scss',
 })
 export class CompletionComponent implements OnInit {

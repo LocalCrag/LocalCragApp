@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -55,6 +61,7 @@ import { httpUrlValidator } from '../../../utility/validators/http-url.validator
   ],
   templateUrl: './app-alerts-form.component.html',
   styleUrl: './app-alerts-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ConfirmationService],
 })
 export class AppAlertsFormComponent implements OnInit {

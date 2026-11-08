@@ -4,6 +4,7 @@ import {
   DestroyRef,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -90,6 +91,7 @@ type PanelTab = RockExplorerPanelTab;
     RouterLink,
   ],
   templateUrl: './rock-explorer-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-panel.component.scss',
 })
 export class RockExplorerPanelComponent {

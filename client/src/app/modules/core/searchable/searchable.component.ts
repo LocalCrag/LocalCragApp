@@ -6,6 +6,7 @@ import {
   Output,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Searchable } from '../../../models/searchable';
 import { AvatarModule } from 'primeng/avatar';
@@ -37,6 +38,7 @@ import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
   ],
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchableComponent {

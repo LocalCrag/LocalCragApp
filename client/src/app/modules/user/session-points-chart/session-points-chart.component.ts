@@ -6,6 +6,7 @@ import {
   OnChanges,
   OnInit,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +16,7 @@ import { ChartModule } from 'primeng/chart';
 import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
-import { Chart } from 'chart.js';
+import { Chart, ChartData } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
@@ -58,6 +59,7 @@ type ScaleChoice = { key: string; label: string };
     SelectButton,
   ],
   templateUrl: './session-points-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './session-points-chart.component.scss',
 })
 export class SessionPointsChartComponent implements OnChanges, OnInit {
@@ -70,7 +72,7 @@ export class SessionPointsChartComponent implements OnChanges, OnInit {
   metricOptions: Choice<SessionMetric>[] = [];
   rangeOptions: Choice<SessionRange>[] = [];
   scaleOptions: ScaleChoice[] = [];
-  chartData: unknown = null;
+  chartData: ChartData | null = null;
   chartOptions: unknown = null;
   chartMinWidth: number | null = null;
   bars: SessionBar[] = [];

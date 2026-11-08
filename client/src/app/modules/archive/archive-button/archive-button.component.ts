@@ -1,4 +1,10 @@
-import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -28,6 +34,7 @@ import { Observable } from 'rxjs';
   providers: [ConfirmationService],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class ArchiveButtonComponent {

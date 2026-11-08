@@ -1,4 +1,10 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { SelectItem } from 'primeng/api';
 import { forkJoin, Observable } from 'rxjs';
@@ -49,6 +55,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     DatePipe,
   ],
   templateUrl: './post-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './post-list.component.scss',
 })
 export class PostListComponent implements OnInit {

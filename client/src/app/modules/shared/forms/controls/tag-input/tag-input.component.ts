@@ -4,6 +4,7 @@ import {
   forwardRef,
   inject,
   Input,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -28,6 +29,7 @@ export type TagInputObjectKind = 'line' | 'area' | 'sector' | 'crag' | 'user';
   imports: [FormsModule, AutoComplete, SearchableComponent],
   templateUrl: './tag-input.component.html',
   styleUrl: './tag-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

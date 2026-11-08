@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -47,6 +47,7 @@ export function openAscentVideoModerationDialog(
   selector: 'lc-ascent-video-moderation-dialog',
   templateUrl: './ascent-video-moderation-dialog.component.html',
   styleUrl: './ascent-video-moderation-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, TranslocoDirective, Button, InputText, Textarea],
 })
 export class AscentVideoModerationDialogComponent {

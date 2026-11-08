@@ -1,5 +1,11 @@
 <ng-container *transloco="let t; read: 'line.lineBoolPropList'">
   <span
+    class="clip"
+    [pTooltip]="fullLabel"
+    [showOnEllipsis]="true"
+    tooltipPosition="top"
+  >
+  <span
     ><strong>{{ line.startingPosition | transloco }}</strong></span
   >
   @if (line.variant) {
@@ -93,4 +99,5 @@
   @if (line.drying) {
     <span>{{ line.drying | transloco }}</span>
   }
+  </span>
 </ng-container>

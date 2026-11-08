@@ -7,6 +7,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -46,6 +47,7 @@ import { RockExplorerUiService } from '../rock-explorer-ui.service';
   ],
   templateUrl: './rock-explorer-location-search-dialog.component.html',
   styleUrl: './rock-explorer-location-search-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class RockExplorerLocationSearchDialogComponent implements AfterViewInit {

@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
@@ -13,6 +18,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   selector: 'lc-region-ascents',
   imports: [AscentListComponent, SkeletonModule],
   templateUrl: './region-ascents.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-ascents.component.scss',
 })
 export class RegionAscentsComponent implements OnInit {

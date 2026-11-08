@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -34,6 +40,7 @@ import { RegionService } from '../../../services/crud/region.service';
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
   imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
 export class SectorComponent implements OnInit {

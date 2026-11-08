@@ -4,19 +4,19 @@
       <h3>{{ t("changeEmailTitle") }}</h3>
 
       @if (loading) {
-        <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+        <p-progress-spinner ariaLabel="loading"></p-progress-spinner>
       }
 
       @if (!loading && !error) {
         <p-message
           severity="success"
-          text="{{ t('emailChangedSuccessfully') }}"
-        >
+         
+        >{{ t('emailChangedSuccessfully') }}
         </p-message>
       }
 
       @if (!loading && error) {
-        <p-message severity="error" text="{{ t('emailChangeError') }}">
+        <p-message severity="error">{{ t('emailChangeError') }}
         </p-message>
       }
 

@@ -1,4 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -35,6 +40,7 @@ export interface LineAdvancedFiltersDialogData {
   selector: 'lc-line-advanced-filters-dialog',
   templateUrl: './line-advanced-filters-dialog.component.html',
   styleUrl: './line-advanced-filters-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     TranslocoDirective,

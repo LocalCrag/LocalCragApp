@@ -10,6 +10,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -71,6 +72,7 @@ import { MultiImageUploadComponent } from '../../shared/forms/controls/multi-ima
   ],
   providers: [MessageService],
   templateUrl: './rock-explorer-gallery.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-gallery.component.scss',
 })
 export class RockExplorerGalleryComponent

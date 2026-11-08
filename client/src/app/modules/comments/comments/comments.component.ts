@@ -8,6 +8,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommentEditorComponent } from '../comment-editor/comment-editor.component';
@@ -51,6 +52,7 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [CommentsContextService, DialogService],
 })
 export class CommentsComponent implements OnChanges, PaginatedListView {

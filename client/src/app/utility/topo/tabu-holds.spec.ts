@@ -14,12 +14,12 @@ import {
 
 describe('tabu hold helpers', () => {
   it('requires at least three vertices', () => {
-    expect(isCompleteTabuPolygon([1, 2, 3, 4])).toBeFalse();
-    expect(isCompleteTabuPolygon([1, 2, 3, 4, 5, 6])).toBeTrue();
+    expect(isCompleteTabuPolygon([1, 2, 3, 4])).toBe(false);
+    expect(isCompleteTabuPolygon([1, 2, 3, 4, 5, 6])).toBe(true);
   });
 
   it('rejects odd-length polygons', () => {
-    expect(isCompleteTabuPolygon([1, 2, 3, 4, 5, 6, 7])).toBeFalse();
+    expect(isCompleteTabuPolygon([1, 2, 3, 4, 5, 6, 7])).toBe(false);
   });
 
   it('clones nested polygon arrays', () => {
@@ -30,14 +30,14 @@ describe('tabu hold helpers', () => {
   });
 
   it('compares tabu polygons by value', () => {
-    expect(tabuPolygonEqual([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6])).toBeTrue();
-    expect(tabuPolygonEqual([1, 2, 3, 4, 5, 6], [])).toBeFalse();
+    expect(tabuPolygonEqual([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6])).toBe(true);
+    expect(tabuPolygonEqual([1, 2, 3, 4, 5, 6], [])).toBe(false);
   });
 
   it('detects self-intersecting tabu polygons', () => {
-    expect(tabuPolygonHasKinks([0, 0, 10, 0, 5, 8])).toBeFalse();
-    expect(tabuPolygonHasKinks([0, 0, 10, 10, 10, 0, 0, 10])).toBeTrue();
-    expect(tabuPolygonHasKinks([0, 0, 10, 0, 10, 10, 0, 10])).toBeFalse();
+    expect(tabuPolygonHasKinks([0, 0, 10, 0, 5, 8])).toBe(false);
+    expect(tabuPolygonHasKinks([0, 0, 10, 10, 10, 0, 0, 10])).toBe(true);
+    expect(tabuPolygonHasKinks([0, 0, 10, 0, 10, 10, 0, 10])).toBe(false);
   });
 
   it('creates tabu areas with cloned paths', () => {
@@ -61,15 +61,15 @@ describe('tabu hold helpers', () => {
         [{ id: 'a', path: [1, 2, 3, 4, 5, 6] }],
         [{ id: 'a', path: [1, 2, 3, 4, 5, 6] }],
       ),
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       tabuAreasEqual(
         [{ id: 'a', path: [1, 2, 3, 4, 5, 6] }],
         [{ id: 'b', path: [1, 2, 3, 4, 5, 6] }],
       ),
-    ).toBeFalse();
-    expect(tabuAreaIdsEqual(['a', 'b'], ['a', 'b'])).toBeTrue();
-    expect(tabuAreaIdsEqual(['a'], [])).toBeFalse();
+    ).toBe(false);
+    expect(tabuAreaIdsEqual(['a', 'b'], ['a', 'b'])).toBe(true);
+    expect(tabuAreaIdsEqual(['a'], [])).toBe(false);
   });
 
   it('resolves selected tabu polygons from the image catalog', () => {

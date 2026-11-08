@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { LinesService } from '../../../services/crud/lines.service';
 import { select, Store } from '@ngrx/store';
@@ -121,6 +122,7 @@ import {
   providers: [DialogService],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class LineListComponent implements OnInit, PaginatedListView {

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
@@ -34,6 +41,7 @@ import { User } from '../../../models/user';
   ],
   providers: [DialogService],
   templateUrl: './rock-explorer-toolbar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-toolbar.component.scss',
 })
 export class RockExplorerToolbarComponent implements OnInit {

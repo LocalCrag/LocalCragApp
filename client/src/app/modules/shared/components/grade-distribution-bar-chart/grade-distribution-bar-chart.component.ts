@@ -10,6 +10,7 @@ import {
   SimpleChanges,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -58,6 +59,7 @@ type BarChartData = {
   imports: [ChartModule, TranslocoDirective, Message],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class GradeDistributionBarChartComponent implements OnChanges, OnInit {

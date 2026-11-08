@@ -1,4 +1,11 @@
-import { Component, DestroyRef, OnInit, effect, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  effect,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -11,6 +18,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { SelectButton } from 'primeng/selectbutton';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { forkJoin, of } from 'rxjs';
+import { ChartData } from 'chart.js';
 import { filter, take } from 'rxjs/operators';
 import {
   TopoPointsHistory,
@@ -54,6 +62,7 @@ const SERIES_COLORS = [
     ToggleSwitch,
   ],
   templateUrl: './topo-quality-trends.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './topo-quality-trends.component.scss',
 })
 export class TopoQualityTrendsComponent implements OnInit {
@@ -71,9 +80,9 @@ export class TopoQualityTrendsComponent implements OnInit {
   rangeOptions: { value: TrendRange; label: string }[] = [];
   scopeKey = 'region';
   scopes: { key: string; name: string }[] = [];
-  qualityData: unknown = null;
+  qualityData: ChartData | null = null;
   qualityOptions: unknown = null;
-  pointsData: unknown = null;
+  pointsData: ChartData | null = null;
   pointsOptions: unknown = null;
   pointsEmpty = true;
   pointsFilteredOut = false;

@@ -12,7 +12,7 @@ describe('latValidator', () => {
     const correctUrlCtrl1 = new FormControl('90.37606632952576');
     const correctUrlCtrl1ValidationResult1 = latValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLat: true,
       }),
     );
@@ -22,7 +22,7 @@ describe('latValidator', () => {
     const correctUrlCtrl1 = new FormControl('-90.37606632952576');
     const correctUrlCtrl1ValidationResult1 = latValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLat: true,
       }),
     );
@@ -32,7 +32,7 @@ describe('latValidator', () => {
     const correctUrlCtrl1 = new FormControl('Test');
     const correctUrlCtrl1ValidationResult1 = latValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLat: true,
       }),
     );

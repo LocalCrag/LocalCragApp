@@ -4,6 +4,7 @@ import {
   HostListener,
   inject,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
@@ -42,6 +43,7 @@ import { take } from 'rxjs/operators';
   ],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchDialogComponent {

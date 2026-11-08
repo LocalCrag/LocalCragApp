@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
-  <p-dataView #dv [value]="lines">
+  <p-data-view #dv [value]="lines">
     <ng-template #emptymessage>
       @if (
         lines?.length === 0 &&
@@ -355,7 +355,7 @@
         </div>
       }
     </ng-template>
-  </p-dataView>
+  </p-data-view>
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">

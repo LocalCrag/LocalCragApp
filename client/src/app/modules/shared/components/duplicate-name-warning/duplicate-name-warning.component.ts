@@ -6,6 +6,7 @@ import {
   OnInit,
   SimpleChanges,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Message } from 'primeng/message';
@@ -35,6 +36,7 @@ type TopoEntity = Crag | Sector | Area | Line;
 @Component({
   selector: 'lc-duplicate-name-warning',
   imports: [Message, TranslocoDirective, LineGradePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './duplicate-name-warning.component.html',
 })
 export class DuplicateNameWarningComponent implements OnInit, OnChanges {

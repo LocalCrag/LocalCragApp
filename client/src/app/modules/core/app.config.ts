@@ -17,6 +17,7 @@ import {
   HttpClient,
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import { ErrorHandlerInterceptor } from '../../utility/http-interceptors/error.interceptor';
 import { LocalCragErrorHandler } from '../../services/core/local-crag-error-handler';
@@ -220,7 +221,7 @@ export const appConfig: ApplicationConfig = {
       provide: LOCALE_ID,
       useFactory: localeFactory,
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     providePrimeNG({
       translation: de,
       ripple: true,

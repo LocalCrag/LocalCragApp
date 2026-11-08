@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -34,6 +39,7 @@ import { DatePipe } from '../../shared/pipes/date.pipe';
     DatePipe,
   ],
   templateUrl: './admin-messages-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-messages-list.component.scss',
 })
 export class AdminMessagesListComponent implements OnInit {

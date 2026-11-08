@@ -8,6 +8,7 @@ import {
   Output,
   SimpleChanges,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -49,6 +50,7 @@ import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/co
     TranslocoDirective,
   ],
   templateUrl: './rock-explorer-misc.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-misc.component.scss',
 })
 export class RockExplorerMiscComponent implements OnChanges {

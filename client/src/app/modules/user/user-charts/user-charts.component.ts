@@ -1,5 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
@@ -44,6 +50,7 @@ import { ThemeService } from '../../../services/core/theme.service';
     CompletionComponent,
   ],
   templateUrl: './user-charts.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-charts.component.scss',
 })
 export class UserChartsComponent implements OnInit {

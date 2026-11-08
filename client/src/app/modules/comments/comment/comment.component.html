@@ -47,7 +47,7 @@
           [reactions]="comment.reactions"
           [targetType]="'comment'"
           [targetId]="comment.id"
-          [createdById]="comment.createdBy?.id"
+          [createdById]="$safeNavigationMigration(comment.createdBy?.id)"
           [hideReactionBar]="replyActive || editModeActive"
           (reactionsChange)="comment.reactions = $event"
         >

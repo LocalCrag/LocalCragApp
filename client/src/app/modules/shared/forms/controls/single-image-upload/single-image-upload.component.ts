@@ -9,6 +9,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ApiService } from '../../../../../services/core/api.service';
 import { UploadService } from '../../../../../services/crud/upload.service';
@@ -58,6 +59,7 @@ import {
     },
   ],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     FileUpload,

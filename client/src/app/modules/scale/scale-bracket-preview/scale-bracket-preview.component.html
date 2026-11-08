@@ -12,7 +12,7 @@
     </p>
 
     @if (mode === "stacked" && stacked && stacked.gradedCount > 0) {
-      <p-meterGroup [value]="meterItems" [min]="0" [max]="stacked.gradedCount">
+      <p-meter-group [value]="meterItems" [min]="0" [max]="stacked.gradedCount">
         <ng-template #label>
           <div
             class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-4"
@@ -63,7 +63,7 @@
             }
           </div>
         </ng-template>
-      </p-meterGroup>
+      </p-meter-group>
     } @else if (mode === "bar" && bar && bar.gradedCount > 0) {
       <div class="bracket-preview__chart">
         <p-chart
@@ -79,15 +79,11 @@
     ) {
       <p-message
         severity="info"
-        icon="pi pi-info-circle"
-        [text]="t('scale.scaleForm.bracketPreviewNoGrades')"
-      />
+        icon="pi pi-info-circle">{{ t('scale.scaleForm.bracketPreviewNoGrades') }}</p-message>
     } @else {
       <p-message
         severity="info"
-        icon="pi pi-info-circle"
-        [text]="t('scale.scaleForm.bracketPreviewUnavailable')"
-      />
+        icon="pi pi-info-circle">{{ t('scale.scaleForm.bracketPreviewUnavailable') }}</p-message>
     }
   </div>
 </ng-container>

@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   BlocWeatherConfig,
@@ -20,6 +21,7 @@ import { CurrentConditionsComponent } from '../current-conditions/current-condit
   selector: 'lc-blocweather',
   imports: [Skeleton, Message, TranslocoDirective, CurrentConditionsComponent],
   templateUrl: './blocweather.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blocweather.component.scss',
 })
 export class BlocweatherComponent implements OnInit, OnDestroy {

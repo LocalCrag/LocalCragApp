@@ -26,7 +26,7 @@
         }}</small>
         <lc-duplicate-name-warning
           [nameControl]="cragForm.get('name')"
-          [excludeId]="crag?.id"
+          [excludeId]="$safeNavigationMigration(crag?.id)"
           entityType="crag"
           [findByName]="findCragsByName"
         />

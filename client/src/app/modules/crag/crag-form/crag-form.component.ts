@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -63,6 +64,7 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
   templateUrl: './crag-form.component.html',
   styleUrls: ['./crag-form.component.scss'],
   providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,

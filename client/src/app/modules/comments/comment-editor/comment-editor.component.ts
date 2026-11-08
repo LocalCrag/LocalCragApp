@@ -8,6 +8,7 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -43,6 +44,7 @@ import { Store } from '@ngrx/store';
     Button,
   ],
   templateUrl: './comment-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./comment-editor.component.scss'],
 })
 export class CommentEditorComponent implements OnInit, AfterViewInit {

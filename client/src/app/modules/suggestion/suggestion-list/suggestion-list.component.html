@@ -2,7 +2,7 @@
   <div class="content">
     <div class="p-6 flex flex-col gap-8">
       @if (lines.length === 0 && topoImages.length === 0) {
-        <p-message severity="info" [text]="t('empty')" />
+        <p-message severity="info">{{ t('empty') }}</p-message>
       }
 
       @if (lines.length > 0) {
@@ -66,7 +66,10 @@
                       {{ t("suggestedBy") }}
                       <a
                         class="underline"
-                        [routerLink]="'/users/' + line.createdBy?.slug"
+                        [routerLink]="
+                          '/users/' +
+                          $safeNavigationMigration(line.createdBy?.slug)
+                        "
                         >{{ name }}</a
                       >
                     </div>
@@ -149,7 +152,10 @@
                       {{ t("suggestedBy") }}
                       <a
                         class="underline"
-                        [routerLink]="'/users/' + image.createdBy?.slug"
+                        [routerLink]="
+                          '/users/' +
+                          $safeNavigationMigration(image.createdBy?.slug)
+                        "
                         >{{ name }}</a
                       >
                     </div>

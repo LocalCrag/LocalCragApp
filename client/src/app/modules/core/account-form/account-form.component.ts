@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -78,6 +79,7 @@ import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DialogService],
 })
 export class AccountFormComponent implements OnInit {

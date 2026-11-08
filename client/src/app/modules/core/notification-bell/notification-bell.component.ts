@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -28,6 +29,7 @@ import { ModerationMessageDialogService } from '../moderation-message-dialog/mod
   styleUrls: ['./notification-bell.component.scss'],
   encapsulation: ViewEncapsulation.None,
   imports: [TranslocoDirective, Popover, RouterLink, ProgressSpinnerModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     LineGradePipe,
     NotificationPresentationService,

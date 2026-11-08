@@ -7,6 +7,7 @@ import {
   ViewEncapsulation,
   inject,
   DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
 import { CardModule } from 'primeng/card';
@@ -40,6 +41,7 @@ import { galleryImageAspectRatio } from '../../../utility/gallery-masonry';
   ],
   templateUrl: './gallery-image.component.html',
   styleUrl: './gallery-image.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class GalleryImageComponent implements OnInit {

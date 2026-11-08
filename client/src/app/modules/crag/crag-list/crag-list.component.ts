@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { CragsService } from '../../../services/crud/crags.service';
 import { LoadingState } from '../../../enums/loading-state';
@@ -41,6 +47,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './crag-list.component.html',
   styleUrls: ['./crag-list.component.scss'],
   providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     DataView,

@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import {
   TranslocoDirective,
@@ -21,6 +26,7 @@ import { LineType } from '../../../enums/line-type';
   selector: 'lc-scale-list',
   templateUrl: './scale-list.component.html',
   styleUrl: './scale-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     RouterLink,

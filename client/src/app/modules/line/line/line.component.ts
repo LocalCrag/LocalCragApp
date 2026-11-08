@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
@@ -55,6 +56,7 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
     DraftTagComponent,
     RouterOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {

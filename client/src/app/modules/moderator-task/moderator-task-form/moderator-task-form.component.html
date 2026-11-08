@@ -34,10 +34,10 @@
           lcFormControl
           styleClass="w-full"
         >
-          <ng-template let-user pTemplate="item">
+          <ng-template let-user #item>
             {{ assigneeLabel(user) }}
           </ng-template>
-          <ng-template let-user pTemplate="selectedItem">
+          <ng-template let-user #selectedItem>
             {{ assigneeLabel(user) }}
           </ng-template>
         </p-select>

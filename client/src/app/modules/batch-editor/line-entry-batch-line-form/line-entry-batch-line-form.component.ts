@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -91,6 +92,7 @@ import { Tag } from 'primeng/tag';
     },
   ],
   templateUrl: './line-entry-batch-line-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './line-entry-batch-line-form.component.scss',
 })
 export class LineEntryBatchLineFormComponent

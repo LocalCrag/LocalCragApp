@@ -4,6 +4,7 @@ import {
   HostListener,
   inject,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Line } from '../../../models/line';
@@ -54,6 +55,7 @@ import {
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
   providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ClosedSpotAlertComponent,
     UpcomingClosureAlertComponent,

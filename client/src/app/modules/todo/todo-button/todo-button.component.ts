@@ -4,6 +4,7 @@ import {
   Input,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Line } from '../../../models/line';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -26,6 +27,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [ButtonModule, MenuModule, TranslocoDirective, NgClass],
   templateUrl: './todo-button.component.html',
   styleUrl: './todo-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class TodoButtonComponent {

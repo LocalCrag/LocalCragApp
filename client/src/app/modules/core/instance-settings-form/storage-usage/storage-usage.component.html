@@ -5,7 +5,7 @@
     } @else if (failed()) {
       <p>{{ t("unavailable") }}</p>
     } @else {
-      <p-meterGroup [value]="meters()" [min]="0" [max]="scale()">
+      <p-meter-group [value]="meters()" [min]="0" [max]="scale()">
         <ng-template #label>
           <div class="storage-usage-labels">
             @for (segment of segments(); track segment.key) {
@@ -20,7 +20,7 @@
             }
           </div>
         </ng-template>
-      </p-meterGroup>
+      </p-meter-group>
       @if (usage()?.capacity) {
         <p class="storage-usage-capacity">
           {{

@@ -7,6 +7,7 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -60,6 +61,7 @@ import { toPrimeNgDayMonthFormat } from '../../../../models/closure-reason-alert
   templateUrl: './scheduled-closure-config-dialog.component.html',
   styleUrl: './scheduled-closure-config-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'closableForm' }],
 })
 export class ScheduledClosureConfigDialogComponent implements OnInit {

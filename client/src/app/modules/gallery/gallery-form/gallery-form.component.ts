@@ -4,6 +4,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -51,6 +52,7 @@ import { ObjectUtilsService } from '../../../services/utils/object-utils.service
   ],
   templateUrl: './gallery-form.component.html',
   styleUrl: './gallery-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class GalleryFormComponent implements OnInit {

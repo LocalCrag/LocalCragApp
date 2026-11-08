@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -36,6 +43,7 @@ import { MenuPagesService } from '../../../services/crud/menu-pages.service';
     LanguageSelectComponent,
   ],
   templateUrl: './instance-settings-general-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './instance-settings-general-tab.component.scss',
 })
 export class InstanceSettingsGeneralTabComponent implements OnInit {

@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -22,6 +27,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   selector: 'lc-area-info',
   templateUrl: './area-info.component.html',
   styleUrls: ['./area-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ClosedSpotAlertComponent,

@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { InputTextModule } from 'primeng/inputtext';
@@ -86,6 +87,7 @@ import { Video } from '../../../models/video';
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AscentFormComponent implements OnInit {

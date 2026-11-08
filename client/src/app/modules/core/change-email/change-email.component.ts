@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -22,6 +28,7 @@ import { newAuthCredentials } from '../../../ngrx/actions/auth.actions';
     TranslocoDirective,
   ],
   templateUrl: './change-email.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './change-email.component.scss',
 })
 export class ChangeEmailComponent implements OnInit {

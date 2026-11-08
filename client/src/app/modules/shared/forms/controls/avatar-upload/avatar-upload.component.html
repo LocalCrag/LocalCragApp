@@ -1,4 +1,4 @@
-<p-fileUpload
+<p-fileupload
   mode="basic"
   #uploader
   [hidden]="true"
@@ -13,16 +13,16 @@
   (onUpload)="setMedia($event)"
   [auto]="true"
 >
-</p-fileUpload>
+</p-fileupload>
 
 <div class="avatar-wrapper">
   <div class="avatar" [style.background-image]="getAvatarStyle()"></div>
   @if (showProgressBar) {
-    <p-progressSpinner
+    <p-progress-spinner
       styleClass="w-8 h-8"
       strokeWidth="8"
       animationDuration=".5s"
-    ></p-progressSpinner>
+    ></p-progress-spinner>
   }
   @if (!showProgressBar) {
     <p-button

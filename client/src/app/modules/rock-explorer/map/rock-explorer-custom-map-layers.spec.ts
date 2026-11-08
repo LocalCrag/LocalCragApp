@@ -8,30 +8,45 @@ describe('RockExplorerCustomMapLayers', () => {
     return {
       sources,
       layers,
-      addSource: jasmine.createSpy('addSource').and.callFake((id, source) => {
-        sources.set(id, source);
-      }),
-      addLayer: jasmine.createSpy('addLayer').and.callFake((layer) => {
-        layers.set(layer.id, layer);
-      }),
-      getSource: jasmine
-        .createSpy('getSource')
-        .and.callFake((id) => sources.get(id)),
-      getLayer: jasmine
-        .createSpy('getLayer')
-        .and.callFake((id) => layers.get(id)),
-      setLayoutProperty: jasmine.createSpy('setLayoutProperty'),
-      setPaintProperty: jasmine.createSpy('setPaintProperty'),
-      moveLayer: jasmine.createSpy('moveLayer'),
-      removeLayer: jasmine.createSpy('removeLayer').and.callFake((id) => {
-        layers.delete(id);
-      }),
-      removeSource: jasmine.createSpy('removeSource').and.callFake((id) => {
-        sources.delete(id);
-      }),
-      queryRenderedFeatures: jasmine
-        .createSpy('queryRenderedFeatures')
-        .and.returnValue([]),
+      addSource: vi
+        .fn()
+        .mockName('addSource')
+        .mockImplementation((id, source) => {
+          sources.set(id, source);
+        }),
+      addLayer: vi
+        .fn()
+        .mockName('addLayer')
+        .mockImplementation((layer) => {
+          layers.set(layer.id, layer);
+        }),
+      getSource: vi
+        .fn()
+        .mockName('getSource')
+        .mockImplementation((id) => sources.get(id)),
+      getLayer: vi
+        .fn()
+        .mockName('getLayer')
+        .mockImplementation((id) => layers.get(id)),
+      setLayoutProperty: vi.fn().mockName('setLayoutProperty'),
+      setPaintProperty: vi.fn().mockName('setPaintProperty'),
+      moveLayer: vi.fn().mockName('moveLayer'),
+      removeLayer: vi
+        .fn()
+        .mockName('removeLayer')
+        .mockImplementation((id) => {
+          layers.delete(id);
+        }),
+      removeSource: vi
+        .fn()
+        .mockName('removeSource')
+        .mockImplementation((id) => {
+          sources.delete(id);
+        }),
+      queryRenderedFeatures: vi
+        .fn()
+        .mockName('queryRenderedFeatures')
+        .mockReturnValue([]),
     };
   }
 
@@ -104,7 +119,7 @@ describe('RockExplorerCustomMapLayers', () => {
       tileSize: 512,
     });
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-dgm',
         type: 'raster',
         source: 're-custom-src-dgm',
@@ -126,10 +141,10 @@ describe('RockExplorerCustomMapLayers', () => {
 
     expect(map.addSource).toHaveBeenCalledWith(
       're-custom-src-dgm',
-      jasmine.objectContaining({ tileSize: 256 }),
+      expect.objectContaining({ tileSize: 256 }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         layout: { visibility: 'none' },
       }),
     );
@@ -146,7 +161,7 @@ describe('RockExplorerCustomMapLayers', () => {
       tiles: [vectorLayer.url],
     });
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--0',
         type: 'fill',
         source: 're-custom-src-ns',
@@ -155,7 +170,7 @@ describe('RockExplorerCustomMapLayers', () => {
       }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--1',
         type: 'fill',
         'source-layer': 'lsg',
@@ -163,7 +178,7 @@ describe('RockExplorerCustomMapLayers', () => {
       }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--0-outline',
         type: 'line',
         'source-layer': 'nsg',
@@ -204,17 +219,17 @@ describe('RockExplorerCustomMapLayers', () => {
       '#888888',
     ];
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--0',
-        paint: jasmine.objectContaining({
+        paint: expect.objectContaining({
           'fill-color': expectedColor,
         }),
       }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--0-outline',
-        paint: jasmine.objectContaining({
+        paint: expect.objectContaining({
           'line-color': expectedColor,
         }),
       }),
@@ -242,13 +257,13 @@ describe('RockExplorerCustomMapLayers', () => {
     });
 
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--0',
         layout: { visibility: 'visible' },
       }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-ns--1',
         layout: { visibility: 'none' },
       }),
@@ -284,13 +299,13 @@ describe('RockExplorerCustomMapLayers', () => {
     });
 
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-dgm',
         layout: { visibility: 'visible' },
       }),
     );
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: 're-custom-xyz',
         layout: { visibility: 'none' },
       }),
@@ -301,12 +316,12 @@ describe('RockExplorerCustomMapLayers', () => {
     const map = createMapMock();
     const helper = new RockExplorerCustomMapLayers(map as any);
     helper.apply([tilejsonLayer, tilesLayer], true);
-    map.moveLayer.calls.reset();
+    map.moveLayer.mockClear();
 
     helper.reorder(['xyz', 'dgm']);
 
     // Bottom entries are moved first so the first list id ends on top.
-    expect(map.moveLayer.calls.allArgs()).toEqual([
+    expect(vi.mocked(map.moveLayer).mock.calls).toEqual([
       ['re-custom-dgm'],
       ['re-custom-xyz'],
     ]);
@@ -319,7 +334,7 @@ describe('RockExplorerCustomMapLayers', () => {
     helper.apply([tilejsonLayer], true, { dgm: 0.2 });
 
     expect(map.addLayer).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         paint: { 'raster-opacity': 0.2 },
       }),
     );
@@ -343,7 +358,7 @@ describe('RockExplorerCustomMapLayers', () => {
     const map = createMapMock();
     const helper = new RockExplorerCustomMapLayers(map as any);
     helper.apply([vectorLayer], true);
-    map.setPaintProperty.calls.reset();
+    map.setPaintProperty.mockClear();
 
     helper.setOpacity('ns', 0.8);
 
@@ -368,7 +383,7 @@ describe('RockExplorerCustomMapLayers', () => {
     const map = createMapMock();
     const helper = new RockExplorerCustomMapLayers(map as any);
     helper.apply([vectorLayer], true);
-    map.queryRenderedFeatures.and.returnValue([
+    map.queryRenderedFeatures.mockReturnValue([
       { layer: { id: 're-custom-ns--0' }, properties: { name: 'A' } },
       { layer: { id: 're-custom-ns--0' }, properties: { name: 'A' } },
       { layer: { id: 're-custom-ns--1' }, properties: { name: 'B' } },

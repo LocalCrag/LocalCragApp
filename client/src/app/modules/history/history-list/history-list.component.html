@@ -62,7 +62,7 @@
       </div>
     }
     @if (historyItems.length === 0) {
-      <p-message severity="info" styleClass="w-full" [text]="t('noHistory')">
+      <p-message severity="info" styleClass="w-full">{{ t('noHistory') }}
       </p-message>
     }
   </div>

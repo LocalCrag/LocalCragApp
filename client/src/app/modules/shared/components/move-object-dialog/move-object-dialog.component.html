@@ -24,7 +24,7 @@
       <form [formGroup]="form" lcForm class="flex flex-col pt-1">
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label mt-0" for="target">{{ t(labelKey) }}</label>
-          <p-autoComplete
+          <p-auto-complete
             id="target"
             formControlName="target"
             [suggestions]="suggestions"
@@ -35,7 +35,7 @@
             appendTo="body"
             fluid
             lcFormControl
-          ></p-autoComplete>
+          ></p-auto-complete>
           <small class="lc-error" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>

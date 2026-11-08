@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -103,6 +104,7 @@ interface LinePathDraft {
     AsyncPipe,
     NgClass,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
 })
 export class LinePathFormComponent implements OnInit, OnChanges {

@@ -6,7 +6,7 @@
   @if (!gradeDistributionEmpty) {
     @for (data of stackChartData; track data) {
       <div class="mb-6">
-        <p-meterGroup
+        <p-meter-group
           [value]="data.meterValues"
           [min]="0"
           [max]="data.total - data.projects - data.ungraded"
@@ -106,7 +106,7 @@
               }
             </div>
           </ng-template>
-        </p-meterGroup>
+        </p-meter-group>
       </div>
     }
   }

@@ -75,8 +75,8 @@ describe('paginated-list', () => {
 
   it('loads the first page through shared helpers', () => {
     const ctx = createContext();
-    const loadNextPage = jasmine.createSpy('loadNextPage');
-    const afterReset = jasmine.createSpy('afterReset');
+    const loadNextPage = vi.fn().mockName('loadNextPage');
+    const afterReset = vi.fn().mockName('afterReset');
 
     loadFirstPaginatedPage(ctx, loadNextPage, afterReset);
 
@@ -87,14 +87,14 @@ describe('paginated-list', () => {
 
   it('clears items only when loading page one', () => {
     const ctx = createContext();
-    const clearItems = jasmine.createSpy('clearItems');
+    const clearItems = vi.fn().mockName('clearItems');
 
     resetPaginatedList(ctx);
     beginPaginatedPageLoad(ctx, clearItems);
     expect(clearItems).toHaveBeenCalled();
 
     completePaginatedPageLoad(ctx, true);
-    clearItems.calls.reset();
+    clearItems.mockClear();
     beginPaginatedPageLoad(ctx, clearItems);
     expect(clearItems).not.toHaveBeenCalled();
   });

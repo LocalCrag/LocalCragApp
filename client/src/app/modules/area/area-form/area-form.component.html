@@ -27,7 +27,7 @@
           }}</small>
           <lc-duplicate-name-warning
             [nameControl]="areaForm.get('name')"
-            [excludeId]="area?.id"
+            [excludeId]="$safeNavigationMigration(area?.id)"
             entityType="area"
             [findByName]="findAreasByName"
           />

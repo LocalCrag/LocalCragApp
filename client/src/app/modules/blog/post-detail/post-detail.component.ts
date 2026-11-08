@@ -1,4 +1,10 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
@@ -31,6 +37,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
     HasPermissionDirective,
   ],
   templateUrl: './post-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './post-detail.component.scss',
 })
 export class PostDetailComponent implements OnInit {

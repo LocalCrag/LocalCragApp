@@ -52,27 +52,27 @@
       @if (coordinatesLoadingSuccess && !positionLoading) {
         <p-message
           severity="success"
-          text="{{
+         
+        >{{
             t('coordinatesLoadedSuccessfullyWithAccuracyX', { x: accuracy })
-          }}"
-        ></p-message>
+          }}</p-message>
       }
       @if (coordinatesLoadingSuccess && positionLoading) {
         <p-message
           severity="success"
-          text="{{
+         
+        >{{
             t(
               'coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement',
               { x: accuracy }
             )
-          }}"
-        ></p-message>
+          }}</p-message>
       }
       @if (coordinatesLoadingError) {
         <p-message
           severity="error"
-          text="{{ t('coordinatesCouldNotBeLoaded') }}"
-        ></p-message>
+         
+        >{{ t('coordinatesCouldNotBeLoaded') }}</p-message>
       }
     </div>
   }

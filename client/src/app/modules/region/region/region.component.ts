@@ -1,4 +1,10 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -24,6 +30,7 @@ import {
   selector: 'lc-region',
   imports: [RouterOutlet],
   templateUrl: './region.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region.component.scss',
 })
 export class RegionComponent implements OnInit {

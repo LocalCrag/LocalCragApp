@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -69,6 +70,7 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
   templateUrl: './area-form.component.html',
   styleUrls: ['./area-form.component.scss'],
   providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,

@@ -15,7 +15,7 @@
             t("blocWeather.reportConditionsStatusLabel")
           }}</label>
           <div class="flex flex-wrap gap-2">
-            <p-toggleButton
+            <p-toggle-button
               fluid
               formControlName="dry"
               [onLabel]="t('blocWeather.dry') + ' 😊'"
@@ -23,7 +23,7 @@
               [dt]="dryDt"
               class="capitalize"
             />
-            <p-toggleButton
+            <p-toggle-button
               fluid
               formControlName="some_wet"
               [onLabel]="t('blocWeather.some_wet') + ' 😐'"
@@ -31,7 +31,7 @@
               [dt]="someWetDt"
               class="capitalize"
             />
-            <p-toggleButton
+            <p-toggle-button
               fluid
               formControlName="mostly_wet"
               [onLabel]="t('blocWeather.mostly_wet') + ' 😢'"
@@ -39,7 +39,7 @@
               [dt]="mostlyWetDt"
               class="capitalize"
             />
-            <p-toggleButton
+            <p-toggle-button
               fluid
               formControlName="wet"
               [onLabel]="t('blocWeather.wet') + ' 😭'"
@@ -60,7 +60,7 @@
             t("blocWeather.reportConditionsObservedAtLabel")
           }}</label>
           <div class="flex gap-2">
-            <p-datePicker
+            <p-date-picker
               formControlName="observedAt"
               appendTo="body"
               [showTime]="true"

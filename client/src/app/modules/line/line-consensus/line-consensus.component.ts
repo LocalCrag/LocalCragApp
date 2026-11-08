@@ -5,6 +5,7 @@ import {
   OnDestroy,
   SimpleChanges,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -28,6 +29,7 @@ import {
   selector: 'lc-line-consensus',
   templateUrl: './line-consensus.component.html',
   styleUrl: './line-consensus.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoDirective, Rating, FormsModule, LineGradePipe],
 })
 export class LineConsensusComponent implements OnChanges, OnDestroy {

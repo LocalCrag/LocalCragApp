@@ -1,6 +1,6 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
-    <p-dataView #dv [value]="menuItemsTop">
+    <p-data-view #dv [value]="menuItemsTop">
       <ng-template #emptymessage>
         <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
           t("noMenuItemsFoundEmptyMessage")
@@ -121,9 +121,9 @@
           </div>
         }
       </ng-template>
-    </p-dataView>
+    </p-data-view>
 
-    <p-dataView [value]="menuItemsBottom">
+    <p-data-view [value]="menuItemsBottom">
       <ng-template #emptymessage>
         <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
           t("noMenuItemsFoundEmptyMessage")
@@ -235,6 +235,6 @@
           </div>
         }
       </ng-template>
-    </p-dataView>
+    </p-data-view>
   </div>
 </ng-container>

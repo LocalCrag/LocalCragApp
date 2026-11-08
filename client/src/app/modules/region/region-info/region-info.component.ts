@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Observable } from 'rxjs';
@@ -23,6 +28,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
     SanitizeHtmlPipe,
   ],
   templateUrl: './region-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-info.component.scss',
 })
 export class RegionInfoComponent implements OnInit {

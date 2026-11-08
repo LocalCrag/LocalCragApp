@@ -8,6 +8,7 @@ import {
   ViewEncapsulation,
   inject,
   DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
@@ -73,6 +74,7 @@ import {
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     HeaderMenuComponent,
     AsyncPipe,

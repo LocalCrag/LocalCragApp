@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -25,6 +31,7 @@ import { AppAlert } from '../../../models/app-alert';
   templateUrl: './app-level-alerts.component.html',
   styleUrls: ['./app-level-alerts.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoDirective, AsyncPipe, Button],
 })
 export class AppLevelAlertsComponent implements OnInit {

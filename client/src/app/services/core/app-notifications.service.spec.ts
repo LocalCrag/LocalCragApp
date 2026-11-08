@@ -22,14 +22,14 @@ describe('AppNotificationsService', () => {
     });
     service = TestBed.inject(AppNotificationsService);
     messages = TestBed.inject(MessageService);
-    spyOn(messages, 'add');
+    vi.spyOn(messages, 'add').mockReturnValue(undefined);
   });
 
   it('shows success toasts on every viewport', () => {
     service.toast('ACCOUNT_SETTINGS_UPDATED');
 
     expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         severity: 'success',
         life: 5000,
       }),
@@ -40,7 +40,7 @@ describe('AppNotificationsService', () => {
     service.toast('LOGOUT_SUCCESS');
 
     expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         severity: 'info',
         life: 5000,
       }),
@@ -51,7 +51,7 @@ describe('AppNotificationsService', () => {
     service.toast('LOGIN_ERROR');
 
     expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         severity: 'error',
         life: 5000,
       }),

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Crag } from '../../../models/crag';
@@ -32,6 +38,7 @@ import { RegionService } from '../../../services/crud/region.service';
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
   imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 export class CragComponent implements OnInit {

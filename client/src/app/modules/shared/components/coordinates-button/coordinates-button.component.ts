@@ -1,4 +1,10 @@
-import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Coordinates } from '../../../../interfaces/coordinates.interface';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -14,6 +20,7 @@ import { DestroyRef } from '@angular/core';
   imports: [TranslocoDirective, SplitButtonModule],
   templateUrl: './coordinates-button.component.html',
   styleUrl: './coordinates-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class CoordinatesButtonComponent {

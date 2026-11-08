@@ -6,6 +6,7 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
@@ -32,6 +33,7 @@ import {
   imports: [RouterOutlet, UserAvatarComponent],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class UserDetailComponent implements OnInit {

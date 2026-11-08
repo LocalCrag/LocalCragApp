@@ -6,6 +6,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Observable, of } from 'rxjs';
@@ -46,6 +47,7 @@ import { Button } from 'primeng/button';
   templateUrl: './refresh-login-modal.component.html',
   styleUrls: ['./refresh-login-modal.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     TranslocoPipe,

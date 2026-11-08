@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
@@ -29,6 +35,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   selector: 'lc-crag-info',
   templateUrl: './crag-info.component.html',
   styleUrls: ['./crag-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ClosedSpotAlertComponent,

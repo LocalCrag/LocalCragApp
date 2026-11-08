@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { Sector } from '../../../models/sector';
@@ -14,6 +19,7 @@ import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/
   selector: 'lc-sector-rules',
   imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './sector-rules.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sector-rules.component.scss',
 })
 export class SectorRulesComponent implements OnInit {

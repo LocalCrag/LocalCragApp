@@ -9,6 +9,7 @@ import {
   OnDestroy,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -103,6 +104,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
   ],
   providers: [MessageService, ConfirmationService, RockExplorerUiService],
   templateUrl: './rock-explorer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer.component.scss',
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {

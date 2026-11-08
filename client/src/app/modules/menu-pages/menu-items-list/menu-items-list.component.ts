@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable, of, switchMap } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -50,6 +56,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DialogService],
 })
 export class MenuItemsListComponent implements OnInit {

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -24,6 +30,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
   imports: [RouterOutlet, TranslocoDirective, ToggleSwitch, FormsModule],
   templateUrl: './topo-quality-page.component.html',
   styleUrl: './topo-quality-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoQuality' }],
 })
 export class TopoQualityPageComponent implements OnInit {

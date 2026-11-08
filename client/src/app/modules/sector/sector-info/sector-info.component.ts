@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Sector } from '../../../models/sector';
 import { SectorsService } from '../../../services/crud/sectors.service';
@@ -24,6 +30,7 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   selector: 'lc-sector-info',
   templateUrl: './sector-info.component.html',
   styleUrls: ['./sector-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ClosedSpotAlertComponent,

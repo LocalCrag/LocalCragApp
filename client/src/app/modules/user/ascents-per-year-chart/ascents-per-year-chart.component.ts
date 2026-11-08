@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, OnChanges, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnChanges,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { ChartModule } from 'primeng/chart';
@@ -14,6 +21,7 @@ Chart.register(ChartDataLabels);
   selector: 'lc-ascents-per-year-chart',
   imports: [TranslocoDirective, ChartModule, Message],
   templateUrl: './ascents-per-year-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ascents-per-year-chart.component.scss',
 })
 export class AscentsPerYearChartComponent implements OnChanges {

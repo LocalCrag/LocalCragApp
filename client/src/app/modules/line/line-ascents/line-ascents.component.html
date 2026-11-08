@@ -1,5 +1,5 @@
 <lc-ascent-list
-  [lineId]="line?.id"
+  [lineId]="$safeNavigationMigration(line?.id)"
   [disableGradeOrderAndFiltering]="true"
   [parentLoading]="!line"
 ></lc-ascent-list>

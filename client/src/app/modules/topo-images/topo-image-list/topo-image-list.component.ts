@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import {
@@ -114,6 +115,7 @@ import {
     { provide: TRANSLOCO_SCOPE, useValue: 'topoImage' },
   ],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     DataView,

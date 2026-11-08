@@ -59,8 +59,6 @@
   } @else {
     <p-message
       severity="info"
-      icon="pi pi-info-circle"
-      [text]="t('noSessionData')"
-    />
+      icon="pi pi-info-circle">{{ t('noSessionData') }}</p-message>
   }
 </ng-container>

@@ -4,6 +4,7 @@ import {
   Input,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   BlocWeatherClassification,
@@ -28,6 +29,7 @@ import { Router, RouterLink } from '@angular/router';
   ],
   templateUrl: './current-conditions.component.html',
   styleUrl: './current-conditions.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class CurrentConditionsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AbstractModel } from '../../../../models/abstract-model';
 import { LoadingState } from '../../../../enums/loading-state';
@@ -22,6 +22,7 @@ import { LineGradePipe } from '../../pipes/line-grade.pipe';
   selector: 'lc-order-items',
   templateUrl: './order-items.component.html',
   styleUrls: ['./order-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     OrderList,
     TranslocoDirective,

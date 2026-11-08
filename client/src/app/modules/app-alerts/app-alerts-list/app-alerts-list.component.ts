@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -35,6 +40,7 @@ import { Observable } from 'rxjs';
     Tag,
   ],
   templateUrl: './app-alerts-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app-alerts-list.component.scss',
 })
 export class AppAlertsListComponent implements OnInit {

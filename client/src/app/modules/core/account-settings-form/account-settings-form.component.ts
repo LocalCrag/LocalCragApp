@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
@@ -36,6 +42,7 @@ export const NOTIFICATION_MAIL_SETTINGS_FRAGMENT = 'notification-mails';
     HasPermissionDirective,
   ],
   templateUrl: './account-settings-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-settings-form.component.scss',
 })
 export class AccountSettingsFormComponent implements OnInit {

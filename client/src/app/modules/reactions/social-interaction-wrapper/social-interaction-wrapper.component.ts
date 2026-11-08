@@ -11,6 +11,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Reactions } from '../../../models/reactions';
 import { Popover } from 'primeng/popover';
@@ -34,6 +35,7 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
   imports: [Popover, HasPermissionDirective],
   templateUrl: './social-interaction-wrapper.component.html',
   styleUrl: './social-interaction-wrapper.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DialogService],
 })
 export class SocialInteractionWrapperComponent implements OnInit, OnChanges {

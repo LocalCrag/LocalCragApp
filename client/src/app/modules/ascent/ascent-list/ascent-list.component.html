@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
-  <p-dataView #dv [value]="ascents">
+  <p-data-view #dv [value]="ascents">
     <ng-template #emptymessage>
       @if (
         ascents?.length === 0 &&
@@ -104,7 +104,7 @@
         >
           {{ t("filterLabel") }}
           <div class="flex flex-wrap gap-2 items-center">
-            <p-toggleButton
+            <p-toggle-button
               [(ngModel)]="filterFlash"
               [dt]="toggleButtonDt"
               [onLabel]="t('flash')"
@@ -115,7 +115,7 @@
               (onChange)="loadFirstPage()"
               data-cy="filterFlash"
             />
-            <p-toggleButton
+            <p-toggle-button
               [(ngModel)]="filterWithKneepad"
               [dt]="toggleButtonDt"
               [onLabel]="t('withKneepad')"
@@ -126,7 +126,7 @@
               (onChange)="loadFirstPage()"
               data-cy="filterWithKneepad"
             />
-            <p-toggleButton
+            <p-toggle-button
               *isGymMode="false"
               [(ngModel)]="filterFa"
               [dt]="toggleButtonDt"
@@ -174,7 +174,7 @@
                 [reactions]="ascent.reactions"
                 [targetType]="'ascent'"
                 [targetId]="ascent.id"
-                [createdById]="ascent.createdBy?.id"
+                [createdById]="$safeNavigationMigration(ascent.createdBy?.id)"
                 [commentTarget]="ascent"
                 [commentCount]="ascent.commentCount"
                 (reactionsChange)="ascent.reactions = $event"
@@ -612,7 +612,7 @@
         </div>
       }
     </ng-template>
-  </p-dataView>
+  </p-data-view>
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">

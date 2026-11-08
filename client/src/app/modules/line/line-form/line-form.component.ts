@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -120,6 +121,7 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
   providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,

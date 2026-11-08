@@ -8,6 +8,7 @@ import {
   ViewChild,
   afterNextRender,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
@@ -49,6 +50,7 @@ import { Subscription } from 'rxjs';
   selector: 'lc-root',
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PageTitleComponent,
     RulesAlertComponent,

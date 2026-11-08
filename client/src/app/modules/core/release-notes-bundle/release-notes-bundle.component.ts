@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
@@ -39,6 +40,7 @@ import '../../../utility/release-note-transloco-keys';
   imports: [TranslocoDirective, MessageModule],
   templateUrl: './release-notes-bundle.component.html',
   styleUrl: './release-notes-bundle.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class ReleaseNotesBundleComponent implements OnInit {

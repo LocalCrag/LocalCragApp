@@ -6,8 +6,6 @@
   } @else {
     <p-message
       severity="info"
-      icon="pi pi-info-circle"
-      [text]="emptyText || t('noAscentYearData')"
-    />
+      icon="pi pi-info-circle">{{ emptyText || t('noAscentYearData') }}</p-message>
   }
 </ng-container>

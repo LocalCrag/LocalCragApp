@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Router, RouterLink } from '@angular/router';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
@@ -24,6 +30,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
     RouterLink,
   ],
   templateUrl: './activate-account.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './activate-account.component.scss',
 })
 export class ActivateAccountComponent implements OnInit {

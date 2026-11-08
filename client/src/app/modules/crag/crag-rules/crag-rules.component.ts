@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { Crag } from '../../../models/crag';
@@ -16,6 +22,7 @@ import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/
   selector: 'lc-crag-rules',
   imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
   templateUrl: './crag-rules.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crag-rules.component.scss',
 })
 export class CragRulesComponent implements OnInit {

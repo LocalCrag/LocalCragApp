@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { MenuItem } from 'primeng/api';
@@ -35,6 +41,7 @@ import { RegionService } from '../../../services/crud/region.service';
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss'],
   imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaComponent implements OnInit {

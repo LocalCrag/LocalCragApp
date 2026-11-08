@@ -27,7 +27,7 @@
           }}</small>
           <lc-duplicate-name-warning
             [nameControl]="lineForm.get('name')"
-            [excludeId]="line?.id"
+            [excludeId]="$safeNavigationMigration(line?.id)"
             entityType="line"
             [findByName]="findLinesByName"
           />
@@ -128,9 +128,7 @@
           @if (getDisplayUserGrades() | async) {
             <p-message
               styleClass="mt-2"
-              severity="warn"
-              text="{{ t('displayUserGradesActive') }}"
-            />
+              severity="warn">{{ t('displayUserGradesActive') }}</p-message>
           }
         </div>
         @if (showAssumedGradeBounds) {
@@ -276,9 +274,7 @@
           @if (getDisplayUserRatings() | async) {
             <p-message
               styleClass="mt-2"
-              severity="warn"
-              text="{{ t('displayUserRatingsActive') }}"
-            />
+              severity="warn">{{ t('displayUserRatingsActive') }}</p-message>
           }
         </div>
         <div class="flex flex-col gap-2">

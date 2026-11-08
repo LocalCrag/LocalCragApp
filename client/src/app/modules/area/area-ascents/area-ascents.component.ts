@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -17,6 +23,7 @@ import { Area } from '../../../models/area';
   selector: 'lc-area-ascents',
   imports: [AscentListComponent, SkeletonModule],
   templateUrl: './area-ascents.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './area-ascents.component.scss',
 })
 export class AreaAscentsComponent implements OnInit {

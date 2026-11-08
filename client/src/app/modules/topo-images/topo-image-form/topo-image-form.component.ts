@@ -5,6 +5,7 @@ import {
   ViewChild,
   ViewChildren,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -87,6 +88,7 @@ import { DividerModule } from 'primeng/divider';
     ProgressBar,
     DividerModule,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
 })
 export class TopoImageFormComponent implements OnInit {

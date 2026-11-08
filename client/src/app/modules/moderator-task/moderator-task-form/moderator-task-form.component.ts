@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -54,6 +60,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   ],
   templateUrl: './moderator-task-form.component.html',
   styleUrl: './moderator-task-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ConfirmationService],
 })
 export class ModeratorTaskFormComponent implements OnInit {

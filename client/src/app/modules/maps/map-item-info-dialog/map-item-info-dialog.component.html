@@ -6,7 +6,9 @@
     [dismissableMask]="true"
   >
     <div class="flex justify-end gap-2 flex-col">
-      <div [innerHTML]="feature?.properties.description"></div>
+      <div
+        [innerHTML]="$safeNavigationMigration(feature?.properties.description)"
+      ></div>
       <p-button
         [label]="t('navigateToItem')"
         (onClick)="navigateToItem()"

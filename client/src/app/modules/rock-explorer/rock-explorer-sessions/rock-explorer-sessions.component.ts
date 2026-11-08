@@ -1,4 +1,9 @@
-import { Component, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
@@ -14,6 +19,7 @@ import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.typ
   selector: 'lc-rock-explorer-sessions',
   imports: [Button, Tag, TranslocoDirective, TimeAgoPipe],
   templateUrl: './rock-explorer-sessions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-sessions.component.scss',
 })
 export class RockExplorerSessionsComponent {

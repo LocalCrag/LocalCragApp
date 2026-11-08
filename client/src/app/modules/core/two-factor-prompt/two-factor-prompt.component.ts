@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -36,6 +37,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   selector: 'lc-two-factor-prompt',
   templateUrl: './two-factor-prompt.component.html',
   styleUrl: './two-factor-prompt.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     TranslocoPipe,

@@ -3,7 +3,8 @@
     <form [formGroup]="scaleForm" lcForm>
       <ng-template #title>
         @if (editMode) {
-          {{ scale?.lineType | transloco }} {{ scale?.name }}
+          {{ $safeNavigationMigration(scale?.lineType) | transloco }}
+          {{ scale?.name }}
         }
       </ng-template>
       <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
@@ -135,7 +136,7 @@
                   <div lcControlGroup>
                     <label>
                       {{ t("gradeValueLabel") }}
-                      <p-inputNumber
+                      <p-input-number
                         class="ml-2"
                         formControlName="value"
                         [min]="1"
@@ -189,9 +190,8 @@
             <ng-container *lcIfError="'not_unique'">
               <p-message
                 severity="error"
-                text="{{ t('valuesNotUnique') }}"
-                styleClass="min-w-full mb-6"
-              />
+               
+                styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
             </ng-container>
           </ng-container>
         </div>
@@ -254,7 +254,7 @@
               <div lcControlGroup>
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber
+                  <p-input-number
                     formControlName="value"
                     [min]="1"
                     class="ml-2"
@@ -310,23 +310,20 @@
           <ng-container *lcIfError="'not_unique'">
             <p-message
               severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-6"
-            />
+             
+              styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
             <p-message
               severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              styleClass="min-w-full mb-6"
-            />
+             
+              styleClass="min-w-full mb-6">{{ t('gradeBracketsErrorMsg') }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
             <p-message
               severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-              styleClass="min-w-full mb-6"
-            />
+             
+              styleClass="min-w-full mb-6">{{ t('gradeBracketsInvalidLength', { min: 2 }) }}</p-message>
           </ng-container>
         </ng-container>
       </div>
@@ -369,7 +366,7 @@
               <div lcControlGroup>
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber
+                  <p-input-number
                     formControlName="value"
                     [min]="1"
                     class="ml-2"
@@ -426,23 +423,20 @@
           <ng-container *lcIfError="'not_unique'">
             <p-message
               severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-6"
-            />
+             
+              styleClass="min-w-full mb-6">{{ t('valuesNotUnique') }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
             <p-message
               severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              class="min-w-full mb-6"
-            />
+             
+              class="min-w-full mb-6">{{ t('gradeBracketsErrorMsg') }}</p-message>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
             <p-message
               severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-              class="min-w-full mb-6"
-            />
+             
+              class="min-w-full mb-6">{{ t('gradeBracketsInvalidLength', { min: 2 }) }}</p-message>
           </ng-container>
         </ng-container>
       </div>

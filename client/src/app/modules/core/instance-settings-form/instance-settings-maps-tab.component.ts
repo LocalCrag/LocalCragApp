@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   FormArray,
@@ -74,6 +80,7 @@ type TileJsonOverlayMeta = {
     IfErrorDirective,
   ],
   templateUrl: './instance-settings-maps-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './instance-settings-maps-tab.component.scss',
 })
 export class InstanceSettingsMapsTabComponent implements OnInit {

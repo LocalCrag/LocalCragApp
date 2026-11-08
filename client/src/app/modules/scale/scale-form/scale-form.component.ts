@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import {
   TranslocoDirective,
@@ -80,6 +86,7 @@ import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bra
     AsyncPipe,
     ScaleBracketPreviewComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ConfirmationService],
 })
 export class ScaleFormComponent implements OnInit {

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { isSeasonEmpty, Season } from '../../../../models/season';
 import { ChartModule } from 'primeng/chart';
@@ -19,6 +26,7 @@ import { Message } from 'primeng/message';
   selector: 'lc-season-chart',
   imports: [ChartModule, Message, TranslocoDirective],
   templateUrl: './season-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './season-chart.component.scss',
 })
 export class SeasonChartComponent implements OnInit {

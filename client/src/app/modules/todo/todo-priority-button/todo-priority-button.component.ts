@@ -5,6 +5,7 @@ import {
   ViewEncapsulation,
   inject,
   DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Todo } from '../../../models/todo';
 import { MenuItem } from 'primeng/api';
@@ -25,6 +26,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [MenuModule, ButtonModule, TranslocoDirective],
   templateUrl: './todo-priority-button.component.html',
   styleUrl: './todo-priority-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class TodoPriorityButtonComponent implements OnInit {

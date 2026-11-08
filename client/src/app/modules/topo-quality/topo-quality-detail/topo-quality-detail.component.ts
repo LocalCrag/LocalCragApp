@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -25,6 +31,7 @@ import { TopoQualityBarComponent } from '../topo-quality-bar/topo-quality-bar.co
     TopoQualityBarComponent,
   ],
   templateUrl: './topo-quality-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './topo-quality-detail.component.scss',
 })
 export class TopoQualityDetailComponent implements OnInit {

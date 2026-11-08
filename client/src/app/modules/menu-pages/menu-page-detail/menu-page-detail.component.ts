@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -16,6 +22,7 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   selector: 'lc-menu-page-detail',
   imports: [SkeletonModule, SanitizeHtmlPipe],
   templateUrl: './menu-page-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu-page-detail.component.scss',
 })
 export class MenuPageDetailComponent implements OnInit {

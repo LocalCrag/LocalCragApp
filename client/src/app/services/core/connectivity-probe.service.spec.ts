@@ -35,7 +35,7 @@ describe('ConnectivityProbeService', () => {
     httpMock = TestBed.inject(HttpTestingController);
     store = TestBed.inject(MockStore);
     api = TestBed.inject(ApiService);
-    spyOn(store, 'dispatch').and.callThrough();
+    vi.spyOn(store, 'dispatch');
     TestBed.inject(ConnectivityProbeService);
   });
 
@@ -50,7 +50,7 @@ describe('ConnectivityProbeService', () => {
     tick(0);
 
     const req = httpMock.expectOne(api.health.check());
-    expect(req.request.context.get(CONNECTIVITY_PROBE)).toBeTrue();
+    expect(req.request.context.get(CONNECTIVITY_PROBE)).toBe(true);
     req.flush({ server: 'healthy' });
 
     expect(store.dispatch).toHaveBeenCalledWith(hideOfflineAlert());
@@ -100,6 +100,6 @@ describe('ConnectivityProbeService', () => {
     simulateOfflineAlertCleared();
     tick(ConnectivityProbeService.INTERVAL_MS * 2);
     httpMock.expectNone(api.health.check());
-    expect(true).toBeTrue();
+    expect(true).toBe(true);
   }));
 });

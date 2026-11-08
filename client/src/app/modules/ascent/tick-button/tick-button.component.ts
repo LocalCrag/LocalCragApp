@@ -1,4 +1,10 @@
-import { Component, Input, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
@@ -25,6 +31,7 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
   templateUrl: './tick-button.component.html',
   styleUrl: './tick-button.component.scss',
   providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class TickButtonComponent {

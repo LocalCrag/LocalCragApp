@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RankingService } from '../../../services/crud/ranking.service';
 import { Ranking } from '../../../models/ranking';
@@ -60,6 +61,7 @@ import { RankingExample, rankingExampleFromGrades } from './ranking-example';
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class RankingListComponent implements OnInit {

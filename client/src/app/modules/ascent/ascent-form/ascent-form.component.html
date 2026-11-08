@@ -46,13 +46,13 @@
           }}</small>
         </div>
       }
-      <p-toggleButton
+      <p-toggle-button
         formControlName="yearOnly"
         [onLabel]="t('onlyYear')"
         [offLabel]="t('onlyYear')"
         data-cy="yearOnly"
         [dt]="toggleButtonDt"
-      ></p-toggleButton>
+      ></p-toggle-button>
     </div>
 
     <div class="flex justify-center gap-2">
@@ -81,12 +81,12 @@
     </p-divider>
 
     <div class="flex flex-row gap-2 justify-center items-center" lcControlGroup>
-      <p-toggleButton
+      <p-toggle-button
         formControlName="soft"
         [onLabel]="t('soft')"
         [offLabel]="t('soft')"
         [dt]="toggleButtonDt"
-      ></p-toggleButton>
+      ></p-toggle-button>
       <p-select
         formControlName="grade"
         [options]="grades"
@@ -104,12 +104,12 @@
           {{ selectedGrade.name | translateSpecialGrades }}
         </ng-template>
       </p-select>
-      <p-toggleButton
+      <p-toggle-button
         formControlName="hard"
         [onLabel]="t('hard')"
         [offLabel]="t('hard')"
         [dt]="toggleButtonDt"
-      ></p-toggleButton>
+      ></p-toggle-button>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
@@ -246,26 +246,26 @@
     </p-divider>
 
     <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
-      <p-toggleButton
+      <p-toggle-button
         formControlName="flash"
         [dt]="toggleButtonDt"
         [onLabel]="t('flash')"
         [offLabel]="t('flash')"
-      ></p-toggleButton>
-      <p-toggleButton
+      ></p-toggle-button>
+      <p-toggle-button
         formControlName="withKneepad"
         [dt]="toggleButtonDt"
         [onLabel]="t('withKneepad')"
         data-cy="withKneepad"
         [offLabel]="t('withKneepad')"
-      ></p-toggleButton>
+      ></p-toggle-button>
       @if ((gymMode$ | async) === false) {
-        <p-toggleButton
+        <p-toggle-button
           formControlName="fa"
           [dt]="toggleButtonDt"
           [onLabel]="t('fa')"
           [offLabel]="t('fa')"
-        ></p-toggleButton>
+        ></p-toggle-button>
       }
     </div>
     @if (ascentForm.get("fa").value && (gymMode$ | async) === false) {
