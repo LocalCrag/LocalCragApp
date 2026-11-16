@@ -1,7 +1,9 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
   <div class="p-6">
     <div class="flex justify-end mb-6" *isLoggedIn="true">
-      <button hlmBtn type="button" (click)="addImage()"><ng-icon name="lucideImage" /> {{ t('addImage') }}</button>
+      <button hlmBtn type="button" (click)="addImage()">
+        <ng-icon name="lucideImage" /> {{ t("addImage") }}
+      </button>
     </div>
 
     <div class="gallery-masonry">
@@ -26,56 +28,74 @@
     </div>
     @if (hasNextPage) {
       <div class="flex justify-center mt-20">
-        <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING && currentPage > 1" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING && currentPage > 1) { <hlm-spinner /> } {{ t('loadMore') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [disabled]="loading === loadingStates.LOADING && currentPage > 1"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+        >
+          @if (loading === loadingStates.LOADING && currentPage > 1) {
+            <hlm-spinner />
+          }
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
     @if (!(loading === loadingStates.LOADING) && images.length === 0) {
-      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("thisGalleryIsEmpty") }}</p></div>
+      <div hlmAlert>
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("thisGalleryIsEmpty") }}</p>
+      </div>
     }
-    
 
     @if (previewVisible && images[previewIndex]; as item) {
       <hlm-dialog state="open" (closed)="previewVisible = false">
         <hlm-dialog-content *hlmDialogPortal class="sm:max-w-5xl">
-        <ng-container *transloco="let tp; read: 'gallery.preview'">
-          <div
-            class="gallery-preview"
-            (touchstart)="onPreviewTouchStart($event)"
-            (touchend)="onPreviewTouchEnd($event)"
-            (touchcancel)="onPreviewTouchCancel()"
-          >
-            @if (canStepPreview(-1)) {
-              <button
-                type="button"
-                class="p-galleria-nav-button p-galleria-prev-button gallery-preview__nav"
-                (click)="stepPreview(-1, $event)"
-                [attr.aria-label]="tp('previousImage')"
-              >
-                <ng-icon name="lucideChevronLeft" />
-              </button>
-            }
-            <img
-              class="gallery-preview__img"
-              [src]="item.image.thumbnailXL || item.image.path"
-              [srcset]="item.image.srcSet"
-              sizes="90vw"
-              [alt]="item.description || ''"
-            />
-            @if (canStepPreview(1)) {
-              <button
-                type="button"
-                class="p-galleria-nav-button p-galleria-next-button gallery-preview__nav"
-                (click)="stepPreview(1, $event)"
-                [attr.aria-label]="tp('nextImage')"
-              >
-                <ng-icon name="lucideChevronRight" />
-              </button>
-            }
-            @if (item.description) {
-              <div class="gallery-preview__caption">{{ item.description }}</div>
-            }
-          </div>
-        </ng-container>
+          <ng-container *transloco="let tp; read: 'gallery.preview'">
+            <div
+              class="gallery-preview"
+              (touchstart)="onPreviewTouchStart($event)"
+              (touchend)="onPreviewTouchEnd($event)"
+              (touchcancel)="onPreviewTouchCancel()"
+            >
+              @if (canStepPreview(-1)) {
+                <button
+                  type="button"
+                  class="p-galleria-nav-button p-galleria-prev-button gallery-preview__nav"
+                  (click)="stepPreview(-1, $event)"
+                  [attr.aria-label]="tp('previousImage')"
+                >
+                  <ng-icon name="lucideChevronLeft" />
+                </button>
+              }
+              <img
+                class="gallery-preview__img"
+                [src]="item.image.thumbnailXL || item.image.path"
+                [srcset]="item.image.srcSet"
+                sizes="90vw"
+                [alt]="item.description || ''"
+              />
+              @if (canStepPreview(1)) {
+                <button
+                  type="button"
+                  class="p-galleria-nav-button p-galleria-next-button gallery-preview__nav"
+                  (click)="stepPreview(1, $event)"
+                  [attr.aria-label]="tp('nextImage')"
+                >
+                  <ng-icon name="lucideChevronRight" />
+                </button>
+              }
+              @if (item.description) {
+                <div class="gallery-preview__caption">
+                  {{ item.description }}
+                </div>
+              }
+            </div>
+          </ng-container>
         </hlm-dialog-content>
       </hlm-dialog>
     }

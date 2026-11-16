@@ -46,8 +46,10 @@
   </div>
   <div class="flex w-full justify-end gap-2 mt-6">
     @if (targetLink) {
-      <button hlmBtn type="button" variant="ghost" (click)="viewDetails()">{{ t('viewDetails') }}</button>
+      <button hlmBtn type="button" variant="ghost" (click)="viewDetails()">
+        {{ t("viewDetails") }}
+      </button>
     }
-    <button hlmBtn type="button" (click)="close()">{{ t('close') }}</button>
+    <button hlmBtn type="button" (click)="close()">{{ t("close") }}</button>
   </div>
 </ng-container>

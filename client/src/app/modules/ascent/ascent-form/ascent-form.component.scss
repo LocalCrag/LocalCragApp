@@ -17,7 +17,7 @@
   width: 6.5rem;
 }
 
-button.ascent-flag[data-state='on'] {
+button.ascent-flag[data-state="on"] {
   background-color: var(--p-primary-color) !important;
   color: var(--p-primary-contrast-color) !important;
 
@@ -28,10 +28,10 @@ button.ascent-flag[data-state='on'] {
 }
 
 lc-ascent-form .lc-control-group.error {
-  [data-slot='select-trigger'],
-  [data-slot='input-group'],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"],
   textarea,
-  input:not([type='hidden']) {
+  input:not([type="hidden"]) {
     border-color: var(--destructive) !important;
   }
 }

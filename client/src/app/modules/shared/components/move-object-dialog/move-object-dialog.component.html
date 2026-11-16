@@ -13,11 +13,7 @@
         }
 
         @if (hasUnsavedChanges) {
-          <div
-            hlmAlert
-            variant="warning"
-            class="mb-6"
-          >
+          <div hlmAlert variant="warning" class="mb-6">
             <ng-icon name="lucideTriangleAlert" />
             {{ t("unsavedChangesAreLost") }}
           </div>
@@ -65,12 +61,7 @@
           >
             {{ t("moveObjectDialog.cancel") }}
           </button>
-          <button
-            hlmBtn
-            type="button"
-            [disabled]="loading"
-            (click)="submit()"
-          >
+          <button hlmBtn type="button" [disabled]="loading" (click)="submit()">
             @if (loading) {
               <hlm-spinner />
             }

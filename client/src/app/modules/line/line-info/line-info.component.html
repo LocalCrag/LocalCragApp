@@ -41,7 +41,17 @@
             />
           }
           @if (line.topoImages.length > 1) {
-            <button hlmBtn type="button" variant="outline" size="sm" (click)="reorderLinePaths()" *isModerator="true"><ng-icon name="lucideArrowUpDown" /> {{ t('reorderLinePathsForLineButtonLabel') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              variant="outline"
+              size="sm"
+              (click)="reorderLinePaths()"
+              *isModerator="true"
+            >
+              <ng-icon name="lucideArrowUpDown" />
+              {{ t("reorderLinePathsForLineButtonLabel") }}
+            </button>
           }
         </div>
 

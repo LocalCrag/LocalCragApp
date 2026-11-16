@@ -26,8 +26,16 @@
             isLoggedIn$ | async
         ) {
           <div>
-            
-            <button hlmBtn type="button" size="icon-sm" class="ellipsis-button" [hlmDropdownMenuTrigger]="commentMenu" variant="ghost"><ng-icon name="lucideEllipsisVertical" /></button>
+            <button
+              hlmBtn
+              type="button"
+              size="icon-sm"
+              class="ellipsis-button"
+              [hlmDropdownMenuTrigger]="commentMenu"
+              variant="ghost"
+            >
+              <ng-icon name="lucideEllipsisVertical" />
+            </button>
           </div>
         }
       </div>
@@ -47,7 +55,14 @@
       }
       @if (comment.replyCount > 0) {
         <div>
-          <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="toggleShowReplies()">
+          <button
+            hlmBtn
+            type="button"
+            size="sm"
+            class="reply-button"
+            variant="ghost"
+            (click)="toggleShowReplies()"
+          >
             @if (!showReplies) {
               <ng-icon name="lucideChevronDown" />
             }
@@ -73,7 +88,14 @@
             loadingReplies !== loadingStates.LOADING
           ) {
             <div>
-              <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="loadNextPageOfReplies()">
+              <button
+                hlmBtn
+                type="button"
+                size="sm"
+                class="reply-button"
+                variant="ghost"
+                (click)="loadNextPageOfReplies()"
+              >
                 <ng-icon name="lucideReply" class="mirror-x" />
                 {{ t("loadMoreReplies") }}
               </button>
@@ -125,7 +147,14 @@
       !replyActive && !comment.isDeleted && !editModeActive && showReplyButton
     ) {
       <div>
-        <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="onReplyClick()">
+        <button
+          hlmBtn
+          type="button"
+          size="sm"
+          class="reply-button"
+          variant="ghost"
+          (click)="onReplyClick()"
+        >
           {{ t("reply") }}
         </button>
       </div>
@@ -143,16 +172,21 @@
     }
   </ng-template>
 
-<ng-template #commentMenu>
-  <div hlmDropdownMenu>
-    @for (item of ellipsisMenuItems; track item.label) {
-      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
-        @if (menuIcon(item.icon); as name) {
-          <ng-icon [name]="name" />
-        }
-        {{ item.label }}
-      </button>
-    }
-  </div>
-</ng-template>
+  <ng-template #commentMenu>
+    <div hlmDropdownMenu>
+      @for (item of ellipsisMenuItems; track item.label) {
+        <button
+          hlmDropdownMenuItem
+          type="button"
+          [disabled]="!!item.disabled"
+          (click)="item.command?.()"
+        >
+          @if (menuIcon(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
 </ng-container>

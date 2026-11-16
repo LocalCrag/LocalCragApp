@@ -2,13 +2,19 @@
   <div class="content notifications-page">
     <div class="p-6">
       <div class="notifications-page-actions">
-        <button hlmBtn type="button" variant="ghost" (click)="markAllRead()" [disabled]="unreadCount() === 0">{{ t('notificationsMarkAllRead') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          (click)="markAllRead()"
+          [disabled]="unreadCount() === 0"
+        >
+          {{ t("notificationsMarkAllRead") }}
+        </button>
       </div>
 
       @if (notifications.length === 0) {
-        <div hlmAlert class="w-full">{{
-          t("notificationsEmpty")
-        }}</div>
+        <div hlmAlert class="w-full">{{ t("notificationsEmpty") }}</div>
       } @else {
         <div class="notifications-page-list">
           @for (notification of notifications; track notification.id) {
@@ -75,7 +81,14 @@
 
       @if (hasNextPage) {
         <div class="notifications-page-load-more">
-          <button hlmBtn type="button" (click)="loadNextPage()" [disabled]="loading">{{ t('history.loadMore') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            (click)="loadNextPage()"
+            [disabled]="loading"
+          >
+            {{ t("history.loadMore") }}
+          </button>
         </div>
       }
     </div>

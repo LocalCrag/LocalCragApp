@@ -9,9 +9,19 @@
             <strong class="mr-2">
               {{ t("lineType") }}
             </strong>
-            <hlm-select [(ngModel)]="scaleKey" (ngModelChange)="selectScale()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of availableScales; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div></hlm-select-item>}</hlm-select-content></hlm-select>
+            <hlm-select [(ngModel)]="scaleKey" (ngModelChange)="selectScale()"
+              ><hlm-select-trigger class="w-full md:mb-0"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of availableScales; track $index) {
+                  <hlm-select-item [value]="option"
+                    ><div class="flex items-center gap-2">
+                      <div>{{ option.label }}</div>
+                    </div></hlm-select-item
+                  >
+                }
+              </hlm-select-content></hlm-select
+            >
           </div>
         }
         @if (scaleKey?.value) {
@@ -26,7 +36,12 @@
           />
         }
         <div class="w-full flex items-center mt-6">
-          <hlm-checkbox inputId="includeClosedSpots" name="includeClosedSpots" [(ngModel)]="includeClosed" (ngModelChange)="onIncludeClosedChange()"></hlm-checkbox>
+          <hlm-checkbox
+            inputId="includeClosedSpots"
+            name="includeClosedSpots"
+            [(ngModel)]="includeClosed"
+            (ngModelChange)="onIncludeClosedChange()"
+          ></hlm-checkbox>
           <label [for]="'includeClosedSpots'" class="ml-2">{{
             t("includeClosedSpots")
           }}</label>
@@ -121,6 +136,9 @@
   }
 
   @if (completion && Object.keys(completion.crags).length === 0) {
-    <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noLinesInThisGradeRange") }}</p></div>
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noLinesInThisGradeRange") }}</p>
+    </div>
   }
 </ng-container>

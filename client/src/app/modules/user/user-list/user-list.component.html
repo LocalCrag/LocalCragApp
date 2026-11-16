@@ -1,96 +1,136 @@
 <ng-container *transloco="let t; read: 'users.list'">
   <div class="content">
-    <div class="flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <input
-            type="search"
-            hlmInput
-            [ngModel]="searchQuery"
-            (ngModelChange)="onSearchChange($event)"
-            [placeholder]="t('searchPlaceholder')"
-            [disabled]="loading === loadingStates.LOADING"
-            class="user-list-search"
-            data-cy="user-list-search"
-          />
-          <hlm-select class="sm:shrink-0" [(ngModel)]="sortKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortChange({ value: $event })"><hlm-select-trigger class="w-full sm:w-auto"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
+    <div
+      class="flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <input
+        type="search"
+        hlmInput
+        [ngModel]="searchQuery"
+        (ngModelChange)="onSearchChange($event)"
+        [placeholder]="t('searchPlaceholder')"
+        [disabled]="loading === loadingStates.LOADING"
+        class="user-list-search"
+        data-cy="user-list-search"
+      />
+      <hlm-select
+        class="sm:shrink-0"
+        [(ngModel)]="sortKey"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onSortChange({ value: $event })"
+        ><hlm-select-trigger class="w-full sm:w-auto"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of sortOptions; track $index) {
+            <hlm-select-item [value]="option"
+              ><div class="flex items-center gap-2">
                 @if (option.icon) {
                   <ng-icon [name]="option.icon" />
                 }
                 <div>{{ option.label }}</div>
-              </div></hlm-select-item>}</hlm-select-content></hlm-select>
-        </div>
-@if (!(filteredUsers?.length) && loading !== loadingStates.LOADING) {
-<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          searchQuery.trim()
-            ? t("noUsersMatchSearchEmptyMessage")
-            : t("noUsersFoundEmptyMessage")
-        }}</p></div>
-}
-@if (loading === loadingStates.LOADING) {
-          <lc-user-list-skeleton></lc-user-list-skeleton>
-        }
-        @if (loading !== loadingStates.LOADING) {
-          
-          <div class="grid grid-cols-12">
-            @for (user of sortClientList(filteredUsers); track user.id; let first = $first) {
-              <div
-                class="col-span-12 user-list-row"
-                [ngClass]="{ 'border-t border-surface': !first }"
-                data-cy="user-list-item"
-              >
-                <a
-                  class="user-list-row__main clickable-data-item"
-                  [routerLink]="user.routerLink"
+              </div></hlm-select-item
+            >
+          }
+        </hlm-select-content></hlm-select
+      >
+    </div>
+    @if (!filteredUsers?.length && loading !== loadingStates.LOADING) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>
+          {{
+            searchQuery.trim()
+              ? t("noUsersMatchSearchEmptyMessage")
+              : t("noUsersFoundEmptyMessage")
+          }}
+        </p>
+      </div>
+    }
+    @if (loading === loadingStates.LOADING) {
+      <lc-user-list-skeleton></lc-user-list-skeleton>
+    }
+    @if (loading !== loadingStates.LOADING) {
+      <div class="grid grid-cols-12">
+        @for (
+          user of sortClientList(filteredUsers);
+          track user.id;
+          let first = $first
+        ) {
+          <div
+            class="col-span-12 user-list-row"
+            [ngClass]="{ 'border-t border-surface': !first }"
+            data-cy="user-list-item"
+          >
+            <a
+              class="user-list-row__main clickable-data-item"
+              [routerLink]="user.routerLink"
+            >
+              <lc-user-avatar
+                [user]="user"
+                thumbnail="thumbnailS"
+                size="large"
+                styleClass="user-list-row__avatar"
+              />
+              <div class="user-list-row__identity">
+                <span
+                  class="user-list-row__name text-surface-900 dark:text-surface-0"
+                  >{{ user.fullname }}</span
                 >
-                  <lc-user-avatar
-                    [user]="user"
-                    thumbnail="thumbnailS"
-                    size="large"
-                    styleClass="user-list-row__avatar"
-                  />
-                  <div class="user-list-row__identity">
-                    <span
-                      class="user-list-row__name text-surface-900 dark:text-surface-0"
-                      >{{ user.fullname }}</span
-                    >
-                    <small class="user-list-row__email">{{ user.email }}</small>
-                  </div>
-                  <div class="user-list-row__meta">
-                    @if (user.activated) {
-                      <small>{{
-                        t("userActivatedAt", {
-                          activationTime: user.activatedAt | date: "datetime",
-                        })
-                      }}</small>
-                    } @else {
-                      <small>{{ t("userNotActivatedYet") }}</small>
-                    }
-                  </div>
-                  <div class="user-list-row__role">
-                    <lc-user-role-tag [user]="user" />
-                  </div>
-                </a>
-                <div class="user-list-row__actions">
-                  <button hlmBtn type="button" variant="secondary" size="icon" class="user-actions rounded-full" [hlmDropdownMenuTrigger]="userMenu" (click)="openUserActions($event, user)" [disabled]="!isUserActionsEnabled(user)" [attr.aria-label]="t('userActions')"><ng-icon name="lucideEllipsisVertical" /></button>
-                </div>
+                <small class="user-list-row__email">{{ user.email }}</small>
               </div>
-            }
+              <div class="user-list-row__meta">
+                @if (user.activated) {
+                  <small>{{
+                    t("userActivatedAt", {
+                      activationTime: user.activatedAt | date: "datetime",
+                    })
+                  }}</small>
+                } @else {
+                  <small>{{ t("userNotActivatedYet") }}</small>
+                }
+              </div>
+              <div class="user-list-row__role">
+                <lc-user-role-tag [user]="user" />
+              </div>
+            </a>
+            <div class="user-list-row__actions">
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                size="icon"
+                class="user-actions rounded-full"
+                [hlmDropdownMenuTrigger]="userMenu"
+                (click)="openUserActions($event, user)"
+                [disabled]="!isUserActionsEnabled(user)"
+                [attr.aria-label]="t('userActions')"
+              >
+                <ng-icon name="lucideEllipsisVertical" />
+              </button>
+            </div>
           </div>
         }
-  </div>
-
-  
-<ng-template #userMenu>
-  <div hlmDropdownMenu>
-    @for (item of userActionItems; track item.label) {
-      @if (item.visible !== false) {
-        <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
-          @if (menuIcon(item.icon); as name) {
-            <ng-icon [name]="name" />
-          }
-          {{ item.label }}
-        </button>
-      }
+      </div>
     }
   </div>
-</ng-template>
+
+  <ng-template #userMenu>
+    <div hlmDropdownMenu>
+      @for (item of userActionItems; track item.label) {
+        @if (item.visible !== false) {
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            [disabled]="!!item.disabled"
+            (click)="item.command?.()"
+          >
+            @if (menuIcon(item.icon); as name) {
+              <ng-icon [name]="name" />
+            }
+            {{ item.label }}
+          </button>
+        }
+      }
+    </div>
+  </ng-template>
 </ng-container>

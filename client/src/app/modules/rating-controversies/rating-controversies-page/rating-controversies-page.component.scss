@@ -186,12 +186,12 @@
 }
 
 @media (max-width: 639px) {
-  .controversy-filters [data-slot='toggle-group'] {
+  .controversy-filters [data-slot="toggle-group"] {
     display: flex;
     width: 100%;
   }
 
-  .controversy-filters [data-slot='toggle-group-item'] {
+  .controversy-filters [data-slot="toggle-group-item"] {
     flex: 1 1 0;
     justify-content: center;
     white-space: nowrap;

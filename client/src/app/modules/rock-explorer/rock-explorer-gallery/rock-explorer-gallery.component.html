@@ -1,5 +1,4 @@
 <ng-container *transloco="let t">
-  
   <section class="rock-explorer-gallery">
     @if (showHeading) {
       <h3>{{ t("rockExplorer.images") }}</h3>
@@ -48,34 +47,52 @@
       </div>
 
       @if (galleryVisible && images[activeIndex]; as item) {
-      <hlm-dialog state="open" (closed)="galleryVisible = false">
-        <hlm-dialog-content *hlmDialogPortal class="sm:max-w-5xl">
-          <div class="mb-3 flex justify-between">
-            <button hlmBtn type="button" variant="outline" size="sm" (click)="activeIndex = (activeIndex + images.length - 1) % images.length"><ng-icon name="lucideChevronLeft" /></button>
-            <button hlmBtn type="button" variant="outline" size="sm" (click)="activeIndex = (activeIndex + 1) % images.length"><ng-icon name="lucideChevronRight" /></button>
-          </div>
-          <div class="rock-explorer-gallery__galleria-item">
-            <img
-              class="rock-explorer-gallery__galleria-img"
-              [src]="
-                item.image.thumbnailXL ||
-                item.image.thumbnailL ||
-                item.image.path
-              "
-              [srcset]="item.image.srcSet"
-              [alt]="item.description || ''"
-            />
-            @if (item.description) {
-              <div class="rock-explorer-gallery__caption">
-                {{ item.description }}
-              </div>
-            }
-          </div>
-        </hlm-dialog-content>
-      </hlm-dialog>
-    }
+        <hlm-dialog state="open" (closed)="galleryVisible = false">
+          <hlm-dialog-content *hlmDialogPortal class="sm:max-w-5xl">
+            <div class="mb-3 flex justify-between">
+              <button
+                hlmBtn
+                type="button"
+                variant="outline"
+                size="sm"
+                (click)="
+                  activeIndex =
+                    (activeIndex + images.length - 1) % images.length
+                "
+              >
+                <ng-icon name="lucideChevronLeft" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="outline"
+                size="sm"
+                (click)="activeIndex = (activeIndex + 1) % images.length"
+              >
+                <ng-icon name="lucideChevronRight" />
+              </button>
+            </div>
+            <div class="rock-explorer-gallery__galleria-item">
+              <img
+                class="rock-explorer-gallery__galleria-img"
+                [src]="
+                  item.image.thumbnailXL ||
+                  item.image.thumbnailL ||
+                  item.image.path
+                "
+                [srcset]="item.image.srcSet"
+                [alt]="item.description || ''"
+              />
+              @if (item.description) {
+                <div class="rock-explorer-gallery__caption">
+                  {{ item.description }}
+                </div>
+              }
+            </div>
+          </hlm-dialog-content>
+        </hlm-dialog>
+      }
     } @else {
-      
       <div class="rock-explorer-gallery__edit-list">
         @for (image of images; track image.id) {
           <div
@@ -99,9 +116,30 @@
               [placeholder]="t('rockExplorer.imageDescriptionPlaceholder')"
             ></textarea>
             <div class="rock-explorer-gallery__edit-actions">
-              <button hlmBtn type="button" [variant]="gpsButtonSeverity(image)" size="icon-sm" class="rounded-full" [hlmDropdownMenuTrigger]="gpsMenu" (click)="openGpsMenu($event, image)" [disabled]="saving" [attr.aria-label]="t('rockExplorer.imageCoordinatesLabel')"><ng-icon name="lucideMapPin" /></button>
+              <button
+                hlmBtn
+                type="button"
+                [variant]="gpsButtonSeverity(image)"
+                size="icon-sm"
+                class="rounded-full"
+                [hlmDropdownMenuTrigger]="gpsMenu"
+                (click)="openGpsMenu($event, image)"
+                [disabled]="saving"
+                [attr.aria-label]="t('rockExplorer.imageCoordinatesLabel')"
+              >
+                <ng-icon name="lucideMapPin" />
+              </button>
               @if (canDeleteImage(image)) {
-                <button hlmBtn type="button" variant="destructive" size="icon-sm" class="rounded-full" (click)="confirmDeleteImage($event, image)"><ng-icon name="lucideTrash2" /></button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  size="icon-sm"
+                  class="rounded-full"
+                  (click)="confirmDeleteImage($event, image)"
+                >
+                  <ng-icon name="lucideTrash2" />
+                </button>
               } @else {
                 <span class="rock-explorer-gallery__edit-delete-spacer"></span>
               }
@@ -117,39 +155,70 @@
     @if (
       hasNextPage && loading !== loadingStates.LOADING && images.length > 0
     ) {
-      <button hlmBtn type="button" variant="ghost" size="sm" (click)="loadNextPage()">{{ t('rockExplorer.loadMore') }}</button>
-    }
-    @if (loading !== loadingStates.LOADING && images.length === 0) {
-      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-        t("rockExplorer.noImages")
-      }}</p></div>
-    }
-
-    <hlm-dialog [state]="coordinatesDialogVisible ? 'open' : 'closed'" (closed)="coordinatesDialogVisible = false"><hlm-dialog-content *hlmDialogPortal class="sm:max-w-md"><div hlmDialogHeader><h2 hlmDialogTitle>{{ t('rockExplorer.imageGpsDialogTitle') }}</h2></div>
-      <div class="rock-explorer-gallery__gps-dialog">
-        <lc-coordinates
-          idPrefix="gallery-gps-dialog-"
-          [ngModel]="coordinatesDialogValue"
-          (ngModelChange)="coordinatesDialogValue = $event"
-          [ngModelOptions]="{ standalone: true }"
-        ></lc-coordinates>
-      </div>
-      <div class="rock-explorer-gallery__gps-dialog-actions">
-        <button hlmBtn type="button" variant="secondary" (click)="closeCoordinatesDialog()">{{ t('rockExplorer.imageGpsDialogCancel') }}</button>
-        <button hlmBtn type="button" (click)="applyCoordinatesDialog()"><ng-icon name="lucideCheck" /> {{ t('rockExplorer.imageGpsDialogApply') }}</button>
-      </div>
-    </hlm-dialog-content></hlm-dialog>
-  </section>
-<ng-template #gpsMenu>
-  <div hlmDropdownMenu>
-    @for (item of gpsMenuItems; track item.label) {
-      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
-        @if (menuIcon(item.icon); as name) {
-          <ng-icon [name]="name" />
-        }
-        {{ item.label }}
+      <button
+        hlmBtn
+        type="button"
+        variant="ghost"
+        size="sm"
+        (click)="loadNextPage()"
+      >
+        {{ t("rockExplorer.loadMore") }}
       </button>
     }
-  </div>
-</ng-template>
+    @if (loading !== loadingStates.LOADING && images.length === 0) {
+      <div hlmAlert>
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("rockExplorer.noImages") }}</p>
+      </div>
+    }
+
+    <hlm-dialog
+      [state]="coordinatesDialogVisible ? 'open' : 'closed'"
+      (closed)="coordinatesDialogVisible = false"
+      ><hlm-dialog-content *hlmDialogPortal class="sm:max-w-md"
+        ><div hlmDialogHeader>
+          <h2 hlmDialogTitle>{{ t("rockExplorer.imageGpsDialogTitle") }}</h2>
+        </div>
+        <div class="rock-explorer-gallery__gps-dialog">
+          <lc-coordinates
+            idPrefix="gallery-gps-dialog-"
+            [ngModel]="coordinatesDialogValue"
+            (ngModelChange)="coordinatesDialogValue = $event"
+            [ngModelOptions]="{ standalone: true }"
+          ></lc-coordinates>
+        </div>
+        <div class="rock-explorer-gallery__gps-dialog-actions">
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            (click)="closeCoordinatesDialog()"
+          >
+            {{ t("rockExplorer.imageGpsDialogCancel") }}
+          </button>
+          <button hlmBtn type="button" (click)="applyCoordinatesDialog()">
+            <ng-icon name="lucideCheck" />
+            {{ t("rockExplorer.imageGpsDialogApply") }}
+          </button>
+        </div>
+      </hlm-dialog-content></hlm-dialog
+    >
+  </section>
+  <ng-template #gpsMenu>
+    <div hlmDropdownMenu>
+      @for (item of gpsMenuItems; track item.label) {
+        <button
+          hlmDropdownMenuItem
+          type="button"
+          [disabled]="!!item.disabled"
+          (click)="item.command?.()"
+        >
+          @if (menuIcon(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
 </ng-container>

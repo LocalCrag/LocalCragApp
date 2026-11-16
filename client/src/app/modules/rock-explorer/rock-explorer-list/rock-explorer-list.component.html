@@ -10,7 +10,17 @@
         <h2>{{ t("rockExplorer.listTitle") }}</h2>
       </div>
       <div class="rock-explorer__panel-header-actions">
-        <button hlmBtn type="button" variant="secondary" size="icon" class="rounded-full" (click)="ui.dispatch({ type: 'closeListPanel' })" [attr.aria-label]="t('rockExplorer.listClose')"><ng-icon name="lucideX" /></button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          size="icon"
+          class="rounded-full"
+          (click)="ui.dispatch({ type: 'closeListPanel' })"
+          [attr.aria-label]="t('rockExplorer.listClose')"
+        >
+          <ng-icon name="lucideX" />
+        </button>
       </div>
     </header>
 
@@ -24,114 +34,193 @@
           [placeholder]="t('rockExplorer.fields.title')"
           class="rock-explorer-list__title-filter"
         />
-        <hlm-select [(ngModel)]="potentialFilter" [itemToString]="ui.potentialLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.potential')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.potentialOptions(); track $index) {<hlm-select-item [value]="option.value"><span class="rock-explorer-list__potential-option">
-              <span
-                class="rock-explorer-list__potential-swatch"
-                [style.background]="ui.potentialColor(option.value)"
-                aria-hidden="true"
-              ></span>
-              {{ option.label }}
-            </span></hlm-select-item>}</hlm-select-content></hlm-select>
-        <hlm-select [(ngModel)]="rockQualityFilter" [itemToString]="ui.rockQualityLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.rockQuality')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockQualityOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
-        <hlm-select [(ngModel)]="rockTypeFilter" [itemToString]="ui.rockTypeLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.rockType')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockTypeOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+        <hlm-select
+          [(ngModel)]="potentialFilter"
+          [itemToString]="ui.potentialLabel"
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="
+                t('rockExplorer.fields.potential')
+              " /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of ui.potentialOptions(); track $index) {
+              <hlm-select-item [value]="option.value"
+                ><span class="rock-explorer-list__potential-option">
+                  <span
+                    class="rock-explorer-list__potential-swatch"
+                    [style.background]="ui.potentialColor(option.value)"
+                    aria-hidden="true"
+                  ></span>
+                  {{ option.label }}
+                </span></hlm-select-item
+              >
+            }
+          </hlm-select-content></hlm-select
+        >
+        <hlm-select
+          [(ngModel)]="rockQualityFilter"
+          [itemToString]="ui.rockQualityLabel"
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="
+                t('rockExplorer.fields.rockQuality')
+              " /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of ui.rockQualityOptions(); track $index) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
+        <hlm-select
+          [(ngModel)]="rockTypeFilter"
+          [itemToString]="ui.rockTypeLabel"
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="
+                t('rockExplorer.fields.rockType')
+              " /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of ui.rockTypeOptions(); track $index) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
         @if (hasActiveFilters) {
-          <button hlmBtn type="button" variant="secondary" size="sm" (click)="clearFilters()"><ng-icon name="lucideFunnelX" /> {{ t('rockExplorer.clearFilters') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            size="sm"
+            (click)="clearFilters()"
+          >
+            <ng-icon name="lucideFunnelX" />
+            {{ t("rockExplorer.clearFilters") }}
+          </button>
         }
       </div>
 
-      <div class="rock-explorer-list__table overflow-auto"><table><thead>
-        
-          <tr>
-            <th>
-              <button
-                type="button"
-                class="rock-explorer-list__sort"
-                (click)="onSort('title')"
+      <div class="rock-explorer-list__table overflow-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <button
+                  type="button"
+                  class="rock-explorer-list__sort"
+                  (click)="onSort('title')"
+                >
+                  {{ t("rockExplorer.fields.title") }}
+                  <ng-icon [name]="sortIconName(sortIcons.title)" />
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  class="rock-explorer-list__sort"
+                  (click)="onSort('potential')"
+                >
+                  {{ t("rockExplorer.fields.potential") }}
+                  <ng-icon [name]="sortIconName(sortIcons.potential)" />
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  class="rock-explorer-list__sort"
+                  (click)="onSort('areaSqM')"
+                >
+                  {{ t("rockExplorer.fields.areaSize") }}
+                  <ng-icon [name]="sortIconName(sortIcons.areaSqM)" />
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  class="rock-explorer-list__sort"
+                  (click)="onSort('rockQuality')"
+                >
+                  {{ t("rockExplorer.fields.rockQuality") }}
+                  <ng-icon [name]="sortIconName(sortIcons.rockQuality)" />
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  class="rock-explorer-list__sort"
+                  (click)="onSort('rockType')"
+                >
+                  {{ t("rockExplorer.fields.rockType") }}
+                  <ng-icon [name]="sortIconName(sortIcons.rockType)" />
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of viewRows.slice(first, first + rows); track row.id) {
+              <tr
+                class="rock-explorer-list__row"
+                [class.rock-explorer-list__row--active]="
+                  ui.editingFeature()?.id === row.id
+                "
+                tabindex="0"
+                role="button"
+                [attr.aria-label]="row.displayTitle"
+                (click)="openFeature(row)"
+                (keydown.enter)="openFeature(row)"
+                (keydown.space)="$event.preventDefault(); openFeature(row)"
               >
-                {{ t("rockExplorer.fields.title") }}
-                <ng-icon [name]="sortIconName(sortIcons.title)" />
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="rock-explorer-list__sort"
-                (click)="onSort('potential')"
-              >
-                {{ t("rockExplorer.fields.potential") }}
-                <ng-icon [name]="sortIconName(sortIcons.potential)" />
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="rock-explorer-list__sort"
-                (click)="onSort('areaSqM')"
-              >
-                {{ t("rockExplorer.fields.areaSize") }}
-                <ng-icon [name]="sortIconName(sortIcons.areaSqM)" />
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="rock-explorer-list__sort"
-                (click)="onSort('rockQuality')"
-              >
-                {{ t("rockExplorer.fields.rockQuality") }}
-                <ng-icon [name]="sortIconName(sortIcons.rockQuality)" />
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="rock-explorer-list__sort"
-                (click)="onSort('rockType')"
-              >
-                {{ t("rockExplorer.fields.rockType") }}
-                <ng-icon [name]="sortIconName(sortIcons.rockType)" />
-              </button>
-            </th>
-          </tr>
-        </thead><tbody>
-        @for (row of viewRows.slice(first, first + rows); track row.id) {
-          <tr
-            class="rock-explorer-list__row"
-            [class.rock-explorer-list__row--active]="
-              ui.editingFeature()?.id === row.id
-            "
-            tabindex="0"
-            role="button"
-            [attr.aria-label]="row.displayTitle"
-            (click)="openFeature(row)"
-            (keydown.enter)="openFeature(row)"
-            (keydown.space)="$event.preventDefault(); openFeature(row)"
-          >
-            <td>{{ row.displayTitle }}</td>
-            <td>
-              @if (row.potential) {
-                <span hlmBadge>{{ row.displayPotential }}</span>
-              } @else {
-                —
-              }
-            </td>
-            <td>{{ row.displayArea }}</td>
-            <td>{{ row.displayRockQuality }}</td>
-            <td>{{ row.displayRockType }}</td>
-          </tr>
-                }
-        @if (!viewRows.length) {
-          <tr>
-            <td colspan="5" class="rock-explorer-list__empty">
-              {{ t("rockExplorer.listEmpty") }}
-            </td>
-          </tr>
-                }
-        </tbody></table></div>
-        <div class="mt-3 flex justify-end gap-2">
-          <button hlmBtn type="button" variant="outline" size="sm" [disabled]="first === 0" (click)="onPage({ first: first - rows, rows: rows })">‹</button>
-          <button hlmBtn type="button" variant="outline" size="sm" [disabled]="first + rows >= viewRows.length" (click)="onPage({ first: first + rows, rows: rows })">›</button>
-        </div>
+                <td>{{ row.displayTitle }}</td>
+                <td>
+                  @if (row.potential) {
+                    <span hlmBadge>{{ row.displayPotential }}</span>
+                  } @else {
+                    —
+                  }
+                </td>
+                <td>{{ row.displayArea }}</td>
+                <td>{{ row.displayRockQuality }}</td>
+                <td>{{ row.displayRockType }}</td>
+              </tr>
+            }
+            @if (!viewRows.length) {
+              <tr>
+                <td colspan="5" class="rock-explorer-list__empty">
+                  {{ t("rockExplorer.listEmpty") }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 flex justify-end gap-2">
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
+          size="sm"
+          [disabled]="first === 0"
+          (click)="onPage({ first: first - rows, rows: rows })"
+        >
+          ‹
+        </button>
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
+          size="sm"
+          [disabled]="first + rows >= viewRows.length"
+          (click)="onPage({ first: first + rows, rows: rows })"
+        >
+          ›
+        </button>
+      </div>
     </div>
   </aside>
 }

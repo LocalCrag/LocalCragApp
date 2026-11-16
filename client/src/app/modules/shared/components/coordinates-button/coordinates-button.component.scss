@@ -3,11 +3,11 @@
 lc-coordinates-button {
   // The pin sits one button-gap (8px) from the label. Drop the label's end
   // padding and inset the chevron by that same gap so both icons match.
-  [data-slot='button-group'] > button:first-child {
+  [data-slot="button-group"] > button:first-child {
     padding-inline-end: 0;
   }
 
-  [data-slot='button-group'] > button:last-child {
+  [data-slot="button-group"] > button:last-child {
     width: auto;
     height: auto;
     align-self: stretch;

@@ -1,8 +1,5 @@
 <ng-container *transloco="let t; read: 'maps.mapItemInfoDialog'">
-  <hlm-dialog
-    [state]="isOpen ? 'open' : 'closed'"
-    (closed)="isOpen = false"
-  >
+  <hlm-dialog [state]="isOpen ? 'open' : 'closed'" (closed)="isOpen = false">
     <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
       <div hlmDialogHeader>
         <h2 hlmDialogTitle>
@@ -11,14 +8,11 @@
       </div>
       <div class="flex justify-end gap-2 flex-col">
         <div
-          [innerHTML]="$safeNavigationMigration(feature?.properties.description)"
+          [innerHTML]="
+            $safeNavigationMigration(feature?.properties.description)
+          "
         ></div>
-        <button
-          hlmBtn
-          type="button"
-          class="w-full"
-          (click)="navigateToItem()"
-        >
+        <button hlmBtn type="button" class="w-full" (click)="navigateToItem()">
           <ng-icon name="lucideNavigation" />
           {{ t("navigateToItem") }}
         </button>

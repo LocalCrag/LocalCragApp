@@ -65,8 +65,14 @@
       <div class="flex flex-col gap-2" lcControlGroup>
         <div class="form-label flex items-center">
           <label for="rulesTitle">{{ t("regionRulesTitleLabel") }}</label>
-          <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('regionRulesTitleTooltip')" position="right"
-          ><ng-icon name="lucideCircleQuestionMark" /></button>
+          <button
+            type="button"
+            class="inline-flex text-muted-foreground ml-2"
+            [hlmTooltip]="t('regionRulesTitleTooltip')"
+            position="right"
+          >
+            <ng-icon name="lucideCircleQuestionMark" />
+          </button>
         </div>
         <input
           id="rulesTitle"
@@ -85,9 +91,30 @@
 
     <div class="form-actions">
       @if (editMode) {
-        <button hlmBtn type="button" class="responsive-button" (click)="saveRegion()" [disabled]="loadingState === loadingStates.LOADING">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('editRegionButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
+          (click)="saveRegion()"
+          [disabled]="loadingState === loadingStates.LOADING"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideSave" />
+          }
+          {{ t("editRegionButtonLabel") }}
+        </button>
       }
-      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="responsive-button"
+        (click)="cancel()"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

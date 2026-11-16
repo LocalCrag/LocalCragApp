@@ -3,8 +3,12 @@
     <h2 class="text-lg font-semibold mb-2">{{ t("title") }}</h2>
     <p>{{ t("message") }}</p>
     <div class="lc-button-group justify-end">
-      <button hlmBtn type="button" variant="outline" (click)="goToLogin()">{{ t('login') }}</button>
-      <button hlmBtn type="button" (click)="goToRegister()">{{ t('register') }}</button>
+      <button hlmBtn type="button" variant="outline" (click)="goToLogin()">
+        {{ t("login") }}
+      </button>
+      <button hlmBtn type="button" (click)="goToRegister()">
+        {{ t("register") }}
+      </button>
     </div>
   </div>
 </ng-container>

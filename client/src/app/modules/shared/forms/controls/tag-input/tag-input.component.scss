@@ -3,13 +3,13 @@ lc-tag-input {
   width: 100%;
 }
 
-[slot='combobox-content'][data-empty]:has(.searchable-autocomplete),
-[data-slot='combobox-content'][data-empty]:has(.searchable-autocomplete),
-[slot='combobox-content']:has(.searchable-autocomplete[data-empty]) {
+[slot="combobox-content"][data-empty]:has(.searchable-autocomplete),
+[data-slot="combobox-content"][data-empty]:has(.searchable-autocomplete),
+[slot="combobox-content"]:has(.searchable-autocomplete[data-empty]) {
   display: none !important;
 }
 
-.searchable-autocomplete [data-slot='combobox-item'] {
+.searchable-autocomplete [data-slot="combobox-item"] {
   padding-block: 0.15rem !important;
   padding-inline: 0.4rem 1.75rem !important;
 }

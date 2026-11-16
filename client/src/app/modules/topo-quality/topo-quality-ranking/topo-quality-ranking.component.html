@@ -1,14 +1,16 @@
 <ng-container *transloco="let t; read: 'topoQuality.ui'">
   @if (failed) {
-    <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{
-      t("loadFailed")
-    }}</p></div>
+    <div hlmAlert variant="destructive">
+      <ng-icon name="lucideCircleX" />
+      <p hlmAlertDescription>{{ t("loadFailed") }}</p>
+    </div>
   }
 
   @if (!loading && rows.length === 0) {
-    <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-      t("rankingEmpty")
-    }}</p></div>
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("rankingEmpty") }}</p>
+    </div>
   }
 
   <ol class="quality-ranking">
@@ -37,11 +39,21 @@
         autocomplete="off"
         data-cy="topo-quality-restart-input"
       />
-      <button hlmBtn type="button" variant="destructive" (click)="restart()" [disabled]="confirmation !== 'RESTART'" data-cy="topo-quality-restart-button">{{ t('restartButton') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="destructive"
+        (click)="restart()"
+        [disabled]="confirmation !== 'RESTART'"
+        data-cy="topo-quality-restart-button"
+      >
+        {{ t("restartButton") }}
+      </button>
       @if (restartFailed) {
-        <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{
-          t("restartFailed")
-        }}</p></div>
+        <div hlmAlert variant="destructive">
+          <ng-icon name="lucideCircleX" />
+          <p hlmAlertDescription>{{ t("restartFailed") }}</p>
+        </div>
       }
     </section>
   }

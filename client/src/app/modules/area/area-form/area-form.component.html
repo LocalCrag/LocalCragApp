@@ -78,8 +78,14 @@
         <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
           <label class="form-label" for="blocweatherUrl">
             {{ t("blocweatherUrlLabel") }}
-            <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('blocweatherTooltip')" position="right"
-            ><ng-icon name="lucideCircleQuestionMark" /></button>
+            <button
+              type="button"
+              class="inline-flex text-muted-foreground ml-2"
+              [hlmTooltip]="t('blocweatherTooltip')"
+              position="right"
+            >
+              <ng-icon name="lucideCircleQuestionMark" />
+            </button>
           </label>
           <input
             id="blocweatherUrl"
@@ -114,10 +120,18 @@
           lcFormControl
         />
         @if (parentClosureState?.closed) {
-          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p></div>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p>
+          </div>
         }
         @if (parentSector?.secret && !areaForm.get("secret").value) {
-          <div hlmAlert variant="warning"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{ t("aPublicAreaWillSetParentsToPublic") }}</p></div>
+          <div hlmAlert variant="warning">
+            <ng-icon name="lucideTriangleAlert" />
+            <p hlmAlertDescription>
+              {{ t("aPublicAreaWillSetParentsToPublic") }}
+            </p>
+          </div>
         }
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label">{{ t("secretOptionsLabel") }}</label>
@@ -138,19 +152,78 @@
       </form>
       <div class="form-actions">
         @if (!editMode) {
-          <button hlmBtn type="button" class="responsive-button" (click)="saveArea()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('createAreaButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="saveArea()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideSave" />
+            }
+            {{ t("createAreaButtonLabel") }}
+          </button>
         }
         @if (editMode) {
-          <button hlmBtn type="button" class="responsive-button" (click)="saveArea()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('editAreaButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="saveArea()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideSave" />
+            }
+            {{ t("editAreaButtonLabel") }}
+          </button>
         }
-        <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          class="responsive-button"
+          (click)="cancel()"
+        >
+          <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+        </button>
         @if (editMode) {
           @if (parentSector.slug !== environment.skippedSlug) {
-            <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="openMoveDialog()"><ng-icon name="lucideArrowLeftRight" /> {{ t('moveAreaButtonLabel') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              class="responsive-button"
+              (click)="openMoveDialog()"
+            >
+              <ng-icon name="lucideArrowLeftRight" />
+              {{ t("moveAreaButtonLabel") }}
+            </button>
           }
-          <button hlmBtn type="button" variant="destructive" class="responsive-button" (click)="confirmDeleteArea($event)" [disabled]="loadingState === loadingStates.LOADING" data-cy="delete">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideTrash2" /> } {{ t('deleteAreaButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="destructive"
+            class="responsive-button"
+            (click)="confirmDeleteArea($event)"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="delete"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideTrash2" />
+            }
+            {{ t("deleteAreaButtonLabel") }}
+          </button>
         }
-        
       </div>
       <lc-move-object-dialog
         #moveDialog

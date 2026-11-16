@@ -99,13 +99,25 @@
     </form>
 
     @if (savePressed && emailsDontMatch()) {
-      <div hlmAlert variant="destructive" class="mt-12">{{ t("emailsDontMatchAlertText") }}</div>
+      <div hlmAlert variant="destructive" class="mt-12">
+        {{ t("emailsDontMatchAlertText") }}
+      </div>
     }
 
-    <button hlmBtn type="button" class="mt-6 block" (click)="save()" [disabled]="loadingState === loadingStates.LOADING">{{ t('saveAccountSettingsButtonLabel') }}</button>
+    <button
+      hlmBtn
+      type="button"
+      class="mt-6 block"
+      (click)="save()"
+      [disabled]="loadingState === loadingStates.LOADING"
+    >
+      {{ t("saveAccountSettingsButtonLabel") }}
+    </button>
 
     @if (emailChangedPostSave) {
-      <div hlmAlert class="mt-6 w-full max-w-35rem">{{ t("emailAddressChangeInfoText") }}</div>
+      <div hlmAlert class="mt-6 w-full max-w-35rem">
+        {{ t("emailAddressChangeInfoText") }}
+      </div>
     }
 
     <lc-account-settings-form></lc-account-settings-form>
@@ -115,10 +127,10 @@
     <lc-account-two-factor></lc-account-two-factor>
 
     <div class="mt-20 flex items-center gap-3">
-  <div hlmSeparator class="flex-1"></div>
-  <b>{{ t("dangerZoneTitle") }}</b>
-  <div hlmSeparator class="flex-1"></div>
-</div>
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("dangerZoneTitle") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div hlmAlert class="w-full" *isSuperadmin="true">
       <ng-icon name="lucideInfo" />
@@ -130,7 +142,14 @@
         {{ t("deleteAccountInfoText") }}
       </div>
       <div>
-        <button hlmBtn type="button" variant="destructive" (click)="openDeleteDialog()">{{ t('deleteAccountButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          (click)="openDeleteDialog()"
+        >
+          {{ t("deleteAccountButtonLabel") }}
+        </button>
       </div>
     </div>
   </div>

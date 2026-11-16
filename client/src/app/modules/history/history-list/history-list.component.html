@@ -14,7 +14,9 @@
               }
             </span>
             <div hlmCard class="flex-1 p-4">
-              <div class="font-medium">{{ getHeader(event) + ": " + objectName(event) }}</div>
+              <div class="font-medium">
+                {{ getHeader(event) + ": " + objectName(event) }}
+              </div>
               @if (lineLocation(event); as location) {
                 <div class="history-line-location">
                   <lc-topo-hierarchy-breadcrumbs
@@ -26,13 +28,23 @@
               }
               <div class="text-sm text-muted-foreground">
                 {{ event.timeCreated | date }},
-                <a class="username" routerLink="{{ event.createdBy.routerLink }}"
+                <a
+                  class="username"
+                  routerLink="{{ event.createdBy.routerLink }}"
                   >{{ event.createdBy.firstname }}
                   {{ event.createdBy.lastname }}</a
                 >
               </div>
               <div>{{ getDescription(event) | async }}</div>
-              <button hlmBtn type="button" variant="ghost" class="card-button" (click)="openObject(event)">{{ t('openObject') }}</button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                class="card-button"
+                (click)="openObject(event)"
+              >
+                {{ t("openObject") }}
+              </button>
             </div>
           </div>
         }
@@ -40,11 +52,28 @@
     }
     @if (hasNextPage) {
       <div class="flex justify-center mt-20">
-        <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING && currentPage > 1" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING && currentPage > 1) { <hlm-spinner /> } {{ t('loadMore') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [disabled]="loading === loadingStates.LOADING && currentPage > 1"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+        >
+          @if (loading === loadingStates.LOADING && currentPage > 1) {
+            <hlm-spinner />
+          }
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
     @if (historyItems.length === 0) {
-      <div hlmAlert class="w-full"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noHistory") }}</p></div>
+      <div hlmAlert class="w-full">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noHistory") }}</p>
+      </div>
     }
   </div>
 </ng-container>

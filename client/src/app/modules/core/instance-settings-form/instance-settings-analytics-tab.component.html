@@ -35,7 +35,15 @@
     </div>
 
     <div class="form-actions">
-      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucideSave" /> {{ t("editInstanceSettingsButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

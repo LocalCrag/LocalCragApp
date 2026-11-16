@@ -63,21 +63,30 @@
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="landing-page">{{ t("landingPageLabel") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('landingPageTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="landingPage" [itemToString]="selectItemLabel(landingPageOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="landing-page">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of landingPageOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="landingPage"
+        [itemToString]="selectItemLabel(landingPageOptions)"
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="landing-page">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of landingPageOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
@@ -88,16 +97,23 @@
         <label class="form-label" for="landing-page-slug">{{
           t("landingPageSlugLabel")
         }}</label>
-        <hlm-select formControlName="landingPageSlug" [itemToString]="selectItemLabel(menuPageOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="landing-page-slug">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of menuPageOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+        <hlm-select
+          formControlName="landingPageSlug"
+          [itemToString]="selectItemLabel(menuPageOptions)"
+          class="block w-full"
+          lcFormControl
+        >
+          <hlm-select-trigger class="w-full" buttonId="landing-page-slug">
+            <hlm-select-value />
+          </hlm-select-trigger>
+          <hlm-select-content *hlmSelectPortal>
+            @for (option of menuPageOptions; track option.value) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content>
+        </hlm-select>
         <small class="lc-error" *lcIfError="'required'">{{
           "validation.required" | transloco
         }}</small>
@@ -109,158 +125,244 @@
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="gym-mode">{{ t("gymModeLabel") }}</label>
-      <hlm-select formControlName="gymMode" [itemToString]="selectItemLabel([
-          { value: false, label: t('gymModeLabelFalse') },
-          { value: true, label: t('gymModeLabelTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="gym-mode">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('gymModeLabelFalse') },
-          { value: true, label: t('gymModeLabelTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="gymMode"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('gymModeLabelFalse') },
+            { value: true, label: t('gymModeLabelTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="gym-mode">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("gymModeLabelFalse") },
+              { value: true, label: t("gymModeLabelTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="display-user-grades">{{
         t("displayUserGradesLabel")
       }}</label>
-      <hlm-select formControlName="displayUserGrades" [itemToString]="selectItemLabel([
-          { value: false, label: t('displayUserGradesFalse') },
-          { value: true, label: t('displayUserGradesTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="display-user-grades">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('displayUserGradesFalse') },
-          { value: true, label: t('displayUserGradesTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="displayUserGrades"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('displayUserGradesFalse') },
+            { value: true, label: t('displayUserGradesTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="display-user-grades">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("displayUserGradesFalse") },
+              { value: true, label: t("displayUserGradesTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="display-user-ratings">{{
         t("displayUserRatingsLabel")
       }}</label>
-      <hlm-select formControlName="displayUserRatings" [itemToString]="selectItemLabel([
-          { value: false, label: t('displayUserRatingsFalse') },
-          { value: true, label: t('displayUserRatingsTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="display-user-ratings">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('displayUserRatingsFalse') },
-          { value: true, label: t('displayUserRatingsTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="displayUserRatings"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('displayUserRatingsFalse') },
+            { value: true, label: t('displayUserRatingsTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="display-user-ratings">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("displayUserRatingsFalse") },
+              { value: true, label: t("displayUserRatingsTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="no-closed-projects">{{
         t("noClosedProjectsLabel")
       }}</label>
-      <hlm-select formControlName="noClosedProjects" [itemToString]="selectItemLabel([
-          { value: false, label: t('noClosedProjectsFalse') },
-          { value: true, label: t('noClosedProjectsTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="no-closed-projects">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('noClosedProjectsFalse') },
-          { value: true, label: t('noClosedProjectsTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="noClosedProjects"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('noClosedProjectsFalse') },
+            { value: true, label: t('noClosedProjectsTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="no-closed-projects">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("noClosedProjectsFalse") },
+              { value: true, label: t("noClosedProjectsTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="suggestions-enabled">{{
         t("suggestionsEnabledLabel")
       }}</label>
-      <hlm-select formControlName="suggestionsEnabled" [itemToString]="selectItemLabel([
-          { value: false, label: t('suggestionsEnabledFalse') },
-          { value: true, label: t('suggestionsEnabledTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="suggestions-enabled">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('suggestionsEnabledFalse') },
-          { value: true, label: t('suggestionsEnabledTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="suggestionsEnabled"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('suggestionsEnabledFalse') },
+            { value: true, label: t('suggestionsEnabledTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="suggestions-enabled">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("suggestionsEnabledFalse") },
+              { value: true, label: t("suggestionsEnabledTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="moderator-game-enabled">{{
         t("moderatorGameEnabledLabel")
       }}</label>
-      <hlm-select formControlName="moderatorGameEnabled" [itemToString]="selectItemLabel([
-          { value: false, label: t('moderatorGameEnabledFalse') },
-          { value: true, label: t('moderatorGameEnabledTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="moderator-game-enabled">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('moderatorGameEnabledFalse') },
-          { value: true, label: t('moderatorGameEnabledTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="moderatorGameEnabled"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('moderatorGameEnabledFalse') },
+            { value: true, label: t('moderatorGameEnabledTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="moderator-game-enabled">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("moderatorGameEnabledFalse") },
+              { value: true, label: t("moderatorGameEnabledTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="soft-gating">{{ t("softGatingLabel") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('softGatingTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="softGating" [itemToString]="selectItemLabel([
-          { value: false, label: t('softGatingFalse') },
-          { value: true, label: t('softGatingTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="soft-gating">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('softGatingFalse') },
-          { value: true, label: t('softGatingTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="softGating"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('softGatingFalse') },
+            { value: true, label: t('softGatingTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="soft-gating">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("softGatingFalse") },
+              { value: true, label: t("softGatingTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
@@ -268,55 +370,83 @@
         <label for="skippedHierarchicalLayers">{{
           t("skippedHierarchicalLayersLabel")
         }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('skippedHierarchicalLayersDescription')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="skippedHierarchicalLayers" [itemToString]="selectItemLabel([
-          { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
-          { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
-          { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="skippedHierarchicalLayers">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
-          { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
-          { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="skippedHierarchicalLayers"
+        [itemToString]="
+          selectItemLabel([
+            { value: 0, label: t('skippedHierarchicalLayersItemLabel0') },
+            { value: 1, label: t('skippedHierarchicalLayersItemLabel1') },
+            { value: 2, label: t('skippedHierarchicalLayersItemLabel2') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="skippedHierarchicalLayers">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: 0, label: t("skippedHierarchicalLayersItemLabel0") },
+              { value: 1, label: t("skippedHierarchicalLayersItemLabel1") },
+              { value: 2, label: t("skippedHierarchicalLayersItemLabel2") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="faDefaultFormat">{{ t("faDefaultFormat") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('faDefaultFormatTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="faDefaultFormat" [itemToString]="selectItemLabel([
-          { value: faDefaultFormats.YEAR, label: t('YEAR') },
-          { value: faDefaultFormats.DATE, label: t('DATE') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="faDefaultFormat">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: faDefaultFormats.YEAR, label: t('YEAR') },
-          { value: faDefaultFormats.DATE, label: t('DATE') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="faDefaultFormat"
+        [itemToString]="
+          selectItemLabel([
+            { value: faDefaultFormats.YEAR, label: t('YEAR') },
+            { value: faDefaultFormats.DATE, label: t('DATE') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="faDefaultFormat">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: faDefaultFormats.YEAR, label: t("YEAR") },
+              { value: faDefaultFormats.DATE, label: t("DATE") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
@@ -325,16 +455,23 @@
           t("defaultStartingPosition")
         }}</label>
       </div>
-      <hlm-select formControlName="defaultStartingPosition" [itemToString]="selectItemLabel(startingPositionsOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="defaultStartingPosition">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of startingPositionsOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="defaultStartingPosition"
+        [itemToString]="selectItemLabel(startingPositionsOptions)"
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="defaultStartingPosition">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of startingPositionsOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
@@ -343,30 +480,41 @@
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="rankingPastWeeks">{{ t("rankingPastWeeksLabel") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('rankingPastWeeksTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="rankingPastWeeks" [itemToString]="selectItemLabel(rankingPastWeeksOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="rankingPastWeeks">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of rankingPastWeeksOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="rankingPastWeeks"
+        [itemToString]="selectItemLabel(rankingPastWeeksOptions)"
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="rankingPastWeeks">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of rankingPastWeeksOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="language">{{ t("languageLabel") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('instanceLanguageTooltip')"
           position="right"
-         />
+        />
       </div>
       <lc-language-select
         id="language"
@@ -378,25 +526,42 @@
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="timezone">{{ t("timezoneLabel") }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('timezoneTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="timezone" [itemToString]="selectItemLabel(timezoneOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="timezone">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of timezoneOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="timezone"
+        [itemToString]="selectItemLabel(timezoneOptions)"
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="timezone">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of timezoneOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="form-actions">
-      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucideSave" /> {{ t("editInstanceSettingsButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

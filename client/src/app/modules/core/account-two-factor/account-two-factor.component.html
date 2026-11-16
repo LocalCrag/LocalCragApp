@@ -1,9 +1,9 @@
 <ng-container *transloco="let t; read: 'accountTwoFactor'">
   <div class="mt-20 flex items-center gap-3">
-  <div hlmSeparator class="flex-1"></div>
-  <b>{{ t("title") }}</b>
-  <div hlmSeparator class="flex-1"></div>
-</div>
+    <div hlmSeparator class="flex-1"></div>
+    <b>{{ t("title") }}</b>
+    <div hlmSeparator class="flex-1"></div>
+  </div>
 
   <p class="two-factor-description">{{ t("description") }}</p>
 
@@ -12,7 +12,9 @@
   }
 
   @if (passwordWithoutTwoFactor) {
-    <div hlmAlert class="mt-4 w-full" data-cy="two-factor-warning">{{ t("warning") }}</div>
+    <div hlmAlert class="mt-4 w-full" data-cy="two-factor-warning">
+      {{ t("warning") }}
+    </div>
   }
 
   <div class="two-factor-list">
@@ -54,20 +56,63 @@
               [placeholder]="t('codePlaceholder')"
               data-cy="account-totp-code"
             />
-            <button hlmBtn type="button" (click)="confirmTotp()" [disabled]="busy" data-cy="account-totp-confirm">{{ t('confirm') }}</button>
-            <button hlmBtn type="button" variant="ghost" (click)="cancelSetup()">{{ t('cancel') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              (click)="confirmTotp()"
+              [disabled]="busy"
+              data-cy="account-totp-confirm"
+            >
+              {{ t("confirm") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              (click)="cancelSetup()"
+            >
+              {{ t("cancel") }}
+            </button>
           </div>
         } @else if (disabling === "totp") {
           <div class="two-factor-actions">
-            <lc-password-input [(ngModel)]="disablePassword" [placeholder]="t('passwordPlaceholder')" data-cy="account-totp-password" />
-            <button hlmBtn type="button" variant="destructive" (click)="disable('totp')" [disabled]="busy">{{ t('disable') }}</button>
-            <button hlmBtn type="button" variant="ghost" (click)="cancelSetup()">{{ t('cancel') }}</button>
+            <lc-password-input
+              [(ngModel)]="disablePassword"
+              [placeholder]="t('passwordPlaceholder')"
+              data-cy="account-totp-password"
+            />
+            <button
+              hlmBtn
+              type="button"
+              variant="destructive"
+              (click)="disable('totp')"
+              [disabled]="busy"
+            >
+              {{ t("disable") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              (click)="cancelSetup()"
+            >
+              {{ t("cancel") }}
+            </button>
           </div>
           <p class="two-factor-meta">{{ t("passwordHint") }}</p>
         }
       </div>
       @if (!totpSecret && disabling !== "totp") {
-        <button hlmBtn type="button" [variant]="totpEnabled ? 'destructive' : 'secondary'" (click)="totpEnabled ? disable('totp') : startTotp()" [disabled]="busy" data-cy="account-totp-toggle">{{ totpEnabled ? t('disable') : t('enable') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [variant]="totpEnabled ? 'destructive' : 'secondary'"
+          (click)="totpEnabled ? disable('totp') : startTotp()"
+          [disabled]="busy"
+          data-cy="account-totp-toggle"
+        >
+          {{ totpEnabled ? t("disable") : t("enable") }}
+        </button>
       }
     </article>
 
@@ -98,20 +143,63 @@
               [placeholder]="t('codePlaceholder')"
               data-cy="account-email-code"
             />
-            <button hlmBtn type="button" (click)="confirmEmail()" [disabled]="busy" data-cy="account-email-confirm">{{ t('confirm') }}</button>
-            <button hlmBtn type="button" variant="ghost" (click)="cancelSetup()">{{ t('cancel') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              (click)="confirmEmail()"
+              [disabled]="busy"
+              data-cy="account-email-confirm"
+            >
+              {{ t("confirm") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              (click)="cancelSetup()"
+            >
+              {{ t("cancel") }}
+            </button>
           </div>
         } @else if (disabling === "email") {
           <div class="two-factor-actions">
-            <lc-password-input [(ngModel)]="disablePassword" [placeholder]="t('passwordPlaceholder')" data-cy="account-email-password" />
-            <button hlmBtn type="button" variant="destructive" (click)="disable('email')" [disabled]="busy">{{ t('disable') }}</button>
-            <button hlmBtn type="button" variant="ghost" (click)="cancelSetup()">{{ t('cancel') }}</button>
+            <lc-password-input
+              [(ngModel)]="disablePassword"
+              [placeholder]="t('passwordPlaceholder')"
+              data-cy="account-email-password"
+            />
+            <button
+              hlmBtn
+              type="button"
+              variant="destructive"
+              (click)="disable('email')"
+              [disabled]="busy"
+            >
+              {{ t("disable") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              (click)="cancelSetup()"
+            >
+              {{ t("cancel") }}
+            </button>
           </div>
           <p class="two-factor-meta">{{ t("passwordHint") }}</p>
         }
       </div>
       @if (!emailSetup && disabling !== "email") {
-        <button hlmBtn type="button" [variant]="emailEnabled ? 'destructive' : 'secondary'" (click)="emailEnabled ? disable('email') : startEmail()" [disabled]="busy" data-cy="account-email-toggle">{{ emailEnabled ? t('disable') : t('enable') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [variant]="emailEnabled ? 'destructive' : 'secondary'"
+          (click)="emailEnabled ? disable('email') : startEmail()"
+          [disabled]="busy"
+          data-cy="account-email-toggle"
+        >
+          {{ emailEnabled ? t("disable") : t("enable") }}
+        </button>
       }
     </article>
   </div>

@@ -1,9 +1,10 @@
 <ng-container *transloco="let t">
   <div class="p-6" data-cy="topo-statistics">
     @if (failed) {
-      <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{
-        t("topoStatistics.loadError")
-      }}</p></div>
+      <div hlmAlert variant="destructive">
+        <ng-icon name="lucideCircleX" />
+        <p hlmAlertDescription>{{ t("topoStatistics.loadError") }}</p>
+      </div>
     } @else if (loading || !stats) {
       <div class="stat-grid">
         @for (_ of [1, 2, 3, 4]; track $index) {
@@ -30,13 +31,16 @@
                 })
               }}
             </div>
-            <div hlmProgress [value]="completionPercent" [max]="100"><div hlmProgressIndicator></div></div>
+            <div hlmProgress [value]="completionPercent" [max]="100">
+              <div hlmProgressIndicator></div>
+            </div>
             <div class="completion-percent">{{ completionPercent }}%</div>
           </div>
         } @else {
-          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-            t("topoStatistics.completionEmpty")
-          }}</p></div>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("topoStatistics.completionEmpty") }}</p>
+          </div>
         }
       }
 
@@ -109,12 +113,17 @@
         </h3>
         @if (voteChartData && stats.gradeVotes) {
           <div class="chart-wrap">
-            <canvas lcChartJs="bar" [data]="voteChartData" [options]="voteChartOptions"></canvas>
+            <canvas
+              lcChartJs="bar"
+              [data]="voteChartData"
+              [options]="voteChartOptions"
+            ></canvas>
           </div>
         } @else {
-          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-            t("topoStatistics.noGradeVotes")
-          }}</p></div>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("topoStatistics.noGradeVotes") }}</p>
+          </div>
         }
       }
 
@@ -131,12 +140,17 @@
           }}
         </p>
         <div class="chart-wrap">
-          <canvas lcChartJs="bar" [data]="ratingChartData" [options]="ratingChartOptions"></canvas>
+          <canvas
+            lcChartJs="bar"
+            [data]="ratingChartData"
+            [options]="ratingChartOptions"
+          ></canvas>
         </div>
       } @else {
-        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          t("topoStatistics.noRatings")
-        }}</p></div>
+        <div hlmAlert>
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("topoStatistics.noRatings") }}</p>
+        </div>
       }
 
       <h3 class="section-title section-title--heatmap">
@@ -182,9 +196,10 @@
           </div>
         </div>
       } @else {
-        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          t("topoStatistics.heatmapEmpty")
-        }}</p></div>
+        <div hlmAlert>
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("topoStatistics.heatmapEmpty") }}</p>
+        </div>
       }
 
       <h3 class="section-title section-title--years">
@@ -223,7 +238,11 @@
           {{ t("topoStatistics.disciplines") }}
         </h3>
         <div class="chart-wrap chart-wrap--pie chart-wrap--mix">
-          <canvas lcChartJs="pie" [data]="disciplineChartData" [options]="disciplineChartOptions"></canvas>
+          <canvas
+            lcChartJs="pie"
+            [data]="disciplineChartData"
+            [options]="disciplineChartOptions"
+          ></canvas>
         </div>
       }
 
@@ -232,7 +251,11 @@
           {{ t(childHeadingKey()) }}
         </h3>
         <div class="chart-wrap chart-wrap--pie chart-wrap--mix">
-          <canvas lcChartJs="pie" [data]="childrenChartData" [options]="childrenChartOptions"></canvas>
+          <canvas
+            lcChartJs="pie"
+            [data]="childrenChartData"
+            [options]="childrenChartOptions"
+          ></canvas>
         </div>
       }
 
@@ -265,9 +288,10 @@
             }
           </ul>
         } @else {
-          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-            t("topoStatistics.noPopularLines")
-          }}</p></div>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("topoStatistics.noPopularLines") }}</p>
+          </div>
         }
       }
 

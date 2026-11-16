@@ -4,27 +4,63 @@
     data-cy="rating-controversies"
   >
     @if (failed && rows.length === 0) {
-      <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{ t("loadFailed") }}</p></div>
+      <div hlmAlert variant="destructive">
+        <ng-icon name="lucideCircleX" />
+        <p hlmAlertDescription>{{ t("loadFailed") }}</p>
+      </div>
     } @else if (unavailable) {
-      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("unavailable") }}</p></div>
+      <div hlmAlert>
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("unavailable") }}</p>
+      </div>
     } @else if (!loaded) {
       <ng-container *ngTemplateOutlet="listSkeleton" />
     } @else if (loaded) {
       <p class="m-0 text-surface-600 dark:text-surface-300">{{ t("intro") }}</p>
       <div class="controversy-filters">
         @if (compareGrades && compareRatings) {
-          <div hlmToggleGroup type="single" variant="outline" [value]="kind" (valueChange)="selectKind($event)" [nullable]="false" data-cy="rating-controversy-kind">@for (option of kindOptions; track $index) {<button hlmToggleGroupItem type="button" [value]="option.value">{{ option.label }}</button>}</div>
+          <div
+            hlmToggleGroup
+            type="single"
+            variant="outline"
+            [value]="kind"
+            (valueChange)="selectKind($event)"
+            [nullable]="false"
+            data-cy="rating-controversy-kind"
+          >
+            @for (option of kindOptions; track $index) {
+              <button hlmToggleGroupItem type="button" [value]="option.value">
+                {{ option.label }}
+              </button>
+            }
+          </div>
         }
         <label class="controversy-min-ascents">
           <span>{{ t("minAscents") }}</span>
-          <hlm-select data-cy="rating-controversy-min-ascents" [value]="minAscents" (valueChange)="selectMinAscents($event)"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of minAscentOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            data-cy="rating-controversy-min-ascents"
+            [value]="minAscents"
+            (valueChange)="selectMinAscents($event)"
+            ><hlm-select-trigger class="w-full"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of minAscentOptions; track $index) {
+                <hlm-select-item [value]="option.value">{{
+                  option.label
+                }}</hlm-select-item>
+              }
+            </hlm-select-content></hlm-select
+          >
         </label>
       </div>
       @if (loadingFirstPage) {
         <ng-container *ngTemplateOutlet="listSkeleton" />
       }
       @if (rows.length === 0 && !loadingFirstPage) {
-        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("empty") }}</p></div>
+        <div hlmAlert>
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("empty") }}</p>
+        </div>
       }
       @for (row of rows; track row.id) {
         <article
@@ -56,7 +92,19 @@
               } @else if (row.authorRating === null) {
                 <span class="controversy__grade">{{ t("noRating") }}</span>
               } @else {
-                <span class="inline-flex text-primary"><ng-icon name="lucideStar" [class.opacity-30]="((row.authorRating) ?? 0) < 1" /><ng-icon name="lucideStar" [class.opacity-30]="((row.authorRating) ?? 0) < 2" /><ng-icon name="lucideStar" [class.opacity-30]="((row.authorRating) ?? 0) < 3" /><ng-icon name="lucideStar" [class.opacity-30]="((row.authorRating) ?? 0) < 4" /><ng-icon name="lucideStar" [class.opacity-30]="((row.authorRating) ?? 0) < 5" /></span>
+                <span class="inline-flex text-primary"
+                  ><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.authorRating ?? 0) < 1" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.authorRating ?? 0) < 2" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.authorRating ?? 0) < 3" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.authorRating ?? 0) < 4" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.authorRating ?? 0) < 5"
+                /></span>
               }
             </div>
             <ng-icon name="lucideArrowRight" />
@@ -67,15 +115,43 @@
               } @else if (row.userRating === null) {
                 <span class="controversy__grade">{{ t("noRating") }}</span>
               } @else {
-                <span class="inline-flex text-primary"><ng-icon name="lucideStar" [class.opacity-30]="((row.userRating) ?? 0) < 1" /><ng-icon name="lucideStar" [class.opacity-30]="((row.userRating) ?? 0) < 2" /><ng-icon name="lucideStar" [class.opacity-30]="((row.userRating) ?? 0) < 3" /><ng-icon name="lucideStar" [class.opacity-30]="((row.userRating) ?? 0) < 4" /><ng-icon name="lucideStar" [class.opacity-30]="((row.userRating) ?? 0) < 5" /></span>
+                <span class="inline-flex text-primary"
+                  ><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.userRating ?? 0) < 1" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.userRating ?? 0) < 2" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.userRating ?? 0) < 3" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.userRating ?? 0) < 4" /><ng-icon
+                    name="lucideStar"
+                    [class.opacity-30]="(row.userRating ?? 0) < 5"
+                /></span>
               }
             </div>
           </div>
           @if (dismissFailedId === row.id) {
-            <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{ t("dismissFailed") }}</p></div>
+            <div hlmAlert variant="destructive">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("dismissFailed") }}</p>
+            </div>
           }
           <div class="controversy__actions">
-            <button hlmBtn type="button" size="sm" [disabled]="dismissingId === row.id" (click)="dismiss(row)" variant="outline" [attr.data-cy]="'rating-controversy-dismiss-' + row.slug">@if (dismissingId === row.id) { <hlm-spinner /> } {{ t('dismiss') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              size="sm"
+              [disabled]="dismissingId === row.id"
+              (click)="dismiss(row)"
+              variant="outline"
+              [attr.data-cy]="'rating-controversy-dismiss-' + row.slug"
+            >
+              @if (dismissingId === row.id) {
+                <hlm-spinner />
+              }
+              {{ t("dismiss") }}
+            </button>
             <a
               pButton
               size="small"
@@ -99,16 +175,42 @@
             autocomplete="off"
             data-cy="rating-controversy-reset-input"
           />
-          <button hlmBtn type="button" variant="destructive" (click)="resetDismissals()" [disabled]="resetConfirmation !== 'RESTART'" data-cy="rating-controversy-reset-button">{{ t('resetButton') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="destructive"
+            (click)="resetDismissals()"
+            [disabled]="resetConfirmation !== 'RESTART'"
+            data-cy="rating-controversy-reset-button"
+          >
+            {{ t("resetButton") }}
+          </button>
           @if (resetFailed) {
-            <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{ t("resetFailed") }}</p></div>
+            <div hlmAlert variant="destructive">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("resetFailed") }}</p>
+            </div>
           }
         </section>
       }
     }
     @if (hasNextPage && !unavailable && !loadingFirstPage) {
       <div class="flex justify-center">
-        <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <hlm-spinner /> } {{ t('loadMore') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [disabled]="loading === loadingStates.LOADING"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+        >
+          @if (loading === loadingStates.LOADING) {
+            <hlm-spinner />
+          }
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
   </div>

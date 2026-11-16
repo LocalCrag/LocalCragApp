@@ -1,5 +1,7 @@
 <ng-container *transloco="let t; read: 'accountForm'">
-  <h2 class="text-lg font-semibold mb-4">{{ t("deleteAccountDialogTitle") }}</h2>
+  <h2 class="text-lg font-semibold mb-4">
+    {{ t("deleteAccountDialogTitle") }}
+  </h2>
   <div class="mb-6">
     {{ t("deleteAccountDialogDescription", { email: email }) }}
   </div>
@@ -17,7 +19,17 @@
   </form>
 
   <div class="form-actions mt-6 justify-end">
-    <button hlmBtn type="button" variant="outline" (click)="cancel()">{{ t('deleteAccountDialogCancel') }}</button>
-    <button hlmBtn type="button" variant="destructive" (click)="confirm()" [disabled]="!form.valid || !emailMatches">{{ t('deleteAccountDialogConfirm') }}</button>
+    <button hlmBtn type="button" variant="outline" (click)="cancel()">
+      {{ t("deleteAccountDialogCancel") }}
+    </button>
+    <button
+      hlmBtn
+      type="button"
+      variant="destructive"
+      (click)="confirm()"
+      [disabled]="!form.valid || !emailMatches"
+    >
+      {{ t("deleteAccountDialogConfirm") }}
+    </button>
   </div>
 </ng-container>

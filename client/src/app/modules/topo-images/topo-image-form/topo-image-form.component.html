@@ -207,11 +207,44 @@
 
     <div class="form-actions">
       @if (editMode || hasUploadedImages) {
-        <button hlmBtn type="button" class="responsive-button" (click)="saveTopoImage()" [disabled]="(loadingState === loadingStates.LOADING) || (coordinatesBusy)" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('addTopoImageButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
+          (click)="saveTopoImage()"
+          [disabled]="loadingState === loadingStates.LOADING || coordinatesBusy"
+          data-cy="submit"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideSave" />
+          }
+          {{ t("addTopoImageButtonLabel") }}
+        </button>
       }
-      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()" [disabled]="loadingState === loadingStates.LOADING"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="responsive-button"
+        (click)="cancel()"
+        [disabled]="loadingState === loadingStates.LOADING"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
       @if (editMode) {
-        <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="openMoveDialog()" *isModerator="true"><ng-icon name="lucideArrowLeftRight" /> {{ t('moveTopoImageButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          class="responsive-button"
+          (click)="openMoveDialog()"
+          *isModerator="true"
+        >
+          <ng-icon name="lucideArrowLeftRight" />
+          {{ t("moveTopoImageButtonLabel") }}
+        </button>
       }
     </div>
     <lc-move-object-dialog

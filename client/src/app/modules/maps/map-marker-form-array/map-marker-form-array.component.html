@@ -50,7 +50,16 @@
     }
   </div>
 
-  <button hlmBtn type="button" class="w-fit" data-cy="open-marker-config-modal" (click)="configDialog.open()" [disabled]="isDisabled"><ng-icon name="lucidePlus" /> {{ t('addMarker') }}</button>
+  <button
+    hlmBtn
+    type="button"
+    class="w-fit"
+    data-cy="open-marker-config-modal"
+    (click)="configDialog.open()"
+    [disabled]="isDisabled"
+  >
+    <ng-icon name="lucidePlus" /> {{ t("addMarker") }}
+  </button>
   <lc-map-marker-config-dialog
     #configDialog
     [defaultMarkerType]="defaultMarkerType"
@@ -58,25 +67,23 @@
     [existingMarkers]="markers"
     [disabledMarkerTypes]="disabledMarkerTypes"
   ></lc-map-marker-config-dialog>
-  
 
-<hlm-dialog
-  [state]="descriptionMarker ? 'open' : 'closed'"
-  (closed)="closeDescription()"
->
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
-    @if (descriptionMarker) {
-      <div hlmDialogHeader>
-        <h2 hlmDialogTitle>
-          {{ descriptionMarker.name || t(descriptionMarker.type) }}
-        </h2>
-      </div>
-      <div
-        class="marker-description"
-        [innerHTML]="descriptionMarker.description | sanitizeHtml"
-      ></div>
-    }
-  </hlm-dialog-content>
-</hlm-dialog>
-
+  <hlm-dialog
+    [state]="descriptionMarker ? 'open' : 'closed'"
+    (closed)="closeDescription()"
+  >
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      @if (descriptionMarker) {
+        <div hlmDialogHeader>
+          <h2 hlmDialogTitle>
+            {{ descriptionMarker.name || t(descriptionMarker.type) }}
+          </h2>
+        </div>
+        <div
+          class="marker-description"
+          [innerHTML]="descriptionMarker.description | sanitizeHtml"
+        ></div>
+      }
+    </hlm-dialog-content>
+  </hlm-dialog>
 </ng-container>

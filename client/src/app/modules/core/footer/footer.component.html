@@ -8,7 +8,12 @@
           </a>
         }
         @if (menuItem.link) {
-          <button hlmBtn variant="ghost" type="button" (click)="openLink(menuItem.link)">
+          <button
+            hlmBtn
+            variant="ghost"
+            type="button"
+            (click)="openLink(menuItem.link)"
+          >
             {{ menuItem.title }}
           </button>
         }

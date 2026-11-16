@@ -57,35 +57,35 @@
         <div hlmDialogHeader>
           <h2 hlmDialogTitle>{{ t("dialogTitle") }}</h2>
         </div>
-      @if (dialogAlert; as alert) {
-        <div class="rules-alert-dialog__section">
-          <h3>
-            {{ t(sectionHeaderKey[alert.level]) }}
-            @if (alert.entityName) {
-              &mdash; {{ alert.entityName }}
+        @if (dialogAlert; as alert) {
+          <div class="rules-alert-dialog__section">
+            <h3>
+              {{ t(sectionHeaderKey[alert.level]) }}
+              @if (alert.entityName) {
+                &mdash; {{ alert.entityName }}
+              }
+            </h3>
+            @if (alert.updatedSinceLastView) {
+              <p
+                class="rules-alert-dialog__updated"
+                data-cy="rules-dialog-updated-notice"
+              >
+                {{ t("updatedSinceLastView") }}
+              </p>
             }
-          </h3>
-          @if (alert.updatedSinceLastView) {
-            <p
-              class="rules-alert-dialog__updated"
-              data-cy="rules-dialog-updated-notice"
-            >
-              {{ t("updatedSinceLastView") }}
-            </p>
-          }
-          @if (alert.updatedAt) {
-            <p class="rules-alert-dialog__date">
-              {{
-                t("lastUpdated", { date: alert.updatedAt | date: "datetime" })
-              }}
-            </p>
-          }
-          <div
-            [innerHTML]="alert.rules | sanitizeHtml"
-            class="wysiwyg-content"
-          ></div>
-        </div>
-      }
+            @if (alert.updatedAt) {
+              <p class="rules-alert-dialog__date">
+                {{
+                  t("lastUpdated", { date: alert.updatedAt | date: "datetime" })
+                }}
+              </p>
+            }
+            <div
+              [innerHTML]="alert.rules | sanitizeHtml"
+              class="wysiwyg-content"
+            ></div>
+          </div>
+        }
         <div hlmDialogFooter>
           <button
             hlmBtn

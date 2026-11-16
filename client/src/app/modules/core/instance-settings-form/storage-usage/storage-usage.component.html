@@ -14,16 +14,16 @@
         }
       </div>
       <div class="storage-usage-labels">
-            @for (segment of segments(); track segment.key) {
-              <span class="storage-usage-label">
-                <span
-                  class="storage-usage-swatch"
-                  [style.background]="segment.color"
-                ></span>
-                {{ t(segment.key) }}
-                {{ formatBytes(segment.bytes) }}
-              </span>
-            }
+        @for (segment of segments(); track segment.key) {
+          <span class="storage-usage-label">
+            <span
+              class="storage-usage-swatch"
+              [style.background]="segment.color"
+            ></span>
+            {{ t(segment.key) }}
+            {{ formatBytes(segment.bytes) }}
+          </span>
+        }
       </div>
       @if (usage()?.capacity) {
         <p class="storage-usage-capacity">

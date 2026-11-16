@@ -59,7 +59,15 @@
     <dt>{{ t("rating") }}</dt>
     <dd>
       <div class="rating-summary">
-<span class="inline-flex text-primary" aria-hidden="true">@for (star of [1, 2, 3, 4, 5]; track star) {<ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="star > (displayedRating)" />}</span>
+        <span class="inline-flex text-primary" aria-hidden="true">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <ng-icon
+              name="lucideStar"
+              class="[&_svg]:fill-current"
+              [class.opacity-30]="star > displayedRating"
+            />
+          }
+        </span>
         @if (ratingCount > 0) {
           <button
             type="button"

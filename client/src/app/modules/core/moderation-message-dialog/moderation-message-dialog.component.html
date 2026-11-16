@@ -5,8 +5,10 @@
   <div class="moderation-message-dialog-body">{{ message }}</div>
   <div class="flex w-full justify-end gap-2 mt-6">
     @if (ascentLink) {
-      <button hlmBtn type="button" variant="ghost" (click)="viewAscent()">{{ t('viewAscent') }}</button>
+      <button hlmBtn type="button" variant="ghost" (click)="viewAscent()">
+        {{ t("viewAscent") }}
+      </button>
     }
-    <button hlmBtn type="button" (click)="close()">{{ t('close') }}</button>
+    <button hlmBtn type="button" (click)="close()">{{ t("close") }}</button>
   </div>
 </ng-container>

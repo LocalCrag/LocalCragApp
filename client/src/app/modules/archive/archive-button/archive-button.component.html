@@ -29,7 +29,12 @@
         <h2 hlmAlertDialogTitle>{{ confirmMessage }}</h2>
       </div>
       <div hlmAlertDialogFooter>
-        <button hlmBtn type="button" variant="outline" (click)="rejectConfirm()">
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
+          (click)="rejectConfirm()"
+        >
           {{ rejectLabel }}
         </button>
         <button hlmBtn type="button" (click)="acceptConfirm()">

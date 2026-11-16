@@ -39,16 +39,48 @@
     </form>
 
     <div class="form-actions">
-      <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveAdminMessage()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        [disabled]="loadingState === loadingStates.LOADING"
+        (click)="saveAdminMessage()"
+      >
+        @if (loadingState === loadingStates.LOADING) {
+          <hlm-spinner />
+        }
+        <ng-icon name="lucideSave" />
+        {{
           editMode
-            ? t('editAdminMessageButtonLabel')
-            : t('createAdminMessageButtonLabel')
-        }}</button>
-      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+            ? t("editAdminMessageButtonLabel")
+            : t("createAdminMessageButtonLabel")
+        }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="responsive-button"
+        (click)="cancel()"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
       @if (editMode) {
-        <button hlmBtn type="button" variant="destructive" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="confirmDeleteAdminMessage($event)">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideTrash2" /> {{ t('deleteAdminMessageButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          class="responsive-button"
+          [disabled]="loadingState === loadingStates.LOADING"
+          (click)="confirmDeleteAdminMessage($event)"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <hlm-spinner />
+          }
+          <ng-icon name="lucideTrash2" />
+          {{ t("deleteAdminMessageButtonLabel") }}
+        </button>
       }
-      
     </div>
   </div>
 </ng-container>

@@ -109,63 +109,63 @@
     [autoFocus]="false"
   >
     <ng-template brnOverlayContent>
-    @if (activeAscent; as ascent) {
-      <div
-        class="sidebar-ascent-popover sidebar-ascent-popover-content"
-        hlmPopoverContent
-        *transloco="let at; read: 'ascents.ascentList'"
-        (mouseenter)="keepAscentPopover()"
-        (mouseleave)="scheduleHideAscentPopover()"
-      >
-        <div class="sidebar-ascent-popover-location">
-          <lc-topo-hierarchy-breadcrumbs
-            [crag]="ascent.crag"
-            [sector]="ascent.sector"
-            [area]="ascent.area"
-          ></lc-topo-hierarchy-breadcrumbs>
-        </div>
-
-        <div class="sidebar-ascent-popover-meta">
-          <span class="sidebar-ascent-popover-date">
-            <ng-icon name="lucideCalendar" />
-            @if (ascent.date) {
-              {{ ascent.date | date }}
-            } @else if (ascent.year) {
-              {{ ascent.year }}
-            }
-          </span>
-          <span class="inline-flex text-primary" aria-hidden="true">
-            @for (star of [1, 2, 3, 4, 5]; track star) {
-              <ng-icon
-                name="lucideStar"
-                [class.opacity-30]="star > ascent.rating"
-              />
-            }
-          </span>
-        </div>
-
-        @if (ascent.fa || ascent.withKneepad) {
-          <div class="sidebar-ascent-popover-tags">
-            @if (ascent.fa) {
-              <span hlmBadge>
-                <ng-icon name="lucideStar" />
-                {{ at("fa") }}
-              </span>
-            }
-            @if (ascent.withKneepad) {
-              <span hlmBadge>
-                <ng-icon name="lucideTicket" />
-                {{ at("withKneepad") }}
-              </span>
-            }
+      @if (activeAscent; as ascent) {
+        <div
+          class="sidebar-ascent-popover sidebar-ascent-popover-content"
+          hlmPopoverContent
+          *transloco="let at; read: 'ascents.ascentList'"
+          (mouseenter)="keepAscentPopover()"
+          (mouseleave)="scheduleHideAscentPopover()"
+        >
+          <div class="sidebar-ascent-popover-location">
+            <lc-topo-hierarchy-breadcrumbs
+              [crag]="ascent.crag"
+              [sector]="ascent.sector"
+              [area]="ascent.area"
+            ></lc-topo-hierarchy-breadcrumbs>
           </div>
-        }
 
-        @if (ascent.comment) {
-          <p class="sidebar-ascent-popover-comment">{{ ascent.comment }}</p>
-        }
-      </div>
-    }
+          <div class="sidebar-ascent-popover-meta">
+            <span class="sidebar-ascent-popover-date">
+              <ng-icon name="lucideCalendar" />
+              @if (ascent.date) {
+                {{ ascent.date | date }}
+              } @else if (ascent.year) {
+                {{ ascent.year }}
+              }
+            </span>
+            <span class="inline-flex text-primary" aria-hidden="true">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <ng-icon
+                  name="lucideStar"
+                  [class.opacity-30]="star > ascent.rating"
+                />
+              }
+            </span>
+          </div>
+
+          @if (ascent.fa || ascent.withKneepad) {
+            <div class="sidebar-ascent-popover-tags">
+              @if (ascent.fa) {
+                <span hlmBadge>
+                  <ng-icon name="lucideStar" />
+                  {{ at("fa") }}
+                </span>
+              }
+              @if (ascent.withKneepad) {
+                <span hlmBadge>
+                  <ng-icon name="lucideTicket" />
+                  {{ at("withKneepad") }}
+                </span>
+              }
+            </div>
+          }
+
+          @if (ascent.comment) {
+            <p class="sidebar-ascent-popover-comment">{{ ascent.comment }}</p>
+          }
+        </div>
+      }
     </ng-template>
   </div>
 </ng-container>

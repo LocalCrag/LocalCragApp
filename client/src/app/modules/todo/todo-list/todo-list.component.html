@@ -1,207 +1,332 @@
 <ng-container *transloco="let t; read: 'todos.todoList'">
   <div class="content">
     @if (listPrivate) {
-      <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("privateListMessage") }}</p></div>
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("privateListMessage") }}</p>
+      </div>
     } @else {
-      <div class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4">
-            <div
-              class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+      <div
+        class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4"
+      >
+        <div
+          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+        >
+          {{ t("orderByLabel") }}
+          <div class="flex flex-wrap gap-2">
+            <hlm-select
+              [(ngModel)]="orderKey"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (ngModelChange)="loadFirstPage()"
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of orderOptions; track $index) {
+                  <hlm-select-item [value]="option"
+                    ><div class="flex items-center gap-2">
+                      <div>{{ option.label }}</div>
+                    </div></hlm-select-item
+                  >
+                }
+              </hlm-select-content></hlm-select
             >
-              {{ t("orderByLabel") }}
-              <div class="flex flex-wrap gap-2">
-                <hlm-select [(ngModel)]="orderKey" [disabled]="
-                    loading === loadingStates.LOADING && currentPage === 1
-                  " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
+            <hlm-select
+              [(ngModel)]="orderDirectionKey"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (ngModelChange)="loadFirstPage()"
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of orderDirectionOptions; track $index) {
+                  <hlm-select-item [value]="option"
+                    ><div class="flex items-center gap-2">
                       <div>{{ option.label }}</div>
-                    </div></hlm-select-item>}</hlm-select-content></hlm-select>
-                <hlm-select [(ngModel)]="orderDirectionKey" [disabled]="
-                    loading === loadingStates.LOADING && currentPage === 1
-                  " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderDirectionOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                      <div>{{ option.label }}</div>
-                    </div></hlm-select-item>}</hlm-select-content></hlm-select>
-              </div>
-            </div>
-
-            <div
-              class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+                    </div></hlm-select-item
+                  >
+                }
+              </hlm-select-content></hlm-select
             >
-              {{ t("filterLabel") }}
-              <div class="flex flex-wrap gap-2">
-                <hlm-select [(ngModel)]="priorityFilterKey" [disabled]="
-                    loading === loadingStates.LOADING && currentPage === 1
-                  " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of priorityFilterOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
+          </div>
+        </div>
+
+        <div
+          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+        >
+          {{ t("filterLabel") }}
+          <div class="flex flex-wrap gap-2">
+            <hlm-select
+              [(ngModel)]="priorityFilterKey"
+              [disabled]="
+                loading === loadingStates.LOADING && currentPage === 1
+              "
+              (ngModelChange)="loadFirstPage()"
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of priorityFilterOptions; track $index) {
+                  <hlm-select-item [value]="option"
+                    ><div class="flex items-center gap-2">
                       <div>{{ option.label }}</div>
-                    </div></hlm-select-item>}</hlm-select-content></hlm-select>
-                @if (cragFilterOptions) {
-                  <hlm-select [(ngModel)]="cragFilterKey" [disabled]="
-                      loading === loadingStates.LOADING && currentPage === 1
-                    " (ngModelChange)="buildSectorFilterOptions(); loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of cragFilterOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                        <div>{{ option.label }}</div>
-                      </div></hlm-select-item>}</hlm-select-content></hlm-select>
+                    </div></hlm-select-item
+                  >
                 }
-                @if (sectorFilterOptions) {
-                  <hlm-select [(ngModel)]="sectorFilterKey" [disabled]="
-                      loading === loadingStates.LOADING && currentPage === 1
-                    " (ngModelChange)="buildAreaFilterOptions(); loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sectorFilterOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                        <div>{{ option.label }}</div>
-                      </div></hlm-select-item>}</hlm-select-content></hlm-select>
-                }
-                @if (areaFilterOptions) {
-                  <hlm-select [(ngModel)]="areaFilterKey" [disabled]="
-                      loading === loadingStates.LOADING && currentPage === 1
-                    " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of areaFilterOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                        <div>{{ option.label }}</div>
-                      </div></hlm-select-item>}</hlm-select-content></hlm-select>
-                }
-              </div>
-            </div>
-
-            @if (availableScales.length > 2) {
-              <div
-                class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
-              >
-                {{ t("lineType") }}
-                <div class="flex flex-wrap gap-2">
-                  <hlm-select [(ngModel)]="scaleKey" [disabled]="
-                      loading === loadingStates.LOADING && currentPage === 1
-                    " (ngModelChange)="selectScale()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of availableScales; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                        <div>{{ option.label }}</div>
-                      </div></hlm-select-item>}</hlm-select-content></hlm-select>
-                </div>
-              </div>
-            }
-
-            @if (scaleKey?.value && maxGradeValue !== null) {
-              <lc-grade-range-slider
-                class="mt-1"
-                [(range)]="gradeFilterRange"
-                [min]="minGradeValue"
-                [max]="maxGradeValue"
-                [lineType]="scaleKey.value.lineType"
-                [gradeScale]="scaleKey.value.gradeScale"
+              </hlm-select-content></hlm-select
+            >
+            @if (cragFilterOptions) {
+              <hlm-select
+                [(ngModel)]="cragFilterKey"
                 [disabled]="
                   loading === loadingStates.LOADING && currentPage === 1
                 "
-                (slideEnd)="reloadOnSlideEnd()"
-              />
+                (ngModelChange)="buildSectorFilterOptions(); loadFirstPage()"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of cragFilterOptions; track $index) {
+                    <hlm-select-item [value]="option"
+                      ><div class="flex items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
+            }
+            @if (sectorFilterOptions) {
+              <hlm-select
+                [(ngModel)]="sectorFilterKey"
+                [disabled]="
+                  loading === loadingStates.LOADING && currentPage === 1
+                "
+                (ngModelChange)="buildAreaFilterOptions(); loadFirstPage()"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of sectorFilterOptions; track $index) {
+                    <hlm-select-item [value]="option"
+                      ><div class="flex items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
+            }
+            @if (areaFilterOptions) {
+              <hlm-select
+                [(ngModel)]="areaFilterKey"
+                [disabled]="
+                  loading === loadingStates.LOADING && currentPage === 1
+                "
+                (ngModelChange)="loadFirstPage()"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of areaFilterOptions; track $index) {
+                    <hlm-select-item [value]="option"
+                      ><div class="flex items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
             }
           </div>
-@if (!(todos?.length)) {
-@if (
-            todos?.length === 0 &&
-            !(loading === loadingStates.LOADING && currentPage === 1)
-          ) {
-            <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noTodosFoundMessage") }}</p></div>
-          }
-}
-@if (loading === loadingStates.LOADING && currentPage === 1) {
-            <lc-line-list-skeleton></lc-line-list-skeleton>
-          }
-          @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-            <div class="grid grid-cols-12">
-              @for (todo of todos; track todo; let first = $first) {
-                <div class="col-span-12" data-cy="todo-list-item">
-                  <div
-                    class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 todo-table-container"
-                    [ngClass]="{ 'border-t border-surface': !first }"
-                  >
-                    <!-- DISPLAY FOR NORMAL SCREENS -->
-                    <div class="todo-table-row-normal">
-                      <div class="todo-table-line-info">
-                        <div class="todo-table-line-name font-bold">
-                          <a routerLink="{{ todo.routerLinkLine }}">{{
-                            todo.line.name
-                          }}</a>
-                        </div>
-                        <div class="todo-table-line-location mt-1">
-                          <lc-topo-hierarchy-breadcrumbs
-                            [crag]="todo.crag"
-                            [sector]="todo.sector"
-                            [area]="todo.area"
-                          ></lc-topo-hierarchy-breadcrumbs>
-                        </div>
-                      </div>
-                      <div class="todo-table-grade">
-                        <div class="grade">
-                          <div class="ml-1 grade-name">
-                            {{ todo.line | lineGrade }}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="todo-table-priority">
-                        <lc-todo-priority-button
-                          [todo]="todo"
-                          [readOnly]="readOnly"
-                        ></lc-todo-priority-button>
-                      </div>
-                      @if (!readOnly) {
-                        <div class="todo-actions">
-                          <lc-tick-button
-                            [line]="todo.line"
-                            [showLabel]="false"
-                            [ticked]="false"
-                          ></lc-tick-button>
-                          <button hlmBtn type="button" variant="secondary" class="tick-button" data-cy="delete-todo" (click)="deleteTodo(todo)">
-                            <ng-icon name="lucideTrash2" />
-                          </button>
-                        </div>
-                      }
+        </div>
+
+        @if (availableScales.length > 2) {
+          <div
+            class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
+          >
+            {{ t("lineType") }}
+            <div class="flex flex-wrap gap-2">
+              <hlm-select
+                [(ngModel)]="scaleKey"
+                [disabled]="
+                  loading === loadingStates.LOADING && currentPage === 1
+                "
+                (ngModelChange)="selectScale()"
+                ><hlm-select-trigger class="w-full md:mb-0"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of availableScales; track $index) {
+                    <hlm-select-item [value]="option"
+                      ><div class="flex items-center gap-2">
+                        <div>{{ option.label }}</div>
+                      </div></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
+            </div>
+          </div>
+        }
+
+        @if (scaleKey?.value && maxGradeValue !== null) {
+          <lc-grade-range-slider
+            class="mt-1"
+            [(range)]="gradeFilterRange"
+            [min]="minGradeValue"
+            [max]="maxGradeValue"
+            [lineType]="scaleKey.value.lineType"
+            [gradeScale]="scaleKey.value.gradeScale"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+            (slideEnd)="reloadOnSlideEnd()"
+          />
+        }
+      </div>
+      @if (!todos?.length) {
+        @if (
+          todos?.length === 0 &&
+          !(loading === loadingStates.LOADING && currentPage === 1)
+        ) {
+          <div hlmAlert class="m-4">
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("noTodosFoundMessage") }}</p>
+          </div>
+        }
+      }
+      @if (loading === loadingStates.LOADING && currentPage === 1) {
+        <lc-line-list-skeleton></lc-line-list-skeleton>
+      }
+      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+        <div class="grid grid-cols-12">
+          @for (todo of todos; track todo; let first = $first) {
+            <div class="col-span-12" data-cy="todo-list-item">
+              <div
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 todo-table-container"
+                [ngClass]="{ 'border-t border-surface': !first }"
+              >
+                <!-- DISPLAY FOR NORMAL SCREENS -->
+                <div class="todo-table-row-normal">
+                  <div class="todo-table-line-info">
+                    <div class="todo-table-line-name font-bold">
+                      <a routerLink="{{ todo.routerLinkLine }}">{{
+                        todo.line.name
+                      }}</a>
                     </div>
-                    <!-- DISPLAY FOR SMALL SCREENS -->
-                    <div class="todo-table-row-small">
-                      <div class="todo-table-row-top">
-                        <div class="todo-table-line-info">
-                          <div class="todo-table-line-name font-bold">
-                            <a routerLink="{{ todo.routerLinkLine }}">{{
-                              todo.line.name
-                            }}</a>
-                          </div>
-                          <div class="todo-table-line-location mt-1">
-                            <lc-topo-hierarchy-breadcrumbs
-                              [crag]="todo.crag"
-                              [sector]="todo.sector"
-                              [area]="todo.area"
-                            ></lc-topo-hierarchy-breadcrumbs>
-                          </div>
-                        </div>
-                        <div class="todo-table-grade">
-                          <div class="grade">
-                            <div class="ml-1 grade-name">
-                              {{ todo.line | lineGrade }}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="todo-table-row-bottom">
-                        <div class="todo-table-priority">
-                          <lc-todo-priority-button
-                            [todo]="todo"
-                            [readOnly]="readOnly"
-                          ></lc-todo-priority-button>
-                        </div>
-                        @if (!readOnly) {
-                          <div class="todo-actions">
-                            <lc-tick-button
-                              [line]="todo.line"
-                              [showLabel]="false"
-                              [ticked]="false"
-                            ></lc-tick-button>
-                            <button hlmBtn type="button" variant="secondary" class="tick-button" data-cy="tick-button" (click)="deleteTodo(todo)">
-                              <ng-icon name="lucideTrash2" />
-                            </button>
-                          </div>
-                        }
+                    <div class="todo-table-line-location mt-1">
+                      <lc-topo-hierarchy-breadcrumbs
+                        [crag]="todo.crag"
+                        [sector]="todo.sector"
+                        [area]="todo.area"
+                      ></lc-topo-hierarchy-breadcrumbs>
+                    </div>
+                  </div>
+                  <div class="todo-table-grade">
+                    <div class="grade">
+                      <div class="ml-1 grade-name">
+                        {{ todo.line | lineGrade }}
                       </div>
                     </div>
                   </div>
+                  <div class="todo-table-priority">
+                    <lc-todo-priority-button
+                      [todo]="todo"
+                      [readOnly]="readOnly"
+                    ></lc-todo-priority-button>
+                  </div>
+                  @if (!readOnly) {
+                    <div class="todo-actions">
+                      <lc-tick-button
+                        [line]="todo.line"
+                        [showLabel]="false"
+                        [ticked]="false"
+                      ></lc-tick-button>
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="secondary"
+                        class="tick-button"
+                        data-cy="delete-todo"
+                        (click)="deleteTodo(todo)"
+                      >
+                        <ng-icon name="lucideTrash2" />
+                      </button>
+                    </div>
+                  }
                 </div>
-              }
+                <!-- DISPLAY FOR SMALL SCREENS -->
+                <div class="todo-table-row-small">
+                  <div class="todo-table-row-top">
+                    <div class="todo-table-line-info">
+                      <div class="todo-table-line-name font-bold">
+                        <a routerLink="{{ todo.routerLinkLine }}">{{
+                          todo.line.name
+                        }}</a>
+                      </div>
+                      <div class="todo-table-line-location mt-1">
+                        <lc-topo-hierarchy-breadcrumbs
+                          [crag]="todo.crag"
+                          [sector]="todo.sector"
+                          [area]="todo.area"
+                        ></lc-topo-hierarchy-breadcrumbs>
+                      </div>
+                    </div>
+                    <div class="todo-table-grade">
+                      <div class="grade">
+                        <div class="ml-1 grade-name">
+                          {{ todo.line | lineGrade }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="todo-table-row-bottom">
+                    <div class="todo-table-priority">
+                      <lc-todo-priority-button
+                        [todo]="todo"
+                        [readOnly]="readOnly"
+                      ></lc-todo-priority-button>
+                    </div>
+                    @if (!readOnly) {
+                      <div class="todo-actions">
+                        <lc-tick-button
+                          [line]="todo.line"
+                          [showLabel]="false"
+                          [ticked]="false"
+                        ></lc-tick-button>
+                        <button
+                          hlmBtn
+                          type="button"
+                          variant="secondary"
+                          class="tick-button"
+                          data-cy="tick-button"
+                          (click)="deleteTodo(todo)"
+                        >
+                          <ng-icon name="lucideTrash2" />
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
           }
+        </div>
+      }
 
       @if (hasNextPage) {
         <div class="flex justify-center mt-20">
-          <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <hlm-spinner /> } {{ t('loadMore') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            [disabled]="loading === loadingStates.LOADING"
+            (scrolled)="loadNextPage()"
+            (click)="loadNextPage()"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+          >
+            @if (loading === loadingStates.LOADING) {
+              <hlm-spinner />
+            }
+            {{ t("loadMore") }}
+          </button>
         </div>
       }
     }

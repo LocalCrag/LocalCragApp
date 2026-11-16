@@ -7,31 +7,53 @@
         <label for="video-uploads-enabled">{{
           t("videoUploadsEnabledLabel")
         }}</label>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('videoUploadsEnabledTooltip')"
           position="right"
-         />
+        />
       </div>
-      <hlm-select formControlName="videoUploadsEnabled" [itemToString]="selectItemLabel([
-          { value: false, label: t('videoUploadsEnabledFalse') },
-          { value: true, label: t('videoUploadsEnabledTrue') },
-        ])" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" buttonId="video-uploads-enabled">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of [
-          { value: false, label: t('videoUploadsEnabledFalse') },
-          { value: true, label: t('videoUploadsEnabledTrue') },
-        ]; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+      <hlm-select
+        formControlName="videoUploadsEnabled"
+        [itemToString]="
+          selectItemLabel([
+            { value: false, label: t('videoUploadsEnabledFalse') },
+            { value: true, label: t('videoUploadsEnabledTrue') },
+          ])
+        "
+        class="block w-full"
+        lcFormControl
+      >
+        <hlm-select-trigger class="w-full" buttonId="video-uploads-enabled">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (
+            option of [
+              { value: false, label: t("videoUploadsEnabledFalse") },
+              { value: true, label: t("videoUploadsEnabledTrue") },
+            ];
+            track option.value
+          ) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <div class="form-actions">
-      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucideSave" /> {{ t("editInstanceSettingsButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

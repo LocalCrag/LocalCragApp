@@ -3,10 +3,7 @@
 >
   <ng-container *transloco="let tf; read: 'closableForm.closableForm'">
     @if (schedule) {
-      <hlm-dialog
-        [state]="isOpen ? 'open' : 'closed'"
-        (closed)="close()"
-      >
+      <hlm-dialog [state]="isOpen ? 'open' : 'closed'" (closed)="close()">
         <hlm-dialog-content *hlmDialogPortal class="sm:max-w-xl">
           <div hlmDialogHeader>
             <h2 hlmDialogTitle>

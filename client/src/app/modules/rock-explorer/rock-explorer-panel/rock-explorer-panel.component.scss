@@ -67,7 +67,7 @@
   min-width: 0;
   background: var(--p-content-background);
 
-  ::ng-deep [data-slot='tabs-trigger'] {
+  ::ng-deep [data-slot="tabs-trigger"] {
     padding-inline: 0.55rem;
     font-size: 0.875rem;
   }

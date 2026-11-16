@@ -16,8 +16,12 @@
           <hlm-select-value />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item [value]="false">{{ t("globalColor") }}</hlm-select-item>
-          <hlm-select-item [value]="true">{{ t("customColor") }}</hlm-select-item>
+          <hlm-select-item [value]="false">{{
+            t("globalColor")
+          }}</hlm-select-item>
+          <hlm-select-item [value]="true">{{
+            t("customColor")
+          }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
       @if (colorForm?.get("customColor").value) {

@@ -9,7 +9,9 @@
             <span class="schedule-label">
               {{ t(scheduleTitleKey(schedule.scheduleType)) }}
               @if (scheduleSummary(schedule)) {
-                <span class="schedule-summary">· {{ scheduleSummary(schedule) }}</span>
+                <span class="schedule-summary"
+                  >· {{ scheduleSummary(schedule) }}</span
+                >
               }
             </span>
             <span class="schedule-actions">

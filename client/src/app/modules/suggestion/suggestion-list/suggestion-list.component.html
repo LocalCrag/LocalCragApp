@@ -2,7 +2,10 @@
   <div class="content">
     <div class="p-6 flex flex-col gap-8">
       @if (lines.length === 0 && topoImages.length === 0) {
-        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("empty") }}</p></div>
+        <div hlmAlert>
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("empty") }}</p>
+        </div>
       }
 
       @if (lines.length > 0) {
@@ -77,12 +80,25 @@
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
-                <button hlmBtn type="button" (click)="
+                <button
+                  hlmBtn
+                  type="button"
+                  (click)="
                     openReview({ kind: 'line', item: line, action: 'publish' })
-                  ">{{ t('publish') }}</button>
-                <button hlmBtn type="button" variant="destructive" (click)="
+                  "
+                >
+                  {{ t("publish") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  (click)="
                     openReview({ kind: 'line', item: line, action: 'reject' })
-                  ">{{ t('reject') }}</button>
+                  "
+                >
+                  {{ t("reject") }}
+                </button>
               </div>
             </div>
           }
@@ -155,20 +171,33 @@
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
-                <button hlmBtn type="button" (click)="
+                <button
+                  hlmBtn
+                  type="button"
+                  (click)="
                     openReview({
                       kind: 'topoImage',
                       item: image,
                       action: 'publish',
                     })
-                  ">{{ t('publish') }}</button>
-                <button hlmBtn type="button" variant="destructive" (click)="
+                  "
+                >
+                  {{ t("publish") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  (click)="
                     openReview({
                       kind: 'topoImage',
                       item: image,
                       action: 'reject',
                     })
-                  ">{{ t('reject') }}</button>
+                  "
+                >
+                  {{ t("reject") }}
+                </button>
               </div>
             </div>
           }

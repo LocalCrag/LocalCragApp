@@ -1,12 +1,24 @@
 <ng-container *transloco="let t; read: 'ascentForm'">
   <lc-ascent-form-title />
   <form [formGroup]="ascentForm" lcForm>
-    <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("ascentDate") }}</b><div hlmSeparator class="flex-1"></div></div>
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("ascentDate") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
         <div class="flex flex-col gap-2 grow" lcControlGroup>
-          <hlm-date-picker [autoCloseOnSelect]="true" formControlName="year" lcFormControl [maxDate]="today" [formatDate]="formatYear" class="w-full"><hlm-date-picker-input inputId="year" /></hlm-date-picker>
+          <hlm-date-picker
+            [autoCloseOnSelect]="true"
+            formControlName="year"
+            lcFormControl
+            [maxDate]="today"
+            [formatDate]="formatYear"
+            class="w-full"
+            ><hlm-date-picker-input inputId="year"
+          /></hlm-date-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("yearInFutureValidationError")
           }}</small>
@@ -17,7 +29,15 @@
       }
       @if (!ascentForm.get("yearOnly").value) {
         <div class="flex flex-col gap-2 grow" lcControlGroup>
-          <hlm-date-picker [autoCloseOnSelect]="true" formControlName="date" lcFormControl class="w-full" [maxDate]="today" [formatDate]="formatDay"><hlm-date-picker-input inputId="date" /></hlm-date-picker>
+          <hlm-date-picker
+            [autoCloseOnSelect]="true"
+            formControlName="date"
+            lcFormControl
+            class="w-full"
+            [maxDate]="today"
+            [formatDate]="formatDay"
+            ><hlm-date-picker-input inputId="date"
+          /></hlm-date-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("dateInFutureValidationError")
           }}</small>
@@ -26,34 +46,112 @@
           }}</small>
         </div>
       }
-      <button hlmToggle type="button" data-cy="yearOnly" [state]="ascentForm.get('yearOnly')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('yearOnly')?.setValue($event === 'on')">{{ t('onlyYear') }}</button>
+      <button
+        hlmToggle
+        type="button"
+        data-cy="yearOnly"
+        [state]="ascentForm.get('yearOnly')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('yearOnly')?.setValue($event === 'on')"
+      >
+        {{ t("onlyYear") }}
+      </button>
     </div>
 
     <div class="flex justify-center gap-2">
-      <button hlmBtn type="button" variant="secondary" size="sm" (click)="setToToday()">{{ t('today') }}</button>
-      <button hlmBtn type="button" variant="secondary" size="sm" (click)="setToLastSaturday()">{{ t('lastSaturday') }}</button>
-      <button hlmBtn type="button" variant="secondary" size="sm" (click)="setToLastSunday()">{{ t('lastSunday') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToToday()"
+      >
+        {{ t("today") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToLastSaturday()"
+      >
+        {{ t("lastSaturday") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToLastSunday()"
+      >
+        {{ t("lastSunday") }}
+      </button>
     </div>
 
-    <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("personalGrade") }}</b><div hlmSeparator class="flex-1"></div></div>
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("personalGrade") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-col gap-2 items-center" lcControlGroup>
       <div class="flex flex-row gap-2 justify-center items-center">
-        <button hlmToggle type="button" class="ascent-flag" [state]="ascentForm.get('soft')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('soft')?.setValue($event === 'on')">{{ t('soft') }}</button>
-        <hlm-select formControlName="grade" [itemToString]="gradeLabel" lcFormControl data-cy="grade-dropdown" class="ascent-grade-select"><hlm-select-trigger class="w-full"><hlm-select-value placeholder="{{ t('gradePlaceholder') }}" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (grade of grades; track $index) {<hlm-select-item [value]="grade"><div class="flex items-center gap-2" data-cy="grade-dropdown-item">
-              <div>{{ grade.name | translateSpecialGrades }}</div>
-            </div></hlm-select-item>}</hlm-select-content></hlm-select>
-        <button hlmToggle type="button" class="ascent-flag" [state]="ascentForm.get('hard')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('hard')?.setValue($event === 'on')">{{ t('hard') }}</button>
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('soft')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('soft')?.setValue($event === 'on')"
+        >
+          {{ t("soft") }}
+        </button>
+        <hlm-select
+          formControlName="grade"
+          [itemToString]="gradeLabel"
+          lcFormControl
+          data-cy="grade-dropdown"
+          class="ascent-grade-select"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              placeholder="{{ t('gradePlaceholder') }}" /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (grade of grades; track $index) {
+              <hlm-select-item [value]="grade"
+                ><div
+                  class="flex items-center gap-2"
+                  data-cy="grade-dropdown-item"
+                >
+                  <div>{{ grade.name | translateSpecialGrades }}</div>
+                </div></hlm-select-item
+              >
+            }
+          </hlm-select-content></hlm-select
+        >
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('hard')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('hard')?.setValue($event === 'on')"
+        >
+          {{ t("hard") }}
+        </button>
       </div>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
     </div>
     @if (gradeDifferenceWarning) {
-      <div hlmAlert variant="warning" class="ascent-form-alert mt-2"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{ t("unusualGradeDifferenceWarning") }}</p></div>
+      <div hlmAlert variant="warning" class="ascent-form-alert mt-2">
+        <ng-icon name="lucideTriangleAlert" />
+        <p hlmAlertDescription>{{ t("unusualGradeDifferenceWarning") }}</p>
+      </div>
     }
 
-    <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("rating") }}</b><div hlmSeparator class="flex-1"></div></div>
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("rating") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-col gap-2 items-center justify-center" lcControlGroup>
       <input type="hidden" formControlName="rating" lcFormControl />
@@ -77,7 +175,11 @@
       }}</small>
     </div>
 
-    <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("comment") }}</b><div hlmSeparator class="flex-1"></div></div>
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("comment") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-row gap-2" lcControlGroup>
       <textarea
@@ -92,7 +194,11 @@
     </div>
 
     @if (videoFormOpen) {
-      <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("video") }}</b><div hlmSeparator class="flex-1"></div></div>
+      <div class="ascent-section">
+        <div hlmSeparator class="flex-1"></div>
+        <b>{{ t("video") }}</b>
+        <div hlmSeparator class="flex-1"></div>
+      </div>
 
       <p class="mt-0 text-center">{{ t("videoHint") }}</p>
       <div class="flex flex-col gap-2" lcControlGroup>
@@ -136,32 +242,90 @@
               t("invalidStartSeconds")
             }}</small>
             <div>
-              <button hlmBtn type="button" variant="secondary" size="sm" (click)="hideVideoStart()"><ng-icon name="lucideX" /> {{ t('clearVideoStart') }}</button>
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                size="sm"
+                (click)="hideVideoStart()"
+              >
+                <ng-icon name="lucideX" /> {{ t("clearVideoStart") }}
+              </button>
             </div>
           </div>
         } @else {
           <div class="mt-2">
-            <button hlmBtn type="button" variant="secondary" size="sm" (click)="showVideoStart()"><ng-icon name="lucideClock" /> {{ t('setVideoStart') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              size="sm"
+              (click)="showVideoStart()"
+            >
+              <ng-icon name="lucideClock" /> {{ t("setVideoStart") }}
+            </button>
           </div>
         }
       }
       <div class="flex justify-center mt-2">
-        <button hlmBtn type="button" variant="secondary" (click)="hideVideoForm()">{{ t('removeVideo') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          (click)="hideVideoForm()"
+        >
+          {{ t("removeVideo") }}
+        </button>
       </div>
     } @else {
       <div class="mt-4 flex justify-center">
-        <button hlmBtn type="button" variant="secondary" data-cy="ascent-add-video" (click)="showVideoForm()"><ng-icon name="lucidePlus" /> {{ t('addVideo') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          data-cy="ascent-add-video"
+          (click)="showVideoForm()"
+        >
+          <ng-icon name="lucidePlus" /> {{ t("addVideo") }}
+        </button>
       </div>
     }
 
-    <div class="ascent-section"><div hlmSeparator class="flex-1"></div><b>{{ t("otherInfo") }}</b><div hlmSeparator class="flex-1"></div></div>
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("otherInfo") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
-      <button hlmToggle type="button" class="ascent-flag" [state]="ascentForm.get('flash')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('flash')?.setValue($event === 'on')">{{ t('flash') }}</button>
-      <button hlmToggle type="button" class="ascent-flag" data-cy="withKneepad" [state]="ascentForm.get('withKneepad')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('withKneepad')?.setValue($event === 'on')">{{ t('withKneepad') }}</button>
+      <button
+        hlmToggle
+        type="button"
+        class="ascent-flag"
+        [state]="ascentForm.get('flash')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('flash')?.setValue($event === 'on')"
+      >
+        {{ t("flash") }}
+      </button>
+      <button
+        hlmToggle
+        type="button"
+        class="ascent-flag"
+        data-cy="withKneepad"
+        [state]="ascentForm.get('withKneepad')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('withKneepad')?.setValue($event === 'on')"
+      >
+        {{ t("withKneepad") }}
+      </button>
       @if ((gymMode$ | async) === false) {
-        <button hlmToggle type="button" class="ascent-flag" [state]="ascentForm.get('fa')?.value ? 'on' : 'off'" (stateChange)="ascentForm.get('fa')?.setValue($event === 'on')">
-          {{ t('fa') }}
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('fa')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('fa')?.setValue($event === 'on')"
+        >
+          {{ t("fa") }}
           <span
             class="inline-flex pointer-events-auto"
             [hlmTooltip]="t('firstAscentExplanation')"
@@ -178,8 +342,18 @@
   </form>
 
   <div class="form-actions">
-    <button hlmBtn type="button" class="w-full" [disabled]="loadingState === loadingStates.LOADING" (click)="saveAscent()" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } {{
-        !editMode ? t('addAscentButtonLabel') : t('editAscentButtonLabel')
-      }}</button>
+    <button
+      hlmBtn
+      type="button"
+      class="w-full"
+      [disabled]="loadingState === loadingStates.LOADING"
+      (click)="saveAscent()"
+      data-cy="submit"
+    >
+      @if (loadingState === loadingStates.LOADING) {
+        <hlm-spinner />
+      }
+      {{ !editMode ? t("addAscentButtonLabel") : t("editAscentButtonLabel") }}
+    </button>
   </div>
 </ng-container>

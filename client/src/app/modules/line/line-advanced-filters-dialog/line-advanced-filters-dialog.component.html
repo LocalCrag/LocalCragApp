@@ -7,7 +7,20 @@
       @if (availableScales.length > 2) {
         <div class="mb-12">
           <label class="block text-sm mb-1">{{ t("lineType") }}</label>
-          <hlm-select [(ngModel)]="dialogScaleKey" (valueChange)="onDialogScaleChange()" class="w-full"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of availableScales; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            [(ngModel)]="dialogScaleKey"
+            (valueChange)="onDialogScaleChange()"
+            class="w-full"
+            ><hlm-select-trigger class="w-full"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of availableScales; track $index) {
+                <hlm-select-item [value]="option">{{
+                  option.label
+                }}</hlm-select-item>
+              }
+            </hlm-select-content></hlm-select
+          >
         </div>
       }
       @if (dialogScaleKey?.value && maxGrade !== null) {
@@ -81,28 +94,76 @@
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersVideoSection") }}
       </div>
-      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.hasVideo"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of videoOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.hasVideo"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of videoOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
     </div>
 
     <div>
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersClimbSection") }}
       </div>
-      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.climbState"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of climbOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.climbState"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of climbOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
     </div>
 
     <div>
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersStartingPositionSection") }}
       </div>
-      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.startingPosition"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('advancedFiltersStartingPositionsPlaceholder')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of startingPositionOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+      <hlm-select
+        [itemToString]="selectLabel"
+        [(ngModel)]="draft.startingPosition"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value
+            [placeholder]="
+              t('advancedFiltersStartingPositionsPlaceholder')
+            " /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of startingPositionOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
     </div>
 
     <div>
       <div class="font-semibold mb-2">
         {{ t("advancedFiltersDryingSection") }}
       </div>
-      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.drying"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('advancedFiltersDryingPlaceholder')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of dryingOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+      <hlm-select [itemToString]="selectLabel" [(ngModel)]="draft.drying"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value
+            [placeholder]="
+              t('advancedFiltersDryingPlaceholder')
+            " /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of dryingOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
     </div>
 
     <div>
@@ -203,10 +264,28 @@
     </div>
 
     <div class="lc-button-group justify-between mt-2">
-      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="reset()"><ng-icon name="lucideRefreshCw" /> {{ t('advancedFiltersReset') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="responsive-button"
+        (click)="reset()"
+      >
+        <ng-icon name="lucideRefreshCw" /> {{ t("advancedFiltersReset") }}
+      </button>
       <div class="lc-button-group">
-        <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideX" /> {{ t('advancedFiltersCancel') }}</button>
-        <button hlmBtn type="button" (click)="apply()"><ng-icon name="lucideCheck" /> {{ t('advancedFiltersApply') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          class="responsive-button"
+          (click)="cancel()"
+        >
+          <ng-icon name="lucideX" /> {{ t("advancedFiltersCancel") }}
+        </button>
+        <button hlmBtn type="button" (click)="apply()">
+          <ng-icon name="lucideCheck" /> {{ t("advancedFiltersApply") }}
+        </button>
       </div>
     </div>
   </div>

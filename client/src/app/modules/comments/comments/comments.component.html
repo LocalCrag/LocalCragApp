@@ -7,7 +7,9 @@
             (created)="onCommentCreated($event)"
           ></lc-comment-editor>
         } @else if (softGating) {
-          <button hlmBtn type="button" (click)="promptForAccount()">{{ t('editor.postComment') }}</button>
+          <button hlmBtn type="button" (click)="promptForAccount()">
+            {{ t("editor.postComment") }}
+          </button>
         }
       </div>
     }
@@ -29,11 +31,28 @@
         [class.mt-20]="!compact"
         [class.mt-4]="compact"
       >
-        <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING && currentPage > 1" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING && currentPage > 1) { <hlm-spinner /> } {{ t('loadMore') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [disabled]="loading === loadingStates.LOADING && currentPage > 1"
+          (scrolled)="loadNextPage()"
+          (click)="loadNextPage()"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+        >
+          @if (loading === loadingStates.LOADING && currentPage > 1) {
+            <hlm-spinner />
+          }
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
     @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
-      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("thisCommentFeedIsEmpty") }}</p></div>
+      <div hlmAlert>
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("thisCommentFeedIsEmpty") }}</p>
+      </div>
     }
   </div>
 </ng-container>

@@ -19,7 +19,15 @@
       [attr.aria-label]="t('rockExplorer.locationSearchGo')"
     />
     <div hlmInputGroupAddon align="inline-end">
-      <button hlmBtn type="button" size="icon" variant="ghost" (click)="close()"><ng-icon name="lucideX" /></button>
+      <button
+        hlmBtn
+        type="button"
+        size="icon"
+        variant="ghost"
+        (click)="close()"
+      >
+        <ng-icon name="lucideX" />
+      </button>
     </div>
   </div>
 
@@ -44,7 +52,11 @@
   }
 
   @if (errorMessage) {
-    <div hlmAlert variant="destructive" class="rock-explorer-location-search-dialog__error">
+    <div
+      hlmAlert
+      variant="destructive"
+      class="rock-explorer-location-search-dialog__error"
+    >
       <ng-icon name="lucideTriangleAlert" />
       <p hlmAlertDescription>{{ errorMessage }}</p>
     </div>

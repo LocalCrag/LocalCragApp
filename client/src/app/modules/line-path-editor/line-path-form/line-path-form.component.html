@@ -28,7 +28,9 @@
                     [color]="line | topoLineColor"
                   ></lc-line-number-badge>
                 } @else {
-                  <span hlmBadge variant="secondary">{{ t("notOnImage") }}</span>
+                  <span hlmBadge variant="secondary">{{
+                    t("notOnImage")
+                  }}</span>
                 }
                 <span>{{ line.name }} {{ line | lineGrade }}</span>
               </span>
@@ -44,7 +46,9 @@
                       [color]="option | topoLineColor"
                     ></lc-line-number-badge>
                   } @else {
-                    <span hlmBadge variant="secondary">{{ t("notOnImage") }}</span>
+                    <span hlmBadge variant="secondary">{{
+                      t("notOnImage")
+                    }}</span>
                   }
                   <span>{{ option.name }} {{ option | lineGrade }}</span>
                 </span>
@@ -87,7 +91,11 @@
             <div class="line-path-order-panel w-72 flex-none">
               <div class="mb-2 font-semibold">{{ t("drawnLinesHeader") }}</div>
               <ul class="flex max-h-[28rem] flex-col gap-1 overflow-auto">
-                @for (draft of orderedDrafts; track draft.line.id; let i = $index) {
+                @for (
+                  draft of orderedDrafts;
+                  track draft.line.id;
+                  let i = $index
+                ) {
                   <li
                     class="drawn-line-item flex items-center gap-2"
                     [class.selected]="draft.line.id === selectedLineId"
@@ -101,7 +109,9 @@
                       tabindex="0"
                       (click)="selectDraft(draft)"
                       (keydown.enter)="selectDraft(draft)"
-                      (keydown.space)="$event.preventDefault(); selectDraft(draft)"
+                      (keydown.space)="
+                        $event.preventDefault(); selectDraft(draft)
+                      "
                     >
                       @if (getLineNumber(draft.line); as lineNumber) {
                         <lc-line-number-badge
@@ -177,7 +187,9 @@
                           [inputId]="'tabu-area-' + i"
                           [attr.data-cy]="'tabu-assign-checkbox-' + i"
                           [disabled]="!isSelectedLineDrawn()"
-                          (checkedChange)="onTabuCheckboxChange(area.id, $event)"
+                          (checkedChange)="
+                            onTabuCheckboxChange(area.id, $event)
+                          "
                         />
                         <label
                           class="tabu-area-item-label"

@@ -135,12 +135,7 @@
     @if (file && focusAdjustable && file.width && file.height) {
       <div class="focus-adjust-actions">
         @if (focusAdjustActive) {
-          <button
-            hlmBtn
-            type="button"
-            size="sm"
-            (click)="confirmFocusAdjust()"
-          >
+          <button hlmBtn type="button" size="sm" (click)="confirmFocusAdjust()">
             <ng-icon name="lucideCheck" />
             {{ t("adjustCropDoneButtonLabel") }}
           </button>

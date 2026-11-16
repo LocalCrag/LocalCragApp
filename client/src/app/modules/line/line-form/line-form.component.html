@@ -64,7 +64,21 @@
             <label class="form-label" for="type">
               {{ t("lineTypeLabel") }}
             </label>
-            <hlm-select [itemToString]="selectLabel" formControlName="type" id="type" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of typeOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+            <hlm-select
+              [itemToString]="selectLabel"
+              formControlName="type"
+              id="type"
+              lcFormControl
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of typeOptions; track option.value) {
+                  <hlm-select-item [value]="option.value">{{
+                    option.label
+                  }}</hlm-select-item>
+                }
+              </hlm-select-content></hlm-select
+            >
           </div>
         }
         @if (
@@ -74,21 +88,54 @@
             <label class="form-label" for="scale">
               {{ t("lineScaleLabel") }}
             </label>
-            <hlm-select [itemToString]="selectLabel" formControlName="scale" id="scale" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of scaleOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+            <hlm-select
+              [itemToString]="selectLabel"
+              formControlName="scale"
+              id="scale"
+              lcFormControl
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of scaleOptions; track option.value) {
+                  <hlm-select-item [value]="option.value">{{
+                    option.label
+                  }}</hlm-select-item>
+                }
+              </hlm-select-content></hlm-select
+            >
           </div>
         }
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="grade">{{
             t("lineGradeLabel")
           }}</label>
-          <hlm-select [itemToString]="selectLabel" formControlName="grade" id="grade" data-cy="grade-dropdown" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('gradePlaceholder')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of grades; track option.value) {<hlm-select-item [value]="option.value" data-cy="grade-dropdown-item">{{ option.name | translateSpecialGrades }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            [itemToString]="selectLabel"
+            formControlName="grade"
+            id="grade"
+            data-cy="grade-dropdown"
+            lcFormControl
+            ><hlm-select-trigger class="w-full"
+              ><hlm-select-value
+                [placeholder]="t('gradePlaceholder')" /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of grades; track option.value) {
+                <hlm-select-item
+                  [value]="option.value"
+                  data-cy="grade-dropdown-item"
+                  >{{ option.name | translateSpecialGrades }}</hlm-select-item
+                >
+              }
+            </hlm-select-content></hlm-select
+          >
           <small class="lc-error" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>
           @if (getDisplayUserGrades() | async) {
-            <div hlmAlert variant="warning" class="mt-2"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{
-              t("displayUserGradesActive")
-            }}</p></div>
+            <div hlmAlert variant="warning" class="mt-2">
+              <ng-icon name="lucideTriangleAlert" />
+              <p hlmAlertDescription>{{ t("displayUserGradesActive") }}</p>
+            </div>
           }
         </div>
         @if (showAssumedGradeBounds) {
@@ -99,18 +146,72 @@
                 <label class="form-label" for="assumed-grade-min">{{
                   t("assumedGradeMinLabel")
                 }}</label>
-                <hlm-select [itemToString]="selectLabel" formControlName="assumedGradeMin" id="assumed-grade-min" data-cy="assumed-grade-min" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('assumedGradeMinPlaceholder')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of assumedGradeMinOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.name | translateSpecialGrades }}</hlm-select-item>}</hlm-select-content></hlm-select>
+                <hlm-select
+                  [itemToString]="selectLabel"
+                  formControlName="assumedGradeMin"
+                  id="assumed-grade-min"
+                  data-cy="assumed-grade-min"
+                  lcFormControl
+                  ><hlm-select-trigger class="w-full"
+                    ><hlm-select-value
+                      [placeholder]="
+                        t('assumedGradeMinPlaceholder')
+                      " /></hlm-select-trigger
+                  ><hlm-select-content *hlmSelectPortal>
+                    @for (
+                      option of assumedGradeMinOptions;
+                      track option.value
+                    ) {
+                      <hlm-select-item [value]="option.value">{{
+                        option.name | translateSpecialGrades
+                      }}</hlm-select-item>
+                    }
+                  </hlm-select-content></hlm-select
+                >
               </div>
               <div class="flex min-w-0 flex-1 flex-col gap-2">
                 <label class="form-label" for="assumed-grade-max">{{
                   t("assumedGradeMaxLabel")
                 }}</label>
-                <hlm-select [itemToString]="selectLabel" formControlName="assumedGradeMax" id="assumed-grade-max" data-cy="assumed-grade-max" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('assumedGradeMaxPlaceholder')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of assumedGradeMaxOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.name | translateSpecialGrades }}</hlm-select-item>}</hlm-select-content></hlm-select>
+                <hlm-select
+                  [itemToString]="selectLabel"
+                  formControlName="assumedGradeMax"
+                  id="assumed-grade-max"
+                  data-cy="assumed-grade-max"
+                  lcFormControl
+                  ><hlm-select-trigger class="w-full"
+                    ><hlm-select-value
+                      [placeholder]="
+                        t('assumedGradeMaxPlaceholder')
+                      " /></hlm-select-trigger
+                  ><hlm-select-content *hlmSelectPortal>
+                    @for (
+                      option of assumedGradeMaxOptions;
+                      track option.value
+                    ) {
+                      <hlm-select-item [value]="option.value">{{
+                        option.name | translateSpecialGrades
+                      }}</hlm-select-item>
+                    }
+                  </hlm-select-content></hlm-select
+                >
               </div>
-              <button hlmBtn type="button" variant="secondary" size="icon" class="shrink-0" (click)="resetAssumedGradeBounds()" [disabled]="
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                size="icon"
+                class="shrink-0"
+                (click)="resetAssumedGradeBounds()"
+                [disabled]="
                   lineForm.get('assumedGradeMin').value === null &&
                   lineForm.get('assumedGradeMax').value === null
-                " aria-label="{{ t('assumedGradeBoundsReset') }}" data-cy="assumed-grade-reset"><ng-icon name="lucideUndo2" /></button>
+                "
+                aria-label="{{ t('assumedGradeBoundsReset') }}"
+                data-cy="assumed-grade-reset"
+              >
+                <ng-icon name="lucideUndo2" />
+              </button>
             </div>
             <small class="text-sm text-muted-color">{{
               t("assumedGradeBoundsHint")
@@ -129,14 +230,51 @@
           <label class="form-label" for="starting-position">{{
             t("startingPositionLabel")
           }}</label>
-          <hlm-select id="starting-position" formControlName="startingPosition" lcFormControl data-cy="starting-position-dropdown"><hlm-select-trigger class="w-full"><ng-template hlmSelectValueTemplate let-value>{{ value | transloco }}</ng-template></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of startingPositions; track $index) {<hlm-select-item [value]="option" data-cy="starting-position-dropdown-item">{{ option | transloco }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            id="starting-position"
+            formControlName="startingPosition"
+            lcFormControl
+            data-cy="starting-position-dropdown"
+            ><hlm-select-trigger class="w-full"
+              ><ng-template hlmSelectValueTemplate let-value>{{
+                value | transloco
+              }}</ng-template></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of startingPositions; track $index) {
+                <hlm-select-item
+                  [value]="option"
+                  data-cy="starting-position-dropdown-item"
+                  >{{ option | transloco }}</hlm-select-item
+                >
+              }
+            </hlm-select-content></hlm-select
+          >
           <small class="lc-error" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="drying">{{ t("dryingLabel") }}</label>
-          <hlm-select id="drying" formControlName="drying" lcFormControl data-cy="drying-dropdown"><hlm-select-trigger class="w-full"><span hlmSelectPlaceholder>{{ t('dryingPlaceholder') }}</span><ng-template hlmSelectValueTemplate let-value>{{ value | transloco }}</ng-template></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of dryingOptions; track $index) {<hlm-select-item [value]="option" data-cy="drying-dropdown-item">{{ option | transloco }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            id="drying"
+            formControlName="drying"
+            lcFormControl
+            data-cy="drying-dropdown"
+            ><hlm-select-trigger class="w-full"
+              ><span hlmSelectPlaceholder>{{ t("dryingPlaceholder") }}</span
+              ><ng-template hlmSelectValueTemplate let-value>{{
+                value | transloco
+              }}</ng-template></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of dryingOptions; track $index) {
+                <hlm-select-item
+                  [value]="option"
+                  data-cy="drying-dropdown-item"
+                  >{{ option | transloco }}</hlm-select-item
+                >
+              }
+            </hlm-select-content></hlm-select
+          >
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="rating">{{
@@ -153,15 +291,18 @@
                 <ng-icon
                   name="lucideStar"
                   class="[&_svg]:fill-current"
-                  [class.opacity-30]="star > (lineForm.get('rating').value || 0)"
+                  [class.opacity-30]="
+                    star > (lineForm.get('rating').value || 0)
+                  "
                 />
               </button>
             }
           </div>
           @if (getDisplayUserRatings() | async) {
-            <div hlmAlert variant="warning" class="mt-2"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{
-              t("displayUserRatingsActive")
-            }}</p></div>
+            <div hlmAlert variant="warning" class="mt-2">
+              <ng-icon name="lucideTriangleAlert" />
+              <p hlmAlertDescription>{{ t("displayUserRatingsActive") }}</p>
+            </div>
           }
         </div>
         <div class="flex flex-col gap-2">
@@ -193,14 +334,34 @@
                       <label class="form-label">{{
                         t("videoSourceLabel")
                       }}</label>
-                      <hlm-select [itemToString]="selectLabel" formControlName="source" [disabled]="
+                      <hlm-select
+                        [itemToString]="selectLabel"
+                        formControlName="source"
+                        [disabled]="
                           !videoUploadsEnabled &&
                           (lineVideoGroup | asFormGroup).get('source').value !==
                             'upload'
-                        " lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of [
-                          { value: 'link', label: t('videoSourceLink') },
-                          { value: 'upload', label: t('videoSourceUpload') },
-                        ]; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+                        "
+                        lcFormControl
+                        ><hlm-select-trigger class="w-full"
+                          ><hlm-select-value /></hlm-select-trigger
+                        ><hlm-select-content *hlmSelectPortal>
+                          @for (
+                            option of [
+                              { value: "link", label: t("videoSourceLink") },
+                              {
+                                value: "upload",
+                                label: t("videoSourceUpload"),
+                              },
+                            ];
+                            track option.value
+                          ) {
+                            <hlm-select-item [value]="option.value">{{
+                              option.label
+                            }}</hlm-select-item>
+                          }
+                        </hlm-select-content></hlm-select
+                      >
                     </div>
                   }
                   <div lcControlGroup class="video-title flex flex-col gap-2">
@@ -248,7 +409,9 @@
                       <label
                         class="inline-flex h-9 cursor-pointer items-center rounded-lg bg-secondary px-3 text-sm font-medium text-secondary-foreground hover:bg-secondary/80"
                         [class.opacity-50]="uploadingVideoIndex !== null"
-                        [class.pointer-events-none]="uploadingVideoIndex !== null"
+                        [class.pointer-events-none]="
+                          uploadingVideoIndex !== null
+                        "
                       >
                         {{ t("uploadVideoButtonLabel") }}
                         <input
@@ -264,9 +427,13 @@
                       @if (
                         (lineVideoGroup | asFormGroup).get("fileLabel").value
                       ) {
-                        <span class="min-w-0 text-sm break-all text-muted-foreground">{{
-                          (lineVideoGroup | asFormGroup).get("fileLabel").value
-                        }}</span>
+                        <span
+                          class="min-w-0 text-sm break-all text-muted-foreground"
+                          >{{
+                            (lineVideoGroup | asFormGroup).get("fileLabel")
+                              .value
+                          }}</span
+                        >
                       }
                     </div>
                     @if (uploadingVideoIndex === i) {
@@ -274,7 +441,11 @@
                         <div
                           hlmProgress
                           class="w-full"
-                          [value]="videoUploadIndeterminate ? null : videoUploadProgress"
+                          [value]="
+                            videoUploadIndeterminate
+                              ? null
+                              : videoUploadProgress
+                          "
                         >
                           <div hlmProgressIndicator></div>
                         </div>
@@ -343,11 +514,29 @@
                       <small class="lc-error" *lcIfError="'startSeconds'">{{
                         t("invalidStartSeconds")
                       }}</small>
-                      <button hlmBtn type="button" variant="secondary" size="sm" (click)="hideVideoStart(i)"><ng-icon name="lucideX" /> {{ t('lineVideoStartClear') }}</button>
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        (click)="hideVideoStart(i)"
+                      >
+                        <ng-icon name="lucideX" />
+                        {{ t("lineVideoStartClear") }}
+                      </button>
                     </div>
                   } @else {
                     <div>
-                      <button hlmBtn type="button" variant="secondary" size="sm" (click)="showVideoStart(i)"><ng-icon name="lucideClock" /> {{ t('lineVideoStartToggle') }}</button>
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        (click)="showVideoStart(i)"
+                      >
+                        <ng-icon name="lucideClock" />
+                        {{ t("lineVideoStartToggle") }}
+                      </button>
                     </div>
                   }
                 }
@@ -355,7 +544,14 @@
             </div>
           }
           <div>
-            <button hlmBtn type="button" variant="secondary" (click)="addLineVideoFormControl()"><ng-icon name="lucidePlus" /> {{ t('addVideoButtonLabel') }}</button>
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="addLineVideoFormControl()"
+            >
+              <ng-icon name="lucidePlus" /> {{ t("addVideoButtonLabel") }}
+            </button>
           </div>
         </div>
         <ng-container *isOutdoorMode="true">
@@ -381,7 +577,14 @@
               <label class="form-label" for="fa-year">{{
                 t("lineFAYearLabel")
               }}</label>
-<hlm-month-year-picker formControlName="faYear" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatYear" data-cy="line-form-faYear">
+              <hlm-month-year-picker
+                formControlName="faYear"
+                lcFormControl
+                [maxDate]="today"
+                [autoCloseOnSelect]="true"
+                [formatDate]="formatYear"
+                data-cy="line-form-faYear"
+              >
                 <hlm-date-picker-input inputId="faYear" />
               </hlm-month-year-picker>
               <small class="lc-error" *lcIfError="'dateInFuture'">{{
@@ -394,7 +597,14 @@
               <label class="form-label" for="fa-year">{{
                 t("lineFADateLabel")
               }}</label>
-<hlm-date-picker formControlName="faDate" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatDay" data-cy="line-form-faDate">
+              <hlm-date-picker
+                formControlName="faDate"
+                lcFormControl
+                [maxDate]="today"
+                [autoCloseOnSelect]="true"
+                [formatDate]="formatDay"
+                data-cy="line-form-faDate"
+              >
                 <hlm-date-picker-input inputId="faDate" />
               </hlm-date-picker>
               <small class="lc-error" *lcIfError="'dateInFuture'">{{
@@ -403,11 +613,19 @@
             </div>
           }
           <div class="mt-2">
-            <button hlmBtn type="button" variant="outline" (click)="toggleFaFormat()" [disabled]="faInputsDisabled">{{ 
+            <button
+              hlmBtn
+              type="button"
+              variant="outline"
+              (click)="toggleFaFormat()"
+              [disabled]="faInputsDisabled"
+            >
+              {{
                 faFormat === faFormats.YEAR
-                  ? t('showFaDateInsteadOfYear')
-                  : t('showFaYearInsteadOfDate')
-               }}</button>
+                  ? t("showFaDateInsteadOfYear")
+                  : t("showFaYearInsteadOfDate")
+              }}
+            </button>
           </div>
         </ng-container>
         <ng-container *isOutdoorMode="true">
@@ -433,7 +651,14 @@
               <label class="form-label" for="bolt-date">{{
                 t("lineBoltDateLabel")
               }}</label>
-<hlm-date-picker formControlName="boltDate" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatDay" data-cy="line-form-boltDate">
+              <hlm-date-picker
+                formControlName="boltDate"
+                lcFormControl
+                [maxDate]="today"
+                [autoCloseOnSelect]="true"
+                [formatDate]="formatDay"
+                data-cy="line-form-boltDate"
+              >
                 <hlm-date-picker-input inputId="boltDate" />
               </hlm-date-picker>
               <small class="lc-error" *lcIfError="'dateInFuture'">{{
@@ -464,9 +689,16 @@
             <label class="form-label" for="set-date">{{
               t("lineSetDateLabel")
             }}</label>
-<hlm-date-picker formControlName="setDate" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatDay" data-cy="line-form-setDate">
-                <hlm-date-picker-input inputId="setDate" />
-              </hlm-date-picker>
+            <hlm-date-picker
+              formControlName="setDate"
+              lcFormControl
+              [maxDate]="today"
+              [autoCloseOnSelect]="true"
+              [formatDate]="formatDay"
+              data-cy="line-form-setDate"
+            >
+              <hlm-date-picker-input inputId="setDate" />
+            </hlm-date-picker>
             <small class="lc-error" *lcIfError="'dateInFuture'">{{
               t("dateInFutureValidationError")
             }}</small>
@@ -486,9 +718,15 @@
               <label [for]="'variant'" class="ml-2">{{
                 t("lineVariantLabel")
               }}</label>
-              <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('lineVariantTooltip')" position="right"
+              <button
+                type="button"
+                class="inline-flex text-muted-foreground ml-2"
+                [hlmTooltip]="t('lineVariantTooltip')"
+                position="right"
                 data-cy="line-form-variant-tooltip"
-              ><ng-icon name="lucideCircleQuestionMark" /></button>
+              >
+                <ng-icon name="lucideCircleQuestionMark" />
+              </button>
             </div>
             <div class="flex">
               <hlm-checkbox
@@ -812,7 +1050,10 @@
           />
         }
         @if (parentClosureState?.closed) {
-          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p></div>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p>
+          </div>
         }
         @if (viewerIsModerator) {
           <div class="flex flex-col gap-2" lcControlGroup>
@@ -833,24 +1074,80 @@
           </div>
         }
         @if (parentArea?.secret && !lineForm.get("secret").value) {
-          <div hlmAlert variant="warning"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{ t("aPublicLineWillSetParentsToPublic") }}</p></div>
+          <div hlmAlert variant="warning">
+            <ng-icon name="lucideTriangleAlert" />
+            <p hlmAlertDescription>
+              {{ t("aPublicLineWillSetParentsToPublic") }}
+            </p>
+          </div>
         }
       </form>
       <div class="form-actions">
         @if (!editMode) {
-          <button hlmBtn type="button" class="responsive-button" (click)="saveLine()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('createLineButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="saveLine()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideSave" />
+            }
+            {{ t("createLineButtonLabel") }}
+          </button>
         }
         @if (editMode) {
-          <button hlmBtn type="button" class="responsive-button" (click)="saveLine()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('editLineButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="saveLine()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="submit"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideSave" />
+            }
+            {{ t("editLineButtonLabel") }}
+          </button>
         }
-        <button hlmBtn type="button" variant="secondary" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+        <button hlmBtn type="button" variant="secondary" (click)="cancel()">
+          <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+        </button>
         @if (editMode && viewerIsModerator) {
-          <button hlmBtn type="button" variant="secondary" (click)="openMoveDialog()"><ng-icon name="lucideArrowLeftRight" /> {{ t('moveLineButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            (click)="openMoveDialog()"
+          >
+            <ng-icon name="lucideArrowLeftRight" />
+            {{ t("moveLineButtonLabel") }}
+          </button>
         }
         @if (editMode) {
-          <button hlmBtn type="button" variant="destructive" (click)="confirmDeleteLine($event)" [disabled]="loadingState === loadingStates.LOADING" data-cy="delete">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideTrash2" /> } {{ t('deleteLineButtonLabel') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="destructive"
+            (click)="confirmDeleteLine($event)"
+            [disabled]="loadingState === loadingStates.LOADING"
+            data-cy="delete"
+          >
+            @if (loadingState === loadingStates.LOADING) {
+              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+            } @else {
+              <ng-icon name="lucideTrash2" />
+            }
+            {{ t("deleteLineButtonLabel") }}
+          </button>
         }
-        
       </div>
       <lc-move-object-dialog
         #moveDialog

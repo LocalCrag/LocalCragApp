@@ -32,7 +32,12 @@
           {{ t("cancel") }}
         </button>
       }
-      <button hlmBtn type="button" [disabled]="saving || form.invalid" (click)="send()">
+      <button
+        hlmBtn
+        type="button"
+        [disabled]="saving || form.invalid"
+        (click)="send()"
+      >
         @if (saving) {
           <hlm-spinner />
         }

@@ -10,43 +10,129 @@
           {{ ui.editingFeature()!.title || t("rockExplorer.untitledFeature") }}
         </h2>
         <div class="rock-explorer__panel-header-actions">
-          <hlm-popover #featureActionsPopover="brnPopover" align="end" sideOffset="8">
-            <button hlmBtn hlmPopoverTrigger type="button" variant="ghost" size="icon" class="rounded-full" [attr.aria-label]="t('rockExplorer.moreTools')"><ng-icon name="lucideEllipsisVertical" /></button>
+          <hlm-popover
+            #featureActionsPopover="brnPopover"
+            align="end"
+            sideOffset="8"
+          >
+            <button
+              hlmBtn
+              hlmPopoverTrigger
+              type="button"
+              variant="ghost"
+              size="icon"
+              class="rounded-full"
+              [attr.aria-label]="t('rockExplorer.moreTools')"
+            >
+              <ng-icon name="lucideEllipsisVertical" />
+            </button>
             <div hlmPopoverContent *hlmPopoverPortal class="w-auto">
-            <div class="rock-explorer__panel-menu">
-              <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'focusOnMap' });
-                  featureActionsPopover.close()
-                "><ng-icon name="lucideMapPin" /> {{ t('rockExplorer.showOnMap') }}</button>
-              <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'shareFeature' });
-                  featureActionsPopover.close()
-                "><ng-icon name="lucideShare2" /> {{ t('rockExplorer.share') }}</button>
-              @if (ui.editingFeature()!.geometry?.type === "Polygon") {
-                <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                    ui.dispatch({ type: 'editGeometry' });
+              <div class="rock-explorer__panel-menu">
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'focusOnMap' });
                     featureActionsPopover.close()
-                  "><ng-icon name="lucidePencil" /> {{ t('rockExplorer.editGeometry') }}</button>
-              }
-              <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'redrawAsPoint' });
-                  featureActionsPopover.close()
-                "><ng-icon name="lucideMapPin" /> {{ t('rockExplorer.redrawAsPoint') }}</button>
-              <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'redrawAsPolygon' });
-                  featureActionsPopover.close()
-                "><ng-icon name="lucideSquare" /> {{ t('rockExplorer.redrawAsPolygon') }}</button>
-              <button hlmBtn type="button" variant="ghost" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'redrawFromContent' });
-                  featureActionsPopover.close()
-                " [disabled]="!canAutoRedrawGeometry"><ng-icon name="lucideNetwork" /> {{ t('rockExplorer.redrawFromContent') }}</button>
-              <button hlmBtn type="button" variant="destructive" class="w-full justify-start" (click)="
-                  ui.dispatch({ type: 'deleteRequest', event: $event });
-                  featureActionsPopover.close()
-                "><ng-icon name="lucideTrash2" /> {{ t('rockExplorer.delete') }}</button>
-            </div>
-          </div></hlm-popover>
-          <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full" (click)="ui.dispatch({ type: 'closePanel' })"><ng-icon name="lucideX" /></button>
+                  "
+                >
+                  <ng-icon name="lucideMapPin" />
+                  {{ t("rockExplorer.showOnMap") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'shareFeature' });
+                    featureActionsPopover.close()
+                  "
+                >
+                  <ng-icon name="lucideShare2" /> {{ t("rockExplorer.share") }}
+                </button>
+                @if (ui.editingFeature()!.geometry?.type === "Polygon") {
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    class="w-full justify-start"
+                    (click)="
+                      ui.dispatch({ type: 'editGeometry' });
+                      featureActionsPopover.close()
+                    "
+                  >
+                    <ng-icon name="lucidePencil" />
+                    {{ t("rockExplorer.editGeometry") }}
+                  </button>
+                }
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'redrawAsPoint' });
+                    featureActionsPopover.close()
+                  "
+                >
+                  <ng-icon name="lucideMapPin" />
+                  {{ t("rockExplorer.redrawAsPoint") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'redrawAsPolygon' });
+                    featureActionsPopover.close()
+                  "
+                >
+                  <ng-icon name="lucideSquare" />
+                  {{ t("rockExplorer.redrawAsPolygon") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'redrawFromContent' });
+                    featureActionsPopover.close()
+                  "
+                  [disabled]="!canAutoRedrawGeometry"
+                >
+                  <ng-icon name="lucideNetwork" />
+                  {{ t("rockExplorer.redrawFromContent") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  class="w-full justify-start"
+                  (click)="
+                    ui.dispatch({ type: 'deleteRequest', event: $event });
+                    featureActionsPopover.close()
+                  "
+                >
+                  <ng-icon name="lucideTrash2" /> {{ t("rockExplorer.delete") }}
+                </button>
+              </div>
+            </div></hlm-popover
+          >
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon"
+            class="rounded-full"
+            (click)="ui.dispatch({ type: 'closePanel' })"
+          >
+            <ng-icon name="lucideX" />
+          </button>
         </div>
       </header>
 
@@ -58,182 +144,178 @@
           (tabActivated)="onPanelTabChange($event)"
         />
         <div class="rock-explorer__tab-panel">
-            <div [hidden]="panelActiveTab !== 'info'">
-              <dl class="rock-explorer__view-fields">
-                @if (ui.editingFeature()!.description) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.description") }}</dt>
-                    <dd class="rock-explorer__view-description">
-                      {{ ui.editingFeature()!.description }}
-                    </dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.potential) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.potential") }}</dt>
-                    <dd>
-                      <span class="rock-explorer__potential-option">
-                        <span
-                          class="rock-explorer__potential-swatch"
-                          [style.background]="
-                            potentialColor(ui.editingFeature()!.potential)
-                          "
-                        ></span>
-                        {{
-                          enumLabel("potential", ui.editingFeature()!.potential)
-                        }}
-                      </span>
-                    </dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.rockQuality) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.rockQuality") }}</dt>
-                    <dd>
+          <div [hidden]="panelActiveTab !== 'info'">
+            <dl class="rock-explorer__view-fields">
+              @if (ui.editingFeature()!.description) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.description") }}</dt>
+                  <dd class="rock-explorer__view-description">
+                    {{ ui.editingFeature()!.description }}
+                  </dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.potential) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.potential") }}</dt>
+                  <dd>
+                    <span class="rock-explorer__potential-option">
+                      <span
+                        class="rock-explorer__potential-swatch"
+                        [style.background]="
+                          potentialColor(ui.editingFeature()!.potential)
+                        "
+                      ></span>
                       {{
-                        enumLabel(
-                          "rockQuality",
-                          ui.editingFeature()!.rockQuality
-                        )
+                        enumLabel("potential", ui.editingFeature()!.potential)
                       }}
-                    </dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.rockType) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.rockType") }}</dt>
-                    <dd>
-                      {{ enumLabel("rockType", ui.editingFeature()!.rockType) }}
-                    </dd>
-                  </div>
-                }
-                @if (featureGradeLabel(ui.editingFeature()!); as gradeLabel) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.gradeLineType") }}</dt>
-                    <dd>{{ gradeLabel }}</dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.accessIssues?.length) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.accessIssues") }}</dt>
-                    <dd>
-                      {{ accessIssuesLabel(ui.editingFeature()!.accessIssues) }}
-                    </dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.topoLinks?.length) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.topoLinks") }}</dt>
-                    <dd>
-                      <div class="rock-explorer__topo-tags">
-                        @for (
-                          tag of ui.editingFeature()!.topoLinks;
-                          track tag.object.id
-                        ) {
-                          <lc-tag [tag]="tag"></lc-tag>
-                        }
-                      </div>
-                    </dd>
-                  </div>
-                }
-                @if (ui.editingFeature()!.createdBy) {
-                  <div class="rock-explorer__view-field">
-                    <dt>{{ t("rockExplorer.fields.createdBy") }}</dt>
-                    <dd>
-                      <div class="rock-explorer__created-by">
-                        <lc-user-avatar
-                          [user]="ui.editingFeature()!.createdBy"
-                          thumbnail="thumbnailS"
-                          size="normal"
-                        ></lc-user-avatar>
-                        @if (ui.editingFeature()!.createdBy.routerLink) {
-                          <a
-                            class="rock-explorer__created-by-name"
-                            [routerLink]="
-                              ui.editingFeature()!.createdBy.routerLink
-                            "
-                          >
-                            {{ ui.editingFeature()!.createdBy.firstname }}
-                            {{ ui.editingFeature()!.createdBy.lastname }}
-                          </a>
-                        } @else {
-                          <span class="rock-explorer__created-by-name">
-                            {{ ui.editingFeature()!.createdBy.firstname }}
-                            {{ ui.editingFeature()!.createdBy.lastname }}
-                          </span>
-                        }
-                      </div>
-                    </dd>
-                  </div>
-                }
-              </dl>
-            </div>
-            <div [hidden]="panelActiveTab !== 'images'">
-              <lc-rock-explorer-gallery
-                #panelGallery
-                [object]="ui.editingFeature()!"
-                [showHeading]="false"
-                (imagesChanged)="ui.dispatch({ type: 'imagesChanged' })"
-                (countChange)="panelImageCount = $event"
-                (editModeChange)="
-                  imageEditMode = $event;
-                  ui.dispatch({ type: 'imageEditModeChange', editMode: $event })
-                "
-                (mapPickChange)="
-                  ui.dispatch({ type: 'imageMapPickChange', active: $event })
-                "
-                (coordinatesPreviewChange)="
-                  ui.dispatch({ type: 'coordinatesPreviewChange' })
-                "
-                (imagesLoaded)="ui.dispatch({ type: 'imagesLoaded' })"
-                (focusCoordinates)="
-                  ui.dispatch({
-                    type: 'focusCoordinates',
-                    coordinates: $event,
-                  })
-                "
-              ></lc-rock-explorer-gallery>
-            </div>
-            <div [hidden]="panelActiveTab !== 'comments'">
-              <lc-comments
-                [object]="ui.editingFeature()!"
-                [compact]="true"
-                (countChange)="panelCommentCount = $event"
-              ></lc-comments>
-            </div>
-            <div [hidden]="panelActiveTab !== 'misc'">
-              <lc-rock-explorer-misc
-                #panelMisc
-                [object]="ui.editingFeature()!"
-                (editModeChange)="
-                  miscEditMode = $event;
-                  ui.dispatch({ type: 'miscEditModeChange', editMode: $event })
-                "
-                (mapPickChange)="
-                  ui.dispatch({ type: 'parkingMapPickChange', active: $event })
-                "
-                (pathDrawChange)="
-                  ui.dispatch({ type: 'pathDrawChange', active: $event })
-                "
-                (pathDraftChange)="ui.dispatch({ type: 'pathDraftChange' })"
-                (previewChange)="ui.dispatch({ type: 'miscPreviewChange' })"
-                (countChange)="panelMiscCount = $event"
-                (saved)="ui.dispatch({ type: 'miscSaved', feature: $event })"
-                (focusCoordinates)="
-                  ui.dispatch({
-                    type: 'focusCoordinates',
-                    coordinates: $event,
-                  })
-                "
-                (focusPathGeometry)="
-                  ui.dispatch({
-                    type: 'focusPathGeometry',
-                    positions: $event,
-                  })
-                "
-              ></lc-rock-explorer-misc>
-            </div>
-          
+                    </span>
+                  </dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.rockQuality) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.rockQuality") }}</dt>
+                  <dd>
+                    {{
+                      enumLabel("rockQuality", ui.editingFeature()!.rockQuality)
+                    }}
+                  </dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.rockType) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.rockType") }}</dt>
+                  <dd>
+                    {{ enumLabel("rockType", ui.editingFeature()!.rockType) }}
+                  </dd>
+                </div>
+              }
+              @if (featureGradeLabel(ui.editingFeature()!); as gradeLabel) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.gradeLineType") }}</dt>
+                  <dd>{{ gradeLabel }}</dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.accessIssues?.length) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.accessIssues") }}</dt>
+                  <dd>
+                    {{ accessIssuesLabel(ui.editingFeature()!.accessIssues) }}
+                  </dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.topoLinks?.length) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.topoLinks") }}</dt>
+                  <dd>
+                    <div class="rock-explorer__topo-tags">
+                      @for (
+                        tag of ui.editingFeature()!.topoLinks;
+                        track tag.object.id
+                      ) {
+                        <lc-tag [tag]="tag"></lc-tag>
+                      }
+                    </div>
+                  </dd>
+                </div>
+              }
+              @if (ui.editingFeature()!.createdBy) {
+                <div class="rock-explorer__view-field">
+                  <dt>{{ t("rockExplorer.fields.createdBy") }}</dt>
+                  <dd>
+                    <div class="rock-explorer__created-by">
+                      <lc-user-avatar
+                        [user]="ui.editingFeature()!.createdBy"
+                        thumbnail="thumbnailS"
+                        size="normal"
+                      ></lc-user-avatar>
+                      @if (ui.editingFeature()!.createdBy.routerLink) {
+                        <a
+                          class="rock-explorer__created-by-name"
+                          [routerLink]="
+                            ui.editingFeature()!.createdBy.routerLink
+                          "
+                        >
+                          {{ ui.editingFeature()!.createdBy.firstname }}
+                          {{ ui.editingFeature()!.createdBy.lastname }}
+                        </a>
+                      } @else {
+                        <span class="rock-explorer__created-by-name">
+                          {{ ui.editingFeature()!.createdBy.firstname }}
+                          {{ ui.editingFeature()!.createdBy.lastname }}
+                        </span>
+                      }
+                    </div>
+                  </dd>
+                </div>
+              }
+            </dl>
+          </div>
+          <div [hidden]="panelActiveTab !== 'images'">
+            <lc-rock-explorer-gallery
+              #panelGallery
+              [object]="ui.editingFeature()!"
+              [showHeading]="false"
+              (imagesChanged)="ui.dispatch({ type: 'imagesChanged' })"
+              (countChange)="panelImageCount = $event"
+              (editModeChange)="
+                imageEditMode = $event;
+                ui.dispatch({ type: 'imageEditModeChange', editMode: $event })
+              "
+              (mapPickChange)="
+                ui.dispatch({ type: 'imageMapPickChange', active: $event })
+              "
+              (coordinatesPreviewChange)="
+                ui.dispatch({ type: 'coordinatesPreviewChange' })
+              "
+              (imagesLoaded)="ui.dispatch({ type: 'imagesLoaded' })"
+              (focusCoordinates)="
+                ui.dispatch({
+                  type: 'focusCoordinates',
+                  coordinates: $event,
+                })
+              "
+            ></lc-rock-explorer-gallery>
+          </div>
+          <div [hidden]="panelActiveTab !== 'comments'">
+            <lc-comments
+              [object]="ui.editingFeature()!"
+              [compact]="true"
+              (countChange)="panelCommentCount = $event"
+            ></lc-comments>
+          </div>
+          <div [hidden]="panelActiveTab !== 'misc'">
+            <lc-rock-explorer-misc
+              #panelMisc
+              [object]="ui.editingFeature()!"
+              (editModeChange)="
+                miscEditMode = $event;
+                ui.dispatch({ type: 'miscEditModeChange', editMode: $event })
+              "
+              (mapPickChange)="
+                ui.dispatch({ type: 'parkingMapPickChange', active: $event })
+              "
+              (pathDrawChange)="
+                ui.dispatch({ type: 'pathDrawChange', active: $event })
+              "
+              (pathDraftChange)="ui.dispatch({ type: 'pathDraftChange' })"
+              (previewChange)="ui.dispatch({ type: 'miscPreviewChange' })"
+              (countChange)="panelMiscCount = $event"
+              (saved)="ui.dispatch({ type: 'miscSaved', feature: $event })"
+              (focusCoordinates)="
+                ui.dispatch({
+                  type: 'focusCoordinates',
+                  coordinates: $event,
+                })
+              "
+              (focusPathGeometry)="
+                ui.dispatch({
+                  type: 'focusPathGeometry',
+                  positions: $event,
+                })
+              "
+            ></lc-rock-explorer-misc>
+          </div>
         </div>
       </div>
 
@@ -241,20 +323,64 @@
         <div *isMember="true" class="rock-explorer__panel-footer">
           @if (panelActiveTab === "images") {
             @if (!imageEditMode) {
-              <button hlmBtn type="button" (click)="gallery?.setEditMode(true)"><ng-icon name="lucidePencil" /> {{ t('rockExplorer.editImages') }}</button>
+              <button hlmBtn type="button" (click)="gallery?.setEditMode(true)">
+                <ng-icon name="lucidePencil" />
+                {{ t("rockExplorer.editImages") }}
+              </button>
             } @else {
-              <button hlmBtn type="button" [disabled]="!!gallery?.saving" (click)="gallery?.saveAll()">@if (!!gallery?.saving) { <hlm-spinner /> } {{ t('rockExplorer.save') }}</button>
-              <button hlmBtn type="button" variant="secondary" (click)="gallery?.cancelEdit()" [disabled]="!!gallery?.saving">{{ t('rockExplorer.cancelEdit') }}</button>
+              <button
+                hlmBtn
+                type="button"
+                [disabled]="!!gallery?.saving"
+                (click)="gallery?.saveAll()"
+              >
+                @if (!!gallery?.saving) {
+                  <hlm-spinner />
+                }
+                {{ t("rockExplorer.save") }}
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                (click)="gallery?.cancelEdit()"
+                [disabled]="!!gallery?.saving"
+              >
+                {{ t("rockExplorer.cancelEdit") }}
+              </button>
             }
           } @else if (panelActiveTab === "misc") {
             @if (!miscEditMode) {
-              <button hlmBtn type="button" (click)="misc?.setEditMode(true)"><ng-icon name="lucidePencil" /> {{ t('rockExplorer.editMisc') }}</button>
+              <button hlmBtn type="button" (click)="misc?.setEditMode(true)">
+                <ng-icon name="lucidePencil" /> {{ t("rockExplorer.editMisc") }}
+              </button>
             } @else {
-              <button hlmBtn type="button" [disabled]="!!misc?.saving" (click)="misc?.saveAll()">@if (!!misc?.saving) { <hlm-spinner /> } {{ t('rockExplorer.save') }}</button>
-              <button hlmBtn type="button" variant="secondary" (click)="misc?.cancelEdit()" [disabled]="!!misc?.saving">{{ t('rockExplorer.cancelEdit') }}</button>
+              <button
+                hlmBtn
+                type="button"
+                [disabled]="!!misc?.saving"
+                (click)="misc?.saveAll()"
+              >
+                @if (!!misc?.saving) {
+                  <hlm-spinner />
+                }
+                {{ t("rockExplorer.save") }}
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                (click)="misc?.cancelEdit()"
+                [disabled]="!!misc?.saving"
+              >
+                {{ t("rockExplorer.cancelEdit") }}
+              </button>
             }
           } @else if (panelActiveTab === "info") {
-            <button hlmBtn type="button" (click)="enterFeatureEdit()"><ng-icon name="lucidePencil" /> {{ t('rockExplorer.editFeature') }}</button>
+            <button hlmBtn type="button" (click)="enterFeatureEdit()">
+              <ng-icon name="lucidePencil" />
+              {{ t("rockExplorer.editFeature") }}
+            </button>
           }
         </div>
       }
@@ -269,7 +395,16 @@
               : t("rockExplorer.newFeature")
           }}
         </h2>
-        <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full" (click)="ui.dispatch({ type: 'closePanel' })"><ng-icon name="lucideX" /></button>
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon"
+          class="rounded-full"
+          (click)="ui.dispatch({ type: 'closePanel' })"
+        >
+          <ng-icon name="lucideX" />
+        </button>
       </header>
 
       <div class="rock-explorer__panel-body" [formGroup]="featureForm" lcForm>
@@ -277,13 +412,26 @@
           <label class="form-label" for="re-potential">{{
             t("rockExplorer.fields.potential")
           }}</label>
-          <hlm-select formControlName="potential" [itemToString]="ui.potentialLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-potential"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.potentialOptions(); track $index) {<hlm-select-item [value]="option.value"><span class="rock-explorer__potential-option">
-                <span
-                  class="rock-explorer__potential-swatch"
-                  [style.background]="potentialColor(option.value)"
-                ></span>
-                {{ option.label }}
-              </span></hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            formControlName="potential"
+            [itemToString]="ui.potentialLabel"
+            lcFormControl
+            ><hlm-select-trigger class="w-full" id="re-potential"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of ui.potentialOptions(); track $index) {
+                <hlm-select-item [value]="option.value"
+                  ><span class="rock-explorer__potential-option">
+                    <span
+                      class="rock-explorer__potential-swatch"
+                      [style.background]="potentialColor(option.value)"
+                    ></span>
+                    {{ option.label }}
+                  </span></hlm-select-item
+                >
+              }
+            </hlm-select-content></hlm-select
+          >
           <small class="lc-error" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>
@@ -292,12 +440,7 @@
           <label class="form-label" for="re-title">{{
             t("rockExplorer.fields.title")
           }}</label>
-          <input
-            id="re-title"
-            hlmInput
-            formControlName="title"
-            lcFormControl
-          />
+          <input id="re-title" hlmInput formControlName="title" lcFormControl />
           <small class="lc-error" *lcIfError="'maxlength'">{{
             "validation.maxLength" | transloco: { max: 120 }
           }}</small>
@@ -318,26 +461,78 @@
           <label class="form-label" for="re-rock-quality">{{
             t("rockExplorer.fields.rockQuality")
           }}</label>
-          <hlm-select formControlName="rockQuality" [itemToString]="ui.rockQualityLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-rock-quality"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockQualityOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            formControlName="rockQuality"
+            [itemToString]="ui.rockQualityLabel"
+            lcFormControl
+            ><hlm-select-trigger class="w-full" id="re-rock-quality"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of ui.rockQualityOptions(); track $index) {
+                <hlm-select-item [value]="option.value">{{
+                  option.label
+                }}</hlm-select-item>
+              }
+            </hlm-select-content></hlm-select
+          >
         </div>
         <div class="rock-explorer__field" lcControlGroup>
           <label class="form-label" for="re-rock-type">{{
             t("rockExplorer.fields.rockType")
           }}</label>
-          <hlm-select formControlName="rockType" [itemToString]="ui.rockTypeLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-rock-type"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockTypeOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            formControlName="rockType"
+            [itemToString]="ui.rockTypeLabel"
+            lcFormControl
+            ><hlm-select-trigger class="w-full" id="re-rock-type"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of ui.rockTypeOptions(); track $index) {
+                <hlm-select-item [value]="option.value">{{
+                  option.label
+                }}</hlm-select-item>
+              }
+            </hlm-select-content></hlm-select
+          >
         </div>
         <div class="rock-explorer__field" lcControlGroup>
           <label class="form-label" for="re-grade-line-type">{{
             t("rockExplorer.fields.gradeLineType")
           }}</label>
-          <hlm-select formControlName="gradeLineType" [itemToString]="lineTypeLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-grade-line-type"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of lineTypeOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select
+            formControlName="gradeLineType"
+            [itemToString]="lineTypeLabel"
+            lcFormControl
+            ><hlm-select-trigger class="w-full" id="re-grade-line-type"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of lineTypeOptions; track $index) {
+                <hlm-select-item [value]="option.value">{{
+                  option.label
+                }}</hlm-select-item>
+              }
+            </hlm-select-content></hlm-select
+          >
         </div>
         @if (featureForm.get("gradeLineType")?.value) {
           <div class="rock-explorer__field" lcControlGroup>
             <label class="form-label" for="re-grade-scale">{{
               t("rockExplorer.fields.gradeScale")
             }}</label>
-            <hlm-select formControlName="gradeScale" [itemToString]="scaleLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-grade-scale"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of scaleOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+            <hlm-select
+              formControlName="gradeScale"
+              [itemToString]="scaleLabel"
+              lcFormControl
+              ><hlm-select-trigger class="w-full" id="re-grade-scale"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of scaleOptions; track $index) {
+                  <hlm-select-item [value]="option.value">{{
+                    option.label
+                  }}</hlm-select-item>
+                }
+              </hlm-select-content></hlm-select
+            >
           </div>
         }
         @if (featureForm.get("gradeScale")?.value) {
@@ -346,13 +541,39 @@
               <label class="form-label" for="re-grade-min">{{
                 t("rockExplorer.fields.gradeValueMin")
               }}</label>
-              <hlm-select formControlName="gradeValueMin" [itemToString]="gradeLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-grade-min"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (grade of gradeOptions; track $index) {<hlm-select-item [value]="grade.value">{{ grade.name | translateSpecialGrades }}</hlm-select-item>}</hlm-select-content></hlm-select>
+              <hlm-select
+                formControlName="gradeValueMin"
+                [itemToString]="gradeLabel"
+                lcFormControl
+                ><hlm-select-trigger class="w-full" id="re-grade-min"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (grade of gradeOptions; track $index) {
+                    <hlm-select-item [value]="grade.value">{{
+                      grade.name | translateSpecialGrades
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content></hlm-select
+              >
             </div>
             <div class="rock-explorer__field" lcControlGroup>
               <label class="form-label" for="re-grade-max">{{
                 t("rockExplorer.fields.gradeValueMax")
               }}</label>
-              <hlm-select formControlName="gradeValueMax" [itemToString]="gradeLabel" lcFormControl><hlm-select-trigger class="w-full" id="re-grade-max"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (grade of gradeOptions; track $index) {<hlm-select-item [value]="grade.value">{{ grade.name | translateSpecialGrades }}</hlm-select-item>}</hlm-select-content></hlm-select>
+              <hlm-select
+                formControlName="gradeValueMax"
+                [itemToString]="gradeLabel"
+                lcFormControl
+                ><hlm-select-trigger class="w-full" id="re-grade-max"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (grade of gradeOptions; track $index) {
+                    <hlm-select-item [value]="grade.value">{{
+                      grade.name | translateSpecialGrades
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content></hlm-select
+              >
               <small class="lc-error" *lcIfError="'gradeRange'">{{
                 t("rockExplorer.validation.gradeRange")
               }}</small>
@@ -363,11 +584,19 @@
           <label class="form-label" for="re-access-issues">{{
             t("rockExplorer.fields.accessIssues")
           }}</label>
-          <hlm-select-multiple formControlName="accessIssues" [itemToString]="accessIssuesItemLabel" lcFormControl>
-            <hlm-select-trigger class="w-full" id="re-access-issues"><hlm-select-value /></hlm-select-trigger>
+          <hlm-select-multiple
+            formControlName="accessIssues"
+            [itemToString]="accessIssuesItemLabel"
+            lcFormControl
+          >
+            <hlm-select-trigger class="w-full" id="re-access-issues"
+              ><hlm-select-value
+            /></hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               @for (option of accessIssueOptions; track option.value) {
-                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                <hlm-select-item [value]="option.value">{{
+                  option.label
+                }}</hlm-select-item>
               }
             </hlm-select-content>
           </hlm-select-multiple>
@@ -387,9 +616,26 @@
       </div>
 
       <div class="rock-explorer__panel-footer">
-        <button hlmBtn type="button" [disabled]="ui.saving()" (click)="onSaveFeature()">@if (ui.saving()) { <hlm-spinner /> } {{ t('rockExplorer.save') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          [disabled]="ui.saving()"
+          (click)="onSaveFeature()"
+        >
+          @if (ui.saving()) {
+            <hlm-spinner />
+          }
+          {{ t("rockExplorer.save") }}
+        </button>
         @if (ui.editingFeature()?.id) {
-          <button hlmBtn type="button" variant="secondary" (click)="cancelFeatureEdit()">{{ t('rockExplorer.cancelEdit') }}</button>
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            (click)="cancelFeatureEdit()"
+          >
+            {{ t("rockExplorer.cancelEdit") }}
+          </button>
         }
       </div>
     </div>

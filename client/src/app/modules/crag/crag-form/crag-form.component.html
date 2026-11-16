@@ -81,8 +81,14 @@
       <div class="flex flex-col gap-2" lcControlGroup>
         <div class="form-label flex items-center">
           <label for="rulesTitle">{{ t("cragRulesTitleLabel") }}</label>
-          <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('cragRulesTitleTooltip')" position="right"
-          ><ng-icon name="lucideCircleQuestionMark" /></button>
+          <button
+            type="button"
+            class="inline-flex text-muted-foreground ml-2"
+            [hlmTooltip]="t('cragRulesTitleTooltip')"
+            position="right"
+          >
+            <ng-icon name="lucideCircleQuestionMark" />
+          </button>
         </div>
         <input
           id="rulesTitle"
@@ -114,8 +120,14 @@
       <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
         <label class="form-label" for="blocweatherUrl"
           >{{ t("blocweatherUrlLabel") }}
-          <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('blocweatherTooltip')" position="right"
-          ><ng-icon name="lucideCircleQuestionMark" /></button>
+          <button
+            type="button"
+            class="inline-flex text-muted-foreground ml-2"
+            [hlmTooltip]="t('blocweatherTooltip')"
+            position="right"
+          >
+            <ng-icon name="lucideCircleQuestionMark" />
+          </button>
         </label>
         <input
           id="blocweatherUrl"
@@ -174,16 +186,66 @@
 
     <div class="form-actions">
       @if (!editMode) {
-        <button hlmBtn type="button" class="responsive-button" (click)="saveCrag()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('createCragButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
+          (click)="saveCrag()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          data-cy="submit"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideSave" />
+          }
+          {{ t("createCragButtonLabel") }}
+        </button>
       }
       @if (editMode) {
-        <button hlmBtn type="button" class="responsive-button" (click)="saveCrag()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('editCragButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
+          (click)="saveCrag()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          data-cy="submit"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideSave" />
+          }
+          {{ t("editCragButtonLabel") }}
+        </button>
       }
-      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="responsive-button"
+        (click)="cancel()"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
       @if (editMode && crag?.slug !== environment.skippedSlug) {
-        <button hlmBtn type="button" variant="destructive" class="responsive-button" (click)="confirmDeleteCrag($event)" [disabled]="loadingState === loadingStates.LOADING" data-cy="delete">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideTrash2" /> } {{ t('deleteCragButtonLabel') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          class="responsive-button"
+          (click)="confirmDeleteCrag($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          data-cy="delete"
+        >
+          @if (loadingState === loadingStates.LOADING) {
+            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideTrash2" />
+          }
+          {{ t("deleteCragButtonLabel") }}
+        </button>
       }
-      
     </div>
   </div>
 </ng-container>

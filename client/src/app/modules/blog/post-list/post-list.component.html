@@ -1,69 +1,100 @@
 <ng-container *transloco="let t; read: 'posts.postList'">
   <div class="content">
-    <div class="flex flex-row items-center justify-between border-b border-surface px-6 py-4">
-          <hlm-select [(ngModel)]="sortKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortChange({ value: $event })"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
-          <div class="lc-button-group justify-end">
-            <a hlmBtn class="responsive-button" routerLink="/news/create-post" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucidePlus" /> {{ t('newPostButtonLabel') }}</a>
-          </div>
-        </div>
-@if (!(posts?.length) && loading !== loadingStates.LOADING) {
-<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          t("noPostsFoundEmptyMessage")
-        }}</p></div>
-}
-@if (loading === loadingStates.LOADING) {
-          <lc-post-list-skeleton></lc-post-list-skeleton>
-        }
-        @if (loading !== loadingStates.LOADING) {
-          <div class="grid grid-cols-12">
-            @for (post of sortClientList(posts); track post; let first = $first) {
-              <div class="col-span-12">
-                <div
-                  class="flex flex-col xl:items-start p-6 gap-2"
-                  [ngClass]="{ 'border-t border-surface': !first }"
-                >
-                  <div
-                    class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
+    <div
+      class="flex flex-row items-center justify-between border-b border-surface px-6 py-4"
+    >
+      <hlm-select
+        [(ngModel)]="sortKey"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onSortChange({ value: $event })"
+        ><hlm-select-trigger class="w-full md:mb-0"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of sortOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <div class="lc-button-group justify-end">
+        <a
+          hlmBtn
+          class="responsive-button"
+          routerLink="/news/create-post"
+          [disabled]="loading === loadingStates.LOADING"
+          *isModerator="true"
+          ><ng-icon name="lucidePlus" /> {{ t("newPostButtonLabel") }}</a
+        >
+      </div>
+    </div>
+    @if (!posts?.length && loading !== loadingStates.LOADING) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noPostsFoundEmptyMessage") }}</p>
+      </div>
+    }
+    @if (loading === loadingStates.LOADING) {
+      <lc-post-list-skeleton></lc-post-list-skeleton>
+    }
+    @if (loading !== loadingStates.LOADING) {
+      <div class="grid grid-cols-12">
+        @for (post of sortClientList(posts); track post; let first = $first) {
+          <div class="col-span-12">
+            <div
+              class="flex flex-col xl:items-start p-6 gap-2"
+              [ngClass]="{ 'border-t border-surface': !first }"
+            >
+              <div
+                class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex w-full"
+              >
+                <div class="grow flex items-center">
+                  <a
+                    class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
+                    [routerLink]="['/news', post.slug]"
+                    >{{ post.title }}</a
                   >
-                    <div class="grow flex items-center">
-                      <a
-                        class="text-surface-900 dark:text-surface-0 no-underline hover:underline cursor-pointer"
-                        [routerLink]="['/news', post.slug]"
-                        >{{ post.title }}</a
-                      >
-                    </div>
-                    <div class="lc-button-group grow-0">
-                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/news/{{ post.slug }}/edit" *isModerator="true"><ng-icon name="lucideFilePen" /> {{ t('editPostButtonLabel') }}</a>
-                    </div>
-                  </div>
-                  <div class="text-xs mb-2">
-                    {{ t("byUser") }}
-                    @if (post.createdBy) {
-                      <a
-                        class="text-primary no-underline hover:underline"
-                        [routerLink]="post.createdBy.routerLink"
-                        >{{ post.createdBy.fullname }}</a
-                      >
-                    } @else {
-                      {{ t("deletedUser") }}
-                    }
-                    {{ t("atDate", { date: post.timeCreated | date }) }}
-                    <span
-                      class="text-surface-500 dark:text-surface-300 hidden sm:inline"
-                      >·</span
-                    >
-                    <span class="text-surface-600 dark:text-surface-200">{{
-                      t("totalComments", { count: post.commentCount })
-                    }}</span>
-                  </div>
-                  <div
-                    [innerHTML]="post.text | sanitizeHtml"
-                    class="wysiwyg-content"
-                  ></div>
+                </div>
+                <div class="lc-button-group grow-0">
+                  <a
+                    hlmBtn
+                    variant="ghost"
+                    class="pr-0 responsive-button"
+                    routerLink="/news/{{ post.slug }}/edit"
+                    *isModerator="true"
+                    ><ng-icon name="lucideFilePen" />
+                    {{ t("editPostButtonLabel") }}</a
+                  >
                 </div>
               </div>
-            }
+              <div class="text-xs mb-2">
+                {{ t("byUser") }}
+                @if (post.createdBy) {
+                  <a
+                    class="text-primary no-underline hover:underline"
+                    [routerLink]="post.createdBy.routerLink"
+                    >{{ post.createdBy.fullname }}</a
+                  >
+                } @else {
+                  {{ t("deletedUser") }}
+                }
+                {{ t("atDate", { date: post.timeCreated | date }) }}
+                <span
+                  class="text-surface-500 dark:text-surface-300 hidden sm:inline"
+                  >·</span
+                >
+                <span class="text-surface-600 dark:text-surface-200">{{
+                  t("totalComments", { count: post.commentCount })
+                }}</span>
+              </div>
+              <div
+                [innerHTML]="post.text | sanitizeHtml"
+                class="wysiwyg-content"
+              ></div>
+            </div>
           </div>
         }
+      </div>
+    }
   </div>
 </ng-container>

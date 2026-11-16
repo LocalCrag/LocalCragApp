@@ -1,443 +1,605 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
-  <div class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4">
-        <div
-          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
-        >
-          {{ t("orderByLabel") }}
-          <div class="flex flex-wrap items-center gap-2">
-            <hlm-select [(ngModel)]="orderKey" [disabled]="
-                loading === loadingStates.LOADING && currentPage === 1
-              " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
+  <div
+    class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4"
+  >
+    <div class="gap-2 flex items-start sm:items-center flex-col sm:flex-row">
+      {{ t("orderByLabel") }}
+      <div class="flex flex-wrap items-center gap-2">
+        <hlm-select
+          [(ngModel)]="orderKey"
+          [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+          (ngModelChange)="loadFirstPage()"
+          ><hlm-select-trigger class="w-full md:mb-0"
+            ><hlm-select-value /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of orderOptions; track $index) {
+              <hlm-select-item [value]="option"
+                ><div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
-                </div></hlm-select-item>}</hlm-select-content></hlm-select>
-            <hlm-select [(ngModel)]="orderDirectionKey" [disabled]="
-                loading === loadingStates.LOADING && currentPage === 1
-              " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderDirectionOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div></hlm-select-item>}</hlm-select-content></hlm-select>
-          </div>
-        </div>
-
-        <div
-          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
-        >
-          @if (availableScales.length > 2) {
-            <div class="flex flex-wrap items-center gap-2">
-              {{ t("lineType") }}
-              <hlm-select [(ngModel)]="scaleKey" [disabled]="
-                  loading === loadingStates.LOADING && currentPage === 1
-                " (ngModelChange)="selectScale()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of availableScales; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
-                    <div>{{ option.label }}</div>
-                  </div></hlm-select-item>}</hlm-select-content></hlm-select>
-            </div>
-          }
-        </div>
-
-        <div
-          class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
-        >
-          {{ t("filterLabel") }}
-          <div class="flex flex-wrap gap-2 items-center">
-            <button hlmToggle variant="outline" type="button" data-cy="filterFlash" [state]="filterFlash ? 'on' : 'off'" (stateChange)="filterFlash = $event === 'on'">{{ t('flash') }}</button>
-            <button hlmToggle variant="outline" type="button" data-cy="filterWithKneepad" [state]="filterWithKneepad ? 'on' : 'off'" (stateChange)="filterWithKneepad = $event === 'on'">{{ t('withKneepad') }}</button>
-            <button hlmToggle variant="outline" type="button" data-cy="filterFa" [state]="filterFa ? 'on' : 'off'" (stateChange)="filterFa = $event === 'on'">{{ t('fa') }}</button>
-          </div>
-        </div>
-
-        @if (
-          !disableGradeOrderAndFiltering &&
-          scaleKey?.value &&
-          maxGradeValue !== null
-        ) {
-          <lc-grade-range-slider
-            class="mt-1"
-            [(range)]="gradeFilterRange"
-            [min]="minGradeValue"
-            [max]="maxGradeValue"
-            [lineType]="scaleKey.value.lineType"
-            [gradeScale]="scaleKey.value.gradeScale"
-            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
-            (slideEnd)="reloadOnSlideEnd()"
-          />
-        }
-      </div>
-@if (!(ascents?.length)) {
-@if (
-        ascents?.length === 0 &&
-        !(loading === loadingStates.LOADING && currentPage === 1)
-      ) {
-        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noAscentsFoundMessage") }}</p></div>
-      }
-}
-@if (
-        (loading === loadingStates.LOADING && currentPage === 1) ||
-        ascents === undefined
-      ) {
-        <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
-      }
-      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        <div class="grid grid-cols-12">
-          @for (ascent of ascents; track ascent; let first = $first) {
-            <div class="col-span-12" data-cy="ascent-list-item">
-              <lc-social-interaction-wrapper
-                [reactions]="ascent.reactions"
-                [targetType]="'ascent'"
-                [targetId]="ascent.id"
-                [createdById]="$safeNavigationMigration(ascent.createdBy?.id)"
-                [commentTarget]="ascent"
-                [commentCount]="ascent.commentCount"
-                (reactionsChange)="ascent.reactions = $event"
-                (commentClick)="openAscentComments(ascent)"
+                </div></hlm-select-item
               >
-                <div
-                  class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ascent-table-container"
-                  [ngClass]="{ 'border-t border-surface': !first }"
+            }
+          </hlm-select-content></hlm-select
+        >
+        <hlm-select
+          [(ngModel)]="orderDirectionKey"
+          [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+          (ngModelChange)="loadFirstPage()"
+          ><hlm-select-trigger class="w-full md:mb-0"
+            ><hlm-select-value /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of orderDirectionOptions; track $index) {
+              <hlm-select-item [value]="option"
+                ><div class="flex items-center gap-2">
+                  <div>{{ option.label }}</div>
+                </div></hlm-select-item
+              >
+            }
+          </hlm-select-content></hlm-select
+        >
+      </div>
+    </div>
+
+    <div class="gap-2 flex items-start sm:items-center flex-col sm:flex-row">
+      @if (availableScales.length > 2) {
+        <div class="flex flex-wrap items-center gap-2">
+          {{ t("lineType") }}
+          <hlm-select
+            [(ngModel)]="scaleKey"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+            (ngModelChange)="selectScale()"
+            ><hlm-select-trigger class="w-full md:mb-0"
+              ><hlm-select-value /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of availableScales; track $index) {
+                <hlm-select-item [value]="option"
+                  ><div class="flex items-center gap-2">
+                    <div>{{ option.label }}</div>
+                  </div></hlm-select-item
                 >
-                  <!-- DISPLAY FOR LARGE SCREENS -->
-                  <div class="ascent-table-row-large">
-                    @if (!user) {
-                      <div class="ascent-table-user-info">
-                        <lc-user-avatar
-                          [user]="ascent.createdBy"
-                          styleClass="mr-2"
-                          size="large"
-                        />
-                        <a
-                          class="username"
-                          routerLink="{{ ascent.routerLinkCreatedBy }}"
-                          >{{ ascent.createdBy.firstname }}
-                          {{ ascent.createdBy.lastname }}</a
-                        >
-                      </div>
+              }
+            </hlm-select-content></hlm-select
+          >
+        </div>
+      }
+    </div>
+
+    <div class="gap-2 flex items-start sm:items-center flex-col sm:flex-row">
+      {{ t("filterLabel") }}
+      <div class="flex flex-wrap gap-2 items-center">
+        <button
+          hlmToggle
+          variant="outline"
+          type="button"
+          data-cy="filterFlash"
+          [state]="filterFlash ? 'on' : 'off'"
+          (stateChange)="filterFlash = $event === 'on'"
+        >
+          {{ t("flash") }}
+        </button>
+        <button
+          hlmToggle
+          variant="outline"
+          type="button"
+          data-cy="filterWithKneepad"
+          [state]="filterWithKneepad ? 'on' : 'off'"
+          (stateChange)="filterWithKneepad = $event === 'on'"
+        >
+          {{ t("withKneepad") }}
+        </button>
+        <button
+          hlmToggle
+          variant="outline"
+          type="button"
+          data-cy="filterFa"
+          [state]="filterFa ? 'on' : 'off'"
+          (stateChange)="filterFa = $event === 'on'"
+        >
+          {{ t("fa") }}
+        </button>
+      </div>
+    </div>
+
+    @if (
+      !disableGradeOrderAndFiltering &&
+      scaleKey?.value &&
+      maxGradeValue !== null
+    ) {
+      <lc-grade-range-slider
+        class="mt-1"
+        [(range)]="gradeFilterRange"
+        [min]="minGradeValue"
+        [max]="maxGradeValue"
+        [lineType]="scaleKey.value.lineType"
+        [gradeScale]="scaleKey.value.gradeScale"
+        [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+        (slideEnd)="reloadOnSlideEnd()"
+      />
+    }
+  </div>
+  @if (!ascents?.length) {
+    @if (
+      ascents?.length === 0 &&
+      !(loading === loadingStates.LOADING && currentPage === 1)
+    ) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noAscentsFoundMessage") }}</p>
+      </div>
+    }
+  }
+  @if (
+    (loading === loadingStates.LOADING && currentPage === 1) ||
+    ascents === undefined
+  ) {
+    <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
+  }
+  @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+    <div class="grid grid-cols-12">
+      @for (ascent of ascents; track ascent; let first = $first) {
+        <div class="col-span-12" data-cy="ascent-list-item">
+          <lc-social-interaction-wrapper
+            [reactions]="ascent.reactions"
+            [targetType]="'ascent'"
+            [targetId]="ascent.id"
+            [createdById]="$safeNavigationMigration(ascent.createdBy?.id)"
+            [commentTarget]="ascent"
+            [commentCount]="ascent.commentCount"
+            (reactionsChange)="ascent.reactions = $event"
+            (commentClick)="openAscentComments(ascent)"
+          >
+            <div
+              class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ascent-table-container"
+              [ngClass]="{ 'border-t border-surface': !first }"
+            >
+              <!-- DISPLAY FOR LARGE SCREENS -->
+              <div class="ascent-table-row-large">
+                @if (!user) {
+                  <div class="ascent-table-user-info">
+                    <lc-user-avatar
+                      [user]="ascent.createdBy"
+                      styleClass="mr-2"
+                      size="large"
+                    />
+                    <a
+                      class="username"
+                      routerLink="{{ ascent.routerLinkCreatedBy }}"
+                      >{{ ascent.createdBy.firstname }}
+                      {{ ascent.createdBy.lastname }}</a
+                    >
+                  </div>
+                }
+                <div class="ascent-table-line-info">
+                  <div class="ascent-table-line-name">
+                    <a routerLink="{{ ascent.routerLinkLine }}">{{
+                      ascent.line.name
+                    }}</a>
+                    <div class="grade">
+                      {{ ascent.line | lineGrade }}
+                    </div>
+                  </div>
+                  <div class="ascent-table-line-location mt-1">
+                    <lc-topo-hierarchy-breadcrumbs
+                      [crag]="ascent.crag"
+                      [sector]="ascent.sector"
+                      [area]="ascent.area"
+                    ></lc-topo-hierarchy-breadcrumbs>
+                  </div>
+                </div>
+                <div class="ascent-table-comment">
+                  {{ ascent.comment }}
+                </div>
+                <div class="ascent-table-rating">
+                  <span class="inline-flex text-primary"
+                    ><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 1" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 2" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 3" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 4" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 5"
+                  /></span>
+                </div>
+                <div class="ascent-table-grade">
+                  <div class="grade">
+                    @if (ascent | upgrade) {
+                      <ng-icon name="lucideChevronsUp" />
                     }
-                    <div class="ascent-table-line-info">
-                      <div class="ascent-table-line-name">
-                        <a routerLink="{{ ascent.routerLinkLine }}">{{
-                          ascent.line.name
-                        }}</a>
-                        <div class="grade">
-                          {{ ascent.line | lineGrade }}
-                        </div>
-                      </div>
-                      <div class="ascent-table-line-location mt-1">
-                        <lc-topo-hierarchy-breadcrumbs
-                          [crag]="ascent.crag"
-                          [sector]="ascent.sector"
-                          [area]="ascent.area"
-                        ></lc-topo-hierarchy-breadcrumbs>
-                      </div>
-                    </div>
-                    <div class="ascent-table-comment">
-                      {{ ascent.comment }}
-                    </div>
-                    <div class="ascent-table-rating">
-                      <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
-                    </div>
-                    <div class="ascent-table-grade">
-                      <div class="grade">
-                        @if (ascent | upgrade) {
-                          <ng-icon name="lucideChevronsUp" />
-                        }
-                        @if (ascent | consensusGrade) {
-                          <ng-icon name="lucideCheck" />
-                        }
-                        @if (ascent | downgrade) {
-                          <ng-icon name="lucideChevronsDown" />
-                        }
-                        <div class="ml-1 grade-name">
-                          {{
-                            scalesService.gradeNameByValue(
-                              ascent.line.type,
-                              ascent.line.gradeScale,
-                              ascent.gradeValue
-                            )
-                              | async
-                              | translateSpecialGrades
-                          }}
-                          @if (ascent.soft) {
-                            <span>&nbsp;({{ t("soft") }})</span>
-                          }
-                          @if (ascent.hard) {
-                            <span>&nbsp;({{ t("hard") }})</span>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    <div class="ascent-table-properties">
-                      @if (ascent.fa) {
-                        <span hlmBadge>{{ t('fa') }}</span>
+                    @if (ascent | consensusGrade) {
+                      <ng-icon name="lucideCheck" />
+                    }
+                    @if (ascent | downgrade) {
+                      <ng-icon name="lucideChevronsDown" />
+                    }
+                    <div class="ml-1 grade-name">
+                      {{
+                        scalesService.gradeNameByValue(
+                          ascent.line.type,
+                          ascent.line.gradeScale,
+                          ascent.gradeValue
+                        )
+                          | async
+                          | translateSpecialGrades
+                      }}
+                      @if (ascent.soft) {
+                        <span>&nbsp;({{ t("soft") }})</span>
                       }
-                      @if (ascent.flash) {
-                        <span hlmBadge>{{ t('flash') }}</span>
+                      @if (ascent.hard) {
+                        <span>&nbsp;({{ t("hard") }})</span>
                       }
-                      @if (ascent.withKneepad) {
-                        <span hlmBadge>{{ t('withKneepad') }}</span>
-                      }
-                      @if (ascent.video) {
-                        <lc-ascent-video-marks
-                          [ascent]="ascent"
-                        ></lc-ascent-video-marks>
-                      }
-                    </div>
-                    <div class="ascent-table-date" data-cy="ascent-date">
-                      <ng-icon name="lucideCalendar" />
-                      @if (ascent.date) {
-                        {{ ascent.date | date }}
-                      } @else if (ascent.year) {
-                        {{ ascent.year }}
-                      }
-                    </div>
-                    <div class="ascent-actions">
-                      @if (canShowAscentActions(ascent)) {
-                        <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
-                      }
-                    </div>
-                  </div>
-                  <!-- DISPLAY FOR MEDIUM SCREENS -->
-                  <div class="ascent-table-row-medium">
-                    <div class="ascent-table-user-and-name-info">
-                      @if (!user) {
-                        <lc-user-avatar
-                          [user]="ascent.createdBy"
-                          styleClass="mr-2"
-                          size="large"
-                        />
-                      }
-                      <div class="name-with-line">
-                        @if (!user) {
-                          <a
-                            class="username"
-                            routerLink="{{ ascent.routerLinkCreatedBy }}"
-                            >{{ ascent.createdBy.firstname }}
-                            {{ ascent.createdBy.lastname }}</a
-                          >
-                        }
-                        <div class="ascent-table-line-name">
-                          <a routerLink="{{ ascent.routerLinkLine }}">{{
-                            ascent.line.name
-                          }}</a>
-                          <div class="grade">
-                            {{ ascent.line | lineGrade }}
-                          </div>
-                        </div>
-                        <div class="ascent-table-line-location mt-1">
-                          <lc-topo-hierarchy-breadcrumbs
-                            [crag]="ascent.crag"
-                            [sector]="ascent.sector"
-                            [area]="ascent.area"
-                          ></lc-topo-hierarchy-breadcrumbs>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="ascent-table-comment">
-                      {{ ascent.comment }}
-                    </div>
-                    <div class="ascent-table-rating">
-                      <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
-                    </div>
-                    <div class="ascent-table-grade">
-                      <div class="grade">
-                        @if (ascent | upgrade) {
-                          <ng-icon name="lucideChevronsUp" />
-                        }
-                        @if (ascent | consensusGrade) {
-                          <ng-icon name="lucideCheck" />
-                        }
-                        @if (ascent | downgrade) {
-                          <ng-icon name="lucideChevronsDown" />
-                        }
-                        <div class="ml-1 grade-name">
-                          {{
-                            scalesService.gradeNameByValue(
-                              ascent.line.type,
-                              ascent.line.gradeScale,
-                              ascent.gradeValue
-                            )
-                              | async
-                              | translateSpecialGrades
-                          }}
-                          @if (ascent.soft) {
-                            <span>&nbsp;({{ t("soft") }})</span>
-                          }
-                          @if (ascent.hard) {
-                            <span>&nbsp;({{ t("hard") }})</span>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    <div class="ascent-table-properties">
-                      @if (ascent.fa) {
-                        <span hlmBadge>{{ t('fa') }}</span>
-                      }
-                      @if (ascent.flash) {
-                        <span hlmBadge>{{ t('flash') }}</span>
-                      }
-                      @if (ascent.withKneepad) {
-                        <span hlmBadge>{{ t('withKneepad') }}</span>
-                      }
-                      @if (ascent.video) {
-                        <lc-ascent-video-marks
-                          [ascent]="ascent"
-                        ></lc-ascent-video-marks>
-                      }
-                    </div>
-                    <div class="ascent-table-date" data-cy="ascent-date">
-                      <ng-icon name="lucideCalendar" />
-                      @if (ascent.date) {
-                        {{ ascent.date | date }}
-                      } @else if (ascent.year) {
-                        {{ ascent.year }}
-                      }
-                    </div>
-                    <div class="ascent-actions">
-                      @if (canShowAscentActions(ascent)) {
-                        <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
-                      }
-                    </div>
-                  </div>
-                  <!-- DISPLAY FOR SMALL SCREENS -->
-                  <div class="ascent-table-row-small">
-                    <div class="ascent-table-user-and-name-info">
-                      @if (!user) {
-                        <lc-user-avatar
-                          [user]="ascent.createdBy"
-                          styleClass="mr-6"
-                          size="large"
-                        />
-                      }
-                      <div class="name-with-line">
-                        @if (!user) {
-                          <a
-                            class="username"
-                            routerLink="{{ ascent.routerLinkCreatedBy }}"
-                            >{{ ascent.createdBy.firstname }}
-                            {{ ascent.createdBy.lastname }}</a
-                          >
-                        }
-                        <div class="ascent-table-line-name">
-                          <a routerLink="{{ ascent.routerLinkLine }}">{{
-                            ascent.line.name
-                          }}</a>
-                          <div class="grade">
-                            {{ ascent.line | lineGrade }}
-                          </div>
-                        </div>
-                        <div class="ascent-table-line-location mt-1">
-                          <lc-topo-hierarchy-breadcrumbs
-                            [crag]="ascent.crag"
-                            [sector]="ascent.sector"
-                            [area]="ascent.area"
-                          ></lc-topo-hierarchy-breadcrumbs>
-                        </div>
-                      </div>
-                      <div class="ascent-actions">
-                        @if (canShowAscentActions(ascent)) {
-                          <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
-                        }
-                      </div>
-                    </div>
-                    <div class="ascent-table-comment">
-                      {{ ascent.comment }}
-                    </div>
-                    <div class="property-row-very-small">
-                      @if (ascent.fa) {
-                        <span hlmBadge>{{ t('fa') }}</span>
-                      }
-                      @if (ascent.flash) {
-                        <span hlmBadge>{{ t('flash') }}</span>
-                      }
-                      @if (ascent.withKneepad) {
-                        <span hlmBadge>{{ t('withKneepad') }}</span>
-                      }
-                      @if (ascent.video) {
-                        <lc-ascent-video-marks
-                          [ascent]="ascent"
-                        ></lc-ascent-video-marks>
-                      }
-                    </div>
-                    <div class="ascent-table-bottom-row">
-                      <div class="ascent-table-properties">
-                        <div class="grade">
-                          @if (ascent | upgrade) {
-                            <ng-icon name="lucideChevronsUp" />
-                          }
-                          @if (ascent | consensusGrade) {
-                            <ng-icon name="lucideCheck" />
-                          }
-                          @if (ascent | downgrade) {
-                            <ng-icon name="lucideChevronsDown" />
-                          }
-                          <div class="ml-1 grade-name">
-                            {{
-                              scalesService.gradeNameByValue(
-                                ascent.line.type,
-                                ascent.line.gradeScale,
-                                ascent.gradeValue
-                              )
-                                | async
-                                | translateSpecialGrades
-                            }}
-                            @if (ascent.soft) {
-                              <span>&nbsp;({{ t("soft") }})</span>
-                            }
-                            @if (ascent.hard) {
-                              <span>&nbsp;({{ t("hard") }})</span>
-                            }
-                          </div>
-                        </div>
-                        @if (ascent.fa) {
-                          <span hlmBadge class="property-small">{{ t('fa') }}</span>
-                        }
-                        @if (ascent.flash) {
-                          <span hlmBadge class="property-small">{{ t('flash') }}</span>
-                        }
-                        @if (ascent.withKneepad) {
-                          <span hlmBadge class="property-small">{{ t('withKneepad') }}</span>
-                        }
-                        @if (ascent.video) {
-                          <lc-ascent-video-marks
-                            class="property-small"
-                            [ascent]="ascent"
-                          ></lc-ascent-video-marks>
-                        }
-                      </div>
-                      <div class="ascent-table-rating">
-                        <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
-                      </div>
-                      <div class="ascent-table-date" data-cy="ascent-date">
-                        <ng-icon name="lucideCalendar" />
-                        @if (ascent.date) {
-                          {{ ascent.date | date }}
-                        } @else if (ascent.year) {
-                          {{ ascent.year }}
-                        }
-                      </div>
                     </div>
                   </div>
                 </div>
-              </lc-social-interaction-wrapper>
+                <div class="ascent-table-properties">
+                  @if (ascent.fa) {
+                    <span hlmBadge>{{ t("fa") }}</span>
+                  }
+                  @if (ascent.flash) {
+                    <span hlmBadge>{{ t("flash") }}</span>
+                  }
+                  @if (ascent.withKneepad) {
+                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                  }
+                  @if (ascent.video) {
+                    <lc-ascent-video-marks
+                      [ascent]="ascent"
+                    ></lc-ascent-video-marks>
+                  }
+                </div>
+                <div class="ascent-table-date" data-cy="ascent-date">
+                  <ng-icon name="lucideCalendar" />
+                  @if (ascent.date) {
+                    {{ ascent.date | date }}
+                  } @else if (ascent.year) {
+                    {{ ascent.year }}
+                  }
+                </div>
+                <div class="ascent-actions">
+                  @if (canShowAscentActions(ascent)) {
+                    <button
+                      hlmBtn
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      data-cy="ascent-actions-button"
+                      [hlmDropdownMenuTrigger]="ascentMenu"
+                      (click)="openAscentActionsMenu($event, ascent)"
+                    >
+                      <ng-icon name="lucideEllipsisVertical" />
+                    </button>
+                  }
+                </div>
+              </div>
+              <!-- DISPLAY FOR MEDIUM SCREENS -->
+              <div class="ascent-table-row-medium">
+                <div class="ascent-table-user-and-name-info">
+                  @if (!user) {
+                    <lc-user-avatar
+                      [user]="ascent.createdBy"
+                      styleClass="mr-2"
+                      size="large"
+                    />
+                  }
+                  <div class="name-with-line">
+                    @if (!user) {
+                      <a
+                        class="username"
+                        routerLink="{{ ascent.routerLinkCreatedBy }}"
+                        >{{ ascent.createdBy.firstname }}
+                        {{ ascent.createdBy.lastname }}</a
+                      >
+                    }
+                    <div class="ascent-table-line-name">
+                      <a routerLink="{{ ascent.routerLinkLine }}">{{
+                        ascent.line.name
+                      }}</a>
+                      <div class="grade">
+                        {{ ascent.line | lineGrade }}
+                      </div>
+                    </div>
+                    <div class="ascent-table-line-location mt-1">
+                      <lc-topo-hierarchy-breadcrumbs
+                        [crag]="ascent.crag"
+                        [sector]="ascent.sector"
+                        [area]="ascent.area"
+                      ></lc-topo-hierarchy-breadcrumbs>
+                    </div>
+                  </div>
+                </div>
+                <div class="ascent-table-comment">
+                  {{ ascent.comment }}
+                </div>
+                <div class="ascent-table-rating">
+                  <span class="inline-flex text-primary"
+                    ><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 1" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 2" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 3" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 4" /><ng-icon
+                      name="lucideStar"
+                      class="[&_svg]:fill-current"
+                      [class.opacity-30]="(ascent.rating ?? 0) < 5"
+                  /></span>
+                </div>
+                <div class="ascent-table-grade">
+                  <div class="grade">
+                    @if (ascent | upgrade) {
+                      <ng-icon name="lucideChevronsUp" />
+                    }
+                    @if (ascent | consensusGrade) {
+                      <ng-icon name="lucideCheck" />
+                    }
+                    @if (ascent | downgrade) {
+                      <ng-icon name="lucideChevronsDown" />
+                    }
+                    <div class="ml-1 grade-name">
+                      {{
+                        scalesService.gradeNameByValue(
+                          ascent.line.type,
+                          ascent.line.gradeScale,
+                          ascent.gradeValue
+                        )
+                          | async
+                          | translateSpecialGrades
+                      }}
+                      @if (ascent.soft) {
+                        <span>&nbsp;({{ t("soft") }})</span>
+                      }
+                      @if (ascent.hard) {
+                        <span>&nbsp;({{ t("hard") }})</span>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div class="ascent-table-properties">
+                  @if (ascent.fa) {
+                    <span hlmBadge>{{ t("fa") }}</span>
+                  }
+                  @if (ascent.flash) {
+                    <span hlmBadge>{{ t("flash") }}</span>
+                  }
+                  @if (ascent.withKneepad) {
+                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                  }
+                  @if (ascent.video) {
+                    <lc-ascent-video-marks
+                      [ascent]="ascent"
+                    ></lc-ascent-video-marks>
+                  }
+                </div>
+                <div class="ascent-table-date" data-cy="ascent-date">
+                  <ng-icon name="lucideCalendar" />
+                  @if (ascent.date) {
+                    {{ ascent.date | date }}
+                  } @else if (ascent.year) {
+                    {{ ascent.year }}
+                  }
+                </div>
+                <div class="ascent-actions">
+                  @if (canShowAscentActions(ascent)) {
+                    <button
+                      hlmBtn
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      data-cy="ascent-actions-button"
+                      [hlmDropdownMenuTrigger]="ascentMenu"
+                      (click)="openAscentActionsMenu($event, ascent)"
+                    >
+                      <ng-icon name="lucideEllipsisVertical" />
+                    </button>
+                  }
+                </div>
+              </div>
+              <!-- DISPLAY FOR SMALL SCREENS -->
+              <div class="ascent-table-row-small">
+                <div class="ascent-table-user-and-name-info">
+                  @if (!user) {
+                    <lc-user-avatar
+                      [user]="ascent.createdBy"
+                      styleClass="mr-6"
+                      size="large"
+                    />
+                  }
+                  <div class="name-with-line">
+                    @if (!user) {
+                      <a
+                        class="username"
+                        routerLink="{{ ascent.routerLinkCreatedBy }}"
+                        >{{ ascent.createdBy.firstname }}
+                        {{ ascent.createdBy.lastname }}</a
+                      >
+                    }
+                    <div class="ascent-table-line-name">
+                      <a routerLink="{{ ascent.routerLinkLine }}">{{
+                        ascent.line.name
+                      }}</a>
+                      <div class="grade">
+                        {{ ascent.line | lineGrade }}
+                      </div>
+                    </div>
+                    <div class="ascent-table-line-location mt-1">
+                      <lc-topo-hierarchy-breadcrumbs
+                        [crag]="ascent.crag"
+                        [sector]="ascent.sector"
+                        [area]="ascent.area"
+                      ></lc-topo-hierarchy-breadcrumbs>
+                    </div>
+                  </div>
+                  <div class="ascent-actions">
+                    @if (canShowAscentActions(ascent)) {
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        data-cy="ascent-actions-button"
+                        [hlmDropdownMenuTrigger]="ascentMenu"
+                        (click)="openAscentActionsMenu($event, ascent)"
+                      >
+                        <ng-icon name="lucideEllipsisVertical" />
+                      </button>
+                    }
+                  </div>
+                </div>
+                <div class="ascent-table-comment">
+                  {{ ascent.comment }}
+                </div>
+                <div class="property-row-very-small">
+                  @if (ascent.fa) {
+                    <span hlmBadge>{{ t("fa") }}</span>
+                  }
+                  @if (ascent.flash) {
+                    <span hlmBadge>{{ t("flash") }}</span>
+                  }
+                  @if (ascent.withKneepad) {
+                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                  }
+                  @if (ascent.video) {
+                    <lc-ascent-video-marks
+                      [ascent]="ascent"
+                    ></lc-ascent-video-marks>
+                  }
+                </div>
+                <div class="ascent-table-bottom-row">
+                  <div class="ascent-table-properties">
+                    <div class="grade">
+                      @if (ascent | upgrade) {
+                        <ng-icon name="lucideChevronsUp" />
+                      }
+                      @if (ascent | consensusGrade) {
+                        <ng-icon name="lucideCheck" />
+                      }
+                      @if (ascent | downgrade) {
+                        <ng-icon name="lucideChevronsDown" />
+                      }
+                      <div class="ml-1 grade-name">
+                        {{
+                          scalesService.gradeNameByValue(
+                            ascent.line.type,
+                            ascent.line.gradeScale,
+                            ascent.gradeValue
+                          )
+                            | async
+                            | translateSpecialGrades
+                        }}
+                        @if (ascent.soft) {
+                          <span>&nbsp;({{ t("soft") }})</span>
+                        }
+                        @if (ascent.hard) {
+                          <span>&nbsp;({{ t("hard") }})</span>
+                        }
+                      </div>
+                    </div>
+                    @if (ascent.fa) {
+                      <span hlmBadge class="property-small">{{ t("fa") }}</span>
+                    }
+                    @if (ascent.flash) {
+                      <span hlmBadge class="property-small">{{
+                        t("flash")
+                      }}</span>
+                    }
+                    @if (ascent.withKneepad) {
+                      <span hlmBadge class="property-small">{{
+                        t("withKneepad")
+                      }}</span>
+                    }
+                    @if (ascent.video) {
+                      <lc-ascent-video-marks
+                        class="property-small"
+                        [ascent]="ascent"
+                      ></lc-ascent-video-marks>
+                    }
+                  </div>
+                  <div class="ascent-table-rating">
+                    <span class="inline-flex text-primary"
+                      ><ng-icon
+                        name="lucideStar"
+                        class="[&_svg]:fill-current"
+                        [class.opacity-30]="(ascent.rating ?? 0) < 1" /><ng-icon
+                        name="lucideStar"
+                        class="[&_svg]:fill-current"
+                        [class.opacity-30]="(ascent.rating ?? 0) < 2" /><ng-icon
+                        name="lucideStar"
+                        class="[&_svg]:fill-current"
+                        [class.opacity-30]="(ascent.rating ?? 0) < 3" /><ng-icon
+                        name="lucideStar"
+                        class="[&_svg]:fill-current"
+                        [class.opacity-30]="(ascent.rating ?? 0) < 4" /><ng-icon
+                        name="lucideStar"
+                        class="[&_svg]:fill-current"
+                        [class.opacity-30]="(ascent.rating ?? 0) < 5"
+                    /></span>
+                  </div>
+                  <div class="ascent-table-date" data-cy="ascent-date">
+                    <ng-icon name="lucideCalendar" />
+                    @if (ascent.date) {
+                      {{ ascent.date | date }}
+                    } @else if (ascent.year) {
+                      {{ ascent.year }}
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-          }
+          </lc-social-interaction-wrapper>
         </div>
       }
-
-  @if (hasNextPage) {
-    <div class="flex justify-center mt-20">
-      <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <hlm-spinner /> } {{ t('loadMore') }}</button>
     </div>
   }
 
-  
-<ng-template #ascentMenu>
-  <div hlmDropdownMenu>
-    @for (item of ascentActionItems; track item.label) {
-      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
-        @if (menuIcon(item.icon); as name) {
-          <ng-icon [name]="name" />
+  @if (hasNextPage) {
+    <div class="flex justify-center mt-20">
+      <button
+        hlmBtn
+        type="button"
+        [disabled]="loading === loadingStates.LOADING"
+        (scrolled)="loadNextPage()"
+        (click)="loadNextPage()"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+      >
+        @if (loading === loadingStates.LOADING) {
+          <hlm-spinner />
         }
-        {{ item.label }}
+        {{ t("loadMore") }}
       </button>
-    }
-  </div>
-</ng-template>
+    </div>
+  }
+
+  <ng-template #ascentMenu>
+    <div hlmDropdownMenu>
+      @for (item of ascentActionItems; track item.label) {
+        <button
+          hlmDropdownMenuItem
+          type="button"
+          [disabled]="!!item.disabled"
+          (click)="item.command?.()"
+        >
+          @if (menuIcon(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
 </ng-container>

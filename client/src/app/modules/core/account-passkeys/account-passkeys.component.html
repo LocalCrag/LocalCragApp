@@ -1,16 +1,14 @@
 <ng-container *transloco="let t; read: 'accountPasskeys'">
   <div class="mt-20 flex items-center gap-3">
-  <div hlmSeparator class="flex-1"></div>
-  <b>{{ t("title") }}</b>
-  <div hlmSeparator class="flex-1"></div>
-</div>
+    <div hlmSeparator class="flex-1"></div>
+    <b>{{ t("title") }}</b>
+    <div hlmSeparator class="flex-1"></div>
+  </div>
 
   <p class="passkey-description">{{ t("description") }}</p>
 
   @if (!supported) {
-    <div hlmAlert class="mt-4 w-full">{{
-      t("unsupported")
-    }}</div>
+    <div hlmAlert class="mt-4 w-full">{{ t("unsupported") }}</div>
   } @else {
     @if (!loading && passkeys.length === 0) {
       <div class="passkey-empty">
@@ -38,8 +36,31 @@
                     [attr.aria-label]="t('namePlaceholder')"
                     [attr.data-cy]="'account-passkey-name-' + passkey.id"
                   />
-                  <button hlmBtn type="button" variant="ghost" size="sm" (click)="saveRename(passkey)" [attr.aria-label]="t('saveName')" [hlmTooltip]="t('saveName')" position="top" [attr.data-cy]="'account-passkey-save-' + passkey.id"><ng-icon name="lucideCheck" /></button>
-                  <button hlmBtn type="button" variant="ghost" size="sm" (click)="editingId = null" [attr.aria-label]="t('cancelRename')" [hlmTooltip]="t('cancelRename')" position="top"><ng-icon name="lucideX" /></button>
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    (click)="saveRename(passkey)"
+                    [attr.aria-label]="t('saveName')"
+                    [hlmTooltip]="t('saveName')"
+                    position="top"
+                    [attr.data-cy]="'account-passkey-save-' + passkey.id"
+                  >
+                    <ng-icon name="lucideCheck" />
+                  </button>
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    (click)="editingId = null"
+                    [attr.aria-label]="t('cancelRename')"
+                    [hlmTooltip]="t('cancelRename')"
+                    position="top"
+                  >
+                    <ng-icon name="lucideX" />
+                  </button>
                 </div>
               } @else {
                 <div class="passkey-name">{{ passkey.name }}</div>
@@ -63,8 +84,33 @@
 
             @if (editingId !== passkey.id) {
               <div class="passkey-actions">
-                <button hlmBtn type="button" variant="ghost" size="sm" (click)="startRename(passkey)" [attr.aria-label]="t('rename')" [hlmTooltip]="t('rename')" position="top" [attr.data-cy]="'account-passkey-rename-' + passkey.id"><ng-icon name="lucidePencil" /></button>
-                <button hlmBtn type="button" variant="destructive" size="sm" (click)="confirmDelete(passkey)" [disabled]="cannotDelete()" [attr.aria-label]="t('delete')" [hlmTooltip]="t('delete')" position="top" [attr.data-cy]="'account-passkey-delete-' + passkey.id"><ng-icon name="lucideTrash2" /></button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  (click)="startRename(passkey)"
+                  [attr.aria-label]="t('rename')"
+                  [hlmTooltip]="t('rename')"
+                  position="top"
+                  [attr.data-cy]="'account-passkey-rename-' + passkey.id"
+                >
+                  <ng-icon name="lucidePencil" />
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  (click)="confirmDelete(passkey)"
+                  [disabled]="cannotDelete()"
+                  [attr.aria-label]="t('delete')"
+                  [hlmTooltip]="t('delete')"
+                  position="top"
+                  [attr.data-cy]="'account-passkey-delete-' + passkey.id"
+                >
+                  <ng-icon name="lucideTrash2" />
+                </button>
               </div>
             }
           </article>
@@ -73,24 +119,48 @@
     }
 
     @if (cannotDelete() && passkeys.length > 0) {
-      <div hlmAlert class="passkey-hint">{{
-        t("lastPasskeyHint")
-      }}</div>
+      <div hlmAlert class="passkey-hint">{{ t("lastPasskeyHint") }}</div>
     }
 
-    <button hlmBtn type="button" class="passkey-add" (click)="add()" [disabled]="adding" data-cy="account-passkey-add"><ng-icon name="lucidePlus" /> {{ t('add') }}</button>
+    <button
+      hlmBtn
+      type="button"
+      class="passkey-add"
+      (click)="add()"
+      [disabled]="adding"
+      data-cy="account-passkey-add"
+    >
+      <ng-icon name="lucidePlus" /> {{ t("add") }}
+    </button>
 
     @if (!hasPassword) {
       <div class="passkey-panel">
         <ng-icon name="lucideShield" />
         <p class="passkey-panel-copy">{{ t("passkeyOnly") }}</p>
-        <button hlmBtn type="button" variant="secondary" (click)="setPassword()" data-cy="account-passkey-set-password">{{ t('setPassword') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          (click)="setPassword()"
+          data-cy="account-passkey-set-password"
+        >
+          {{ t("setPassword") }}
+        </button>
       </div>
     } @else if (passkeys.length > 0) {
       <div class="passkey-panel">
         <ng-icon name="lucideLock" />
         <p class="passkey-panel-copy">{{ t("removePasswordHint") }}</p>
-        <button hlmBtn type="button" variant="destructive" (click)="confirmRemovePassword()" [disabled]="removingPassword" data-cy="account-passkey-remove-password">{{ t('removePassword') }}</button>
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          (click)="confirmRemovePassword()"
+          [disabled]="removingPassword"
+          data-cy="account-passkey-remove-password"
+        >
+          {{ t("removePassword") }}
+        </button>
       </div>
     }
   }

@@ -3,10 +3,12 @@
     <div class="mt-2 mb-2">
       <div class="form-label flex items-center">
         <h4 class="m-0">{{ t("baseLayersLabel") }}</h4>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('baseLayersDescription')"
           position="right"
-         />
+        />
       </div>
       <div lcControlGroup>
         <ng-container formArrayName="mapBaseLayers" lcFormArray>
@@ -75,25 +77,31 @@
 
               <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2" lcControlGroup>
-                  <hlm-checkbox [inputId]="'base-layer-topo-default-' + i" formControlName="topoDefault" (checkedChange)="
-                      onBaseLayerRoleDefaultChange(
-                        i,
-                        'topoDefault',
-                        $event
-                      )
-                    " lcFormControl />
+                  <hlm-checkbox
+                    [inputId]="'base-layer-topo-default-' + i"
+                    formControlName="topoDefault"
+                    (checkedChange)="
+                      onBaseLayerRoleDefaultChange(i, 'topoDefault', $event)
+                    "
+                    lcFormControl
+                  />
                   <label [for]="'base-layer-topo-default-' + i">{{
                     t("baseLayerTopoDefaultLabel")
                   }}</label>
                 </div>
                 <div class="flex items-center gap-2" lcControlGroup>
-                  <hlm-checkbox [inputId]="'base-layer-re-default-' + i" formControlName="rockExplorerDefault" (checkedChange)="
+                  <hlm-checkbox
+                    [inputId]="'base-layer-re-default-' + i"
+                    formControlName="rockExplorerDefault"
+                    (checkedChange)="
                       onBaseLayerRoleDefaultChange(
                         i,
                         'rockExplorerDefault',
                         $event
                       )
-                    " lcFormControl />
+                    "
+                    lcFormControl
+                  />
                   <label [for]="'base-layer-re-default-' + i">{{
                     t("baseLayerRockExplorerDefaultLabel")
                   }}</label>
@@ -106,25 +114,70 @@
                   [for]="'base-layer-default-overlays-' + i"
                   >{{ t("baseLayerDefaultOverlaysLabel") }}</label
                 >
-                <hlm-select-multiple formControlName="defaultOverlayIds" [disabled]="overlaySelectOptions().length === 0" [itemToString]="selectItemLabel(overlaySelectOptions())" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" [buttonId]="'base-layer-default-overlays-' + i">
-    <ng-template hlmSelectValues let-values>{{ joinedSelectLabels(overlaySelectOptions(), values) }}</ng-template>
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of overlaySelectOptions(); track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select-multiple>
+                <hlm-select-multiple
+                  formControlName="defaultOverlayIds"
+                  [disabled]="overlaySelectOptions().length === 0"
+                  [itemToString]="selectItemLabel(overlaySelectOptions())"
+                  class="block w-full"
+                  lcFormControl
+                >
+                  <hlm-select-trigger
+                    class="w-full"
+                    [buttonId]="'base-layer-default-overlays-' + i"
+                  >
+                    <ng-template hlmSelectValues let-values>{{
+                      joinedSelectLabels(overlaySelectOptions(), values)
+                    }}</ng-template>
+                  </hlm-select-trigger>
+                  <hlm-select-content *hlmSelectPortal>
+                    @for (
+                      option of overlaySelectOptions();
+                      track option.value
+                    ) {
+                      <hlm-select-item [value]="option.value">{{
+                        option.label
+                      }}</hlm-select-item>
+                    }
+                  </hlm-select-content>
+                </hlm-select-multiple>
                 <small class="text-muted-color">{{
                   t("baseLayerDefaultOverlaysHelp")
                 }}</small>
               </div>
             </div>
             <div actions class="map-layer-actions">
-              <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveBaseLayer(i, 'up')" [disabled]="loading || i === 0" [attr.aria-label]="t('baseLayerMoveUp')"><ng-icon name="lucideArrowUp" /></button>
-              <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveBaseLayer(i, 'down')" [disabled]="loading || i === mapBaseLayersControls().length - 1" [attr.aria-label]="t('baseLayerMoveDown')"><ng-icon name="lucideArrowDown" /></button>
-              <button hlmBtn type="button" variant="destructive" size="icon" (click)="removeBaseLayer(i)" [disabled]="loading"><ng-icon name="lucideTrash2" /></button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon"
+                (click)="moveBaseLayer(i, 'up')"
+                [disabled]="loading || i === 0"
+                [attr.aria-label]="t('baseLayerMoveUp')"
+              >
+                <ng-icon name="lucideArrowUp" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon"
+                (click)="moveBaseLayer(i, 'down')"
+                [disabled]="loading || i === mapBaseLayersControls().length - 1"
+                [attr.aria-label]="t('baseLayerMoveDown')"
+              >
+                <ng-icon name="lucideArrowDown" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="destructive"
+                size="icon"
+                (click)="removeBaseLayer(i)"
+                [disabled]="loading"
+              >
+                <ng-icon name="lucideTrash2" />
+              </button>
             </div>
           </lc-form-entry-row>
         </div>
@@ -132,16 +185,26 @@
     </div>
 
     <div class="lc-button-group mt-2 mb-3">
-      <button hlmBtn type="button" class="responsive-button" (click)="addBaseLayer()" [disabled]="loading"><ng-icon name="lucidePlus" /> {{ t('addBaseLayer') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="addBaseLayer()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucidePlus" /> {{ t("addBaseLayer") }}
+      </button>
     </div>
 
     <div class="mt-2 mb-2">
       <div class="form-label flex items-center">
         <h4 class="m-0">{{ t("mapLayersLabel") }}</h4>
-        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
           [hlmTooltip]="t('mapLayersDescription')"
           position="right"
-         />
+        />
       </div>
     </div>
 
@@ -175,16 +238,24 @@
                 <label class="form-label" [for]="'map-layer-type-' + i">{{
                   t("mapLayerTypeLabel")
                 }}</label>
-                <hlm-select formControlName="type" (valueChange)="onOverlayTypeChange(i)" [itemToString]="selectItemLabel(overlayTypeOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of overlayTypeOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+                <hlm-select
+                  formControlName="type"
+                  (valueChange)="onOverlayTypeChange(i)"
+                  [itemToString]="selectItemLabel(overlayTypeOptions)"
+                  class="block w-full"
+                  lcFormControl
+                >
+                  <hlm-select-trigger class="w-full">
+                    <hlm-select-value />
+                  </hlm-select-trigger>
+                  <hlm-select-content *hlmSelectPortal>
+                    @for (option of overlayTypeOptions; track option.value) {
+                      <hlm-select-item [value]="option.value">{{
+                        option.label
+                      }}</hlm-select-item>
+                    }
+                  </hlm-select-content>
+                </hlm-select>
               </div>
 
               <div class="flex flex-col gap-2" lcControlGroup>
@@ -193,16 +264,23 @@
                   [for]="'map-layer-source-kind-' + i"
                   >{{ t("mapLayerSourceKindLabel") }}</label
                 >
-                <hlm-select formControlName="sourceKind" [itemToString]="selectItemLabel(sourceKindOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of sourceKindOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+                <hlm-select
+                  formControlName="sourceKind"
+                  [itemToString]="selectItemLabel(sourceKindOptions)"
+                  class="block w-full"
+                  lcFormControl
+                >
+                  <hlm-select-trigger class="w-full">
+                    <hlm-select-value />
+                  </hlm-select-trigger>
+                  <hlm-select-content *hlmSelectPortal>
+                    @for (option of sourceKindOptions; track option.value) {
+                      <hlm-select-item [value]="option.value">{{
+                        option.label
+                      }}</hlm-select-item>
+                    }
+                  </hlm-select-content>
+                </hlm-select>
               </div>
 
               <div class="flex flex-col gap-2" lcControlGroup>
@@ -315,16 +393,32 @@
                               [for]="'map-layer-paint-mode-' + i + '-' + j"
                               >{{ t("mapLayerPaintModeLabel") }}</label
                             >
-                            <hlm-select formControlName="paintMode" (valueChange)="onVectorPaintModeChange(i, j)" [itemToString]="selectItemLabel(paintModeOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" [buttonId]="'map-layer-paint-mode-' + i + '-' + j">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of paintModeOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+                            <hlm-select
+                              formControlName="paintMode"
+                              (valueChange)="onVectorPaintModeChange(i, j)"
+                              [itemToString]="selectItemLabel(paintModeOptions)"
+                              class="block w-full"
+                              lcFormControl
+                            >
+                              <hlm-select-trigger
+                                class="w-full"
+                                [buttonId]="
+                                  'map-layer-paint-mode-' + i + '-' + j
+                                "
+                              >
+                                <hlm-select-value />
+                              </hlm-select-trigger>
+                              <hlm-select-content *hlmSelectPortal>
+                                @for (
+                                  option of paintModeOptions;
+                                  track option.value
+                                ) {
+                                  <hlm-select-item [value]="option.value">{{
+                                    option.label
+                                  }}</hlm-select-item>
+                                }
+                              </hlm-select-content>
+                            </hlm-select>
                           </div>
                           <div class="flex flex-col gap-2" lcControlGroup>
                             <label
@@ -337,16 +431,50 @@
                                   : t("mapLayerColorLabel")
                               }}</label
                             >
-                            <ngx-colors ngx-colors-trigger formControlName="color" lcFormControl></ngx-colors>
+                            <ngx-colors
+                              ngx-colors-trigger
+                              formControlName="color"
+                              lcFormControl
+                            ></ngx-colors>
                           </div>
                           <div class="map-layer-actions">
-                            <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveVectorLayer(i, j, 'up')" [disabled]="loading || j === 0" [attr.aria-label]="t('mapLayerMoveVectorLayerUp')"><ng-icon name="lucideArrowUp" /></button>
-                            <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveVectorLayer(i, j, 'down')" [disabled]="loading || lastVector" [attr.aria-label]="
+                            <button
+                              hlmBtn
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              (click)="moveVectorLayer(i, j, 'up')"
+                              [disabled]="loading || j === 0"
+                              [attr.aria-label]="t('mapLayerMoveVectorLayerUp')"
+                            >
+                              <ng-icon name="lucideArrowUp" />
+                            </button>
+                            <button
+                              hlmBtn
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              (click)="moveVectorLayer(i, j, 'down')"
+                              [disabled]="loading || lastVector"
+                              [attr.aria-label]="
                                 t('mapLayerMoveVectorLayerDown')
-                              "><ng-icon name="lucideArrowDown" /></button>
-                            <button hlmBtn type="button" variant="destructive" size="icon" (click)="removeVectorLayer(i, j)" [disabled]="
+                              "
+                            >
+                              <ng-icon name="lucideArrowDown" />
+                            </button>
+                            <button
+                              hlmBtn
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              (click)="removeVectorLayer(i, j)"
+                              [disabled]="
                                 loading || vectorLayersControls(i).length <= 1
-                              " [attr.aria-label]="t('mapLayerRemoveVectorLayer')"><ng-icon name="lucideTrash2" /></button>
+                              "
+                              [attr.aria-label]="t('mapLayerRemoveVectorLayer')"
+                            >
+                              <ng-icon name="lucideTrash2" />
+                            </button>
                           </div>
                         </div>
 
@@ -372,22 +500,45 @@
                                 @if (
                                   tileJsonAttributeOptions(i, j).length > 0
                                 ) {
-                                  <hlm-select formControlName="categoricalProperty" [itemToString]="selectItemLabel(tileJsonAttributeOptions(i, j))" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full" [buttonId]="
-                                      'map-layer-cat-prop-' + i + '-' + j
-                                    ">
-    <hlm-select-value placeholder="
+                                  <hlm-select
+                                    formControlName="categoricalProperty"
+                                    [itemToString]="
+                                      selectItemLabel(
+                                        tileJsonAttributeOptions(i, j)
+                                      )
+                                    "
+                                    class="block w-full"
+                                    lcFormControl
+                                  >
+                                    <hlm-select-trigger
+                                      class="w-full"
+                                      [buttonId]="
+                                        'map-layer-cat-prop-' + i + '-' + j
+                                      "
+                                    >
+                                      <hlm-select-value
+                                        placeholder="
                                       t(
                                         'mapLayerCategoricalPropertyPlaceholder'
                                       )
-                                    " />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of tileJsonAttributeOptions(i, j); track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+                                    "
+                                      />
+                                    </hlm-select-trigger>
+                                    <hlm-select-content *hlmSelectPortal>
+                                      @for (
+                                        option of tileJsonAttributeOptions(
+                                          i,
+                                          j
+                                        );
+                                        track option.value
+                                      ) {
+                                        <hlm-select-item
+                                          [value]="option.value"
+                                          >{{ option.label }}</hlm-select-item
+                                        >
+                                      }
+                                    </hlm-select-content>
+                                  </hlm-select>
                                 } @else {
                                   <input
                                     hlmInput
@@ -403,17 +554,37 @@
                                 }
                               </div>
                               <div class="flex flex-wrap gap-2">
-                                <button hlmBtn type="button" variant="ghost" size="sm" (click)="loadTileJsonAttributes(i)" [disabled]="
+                                <button
+                                  hlmBtn
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  (click)="loadTileJsonAttributes(i)"
+                                  [disabled]="
                                     loading || tileJsonMetaByOverlay[i]?.loading
-                                  "><ng-icon name="lucideDownload" /> {{ t('mapLayerLoadTileJson') }}</button>
-                                <button hlmBtn type="button" variant="ghost" size="sm" (click)="
+                                  "
+                                >
+                                  <ng-icon name="lucideDownload" />
+                                  {{ t("mapLayerLoadTileJson") }}
+                                </button>
+                                <button
+                                  hlmBtn
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  (click)="
                                     seedCategoricalStopsFromTileJson(i, j)
-                                  " [disabled]="
+                                  "
+                                  [disabled]="
                                     loading ||
                                     !vectorLayersControls(i)
                                       .at(j)
                                       .get('categoricalProperty')?.value
-                                  "><ng-icon name="lucidePalette" /> {{ t('mapLayerSeedCategoricalStops') }}</button>
+                                  "
+                                >
+                                  <ng-icon name="lucidePalette" />
+                                  {{ t("mapLayerSeedCategoricalStops") }}
+                                </button>
                               </div>
                             </div>
                             @if (tileJsonMetaByOverlay[i]?.error) {
@@ -488,11 +659,25 @@
                                           t("mapLayerCategoricalStopColorLabel")
                                         }}</label
                                       >
-                                      <ngx-colors ngx-colors-trigger formControlName="color" lcFormControl></ngx-colors>
+                                      <ngx-colors
+                                        ngx-colors-trigger
+                                        formControlName="color"
+                                        lcFormControl
+                                      ></ngx-colors>
                                     </div>
-                                    <button hlmBtn type="button" variant="destructive" size="icon" (click)="removeCategoricalStop(i, j, k)" [disabled]="loading" [attr.aria-label]="
+                                    <button
+                                      hlmBtn
+                                      type="button"
+                                      variant="destructive"
+                                      size="icon"
+                                      (click)="removeCategoricalStop(i, j, k)"
+                                      [disabled]="loading"
+                                      [attr.aria-label]="
                                         t('mapLayerRemoveCategoricalStop')
-                                      "><ng-icon name="lucideTrash2" /></button>
+                                      "
+                                    >
+                                      <ng-icon name="lucideTrash2" />
+                                    </button>
                                   </div>
                                 }
                                 <div lcControlGroup>
@@ -514,15 +699,29 @@
                                   </ng-container>
                                 </div>
                               </div>
-                              <button hlmBtn type="button" variant="ghost" size="sm" (click)="addCategoricalStop(i, j)" [disabled]="loading"><ng-icon name="lucidePlus" /> {{ t('mapLayerAddCategoricalStop') }}</button>
+                              <button
+                                hlmBtn
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                (click)="addCategoricalStop(i, j)"
+                                [disabled]="loading"
+                              >
+                                <ng-icon name="lucidePlus" />
+                                {{ t("mapLayerAddCategoricalStop") }}
+                              </button>
                             </div>
                           </div>
                         }
 
                         <div class="flex items-center gap-2" lcControlGroup>
-                          <hlm-checkbox [inputId]="
+                          <hlm-checkbox
+                            [inputId]="
                               'map-layer-default-active-' + i + '-' + j
-                            " formControlName="defaultActive" lcFormControl />
+                            "
+                            formControlName="defaultActive"
+                            lcFormControl
+                          />
                           <label
                             [for]="'map-layer-default-active-' + i + '-' + j"
                             >{{ t("mapLayerVectorDefaultActiveLabel") }}</label
@@ -531,7 +730,17 @@
                       </div>
                     }
                   </div>
-                  <button hlmBtn type="button" variant="ghost" size="sm" (click)="addVectorLayer(i)" [disabled]="loading"><ng-icon name="lucidePlus" /> {{ t('mapLayerAddVectorLayer') }}</button>
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    (click)="addVectorLayer(i)"
+                    [disabled]="loading"
+                  >
+                    <ng-icon name="lucidePlus" />
+                    {{ t("mapLayerAddVectorLayer") }}
+                  </button>
                 </div>
               }
 
@@ -540,7 +749,16 @@
                   <label class="form-label" [for]="'map-layer-opacity-' + i">{{
                     t("mapLayerOpacityLabel")
                   }}</label>
-                  <input type="number" hlmInput [id]="'map-layer-opacity-' + i" formControlName="opacity" min="0" max="1" step="0.05" lcFormControl />
+                  <input
+                    type="number"
+                    hlmInput
+                    [id]="'map-layer-opacity-' + i"
+                    formControlName="opacity"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    lcFormControl
+                  />
                 </div>
                 @if (
                   mapOverlaysControls().at(i).get("type")?.value === "raster"
@@ -551,24 +769,60 @@
                       [for]="'map-layer-tile-size-' + i"
                       >{{ t("mapLayerTileSizeLabel") }}</label
                     >
-                    <hlm-select formControlName="tileSize" [itemToString]="selectItemLabel(tileSizeOptions)" class="block w-full" lcFormControl>
-  <hlm-select-trigger class="w-full">
-    <hlm-select-value />
-  </hlm-select-trigger>
-  <hlm-select-content *hlmSelectPortal>
-    @for (option of tileSizeOptions; track option.value) {
-      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
-    }
-  </hlm-select-content>
-</hlm-select>
+                    <hlm-select
+                      formControlName="tileSize"
+                      [itemToString]="selectItemLabel(tileSizeOptions)"
+                      class="block w-full"
+                      lcFormControl
+                    >
+                      <hlm-select-trigger class="w-full">
+                        <hlm-select-value />
+                      </hlm-select-trigger>
+                      <hlm-select-content *hlmSelectPortal>
+                        @for (option of tileSizeOptions; track option.value) {
+                          <hlm-select-item [value]="option.value">{{
+                            option.label
+                          }}</hlm-select-item>
+                        }
+                      </hlm-select-content>
+                    </hlm-select>
                   </div>
                 }
               </div>
             </div>
             <div actions class="map-layer-actions">
-              <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveMapLayer(i, 'up')" [disabled]="loading || i === 0" [attr.aria-label]="t('mapLayerMoveUp')"><ng-icon name="lucideArrowUp" /></button>
-              <button hlmBtn type="button" variant="ghost" size="icon" (click)="moveMapLayer(i, 'down')" [disabled]="loading || i === mapOverlaysControls().length - 1" [attr.aria-label]="t('mapLayerMoveDown')"><ng-icon name="lucideArrowDown" /></button>
-              <button hlmBtn type="button" variant="destructive" size="icon" (click)="removeMapLayer(i)" [disabled]="loading"><ng-icon name="lucideTrash2" /></button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon"
+                (click)="moveMapLayer(i, 'up')"
+                [disabled]="loading || i === 0"
+                [attr.aria-label]="t('mapLayerMoveUp')"
+              >
+                <ng-icon name="lucideArrowUp" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon"
+                (click)="moveMapLayer(i, 'down')"
+                [disabled]="loading || i === mapOverlaysControls().length - 1"
+                [attr.aria-label]="t('mapLayerMoveDown')"
+              >
+                <ng-icon name="lucideArrowDown" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="destructive"
+                size="icon"
+                (click)="removeMapLayer(i)"
+                [disabled]="loading"
+              >
+                <ng-icon name="lucideTrash2" />
+              </button>
             </div>
           </lc-form-entry-row>
         </div>
@@ -576,11 +830,27 @@
     </div>
 
     <div class="lc-button-group mt-2">
-      <button hlmBtn type="button" class="responsive-button" (click)="addMapLayer()" [disabled]="loading"><ng-icon name="lucidePlus" /> {{ t('addMapLayer') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="addMapLayer()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucidePlus" /> {{ t("addMapLayer") }}
+      </button>
     </div>
 
     <div class="form-actions">
-      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucideSave" /> {{ t("editInstanceSettingsButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

@@ -15,11 +15,7 @@
       <div class="form-label flex items-center">
         <label for="color-scheme">{{ t("colorSchemeLabel") }}</label>
       </div>
-      <select
-        id="color-scheme"
-        hlmInput
-        formControlName="colorScheme"
-      >
+      <select id="color-scheme" hlmInput formControlName="colorScheme">
         <option value="system">{{ t("colorSchemeSystem") }}</option>
         <option value="light">{{ t("colorSchemeLight") }}</option>
         <option value="dark">{{ t("colorSchemeDark") }}</option>
@@ -33,7 +29,7 @@
       <div class="flex items-center justify-center sm:justify-start">
         <div>
           <hlm-switch
-          inputId="exclude-from-rankings"
+            inputId="exclude-from-rankings"
             class="mx-2 blue-green-switch"
             formControlName="excludeFromRankings"
             lcFormControl

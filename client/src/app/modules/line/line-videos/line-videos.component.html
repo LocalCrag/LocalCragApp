@@ -76,10 +76,7 @@
               [attr.aria-pressed]="selected?.key === item.key"
               (click)="select(item)"
             >
-              <ng-icon
-                class="choice-icon"
-                [name]="sourceIcon(item.source)"
-              />
+              <ng-icon class="choice-icon" [name]="sourceIcon(item.source)" />
               <span class="badge">{{
                 item.kind === "line"
                   ? t("lineVideoBadge")

@@ -1,190 +1,236 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
-    <div class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4">
-          <div class="flex flex-col justify-center">
-            <h3>{{ t("topMenu") }}</h3>
-            @if (!isMobile && menuItemsTop?.length > 1) {
-              <p class="text-sm text-surface-500 m-0 mt-1">
-                {{ t("nestByDragHint") }}
-              </p>
-            }
-          </div>
-          <div class="lc-button-group justify-end">
-            <a hlmBtn class="responsive-button" [disabled]="loading === loadingStates.LOADING" routerLink="/menu-items/create-menu-item/top"><ng-icon name="lucidePlus" /> {{ t('newMenuItemButtonLabel') }}</a>
-            @if (isMobile) {
-              <button hlmBtn type="button" class="responsive-button" (click)="reorderMenuItems(positions.TOP)" [disabled]="
-                  menuItemsTop?.length < 2 || loading === loadingStates.LOADING
-                "><ng-icon name="lucideArrowUpDown" /> {{ t('reorderMenuItemsButtonLabel') }}</button>
-            }
-          </div>
-        </div>
-@if (!(menuItemsTop?.length) && loading !== loadingStates.LOADING) {
-<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          t("noMenuItemsFoundEmptyMessage")
-        }}</p></div>
-}
-@if (loading === loadingStates.LOADING) {
-          <lc-menu-list-skeleton></lc-menu-list-skeleton>
+    <div
+      class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4"
+    >
+      <div class="flex flex-col justify-center">
+        <h3>{{ t("topMenu") }}</h3>
+        @if (!isMobile && menuItemsTop?.length > 1) {
+          <p class="text-sm text-surface-500 m-0 mt-1">
+            {{ t("nestByDragHint") }}
+          </p>
         }
-        @if (loading !== loadingStates.LOADING) {
-          <div class="grid grid-cols-12">
-            @for (
-              menuItem of menuItemsTop;
-              track menuItem.id;
-              let first = $first;
-              let last = $last
-            ) {
-              <div class="col-span-12">
-                <div
-                  class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
-                  [attr.data-menu-item-id]="menuItem.id"
-                  [style.padding-left.rem]="1.5 + (menuItem.depth || 0) * 1.5"
-                  [style.--drop-indent.rem]="dropLineIndent(menuItem)"
-                  [ngClass]="{
-                    'border-t border-surface': !first,
-                    'nest-target':
-                      dropTargetId === menuItem.id &&
-                      dropPlacement === 'inside',
-                    'drop-before':
-                      dropTargetId === menuItem.id &&
-                      dropPlacement === 'before',
-                    'drop-after':
-                      dropTargetId === menuItem.id && dropPlacement === 'after',
-                    'drop-end':
-                      last &&
-                      dropTargetId === menuItem.id &&
-                      dropPlacement === 'after',
-                    'drop-full':
-                      dropTargetId === menuItem.id && isFullWidthDrop(menuItem),
-                    'is-dragging': draggedItem?.id === menuItem.id,
-                  }"
-                >
+      </div>
+      <div class="lc-button-group justify-end">
+        <a
+          hlmBtn
+          class="responsive-button"
+          [disabled]="loading === loadingStates.LOADING"
+          routerLink="/menu-items/create-menu-item/top"
+          ><ng-icon name="lucidePlus" /> {{ t("newMenuItemButtonLabel") }}</a
+        >
+        @if (isMobile) {
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="reorderMenuItems(positions.TOP)"
+            [disabled]="
+              menuItemsTop?.length < 2 || loading === loadingStates.LOADING
+            "
+          >
+            <ng-icon name="lucideArrowUpDown" />
+            {{ t("reorderMenuItemsButtonLabel") }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (!menuItemsTop?.length && loading !== loadingStates.LOADING) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noMenuItemsFoundEmptyMessage") }}</p>
+      </div>
+    }
+    @if (loading === loadingStates.LOADING) {
+      <lc-menu-list-skeleton></lc-menu-list-skeleton>
+    }
+    @if (loading !== loadingStates.LOADING) {
+      <div class="grid grid-cols-12">
+        @for (
+          menuItem of menuItemsTop;
+          track menuItem.id;
+          let first = $first;
+          let last = $last
+        ) {
+          <div class="col-span-12">
+            <div
+              class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
+              [attr.data-menu-item-id]="menuItem.id"
+              [style.padding-left.rem]="1.5 + (menuItem.depth || 0) * 1.5"
+              [style.--drop-indent.rem]="dropLineIndent(menuItem)"
+              [ngClass]="{
+                'border-t border-surface': !first,
+                'nest-target':
+                  dropTargetId === menuItem.id && dropPlacement === 'inside',
+                'drop-before':
+                  dropTargetId === menuItem.id && dropPlacement === 'before',
+                'drop-after':
+                  dropTargetId === menuItem.id && dropPlacement === 'after',
+                'drop-end':
+                  last &&
+                  dropTargetId === menuItem.id &&
+                  dropPlacement === 'after',
+                'drop-full':
+                  dropTargetId === menuItem.id && isFullWidthDrop(menuItem),
+                'is-dragging': draggedItem?.id === menuItem.id,
+              }"
+            >
+              <div
+                class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
+              >
+                @if (!isMobile) {
                   <div
-                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
+                    class="menu-item-drag-handle"
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="t('orderDragHandleLabel')"
+                    (pointerdown)="onPointerDown(menuItem, $event)"
+                    (pointermove)="onPointerMove($event)"
+                    (pointerup)="onPointerUp($event)"
+                    (pointercancel)="endDrag()"
                   >
-                    @if (!isMobile) {
-                      <div
-                        class="menu-item-drag-handle"
-                        role="button"
-                        tabindex="0"
-                        [attr.aria-label]="t('orderDragHandleLabel')"
-                        (pointerdown)="onPointerDown(menuItem, $event)"
-                        (pointermove)="onPointerMove($event)"
-                        (pointerup)="onPointerUp($event)"
-                        (pointercancel)="endDrag()"
-                      >
-                        <ng-icon name="lucideMenu" />
-                      </div>
-                    }
-                    <div class="grow flex items-center">
-                      {{ menuItem.type | transloco }}
-                      @if (menuItem.type === menuItemTypes.MENU_PAGE) {
-                        <span>&nbsp;({{ menuItem.menuPage.title }})</span>
-                      }
-                      @if (
-                        menuItem.type === menuItemTypes.URL ||
-                        menuItem.type === menuItemTypes.CONTAINER
-                      ) {
-                        <span>&nbsp;({{ menuItem.title }})</span>
-                      }
-                    </div>
-                    <div class="lc-button-group grow-0">
-                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/menu-items/{{ menuItem.id }}/edit"><ng-icon name="lucideFilePen" /> {{ t('editMenuItemButtonLabel') }}</a>
-                    </div>
+                    <ng-icon name="lucideMenu" />
                   </div>
+                }
+                <div class="grow flex items-center">
+                  {{ menuItem.type | transloco }}
+                  @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                    <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                  }
+                  @if (
+                    menuItem.type === menuItemTypes.URL ||
+                    menuItem.type === menuItemTypes.CONTAINER
+                  ) {
+                    <span>&nbsp;({{ menuItem.title }})</span>
+                  }
+                </div>
+                <div class="lc-button-group grow-0">
+                  <a
+                    hlmBtn
+                    variant="ghost"
+                    class="pr-0 responsive-button"
+                    routerLink="/menu-items/{{ menuItem.id }}/edit"
+                    ><ng-icon name="lucideFilePen" />
+                    {{ t("editMenuItemButtonLabel") }}</a
+                  >
                 </div>
               </div>
-            }
+            </div>
           </div>
         }
+      </div>
+    }
 
-    <div class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4">
-          <div class="flex flex-col justify-center">
-            <h3>{{ t("bottomMenu") }}</h3>
-            @if (!isMobile && menuItemsBottom?.length > 1) {
-              <p class="text-sm text-surface-500 m-0 mt-1">
-                {{ t("orderByDragHint") }}
-              </p>
-            }
-          </div>
-          <div class="lc-button-group justify-end">
-            <a hlmBtn class="responsive-button" [disabled]="loading === loadingStates.LOADING" routerLink="/menu-items/create-menu-item/bottom"><ng-icon name="lucidePlus" /> {{ t('newMenuItemButtonLabel') }}</a>
-            @if (isMobile) {
-              <button hlmBtn type="button" class="responsive-button" (click)="reorderMenuItems(positions.BOTTOM)" [disabled]="
-                  menuItemsBottom?.length < 2 ||
-                  loading === loadingStates.LOADING
-                "><ng-icon name="lucideArrowUpDown" /> {{ t('reorderMenuItemsButtonLabel') }}</button>
-            }
-          </div>
-        </div>
-@if (!(menuItemsBottom?.length) && loading !== loadingStates.LOADING) {
-<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
-          t("noMenuItemsFoundEmptyMessage")
-        }}</p></div>
-}
-@if (loading === loadingStates.LOADING) {
-          <lc-menu-list-skeleton></lc-menu-list-skeleton>
+    <div
+      class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4"
+    >
+      <div class="flex flex-col justify-center">
+        <h3>{{ t("bottomMenu") }}</h3>
+        @if (!isMobile && menuItemsBottom?.length > 1) {
+          <p class="text-sm text-surface-500 m-0 mt-1">
+            {{ t("orderByDragHint") }}
+          </p>
         }
-        @if (loading !== loadingStates.LOADING) {
-          <div class="grid grid-cols-12">
-            @for (
-              menuItem of menuItemsBottom;
-              track menuItem.id;
-              let first = $first;
-              let last = $last
-            ) {
-              <div class="col-span-12">
-                <div
-                  class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
-                  [attr.data-menu-item-id]="menuItem.id"
-                  [style.--drop-indent.rem]="dropLineIndent(menuItem)"
-                  [ngClass]="{
-                    'border-t border-surface': !first,
-                    'drop-before':
-                      dropTargetId === menuItem.id &&
-                      dropPlacement === 'before',
-                    'drop-after':
-                      dropTargetId === menuItem.id && dropPlacement === 'after',
-                    'drop-end':
-                      last &&
-                      dropTargetId === menuItem.id &&
-                      dropPlacement === 'after',
-                    'drop-full':
-                      dropTargetId === menuItem.id && isFullWidthDrop(menuItem),
-                    'is-dragging': draggedItem?.id === menuItem.id,
-                  }"
-                >
+      </div>
+      <div class="lc-button-group justify-end">
+        <a
+          hlmBtn
+          class="responsive-button"
+          [disabled]="loading === loadingStates.LOADING"
+          routerLink="/menu-items/create-menu-item/bottom"
+          ><ng-icon name="lucidePlus" /> {{ t("newMenuItemButtonLabel") }}</a
+        >
+        @if (isMobile) {
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
+            (click)="reorderMenuItems(positions.BOTTOM)"
+            [disabled]="
+              menuItemsBottom?.length < 2 || loading === loadingStates.LOADING
+            "
+          >
+            <ng-icon name="lucideArrowUpDown" />
+            {{ t("reorderMenuItemsButtonLabel") }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (!menuItemsBottom?.length && loading !== loadingStates.LOADING) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noMenuItemsFoundEmptyMessage") }}</p>
+      </div>
+    }
+    @if (loading === loadingStates.LOADING) {
+      <lc-menu-list-skeleton></lc-menu-list-skeleton>
+    }
+    @if (loading !== loadingStates.LOADING) {
+      <div class="grid grid-cols-12">
+        @for (
+          menuItem of menuItemsBottom;
+          track menuItem.id;
+          let first = $first;
+          let last = $last
+        ) {
+          <div class="col-span-12">
+            <div
+              class="menu-item-row flex flex-col xl:items-start p-6 gap-2"
+              [attr.data-menu-item-id]="menuItem.id"
+              [style.--drop-indent.rem]="dropLineIndent(menuItem)"
+              [ngClass]="{
+                'border-t border-surface': !first,
+                'drop-before':
+                  dropTargetId === menuItem.id && dropPlacement === 'before',
+                'drop-after':
+                  dropTargetId === menuItem.id && dropPlacement === 'after',
+                'drop-end':
+                  last &&
+                  dropTargetId === menuItem.id &&
+                  dropPlacement === 'after',
+                'drop-full':
+                  dropTargetId === menuItem.id && isFullWidthDrop(menuItem),
+                'is-dragging': draggedItem?.id === menuItem.id,
+              }"
+            >
+              <div
+                class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
+              >
+                @if (!isMobile) {
                   <div
-                    class="text-md font-bold text-surface-900 dark:text-surface-0 flex w-full items-center"
+                    class="menu-item-drag-handle"
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="t('orderDragHandleLabel')"
+                    (pointerdown)="onPointerDown(menuItem, $event)"
+                    (pointermove)="onPointerMove($event)"
+                    (pointerup)="onPointerUp($event)"
+                    (pointercancel)="endDrag()"
                   >
-                    @if (!isMobile) {
-                      <div
-                        class="menu-item-drag-handle"
-                        role="button"
-                        tabindex="0"
-                        [attr.aria-label]="t('orderDragHandleLabel')"
-                        (pointerdown)="onPointerDown(menuItem, $event)"
-                        (pointermove)="onPointerMove($event)"
-                        (pointerup)="onPointerUp($event)"
-                        (pointercancel)="endDrag()"
-                      >
-                        <ng-icon name="lucideMenu" />
-                      </div>
-                    }
-                    <div class="grow flex items-center">
-                      {{ menuItem.type | transloco }}
-                      @if (menuItem.type === menuItemTypes.MENU_PAGE) {
-                        <span>&nbsp;({{ menuItem.menuPage.title }})</span>
-                      }
-                    </div>
-                    <div class="lc-button-group grow-0">
-                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/menu-items/{{ menuItem.id }}/edit"><ng-icon name="lucideFilePen" /> {{ t('editMenuItemButtonLabel') }}</a>
-                    </div>
+                    <ng-icon name="lucideMenu" />
                   </div>
+                }
+                <div class="grow flex items-center">
+                  {{ menuItem.type | transloco }}
+                  @if (menuItem.type === menuItemTypes.MENU_PAGE) {
+                    <span>&nbsp;({{ menuItem.menuPage.title }})</span>
+                  }
+                </div>
+                <div class="lc-button-group grow-0">
+                  <a
+                    hlmBtn
+                    variant="ghost"
+                    class="pr-0 responsive-button"
+                    routerLink="/menu-items/{{ menuItem.id }}/edit"
+                    ><ng-icon name="lucideFilePen" />
+                    {{ t("editMenuItemButtonLabel") }}</a
+                  >
                 </div>
               </div>
-            }
+            </div>
           </div>
         }
+      </div>
+    }
   </div>
 </ng-container>

@@ -8,138 +8,225 @@
             [stepControl]="topoImageBatchUploadForm.get('images')"
             [label]="t('images')"
           >
-                <div class="flex flex-col gap-2" lcControlGroup>
-                  <lc-multi-image-upload
-                    lcFormControl
-                    formControlName="images"
-                    data-cy="topo-images-input"
-                  ></lc-multi-image-upload>
-                  <small class="lc-error" *lcIfError="'required'">{{
-                    t("min-length-1-image-validation-error")
-                  }}</small>
-                </div>
-                <div class="flex pt-6 justify-between">
-                  <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="cancel()">
-                    @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideBan" /> }
-                    {{ t('cancel') }}
-                  </button>
-                  <button hlmBtn type="button" class="responsive-button" spartanStepperNext>
-                    {{ t('Next') }}
-                    <ng-icon name="lucideArrowRight" />
-                  </button>
-                </div>
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <lc-multi-image-upload
+                lcFormControl
+                formControlName="images"
+                data-cy="topo-images-input"
+              ></lc-multi-image-upload>
+              <small class="lc-error" *lcIfError="'required'">{{
+                t("min-length-1-image-validation-error")
+              }}</small>
+            </div>
+            <div class="flex pt-6 justify-between">
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                class="responsive-button"
+                [disabled]="loadingState === loadingStates.LOADING"
+                (click)="cancel()"
+              >
+                @if (loadingState === loadingStates.LOADING) {
+                  <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+                } @else {
+                  <ng-icon name="lucideBan" />
+                }
+                {{ t("cancel") }}
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                class="responsive-button"
+                spartanStepperNext
+              >
+                {{ t("Next") }}
+                <ng-icon name="lucideArrowRight" />
+              </button>
+            </div>
           </spartan-step>
           <spartan-step
             [stepControl]="topoImageBatchUploadForm.get('lines')"
             [label]="t('lines')"
           >
-                <div formGroupName="lines">
-                  @if (typeOptions?.length > 1) {
-                    <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
-                      <label class="form-label" for="type">{{
-                        t("lineTypeLabel")
-                      }}</label>
-                      <hlm-select formControlName="type" id="type" lcFormControl [itemToString]="selectLabel"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of typeOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
-                    </div>
-                  }
-                  @if (scaleOptions?.length > 1) {
-                    <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
-                      <label class="form-label" for="scale">{{
-                        t("lineScaleLabel")
-                      }}</label>
-                      <hlm-select formControlName="scale" id="scale" lcFormControl [itemToString]="selectLabel"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of scaleOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
-                    </div>
-                  }
-                  @if (faFormat === faFormats.DATE && (gymMode$ | async)) {
-                    <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
-                      <label class="form-label" for="fa-year">{{
-                        t("lineFADateLabel")
-                      }}</label>
-                      <hlm-date-picker formControlName="faDate" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatDay" data-cy="line-form-faDate">
-                        <hlm-date-picker-input inputId="faDate" />
-                      </hlm-date-picker>
-                      <small class="lc-error" *lcIfError="'dateInFuture'">{{
-                        t("dateInFutureValidationError")
-                      }}</small>
-                    </div>
-                  }
-                  <div formArrayName="lines" class="flex gap-2 flex-col mb-12">
-                    <label class="form-label" for="scale">{{
-                      t("linesLabel")
-                    }}</label>
-                    @for (_ of lines.controls; track _; let i = $index) {
-                      <div>
-                        <lc-line-entry-batch-line-form
-                          [index]="i"
-                          [formControlName]="i"
-                          [grades]="grades"
-                          [control]="lines.at(i)"
-                          [type]="
-                            topoImageBatchUploadForm.get('lines.type').value
-                          "
-                          (delete)="removeLine(i)"
-                          [deleteDisabled]="lines.length < 2"
-                        ></lc-line-entry-batch-line-form>
-                      </div>
-                    }
-                  </div>
-                  <button hlmBtn type="button" class="w-full md:w-auto" (click)="addLine()">
-                    <ng-icon name="lucidePlus" />
-                    {{ t('addLine') }}
-                  </button>
+            <div formGroupName="lines">
+              @if (typeOptions?.length > 1) {
+                <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
+                  <label class="form-label" for="type">{{
+                    t("lineTypeLabel")
+                  }}</label>
+                  <hlm-select
+                    formControlName="type"
+                    id="type"
+                    lcFormControl
+                    [itemToString]="selectLabel"
+                    ><hlm-select-trigger class="w-full"
+                      ><hlm-select-value /></hlm-select-trigger
+                    ><hlm-select-content *hlmSelectPortal>
+                      @for (option of typeOptions; track option.value) {
+                        <hlm-select-item [value]="option.value">{{
+                          option.label
+                        }}</hlm-select-item>
+                      }
+                    </hlm-select-content></hlm-select
+                  >
                 </div>
-                @if (getDisplayUserGrades() | async) {
-                  <div hlmAlert variant="warning" class="mt-12">
-                    <ng-icon name="lucideTriangleAlert" />
-                    <p hlmAlertDescription>{{ t("displayUserGradesActive") }}</p>
+              }
+              @if (scaleOptions?.length > 1) {
+                <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
+                  <label class="form-label" for="scale">{{
+                    t("lineScaleLabel")
+                  }}</label>
+                  <hlm-select
+                    formControlName="scale"
+                    id="scale"
+                    lcFormControl
+                    [itemToString]="selectLabel"
+                    ><hlm-select-trigger class="w-full"
+                      ><hlm-select-value /></hlm-select-trigger
+                    ><hlm-select-content *hlmSelectPortal>
+                      @for (option of scaleOptions; track option.value) {
+                        <hlm-select-item [value]="option.value">{{
+                          option.label
+                        }}</hlm-select-item>
+                      }
+                    </hlm-select-content></hlm-select
+                  >
+                </div>
+              }
+              @if (faFormat === faFormats.DATE && (gymMode$ | async)) {
+                <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
+                  <label class="form-label" for="fa-year">{{
+                    t("lineFADateLabel")
+                  }}</label>
+                  <hlm-date-picker
+                    formControlName="faDate"
+                    lcFormControl
+                    [maxDate]="today"
+                    [autoCloseOnSelect]="true"
+                    [formatDate]="formatDay"
+                    data-cy="line-form-faDate"
+                  >
+                    <hlm-date-picker-input inputId="faDate" />
+                  </hlm-date-picker>
+                  <small class="lc-error" *lcIfError="'dateInFuture'">{{
+                    t("dateInFutureValidationError")
+                  }}</small>
+                </div>
+              }
+              <div formArrayName="lines" class="flex gap-2 flex-col mb-12">
+                <label class="form-label" for="scale">{{
+                  t("linesLabel")
+                }}</label>
+                @for (_ of lines.controls; track _; let i = $index) {
+                  <div>
+                    <lc-line-entry-batch-line-form
+                      [index]="i"
+                      [formControlName]="i"
+                      [grades]="grades"
+                      [control]="lines.at(i)"
+                      [type]="topoImageBatchUploadForm.get('lines.type').value"
+                      (delete)="removeLine(i)"
+                      [deleteDisabled]="lines.length < 2"
+                    ></lc-line-entry-batch-line-form>
                   </div>
                 }
-                <div class="flex pt-6 justify-between">
-                  <div class="lc-button-group">
-                    <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" spartanStepperPrevious>
-                      <ng-icon name="lucideArrowLeft" />
-                      {{ t('Back') }}
-                    </button>
-                    <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="cancel()">
-                      @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideBan" /> }
-                      {{ t('cancel') }}
-                    </button>
-                  </div>
-                  <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveLinesAndTopoImages()">
-                    @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> }
-                    {{ t('saveLinesAndTopoImagesAndNext') }}
-                    <ng-icon name="lucideArrowRight" />
-                  </button>
-                </div>
+              </div>
+              <button
+                hlmBtn
+                type="button"
+                class="w-full md:w-auto"
+                (click)="addLine()"
+              >
+                <ng-icon name="lucidePlus" />
+                {{ t("addLine") }}
+              </button>
+            </div>
+            @if (getDisplayUserGrades() | async) {
+              <div hlmAlert variant="warning" class="mt-12">
+                <ng-icon name="lucideTriangleAlert" />
+                <p hlmAlertDescription>{{ t("displayUserGradesActive") }}</p>
+              </div>
+            }
+            <div class="flex pt-6 justify-between">
+              <div class="lc-button-group">
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="secondary"
+                  class="responsive-button"
+                  [disabled]="loadingState === loadingStates.LOADING"
+                  spartanStepperPrevious
+                >
+                  <ng-icon name="lucideArrowLeft" />
+                  {{ t("Back") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="secondary"
+                  class="responsive-button"
+                  [disabled]="loadingState === loadingStates.LOADING"
+                  (click)="cancel()"
+                >
+                  @if (loadingState === loadingStates.LOADING) {
+                    <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+                  } @else {
+                    <ng-icon name="lucideBan" />
+                  }
+                  {{ t("cancel") }}
+                </button>
+              </div>
+              <button
+                hlmBtn
+                type="button"
+                class="responsive-button"
+                [disabled]="loadingState === loadingStates.LOADING"
+                (click)="saveLinesAndTopoImages()"
+              >
+                @if (loadingState === loadingStates.LOADING) {
+                  <ng-icon name="lucideLoaderCircle" class="animate-spin" />
+                }
+                {{ t("saveLinesAndTopoImagesAndNext") }}
+                <ng-icon name="lucideArrowRight" />
+              </button>
+            </div>
           </spartan-step>
           <spartan-step [label]="t('linePaths')">
-                <div class="flex flex-col gap-2" lcControlGroup>
-                  <label class="form-label" for="topoImage">{{
-                    t("topoImageLabel")
-                  }}</label>
-                  <hlm-select id="topoImage" formControlName="selectedTopoImage" data-cy="line-dropdown">
-                    <hlm-select-trigger class="w-full">
-                      <span hlmSelectPlaceholder>{{ t('topoImagePlaceholder') }}</span>
-                      <ng-template hlmSelectValueTemplate>{{ t('topoImagePlaceholder') }}</ng-template>
-                    </hlm-select-trigger>
-                    <hlm-select-content *hlmSelectPortal>
-                      @for (option of topoImages; track option.id) {
-                        <hlm-select-item [value]="option">
-                          <img [src]="option.image.thumbnailS" alt="" />
-                        </hlm-select-item>
-                      }
-                    </hlm-select-content>
-                  </hlm-select>
-                </div>
-                <lc-line-path-form
-                  [embedded]="true"
-                  [selectedTopoImageId]="
-                    $safeNavigationMigration(
-                      topoImageBatchUploadForm.get('selectedTopoImage').value
-                        ?.id
-                    )
-                  "
-                ></lc-line-path-form>
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="topoImage">{{
+                t("topoImageLabel")
+              }}</label>
+              <hlm-select
+                id="topoImage"
+                formControlName="selectedTopoImage"
+                data-cy="line-dropdown"
+              >
+                <hlm-select-trigger class="w-full">
+                  <span hlmSelectPlaceholder>{{
+                    t("topoImagePlaceholder")
+                  }}</span>
+                  <ng-template hlmSelectValueTemplate>{{
+                    t("topoImagePlaceholder")
+                  }}</ng-template>
+                </hlm-select-trigger>
+                <hlm-select-content *hlmSelectPortal>
+                  @for (option of topoImages; track option.id) {
+                    <hlm-select-item [value]="option">
+                      <img [src]="option.image.thumbnailS" alt="" />
+                    </hlm-select-item>
+                  }
+                </hlm-select-content>
+              </hlm-select>
+            </div>
+            <lc-line-path-form
+              [embedded]="true"
+              [selectedTopoImageId]="
+                $safeNavigationMigration(
+                  topoImageBatchUploadForm.get('selectedTopoImage').value?.id
+                )
+              "
+            ></lc-line-path-form>
           </spartan-step>
         </spartan-stepper>
       </form>

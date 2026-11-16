@@ -74,7 +74,11 @@
   align="end"
   (stateChanged)="onPopoverState($event)"
 >
-  <div hlmPopoverContent *hlmPopoverPortal class="reaction-popover w-max flex-row">
+  <div
+    hlmPopoverContent
+    *hlmPopoverPortal
+    class="reaction-popover w-max flex-row"
+  >
     <div class="reaction-picker">
       @for (emoji of availableReactions; track emoji) {
         <button
@@ -86,7 +90,11 @@
         </button>
       }
       @if (totalReactions > 0) {
-        <button class="reaction-info-btn" type="button" (click)="openInfoModal($event)">
+        <button
+          class="reaction-info-btn"
+          type="button"
+          (click)="openInfoModal($event)"
+        >
           <ng-icon name="lucideInfo" />
         </button>
       }

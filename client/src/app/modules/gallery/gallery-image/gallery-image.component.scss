@@ -99,10 +99,10 @@ lc-gallery-image {
           pointer-events: none;
         }
 
-          &:hover .gallery-image-open__icon,
-          &:focus-visible .gallery-image-open__icon {
-            opacity: 1;
-          }
+        &:hover .gallery-image-open__icon,
+        &:focus-visible .gallery-image-open__icon {
+          opacity: 1;
+        }
 
         &:focus-visible {
           outline: 2px solid var(--p-primary-color);
