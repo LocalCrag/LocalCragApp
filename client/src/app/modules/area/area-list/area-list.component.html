@@ -1,75 +1,23 @@
 <ng-container *transloco="let t; read: 'area.areaList'">
-  <p-data-view
-    #dv
-    [value]="areas"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
-  >
-    <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
-        >{{ t("noAreasFoundEmptyMessage") }}
-      </p-message>
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
+  
+      <div class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4">
         <div class="flex flex-wrap items-center gap-2">
           {{ t("orderByLabel") }}
-          <p-select
-            [options]="orderOptions"
-            [(ngModel)]="orderKey"
-            optionLabel="label"
-            (onChange)="onSortControlsChange()"
-            [disabled]="loading === loadingStates.LOADING"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderKey) {
-                <div>{{ orderKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-          <p-select
-            [options]="orderDirectionOptions"
-            [(ngModel)]="orderDirectionKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderDirectionKey) {
-                <div>{{ orderDirectionKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
+          <hlm-select [(ngModel)]="orderKey" (ngModelChange)="onSortControlsChange()" [disabled]="loading === loadingStates.LOADING"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select [(ngModel)]="orderDirectionKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortControlsChange()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderDirectionOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
         </div>
         <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            label="{{ t('newAreaButtonLabel') }}"
-            icon="pi pi-plus"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/create-area"
-            [disabled]="loading === loadingStates.LOADING"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderAreasButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderAreas()"
-            [disabled]="areas?.length < 2 || loading === loadingStates.LOADING"
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
+          <a hlmBtn class="responsive-button" routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/create-area" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucidePlus" /> {{ t('newAreaButtonLabel') }}</a>
+          <button hlmBtn type="button" class="responsive-button" (click)="reorderAreas()" [disabled]="areas?.length < 2 || loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucideArrowUpDown" /> {{ t('reorderAreasButtonLabel') }}</button>
         </div>
       </div>
-    </ng-template>
-    <ng-template let-areas #list>
+    
+
+      @if (!areas?.length && loading !== loadingStates.LOADING) {
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noAreasFoundEmptyMessage") }}</p></div>
+      }
+    
+
       @if (loading === loadingStates.LOADING) {
         <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
       }
@@ -154,6 +102,5 @@
           }
         </div>
       }
-    </ng-template>
-  </p-data-view>
+    
 </ng-container>

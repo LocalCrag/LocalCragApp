@@ -1,33 +1,72 @@
 <ng-container *transloco="let t; read: 'todos.priorityButton'">
-  <p-menu #menu [model]="items" [popup]="true" appendTo="body"></p-menu>
+  <ng-template #priorityMenu>
+    <div hlmDropdownMenu class="todo-priority-menu">
+      <button
+        hlmDropdownMenuItem
+        type="button"
+        class="high-priority"
+        (triggered)="setPriority(priorities.HIGH)"
+      >
+        <ng-icon name="lucideChevronUp" />
+        {{ t("highPriority") }}
+      </button>
+      <button
+        hlmDropdownMenuItem
+        type="button"
+        class="medium-priority"
+        (triggered)="setPriority(priorities.MEDIUM)"
+      >
+        <ng-icon name="lucideChevronRight" />
+        {{ t("mediumPriority") }}
+      </button>
+      <button
+        hlmDropdownMenuItem
+        type="button"
+        class="low-priority"
+        (triggered)="setPriority(priorities.LOW)"
+      >
+        <ng-icon name="lucideChevronDown" />
+        {{ t("lowPriority") }}
+      </button>
+    </div>
+  </ng-template>
   @if (todo.priority === priorities.MEDIUM) {
-    <p-button
+    <button
+      hlmBtn
       type="button"
-      styleClass="p-button-secondary p-button-text medium-priority"
-      (click)="readOnly || menu.toggle($event)"
+      variant="ghost"
+      class="medium-priority"
       [disabled]="readOnly"
-      icon="pi pi-circle"
-      [label]="t('mediumPriority')"
-    ></p-button>
+      [hlmDropdownMenuTrigger]="priorityMenu"
+    >
+      <ng-icon name="lucideCircle" />
+      {{ t("mediumPriority") }}
+    </button>
   }
   @if (todo.priority === priorities.LOW) {
-    <p-button
+    <button
+      hlmBtn
       type="button"
-      styleClass="p-button-secondary p-button-text low-priority"
-      (click)="readOnly || menu.toggle($event)"
+      variant="ghost"
+      class="low-priority"
       [disabled]="readOnly"
-      icon="pi pi-chevron-circle-down"
-      [label]="t('lowPriority')"
-    ></p-button>
+      [hlmDropdownMenuTrigger]="priorityMenu"
+    >
+      <ng-icon name="lucideChevronDown" />
+      {{ t("lowPriority") }}
+    </button>
   }
   @if (todo.priority === priorities.HIGH) {
-    <p-button
+    <button
+      hlmBtn
       type="button"
-      styleClass="p-button-secondary p-button-text high-priority"
-      (click)="readOnly || menu.toggle($event)"
+      variant="ghost"
+      class="high-priority"
       [disabled]="readOnly"
-      icon="pi pi-chevron-circle-up"
-      [label]="t('highPriority')"
-    ></p-button>
+      [hlmDropdownMenuTrigger]="priorityMenu"
+    >
+      <ng-icon name="lucideChevronUp" />
+      {{ t("highPriority") }}
+    </button>
   }
 </ng-container>

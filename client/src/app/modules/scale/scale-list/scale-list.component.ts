@@ -15,14 +15,25 @@ import { LoadingState } from '../../../enums/loading-state';
 import { Scale } from '../../../models/scale';
 
 import { Router, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
 import { ScaleListSkeletonComponent } from '../scale-list-skeleton/scale-list-skeleton.component';
-import { Message } from 'primeng/message';
-import { Tooltip } from 'primeng/tooltip';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { LineType } from '../../../enums/line-type';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideFilePen,
+  lucideInfo,
+  lucidePlus,
+  lucideStar,
+} from '@ng-icons/lucide';
 
 @Component({
+  providers: [
+    provideIcons({ lucideFilePen, lucideInfo, lucidePlus, lucideStar }),
+  ],
   selector: 'lc-scale-list',
   templateUrl: './scale-list.component.html',
   styleUrl: './scale-list.component.scss',
@@ -30,11 +41,13 @@ import { LineType } from '../../../enums/line-type';
   imports: [
     TranslocoDirective,
     RouterLink,
-    ButtonModule,
     TranslocoPipe,
     ScaleListSkeletonComponent,
-    Message,
-    Tooltip,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmTooltip,
+    NgIcon,
   ],
 })
 export class ScaleListComponent implements OnInit {

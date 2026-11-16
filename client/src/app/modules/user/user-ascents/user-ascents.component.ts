@@ -18,11 +18,11 @@ import { EMPTY, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-user-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent, HlmSkeleton],
   templateUrl: './user-ascents.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-ascents.component.scss',

@@ -1,12 +1,12 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   HostListener,
   inject,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
 } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { SearchService } from '../../../services/crud/search.service';
@@ -14,15 +14,13 @@ import { Searchable } from '../../../models/searchable';
 import { RecentSearchHistoryService } from '../../../services/core/recent-search-history.service';
 
 import { debounceTime, Subject } from 'rxjs';
-import { AvatarModule } from 'primeng/avatar';
 import { NavigationEnd, Router } from '@angular/router';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideLoader2, lucideSearch, lucideX } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { SearchableComponent } from '../searchable/searchable.component';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
@@ -31,16 +29,14 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'lc-search-dialog',
   imports: [
-    InputTextModule,
     FormsModule,
     TranslocoDirective,
-    AvatarModule,
-    ButtonModule,
-    MessageModule,
+    NgIcon,
+    HlmButton,
+    HlmInputGroupImports,
     SearchableComponent,
-    InputGroup,
-    InputGroupAddon,
   ],
+  providers: [provideIcons({ lucideLoader2, lucideSearch, lucideX })],
   templateUrl: './search-dialog.component.html',
   styleUrl: './search-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -54,9 +50,10 @@ export class SearchDialogComponent {
   private queryUpdate = new Subject<any>();
 
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   private searchService = inject(SearchService);
   private router = inject(Router);
-  private ref = inject(DynamicDialogRef);
+  private ref = inject(BrnDialogRef);
   private recentSearchHistory = inject(RecentSearchHistoryService);
   private store = inject(Store);
 
@@ -71,6 +68,9 @@ export class SearchDialogComponent {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((recentSearchables) => {
             this.recentSearchables = recentSearchables;
+            // The dialog shell is OnPush, so this async result is skipped until
+            // the closing click. Refresh here so history is visible while open.
+            this.cdr.markForCheck();
           });
       });
     this.queryUpdate.pipe(debounceTime(400)).subscribe(() => {
@@ -78,10 +78,12 @@ export class SearchDialogComponent {
         this.searchService.search(this.query).subscribe((searchables) => {
           this.searchables = searchables;
           this.loading = false;
+          this.cdr.markForCheck();
         });
       } else {
         this.searchables = [];
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
     this.router.events
@@ -94,8 +96,7 @@ export class SearchDialogComponent {
   }
 
   /**
-   * PrimeNG DynamicDialog Escape can no-op when its z-index gate fails;
-   * close via the dialog ref so Escape always dismisses search.
+   * Close on Escape from this host so the search dialog always dismisses.
    */
   @HostListener('document:keydown.escape', ['$event'])
   onDocumentEscape(event: Event) {

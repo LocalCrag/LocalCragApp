@@ -7,7 +7,7 @@
         }}</label>
         <input
           type="text"
-          pInputText
+          hlmInput
           id="title"
           formControlName="title"
           placeholder="{{ t('menuPageTitlePlaceholder') }}"
@@ -41,41 +41,16 @@
 
     <div class="form-actions">
       @if (!editMode) {
-        <p-button
-          label="{{ t('createMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveMenuPage()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{ t('createMenuPageButtonLabel') }}</button>
       }
       @if (editMode) {
-        <p-button
-          label="{{ t('editMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveMenuPage()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{ t('editMenuPageButtonLabel') }}</button>
       }
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
-        class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
       @if (editMode) {
-        <p-button
-          label="{{ t('deleteMenuPageButtonLabel') }}"
-          (click)="confirmDeleteMenuPage($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" variant="destructive" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="confirmDeleteMenuPage($event)">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideTrash2" /> {{ t('deleteMenuPageButtonLabel') }}</button>
       }
-      <p-confirmpopup></p-confirmpopup>
+      
     </div>
   </div>
 </ng-container>

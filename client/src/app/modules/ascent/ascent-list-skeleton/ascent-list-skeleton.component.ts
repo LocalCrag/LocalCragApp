@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-ascent-list-skeleton',
-  imports: [SkeletonModule],
+  imports: [HlmSkeleton],
   templateUrl: './ascent-list-skeleton.component.html',
   styleUrl: './ascent-list-skeleton.component.scss',
 })

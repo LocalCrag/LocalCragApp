@@ -13,7 +13,7 @@
           <input
             id="name"
             type="text"
-            pInputText
+            hlmInput
             formControlName="name"
             placeholder="{{ t('areaNamePlaceholder') }}"
             lcFormControl
@@ -78,16 +78,13 @@
         <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
           <label class="form-label" for="blocweatherUrl">
             {{ t("blocweatherUrlLabel") }}
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('blocweatherTooltip')"
-              tooltipPosition="right"
-            ></span>
+            <button type="button" class="inline-flex text-muted-foreground ml-2" [hlmTooltip]="t('blocweatherTooltip')" position="right"
+            ><ng-icon name="lucideCircleQuestionMark" /></button>
           </label>
           <input
             id="blocweatherUrl"
             type="text"
-            pInputText
+            hlmInput
             formControlName="blocweatherUrl"
             placeholder="https://blocweather.com/<country>/<region>/<spot>"
             lcFormControl
@@ -117,26 +114,21 @@
           lcFormControl
         />
         @if (parentClosureState?.closed) {
-          <p-message severity="info" icon="pi pi-info-circle">
-            {{ t("closedBecauseParentIsClosed") }}
-          </p-message>
+          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p></div>
         }
         @if (parentSector?.secret && !areaForm.get("secret").value) {
-          <p-message severity="warn" icon="pi pi-info-circle">
-            {{ t("aPublicAreaWillSetParentsToPublic") }}
-          </p-message>
+          <div hlmAlert variant="warning"><ng-icon name="lucideTriangleAlert" /><p hlmAlertDescription>{{ t("aPublicAreaWillSetParentsToPublic") }}</p></div>
         }
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label">{{ t("secretOptionsLabel") }}</label>
           <div class="flex flex-col gap-2">
             <div class="flex">
-              <p-checkbox
+              <hlm-checkbox
                 inputId="secret"
                 name="secret"
-                [binary]="true"
                 formControlName="secret"
                 lcFormControl
-              ></p-checkbox>
+              ></hlm-checkbox>
               <label [for]="'secret'" class="ml-2">{{
                 t("secretLabel")
               }}</label>
@@ -146,53 +138,19 @@
       </form>
       <div class="form-actions">
         @if (!editMode) {
-          <p-button
-            label="{{ t('createAreaButtonLabel') }}"
-            (click)="saveArea()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            data-cy="submit"
-          ></p-button>
+          <button hlmBtn type="button" class="responsive-button" (click)="saveArea()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('createAreaButtonLabel') }}</button>
         }
         @if (editMode) {
-          <p-button
-            label="{{ t('editAreaButtonLabel') }}"
-            (click)="saveArea()"
-            icon="pi pi-save"
-            class="responsive-button"
-            [loading]="loadingState === loadingStates.LOADING"
-            data-cy="submit"
-          ></p-button>
+          <button hlmBtn type="button" class="responsive-button" (click)="saveArea()" [disabled]="loadingState === loadingStates.LOADING" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('editAreaButtonLabel') }}</button>
         }
-        <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
-          class="responsive-button"
-          styleClass="p-button-secondary"
-          icon="pi pi-ban"
-        ></p-button>
+        <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
         @if (editMode) {
           @if (parentSector.slug !== environment.skippedSlug) {
-            <p-button
-              icon="pi pi-arrow-right-arrow-left"
-              label="{{ t('moveAreaButtonLabel') }}"
-              class="responsive-button"
-              styleClass="p-button-secondary"
-              (click)="openMoveDialog()"
-            ></p-button>
+            <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="openMoveDialog()"><ng-icon name="lucideArrowLeftRight" /> {{ t('moveAreaButtonLabel') }}</button>
           }
-          <p-button
-            label="{{ t('deleteAreaButtonLabel') }}"
-            (click)="confirmDeleteArea($event)"
-            icon="pi pi-trash"
-            class="responsive-button"
-            styleClass="p-button-danger"
-            [loading]="loadingState === loadingStates.LOADING"
-            data-cy="delete"
-          ></p-button>
+          <button hlmBtn type="button" variant="destructive" class="responsive-button" (click)="confirmDeleteArea($event)" [disabled]="loadingState === loadingStates.LOADING" data-cy="delete">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideTrash2" /> } {{ t('deleteAreaButtonLabel') }}</button>
         }
-        <p-confirmpopup></p-confirmpopup>
+        
       </div>
       <lc-move-object-dialog
         #moveDialog

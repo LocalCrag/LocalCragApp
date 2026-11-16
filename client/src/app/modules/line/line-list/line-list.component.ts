@@ -14,11 +14,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { CommentCountComponent } from '../../comments/comment-count/comment-count.component';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { NgClass } from '@angular/common';
-import { RatingModule } from 'primeng/rating';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
@@ -34,13 +31,10 @@ import {
 } from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
-import { SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { AccordionModule } from 'primeng/accordion';
 import { map, mergeMap, take } from 'rxjs/operators';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
-
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
@@ -54,10 +48,8 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 import { CragsService } from '../../../services/crud/crags.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { GradeDistribution } from '../../../models/scale';
-import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../line-list-skeleton/line-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -66,7 +58,6 @@ import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import {
   LineAdvancedFiltersDialogComponent,
   type LineAdvancedFiltersDialogData,
@@ -78,7 +69,9 @@ import {
   LineListAdvancedFilters,
   LineListFiltersDialogResult,
   LineListFiltersPersisted,
+  LineListScaleSelectItem,
   sanitizeLineListAdvancedFilters,
+  SelectOption,
 } from '../line-list-filters/line-list-filter.logic';
 import { appendLineListQueryParams } from '../line-list-filters/line-list-api-query';
 import { ApiQueryParams } from '../../../utility/http/query-params';
@@ -86,16 +79,29 @@ import {
   loadLineListFilters,
   saveLineListFilters,
 } from '../line-list-filters/line-list-filters.storage';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideEye,
+  lucideEyeOff,
+  lucideFilter,
+  lucideInfo,
+  lucideLoaderCircle,
+  lucidePlus,
+  lucideStar,
+  lucideVideo,
+} from '@ng-icons/lucide';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 
 @Component({
   selector: 'lc-line-list',
   imports: [
     AscentCountComponent,
     CommentCountComponent,
-    ButtonModule,
-    DataViewModule,
     HasPermissionDirective,
-    RatingModule,
     RouterLink,
     SecretSpotTagComponent,
     DraftTagComponent,
@@ -104,22 +110,35 @@ import {
     NgClass,
     FormsModule,
     GradeRangeSliderComponent,
-    AccordionModule,
     TodoButtonComponent,
     ClosedSpotTagComponent,
     ArchiveButtonComponent,
     GymModeDirective,
-    Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
-    Message,
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     LineGradePipe,
     TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    NgIcon,
   ],
-  providers: [DialogService],
+  providers: [
+    provideIcons({
+      lucideEye,
+      lucideEyeOff,
+      lucideFilter,
+      lucideInfo,
+      lucideLoaderCircle,
+      lucidePlus,
+      lucideStar,
+      lucideVideo,
+    }),
+  ],
   templateUrl: './line-list.component.html',
   styleUrl: './line-list.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -139,12 +158,8 @@ export class LineListComponent implements OnInit, PaginatedListView {
   public isTodo: Set<string> = new Set();
   public displayUserRating?: boolean = undefined;
 
-  public availableScales: SelectItem<
-    { lineType: LineType; gradeScale: string } | undefined
-  >[] = [];
-  public scaleKey: SelectItem<
-    { lineType: LineType; gradeScale: string } | undefined
-  >;
+  public availableScales: LineListScaleSelectItem[] = [];
+  public scaleKey: LineListScaleSelectItem;
 
   public minGradeValue = -2;
   public maxGradeValue = null;
@@ -153,14 +168,14 @@ export class LineListComponent implements OnInit, PaginatedListView {
     this.minGradeValue,
     this.maxGradeValue,
   ];
-  public orderOptions: SelectItem[];
-  public orderKey: SelectItem;
-  public orderDirectionOptions: SelectItem[];
-  public orderDirectionKey: SelectItem;
+  public orderOptions: SelectOption<string>[];
+  public orderKey: SelectOption<string>;
+  public orderDirectionOptions: SelectOption<string>[];
+  public orderDirectionKey: SelectOption<string>;
   public showArchive = false;
   public advancedFilters: LineListAdvancedFilters =
     defaultLineListAdvancedFilters();
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef<LineListFiltersDialogResult> | undefined;
 
   private loadedGradeFilterRange: (number | null)[] | null = null;
   private destroyRef = inject(DestroyRef);
@@ -176,7 +191,7 @@ export class LineListComponent implements OnInit, PaginatedListView {
   private actions$ = inject(Actions);
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
 
   protected scalesService = inject(ScalesService);
 
@@ -295,15 +310,17 @@ export class LineListComponent implements OnInit, PaginatedListView {
       gradeFilterRange: [...this.gradeFilterRange],
       maxGradeValue: this.maxGradeValue,
     };
-    this.ref = this.dialogService.open(LineAdvancedFiltersDialogComponent, {
-      modal: true,
-      width: 'min(640px, 95vw)',
-      header: this.translocoService.translate(
-        'line.lineList.advancedFiltersDialogTitle',
-      ),
-      data,
-    });
-    this.ref.onClose
+    this.ref = this.dialogService.open<LineListFiltersDialogResult>(
+      LineAdvancedFiltersDialogComponent,
+      {
+        title: this.translocoService.translate(
+          marker('line.lineList.advancedFiltersDialogTitle'),
+        ),
+        contentClass: 'sm:max-w-lg',
+        context: data,
+      },
+    );
+    this.ref.closed$
       .pipe(take(1))
       .subscribe((result: LineListFiltersDialogResult | undefined) => {
         if (result) {

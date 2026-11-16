@@ -1,19 +1,25 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
+  NgZone,
   OnChanges,
   Output,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideRotateCcw, lucideRotateCw } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { TooltipModule } from 'primeng/tooltip';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import {
   CropEdges,
   displaySize,
@@ -45,7 +51,15 @@ const HANDLE_EDGES: Record<Exclude<CropDragMode, 'move'>, CropEdges> = {
 
 @Component({
   selector: 'lc-image-edit-dialog',
-  imports: [TranslocoDirective, DialogModule, ButtonModule, TooltipModule],
+  imports: [
+    TranslocoDirective,
+    NgIcon,
+    HlmButton,
+    HlmSpinner,
+    HlmTooltip,
+    ...HlmDialogImports,
+  ],
+  providers: [provideIcons({ lucideRotateCcw, lucideRotateCw })],
   templateUrl: './image-edit-dialog.component.html',
   styleUrl: './image-edit-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -76,6 +90,9 @@ export class ImageEditDialogComponent implements OnChanges {
     'sw',
     'se',
   ];
+
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ngZone = inject(NgZone);
 
   private drag: {
     mode: CropDragMode;
@@ -192,17 +209,54 @@ export class ImageEditDialogComponent implements OnChanges {
     const dy = point.y - this.drag.originY;
     if (this.drag.mode === 'move') {
       this.crop = moveCrop(this.drag.start, dx, dy);
+    } else {
+      const min = this.minCropFraction();
+      this.crop = resizeCrop(
+        this.drag.start,
+        dx,
+        dy,
+        HANDLE_EDGES[this.drag.mode],
+        min.width,
+        min.height,
+      );
+    }
+    // Paint immediately. Captured pointer moves often run outside the dialog
+    // view's change detection, so bindings would otherwise update only on release.
+    this.paintCrop();
+    this.ngZone.run(() => this.cdr.detectChanges());
+  }
+
+  private paintCrop(): void {
+    const stage = this.stage?.nativeElement;
+    if (!stage) {
       return;
     }
-    const min = this.minCropFraction();
-    this.crop = resizeCrop(
-      this.drag.start,
-      dx,
-      dy,
-      HANDLE_EDGES[this.drag.mode],
-      min.width,
-      min.height,
-    );
+    const { x, y, width, height } = this.crop;
+    const pct = (value: number) => `${value * 100}%`;
+    const set = (selector: string, styles: Partial<CSSStyleDeclaration>) => {
+      const el = stage.querySelector(selector) as HTMLElement | null;
+      if (el) {
+        Object.assign(el.style, styles);
+      }
+    };
+    set('.edit-stage__shade--top', { height: pct(y) });
+    set('.edit-stage__shade--bottom', { top: pct(y + height) });
+    set('.edit-stage__shade--left', {
+      top: pct(y),
+      height: pct(height),
+      width: pct(x),
+    });
+    set('.edit-stage__shade--right', {
+      top: pct(y),
+      height: pct(height),
+      left: pct(x + width),
+    });
+    set('.edit-stage__crop', {
+      left: pct(x),
+      top: pct(y),
+      width: pct(width),
+      height: pct(height),
+    });
   }
 
   onStagePointerUp(event: PointerEvent): void {
@@ -227,7 +281,6 @@ export class ImageEditDialogComponent implements OnChanges {
     }
     event.preventDefault();
     event.stopPropagation();
-    this.stage.nativeElement.setPointerCapture(event.pointerId);
     const point = this.pointInStage(event);
     this.drag = {
       mode,
@@ -236,6 +289,11 @@ export class ImageEditDialogComponent implements OnChanges {
       originX: point.x,
       originY: point.y,
     };
+    try {
+      this.stage.nativeElement.setPointerCapture(event.pointerId);
+    } catch {
+      // The pointer is already gone, or this event cannot be captured.
+    }
   }
 
   private pointInStage(event: PointerEvent): { x: number; y: number } {

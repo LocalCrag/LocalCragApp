@@ -8,12 +8,15 @@
         }}</a>
       </div>
       <div class="alert-actions">
-        <p-button
-          label="{{ t('AcceptCookiesButton') }}"
-          styleClass="p-button-text"
-          (onClick)="allowCookies()"
+        <button
+          hlmBtn
+          variant="ghost"
+          type="button"
+          (click)="allowCookies()"
           data-cy="accept-cookies"
-        ></p-button>
+        >
+          {{ t("AcceptCookiesButton") }}
+        </button>
       </div>
     </div>
   }
@@ -28,14 +31,18 @@
           }}</a>
         }
       </div>
-      <p-button
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon"
+        type="button"
         class="alert-dismiss"
-        icon="pi pi-times"
-        styleClass="p-button-text p-button-rounded"
         [attr.aria-label]="t('dismissAlertButton')"
-        (onClick)="dismissAdminAlert(alert)"
+        (click)="dismissAdminAlert(alert)"
         data-cy="dismiss-app-alert"
-      />
+      >
+        <ng-icon name="lucideX" />
+      </button>
     </div>
   }
 </ng-container>

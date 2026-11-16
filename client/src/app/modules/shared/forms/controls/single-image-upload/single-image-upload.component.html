@@ -1,25 +1,32 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
   @if (!file) {
-    <p-fileupload
-      mode="basic"
+    <button
+      hlmBtn
+      type="button"
+      class="lc-file-trigger"
       [hidden]="showProgressBar"
-      [name]="'upload'"
-      [url]="uploadUrl"
-      accept="image/jpeg,image/png,image/gif,image/bmp"
-      [multiple]="false"
-      [maxFileSize]="maxImageSize"
-      (onError)="showProgressBar = false"
-      (onBeforeUpload)="startProgress()"
-      (onProgress)="setProgress($event)"
-      (onUpload)="setMedia($event)"
-      [auto]="true"
-      chooseLabel="{{ t('browseFilesButtonLabel') }}"
+      [disabled]="isDisabled"
+      (click)="fileInput.click()"
     >
-    </p-fileupload>
+      <ng-icon name="lucideUpload" />
+      {{ t("browseFilesButtonLabel") }}
+    </button>
+    <input
+      #fileInput
+      type="file"
+      class="hidden"
+      accept="image/jpeg,image/png,image/gif,image/bmp"
+      (change)="onFilesSelected($event)"
+    />
   }
 
   @if (showProgressBar) {
-    <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
+    <div
+      hlmProgress
+      [value]="progressMode === 'indeterminate' ? null : progress"
+    >
+      <div hlmProgressIndicator></div>
+    </div>
   }
 
   <div
@@ -75,85 +82,108 @@
             ></div>
           </div>
         } @else {
-          <p-image
-            [src]="file.path"
-            [preview]="!isDisabled"
-            [alt]="file.originalFilename"
-            [width]="fullWidth ? undefined : '250'"
+          <button
+            type="button"
+            class="image-preview"
+            [disabled]="isDisabled"
+            (click)="previewUrl = file.path"
           >
-            <ng-template #indicator>
-              <i class="pi pi-eye"></i>
-            </ng-template>
-          </p-image>
+            <img
+              [src]="file.path"
+              [alt]="file.originalFilename"
+              [width]="fullWidth ? undefined : 250"
+            />
+            @if (!isDisabled) {
+              <span class="image-preview-mask">
+                <ng-icon name="lucideEye" />
+              </span>
+            }
+          </button>
         }
       }
       @if (file && !isDisabled) {
-        <p-button
-          icon="pi pi-times"
-          (click)="removeMedia()"
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          class="image-remove rounded-full"
           [disabled]="focusAdjustActive"
-          styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
-        ></p-button>
+          (click)="removeMedia()"
+        >
+          <ng-icon name="lucideX" />
+        </button>
       }
     </div>
 
     @if (file && !isDisabled && file.width && file.height && canEdit(file)) {
-      <p-button
-        icon="pi pi-pencil"
-        [label]="t('editImageButtonLabel')"
-        severity="secondary"
-        [outlined]="true"
-        size="small"
+      <button
+        hlmBtn
+        type="button"
+        variant="outline"
+        size="sm"
         [disabled]="focusAdjustActive || transforming"
-        [pTooltip]="t('editImageTooltip')"
-        tooltipPosition="right"
+        [hlmTooltip]="t('editImageTooltip')"
+        position="right"
         (click)="openImageEdit()"
-      />
+      >
+        <ng-icon name="lucidePencil" />
+        {{ t("editImageButtonLabel") }}
+      </button>
     }
 
     @if (file && focusAdjustable && file.width && file.height) {
       <div class="focus-adjust-actions">
         @if (focusAdjustActive) {
-          <p-button
-            icon="pi pi-check"
-            [label]="t('adjustCropDoneButtonLabel')"
-            severity="primary"
-            size="small"
+          <button
+            hlmBtn
+            type="button"
+            size="sm"
             (click)="confirmFocusAdjust()"
-          />
-          <p-button
-            icon="pi pi-refresh"
-            severity="secondary"
-            [outlined]="true"
-            size="small"
-            [pTooltip]="t('adjustCropResetButtonLabel')"
-            tooltipPosition="top"
+          >
+            <ng-icon name="lucideCheck" />
+            {{ t("adjustCropDoneButtonLabel") }}
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            [hlmTooltip]="t('adjustCropResetButtonLabel')"
+            position="top"
             (click)="resetFocusAdjust()"
-          />
-          <p-button
-            icon="pi pi-times"
-            severity="secondary"
-            [outlined]="true"
-            size="small"
-            [pTooltip]="t('adjustCropCancelButtonLabel')"
-            tooltipPosition="top"
+          >
+            <ng-icon name="lucideRefreshCw" />
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            [hlmTooltip]="t('adjustCropCancelButtonLabel')"
+            position="top"
             (click)="cancelFocusAdjust()"
-          />
+          >
+            <ng-icon name="lucideX" />
+          </button>
         } @else {
-          <p-button
-            icon="pi pi-objects-column"
-            [label]="t('adjustCropButtonLabel')"
-            severity="secondary"
-            [outlined]="true"
-            size="small"
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="sm"
             (click)="toggleFocusAdjust()"
-          />
+          >
+            <ng-icon name="lucideColumns3" />
+            {{ t("adjustCropButtonLabel") }}
+          </button>
         }
-        <span
-          class="pi pi-info-circle focus-adjust-actions__info"
-          [pTooltip]="t('adjustCropTooltip')"
-          tooltipPosition="right"
-        ></span>
+        <ng-icon
+          name="lucideInfo"
+          class="focus-adjust-actions__info"
+          [hlmTooltip]="t('adjustCropTooltip')"
+          position="right"
+        />
       </div>
     }
   </div>
@@ -167,4 +197,12 @@
     (visibleChange)="onImageEditVisible($event)"
     (applyEdit)="applyImageEdit($event)"
   />
+
+  @if (previewUrl) {
+    <hlm-dialog state="open" (closed)="previewUrl = null">
+      <hlm-dialog-content *hlmDialogPortal class="sm:max-w-3xl">
+        <img [src]="previewUrl" alt="" class="w-full" />
+      </hlm-dialog-content>
+    </hlm-dialog>
+  }
 </ng-container>

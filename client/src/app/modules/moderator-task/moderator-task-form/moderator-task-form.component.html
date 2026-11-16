@@ -5,7 +5,7 @@
         <label class="form-label" for="title">{{ t("titleLabel") }}</label>
         <input
           type="text"
-          pInputText
+          hlmInput
           id="title"
           formControlName="title"
           placeholder="{{ t('titlePlaceholder') }}"
@@ -23,24 +23,7 @@
         <label class="form-label" for="assigned-to">{{
           t("assignedToLabel")
         }}</label>
-        <p-select
-          id="assigned-to"
-          formControlName="assignedTo"
-          [options]="assigneeUsers"
-          dataKey="id"
-          [showClear]="true"
-          [disabled]="usersLoading"
-          placeholder="{{ t('assignedToPlaceholder') }}"
-          lcFormControl
-          styleClass="w-full"
-        >
-          <ng-template let-user #item>
-            {{ assigneeLabel(user) }}
-          </ng-template>
-          <ng-template let-user #selectedItem>
-            {{ assigneeLabel(user) }}
-          </ng-template>
-        </p-select>
+        <hlm-select formControlName="assignedTo" [itemToString]="assigneeItemLabel" [disabled]="usersLoading" lcFormControl><hlm-select-trigger class="w-full"><hlm-select-value placeholder="{{ t('assignedToPlaceholder') }}" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (user of assigneeUsers; track $index) {<hlm-select-item [value]="user">{{ assigneeLabel(user) }}</hlm-select-item>}</hlm-select-content></hlm-select>
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
@@ -59,28 +42,12 @@
     </form>
 
     <div class="form-actions">
-      <p-button
-        [label]="editMode ? t('saveTaskButton') : t('createTaskButton')"
-        (click)="saveTask()"
-        icon="pi pi-save"
-        [loading]="loadingState === loadingStates.LOADING"
-      ></p-button>
-      <p-button
-        [label]="t('cancelButton')"
-        (click)="cancel()"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+      <button hlmBtn type="button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveTask()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{ editMode ? t('saveTaskButton') : t('createTaskButton') }}</button>
+      <button hlmBtn type="button" variant="secondary" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButton') }}</button>
       @if (editMode) {
-        <p-button
-          [label]="t('deleteTaskButton')"
-          (click)="confirmDelete($event)"
-          icon="pi pi-trash"
-          styleClass="p-button-danger"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" variant="destructive" [disabled]="loadingState === loadingStates.LOADING" (click)="confirmDelete($event)">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideTrash2" /> {{ t('deleteTaskButton') }}</button>
       }
-      <p-confirmpopup></p-confirmpopup>
+      
     </div>
   </div>
 </ng-container>

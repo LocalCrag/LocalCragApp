@@ -1,11 +1,7 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
   <div class="p-6">
     <div class="flex justify-end mb-6" *isLoggedIn="true">
-      <p-button
-        (click)="addImage()"
-        icon="pi pi-image"
-        [label]="t('addImage')"
-      ></p-button>
+      <button hlmBtn type="button" (click)="addImage()"><ng-icon name="lucideImage" /> {{ t('addImage') }}</button>
     </div>
 
     <div class="gallery-masonry">
@@ -30,35 +26,17 @@
     </div>
     @if (hasNextPage) {
       <div class="flex justify-center mt-20">
-        <p-button
-          label="{{ t('loadMore') }}"
-          (scrolled)="loadNextPage()"
-          (click)="loadNextPage()"
-          infiniteScroll
-          [infiniteScrollDistance]="2"
-          [infiniteScrollThrottle]="50"
-          [loading]="loading === loadingStates.LOADING && currentPage > 1"
-        ></p-button>
+        <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING && currentPage > 1" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING && currentPage > 1) { <hlm-spinner /> } {{ t('loadMore') }}</button>
       </div>
     }
     @if (!(loading === loadingStates.LOADING) && images.length === 0) {
-      <p-message severity="info" icon="pi pi-info-circle">
-        {{ t("thisGalleryIsEmpty") }}
-      </p-message>
+      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("thisGalleryIsEmpty") }}</p></div>
     }
-    <p-confirmpopup></p-confirmpopup>
+    
 
-    <p-galleria
-      [value]="images"
-      [(visible)]="previewVisible"
-      [activeIndex]="previewIndex"
-      [fullScreen]="true"
-      [showThumbnails]="false"
-      [showItemNavigators]="false"
-      [baseZIndex]="1200"
-      [containerStyle]="{ 'max-width': '90vw' }"
-    >
-      <ng-template #item let-item>
+    @if (previewVisible && images[previewIndex]; as item) {
+      <hlm-dialog state="open" (closed)="previewVisible = false">
+        <hlm-dialog-content *hlmDialogPortal class="sm:max-w-5xl">
         <ng-container *transloco="let tp; read: 'gallery.preview'">
           <div
             class="gallery-preview"
@@ -73,10 +51,7 @@
                 (click)="stepPreview(-1, $event)"
                 [attr.aria-label]="tp('previousImage')"
               >
-                <i
-                  class="pi pi-chevron-left p-galleria-prev-icon"
-                  aria-hidden="true"
-                ></i>
+                <ng-icon name="lucideChevronLeft" />
               </button>
             }
             <img
@@ -93,10 +68,7 @@
                 (click)="stepPreview(1, $event)"
                 [attr.aria-label]="tp('nextImage')"
               >
-                <i
-                  class="pi pi-chevron-right p-galleria-next-icon"
-                  aria-hidden="true"
-                ></i>
+                <ng-icon name="lucideChevronRight" />
               </button>
             }
             @if (item.description) {
@@ -104,7 +76,8 @@
             }
           </div>
         </ng-container>
-      </ng-template>
-    </p-galleria>
+        </hlm-dialog-content>
+      </hlm-dialog>
+    }
   </div>
 </ng-container>

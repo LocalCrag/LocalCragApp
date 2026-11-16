@@ -14,18 +14,14 @@ import { Comment } from '../../../models/comment';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
-import { Button } from 'primeng/button';
 import { CommentEditorComponent } from '../comment-editor/comment-editor.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { map, take } from 'rxjs/operators';
 import { CommentsService } from '../../../services/crud/comments.service';
-import { ProgressSpinner } from 'primeng/progressspinner';
 import { CommentsContextService } from '../comments-context.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest, forkJoin, Observable, timer } from 'rxjs';
-import { Menu } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import {
   selectCurrentUser,
@@ -38,32 +34,60 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { LanguageService } from '../../../services/core/language.service';
 import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
-import { DialogService } from 'primeng/dynamicdialog';
 import { selectSoftGating } from '../../../ngrx/selectors/instance-settings.selectors';
 import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronDown,
+  lucideChevronUp,
+  lucideEllipsisVertical,
+  lucidePencil,
+  lucideReply,
+  lucideTrash,
+} from '@ng-icons/lucide';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
+
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 
 @Component({
   selector: 'lc-comment',
   imports: [
+    ...HlmDropdownMenuImports,
     UserAvatarComponent,
     RouterLink,
     TimeAgoPipe,
-    Button,
     CommentEditorComponent,
     TranslocoDirective,
-    ProgressSpinner,
-    Menu,
     AsyncPipe,
     NgTemplateOutlet,
     SocialInteractionWrapperComponent,
+    HlmButton,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.scss',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [DialogService],
+  providers: [
+    provideIcons({
+      lucideChevronDown,
+      lucideChevronUp,
+      lucideEllipsisVertical,
+      lucidePencil,
+      lucideReply,
+      lucideTrash,
+    }),
+  ],
 })
 export class CommentComponent implements OnInit {
+  readonly menuIcon = lucideNameFromPrimeIcon;
+
   @Input() comment: Comment;
   @Input() isRootComment = true;
 
@@ -92,7 +116,7 @@ export class CommentComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private languageService = inject(LanguageService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private loggedIn = false;
 
   ngOnInit() {

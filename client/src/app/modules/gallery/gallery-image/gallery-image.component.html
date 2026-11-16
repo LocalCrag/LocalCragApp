@@ -1,47 +1,69 @@
 <ng-container *transloco="let t; read: 'gallery.galleryImage'">
-  <p-card styleClass="gallery-image-card">
-    <ng-template #header>
-      <div class="image-container" [style.aspect-ratio]="aspectRatio()">
+  <div hlmCard class="gallery-image-card">
+    <div class="image-container" [style.aspect-ratio]="aspectRatio()">
+      <button
+        type="button"
+        class="gallery-image-open"
+        [attr.aria-label]="image.description || t('viewFullSize')"
+        (click)="preview.emit()"
+      >
+        <img [src]="image.image.thumbnailM" alt="" />
+        <span class="gallery-image-open__icon" aria-hidden="true">
+          <ng-icon name="lucideEye" />
+        </span>
+      </button>
+    </div>
+    <div hlmCardContent class="tags">
+      <div class="info-icon">
         <button
           type="button"
-          class="gallery-image-open"
-          [attr.aria-label]="image.description || t('viewFullSize')"
-          (click)="preview.emit()"
-        >
-          <img [src]="image.image.thumbnailM" alt="" />
-          <span class="gallery-image-open__icon" aria-hidden="true">
-            <i class="pi pi-eye"></i>
-          </span>
-        </button>
-      </div>
-    </ng-template>
-    <div class="tags">
-      <div class="info-icon">
-        <i
-          class="pi pi-info-circle"
-          (click)="infoIcon.focus()"
           #infoIcon
-          tabindex="0"
-          tooltipEvent="focus"
-          pTooltip="{{
+          hlmTooltip="{{
             t('createdBy', { createdBy: image.createdBy.fullname })
           }}"
-          tooltipPosition="top"
-        ></i>
+          position="top"
+          (click)="infoIcon.focus()"
+        >
+          <ng-icon name="lucideInfo" />
+        </button>
       </div>
       @for (tag of image.tags; track tag) {
         <lc-tag [tag]="tag"></lc-tag>
       }
       @if (image.createdBy.id === loggedInUser?.id || loggedInUser?.moderator) {
         <div class="speed-dial-container">
-          <p-speed-dial
-            [model]="speedDialItems"
-            direction="up"
-            showIcon="pi pi-bars"
-            hideIcon="pi pi-times"
-          />
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon"
+            [hlmDropdownMenuTrigger]="imageMenu"
+          >
+            <ng-icon name="lucideMenu" />
+          </button>
+          <ng-template #imageMenu>
+            <div hlmDropdownMenu>
+              <button
+                hlmDropdownMenuItem
+                type="button"
+                (triggered)="edit.emit()"
+              >
+                <ng-icon name="lucidePencil" />
+                {{ "gallery.deleteImage" | transloco }}
+              </button>
+              <button
+                hlmDropdownMenuItem
+                type="button"
+                variant="destructive"
+                (triggered)="emitDelete()"
+              >
+                <ng-icon name="lucideTrash2" />
+                {{ "gallery.deleteImage" | transloco }}
+              </button>
+            </div>
+          </ng-template>
         </div>
       }
     </div>
-  </p-card>
+  </div>
 </ng-container>

@@ -21,7 +21,9 @@ import { cookiesAccepted } from '../../../ngrx/actions/app-level-alerts.actions'
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { AsyncPipe } from '@angular/common';
-import { Button } from 'primeng/button';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideX } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { AppAlertsService } from '../../../services/crud/app-alerts.service';
 import { AppAlertDismissalService } from '../../../services/crud/app-alert-dismissal.service';
 import { AppAlert } from '../../../models/app-alert';
@@ -32,7 +34,8 @@ import { AppAlert } from '../../../models/app-alert';
   styleUrls: ['./app-level-alerts.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TranslocoDirective, AsyncPipe, Button],
+  imports: [TranslocoDirective, AsyncPipe, HlmButton, NgIcon],
+  providers: [provideIcons({ lucideX })],
 })
 export class AppLevelAlertsComponent implements OnInit {
   public showCookieAlert$: Observable<boolean>;

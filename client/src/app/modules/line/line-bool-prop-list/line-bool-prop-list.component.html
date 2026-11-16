@@ -1,9 +1,10 @@
 <ng-container *transloco="let t; read: 'line.lineBoolPropList'">
   <span
+    #clip
     class="clip"
-    [pTooltip]="fullLabel"
-    [showOnEllipsis]="true"
-    tooltipPosition="top"
+    [hlmTooltip]="fullLabel"
+    [tooltipDisabled]="clip.scrollWidth <= clip.clientWidth"
+    position="top"
   >
     <span
       ><strong>{{ line.startingPosition | transloco }}</strong></span

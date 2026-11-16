@@ -21,18 +21,68 @@
       }
     </ng-template>
     <ng-template #end>
-      <p-menu
-        #menu
-        [model]="userMenuItems"
-        [popup]="true"
-        data-cy="auth-menu"
-        styleClass="wide-menu"
-      ></p-menu>
+      <ng-template #userMenu>
+        <div hlmDropdownMenu>
+          @for (item of userMenuItems; track item.label; let last = $last) {
+            @if (item.items?.length) {
+              <div hlmDropdownMenuGroup>
+                @if (item.label) {
+                  <div hlmDropdownMenuLabel>{{ item.label }}</div>
+                }
+                @for (child of item.items; track child.label) {
+                  @if (child.routerLink) {
+                    <a hlmDropdownMenuItem [routerLink]="child.routerLink">
+                      @if (child.icon) {
+                        <ng-icon [name]="$any(child.icon)" />
+                      }
+                      {{ child.label }}
+                    </a>
+                  } @else {
+                    <button
+                      hlmDropdownMenuItem
+                      type="button"
+                      [attr.data-cy]="child.id"
+                      (triggered)="child.command?.()"
+                    >
+                      @if (child.icon) {
+                        <ng-icon [name]="$any(child.icon)" />
+                      }
+                      {{ child.label }}
+                    </button>
+                  }
+                }
+              </div>
+              @if (!last) {
+                <div hlmDropdownMenuSeparator></div>
+              }
+            } @else if (item.routerLink) {
+              <a hlmDropdownMenuItem [routerLink]="item.routerLink">
+                @if (item.icon) {
+                  <ng-icon [name]="$any(item.icon)" />
+                }
+                {{ item.label }}
+              </a>
+            } @else {
+              <button
+                hlmDropdownMenuItem
+                type="button"
+                [attr.data-cy]="item.id"
+                (triggered)="item.command?.()"
+              >
+                @if (item.icon) {
+                  <ng-icon [name]="$any(item.icon)" />
+                }
+                {{ item.label }}
+              </button>
+            }
+          }
+        </div>
+      </ng-template>
       <div class="flex items-center justify-center gap-2">
         <div class="navbar-field-group">
           @if (showNavbarElement(navbarCollapseLevels.search)) {
             <div class="search-fake-input" (click)="openSearch()" tabindex="0">
-              <i class="pi pi-search mr-2"></i>
+              <ng-icon name="lucideSearch" />
               <span class="search-label">{{ t("searchPlaceholder") }}</span>
             </div>
           }
@@ -46,15 +96,19 @@
             ></lc-language-select>
           }
           @if (showNavbarElement(navbarCollapseLevels.themeToggle)) {
-            <p-button
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              size="icon"
+              (click)="toggleGuestColorScheme()"
               *isLoggedOut="true"
-              [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
-              severity="secondary"
-              variant="text"
-              styleClass="navbar-icon-button navbar-color-scheme-toggle"
-              (onClick)="toggleGuestColorScheme()"
               data-cy="navbar-color-scheme-toggle"
-            ></p-button>
+            >
+              <ng-icon
+                [name]="themeService.isDarkMode() ? 'lucideSun' : 'lucideMoon'"
+              />
+            </button>
           }
         </div>
 
@@ -63,24 +117,17 @@
             <lc-notification-bell></lc-notification-bell>
           }
           @if (currentUser$ | async; as authUser) {
-            <lc-user-avatar
-              [user]="authUser"
-              (click)="menu.toggle($event)"
+            <div
+              hlmDropdownMenuTrigger
+              [hlmDropdownMenuTrigger]="userMenu"
+              class="inline-flex items-center"
               data-cy="auth-menu-button"
-              styleClass="mr-2"
-              size="normal"
-            />
+            >
+              <lc-user-avatar [user]="authUser" size="normal" />
+            </div>
           }
         </ng-container>
-        <p-button
-          icon="pi pi-user"
-          routerLink="login"
-          severity="secondary"
-          variant="text"
-          styleClass="navbar-icon-button"
-          *isLoggedOut="true"
-          data-cy="navbar-login"
-        ></p-button>
+        <a hlmBtn variant="ghost" size="icon" routerLink="login" *isLoggedOut="true" data-cy="navbar-login"><ng-icon name="lucideUser" /></a>
       </div>
     </ng-template>
   </lc-header-menu>

@@ -1,15 +1,11 @@
-<ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
-  <div class="content p-6">
+<div class="content p-6">
     <form [formGroup]="instanceSettingsForm" lcForm>
-      <p-tabs [(value)]="activeTab">
-        <p-tablist>
-          <p-tab value="general">{{ t("commonSettings") }}</p-tab>
-          <p-tab value="appearance">{{ t("imagesSettings") }}</p-tab>
-          <p-tab value="analytics">{{ t("matomoSettings") }}</p-tab>
-          <p-tab value="maps">{{ t("mapSettings") }}</p-tab>
-          <p-tab value="storage">{{ t("storageSettings") }}</p-tab>
-        </p-tablist>
-      </p-tabs>
+      <lc-chrome-tabs
+        appearance="plain"
+        [tabs]="settingsTabs"
+        [tab]="activeTab"
+        (tabActivated)="onSettingsTab($event)"
+      />
 
       @if (activeTab === "general") {
         <lc-instance-settings-general-tab
@@ -51,5 +47,4 @@
         />
       }
     </form>
-  </div>
-</ng-container>
+</div>

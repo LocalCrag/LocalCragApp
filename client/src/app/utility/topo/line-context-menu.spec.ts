@@ -1,4 +1,4 @@
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../../modules/shared/models/menu-item';
 import { TodoPriority } from '../../enums/todo-priority';
 import {
   buildLineContextMenuItems,

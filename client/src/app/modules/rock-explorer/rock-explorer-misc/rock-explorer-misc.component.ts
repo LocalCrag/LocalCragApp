@@ -14,13 +14,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
-import { Menu } from 'primeng/menu';
-import { Message } from 'primeng/message';
-import { Textarea } from 'primeng/textarea';
 import { Feature, FeatureCollection, Geometry, Position } from 'geojson';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
@@ -35,25 +28,65 @@ import {
 } from '../../../models/rock-explorer-misc';
 import { RockExplorerService } from '../../../services/crud/rock-explorer.service';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
+import { toast } from '@spartan-ng/brain/sonner';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideCheck,
+  lucideEye,
+  lucideInfo,
+  lucideMapPin,
+  lucidePencil,
+  lucidePlus,
+  lucideTrash2,
+  lucideUndo2,
+} from '@ng-icons/lucide';
+
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
+  providers: [
+    provideIcons({
+      lucideCheck,
+      lucideEye,
+      lucideInfo,
+      lucideMapPin,
+      lucidePencil,
+      lucidePlus,
+      lucideTrash2,
+      lucideUndo2,
+    }),
+  ],
   selector: 'lc-rock-explorer-misc',
   imports: [
+    ...HlmDropdownMenuImports,
     FormsModule,
-    Button,
-    DialogModule,
-    InputText,
-    Menu,
-    Message,
-    Textarea,
     CoordinatesComponent,
     TranslocoDirective,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    HlmTextarea,
+    ...HlmDialogImports,
+    NgIcon,
   ],
   templateUrl: './rock-explorer-misc.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-misc.component.scss',
 })
 export class RockExplorerMiscComponent implements OnChanges {
+  private confirmDialog = inject(ConfirmDialogService);
+  readonly menuIcon = lucideNameFromPrimeIcon;
+
   @Input({ required: true }) object!: RockExplorerFeature;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() mapPickChange = new EventEmitter<boolean>();
@@ -84,8 +117,6 @@ export class RockExplorerMiscComponent implements OnChanges {
   private coordinatesDialogParkingId: string | null = null;
   private destroyRef = inject(DestroyRef);
   private rockExplorerService = inject(RockExplorerService);
-  private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
   private transloco = inject(TranslocoService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -127,12 +158,9 @@ export class RockExplorerMiscComponent implements OnChanges {
     if (this.drawingPathId) {
       this.finishPathDraw();
       if (this.drawingPathId) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: this.transloco.translate(
-            marker('rockExplorer.pathNeedsVertices'),
-          ),
-        });
+        toast.warning(
+          this.transloco.translate(marker('rockExplorer.pathNeedsVertices')),
+        );
         return;
       }
     }
@@ -142,24 +170,20 @@ export class RockExplorerMiscComponent implements OnChanges {
       (site) => site.lat == null || site.lng == null,
     );
     if (incompleteParking) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
+      toast.warning(
+        this.transloco.translate(
           marker('rockExplorer.parkingNeedsCoordinates'),
         ),
-      });
+      );
       return;
     }
     const incompletePaths = this.paths.some(
       (path) => (path.geometry?.coordinates?.length ?? 0) < 2,
     );
     if (incompletePaths) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.pathNeedsVertices'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.pathNeedsVertices')),
+      );
       return;
     }
 
@@ -195,12 +219,9 @@ export class RockExplorerMiscComponent implements OnChanges {
         },
         error: () => {
           this.saving = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.miscSaveError'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.miscSaveError')),
+          );
           this.cdr.detectChanges();
         },
       });
@@ -255,19 +276,17 @@ export class RockExplorerMiscComponent implements OnChanges {
   }
 
   confirmDeleteParking(event: Event, site: RockExplorerParkingSite): void {
-    this.confirmationService.confirm({
-      target: event.currentTarget ?? event.target,
+    this.confirmDialog.open({
       message: this.transloco.translate(
         marker('rockExplorer.parkingDeleteConfirm'),
       ),
       acceptLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteYes'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteNo'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.parkingSites = this.parkingSites.filter((s) => s.id !== site.id);
         if (this.pickingParkingId === site.id) {
@@ -280,24 +299,19 @@ export class RockExplorerMiscComponent implements OnChanges {
     });
   }
 
-  openParkingMenu(
-    event: Event,
-    site: RockExplorerParkingSite,
-    menu: Menu,
-  ): void {
+  openParkingMenu(event: Event, site: RockExplorerParkingSite): void {
     event.preventDefault();
     event.stopPropagation();
     this.parkingMenuItems = this.buildParkingMenuItems(site);
-    menu.toggle(event);
   }
 
   parkingButtonSeverity(
     site: RockExplorerParkingSite,
-  ): 'primary' | 'secondary' | 'danger' {
+  ): 'default' | 'secondary' | 'destructive' {
     if (this.pickingParkingId === site.id) {
-      return 'danger';
+      return 'destructive';
     }
-    return this.parkingHasCoordinates(site) ? 'primary' : 'secondary';
+    return this.parkingHasCoordinates(site) ? 'default' : 'secondary';
   }
 
   toggleMapPick(site: RockExplorerParkingSite): void {
@@ -522,19 +536,17 @@ export class RockExplorerMiscComponent implements OnChanges {
   }
 
   confirmDeletePath(event: Event, path: RockExplorerPath): void {
-    this.confirmationService.confirm({
-      target: event.currentTarget ?? event.target,
+    this.confirmDialog.open({
       message: this.transloco.translate(
         marker('rockExplorer.pathDeleteConfirm'),
       ),
       acceptLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteYes'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteNo'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         if (this.drawingPathId === path.id) {
           this.drawingPathId = null;

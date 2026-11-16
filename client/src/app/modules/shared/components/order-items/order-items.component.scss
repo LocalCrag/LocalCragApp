@@ -1,0 +1,29 @@
+// The drag preview is moved out of the list. CDK clears its background,
+// border, and padding, so the lifted row has to be drawn again here.
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.16);
+}
+
+.cdk-drag-placeholder {
+  border-radius: var(--radius);
+  background: var(--accent);
+  border: 1px dashed var(--border);
+
+  > * {
+    visibility: hidden;
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 180ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 180ms cubic-bezier(0, 0, 0.2, 1);
+}

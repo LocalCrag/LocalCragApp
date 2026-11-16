@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { Rating } from 'primeng/rating';
 import { Subscription, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { Line } from '../../../models/line';
@@ -21,6 +20,12 @@ import {
   buildGradeVoteBars,
   buildRatingRows,
 } from './line-consensus';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronDown,
+  lucideChevronUp,
+  lucideStar,
+} from '@ng-icons/lucide';
 
 /**
  * Community grade diagram and expandable star-rating breakdown for one line.
@@ -30,7 +35,8 @@ import {
   templateUrl: './line-consensus.component.html',
   styleUrl: './line-consensus.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TranslocoDirective, Rating, FormsModule, LineGradePipe],
+  imports: [TranslocoDirective, FormsModule, LineGradePipe, NgIcon],
+  providers: [provideIcons({ lucideChevronDown, lucideChevronUp, lucideStar })],
 })
 export class LineConsensusComponent implements OnChanges, OnDestroy {
   @Input() line: Line;

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { AdminMessagesService } from '../../../services/crud/admin-messages.service';
@@ -10,23 +11,17 @@ import {
 
 @Injectable()
 export class AdminMessageDialogService {
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private adminMessagesService = inject(AdminMessagesService);
   private translocoService = inject(TranslocoService);
 
-  private openRef: DynamicDialogRef | undefined;
+  private openRef: BrnDialogRef | undefined;
 
   public open(data: AdminMessageDialogData): void {
     this.openRef?.close();
     this.openRef = this.dialogService.open(AdminMessageDialogComponent, {
-      header: data.title,
-      data,
-      modal: true,
-      dismissableMask: true,
-      closeOnEscape: true,
-      styleClass: 'admin-message-dialog-host',
-      width: '36rem',
-      breakpoints: { '640px': '95vw' },
+      context: data,
+      contentClass: 'admin-message-dialog-host sm:max-w-xl',
     });
   }
 

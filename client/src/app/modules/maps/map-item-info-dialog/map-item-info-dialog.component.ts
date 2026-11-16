@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation, inject } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo, lucideNavigation } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { MapMarkerProperties } from '../../../models/map-marker';
 
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -10,7 +12,8 @@ import { MapMarkerType } from '../../../enums/map-marker-type';
 
 @Component({
   selector: 'lc-map-item-info-dialog',
-  imports: [DialogModule, ButtonModule, TranslocoDirective],
+  imports: [...HlmDialogImports, HlmButton, NgIcon, TranslocoDirective],
+  providers: [provideIcons({ lucideInfo, lucideNavigation })],
   templateUrl: './map-item-info-dialog.component.html',
   styleUrl: './map-item-info-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,

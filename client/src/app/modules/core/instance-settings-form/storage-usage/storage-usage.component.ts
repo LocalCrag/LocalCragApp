@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { MeterGroup } from 'primeng/metergroup';
-import { Skeleton } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import {
   InstanceSettingsService,
   StorageUsage,
@@ -23,7 +22,7 @@ interface StorageSegment {
 
 @Component({
   selector: 'lc-storage-usage',
-  imports: [TranslocoDirective, MeterGroup, Skeleton],
+  imports: [TranslocoDirective, HlmSkeleton],
   templateUrl: './storage-usage.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './storage-usage.component.scss',
@@ -37,10 +36,10 @@ export class StorageUsageComponent implements OnInit {
   public usage = signal<StorageUsage | null>(null);
 
   private readonly colors = {
-    videos: 'var(--p-blue-500)',
-    gallery: 'var(--p-green-500)',
-    topo: 'var(--p-orange-500)',
-    other: 'var(--p-purple-500)',
+    videos: '#3b82f6',
+    gallery: '#22c55e',
+    topo: '#f97316',
+    other: '#a855f7',
   };
 
   ngOnInit(): void {

@@ -8,15 +8,16 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { ButtonModule } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Select } from 'primeng/select';
 import { of, switchMap } from 'rxjs';
 import { UserPromotionTargets } from '../../../enums/user-promotion-targets';
 import { User } from '../../../models/user';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { UsersService } from '../../../services/crud/users.service';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 
 export interface UserRightsDialogData {
   userId: string;
@@ -40,19 +41,26 @@ export function userPromotionTarget(user: User): UserPromotionTargets {
 @Component({
   selector: 'lc-user-rights-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, TranslocoDirective, ButtonModule, Checkbox, Select],
+  imports: [
+    FormsModule,
+    TranslocoDirective,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmCheckbox,
+    HlmSpinner,
+  ],
   templateUrl: './user-rights-dialog.component.html',
   styleUrl: './user-rights-dialog.component.scss',
 })
 export class UserRightsDialogComponent {
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private context = injectBrnDialogContext<Record<string, any>>();
+  private ref = inject(BrnDialogRef);
   private usersService = inject(UsersService);
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private changeDetector = inject(ChangeDetectorRef);
 
-  private readonly data = this.config.data as UserRightsDialogData;
+  private readonly data = this.context as UserRightsDialogData;
   selectedRole = this.data.role;
   suggestionsEnabled = this.data.suggestionsEnabled;
   saving = false;
@@ -65,6 +73,9 @@ export class UserRightsDialogComponent {
     value,
     label: this.translocoService.translate(this.roleLabel(value)),
   }));
+
+  roleOptionLabel = (value: UserPromotionTargets | null): string =>
+    this.roleOptions.find((option) => option.value === value)?.label ?? '';
 
   get showSuggestionRight(): boolean {
     return (

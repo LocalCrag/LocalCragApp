@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Line } from '../../../models/line';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { Tooltip } from 'primeng/tooltip';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 
 /**
  * Component that lists boolean properties of lines in text form.
@@ -20,7 +20,7 @@ import { Tooltip } from 'primeng/tooltip';
   selector: 'lc-line-bool-prop-list',
   templateUrl: './line-bool-prop-list.component.html',
   styleUrls: ['./line-bool-prop-list.component.scss'],
-  imports: [TranslocoDirective, TranslocoPipe, Tooltip],
+  imports: [TranslocoDirective, TranslocoPipe, HlmTooltip],
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class LineBoolPropListComponent implements AfterViewInit, OnDestroy {

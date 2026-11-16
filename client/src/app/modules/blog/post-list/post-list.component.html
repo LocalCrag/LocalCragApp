@@ -1,45 +1,22 @@
 <ng-container *transloco="let t; read: 'posts.postList'">
   <div class="content">
-    <p-data-view
-      #dv
-      [value]="posts"
-      [sortField]="sortField"
-      [sortOrder]="sortOrder"
-    >
-      <ng-template #emptymessage>
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noPostsFoundEmptyMessage")
-        }}</p-message>
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-row justify-between">
-          <p-select
-            [options]="sortOptions"
-            [(ngModel)]="sortKey"
-            optionLabel="label"
-            (onChange)="onSortChange($event)"
-            styleClass="md:mb-0"
-            [disabled]="loading === loadingStates.LOADING"
-          ></p-select>
+    <div class="flex flex-row items-center justify-between border-b border-surface px-6 py-4">
+          <hlm-select [(ngModel)]="sortKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortChange({ value: $event })"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
           <div class="lc-button-group justify-end">
-            <p-button
-              label="{{ t('newPostButtonLabel') }}"
-              icon="pi pi-plus"
-              routerLink="/news/create-post"
-              [disabled]="loading === loadingStates.LOADING"
-              *isModerator="true"
-              class="responsive-button"
-            ></p-button>
+            <a hlmBtn class="responsive-button" routerLink="/news/create-post" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucidePlus" /> {{ t('newPostButtonLabel') }}</a>
           </div>
         </div>
-      </ng-template>
-      <ng-template let-posts #list>
-        @if (loading === loadingStates.LOADING) {
+@if (!(posts?.length) && loading !== loadingStates.LOADING) {
+<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
+          t("noPostsFoundEmptyMessage")
+        }}</p></div>
+}
+@if (loading === loadingStates.LOADING) {
           <lc-post-list-skeleton></lc-post-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
-            @for (post of posts; track post; let first = $first) {
+            @for (post of sortClientList(posts); track post; let first = $first) {
               <div class="col-span-12">
                 <div
                   class="flex flex-col xl:items-start p-6 gap-2"
@@ -56,15 +33,7 @@
                       >
                     </div>
                     <div class="lc-button-group grow-0">
-                      <p-button
-                        label="{{ t('editPostButtonLabel') }}"
-                        icon="pi pi-file-edit"
-                        routerLink="/news/{{ post.slug }}/edit"
-                        class="responsive-button"
-                        styleClass="pr-0"
-                        *isModerator="true"
-                        [text]="true"
-                      ></p-button>
+                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/news/{{ post.slug }}/edit" *isModerator="true"><ng-icon name="lucideFilePen" /> {{ t('editPostButtonLabel') }}</a>
                     </div>
                   </div>
                   <div class="text-xs mb-2">
@@ -96,7 +65,5 @@
             }
           </div>
         }
-      </ng-template>
-    </p-data-view>
   </div>
 </ng-container>

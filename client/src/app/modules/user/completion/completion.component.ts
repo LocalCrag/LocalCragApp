@@ -16,35 +16,42 @@ import { forkJoin } from 'rxjs';
 import { Completion } from '../../../models/statistics';
 import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { SelectItem } from 'primeng/api';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
-import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { Select } from 'primeng/select';
-import { Message } from 'primeng/message';
-import { Checkbox } from 'primeng/checkbox';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-completion',
   imports: [
-    ProgressBarModule,
     CompletionProgressBarComponent,
-    AccordionModule,
     ExpandButtonComponent,
     GradeRangeSliderComponent,
     FormsModule,
     TranslocoDirective,
-    Select,
-    Message,
-    Checkbox,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmCheckbox,
+    NgIcon,
   ],
   templateUrl: './completion.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

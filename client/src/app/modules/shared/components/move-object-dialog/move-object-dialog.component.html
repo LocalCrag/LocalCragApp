@@ -1,60 +1,83 @@
 <ng-container *transloco="let t">
   @if (form) {
-    <p-dialog
-      [header]="t(titleKey)"
-      [modal]="true"
-      [(visible)]="isOpen"
-      [style]="{ width: '30rem' }"
-    >
-      @if (objectToMoveIsTopoImage) {
-        <p-message severity="info" class="mt-1 mb-6" icon="pi pi-info-circle"
-          >{{ t("topoImageMoveInfo") }}
-        </p-message>
-      }
-
-      @if (hasUnsavedChanges) {
-        <p-message
-          severity="warn"
-          class="mb-6"
-          icon="pi pi-exclamation-triangle"
-          >{{ t("unsavedChangesAreLost") }}
-        </p-message>
-      }
-
-      <form [formGroup]="form" lcForm class="flex flex-col pt-1">
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label mt-0" for="target">{{ t(labelKey) }}</label>
-          <p-auto-complete
-            id="target"
-            formControlName="target"
-            [suggestions]="suggestions"
-            optionLabel="name"
-            [forceSelection]="true"
-            (completeMethod)="searchSuggestions($event)"
-            [placeholder]="t(placeholderKey)"
-            appendTo="body"
-            fluid
-            lcFormControl
-          ></p-auto-complete>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
+    <hlm-dialog [state]="isOpen ? 'open' : 'closed'" (closed)="close()">
+      <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg">
+        <div hlmDialogHeader>
+          <h2 hlmDialogTitle>{{ t(titleKey) }}</h2>
         </div>
-      </form>
+        @if (objectToMoveIsTopoImage) {
+          <div hlmAlert class="mt-1 mb-6">
+            <ng-icon name="lucideInfo" />
+            {{ t("topoImageMoveInfo") }}
+          </div>
+        }
 
-      <ng-template #footer>
-        <p-button
-          [label]="t('moveObjectDialog.cancel')"
-          severity="secondary"
-          (onClick)="close()"
-          [disabled]="loading"
-        />
-        <p-button
-          [label]="t('moveObjectDialog.submit')"
-          (onClick)="submit()"
-          [loading]="loading"
-        />
-      </ng-template>
-    </p-dialog>
+        @if (hasUnsavedChanges) {
+          <div
+            hlmAlert
+            variant="warning"
+            class="mb-6"
+          >
+            <ng-icon name="lucideTriangleAlert" />
+            {{ t("unsavedChangesAreLost") }}
+          </div>
+        }
+
+        <form [formGroup]="form" lcForm class="flex flex-col pt-1">
+          <div class="flex flex-col gap-2" lcControlGroup>
+            <label class="form-label mt-0" for="target">{{
+              t(labelKey)
+            }}</label>
+            <hlm-autocomplete
+              class="w-full"
+              formControlName="target"
+              [itemToString]="searchableLabel"
+              (searchChange)="searchSuggestions($event)"
+              lcFormControl
+            >
+              <hlm-autocomplete-input
+                inputId="target"
+                [placeholder]="t(placeholderKey)"
+              />
+              <div hlmAutocompleteContent *hlmAutocompletePortal>
+                <div hlmAutocompleteList>
+                  @for (suggestion of suggestions; track suggestion.id) {
+                    <hlm-autocomplete-item [value]="suggestion">
+                      {{ suggestion.name }}
+                    </hlm-autocomplete-item>
+                  }
+                </div>
+              </div>
+            </hlm-autocomplete>
+            <small class="lc-error" *lcIfError="'required'">{{
+              "validation.required" | transloco
+            }}</small>
+          </div>
+        </form>
+
+        <div hlmDialogFooter>
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            [disabled]="loading"
+            (click)="close()"
+          >
+            {{ t("moveObjectDialog.cancel") }}
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            [disabled]="loading"
+            (click)="submit()"
+          >
+            @if (loading) {
+              <hlm-spinner />
+            }
+            {{ t("moveObjectDialog.submit") }}
+          </button>
+        </div>
+      </hlm-dialog-content>
+    </hlm-dialog>
   }
 </ng-container>

@@ -18,13 +18,34 @@ lc-multi-image-upload {
     display: block;
     position: relative;
 
-    p-image {
+    .image-preview {
+      position: relative;
+      display: inline-block;
+      padding: 0;
+      border: 0;
+      background: transparent;
+
       img {
         border-radius: 6px;
       }
     }
 
-    p-button {
+    .image-preview-mask {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: rgb(0 0 0 / 0.35);
+      opacity: 0;
+    }
+
+    .image-preview:hover .image-preview-mask {
+      opacity: 1;
+    }
+
+    .image-remove {
       position: absolute;
       top: 6px;
       right: 6px;
@@ -34,19 +55,14 @@ lc-multi-image-upload {
   .image-edit-button {
     margin-top: 0.5rem;
     width: 100%;
-
-    .p-button {
-      width: 100%;
-      justify-content: center;
-    }
+    justify-content: center;
   }
 
-  // Fix bad spacing below upload button
-  .image-list:not(:empty) + p-fileupload:not([hidden]) {
+  .image-list:not(:empty) + .lc-file-trigger:not([hidden]) {
     margin-top: 0.75rem;
   }
 
-  p-fileupload:not([hidden]) {
-    display: inline-block;
+  .lc-file-trigger:not([hidden]) {
+    width: fit-content;
   }
 }

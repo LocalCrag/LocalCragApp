@@ -1,9 +1,9 @@
 <ng-container *transloco="let t; read: 'closedSpotAlert'">
   <div class="flex flex-col gap-2 w-full">
     @for (alert of displayAlerts; track $index) {
-      <p-message severity="error" styleClass="w-full">{{
-        alertText(alert)
-      }}</p-message>
+      <div hlmAlert variant="destructive" class="w-full">
+        {{ alertText(alert) }}
+      </div>
     }
   </div>
 </ng-container>

@@ -2,13 +2,13 @@ import {
   Component,
   forwardRef,
   Injector,
-  OnDestroy,
   OnInit,
-  ViewChild,
   ViewEncapsulation,
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { ApiService } from '../../../../../services/core/api.service';
 import { UploadService } from '../../../../../services/crud/upload.service';
 import {
@@ -22,17 +22,18 @@ import {
 } from '@angular/forms';
 import { File } from '../../../../../models/file';
 import { User } from '../../../../../models/user';
-import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { selectCurrentUser } from '../../../../../ngrx/selectors/auth.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
 
-import { ProgressBar } from 'primeng/progressbar';
-import { Image } from 'primeng/image';
-import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { ImageEditDialogComponent } from '../image-edit-dialog/image-edit-dialog.component';
+import { uploadFormFiles } from '../upload-form-files';
+import { sharedLucideIcons } from '../../../utils/prime-icon';
 
 /**
  * A media upload component.
@@ -47,24 +48,21 @@ import { ImageEditDialogComponent } from '../image-edit-dialog/image-edit-dialog
       useExisting: forwardRef(() => MultiImageUploadComponent),
       multi: true,
     },
+    provideIcons(sharedLucideIcons),
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
-    FileUpload,
-    ProgressBar,
-    Image,
-    Button,
-    TooltipModule,
+    NgIcon,
+    HlmButton,
+    HlmTooltip,
+    ...HlmProgressImports,
+    ...HlmDialogImports,
     ImageEditDialogComponent,
   ],
 })
-export class MultiImageUploadComponent
-  implements OnInit, ControlValueAccessor, OnDestroy
-{
-  @ViewChild(FileUpload) uploader: FileUpload;
-
+export class MultiImageUploadComponent implements OnInit, ControlValueAccessor {
   public uploadUrl: string;
   public isDisabled = false;
   public formControl: NgControl;
@@ -77,7 +75,10 @@ export class MultiImageUploadComponent
   public maxImageSize: number;
   public editingFileId: string | null = null;
   public transforming = false;
+  public previewUrl: string | null = null;
   public currentUser: User | null = null;
+
+  private http = inject(HttpClient);
 
   private api = inject(ApiService);
   private inj = inject(Injector);
@@ -226,11 +227,28 @@ export class MultiImageUploadComponent
       });
   }
 
-  /**
-   * Resets the component on destruction.
-   */
-  ngOnDestroy(): void {
-    this.uploader?.clear();
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!files.length) {
+      return;
+    }
+    if (
+      this.maxImageSize &&
+      files.some((file) => file.size > this.maxImageSize)
+    ) {
+      this.showProgressBar = false;
+      return;
+    }
+    this.startProgress();
+    uploadFormFiles(this.http, this.uploadUrl, files, {
+      onProgress: (progress) => this.setProgress({ progress }),
+      onBody: (body) => this.setMedia({ originalEvent: { body } }),
+      onError: () => {
+        this.showProgressBar = false;
+      },
+    });
   }
 
   /**

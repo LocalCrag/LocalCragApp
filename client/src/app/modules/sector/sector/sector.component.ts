@@ -6,7 +6,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
-import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
@@ -24,16 +23,25 @@ import {
   selectInstanceSettingsState,
   selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
 import { RegionService } from '../../../services/crud/region.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-sector',
@@ -46,9 +54,9 @@ import { RegionService } from '../../../services/crud/region.service';
 export class SectorComponent implements OnInit {
   public crag: Crag;
   public sector: Sector;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
-  private breadcrumbHome: MenuItem | undefined;
+  private breadcrumbHome: PageMenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);

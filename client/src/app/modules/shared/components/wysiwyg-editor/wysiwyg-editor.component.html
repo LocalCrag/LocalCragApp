@@ -20,8 +20,8 @@
     [class.active]="bold"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.bold' | transloco"
-    [pTooltip]="'wysiwygEditor.bold' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.bold' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatText('bold')"
   >
@@ -33,8 +33,8 @@
     [class.active]="italic"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.italic' | transloco"
-    [pTooltip]="'wysiwygEditor.italic' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.italic' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatText('italic')"
   >
@@ -46,8 +46,8 @@
     [class.active]="underline"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.underline' | transloco"
-    [pTooltip]="'wysiwygEditor.underline' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.underline' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatText('underline')"
   >
@@ -61,8 +61,8 @@
       class="fmt"
       [disabled]="!editable"
       [attr.aria-label]="'wysiwygEditor.orderedList' | transloco"
-      [pTooltip]="'wysiwygEditor.orderedList' | transloco"
-      tooltipPosition="bottom"
+      [hlmTooltip]="'wysiwygEditor.orderedList' | transloco"
+      position="bottom"
       (mousedown)="$event.preventDefault()"
       (click)="insertList(true)"
     >
@@ -78,12 +78,12 @@
       class="fmt"
       [disabled]="!editable"
       [attr.aria-label]="'wysiwygEditor.bulletList' | transloco"
-      [pTooltip]="'wysiwygEditor.bulletList' | transloco"
-      tooltipPosition="bottom"
+      [hlmTooltip]="'wysiwygEditor.bulletList' | transloco"
+      position="bottom"
       (mousedown)="$event.preventDefault()"
       (click)="insertList(false)"
     >
-      <i class="pi pi-list"></i>
+      <ng-icon name="lucideList" />
     </button>
   }
 
@@ -95,12 +95,12 @@
     [disabled]="!editable"
     [attr.aria-pressed]="linkActive"
     [attr.aria-label]="'wysiwygEditor.link' | transloco"
-    [pTooltip]="'wysiwygEditor.link' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.link' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="togglePanel('link')"
   >
-    <i class="pi pi-link"></i>
+    <ng-icon name="lucideLink" />
   </button>
   @if (images) {
     <button
@@ -108,12 +108,12 @@
       class="fmt"
       [disabled]="!editable || uploading"
       [attr.aria-label]="'wysiwygEditor.image' | transloco"
-      [pTooltip]="'wysiwygEditor.image' | transloco"
-      tooltipPosition="bottom"
+      [hlmTooltip]="'wysiwygEditor.image' | transloco"
+      position="bottom"
       (mousedown)="$event.preventDefault()"
       (click)="openFilePicker(imageInput)"
     >
-      <i class="pi pi-image"></i>
+      <ng-icon name="lucideImage" />
     </button>
   }
   @if (videos) {
@@ -122,34 +122,56 @@
       class="fmt"
       [disabled]="!editable || uploading"
       [attr.aria-label]="'wysiwygEditor.video' | transloco"
-      [pTooltip]="'wysiwygEditor.video' | transloco"
-      tooltipPosition="bottom"
+      [hlmTooltip]="'wysiwygEditor.video' | transloco"
+      position="bottom"
       (mousedown)="$event.preventDefault()"
-      (click)="openVideoMenu($event, videoMenu)"
+      [hlmDropdownMenuTrigger]="videoMenu"
     >
-      <i class="pi pi-video"></i>
+      <ng-icon name="lucideVideo" />
     </button>
-    <p-menu
-      #videoMenu
-      [model]="videoMenuItems"
-      [popup]="true"
-      appendTo="body"
-    />
+    <ng-template #videoMenu>
+      <div hlmDropdownMenu>
+        <button
+          type="button"
+          hlmDropdownMenuItem
+          (triggered)="openVideo('link')"
+        >
+          <ng-icon name="lucideLink" />
+          {{ "wysiwygEditor.videoLink" | transloco }}
+        </button>
+        <button
+          type="button"
+          hlmDropdownMenuItem
+          (triggered)="openVideo('upload')"
+        >
+          <ng-icon name="lucideUpload" />
+          {{ "wysiwygEditor.videoUpload" | transloco }}
+        </button>
+      </div>
+    </ng-template>
   }
-  <p-contextmenu #mediaMenu [model]="mediaMenuItems" appendTo="body" />
+  <div #mediaMenuHost class="hidden" [hlmContextMenuTrigger]="mediaMenu"></div>
+  <ng-template #mediaMenu>
+    <div hlmDropdownMenu>
+      <button type="button" hlmDropdownMenuItem (triggered)="openSizeDialog()">
+        <ng-icon name="lucideExpand" />
+        {{ "wysiwygEditor.size" | transloco }}
+      </button>
+    </div>
+  </ng-template>
 
   <span class="sep"></span>
   <label
     class="fmt color"
     [attr.aria-label]="'wysiwygEditor.textColor' | transloco"
   >
-    <i class="pi pi-palette"></i>
+    <ng-icon name="lucidePalette" />
     <input
       type="color"
       [disabled]="!editable"
       [value]="color || '#222222'"
-      [pTooltip]="'wysiwygEditor.textColor' | transloco"
-      tooltipPosition="bottom"
+      [hlmTooltip]="'wysiwygEditor.textColor' | transloco"
+      position="bottom"
       (input)="setColor($any($event.target).value)"
     />
   </label>
@@ -158,12 +180,12 @@
     class="fmt"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.clearColor' | transloco"
-    [pTooltip]="'wysiwygEditor.clearColor' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.clearColor' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="setColor(null)"
   >
-    <i class="pi pi-eraser"></i>
+    <ng-icon name="lucideEraser" />
   </button>
 
   <span class="sep"></span>
@@ -172,203 +194,206 @@
     class="fmt"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.alignLeft' | transloco"
-    [pTooltip]="'wysiwygEditor.alignLeft' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.alignLeft' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatAlign('left')"
   >
-    <i class="pi pi-align-left"></i>
+    <ng-icon name="lucideAlignLeft" />
   </button>
   <button
     type="button"
     class="fmt"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.alignCenter' | transloco"
-    [pTooltip]="'wysiwygEditor.alignCenter' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.alignCenter' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatAlign('center')"
   >
-    <i class="pi pi-align-center"></i>
+    <ng-icon name="lucideAlignCenter" />
   </button>
   <button
     type="button"
     class="fmt"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.alignRight' | transloco"
-    [pTooltip]="'wysiwygEditor.alignRight' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.alignRight' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatAlign('right')"
   >
-    <i class="pi pi-align-right"></i>
+    <ng-icon name="lucideAlignRight" />
   </button>
   <button
     type="button"
     class="fmt"
     [disabled]="!editable"
     [attr.aria-label]="'wysiwygEditor.alignJustify' | transloco"
-    [pTooltip]="'wysiwygEditor.alignJustify' | transloco"
-    tooltipPosition="bottom"
+    [hlmTooltip]="'wysiwygEditor.alignJustify' | transloco"
+    position="bottom"
     (mousedown)="$event.preventDefault()"
     (click)="formatAlign('justify')"
   >
-    <i class="pi pi-align-justify"></i>
+    <ng-icon name="lucideAlignJustify" />
   </button>
 </div>
 
 @if (panel === "link") {
-  <p-dialog
-    [header]="'wysiwygEditor.link' | transloco"
-    [visible]="true"
-    (onHide)="closePanel('link')"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closable]="true"
-    appendTo="body"
-    [style]="{ width: '28rem' }"
-  >
-    <form [formGroup]="linkForm" lcForm novalidate (ngSubmit)="applyLink()">
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <input
-          pInputText
-          type="text"
-          class="w-full"
-          formControlName="url"
-          lcFormControl
-          [attr.placeholder]="'wysiwygEditor.linkUrl' | transloco"
-          [attr.aria-label]="'wysiwygEditor.linkUrl' | transloco"
-        />
-        <small class="lc-error" *lcIfError="'required'">{{
-          "validation.required" | transloco
-        }}</small>
-        <small class="lc-error" *lcIfError="'invalidUrl'">{{
-          "wysiwygEditor.invalidUrl" | transloco
-        }}</small>
+  <hlm-dialog state="open" (closed)="closePanel('link')">
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ "wysiwygEditor.link" | transloco }}</h2>
       </div>
-      <div class="form-actions justify-end">
-        <p-button
-          type="button"
-          [label]="'wysiwygEditor.removeLink' | transloco"
-          severity="secondary"
-          [disabled]="!canRemoveLink"
-          (onClick)="removeLink()"
-        />
-        <p-button type="submit" [label]="'wysiwygEditor.apply' | transloco" />
-      </div>
-    </form>
-  </p-dialog>
+      <form [formGroup]="linkForm" lcForm novalidate (ngSubmit)="applyLink()">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <input
+            hlmInput
+            type="text"
+            class="w-full"
+            formControlName="url"
+            lcFormControl
+            [attr.placeholder]="'wysiwygEditor.linkUrl' | transloco"
+            [attr.aria-label]="'wysiwygEditor.linkUrl' | transloco"
+          />
+          <small class="lc-error" *lcIfError="'required'">{{
+            "validation.required" | transloco
+          }}</small>
+          <small class="lc-error" *lcIfError="'invalidUrl'">{{
+            "wysiwygEditor.invalidUrl" | transloco
+          }}</small>
+        </div>
+        <div hlmDialogFooter>
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
+            [disabled]="!canRemoveLink"
+            (click)="removeLink()"
+          >
+            {{ "wysiwygEditor.removeLink" | transloco }}
+          </button>
+          <button hlmBtn type="submit">
+            {{ "wysiwygEditor.apply" | transloco }}
+          </button>
+        </div>
+      </form>
+    </hlm-dialog-content>
+  </hlm-dialog>
 }
 
 @if (panel === "video" && videoSource === "link") {
-  <p-dialog
-    [header]="'wysiwygEditor.videoLink' | transloco"
-    [visible]="true"
-    (onHide)="closePanel('video')"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closable]="true"
-    appendTo="body"
-    [style]="{ width: '28rem' }"
-  >
-    <form [formGroup]="videoForm" lcForm novalidate (ngSubmit)="insertVideo()">
-      <div class="flex flex-col gap-2" lcControlGroup>
-        <input
-          pInputText
-          type="text"
-          class="w-full"
-          formControlName="url"
-          lcFormControl
-          [attr.placeholder]="'wysiwygEditor.videoUrlPlaceholder' | transloco"
-          [attr.aria-label]="'wysiwygEditor.videoUrl' | transloco"
-        />
-        <small class="lc-error" *lcIfError="'required'">{{
-          "validation.required" | transloco
-        }}</small>
-        <small class="lc-error" *lcIfError="'unsupportedVideoUrl'">{{
-          "ascentForm.unsupportedVideoUrl" | transloco
-        }}</small>
+  <hlm-dialog state="open" (closed)="closePanel('video')">
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ "wysiwygEditor.videoLink" | transloco }}</h2>
       </div>
-      <div class="form-actions justify-end">
-        <p-button type="submit" [label]="'wysiwygEditor.insert' | transloco" />
-      </div>
-    </form>
-  </p-dialog>
+      <form [formGroup]="videoForm" lcForm novalidate (ngSubmit)="insertVideo()">
+        <div class="flex flex-col gap-2" lcControlGroup>
+          <input
+            hlmInput
+            type="text"
+            class="w-full"
+            formControlName="url"
+            lcFormControl
+            [attr.placeholder]="'wysiwygEditor.videoUrlPlaceholder' | transloco"
+            [attr.aria-label]="'wysiwygEditor.videoUrl' | transloco"
+          />
+          <small class="lc-error" *lcIfError="'required'">{{
+            "validation.required" | transloco
+          }}</small>
+          <small class="lc-error" *lcIfError="'unsupportedVideoUrl'">{{
+            "ascentForm.unsupportedVideoUrl" | transloco
+          }}</small>
+        </div>
+        <div hlmDialogFooter>
+          <button hlmBtn type="submit">
+            {{ "wysiwygEditor.insert" | transloco }}
+          </button>
+        </div>
+      </form>
+    </hlm-dialog-content>
+  </hlm-dialog>
 }
 
 @if (panel === "size") {
-  <p-dialog
-    [header]="'wysiwygEditor.size' | transloco"
-    [visible]="true"
-    (onHide)="closePanel('size')"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closable]="true"
-    appendTo="body"
-    [style]="{ width: '28rem' }"
-  >
-    <form [formGroup]="sizeForm" lcForm novalidate (ngSubmit)="applySize()">
-      <div class="flex flex-col gap-3">
-        <p-selectbutton
-          formControlName="mode"
-          [options]="sizeModeOptions"
-          optionLabel="label"
-          optionValue="value"
-          [allowEmpty]="false"
-        />
-        @if (sizeForm.controls.mode.value === "px") {
-          <div class="flex flex-col gap-2" lcControlGroup>
-            <input
-              pInputText
-              type="number"
-              class="w-full"
-              formControlName="width"
-              lcFormControl
-              min="48"
-              [attr.aria-label]="'wysiwygEditor.widthPx' | transloco"
-            />
-            <small class="lc-error" *lcIfError="'required'">{{
-              "validation.required" | transloco
-            }}</small>
-            <small class="lc-error" *lcIfError="'invalidWidth'">{{
-              "wysiwygEditor.invalidWidth" | transloco
-            }}</small>
+  <hlm-dialog state="open" (closed)="closePanel('size')">
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ "wysiwygEditor.size" | transloco }}</h2>
+      </div>
+      <form [formGroup]="sizeForm" lcForm novalidate (ngSubmit)="applySize()">
+        <div class="flex flex-col gap-3">
+          <div
+            hlmToggleGroup
+            type="single"
+            [nullable]="false"
+            formControlName="mode"
+          >
+            <button hlmToggleGroupItem type="button" value="full">
+              {{ "wysiwygEditor.fullWidth" | transloco }}
+            </button>
+            <button hlmToggleGroupItem type="button" value="px">
+              {{ "wysiwygEditor.widthPx" | transloco }}
+            </button>
           </div>
-        }
-      </div>
-      <div class="form-actions justify-end">
-        <p-button type="submit" [label]="'wysiwygEditor.apply' | transloco" />
-      </div>
-    </form>
-  </p-dialog>
+          @if (sizeForm.controls.mode.value === "px") {
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <input
+                hlmInput
+                type="number"
+                class="w-full"
+                formControlName="width"
+                lcFormControl
+                min="48"
+                [attr.aria-label]="'wysiwygEditor.widthPx' | transloco"
+              />
+              <small class="lc-error" *lcIfError="'required'">{{
+                "validation.required" | transloco
+              }}</small>
+              <small class="lc-error" *lcIfError="'invalidWidth'">{{
+                "wysiwygEditor.invalidWidth" | transloco
+              }}</small>
+            </div>
+          }
+        </div>
+        <div hlmDialogFooter>
+          <button hlmBtn type="submit">
+            {{ "wysiwygEditor.apply" | transloco }}
+          </button>
+        </div>
+      </form>
+    </hlm-dialog-content>
+  </hlm-dialog>
 }
 
 @if (panel === "video" && videoSource === "upload") {
-  <p-dialog
-    [header]="'wysiwygEditor.uploadVideo' | transloco"
-    [visible]="true"
-    (onHide)="closePanel('video')"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closable]="true"
-    appendTo="body"
-    [style]="{ width: '28rem' }"
-  >
-    @if (videoUploadsEnabled) {
-      <div class="form-actions justify-end">
-        <p-button
-          [label]="'wysiwygEditor.uploadVideo' | transloco"
-          [disabled]="uploading"
-          [loading]="uploading"
-          (onClick)="openFilePicker(videoInput)"
-        />
+  <hlm-dialog state="open" (closed)="closePanel('video')">
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ "wysiwygEditor.uploadVideo" | transloco }}</h2>
       </div>
-    } @else {
-      <small class="text-muted-color">{{
-        "wysiwygEditor.videoUploadsDisabled" | transloco
-      }}</small>
-    }
-  </p-dialog>
+      @if (videoUploadsEnabled) {
+        <div hlmDialogFooter>
+          <button
+            hlmBtn
+            type="button"
+            [disabled]="uploading"
+            (click)="openFilePicker(videoInput)"
+          >
+            @if (uploading) {
+              <hlm-spinner />
+            }
+            {{ "wysiwygEditor.uploadVideo" | transloco }}
+          </button>
+        </div>
+      } @else {
+        <small class="text-muted-color">{{
+          "wysiwygEditor.videoUploadsDisabled" | transloco
+        }}</small>
+      }
+    </hlm-dialog-content>
+  </hlm-dialog>
 }
 
 <div #surface class="lc-wysiwyg-surface" [style.height]="height">
@@ -392,12 +417,12 @@
       [style.top.px]="chrome.top"
       [style.left.px]="chrome.right - 28"
       [attr.aria-label]="'wysiwygEditor.deleteMedia' | transloco"
-      [pTooltip]="'wysiwygEditor.deleteMedia' | transloco"
-      tooltipPosition="top"
+      [hlmTooltip]="'wysiwygEditor.deleteMedia' | transloco"
+      position="top"
       (mousedown)="$event.preventDefault()"
       (click)="deleteSelected()"
     >
-      <i class="pi pi-trash"></i>
+      <ng-icon name="lucideTrash" />
     </button>
     @if (chrome.resizable) {
       <div
@@ -418,13 +443,13 @@
                 : 'wysiwygEditor.resizeVideo'
               ) | transloco
             "
-            [pTooltip]="
+            [hlmTooltip]="
               (chrome.image
                 ? 'wysiwygEditor.resizeImage'
                 : 'wysiwygEditor.resizeVideo'
               ) | transloco
             "
-            tooltipPosition="top"
+            position="top"
             (pointerdown)="startResize($event, corner)"
           ></button>
         }

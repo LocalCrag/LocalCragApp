@@ -41,7 +41,7 @@
               <input
                 id="title"
                 type="text"
-                pInputText
+                hlmInput
                 formControlName="title"
                 placeholder="{{ t('topoImageTitlePlaceholder') }}"
                 class="w-full"
@@ -84,29 +84,29 @@
         </div>
       } @else {
         <div class="flex flex-col gap-2 topo-image-upload-group mt-4">
-          <p-fileupload
-            mode="basic"
-            [hidden]="showProgressBar || loadingState === loadingStates.LOADING"
-            name="upload"
-            [url]="uploadUrl"
+          <input
+            #topoFileInput
+            class="hidden"
+            type="file"
+            multiple
             accept="image/jpeg,image/png,image/gif,image/bmp"
-            [multiple]="true"
-            [maxFileSize]="maxImageSize"
-            (onError)="showProgressBar = false"
-            (onBeforeUpload)="startProgress()"
-            (onProgress)="setProgress($event)"
-            (onUpload)="addUploadedImages($event)"
-            [auto]="true"
-            chooseLabel="{{
-              'singleImageUploader.browseFilesButtonLabel' | transloco
-            }}"
             data-cy="topo-image-input"
-          ></p-fileupload>
+            (change)="onTopoFilesSelected($event)"
+          />
+          @if (!showProgressBar && loadingState !== loadingStates.LOADING) {
+            <button hlmBtn type="button" (click)="topoFileInput.click()">
+              <ng-icon name="lucideUpload" />
+              {{ "singleImageUploader.browseFilesButtonLabel" | transloco }}
+            </button>
+          }
           @if (showProgressBar) {
-            <p-progress-bar
-              [mode]="progressMode"
-              [value]="progress"
-            ></p-progress-bar>
+            <div
+              hlmProgress
+              class="w-full"
+              [value]="progressMode === 'indeterminate' ? null : progress"
+            >
+              <div hlmProgressIndicator></div>
+            </div>
           }
           @if (imagesTouched && images.length === 0) {
             <small class="lc-error">{{
@@ -123,14 +123,16 @@
           @for (group of images.controls; track group; let i = $index) {
             <div class="topo-image-entry" [formGroupName]="i">
               @if (images.length > 1) {
-                <p-divider align="center" type="solid">
+                <div class="flex items-center gap-3">
+                  <div hlmSeparator class="flex-1"></div>
                   <b>{{
                     t("imageDivider", {
                       current: i + 1,
                       total: images.length,
                     })
                   }}</b>
-                </p-divider>
+                  <div hlmSeparator class="flex-1"></div>
+                </div>
               }
               <div class="topo-image-entry__columns">
                 <div
@@ -153,7 +155,7 @@
                     <input
                       [id]="'title-' + i"
                       type="text"
-                      pInputText
+                      hlmInput
                       formControlName="title"
                       placeholder="{{ t('topoImageTitlePlaceholder') }}"
                       class="w-full"
@@ -205,33 +207,11 @@
 
     <div class="form-actions">
       @if (editMode || hasUploadedImages) {
-        <p-button
-          label="{{ t('addTopoImageButtonLabel') }}"
-          (click)="saveTopoImage()"
-          icon="pi pi-save"
-          class="responsive-button"
-          data-cy="submit"
-          [disabled]="coordinatesBusy"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" class="responsive-button" (click)="saveTopoImage()" [disabled]="(loadingState === loadingStates.LOADING) || (coordinatesBusy)" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideSave" /> } {{ t('addTopoImageButtonLabel') }}</button>
       }
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
-        class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-        [disabled]="loadingState === loadingStates.LOADING"
-      ></p-button>
+      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()" [disabled]="loadingState === loadingStates.LOADING"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
       @if (editMode) {
-        <p-button
-          icon="pi pi-arrow-right-arrow-left"
-          label="{{ t('moveTopoImageButtonLabel') }}"
-          class="responsive-button"
-          styleClass="p-button-secondary"
-          (click)="openMoveDialog()"
-          *isModerator="true"
-        ></p-button>
+        <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="openMoveDialog()" *isModerator="true"><ng-icon name="lucideArrowLeftRight" /> {{ t('moveTopoImageButtonLabel') }}</button>
       }
     </div>
     <lc-move-object-dialog

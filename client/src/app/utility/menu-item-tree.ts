@@ -1,4 +1,4 @@
-import { MenuItem as PrimeMenuItem } from 'primeng/api';
+import { MenuItem as PrimeMenuItem } from '../modules/shared/models/menu-item';
 import { MenuItemPosition } from '../enums/menu-item-position';
 import { MenuItemType } from '../enums/menu-item-type';
 import { MenuItem } from '../models/menu-item';

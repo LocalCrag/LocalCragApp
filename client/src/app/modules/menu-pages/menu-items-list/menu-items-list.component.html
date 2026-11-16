@@ -1,13 +1,6 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
-    <p-data-view #dv [value]="menuItemsTop">
-      <ng-template #emptymessage>
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noMenuItemsFoundEmptyMessage")
-        }}</p-message>
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-row justify-between">
+    <div class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4">
           <div class="flex flex-col justify-center">
             <h3>{{ t("topMenu") }}</h3>
             @if (!isMobile && menuItemsTop?.length > 1) {
@@ -17,35 +10,26 @@
             }
           </div>
           <div class="lc-button-group justify-end">
-            <p-button
-              [disabled]="loading === loadingStates.LOADING"
-              label="{{ t('newMenuItemButtonLabel') }}"
-              icon="pi pi-plus"
-              routerLink="/menu-items/create-menu-item/top"
-              class="responsive-button"
-            ></p-button>
+            <a hlmBtn class="responsive-button" [disabled]="loading === loadingStates.LOADING" routerLink="/menu-items/create-menu-item/top"><ng-icon name="lucidePlus" /> {{ t('newMenuItemButtonLabel') }}</a>
             @if (isMobile) {
-              <p-button
-                label="{{ t('reorderMenuItemsButtonLabel') }}"
-                icon="pi pi-sort"
-                (click)="reorderMenuItems(positions.TOP)"
-                [disabled]="
+              <button hlmBtn type="button" class="responsive-button" (click)="reorderMenuItems(positions.TOP)" [disabled]="
                   menuItemsTop?.length < 2 || loading === loadingStates.LOADING
-                "
-                class="responsive-button"
-              ></p-button>
+                "><ng-icon name="lucideArrowUpDown" /> {{ t('reorderMenuItemsButtonLabel') }}</button>
             }
           </div>
         </div>
-      </ng-template>
-      <ng-template let-menuItems #list>
-        @if (loading === loadingStates.LOADING) {
+@if (!(menuItemsTop?.length) && loading !== loadingStates.LOADING) {
+<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
+          t("noMenuItemsFoundEmptyMessage")
+        }}</p></div>
+}
+@if (loading === loadingStates.LOADING) {
           <lc-menu-list-skeleton></lc-menu-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
             @for (
-              menuItem of menuItems;
+              menuItem of menuItemsTop;
               track menuItem.id;
               let first = $first;
               let last = $last
@@ -89,7 +73,7 @@
                         (pointerup)="onPointerUp($event)"
                         (pointercancel)="endDrag()"
                       >
-                        <i class="pi pi-bars"></i>
+                        <ng-icon name="lucideMenu" />
                       </div>
                     }
                     <div class="grow flex items-center">
@@ -105,14 +89,7 @@
                       }
                     </div>
                     <div class="lc-button-group grow-0">
-                      <p-button
-                        label="{{ t('editMenuItemButtonLabel') }}"
-                        icon="pi pi-file-edit"
-                        routerLink="/menu-items/{{ menuItem.id }}/edit"
-                        class="responsive-button"
-                        styleClass="pr-0"
-                        [text]="true"
-                      ></p-button>
+                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/menu-items/{{ menuItem.id }}/edit"><ng-icon name="lucideFilePen" /> {{ t('editMenuItemButtonLabel') }}</a>
                     </div>
                   </div>
                 </div>
@@ -120,17 +97,8 @@
             }
           </div>
         }
-      </ng-template>
-    </p-data-view>
 
-    <p-data-view [value]="menuItemsBottom">
-      <ng-template #emptymessage>
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noMenuItemsFoundEmptyMessage")
-        }}</p-message>
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-row justify-between">
+    <div class="flex flex-row items-start justify-between gap-3 border-b border-surface px-6 py-4">
           <div class="flex flex-col justify-center">
             <h3>{{ t("bottomMenu") }}</h3>
             @if (!isMobile && menuItemsBottom?.length > 1) {
@@ -140,36 +108,27 @@
             }
           </div>
           <div class="lc-button-group justify-end">
-            <p-button
-              label="{{ t('newMenuItemButtonLabel') }}"
-              icon="pi pi-plus"
-              [disabled]="loading === loadingStates.LOADING"
-              routerLink="/menu-items/create-menu-item/bottom"
-              class="responsive-button"
-            ></p-button>
+            <a hlmBtn class="responsive-button" [disabled]="loading === loadingStates.LOADING" routerLink="/menu-items/create-menu-item/bottom"><ng-icon name="lucidePlus" /> {{ t('newMenuItemButtonLabel') }}</a>
             @if (isMobile) {
-              <p-button
-                label="{{ t('reorderMenuItemsButtonLabel') }}"
-                icon="pi pi-sort"
-                (click)="reorderMenuItems(positions.BOTTOM)"
-                [disabled]="
+              <button hlmBtn type="button" class="responsive-button" (click)="reorderMenuItems(positions.BOTTOM)" [disabled]="
                   menuItemsBottom?.length < 2 ||
                   loading === loadingStates.LOADING
-                "
-                class="responsive-button"
-              ></p-button>
+                "><ng-icon name="lucideArrowUpDown" /> {{ t('reorderMenuItemsButtonLabel') }}</button>
             }
           </div>
         </div>
-      </ng-template>
-      <ng-template let-menuItems #list>
-        @if (loading === loadingStates.LOADING) {
+@if (!(menuItemsBottom?.length) && loading !== loadingStates.LOADING) {
+<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
+          t("noMenuItemsFoundEmptyMessage")
+        }}</p></div>
+}
+@if (loading === loadingStates.LOADING) {
           <lc-menu-list-skeleton></lc-menu-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
             @for (
-              menuItem of menuItems;
+              menuItem of menuItemsBottom;
               track menuItem.id;
               let first = $first;
               let last = $last
@@ -209,7 +168,7 @@
                         (pointerup)="onPointerUp($event)"
                         (pointercancel)="endDrag()"
                       >
-                        <i class="pi pi-bars"></i>
+                        <ng-icon name="lucideMenu" />
                       </div>
                     }
                     <div class="grow flex items-center">
@@ -219,14 +178,7 @@
                       }
                     </div>
                     <div class="lc-button-group grow-0">
-                      <p-button
-                        label="{{ t('editMenuItemButtonLabel') }}"
-                        icon="pi pi-file-edit"
-                        routerLink="/menu-items/{{ menuItem.id }}/edit"
-                        class="responsive-button"
-                        styleClass="pr-0"
-                        [text]="true"
-                      ></p-button>
+                      <a hlmBtn variant="ghost" class="pr-0 responsive-button" routerLink="/menu-items/{{ menuItem.id }}/edit"><ng-icon name="lucideFilePen" /> {{ t('editMenuItemButtonLabel') }}</a>
                     </div>
                   </div>
                 </div>
@@ -234,7 +186,5 @@
             }
           </div>
         }
-      </ng-template>
-    </p-data-view>
   </div>
 </ng-container>

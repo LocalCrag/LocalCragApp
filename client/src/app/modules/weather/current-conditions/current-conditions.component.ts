@@ -12,21 +12,26 @@ import {
   BlocWeatherService,
 } from '../../../services/crud/blocweather.service';
 import { switchMap, EMPTY } from 'rxjs';
-import { Message } from 'primeng/message';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ReportConditionsDialogComponent } from '../report-conditions-dialog/report-conditions-dialog.component';
-import { Button } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lc-current-conditions',
   imports: [
-    Message,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmButton,
+    NgIcon,
     TranslocoDirective,
     ReportConditionsDialogComponent,
-    Button,
     RouterLink,
   ],
+  providers: [provideIcons({ lucideInfo })],
   templateUrl: './current-conditions.component.html',
   styleUrl: './current-conditions.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,

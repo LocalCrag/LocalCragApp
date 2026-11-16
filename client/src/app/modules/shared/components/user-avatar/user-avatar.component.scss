@@ -2,9 +2,15 @@
   color: var(--p-primary-contrast-color);
   font-weight: 600;
   border: none;
+
+  [data-slot='avatar-fallback'] {
+    background-color: transparent;
+    color: inherit;
+    font-weight: inherit;
+  }
 }
 
-:host ::ng-deep p-image.lc-user-avatar-preview {
+:host ::ng-deep button.lc-user-avatar-preview {
   display: inline-flex;
   width: fit-content;
   cursor: pointer;
@@ -34,7 +40,7 @@
     height: 4rem;
   }
 
-  .p-image-preview-mask {
+  .lc-user-avatar-preview-mask {
     position: absolute;
     inset: 0;
     width: 100% !important;

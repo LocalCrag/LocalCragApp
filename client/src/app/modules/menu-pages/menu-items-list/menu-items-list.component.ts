@@ -20,8 +20,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
-import { DataViewModule } from 'primeng/dataview';
-import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenuItemType } from '../../../enums/menu-item-type';
@@ -35,29 +33,49 @@ import {
   planMenuItemDrop,
 } from '../../../utility/menu-item-tree';
 
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowUpDown,
+  lucideFilePen,
+  lucideInfo,
+  lucideMenu,
+  lucidePlus,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-menu-items-list',
   imports: [
-    DataViewModule,
-    ButtonModule,
     NgClass,
     RouterLink,
     TranslocoDirective,
     TranslocoPipe,
     MenuPagesListSkeletonComponent,
-    Message,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
   ],
   templateUrl: './menu-items-list.component.html',
   styleUrl: './menu-items-list.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [DialogService],
+  providers: [
+    provideIcons({
+      lucideArrowUpDown,
+      lucideFilePen,
+      lucideInfo,
+      lucideMenu,
+      lucidePlus,
+    }),
+  ],
 })
 export class MenuItemsListComponent implements OnInit {
   public menuItemsTop: MenuItem[];
@@ -66,7 +84,7 @@ export class MenuItemsListComponent implements OnInit {
   public loadingStates = LoadingState;
   public isMobile$: Observable<boolean>;
   public menuItemTypes = MenuItemType;
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
   public positions = MenuItemPosition;
   public isMobile = false;
   /** Item held by the handle. Null when no drag is in progress. */
@@ -79,7 +97,7 @@ export class MenuItemsListComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
   private menuItemsService = inject(MenuItemsService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private store = inject(Store);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
@@ -464,13 +482,13 @@ export class MenuItemsListComponent implements OnInit {
       };
     }
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      modal: true,
-      header: this.translocoService.translate(
+      title: this.translocoService.translate(
         marker('reorderMenuItemsDialogTitle'),
       ),
-      data,
+      contentClass: 'sm:max-w-lg',
+      context: data,
     });
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.ref.closed$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
       this.store.dispatch(reloadMenus());
     });

@@ -1,11 +1,16 @@
 <ng-container *transloco="let t; read: 'user.charts'">
   @if (yearChartData?.labels?.length) {
     <div class="year-chart-wrap charts-section-box charts-section-box--blue">
-      <p-chart type="bar" [data]="yearChartData" [options]="yearChartOptions" />
+      <canvas
+        lcChartJs="bar"
+        [data]="yearChartData"
+        [options]="yearChartOptions"
+      ></canvas>
     </div>
   } @else {
-    <p-message severity="info" icon="pi pi-info-circle">{{
-      emptyText || t("noAscentYearData")
-    }}</p-message>
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ emptyText || t("noAscentYearData") }}</p>
+    </div>
   }
 </ng-container>

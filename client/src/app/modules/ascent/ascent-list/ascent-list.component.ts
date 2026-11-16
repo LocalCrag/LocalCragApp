@@ -10,17 +10,12 @@ import {
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { Ascent } from '../../../models/ascent';
 import { Video } from '../../../models/video';
-import { ButtonModule } from 'primeng/button';
-import { Menu } from 'primeng/menu';
-import { DataViewModule } from 'primeng/dataview';
 import { LoadingState } from '../../../enums/loading-state';
 import {
   beginPaginatedPageLoad,
@@ -29,21 +24,15 @@ import {
   PaginatedListView,
 } from '../../../utility/paginated-list';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { RatingModule } from 'primeng/rating';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { UpgradePipe } from '../pipes/upgrade.pipe';
 import { DowngradePipe } from '../pipes/downgrade.pipe';
 import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
-import { TagModule } from 'primeng/tag';
 import { Store } from '@ngrx/store';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AscentFormComponent } from '../ascent-form/ascent-form.component';
-import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { Actions, ofType } from '@ngrx/effects';
@@ -51,16 +40,12 @@ import { Actions, ofType } from '@ngrx/effects';
 import { User } from '../../../models/user';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
-import { MenuModule } from 'primeng/menu';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { Select } from 'primeng/select';
-import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { AscentListSkeletonComponent } from '../ascent-list-skeleton/ascent-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -68,55 +53,100 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs/operators';
 import { LanguageService } from '../../../services/core/language.service';
 import { SocialInteractionWrapperComponent } from '../../reactions/social-interaction-wrapper/social-interaction-wrapper.component';
-import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { CommentsDialogComponent } from '../../comments/comments-dialog/comments-dialog.component';
 import { AscentVideoMarksComponent } from './ascent-video-marks/ascent-video-marks.component';
 import { openAscentVideoModerationDialog } from '../../line/ascent-video-moderation-dialog/ascent-video-moderation-dialog.component';
 import { RemoveFaDialogComponent } from '../remove-fa-dialog/remove-fa-dialog.component';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideCalendar,
+  lucideCheck,
+  lucideChevronsDown,
+  lucideChevronsUp,
+  lucideEllipsisVertical,
+  lucideInfo,
+  lucidePencil,
+  lucideStar,
+  lucideTrash,
+  lucideVideo,
+} from '@ng-icons/lucide';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
+
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmToggle } from '@spartan-ng/helm/toggle';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'lc-ascent-list',
   imports: [
-    BreadcrumbModule,
-    CardModule,
+    ...HlmSelectImports,
+    HlmToggle,
+    ...HlmDropdownMenuImports,
     TranslocoDirective,
-    ButtonModule,
-    DataViewModule,
     FormsModule,
     NgClass,
-    ConfirmPopupModule,
-    RatingModule,
     AsyncPipe,
     UserAvatarComponent,
     UpgradePipe,
     DowngradePipe,
     ConsensusGradePipe,
-    TagModule,
     GradeRangeSliderComponent,
-    MenuModule,
-    Select,
-    ToggleButtonModule,
     RouterLink,
     InfiniteScrollDirective,
     AscentListSkeletonComponent,
-    Message,
     DatePipe,
     TranslateSpecialGradesPipe,
     LineGradePipe,
     SocialInteractionWrapperComponent,
     TopoHierarchyBreadcrumbsComponent,
-    GymModeDirective,
     AscentVideoMarksComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmBadge,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './ascent-list.component.html',
   styleUrl: './ascent-list.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [DialogService, ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideCalendar,
+      lucideCheck,
+      lucideChevronsDown,
+      lucideChevronsUp,
+      lucideEllipsisVertical,
+      lucideInfo,
+      lucidePencil,
+      lucideStar,
+      lucideTrash,
+      lucideVideo,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AscentListComponent
   implements OnInit, OnChanges, PaginatedListView
 {
+  private confirmDialog = inject(ConfirmDialogService);
+  readonly menuIcon = lucideNameFromPrimeIcon;
+
   @Input() user: User;
   @Input() cragId: string;
   @Input() sectorId: string;
@@ -133,7 +163,7 @@ export class AscentListComponent
   public loadingStates = LoadingState;
   public loading: LoadingState = LoadingState.DEFAULT;
   public ascents: Ascent[];
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
 
@@ -172,10 +202,9 @@ export class AscentListComponent
   private deepLinkDialogOpened = false;
   private destroyRef = inject(DestroyRef);
   private ascentsService = inject(AscentsService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private store = inject(Store);
   private actions$ = inject(Actions);
-  private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
   private languageService = inject(LanguageService);
   protected scalesService = inject(ScalesService);
@@ -423,12 +452,9 @@ export class AscentListComponent
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
-      modal: true,
-      templates: {
-        header: AscentFormTitleComponent,
-      },
-      focusOnShow: false,
-      data: {
+      contentClass:
+        'sm:max-w-xl max-h-[min(40rem,calc(100dvh-2rem))] overflow-y-auto',
+      context: {
         ascent,
       },
     });
@@ -436,17 +462,11 @@ export class AscentListComponent
 
   openAscentComments(ascent: Ascent) {
     this.ref = this.dialogService.open(CommentsDialogComponent, {
-      modal: true,
-      closable: true,
-      draggable: false,
-      dismissableMask: true,
-      focusOnShow: false,
-      styleClass: 'ascent-comments-dialog',
-      width: 'min(560px, 96vw)',
-      header: this.translocoService.translate(
+      title: this.translocoService.translate(
         marker('comments.ascentDialogTitle'),
       ),
-      data: {
+      contentClass: 'sm:max-w-xl',
+      context: {
         object: ascent,
         commentCount: ascent.commentCount,
         onCountChange: (count: number) => {
@@ -505,18 +525,16 @@ export class AscentListComponent
     });
   }
 
-  confirmDeleteAscent(event: Event, ascent: Ascent) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteAscent(ascent: Ascent) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('ascent.askReallyWantToDeleteAscent'),
       ),
       acceptLabel: this.translocoService.translate(marker('ascent.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('ascent.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteAscent(ascent);
       },
@@ -545,10 +563,10 @@ export class AscentListComponent
     return !!(this.currentUser.moderator && ascent.fa);
   }
 
-  public openAscentActionsMenu(event: Event, ascent: Ascent, menu: Menu): void {
+  public openAscentActionsMenu(event: Event, ascent: Ascent): void {
+    event.stopPropagation();
     this.clickedAscentForAction = ascent;
     this.ascentActionItems = this.buildAscentActionItemsFor(ascent);
-    menu.toggle(event);
   }
 
   public openAscentVideoDialog(ascent: Ascent): void {
@@ -560,7 +578,7 @@ export class AscentListComponent
         video: ascent.video,
       },
     );
-    ref?.onClose.pipe(take(1)).subscribe((video: Video | null | undefined) => {
+    ref?.closed$.pipe(take(1)).subscribe((video: Video | null | undefined) => {
       if (video === undefined) {
         return;
       }
@@ -571,13 +589,9 @@ export class AscentListComponent
 
   public openRemoveFaDialog(ascent: Ascent) {
     this.ref = this.dialogService.open(RemoveFaDialogComponent, {
-      modal: true,
-      header: this.translocoService.translate(marker('ascent.removeFaTag')),
-      width: '32rem',
-      breakpoints: { '640px': '95vw' },
-      dismissableMask: true,
-      closeOnEscape: true,
-      data: { ascent },
+      title: this.translocoService.translate(marker('ascent.removeFaTag')),
+      contentClass: 'sm:max-w-lg',
+      context: { ascent },
     });
   }
 
@@ -597,11 +611,8 @@ export class AscentListComponent
           label: this.translocoService.translate('ascent.deleteAscent'),
           icon: 'pi pi-trash',
           id: 'delete-ascent',
-          command: (e) => {
-            this.confirmDeleteAscent(
-              e.originalEvent,
-              this.clickedAscentForAction,
-            );
+          command: () => {
+            this.confirmDeleteAscent(this.clickedAscentForAction);
           },
         },
       );

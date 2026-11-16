@@ -14,13 +14,16 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Reactions } from '../../../models/reactions';
-import { Popover } from 'primeng/popover';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo, lucideMessageSquare, lucidePlus } from '@ng-icons/lucide';
+import { BrnPopover } from '@spartan-ng/brain/popover';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { ReactionsService } from '../../../services/crud/reactions.service';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { User } from '../../../models/user';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReactionsInfoModalComponent } from '../reactions-info-modal/reactions-info-modal.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { TranslocoService } from '@jsverse/transloco';
@@ -32,11 +35,11 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
 
 @Component({
   selector: 'lc-social-interaction-wrapper',
-  imports: [Popover, HasPermissionDirective],
+  imports: [...HlmPopoverImports, HasPermissionDirective, NgIcon],
   templateUrl: './social-interaction-wrapper.component.html',
   styleUrl: './social-interaction-wrapper.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [DialogService],
+  providers: [provideIcons({ lucideInfo, lucideMessageSquare, lucidePlus })],
 })
 export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   @Input() reactions: Reactions;
@@ -49,7 +52,7 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   @Input() commentCount = 0;
   @Output() reactionsChange = new EventEmitter<Reactions>();
   @Output() commentClick = new EventEmitter<void>();
-  @ViewChild('popover') popover: Popover;
+  @ViewChild('popover') popover?: BrnPopover;
   @ViewChild('reactionBar') reactionBar: ElementRef<HTMLElement>;
 
   readonly availableReactions = ['💪', '❤️', '👍', '🤯', '🔥', '🎉', '😀'];
@@ -63,10 +66,9 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   private cdr = inject(ChangeDetectorRef);
   private reactionsService = inject(ReactionsService);
   private store = inject(Store);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private translocoService = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
-  private ref: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
     this.store
@@ -87,7 +89,7 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.syncMyReaction();
     if (changes['hideReactionBar']?.currentValue && this.popover) {
-      this.popover.hide();
+      this.popover?.close();
     }
   }
 
@@ -179,7 +181,15 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
       }
       return;
     }
-    this.popover.toggle(event, this.reactionBar.nativeElement);
+    this.popover?.toggle();
+  }
+
+  onPopoverState(state: 'open' | 'closed'): void {
+    if (state === 'open') {
+      this.onPickerShow();
+    } else {
+      this.onPickerHide();
+    }
   }
 
   onPickerShow(): void {
@@ -201,8 +211,7 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
       if (this.totalReactions > 0) {
         this.openInfoModal();
       } else if (this.canOpenPicker && this.popover) {
-        const fakeEvent = { stopPropagation: () => {} };
-        this.popover.toggle(fakeEvent as any, this.reactionBar.nativeElement);
+        this.popover.toggle();
       }
     }, 500);
   }
@@ -216,16 +225,9 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
 
   openInfoModal(event?: MouseEvent): void {
     event?.stopPropagation();
-    this.ref = this.dialogService.open(ReactionsInfoModalComponent, {
-      modal: true,
-      closable: true,
-      draggable: false,
-      dismissableMask: true,
-      focusOnShow: false,
-      header: this.translocoService.translate(
-        marker('reactions.infoModalTitle'),
-      ),
-      data: {
+    this.dialogService.open(ReactionsInfoModalComponent, {
+      contentClass: 'sm:max-w-md',
+      context: {
         reactions: this.reactions,
       },
     });
@@ -254,6 +256,6 @@ export class SocialInteractionWrapperComponent implements OnInit, OnChanges {
         this.reactionsChange.emit(reactions);
       });
     }
-    this.popover.hide();
+    this.popover?.close();
   }
 }

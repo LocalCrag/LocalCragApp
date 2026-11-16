@@ -1,24 +1,26 @@
 <ng-container *transloco="let t; read: 'searchDialog'">
-  <p-inputgroup>
-    <p-inputgroup-addon>
+  <div hlmInputGroup>
+    <div hlmInputGroupAddon>
       @if (!loading) {
-        <i class="pi pi-search"></i>
+        <ng-icon name="lucideSearch" />
       }
       @if (loading) {
-        <i class="pi pi-spin pi-spinner"></i>
+        <ng-icon name="lucideLoader2" />
       }
-    </p-inputgroup-addon>
+    </div>
     <input
+      hlmInputGroupInput
       type="text"
-      pInputText
       [(ngModel)]="query"
       (ngModelChange)="search()"
       placeholder="{{ t('searchInputPlaceholder') }}"
     />
-    <p-inputgroup-addon>
-      <p-button icon="pi pi-times" (click)="close()"></p-button>
-    </p-inputgroup-addon>
-  </p-inputgroup>
+    <div hlmInputGroupAddon align="inline-end">
+      <button hlmBtn type="button" size="icon" variant="ghost" (click)="close()">
+        <ng-icon name="lucideX" />
+      </button>
+    </div>
+  </div>
 
   @if (
     (showLiveSearchResults() && searchables?.length > 0) || showRecentSearches()

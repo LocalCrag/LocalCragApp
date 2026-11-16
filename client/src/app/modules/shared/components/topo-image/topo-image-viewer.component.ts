@@ -9,7 +9,9 @@ import {
 import { LinePath } from '../../../../models/line-path';
 import { Label } from './point-feature-label-placement';
 import Konva from 'konva';
-import { Skeleton } from 'primeng/skeleton';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye } from '@ng-icons/lucide';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { TopoLinePaint } from '../../../../utility/scale/topo-line-color';
 import {
   linePathsForTopoCanvas,
@@ -27,7 +29,8 @@ import { TopoImageCanvasBase } from './topo-image-canvas.base';
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [Skeleton],
+  imports: [HlmSkeleton, NgIcon],
+  providers: [provideIcons({ lucideEye })],
 })
 export class TopoImageViewerComponent
   extends TopoImageCanvasBase

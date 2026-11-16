@@ -7,10 +7,6 @@
   cursor: pointer;
 }
 
-:host ::ng-deep p-tag.closed-spot-tag .p-tag-label:empty {
-  display: none;
-}
-
 :host ::ng-deep .closed-spot-tag-inner {
   display: inline-flex;
   align-items: center;

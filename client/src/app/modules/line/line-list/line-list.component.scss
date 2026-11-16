@@ -49,13 +49,13 @@ lc-line-list {
       padding-inline-start: 0.5rem;
     }
 
-    p-button.line-list-filter-btn .line-list-filter-label-group {
+    button.line-list-filter-btn .line-list-filter-label-group {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
     }
 
-    p-button.line-list-filter-btn .line-list-filter-active-dot {
+    button.line-list-filter-btn .line-list-filter-active-dot {
       flex-shrink: 0;
       width: 0.5rem;
       height: 0.5rem;
@@ -86,7 +86,7 @@ lc-line-list {
       color: var(--p-text-muted-color) !important;
     }
 
-    .p-rating-icon {
+    .text-primary {
       color: inherit;
     }
 

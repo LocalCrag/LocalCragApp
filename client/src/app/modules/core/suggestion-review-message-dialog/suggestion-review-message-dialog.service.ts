@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import {
@@ -11,11 +12,11 @@ import { SuggestionReviewMessageDialogComponent } from './suggestion-review-mess
 
 @Injectable()
 export class SuggestionReviewMessageDialogService {
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private notificationsService = inject(NotificationsService);
   private translocoService = inject(TranslocoService);
 
-  private openRef: DynamicDialogRef | undefined;
+  private openRef: BrnDialogRef | undefined;
 
   public openFromNotification(notification: NotificationItem): boolean {
     if (
@@ -68,14 +69,8 @@ export class SuggestionReviewMessageDialogService {
     this.openRef = this.dialogService.open(
       SuggestionReviewMessageDialogComponent,
       {
-        header,
-        data: { message, targetLink, subject },
-        modal: true,
-        dismissableMask: true,
-        closeOnEscape: true,
-        styleClass: 'suggestion-review-message-dialog-host',
-        width: '42rem',
-        breakpoints: { '640px': '95vw' },
+        context: { message, targetLink, subject, title: header },
+        contentClass: 'suggestion-review-message-dialog-host sm:max-w-2xl',
       },
     );
   }

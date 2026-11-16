@@ -9,8 +9,6 @@ import {
   ViewChild,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ColorPickerModule } from 'primeng/colorpicker';
-import { SelectButtonModule } from 'primeng/selectbutton';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -19,7 +17,7 @@ import {
   NgControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 
 import { Store } from '@ngrx/store';
 import { FormDirective } from '../../form.directive';
@@ -27,20 +25,18 @@ import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/insta
 
 import { FormControlDirective } from '../../form-control.directive';
 import { NgxColorsModule } from 'ngx-colors';
-import { Select } from 'primeng/select';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-advanced-color-picker',
   imports: [
     TranslocoDirective,
-    ColorPickerModule,
     ReactiveFormsModule,
-    SelectButtonModule,
     FormControlDirective,
     FormDirective,
     NgxColorsModule,
-    Select,
+    ...HlmSelectImports,
   ],
   templateUrl: './advanced-color-picker.component.html',
   styleUrl: './advanced-color-picker.component.scss',
@@ -86,6 +82,14 @@ export class AdvancedColorPickerComponent
   private fb = inject(FormBuilder);
   private inj = inject(Injector);
   private store = inject(Store);
+  private transloco = inject(TranslocoService);
+
+  colorModeLabel = (custom: boolean): string =>
+    this.transloco.translate(
+      custom
+        ? 'advancedColorPicker.customColor'
+        : 'advancedColorPicker.globalColor',
+    );
 
   ngOnInit() {
     this.formControl = this.inj.get(NgControl);

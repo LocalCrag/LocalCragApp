@@ -5,10 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
 import { RouterLink } from '@angular/router';
-import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { select, Store } from '@ngrx/store';
@@ -20,23 +17,35 @@ import { AdminMessage } from '../../../models/admin-message';
 import { AdminMessagesService } from '../../../services/crud/admin-messages.service';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Select } from 'primeng/select';
-import { Message } from 'primeng/message';
 import { Observable } from 'rxjs';
 import { DatePipe } from '../../shared/pipes/date.pipe';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideFilePen, lucideInfo, lucidePlus } from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
 
 @Component({
+  providers: [provideIcons({ lucideFilePen, lucideInfo, lucidePlus })],
   selector: 'lc-admin-messages-list',
   imports: [
-    ButtonModule,
-    DataViewModule,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
-    Select,
-    Message,
     DatePipe,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    NgIcon,
   ],
   templateUrl: './admin-messages-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -63,6 +72,11 @@ export class AdminMessagesListComponent implements OnInit {
       this.translocoService.translate(
         marker('adminMessages.list.adminMessagesListTitle'),
       ),
+      {
+        info: this.translocoService.translate(
+          marker('adminMessages.list.infoTooltip'),
+        ),
+      },
     );
     this.refreshData();
     this.isMobile$ = this.store.pipe(select(selectIsMobile));
@@ -100,5 +114,26 @@ export class AdminMessagesListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+  }
+
+  sortClientList<T>(items: T[] | null | undefined): T[] {
+    if (!items || !this.sortField) {
+      return items ?? [];
+    }
+    const direction = this.sortOrder ?? 1;
+    return [...items].sort((a: any, b: any) => {
+      const left = a?.[this.sortField];
+      const right = b?.[this.sortField];
+      if (left === right) {
+        return 0;
+      }
+      if (left == null) {
+        return 1;
+      }
+      if (right == null) {
+        return -1;
+      }
+      return left > right ? direction : -direction;
+    });
   }
 }

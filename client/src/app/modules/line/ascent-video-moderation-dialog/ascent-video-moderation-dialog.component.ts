@@ -3,18 +3,17 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { Button } from 'primeng/button';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
 import { Video } from '../../../models/video';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { providerForUrl } from '../../../utility/video-source';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideLoaderCircle } from '@ng-icons/lucide';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 
 const MAX_START_SECONDS = 24 * 60 * 60;
 const MAX_MESSAGE_LENGTH = 2000;
@@ -25,18 +24,14 @@ export interface AscentVideoModerationData {
 }
 
 export function openAscentVideoModerationDialog(
-  dialogService: DialogService,
+  dialogService: HlmDialogService,
   transloco: TranslocoService,
   data: AscentVideoModerationData,
-): DynamicDialogRef {
+): BrnDialogRef<Video | null> {
   return dialogService.open(AscentVideoModerationDialogComponent, {
-    modal: true,
-    header: transloco.translate(marker('line.line.editAscentVideos')),
-    width: '32rem',
-    breakpoints: { '640px': '95vw' },
-    dismissableMask: true,
-    closeOnEscape: true,
-    data: {
+    title: transloco.translate(marker('line.line.editAscentVideos')),
+    contentClass: 'sm:max-w-lg',
+    context: {
       ascentId: data.ascentId,
       video: data.video ? { ...data.video } : null,
     },
@@ -48,7 +43,15 @@ export function openAscentVideoModerationDialog(
   templateUrl: './ascent-video-moderation-dialog.component.html',
   styleUrl: './ascent-video-moderation-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule, TranslocoDirective, Button, InputText, Textarea],
+  imports: [
+    FormsModule,
+    TranslocoDirective,
+    HlmButton,
+    HlmInput,
+    HlmTextarea,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideLoaderCircle })],
 })
 export class AscentVideoModerationDialogComponent {
   public draft: Video | null = null;
@@ -58,13 +61,13 @@ export class AscentVideoModerationDialogComponent {
   public message = '';
   public readonly maxMessageLength = MAX_MESSAGE_LENGTH;
 
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private dialogContext = injectBrnDialogContext<AscentVideoModerationData>();
+  private ref = inject(BrnDialogRef<Video | null>);
   private ascentsService = inject(AscentsService);
   private store = inject(Store);
 
   constructor() {
-    const data = this.config.data as AscentVideoModerationData;
+    const data = this.dialogContext;
     this.draft = data.video ? { ...data.video } : null;
   }
 
@@ -102,7 +105,7 @@ export class AscentVideoModerationDialogComponent {
     }
     this.startInvalid = false;
     this.saving = true;
-    const ascentId = (this.config.data as AscentVideoModerationData).ascentId;
+    const ascentId = this.dialogContext.ascentId;
     const message = this.removing ? this.message.trim() || null : null;
     this.ascentsService.updateAscentVideo(ascentId, video, message).subscribe({
       next: (ascent) => {

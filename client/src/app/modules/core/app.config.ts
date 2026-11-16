@@ -3,6 +3,7 @@ import {
   ErrorHandler,
   inject,
   Injectable,
+  Injector,
   LOCALE_ID,
   provideAppInitializer,
 } from '@angular/core';
@@ -27,8 +28,6 @@ import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-
 import { TopoPointsInterceptor } from '../../utility/http-interceptors/topo-points.interceptor';
 import { environment } from '../../../environments/environment';
 import * as Sentry from '@sentry/angular';
-import { providePrimeNG } from 'primeng/config';
-import { LocalCragTheme } from './theme/theme';
 import { ThemeService } from '../../services/core/theme.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
@@ -42,7 +41,7 @@ import { MenuItemsService } from '../../services/crud/menu-items.service';
 import { concatMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
-import { MessageService } from 'primeng/api';
+import { setRootInjector } from './root-injector';
 import { metaReducers, reducers } from '../../ngrx/reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { Actions, ofType, provideEffects } from '@ngrx/effects';
@@ -53,7 +52,6 @@ import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { LanguageService } from '../../services/core/language.service';
-import { de } from 'primelocale/js/de.js';
 import { InstanceSettings } from '../../models/instance-settings';
 import {
   SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
@@ -187,6 +185,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => {
       inject(ThemeService).init();
+      setRootInjector(inject(Injector));
       return Promise.resolve();
     }),
     provideRouter(
@@ -222,21 +221,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: localeFactory,
     },
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
-    providePrimeNG({
-      translation: de,
-      ripple: true,
-      theme: {
-        preset: LocalCragTheme,
-        options: {
-          darkModeSelector: '.lc-dark',
-          cssLayer: {
-            name: 'primeng',
-            order: 'theme, base, primeng',
-          },
-        },
-      },
-    }),
-    MessageService,
     provideAnimationsAsync(),
     provideTransloco({
       config: {

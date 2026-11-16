@@ -7,8 +7,10 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircle, lucideX } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
@@ -17,7 +19,8 @@ import type { RockExplorerDraftRecord } from '../offline/rock-explorer-draft.typ
 
 @Component({
   selector: 'lc-rock-explorer-sessions',
-  imports: [Button, Tag, TranslocoDirective, TimeAgoPipe],
+  imports: [HlmBadge, HlmButton, NgIcon, TranslocoDirective, TimeAgoPipe],
+  providers: [provideIcons({ lucideCircle, lucideX })],
   templateUrl: './rock-explorer-sessions.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-sessions.component.scss',

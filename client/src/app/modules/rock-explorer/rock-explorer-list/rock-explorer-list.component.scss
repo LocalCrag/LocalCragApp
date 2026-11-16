@@ -100,6 +100,30 @@
     flex: 1;
     min-height: 0;
   }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.7rem 0.55rem;
+    text-align: start;
+    vertical-align: middle;
+  }
+
+  th {
+    border-bottom: 1px solid var(--p-content-border-color);
+  }
+
+  td {
+    border-bottom: 1px solid var(--p-content-border-color);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
 }
 
 .rock-explorer-list__row {

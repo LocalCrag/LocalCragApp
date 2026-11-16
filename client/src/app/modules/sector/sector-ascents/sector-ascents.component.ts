@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { SkeletonModule } from 'primeng/skeleton';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -21,7 +20,7 @@ import { SectorsService } from '../../../services/crud/sectors.service';
 
 @Component({
   selector: 'lc-sector-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent],
   templateUrl: './sector-ascents.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sector-ascents.component.scss',

@@ -20,7 +20,7 @@ import { AscentsPerYearChartComponent } from '../ascents-per-year-chart/ascents-
 import { SessionPointsChartComponent } from '../session-points-chart/session-points-chart.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { GradeDistribution } from '../../../models/scale';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import {
   GlobalRank,
   HardestGradeBucket,
@@ -46,7 +46,7 @@ import { ThemeService } from '../../../services/core/theme.service';
     SessionPointsChartComponent,
     GymModeDirective,
     TranslocoDirective,
-    SkeletonModule,
+    HlmSkeleton,
     CompletionComponent,
   ],
   templateUrl: './user-charts.component.html',

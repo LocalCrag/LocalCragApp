@@ -1,5 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
-import { MessageModule } from 'primeng/message';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
   ClosureReasonAlert,
@@ -9,7 +9,7 @@ import { LanguageService } from '../../../../services/core/language.service';
 
 @Component({
   selector: 'lc-closed-spot-alert',
-  imports: [MessageModule, TranslocoDirective],
+  imports: [HlmAlert, TranslocoDirective],
   templateUrl: './closed-spot-alert.component.html',
   styleUrl: './closed-spot-alert.component.scss',
 })

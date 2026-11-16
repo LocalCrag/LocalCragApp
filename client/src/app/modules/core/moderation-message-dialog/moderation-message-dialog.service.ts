@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { NotificationItem } from '../../../models/notification-item';
@@ -11,11 +12,11 @@ import {
 
 @Injectable()
 export class ModerationMessageDialogService {
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private notificationsService = inject(NotificationsService);
   private translocoService = inject(TranslocoService);
 
-  private openRef: DynamicDialogRef | undefined;
+  private openRef: BrnDialogRef | undefined;
 
   public openFromNotification(notification: NotificationItem): boolean {
     if (notification.type === 'fa_moderation_removed') {
@@ -69,14 +70,11 @@ export class ModerationMessageDialogService {
       ? marker('faRemoval.dialog.unavailableTitle')
       : titleKey;
     this.openRef = this.dialogService.open(ModerationMessageDialogComponent, {
-      header: this.translocoService.translate(headerKey),
-      data,
-      modal: true,
-      dismissableMask: true,
-      closeOnEscape: true,
-      styleClass: 'moderation-message-dialog-host',
-      width: '36rem',
-      breakpoints: { '640px': '95vw' },
+      context: {
+        ...data,
+        title: this.translocoService.translate(headerKey),
+      },
+      contentClass: 'moderation-message-dialog-host sm:max-w-xl',
     });
   }
 }

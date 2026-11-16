@@ -17,49 +17,46 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
   TranslocoPipe,
+  TranslocoService,
 } from '@jsverse/transloco';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
-import { ColorPickerModule } from 'primeng/colorpicker';
-import { ToggleButtonModule } from 'primeng/togglebutton';
 import {
   MAP_MARKER_TYPES,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { MapMarker } from '../../../models/map-marker';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
 
-import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
   imports: [
     ReactiveFormsModule,
-    InputTextModule,
     TranslocoDirective,
     TranslocoPipe,
     WysiwygEditorComponent,
     CoordinatesComponent,
-    ColorPickerModule,
-    ToggleButtonModule,
-    DialogModule,
-    ButtonModule,
-    Select,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    ...HlmDialogImports,
   ],
   templateUrl: './map-marker-config-dialog.component.html',
   styleUrl: './map-marker-config-dialog.component.scss',
@@ -83,6 +80,10 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
+  private transloco = inject(TranslocoService);
+
+  typeLabel = (type: string | null): string =>
+    type ? this.transloco.translate(`markerList.${type}`, {}, 'maps') : '';
 
   ngOnInit() {
     this.buildForm();

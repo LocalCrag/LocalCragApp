@@ -19,14 +19,17 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Coordinates } from '../../../../../interfaces/coordinates.interface';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMapPin } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { InputTextModule } from 'primeng/inputtext';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { latValidator } from '../../../../../utility/validators/lat.validator';
 import { lngValidator } from '../../../../../utility/validators/lng.validator';
 
 import { FormDirective } from '../../form.directive';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
 
 import { ControlGroupDirective } from '../../control-group.directive';
 import { FormControlDirective } from '../../form-control.directive';
@@ -37,10 +40,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-coordinates',
   imports: [
     TranslocoDirective,
-    InputTextModule,
     ReactiveFormsModule,
-    ButtonModule,
-    MessageModule,
+    NgIcon,
+    HlmInput,
+    HlmButton,
+    HlmSpinner,
+    HlmAlert,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -50,6 +55,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './coordinates.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
+    provideIcons({ lucideMapPin }),
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CoordinatesComponent),

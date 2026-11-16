@@ -59,6 +59,15 @@ export default defineConfig([
     },
   },
   {
+    files: ["src/app/ui/**/*.ts"],
+    rules: {
+      "@angular-eslint/component-selector": "off",
+      "@angular-eslint/directive-selector": "off",
+      "@angular-eslint/no-input-rename": "off",
+      "@angular-eslint/template/interactive-supports-focus": "off",
+    },
+  },
+  {
     files: ["**/*.html"],
     extends: [
       angular.configs.templateRecommended,
@@ -67,6 +76,12 @@ export default defineConfig([
     rules: {
       "@angular-eslint/template/label-has-associated-control": "off",
       "@angular-eslint/template/click-events-have-key-events": "off",
+    },
+  },
+  {
+    files: ["src/app/ui/**"],
+    rules: {
+      "@angular-eslint/template/interactive-supports-focus": "off",
     },
   },
 ]);

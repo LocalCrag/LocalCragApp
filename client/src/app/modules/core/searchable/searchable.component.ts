@@ -9,7 +9,9 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Searchable } from '../../../models/searchable';
-import { AvatarModule } from 'primeng/avatar';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMap } from '@ng-icons/lucide';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { AsyncPipe } from '@angular/common';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -29,8 +31,9 @@ import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 @Component({
   selector: 'lc-searchable',
   imports: [
-    AvatarModule,
     UserAvatarComponent,
+    NgIcon,
+    HlmAvatarImports,
     TranslocoDirective,
     RouterLink,
     LineGradePipe,
@@ -39,6 +42,7 @@ import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
   templateUrl: './searchable.component.html',
   styleUrl: './searchable.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideIcons({ lucideMap })],
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchableComponent {

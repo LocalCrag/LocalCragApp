@@ -6,7 +6,7 @@
         <input
           id="title"
           type="text"
-          pInputText
+          hlmInput
           formControlName="title"
           placeholder="{{ t('postTitlePlaceholder') }}"
           lcFormControl
@@ -37,41 +37,16 @@
 
     <div class="form-actions">
       @if (!editMode) {
-        <p-button
-          label="{{ t('createPostButtonLabel') }}"
-          (click)="savePost()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="savePost()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{ t('createPostButtonLabel') }}</button>
       }
       @if (editMode) {
-        <p-button
-          label="{{ t('editPostButtonLabel') }}"
-          (click)="savePost()"
-          icon="pi pi-save"
-          class="responsive-button"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="savePost()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{ t('editPostButtonLabel') }}</button>
       }
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
-        class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
       @if (editMode) {
-        <p-button
-          label="{{ t('deletePostButtonLabel') }}"
-          (click)="confirmDeletePost($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" variant="destructive" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="confirmDeletePost($event)">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideTrash2" /> {{ t('deletePostButtonLabel') }}</button>
       }
-      <p-confirmpopup></p-confirmpopup>
+      
     </div>
   </div>
 </ng-container>

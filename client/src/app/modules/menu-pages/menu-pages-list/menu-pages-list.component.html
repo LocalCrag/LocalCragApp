@@ -1,44 +1,22 @@
 <ng-container *transloco="let t; read: 'menuPages.menuPageList'">
   <div class="content">
-    <p-data-view
-      #dv
-      [value]="menuPages"
-      [sortField]="sortField"
-      [sortOrder]="sortOrder"
-    >
-      <ng-template #emptymessage>
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noMenuPagesFoundEmptyMessage")
-        }}</p-message>
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-row justify-between">
-          <p-select
-            [disabled]="loading === loadingStates.LOADING"
-            [options]="sortOptions"
-            [(ngModel)]="sortKey"
-            optionLabel="label"
-            (onChange)="onSortChange($event)"
-            styleClass="md:mb-0"
-          ></p-select>
+    <div class="flex flex-row items-center justify-between gap-3 border-b border-surface px-6 py-4">
+          <hlm-select [(ngModel)]="sortKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortChange({ value: $event })"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
           <div class="lc-button-group justify-end">
-            <p-button
-              [disabled]="loading === loadingStates.LOADING"
-              label="{{ t('newMenuPageButtonLabel') }}"
-              icon="pi pi-plus"
-              routerLink="/pages/create-menu-page"
-              class="responsive-button"
-            ></p-button>
+            <a hlmBtn class="responsive-button" [disabled]="loading === loadingStates.LOADING" routerLink="/pages/create-menu-page"><ng-icon name="lucidePlus" /> {{ t('newMenuPageButtonLabel') }}</a>
           </div>
         </div>
-      </ng-template>
-      <ng-template let-menuPages #list>
-        @if (loading === loadingStates.LOADING) {
+@if (!(menuPages?.length) && loading !== loadingStates.LOADING) {
+<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
+          t("noMenuPagesFoundEmptyMessage")
+        }}</p></div>
+}
+@if (loading === loadingStates.LOADING) {
           <lc-menu-list-skeleton></lc-menu-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
           <div class="grid grid-cols-12">
-            @for (menuPage of menuPages; track menuPage; let first = $first) {
+            @for (menuPage of sortClientList(menuPages); track menuPage; let first = $first) {
               <div class="col-span-12">
                 <div
                   class="flex flex-col xl:items-start p-6 gap-2"
@@ -51,20 +29,8 @@
                       {{ menuPage.title }}
                     </div>
                     <div class="lc-button-group grow-0">
-                      <p-button
-                        label="{{ t('visitMenuPageButtonLabel') }}"
-                        icon="pi pi-eye"
-                        routerLink="/pages/{{ menuPage.slug }}"
-                        styleClass="pr-0 responsive-button"
-                        [text]="true"
-                      ></p-button>
-                      <p-button
-                        label="{{ t('editMenuPageButtonLabel') }}"
-                        icon="pi pi-file-edit"
-                        routerLink="/pages/{{ menuPage.slug }}/edit"
-                        styleClass="pr-0 responsive-button"
-                        [text]="true"
-                      ></p-button>
+                      <a hlmBtn variant="ghost" class="responsive-button" routerLink="/pages/{{ menuPage.slug }}"><ng-icon name="lucideEye" /> {{ t('visitMenuPageButtonLabel') }}</a>
+                      <a hlmBtn variant="ghost" class="responsive-button" routerLink="/pages/{{ menuPage.slug }}/edit"><ng-icon name="lucideFilePen" /> {{ t('editMenuPageButtonLabel') }}</a>
                     </div>
                   </div>
                 </div>
@@ -72,7 +38,5 @@
             }
           </div>
         }
-      </ng-template>
-    </p-data-view>
   </div>
 </ng-container>

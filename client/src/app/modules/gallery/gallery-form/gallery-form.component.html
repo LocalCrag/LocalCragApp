@@ -1,12 +1,10 @@
 <ng-container *transloco="let t; read: 'gallery.galleryForm'">
-  <p-message severity="info">
-    @if (!editMode) {
+  <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>@if (!editMode) {
       <div [innerHTML]="t('addGalleryImageDescription')"></div>
     }
     @if (editMode) {
       <div [innerHTML]="t('editGalleryImageDescription')"></div>
-    }
-  </p-message>
+    }</p></div>
 
   <form [formGroup]="galleryImageForm" lcForm>
     <div class="flex flex-col gap-2" lcControlGroup>
@@ -36,16 +34,10 @@
   </form>
 
   <div class="form-actions">
-    <p-button
-      label="{{
+    <button hlmBtn type="button" class="w-full" [disabled]="loadingState === loadingStates.LOADING" (click)="saveGalleryImage()" data-cy="submit">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } {{
         !editMode
           ? t('addGalleryImageButtonLabel')
           : t('editGalleryImageButtonLabel')
-      }}"
-      (click)="saveGalleryImage()"
-      styleClass="w-full"
-      [loading]="loadingState === loadingStates.LOADING"
-      data-cy="submit"
-    ></p-button>
+      }}</button>
   </div>
 </ng-container>

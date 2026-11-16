@@ -8,7 +8,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import { InputTextModule } from 'primeng/inputtext';
 import {
   FormBuilder,
   FormGroup,
@@ -17,11 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { AsyncPipe } from '@angular/common';
-import { RatingModule } from 'primeng/rating';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Line } from '../../../models/line';
 import { Store } from '@ngrx/store';
@@ -29,20 +24,14 @@ import { yearOfDateNotInFutureValidator } from '../../../utility/validators/year
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ToggleButtonModule } from 'primeng/togglebutton';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
 import { startSecondsValidator } from '../../../utility/validators/start-seconds.validator';
-import { DividerModule } from 'primeng/divider';
 
 import { filter, take } from 'rxjs/operators';
-import { MessageModule } from 'primeng/message';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { DatePickerModule } from 'primeng/datepicker';
-import { Select } from 'primeng/select';
-import { Textarea } from 'primeng/textarea';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
@@ -59,31 +48,67 @@ import {
 import { externalVideoUrlValidator } from '../../../utility/validators/external-video-url.validator';
 import { providerForUrl } from '../../../utility/video-source';
 import { Video } from '../../../models/video';
+import { AscentFormTitleComponent } from '../ascent-form-title/ascent-form-title.component';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { HlmToggle } from '@spartan-ng/helm/toggle';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideCircleQuestionMark,
+  lucideClock,
+  lucideInfo,
+  lucidePlus,
+  lucideStar,
+  lucideTriangleAlert,
+  lucideX,
+} from '@ng-icons/lucide';
 
 @Component({
+  providers: [
+    provideIcons({
+      lucideCircleQuestionMark,
+      lucideClock,
+      lucideInfo,
+      lucidePlus,
+      lucideStar,
+      lucideTriangleAlert,
+      lucideX,
+    }),
+  ],
   selector: 'lc-ascent-form',
   imports: [
-    InputTextModule,
     ReactiveFormsModule,
-    CheckboxModule,
-    ButtonModule,
-    ConfirmPopupModule,
     TranslocoDirective,
     TranslocoPipe,
-    RatingModule,
-    DatePickerModule,
-    ToggleButtonModule,
     FormsModule,
-    DividerModule,
-    MessageModule,
-    Select,
-    Textarea,
     TranslateSpecialGradesPipe,
     IfErrorDirective,
     FormControlDirective,
     ControlGroupDirective,
     FormDirective,
     AsyncPipe,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmInput,
+    HlmTextarea,
+    ...HlmDatePickerImports,
+    HlmToggle,
+    HlmTooltip,
+    HlmSeparator,
+    HlmSpinner,
+    NgIcon,
+    AscentFormTitleComponent,
   ],
   templateUrl: './ascent-form.component.html',
   styleUrl: './ascent-form.component.scss',
@@ -104,6 +129,9 @@ export class AscentFormComponent implements OnInit {
   public editMode = false;
   public videoFormOpen = false;
   public videoStartOpen = false;
+  public formatDay = (date: Date) =>
+    `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+  public formatYear = (date: Date) => String(date.getFullYear());
   public toggleButtonDt = {
     checkedBackground: '{primary.500}',
     contentCheckedBackground: '{primary.500}',
@@ -113,16 +141,20 @@ export class AscentFormComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
-  private dialogConfig = inject(DynamicDialogConfig);
+  private context = injectBrnDialogContext<Record<string, any>>();
   private store = inject(Store);
-  private ref = inject(DynamicDialogRef);
+  private ref = inject(BrnDialogRef);
   private ascentsService = inject(AscentsService);
   private scalesService = inject(ScalesService);
+  private translateSpecialGrades = inject(TranslateSpecialGradesService);
+
+  gradeLabel = (grade: { name?: string } | null): string =>
+    grade?.name ? this.translateSpecialGrades.translate(grade.name) : '';
 
   constructor() {
-    this.line = this.dialogConfig.data.line
-      ? this.dialogConfig.data.line
-      : this.dialogConfig.data.ascent.line;
+    this.line = this.context.line
+      ? this.context.line
+      : this.context.ascent.line;
 
     this.scalesService
       .getScale(this.line.type, this.line.gradeScale)
@@ -137,7 +169,7 @@ export class AscentFormComponent implements OnInit {
     this.buildForm();
     this.gymMode$ = this.store.select(selectGymMode).pipe(take(1));
 
-    this.ascent = this.dialogConfig.data.ascent;
+    this.ascent = this.context.ascent;
     this.ascentForm.disable();
     if (this.ascent) {
       this.editMode = true;

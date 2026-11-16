@@ -9,7 +9,7 @@
     <div class="card-container block" lcControlGroup>
       <input
         type="text"
-        pInputText
+        hlmInput
         formControlName="code"
         inputmode="numeric"
         autocomplete="one-time-code"
@@ -27,28 +27,37 @@
     </div>
   </form>
 
-  <p-button
-    [label]="t('submit')"
+  <button
+    hlmBtn
+    type="button"
     (click)="submit()"
-    [loading]="submitting"
+    [disabled]="submitting"
     data-cy="two-factor-submit"
-  ></p-button>
+  >
+    {{ t("submit") }}
+  </button>
 
   @if (challenge?.emailTwoFactorEnabled) {
-    <p-button
-      [label]="challenge?.emailSent ? t('resendEmail') : t('sendEmail')"
-      severity="secondary"
+    <button
+      hlmBtn
+      variant="secondary"
+      type="button"
       (click)="sendEmail()"
-      [loading]="sending"
+      [disabled]="sending"
       data-cy="two-factor-email"
-    ></p-button>
+    >
+      {{ challenge?.emailSent ? t("resendEmail") : t("sendEmail") }}
+    </button>
   }
 
-  <p-button
-    [label]="t('back')"
-    styleClass="p-button-link"
+  <button
+    hlmBtn
+    variant="ghost"
+    type="button"
     class="link-button"
     (click)="back()"
     data-cy="two-factor-back"
-  ></p-button>
+  >
+    {{ t("back") }}
+  </button>
 </ng-container>

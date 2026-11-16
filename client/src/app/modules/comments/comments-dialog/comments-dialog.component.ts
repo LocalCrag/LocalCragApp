@@ -1,9 +1,15 @@
-import { Component, OnDestroy, inject } from '@angular/core';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { Component, OnDestroy } from '@angular/core';
+import { injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { CommentsComponent } from '../comments/comments.component';
 import { LCObject } from '../../../models/object';
 import { Ascent } from '../../../models/ascent';
 import { AscentDialogSummaryComponent } from '../../ascent/ascent-dialog-summary/ascent-dialog-summary.component';
+
+type CommentsDialogContext = {
+  object: LCObject;
+  commentCount?: number | null;
+  onCountChange?: (count: number) => void;
+};
 
 @Component({
   selector: 'lc-comments-dialog',
@@ -12,14 +18,14 @@ import { AscentDialogSummaryComponent } from '../../ascent/ascent-dialog-summary
   styleUrl: './comments-dialog.component.scss',
 })
 export class CommentsDialogComponent implements OnDestroy {
-  private config = inject(DynamicDialogConfig);
+  private context = injectBrnDialogContext<CommentsDialogContext>();
 
-  public object: LCObject = this.config.data?.object;
+  public object: LCObject = this.context.object;
 
   get ascent(): Ascent | null {
     return this.object instanceof Ascent ? this.object : null;
   }
-  private latestCount: number | null = this.config.data?.commentCount ?? null;
+  private latestCount: number | null = this.context.commentCount ?? null;
   private hasReceivedCount = false;
 
   onCountChange(count: number): void {
@@ -29,12 +35,12 @@ export class CommentsDialogComponent implements OnDestroy {
     }
     this.hasReceivedCount = true;
     this.latestCount = count;
-    this.config.data?.onCountChange?.(count);
+    this.context.onCountChange?.(count);
   }
 
   ngOnDestroy(): void {
     if (this.hasReceivedCount && this.latestCount !== null) {
-      this.config.data?.onCountChange?.(this.latestCount);
+      this.context.onCountChange?.(this.latestCount);
     }
   }
 }

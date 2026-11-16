@@ -27,8 +27,8 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -46,8 +46,8 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
-    InputText,
-    Button,
+    HlmInput,
+    HlmButton,
     AsyncPipe,
     FormDirective,
     ControlGroupDirective,

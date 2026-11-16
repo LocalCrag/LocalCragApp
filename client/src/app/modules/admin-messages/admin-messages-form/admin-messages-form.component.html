@@ -5,7 +5,7 @@
         <label class="form-label" for="title">{{ t("titleLabel") }}</label>
         <input
           type="text"
-          pInputText
+          hlmInput
           id="title"
           formControlName="title"
           placeholder="{{ t('titlePlaceholder') }}"
@@ -22,7 +22,7 @@
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="text">{{ t("textLabel") }}</label>
         <textarea
-          pTextarea
+          hlmTextarea
           id="text"
           formControlName="text"
           rows="8"
@@ -39,35 +39,16 @@
     </form>
 
     <div class="form-actions">
-      <p-button
-        label="{{
+      <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveAdminMessage()">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideSave" /> {{
           editMode
             ? t('editAdminMessageButtonLabel')
             : t('createAdminMessageButtonLabel')
-        }}"
-        (click)="saveAdminMessage()"
-        icon="pi pi-save"
-        class="responsive-button"
-        [loading]="loadingState === loadingStates.LOADING"
-      ></p-button>
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
-        class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+        }}</button>
+      <button hlmBtn type="button" variant="secondary" class="responsive-button" (click)="cancel()"><ng-icon name="lucideBan" /> {{ t('cancelButtonLabel') }}</button>
       @if (editMode) {
-        <p-button
-          label="{{ t('deleteAdminMessageButtonLabel') }}"
-          (click)="confirmDeleteAdminMessage($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
-          [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+        <button hlmBtn type="button" variant="destructive" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="confirmDeleteAdminMessage($event)">@if (loadingState === loadingStates.LOADING) { <hlm-spinner /> } <ng-icon name="lucideTrash2" /> {{ t('deleteAdminMessageButtonLabel') }}</button>
       }
-      <p-confirmpopup></p-confirmpopup>
+      
     </div>
   </div>
 </ng-container>

@@ -4,20 +4,19 @@ import {
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-
-import { SkeletonModule } from 'primeng/skeleton';
 import { Sector } from '../../../models/sector';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 /**
  * Component that displays sector rules.
  */
 @Component({
   selector: 'lc-sector-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
+  imports: [SanitizeHtmlPipe, RulesViewMetaComponent, HlmSkeleton],
   templateUrl: './sector-rules.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sector-rules.component.scss',

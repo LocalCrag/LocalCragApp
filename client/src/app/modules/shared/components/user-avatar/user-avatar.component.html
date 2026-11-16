@@ -1,31 +1,54 @@
 @if (previewEnabled) {
-  <p-image
-    [src]="previewImageUrl"
-    [preview]="true"
-    [previewImageSrc]="previewImageUrl"
-    [alt]="ariaLabel"
-    imageClass="lc-user-avatar-preview-thumb"
+  <button
+    type="button"
     [class]="previewStyleClass"
+    [attr.aria-label]="ariaLabel"
+    (click)="previewOpen = true"
   >
-    <ng-template #indicator>
-      <i class="pi pi-eye"></i>
-    </ng-template>
-  </p-image>
+    <img
+      [src]="previewImageUrl"
+      [alt]="ariaLabel"
+      class="lc-user-avatar-preview-thumb"
+    />
+    <span class="lc-user-avatar-preview-mask">
+      <ng-icon name="lucideEye" />
+    </span>
+  </button>
+  <hlm-dialog
+    [state]="previewOpen ? 'open' : 'closed'"
+    (closed)="previewOpen = false"
+  >
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-3xl">
+      <img [src]="previewImageUrl" [alt]="ariaLabel" class="w-full" />
+    </hlm-dialog-content>
+  </hlm-dialog>
 } @else if (imageUrl) {
-  <p-avatar
-    [image]="imageUrl"
-    [size]="size"
-    shape="circle"
-    [class]="styleClass"
+  <span
+    hlmAvatar
+    [size]="avatarSize"
+    [class]="avatarClass + ' lc-user-avatar--initials'"
     [attr.aria-label]="ariaLabel"
-  />
+  >
+    <img hlmAvatarImage [src]="imageUrl" [alt]="ariaLabel" />
+    <span
+      hlmAvatarFallback
+      class="text-primary-foreground"
+      [style]="gradientStyle"
+      >{{ initials }}</span
+    >
+  </span>
 } @else {
-  <p-avatar
-    [label]="initials"
-    [style]="gradientStyle"
-    [size]="size"
-    shape="circle"
-    [class]="fallbackClasses"
+  <span
+    hlmAvatar
+    [size]="avatarSize"
+    [class]="fallbackClasses + ' ' + avatarClass"
     [attr.aria-label]="ariaLabel"
-  />
+  >
+    <span
+      hlmAvatarFallback
+      class="text-primary-foreground"
+      [style]="gradientStyle"
+      >{{ initials }}</span
+    >
+  </span>
 }

@@ -1,29 +1,24 @@
 <ng-container *transloco="let t; read: 'topoQuality.ui'">
   <p class="quality-legend">
     {{ t("legend") }}
-    <span
-      class="pi pi-question-circle quality-hint-icon"
-      [pTooltip]="t('scoreHint')"
-      tooltipPosition="right"
-      tooltipStyleClass="quality-hint"
-    ></span>
+    <ng-icon name="lucideCircleHelp" />
   </p>
 
   @if (loading) {
     <ul class="quality-tree" aria-hidden="true">
       <li>
         <div class="quality-node">
-          <p-skeleton height="1.25rem" />
-          <p-skeleton width="9rem" height="1.25rem" />
-          <p-skeleton width="2rem" height="2rem" />
+          <div hlmSkeleton style="height: 1.25rem"></div>
+          <div hlmSkeleton style="width: 9rem; height: 1.25rem"></div>
+          <div hlmSkeleton style="width: 2rem; height: 2rem"></div>
         </div>
         <ul>
           @for (width of skeletonRows; track width) {
             <li>
               <div class="quality-node">
-                <p-skeleton height="1.25rem" />
-                <p-skeleton [width]="width" height="1.25rem" />
-                <p-skeleton width="2rem" height="2rem" />
+                <div hlmSkeleton style="height: 1.25rem"></div>
+                <div hlmSkeleton style="height: 1.25rem; width: {{ width }}"></div>
+                <div hlmSkeleton style="width: 2rem; height: 2rem"></div>
               </div>
             </li>
           }
@@ -33,9 +28,9 @@
   }
 
   @if (failed) {
-    <p-message severity="error" icon="pi pi-times-circle">{{
+    <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{
       t("loadFailed")
-    }}</p-message>
+    }}</p></div>
   }
 
   @if (tree && !loading) {
@@ -55,14 +50,9 @@
             queryParamsHandling="preserve"
             >{{ tree.region.name }}</a
           >
-          <p-button
-            [icon]="
-              regionExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
-            "
-            [text]="true"
-            severity="secondary"
-            (onClick)="regionExpanded = !regionExpanded"
-          />
+          <button hlmBtn type="button" variant="secondary" size="icon" (click)="regionExpanded = !regionExpanded"><ng-icon [name]="
+              regionExpanded ? 'lucideChevronDown' : 'lucideChevronRight'
+            " /></button>
         </div>
 
         @if (regionExpanded) {
@@ -83,16 +73,11 @@
                     queryParamsHandling="preserve"
                     >{{ crag.name }}</a
                   >
-                  <p-button
-                    [icon]="
+                  <button hlmBtn type="button" variant="secondary" size="icon" (click)="toggle(expandedCrags, crag.slug)"><ng-icon [name]="
                       expandedCrags.has(crag.slug)
-                        ? 'pi pi-chevron-down'
-                        : 'pi pi-chevron-right'
-                    "
-                    [text]="true"
-                    severity="secondary"
-                    (onClick)="toggle(expandedCrags, crag.slug)"
-                  />
+                        ? 'lucideChevronDown'
+                        : 'lucideChevronRight'
+                    " /></button>
                 </div>
                 @if (expandedCrags.has(crag.slug)) {
                   <ul>
@@ -118,23 +103,18 @@
                             queryParamsHandling="preserve"
                             >{{ sector.name }}</a
                           >
-                          <p-button
-                            [icon]="
-                              expandedSectors.has(
-                                sectorKey(crag.slug, sector.slug)
-                              )
-                                ? 'pi pi-chevron-down'
-                                : 'pi pi-chevron-right'
-                            "
-                            [text]="true"
-                            severity="secondary"
-                            (onClick)="
+                          <button hlmBtn type="button" variant="secondary" size="icon" (click)="
                               toggle(
                                 expandedSectors,
                                 sectorKey(crag.slug, sector.slug)
                               )
-                            "
-                          />
+                            "><ng-icon [name]="
+                              expandedSectors.has(
+                                sectorKey(crag.slug, sector.slug)
+                              )
+                                ? 'lucideChevronDown'
+                                : 'lucideChevronRight'
+                            " /></button>
                         </div>
                         @if (
                           expandedSectors.has(sectorKey(crag.slug, sector.slug))
@@ -178,9 +158,9 @@
             }
             @if (tree.region.crags.length === 0) {
               <li>
-                <p-message severity="info" icon="pi pi-info-circle">{{
+                <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
                   t("empty")
-                }}</p-message>
+                }}</p></div>
               </li>
             }
           </ul>

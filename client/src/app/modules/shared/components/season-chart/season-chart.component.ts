@@ -8,7 +8,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { isSeasonEmpty, Season } from '../../../../models/season';
-import { ChartModule } from 'primeng/chart';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
@@ -20,11 +22,12 @@ import { combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { resolveBarChartColor, toRgba } from '../../../../utility/chart-theme';
 import { ThemeService } from '../../../../services/core/theme.service';
-import { Message } from 'primeng/message';
+import { ChartJsDirective } from '../../directives/chart-js.directive';
 
 @Component({
   selector: 'lc-season-chart',
-  imports: [ChartModule, Message, TranslocoDirective],
+  imports: [ChartJsDirective, HlmAlert, NgIcon, TranslocoDirective],
+  providers: [provideIcons({ lucideInfo })],
   templateUrl: './season-chart.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './season-chart.component.scss',

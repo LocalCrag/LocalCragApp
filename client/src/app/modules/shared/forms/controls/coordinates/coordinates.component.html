@@ -6,7 +6,7 @@
         <input
           [id]="latInputId"
           type="text"
-          pInputText
+          hlmInput
           formControlName="lat"
           placeholder="{{ t('latPlaceholder') }}"
           lcFormControl
@@ -22,7 +22,7 @@
         <input
           type="text"
           [id]="lngInputId"
-          pInputText
+          hlmInput
           formControlName="lng"
           placeholder="{{ t('lngPlaceholder') }}"
           lcFormControl
@@ -35,14 +35,21 @@
 
       <div class="flex flex-col gap-2">
         <label [attr.for]="locationButtonId">&nbsp;</label>
-        <p-button
+        <button
+          hlmBtn
+          type="button"
           [id]="locationButtonId"
-          label="{{ t('getCoordinatesPosition') }}"
-          icon="pi pi-map-marker"
-          (click)="getGeoLocation()"
           class="responsive-button"
-          [loading]="positionLoading"
-        ></p-button>
+          [disabled]="positionLoading"
+          (click)="getGeoLocation()"
+        >
+          @if (positionLoading) {
+            <hlm-spinner />
+          } @else {
+            <ng-icon name="lucideMapPin" />
+          }
+          {{ t("getCoordinatesPosition") }}
+        </button>
       </div>
     </div>
   </form>
@@ -50,22 +57,30 @@
   @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
     <div class="mt-6">
       @if (coordinatesLoadingSuccess && !positionLoading) {
-        <p-message severity="success">{{
-          t("coordinatesLoadedSuccessfullyWithAccuracyX", { x: accuracy })
-        }}</p-message>
+        <div
+          hlmAlert
+          class="border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+        >
+          {{ t("coordinatesLoadedSuccessfullyWithAccuracyX", { x: accuracy }) }}
+        </div>
       }
       @if (coordinatesLoadingSuccess && positionLoading) {
-        <p-message severity="success">{{
-          t(
-            "coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement",
-            { x: accuracy }
-          )
-        }}</p-message>
+        <div
+          hlmAlert
+          class="border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+        >
+          {{
+            t(
+              "coordinatesLoadedSuccessfullyWithAccuracyXTryingAccuracyImprovement",
+              { x: accuracy }
+            )
+          }}
+        </div>
       }
       @if (coordinatesLoadingError) {
-        <p-message severity="error">{{
-          t("coordinatesCouldNotBeLoaded")
-        }}</p-message>
+        <div hlmAlert variant="destructive">
+          {{ t("coordinatesCouldNotBeLoaded") }}
+        </div>
       }
     </div>
   }

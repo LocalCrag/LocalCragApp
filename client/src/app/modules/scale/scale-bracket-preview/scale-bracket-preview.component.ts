@@ -10,10 +10,6 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormArray } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ChartModule } from 'primeng/chart';
-import { Message } from 'primeng/message';
-import { MeterGroup } from 'primeng/metergroup';
-import { Tag } from 'primeng/tag';
 import { Store } from '@ngrx/store';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartData } from 'chart.js';
@@ -36,6 +32,12 @@ import {
 } from '../../../utility/scale/bracket-preview';
 import { STACKED_CHART_PROJECT_COLOR } from '../../../utility/scale/stacked-chart-brackets';
 import { ThemeService } from '../../../services/core/theme.service';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon } from '@ng-icons/core';
+import { ChartJsDirective } from '../../shared/directives/chart-js.directive';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
 
 type PreviewMode = 'stacked' | 'bar';
 
@@ -44,11 +46,19 @@ type PreviewMode = 'stacked' | 'bar';
  * entered on the form. One grade counts as one line.
  */
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-scale-bracket-preview',
   templateUrl: './scale-bracket-preview.component.html',
   styleUrl: './scale-bracket-preview.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TranslocoDirective, ChartModule, Message, MeterGroup, Tag],
+  imports: [
+    TranslocoDirective,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmBadge,
+    NgIcon,
+    ChartJsDirective,
+  ],
 })
 export class ScaleBracketPreviewComponent implements OnChanges {
   @Input({ required: true }) mode: PreviewMode;

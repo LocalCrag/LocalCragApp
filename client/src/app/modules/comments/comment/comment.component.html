@@ -26,19 +26,8 @@
             isLoggedIn$ | async
         ) {
           <div>
-            <p-menu
-              #menu
-              [model]="ellipsisMenuItems"
-              [popup]="true"
-              appendTo="body"
-            />
-            <p-button
-              (click)="menu.toggle($event)"
-              variant="text"
-              size="small"
-              class="ellipsis-button"
-              icon="pi pi-ellipsis-v"
-            />
+            
+            <button hlmBtn type="button" size="icon-sm" class="ellipsis-button" [hlmDropdownMenuTrigger]="commentMenu" variant="ghost"><ng-icon name="lucideEllipsisVertical" /></button>
           </div>
         }
       </div>
@@ -58,21 +47,15 @@
       }
       @if (comment.replyCount > 0) {
         <div>
-          <p-button
-            variant="text"
-            size="small"
-            severity="primary"
-            styleClass="reply-button"
-            (click)="toggleShowReplies()"
-          >
+          <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="toggleShowReplies()">
             @if (!showReplies) {
-              <i class="pi pi-angle-down"></i>
+              <ng-icon name="lucideChevronDown" />
             }
             @if (showReplies) {
-              <i class="pi pi-angle-up"></i>
+              <ng-icon name="lucideChevronUp" />
             }
             {{ t("viewReplies", { count: comment.replyCount }) }}
-          </p-button>
+          </button>
         </div>
       }
       @if (showReplies) {
@@ -90,23 +73,14 @@
             loadingReplies !== loadingStates.LOADING
           ) {
             <div>
-              <p-button
-                variant="text"
-                size="small"
-                severity="primary"
-                styleClass="reply-button"
-                (click)="loadNextPageOfReplies()"
-              >
-                <i class="pi pi-reply mirror-x"></i>
+              <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="loadNextPageOfReplies()">
+                <ng-icon name="lucideReply" class="mirror-x" />
                 {{ t("loadMoreReplies") }}
-              </p-button>
+              </button>
             </div>
           }
           @if (loadingReplies === loadingStates.LOADING) {
-            <p-progress-spinner
-              strokeWidth="4"
-              [style]="{ width: '2rem', height: '2rem' }"
-            />
+            <hlm-spinner />
           }
         </div>
       }
@@ -151,15 +125,9 @@
       !replyActive && !comment.isDeleted && !editModeActive && showReplyButton
     ) {
       <div>
-        <p-button
-          variant="text"
-          size="small"
-          severity="primary"
-          styleClass="reply-button"
-          (click)="onReplyClick()"
-        >
+        <button hlmBtn type="button" size="sm" class="reply-button" variant="ghost" (click)="onReplyClick()">
           {{ t("reply") }}
-        </p-button>
+        </button>
       </div>
     }
     @if (replyActive) {
@@ -174,4 +142,17 @@
       </div>
     }
   </ng-template>
+
+<ng-template #commentMenu>
+  <div hlmDropdownMenu>
+    @for (item of ellipsisMenuItems; track item.label) {
+      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
+        @if (menuIcon(item.icon); as name) {
+          <ng-icon [name]="name" />
+        }
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>
 </ng-container>

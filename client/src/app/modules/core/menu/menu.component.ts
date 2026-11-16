@@ -10,7 +10,6 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { MenuItem } from 'primeng/api';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 import {
@@ -34,6 +33,7 @@ import { MenuItem as NavMenuItem } from '../../../models/menu-item';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
 import { nestHeaderMenuItems } from '../../../utility/menu-item-tree';
+import { MenuItem } from '../../shared/models/menu-item';
 import { Crag } from '../../../models/crag';
 import {
   selectInstanceName,
@@ -45,18 +45,40 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { effectiveLogoImage } from '../../../utility/instance-settings-theme';
 import { ThemeService } from '../../../services/core/theme.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideChartColumn,
+  lucideCircleAlert,
+  lucideCircleCheck,
+  lucideFile,
+  lucideFlag,
+  lucideLogOut,
+  lucideMail,
+  lucideMap,
+  lucideMenu,
+  lucideMoon,
+  lucideSearch,
+  lucideSettings,
+  lucideShield,
+  lucideSlidersHorizontal,
+  lucideSun,
+  lucideTriangleAlert,
+  lucideUser,
+  lucideUserPen,
+  lucideUsers,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { File } from '../../../models/file';
 import { User } from '../../../models/user';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { HeaderMenuComponent } from '../../shared/components/header-menu/header-menu.component';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Menu } from 'primeng/menu';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { Button } from 'primeng/button';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { LanguageSelectComponent } from '../../shared/forms/controls/language-select/language-select.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -73,17 +95,40 @@ import {
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  providers: [DialogService],
+  providers: [
+    provideIcons({
+      lucideChartColumn,
+      lucideCircleAlert,
+      lucideCircleCheck,
+      lucideFile,
+      lucideFlag,
+      lucideLogOut,
+      lucideMail,
+      lucideMap,
+      lucideMenu,
+      lucideMoon,
+      lucideSearch,
+      lucideSettings,
+      lucideShield,
+      lucideSlidersHorizontal,
+      lucideSun,
+      lucideTriangleAlert,
+      lucideUser,
+      lucideUserPen,
+      lucideUsers,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     HeaderMenuComponent,
     AsyncPipe,
     RouterLink,
     TranslocoDirective,
-    Menu,
+    NgIcon,
+    HlmButton,
+    HlmDropdownMenuImports,
     UserAvatarComponent,
     HasPermissionDirective,
-    Button,
     FormControlDirective,
     LanguageSelectComponent,
     ReactiveFormsModule,
@@ -102,7 +147,6 @@ export class MenuComponent implements OnInit, AfterViewInit {
   instanceName$: Observable<string>;
   currentUser$: Observable<User>;
   skippedHierarchyLayers$: Observable<number>;
-  ref: DynamicDialogRef | undefined;
   language: LanguageCode;
   /**
    * How many optional header controls are currently hidden (0 = all visible).
@@ -115,7 +159,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
 
   private menuItemsService = inject(MenuItemsService);
   private translocoService = inject(TranslocoService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private actions = inject(Actions);
   private store = inject(Store);
   private languageService = inject(LanguageService);
@@ -283,37 +327,37 @@ export class MenuComponent implements OnInit, AfterViewInit {
           if (authState.user.moderator) {
             const systemItems: MenuItem[] = [
               {
-                icon: 'pi pi-fw pi-file',
+                icon: 'lucideFile',
                 label: this.translocoService.translate(
                   marker('menu.menuPages'),
                 ),
                 routerLink: '/pages',
               },
               {
-                icon: 'pi pi-fw pi-bars',
+                icon: 'lucideMenu',
                 label: this.translocoService.translate(marker('menu.menus')),
                 routerLink: '/menu-items',
               },
               {
-                icon: 'pi pi-fw pi-users',
+                icon: 'lucideUsers',
                 label: this.translocoService.translate(marker('menu.users')),
                 routerLink: '/users',
                 routerLinkActiveOptions: { exact: true },
               },
               {
-                icon: 'pi pi-fw pi-flag',
+                icon: 'lucideFlag',
                 label: this.translocoService.translate(
                   marker('menu.suggestions'),
                 ),
                 routerLink: '/suggestions',
               },
               {
-                icon: 'pi pi-fw pi-sliders-h',
+                icon: 'lucideSlidersHorizontal',
                 label: this.translocoService.translate(marker('menu.scales')),
                 routerLink: '/scales',
               },
               {
-                icon: 'pi pi-fw pi-cog',
+                icon: 'lucideSettings',
                 label: this.translocoService.translate(
                   marker('menu.instanceSettings'),
                 ),
@@ -323,14 +367,14 @@ export class MenuComponent implements OnInit, AfterViewInit {
 
             if (authState.user.admin) {
               systemItems.splice(1, 0, {
-                icon: 'pi pi-fw pi-exclamation-triangle',
+                icon: 'lucideTriangleAlert',
                 label: this.translocoService.translate(
                   marker('menu.appAlerts'),
                 ),
                 routerLink: '/app-alerts',
               });
               systemItems.splice(2, 0, {
-                icon: 'pi pi-fw pi-envelope',
+                icon: 'lucideMail',
                 label: this.translocoService.translate(
                   marker('menu.adminMessages'),
                 ),
@@ -349,24 +393,24 @@ export class MenuComponent implements OnInit, AfterViewInit {
           // Account category is always present
           const accountItems: MenuItem[] = [
             {
-              icon: 'pi pi-fw pi-user',
+              icon: 'lucideUser',
               label: this.translocoService.translate(
                 marker('menu.accountDetail'),
               ),
               routerLink: `/users/${authState.user.slug}`,
             },
             {
-              icon: 'pi pi-fw pi-check-circle',
+              icon: 'lucideCircleCheck',
               label: this.translocoService.translate(marker('menu.todos')),
               routerLink: `/todos`,
             },
             {
-              icon: 'pi pi-fw pi-user-edit',
+              icon: 'lucideUserPen',
               label: this.translocoService.translate(marker('menu.account')),
               routerLink: '/account',
             },
             {
-              icon: 'pi pi-fw pi-shield',
+              icon: 'lucideShield',
               label: this.translocoService.translate(
                 marker('menu.changePassword'),
               ),
@@ -375,7 +419,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
             {
               id: 'auth-menu-logout',
               label: this.translocoService.translate(marker('menu.logout')),
-              icon: 'pi pi-fw pi-sign-out',
+              icon: 'lucideLogOut',
               command: this.logout.bind(this),
             },
           ];
@@ -389,7 +433,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
           const toolItems: MenuItem[] = [];
           if (authState.user.member && !gymMode) {
             toolItems.push({
-              icon: 'pi pi-fw pi-map',
+              icon: 'lucideMap',
               label: this.translocoService.translate(
                 marker('menu.rockExplorer'),
               ),
@@ -398,7 +442,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
           }
           if (authState.user.member) {
             toolItems.push({
-              icon: 'pi pi-fw pi-chart-bar',
+              icon: 'lucideChartColumn',
               label: this.translocoService.translate(
                 marker('menu.topoQuality'),
               ),
@@ -414,7 +458,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
             (authorGradesShown || authorRatingsShown)
           ) {
             toolItems.push({
-              icon: 'pi pi-fw pi-exclamation-circle',
+              icon: 'lucideCircleAlert',
               label: this.translocoService.translate(
                 marker('menu.ratingControversies'),
               ),
@@ -431,7 +475,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
           }
 
           // If the only group present is the account category, unwrap it so
-          // the p-menu receives a flat list of MenuItem entries instead of
+          // the user menu receives a flat list of entries instead of
           // a single grouped object with a label.
           if (items.length === 1 && Array.isArray(items[0].items)) {
             this.userMenuItems = items[0].items as MenuItem[];
@@ -460,7 +504,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
         (menuItem) =>
           this.toPrimeMenuItem(menuItem, skippedHierarchyLayersSlug),
         this.buildCragNavigationMenu(crags),
-      );
+      ) as MenuItem[];
       queueMicrotask(() => this.reconcileNavbarOverflow());
     });
   }
@@ -468,7 +512,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
   private toPrimeMenuItem(
     menuItem: NavMenuItem,
     skippedHierarchyLayersSlug: string,
-  ): MenuItem {
+  ): ReturnType<typeof nestHeaderMenuItems>[number] {
     switch (menuItem.type) {
       case MenuItemType.MENU_PAGE:
         return {
@@ -567,13 +611,10 @@ export class MenuComponent implements OnInit, AfterViewInit {
   }
 
   openSearch() {
-    this.ref = this.dialogService.open(SearchDialogComponent, {
-      position: 'top',
-      closeOnEscape: true,
-      dismissableMask: true,
-      modal: true,
-      showHeader: false,
-      styleClass: 'search-dialog',
+    this.dialogService.open(SearchDialogComponent, {
+      showCloseButton: false,
+      contentClass:
+        'search-dialog w-[min(40rem,calc(100vw-2rem))] max-w-none sm:max-w-[40rem]',
     });
   }
 }

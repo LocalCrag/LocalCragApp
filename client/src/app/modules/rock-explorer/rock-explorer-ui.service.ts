@@ -129,6 +129,18 @@ export class RockExplorerUiService {
   readonly rockQualityOptions = signal<RockExplorerSelectOption[]>([]);
   readonly rockTypeOptions = signal<RockExplorerSelectOption[]>([]);
 
+  readonly potentialLabel = (value: string | null): string =>
+    this.potentialOptions().find((option) => option.value === value)?.label ??
+    '';
+
+  readonly rockQualityLabel = (value: string | null): string =>
+    this.rockQualityOptions().find((option) => option.value === value)?.label ??
+    '';
+
+  readonly rockTypeLabel = (value: string | null): string =>
+    this.rockTypeOptions().find((option) => option.value === value)?.label ??
+    '';
+
   // --- Map chrome / draw tools ---
   readonly drawMode = signal<RockExplorerDrawMode>('select');
   readonly polygonVertexCount = signal(0);

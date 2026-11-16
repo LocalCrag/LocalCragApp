@@ -14,7 +14,9 @@ import Konva from 'konva';
 import { selectInstanceSettingsState } from '../../../../ngrx/selectors/instance-settings.selectors';
 import { take } from 'rxjs/operators';
 import { TopoLinePaint } from '../../../../utility/scale/topo-line-color';
-import { Skeleton } from 'primeng/skeleton';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye } from '@ng-icons/lucide';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import {
   sortLinePathsByOrderIndex,
   getLinePathDisplayNumber,
@@ -42,7 +44,8 @@ import {
   styleUrls: ['./topo-image.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [Skeleton],
+  imports: [HlmSkeleton, NgIcon],
+  providers: [provideIcons({ lucideEye })],
 })
 export class TopoImageEditorComponent
   extends TopoImageCanvasBase

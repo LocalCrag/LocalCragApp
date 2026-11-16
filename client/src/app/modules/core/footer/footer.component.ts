@@ -18,7 +18,7 @@ import {
   selectSkippedHierarchyLayers,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { environment } from '../../../../environments/environment';
-import { Button } from 'primeng/button';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -29,7 +29,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [Button, TranslocoDirective, RouterLink, AsyncPipe],
+  imports: [HlmButton, TranslocoDirective, RouterLink, AsyncPipe],
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();

@@ -8,13 +8,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { loginSuccess } from '../../ngrx/actions/auth.actions';
 import { map, tap } from 'rxjs/operators';
-import { PrimeNG } from 'primeng/config';
-import { Locale } from 'primelocale/js/locale.js';
-import { de } from 'primelocale/js/de.js';
-import { fr } from 'primelocale/js/fr.js';
-import { it } from 'primelocale/js/it.js';
-import { en_GB } from 'primelocale/js/en_GB.js';
-import { nl } from 'primelocale/js/nl.js';
 import {
   readLocalStorageItem,
   writeLocalStorageItem,
@@ -26,8 +19,6 @@ export class LanguageService {
   private transloco = inject(TranslocoService);
   private actions$ = inject(Actions);
   private destroyRef = inject(DestroyRef);
-  private primeNG = inject(PrimeNG);
-
   private gymMode = false;
 
   // Language of the instance
@@ -44,14 +35,6 @@ export class LanguageService {
   // Observable that emits whenever the currently rendered language changes.
   private renderedLanguageSubject = new BehaviorSubject<string | null>(null);
   readonly renderedLanguage$ = this.renderedLanguageSubject.asObservable();
-
-  private primeNGTranslationMapping: Record<LanguageCode, Locale> = {
-    de: de,
-    en: en_GB,
-    fr: fr,
-    it: it,
-    nl: nl,
-  };
 
   constructor() {
     this.browserLanguage = navigator.language.slice(0, 2) as LanguageCode;
@@ -136,7 +119,6 @@ export class LanguageService {
     this.transloco.setFallbackLangForMissingTranslation({
       fallbackLang: lang,
     });
-    this.primeNG.setTranslation(this.primeNGTranslationMapping[lang]);
     return this.preloadScopes(lang).pipe(
       tap(() => {
         // Notify subscribers about the change

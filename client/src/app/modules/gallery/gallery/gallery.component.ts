@@ -12,19 +12,13 @@ import { GalleryImage } from '../../../models/gallery-image';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 
-import { GalleriaModule } from 'primeng/galleria';
-
 import { GalleryImageComponent } from '../gallery-image/gallery-image.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleryFormComponent } from '../gallery-form/gallery-form.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
-import { ConfirmationService } from 'primeng/api';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
 import { LoadingState } from '../../../enums/loading-state';
 import {
@@ -34,7 +28,6 @@ import {
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
-import { Message } from 'primeng/message';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ObjectType } from '../../../models/object';
@@ -47,6 +40,19 @@ import {
   packMasonryColumns,
 } from '../../../utility/gallery-masonry';
 import { galleryImageBelongsToObject } from '../../../utility/gallery-membership';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronLeft,
+  lucideChevronRight,
+  lucideImage,
+  lucideInfo,
+} from '@ng-icons/lucide';
 import {
   galleryPreviewIndexAfterRemoval,
   GalleryPreviewDirection,
@@ -58,28 +64,41 @@ type GalleryMasonryCell =
   | { kind: 'image'; image: GalleryImage }
   | { kind: 'skeleton'; key: string; aspectRatio: string };
 
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+
 @Component({
   selector: 'lc-gallery',
   imports: [
-    GalleriaModule,
+    ...HlmDialogImports,
     GalleryImageComponent,
-    ButtonModule,
     TranslocoDirective,
     HasPermissionDirective,
-    ConfirmPopupModule,
     GalleryImageSkeletonComponent,
-    Message,
     InfiniteScrollDirective,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss',
-  providers: [DialogService, ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideChevronLeft,
+      lucideChevronRight,
+      lucideImage,
+      lucideInfo,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalleryComponent implements OnInit, PaginatedListView {
+  private confirmDialog = inject(ConfirmDialogService);
   public images: GalleryImage[] = [];
   public columns: GalleryMasonryCell[][] = [];
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef<GalleryImage> | undefined;
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
@@ -96,10 +115,9 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   private objectSlug: string;
   private objectType: ObjectType;
   private destroyRef = inject(DestroyRef);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private galleryService = inject(GalleryService);
   private store = inject(Store);
-  private confirmationService = inject(ConfirmationService);
   private route = inject(ActivatedRoute);
   private translocoService = inject(TranslocoService);
   private cdr = inject(ChangeDetectorRef);
@@ -190,21 +208,18 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   }
 
   addImage() {
-    this.ref = this.dialogService.open(GalleryFormComponent, {
-      modal: true,
-      header: this.translocoService.translate(marker('gallery.addImage')),
-      focusOnShow: false,
-      data: {
+    this.ref = this.dialogService.open<GalleryImage>(GalleryFormComponent, {
+      title: this.translocoService.translate(marker('gallery.addImage')),
+      contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
+      context: {
         defaultSearchableSlug: this.objectSlug,
         defaultSearchableType: this.objectType,
       },
-      closable: true,
-      closeOnEscape: true,
     });
     // Add gallery image after dialog is closed
-    this.ref.onClose
+    this.ref.closed$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((galleryImage: GalleryImage) => {
+      .subscribe((galleryImage) => {
         if (galleryImage) {
           if (this.images.map((i) => i.id).indexOf(galleryImage.id) === -1) {
             this.images.unshift(galleryImage);
@@ -219,17 +234,15 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   }
 
   confirmDeleteImage(event: Event, image: GalleryImage) {
-    this.confirmationService.confirm({
-      target: event.target,
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('gallery.askReallyWantToDeleteGalleryImage'),
       ),
       acceptLabel: this.translocoService.translate(marker('gallery.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('gallery.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteImage(image);
       },
@@ -246,19 +259,16 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   }
 
   editImage(image: GalleryImage) {
-    this.ref = this.dialogService.open(GalleryFormComponent, {
-      modal: true,
-      header: this.translocoService.translate(marker('gallery.editImage')),
-      focusOnShow: false,
-      data: {
+    this.ref = this.dialogService.open<GalleryImage>(GalleryFormComponent, {
+      title: this.translocoService.translate(marker('gallery.editImage')),
+      contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
+      context: {
         galleryImage: image,
       },
-      closable: true,
-      closeOnEscape: true,
     });
-    this.ref.onClose
+    this.ref.closed$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((galleryImage: GalleryImage) => {
+      .subscribe((galleryImage) => {
         if (!galleryImage) {
           return;
         }

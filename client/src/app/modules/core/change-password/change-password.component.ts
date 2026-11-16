@@ -39,11 +39,10 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Password } from 'primeng/password';
-import { Message } from 'primeng/message';
-
-import { Button } from 'primeng/button';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
+import { PasswordInputComponent } from '../../shared/forms/controls/password-input/password-input.component';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 
@@ -58,15 +57,15 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReactiveFormsModule,
-    Password,
-    Message,
-    Button,
+    HlmAlert,
+    HlmButton,
     TranslocoDirective,
     TranslocoPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    PasswordInputComponent,
   ],
 })
 export class ChangePasswordComponent implements OnInit {

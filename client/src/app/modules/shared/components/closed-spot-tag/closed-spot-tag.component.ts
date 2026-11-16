@@ -1,13 +1,14 @@
 import {
   Component,
   Input,
-  ViewChild,
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { TagModule } from 'primeng/tag';
-import { Popover } from 'primeng/popover';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleHelp } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmPopoverImports } from '@spartan-ng/helm/popover';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { TranslocoDirective } from '@jsverse/transloco';
 import {
   ClosedSpotType,
@@ -19,12 +20,14 @@ import { ClosureReasonAlert } from '../../../../models/closure-reason-alert';
 @Component({
   selector: 'lc-closed-spot-tag',
   imports: [
-    TagModule,
-    Popover,
-    ProgressSpinnerModule,
+    NgIcon,
+    HlmBadge,
+    ...HlmPopoverImports,
+    HlmSpinner,
     TranslocoDirective,
     ClosedSpotAlertComponent,
   ],
+  providers: [provideIcons({ lucideBan, lucideCircleHelp })],
   templateUrl: './closed-spot-tag.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './closed-spot-tag.component.scss',
@@ -35,8 +38,6 @@ export class ClosedSpotTagComponent {
   /** When already loaded (e.g. detail view), skip the closure-state request. */
   @Input() reasons: ClosureReasonAlert[] | null = null;
   @Input() closureIsPermanent = true;
-
-  @ViewChild('popover') popover: Popover;
 
   protected loading = false;
   protected loadError = false;
@@ -49,7 +50,12 @@ export class ClosedSpotTagComponent {
   protected onTagClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.popover.toggle(event);
+  }
+
+  protected onPopoverState(state: string): void {
+    if (state === 'open') {
+      this.onPopoverShow();
+    }
   }
 
   protected onPopoverShow(): void {

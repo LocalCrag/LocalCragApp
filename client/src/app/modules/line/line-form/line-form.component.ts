@@ -24,7 +24,6 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import {
   catchError,
   filter,
@@ -44,8 +43,6 @@ import { externalVideoUrlValidator } from '../../../utility/validators/external-
 import { startSecondsValidator } from '../../../utility/validators/start-seconds.validator';
 import { providerForUrl } from '../../../utility/video-source';
 import { UploadService } from '../../../services/crud/upload.service';
-import { ProgressBar } from 'primeng/progressbar';
-
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
 import { Title } from '@angular/platform-browser';
@@ -65,23 +62,14 @@ import { TopoImage } from '../../../models/topo-image';
 import { defaultScaleName, Scale } from '../../../models/scale';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
-import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
-import { Rating } from 'primeng/rating';
 import { AsFormArrayPipe } from '../../shared/pipes/as-form-array.pipe';
 import { AsFormGroupPipe } from '../../shared/pipes/as-form-group.pipe';
-import { Button } from 'primeng/button';
-import { DatePicker } from 'primeng/datepicker';
-import { Checkbox } from 'primeng/checkbox';
-import { Tooltip } from 'primeng/tooltip';
-import { Message } from 'primeng/message';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
@@ -95,6 +83,32 @@ import { ClosureStateService } from '../../../services/crud/closure-state.servic
 import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
 import { filterSelectableGrades } from '../../../utility/grade/filter-selectable-grades';
 import { Grade } from '../../../models/scale';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { HlmProgress, HlmProgressIndicator } from '@spartan-ng/helm/progress';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeftRight,
+  lucideBan,
+  lucideCircleQuestionMark,
+  lucideClock,
+  lucideInfo,
+  lucideLoaderCircle,
+  lucidePlus,
+  lucideSave,
+  lucideStar,
+  lucideTrash2,
+  lucideTriangleAlert,
+  lucideUndo2,
+  lucideX,
+} from '@ng-icons/lucide';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 
 /** Both ends are required together, and the lower grade cannot be harder. */
 function assumedGradeBoundsValidator(control: AbstractControl) {
@@ -120,42 +134,60 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
   selector: 'lc-line-form',
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.scss'],
-  providers: [ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideArrowLeftRight,
+      lucideBan,
+      lucideCircleQuestionMark,
+      lucideClock,
+      lucideInfo,
+      lucideLoaderCircle,
+      lucidePlus,
+      lucideSave,
+      lucideStar,
+      lucideTrash2,
+      lucideTriangleAlert,
+      lucideUndo2,
+      lucideX,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
-    InputText,
     FormControlDirective,
     IfErrorDirective,
     WysiwygEditorComponent,
     AdvancedColorPickerComponent,
     GymModeDirective,
     OutdoorModeDirective,
-    Select,
     TranslateSpecialGradesPipe,
     TranslocoPipe,
-    Rating,
     AsFormArrayPipe,
     AsFormGroupPipe,
-    Button,
-    DatePicker,
-    Checkbox,
-    Tooltip,
-    Message,
-    ConfirmPopup,
     FormSkeletonComponent,
     AsyncPipe,
     FormsModule,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
-    ProgressBar,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    HlmCheckbox,
+    ...HlmSelectImports,
+    ...HlmDatePickerImports,
+    HlmTooltip,
+    HlmProgress,
+    HlmProgressIndicator,
+    NgIcon,
   ],
 })
 export class LineFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
@@ -217,9 +249,9 @@ export class LineFormComponent implements OnInit {
   private linesService = inject(LinesService);
   private areasService = inject(AreasService);
   private translocoService = inject(TranslocoService);
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
   private languageService = inject(LanguageService);
   private pageTitleService = inject(PageTitleService);
-  private confirmationService = inject(ConfirmationService);
   private scalesService = inject(ScalesService);
   private closureStateService = inject(ClosureStateService);
 
@@ -956,19 +988,17 @@ export class LineFormComponent implements OnInit {
    * Asks if the line should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteLine(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteLine(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('line.askReallyWantToDeleteLine'),
       ),
       acceptLabel: this.translocoService.translate(marker('line.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(marker('line.noDontDelete')),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteLine();
       },
+      destructive: true,
     });
   }
 
@@ -1100,6 +1130,54 @@ export class LineFormComponent implements OnInit {
   }
 
   protected readonly LineType = LineType;
+
+  formatDay = (date: Date) =>
+    `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+
+  formatYear = (date: Date) => String(date.getFullYear());
+
+  setRating(star: number) {
+    const control = this.lineForm.get('rating');
+    control?.setValue(control.value === star ? null : star);
+  }
+
+  selectLabel = (value: unknown): string => this.labelForValue(value);
+
+  private labelForValue(value: unknown): string {
+    if (value == null || value === '') {
+      return '';
+    }
+    const lists = [
+      this.typeOptions,
+      this.scaleOptions,
+      this.grades,
+      this.assumedGradeMinOptions,
+      this.assumedGradeMaxOptions,
+    ];
+    for (const list of lists) {
+      const match = list?.find((option) => option?.value === value);
+      if (!match) {
+        continue;
+      }
+      if (match.name) {
+        return this.translateSpecialGradesService.translate(match.name);
+      }
+      if (match.label) {
+        return match.label;
+      }
+    }
+    if (value === 'link') {
+      return this.translocoService.translate('line.lineForm.videoSourceLink');
+    }
+    if (value === 'upload') {
+      return this.translocoService.translate('line.lineForm.videoSourceUpload');
+    }
+    if (typeof value === 'string') {
+      const translated = this.translocoService.translate(value);
+      return translated === value ? value : translated;
+    }
+    return String(value);
+  }
 
   openMoveDialog() {
     this.moveDialog.open(this.line, this.parentArea.id);

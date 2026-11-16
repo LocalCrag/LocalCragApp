@@ -5,10 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
 import { RouterLink } from '@angular/router';
-import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
@@ -21,22 +18,41 @@ import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
 import { FormsModule } from '@angular/forms';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { Select } from 'primeng/select';
 import { MenuPagesListSkeletonComponent } from '../menu-list-skeleton/menu-pages-list-skeleton.component';
-import { Message } from 'primeng/message';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideEye,
+  lucideFilePen,
+  lucideInfo,
+  lucidePlus,
+} from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
 
 @Component({
+  providers: [
+    provideIcons({ lucideEye, lucideFilePen, lucideInfo, lucidePlus }),
+  ],
   selector: 'lc-menu-pages-list',
   imports: [
-    ButtonModule,
-    DataViewModule,
     RouterLink,
     TranslocoDirective,
     FormsModule,
     NgClass,
-    Select,
     MenuPagesListSkeletonComponent,
-    Message,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    NgIcon,
   ],
   templateUrl: './menu-pages-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -112,5 +128,26 @@ export class MenuPagesListComponent implements OnInit {
       this.sortOrder = -1;
       this.sortField = value;
     }
+  }
+
+  sortClientList<T>(items: T[] | null | undefined): T[] {
+    if (!items || !this.sortField) {
+      return items ?? [];
+    }
+    const direction = this.sortOrder ?? 1;
+    return [...items].sort((a: any, b: any) => {
+      const left = a?.[this.sortField];
+      const right = b?.[this.sortField];
+      if (left === right) {
+        return 0;
+      }
+      if (left == null) {
+        return 1;
+      }
+      if (right == null) {
+        return -1;
+      }
+      return left > right ? direction : -direction;
+    });
   }
 }

@@ -1,4 +1,5 @@
 <ng-container *transloco="let t; read: 'accountForm'">
+  <h2 class="text-lg font-semibold mb-4">{{ t("deleteAccountDialogTitle") }}</h2>
   <div class="mb-6">
     {{ t("deleteAccountDialogDescription", { email: email }) }}
   </div>
@@ -7,7 +8,7 @@
       <input
         type="text"
         class="w-full"
-        pInputText
+        hlmInput
         formControlName="email"
         placeholder="{{ t('deleteAccountDialogEmailPlaceholder') }}"
         lcFormControl
@@ -16,16 +17,7 @@
   </form>
 
   <div class="form-actions mt-6 justify-end">
-    <p-button
-      label="{{ t('deleteAccountDialogCancel') }}"
-      styleClass="p-button-outlined p-button-secondary"
-      (click)="cancel()"
-    ></p-button>
-    <p-button
-      label="{{ t('deleteAccountDialogConfirm') }}"
-      severity="danger"
-      (click)="confirm()"
-      [disabled]="!form.valid || !emailMatches"
-    ></p-button>
+    <button hlmBtn type="button" variant="outline" (click)="cancel()">{{ t('deleteAccountDialogCancel') }}</button>
+    <button hlmBtn type="button" variant="destructive" (click)="confirm()" [disabled]="!form.valid || !emailMatches">{{ t('deleteAccountDialogConfirm') }}</button>
   </div>
 </ng-container>

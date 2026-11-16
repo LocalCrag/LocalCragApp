@@ -38,13 +38,13 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { Password } from 'primeng/password';
+import { PasswordInputComponent } from '../../shared/forms/controls/password-input/password-input.component';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { Message } from 'primeng/message';
 import { AsyncPipe } from '@angular/common';
-import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-reset-password',
@@ -57,11 +57,11 @@ import { Button } from 'primeng/button';
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
-    Password,
+    HlmButton,
+    HlmAlert,
     FormControlDirective,
     IfErrorDirective,
-    Message,
-    Button,
+    PasswordInputComponent,
     AsyncPipe,
     TwoFactorPromptComponent,
   ],

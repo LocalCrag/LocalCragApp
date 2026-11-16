@@ -6,7 +6,7 @@
       }}</label>
       <input
         type="text"
-        pInputText
+        hlmInput
         id="matomo-tracker-url"
         formControlName="matomoTrackerUrl"
         [placeholder]="t('matomoTrackerUrlPlaceholder')"
@@ -23,7 +23,7 @@
       }}</label>
       <input
         type="text"
-        pInputText
+        hlmInput
         id="matomo-site-id"
         formControlName="matomoSiteId"
         [placeholder]="t('matomoSiteIdPlaceholder')"
@@ -35,13 +35,7 @@
     </div>
 
     <div class="form-actions">
-      <p-button
-        label="{{ t('editInstanceSettingsButtonLabel') }}"
-        (click)="save()"
-        icon="pi pi-save"
-        class="responsive-button"
-        [loading]="loading"
-      ></p-button>
+      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
     </div>
   </div>
 </ng-container>

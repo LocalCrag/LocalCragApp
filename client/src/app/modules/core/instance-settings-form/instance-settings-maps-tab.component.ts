@@ -18,14 +18,24 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { ColorPickerModule } from 'primeng/colorpicker';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelect } from 'primeng/multiselect';
-import { Select } from 'primeng/select';
-import { TooltipModule } from 'primeng/tooltip';
+import { NgxColorsModule } from 'ngx-colors';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowDown,
+  lucideArrowUp,
+  lucideCircleHelp,
+  lucideDownload,
+  lucidePalette,
+  lucidePlus,
+  lucideSave,
+  lucideTrash2,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { joinedSelectLabels, selectItemLabel } from '../select-item-label';
 import {
   MapOverlayPaintMode,
   MapOverlaySourceKind,
@@ -65,14 +75,13 @@ type TileJsonOverlayMeta = {
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
-    ButtonModule,
-    Checkbox,
-    ColorPickerModule,
-    InputNumberModule,
-    InputTextModule,
-    MultiSelect,
-    Select,
-    TooltipModule,
+    NgxColorsModule,
+    NgIcon,
+    HlmButton,
+    HlmCheckbox,
+    HlmInput,
+    HlmSelectImports,
+    HlmTooltip,
     FormEntryRowComponent,
     ControlGroupDirective,
     FormArrayDirective,
@@ -80,10 +89,24 @@ type TileJsonOverlayMeta = {
     IfErrorDirective,
   ],
   templateUrl: './instance-settings-maps-tab.component.html',
+  providers: [
+    provideIcons({
+      lucideArrowDown,
+      lucideArrowUp,
+      lucideCircleHelp,
+      lucideDownload,
+      lucidePalette,
+      lucidePlus,
+      lucideSave,
+      lucideTrash2,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './instance-settings-maps-tab.component.scss',
 })
 export class InstanceSettingsMapsTabComponent implements OnInit {
+  protected readonly selectItemLabel = selectItemLabel;
+  protected readonly joinedSelectLabels = joinedSelectLabels;
   @Input({ required: true }) group!: FormGroup;
   @Input() loading = false;
   @Input({ required: true }) save!: () => void;

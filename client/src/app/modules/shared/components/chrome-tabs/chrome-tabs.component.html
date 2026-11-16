@@ -1,0 +1,31 @@
+<div
+  hlmTabs
+  [tab]="syncWithRouter() ? '' + routeTabs.activeTabIndex() : (tab() ?? '')"
+  (tabActivated)="onActivated($event)"
+  lcSetActiveTab
+  #routeTabs="lcSetActiveTab"
+  [items]="routerItems()"
+>
+  <hlm-paginated-tabs-list tabListClass="chrome-tabs__list">
+    @for (item of tabs(); track item.id) {
+      @if (item.visible !== false) {
+        <button
+          type="button"
+          [hlmTabsTrigger]="item.id"
+          [routerLink]="item.routerLink"
+          [queryParams]="item.queryParams"
+        >
+          @if (lucideNameFromPrimeIcon(item.icon); as iconName) {
+            <ng-icon [name]="iconName" />
+          }
+          {{ item.label }}
+          @if (item.badge !== undefined && item.badge !== null) {
+            <span hlmBadge variant="secondary" class="chrome-tabs__badge">{{
+              item.badge
+            }}</span>
+          }
+        </button>
+      }
+    }
+  </hlm-paginated-tabs-list>
+</div>

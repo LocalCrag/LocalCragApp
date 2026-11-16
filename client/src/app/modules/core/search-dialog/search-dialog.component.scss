@@ -1,28 +1,21 @@
 @use "../../../styles/media-queries" as m;
 
 // Add styles for search dialog prime ng component
-.search-dialog .p-dialog-content {
-  padding-top: 1.25rem;
-}
-
 .search-dialog {
-  margin-top: 5rem !important;
+  width: min(40rem, calc(100vw - 2rem)) !important;
+  max-width: none !important;
 
   @media (screen and max-width: 800px) {
-    margin-top: 0 !important;
     height: 100%;
     max-height: 100%;
-
-    &.p-dialog {
-      border-radius: 0 !important;
-    }
+    border-radius: 0;
   }
 }
 
 // Add internal styles
 lc-search-dialog {
   display: block;
-  width: 40rem;
+  width: 100%;
   max-width: 100%;
 
   .spacer {

@@ -4,9 +4,14 @@
       warning of warnings;
       track warning.startsOn + (warning.reason ?? "")
     ) {
-      <p-message severity="warn" styleClass="w-full">{{
-        warningText(warning)
-      }}</p-message>
+      <div
+        hlmAlert
+        variant="warning"
+        class="w-full"
+      >
+        <ng-icon name="lucideInfo" />
+        {{ warningText(warning) }}
+      </div>
     }
   </div>
 </ng-container>

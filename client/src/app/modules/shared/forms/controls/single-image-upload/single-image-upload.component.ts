@@ -4,13 +4,15 @@ import {
   forwardRef,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
   ViewChild,
   ViewEncapsulation,
   inject,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { ApiService } from '../../../../../services/core/api.service';
 import { UploadService } from '../../../../../services/crud/upload.service';
 import {
@@ -24,17 +26,18 @@ import {
 } from '@angular/forms';
 import { File } from '../../../../../models/file';
 import { User } from '../../../../../models/user';
-import { FileUpload } from 'primeng/fileupload';
 import { Store } from '@ngrx/store';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { selectCurrentUser } from '../../../../../ngrx/selectors/auth.selectors';
 import { TranslocoDirective } from '@jsverse/transloco';
 
-import { ProgressBar } from 'primeng/progressbar';
-import { Image } from 'primeng/image';
-import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { ImageEditDialogComponent } from '../image-edit-dialog/image-edit-dialog.component';
+import { uploadFormFiles } from '../upload-form-files';
+import { sharedLucideIcons } from '../../../utils/prime-icon';
 import {
   clampImageFocusY,
   computeFocusFrameRect,
@@ -57,23 +60,23 @@ import {
       useExisting: forwardRef(() => SingleImageUploadComponent),
       multi: true,
     },
+    provideIcons(sharedLucideIcons),
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
-    FileUpload,
-    ProgressBar,
-    Image,
-    Button,
-    TooltipModule,
+    NgIcon,
+    HlmButton,
+    HlmTooltip,
+    ...HlmProgressImports,
+    ...HlmDialogImports,
     ImageEditDialogComponent,
   ],
 })
 export class SingleImageUploadComponent
-  implements OnInit, ControlValueAccessor, OnDestroy
+  implements OnInit, ControlValueAccessor
 {
-  @ViewChild(FileUpload) uploader: FileUpload;
   @ViewChild('focusStage') focusStage?: ElementRef<HTMLElement>;
 
   @Input() focusAdjustable = false;
@@ -95,6 +98,10 @@ export class SingleImageUploadComponent
   public focusDragging = false;
   public imageEditOpen = false;
   public transforming = false;
+  public previewUrl: string | null = null;
+
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
   public currentUser: User | null = null;
 
   private api = inject(ApiService);
@@ -242,11 +249,28 @@ export class SingleImageUploadComponent
       });
   }
 
-  /**
-   * Resets the component on destruction.
-   */
-  ngOnDestroy(): void {
-    this.uploader?.clear();
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!files.length) {
+      return;
+    }
+    if (
+      this.maxImageSize &&
+      files.some((file) => file.size > this.maxImageSize)
+    ) {
+      this.showProgressBar = false;
+      return;
+    }
+    this.startProgress();
+    uploadFormFiles(this.http, this.uploadUrl, files, {
+      onProgress: (progress) => this.setProgress({ progress }),
+      onBody: (body) => this.setMedia({ originalEvent: { body } }),
+      onError: () => {
+        this.showProgressBar = false;
+      },
+    });
   }
 
   /**
@@ -326,6 +350,9 @@ export class SingleImageUploadComponent
         return;
       }
       this.setFocusFromPointer(moveEvent);
+      // The preview sits under an OnPush parent, which a window listener
+      // does not mark, so the frame would stay put until release.
+      this.cdr.detectChanges();
     };
 
     const handleUp = () => {

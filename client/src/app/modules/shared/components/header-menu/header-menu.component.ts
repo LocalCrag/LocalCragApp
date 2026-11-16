@@ -12,21 +12,29 @@ import {
   TemplateRef,
   inject,
 } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../../models/menu-item';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMenu } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { HeaderMenuSubComponent } from './header-menu-sub.component';
 import { ProcessedMenuItem } from './processed-menu-item';
 import { HeaderMenuService } from './header-menu.service';
 import { MOBILE_BREAKPOINT_HEADER_MENU } from '../../../../utility/misc/breakpoints';
-import { Button } from 'primeng/button';
 
 @Component({
   selector: 'lc-header-menu',
-  imports: [NgTemplateOutlet, HeaderMenuSubComponent, NgClass, Button],
+  imports: [
+    NgTemplateOutlet,
+    HeaderMenuSubComponent,
+    NgClass,
+    HlmButton,
+    NgIcon,
+  ],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [HeaderMenuService],
+  providers: [HeaderMenuService, provideIcons({ lucideMenu })],
 })
 export class HeaderMenuComponent implements OnChanges, OnInit {
   @Input() model: MenuItem[];

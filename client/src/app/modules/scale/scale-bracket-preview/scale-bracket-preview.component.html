@@ -12,78 +12,72 @@
     </p>
 
     @if (mode === "stacked" && stacked && stacked.gradedCount > 0) {
-      <p-meter-group [value]="meterItems" [min]="0" [max]="stacked.gradedCount">
-        <ng-template #label>
-          <div
-            class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-4"
-          >
+      <div class="flex h-3 w-full overflow-hidden rounded bg-muted">
+        @for (segment of meterItems; track $index) {
+          <div [style.width.%]="(segment.value / stacked.gradedCount) * 100" [style.background]="segment.color"></div>
+        }
+      </div>
+          <div class="mt-3 flex flex-wrap gap-4">
             <div class="p-metergroup-label font-bold">
               {{ stacked.gradedCount }} {{ t("lines") }}:
             </div>
             @for (segment of stacked.segments; track $index) {
               <div class="p-metergroup-label">
-                <p-tag
-                  [value]="segment.count + ' ' + segment.label"
-                  [style]="{
-                    backgroundColor: segment.color,
-                    color: tagTextColor(segment.color),
-                  }"
-                />
+                <span
+                  hlmBadge
+                  class="h-auto border-transparent"
+                  [style.backgroundColor]="segment.color"
+                  [style.color]="tagTextColor(segment.color)"
+                  >{{ segment.count + " " + segment.label }}</span
+                >
               </div>
             }
             @if (stacked.ungradedCount > 0) {
               <div class="p-metergroup-label">
-                <p-tag
-                  [value]="
+                <span
+                  hlmBadge
+                  class="h-auto border-transparent"
+                  [style.backgroundColor]="stackedChartProjectColor"
+                  [style.color]="tagTextColor(stackedChartProjectColor)"
+                  >{{
                     stacked.ungradedCount +
-                    ' ' +
-                    t('leveledGradeDistributionUngraded')
-                  "
-                  [style]="{
-                    backgroundColor: stackedChartProjectColor,
-                    color: tagTextColor(stackedChartProjectColor),
-                  }"
-                />
+                      " " +
+                      t("leveledGradeDistributionUngraded")
+                  }}</span
+                >
               </div>
             }
             @if (stacked.projectCount > 0) {
               <div class="p-metergroup-label">
-                <p-tag
-                  [value]="
+                <span
+                  hlmBadge
+                  class="h-auto border-transparent"
+                  [style.backgroundColor]="stackedChartProjectColor"
+                  [style.color]="tagTextColor(stackedChartProjectColor)"
+                  >{{
                     stacked.projectCount +
-                    ' ' +
-                    t('leveledGradeDistributionProjects')
-                  "
-                  [style]="{
-                    backgroundColor: stackedChartProjectColor,
-                    color: tagTextColor(stackedChartProjectColor),
-                  }"
-                />
+                      " " +
+                      t("leveledGradeDistributionProjects")
+                  }}</span
+                >
               </div>
             }
           </div>
-        </ng-template>
-      </p-meter-group>
     } @else if (mode === "bar" && bar && bar.gradedCount > 0) {
       <div class="bracket-preview__chart">
-        <p-chart
-          type="bar"
-          [data]="chartData"
-          [options]="chartOptions"
-          [plugins]="chartPlugins"
-        />
+        <canvas lcChartJs="bar" [data]="chartData" [options]="chartOptions"></canvas>
       </div>
     } @else if (
       (mode === "stacked" && stacked && stacked.gradedCount === 0) ||
       (mode === "bar" && bar && bar.gradedCount === 0)
     ) {
-      <p-message severity="info" icon="pi pi-info-circle">{{
+      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
         t("scale.scaleForm.bracketPreviewNoGrades")
-      }}</p-message>
+      }}</p></div>
     } @else {
-      <p-message severity="info" icon="pi pi-info-circle">{{
+      <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
         t("scale.scaleForm.bracketPreviewUnavailable")
-      }}</p-message>
+      }}</p></div>
     }
   </div>
 </ng-container>

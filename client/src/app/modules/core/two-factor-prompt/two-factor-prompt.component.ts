@@ -16,8 +16,8 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
 import {
   clearTwoFactorChallenge,
   loginSuccess,
@@ -46,8 +46,8 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    InputText,
-    Button,
+    HlmInput,
+    HlmButton,
   ],
 })
 export class TwoFactorPromptComponent implements OnInit {

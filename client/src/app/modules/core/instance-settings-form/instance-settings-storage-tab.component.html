@@ -7,33 +7,31 @@
         <label for="video-uploads-enabled">{{
           t("videoUploadsEnabledLabel")
         }}</label>
-        <span
-          class="pi pi-question-circle ml-2"
-          [pTooltip]="t('videoUploadsEnabledTooltip')"
-          tooltipPosition="right"
-        ></span>
+        <ng-icon name="lucideCircleHelp" class="inline ml-2"
+          [hlmTooltip]="t('videoUploadsEnabledTooltip')"
+          position="right"
+         />
       </div>
-      <p-select
-        id="video-uploads-enabled"
-        [options]="[
+      <hlm-select formControlName="videoUploadsEnabled" [itemToString]="selectItemLabel([
           { value: false, label: t('videoUploadsEnabledFalse') },
           { value: true, label: t('videoUploadsEnabledTrue') },
-        ]"
-        optionLabel="label"
-        optionValue="value"
-        formControlName="videoUploadsEnabled"
-        lcFormControl
-      />
+        ])" class="block w-full" lcFormControl>
+  <hlm-select-trigger class="w-full" buttonId="video-uploads-enabled">
+    <hlm-select-value />
+  </hlm-select-trigger>
+  <hlm-select-content *hlmSelectPortal>
+    @for (option of [
+          { value: false, label: t('videoUploadsEnabledFalse') },
+          { value: true, label: t('videoUploadsEnabledTrue') },
+        ]; track option.value) {
+      <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+    }
+  </hlm-select-content>
+</hlm-select>
     </div>
 
     <div class="form-actions">
-      <p-button
-        label="{{ t('editInstanceSettingsButtonLabel') }}"
-        (click)="save()"
-        icon="pi pi-save"
-        class="responsive-button"
-        [loading]="loading"
-      ></p-button>
+      <button hlmBtn type="button" class="responsive-button" (click)="save()" [disabled]="loading"><ng-icon name="lucideSave" /> {{ t('editInstanceSettingsButtonLabel') }}</button>
     </div>
   </div>
 </ng-container>

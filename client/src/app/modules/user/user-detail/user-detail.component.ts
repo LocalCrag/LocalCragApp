@@ -10,8 +10,15 @@ import {
 } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
+
+interface UserDetailTab {
+  label: string;
+  icon: string;
+  routerLink: string;
+  routerLinkActiveOptions?: { exact: boolean };
+  visible: boolean;
+}
 import { combineLatest, EMPTY, forkJoin, throwError } from 'rxjs';
 import { catchError, filter, take } from 'rxjs/operators';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -41,7 +48,7 @@ export class UserDetailComponent implements OnInit {
   pageTitleTemplate: TemplateRef<unknown>;
 
   public user: User;
-  public items: MenuItem[];
+  public items: UserDetailTab[];
   private todosTabVisible = false;
 
   private destroyRef = inject(DestroyRef);

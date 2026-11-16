@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
-import { Skeleton } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-menu-list-skeleton',
-  imports: [Skeleton],
+  imports: [HlmSkeleton],
   templateUrl: './menu-list-skeleton.component.html',
   styleUrl: './menu-list-skeleton.component.scss',
 })

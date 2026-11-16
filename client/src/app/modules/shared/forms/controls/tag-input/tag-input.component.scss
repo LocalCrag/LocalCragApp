@@ -1,4 +1,20 @@
-:host {
+lc-tag-input {
   display: block;
   width: 100%;
+}
+
+[slot='combobox-content'][data-empty]:has(.searchable-autocomplete),
+[data-slot='combobox-content'][data-empty]:has(.searchable-autocomplete),
+[slot='combobox-content']:has(.searchable-autocomplete[data-empty]) {
+  display: none !important;
+}
+
+.searchable-autocomplete [data-slot='combobox-item'] {
+  padding-block: 0.15rem !important;
+  padding-inline: 0.4rem 1.75rem !important;
+}
+
+.searchable-autocomplete .search-result {
+  padding: 0.25rem 0.15rem !important;
+  margin-right: 0 !important;
 }

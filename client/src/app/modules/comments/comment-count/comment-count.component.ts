@@ -1,11 +1,14 @@
 import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Chip } from 'primeng/chip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMessageSquare } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 
 @Component({
   selector: 'lc-comment-count',
-  imports: [Chip, TranslocoDirective],
+  imports: [HlmBadge, NgIcon, TranslocoDirective],
+  providers: [provideIcons({ lucideMessageSquare })],
   templateUrl: './comment-count.component.html',
   styleUrl: './comment-count.component.scss',
 })

@@ -1,12 +1,19 @@
 import {
   Component,
   Input,
+  ViewChild,
   ViewEncapsulation,
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
 import { NgClass } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideHammer, lucideUndo2 } from '@ng-icons/lucide';
+import {
+  HlmAlertDialog,
+  HlmAlertDialogImports,
+} from '@spartan-ng/helm/alert-dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -18,20 +25,19 @@ import { TopoImage } from '../../../models/topo-image';
 import { ArchiveService } from '../../../services/crud/archive.service';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lc-archive-button',
   imports: [
-    ButtonModule,
+    ...HlmAlertDialogImports,
+    HlmButton,
     NgClass,
+    NgIcon,
     TranslocoDirective,
     GymModeDirective,
-    ConfirmPopup,
   ],
-  providers: [ConfirmationService],
+  providers: [provideIcons({ lucideHammer, lucideUndo2 })],
   templateUrl: './archive-button.component.html',
   styleUrl: './archive-button.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -46,8 +52,15 @@ export class ArchiveButtonComponent {
   @Input() showLabel: boolean;
   @Input() style: 'plain' | 'outline' | 'rounded' = 'plain';
 
+  @ViewChild('archiveDialog') archiveDialog?: HlmAlertDialog;
+
+  public confirmMessage = '';
+  public acceptLabel = '';
+  public rejectLabel = '';
+  private confirmMode: 'entity' | 'topo' | null = null;
+  private confirmEntityType: 'area' | 'sector' | 'crag' | null = null;
+
   private archiveService = inject(ArchiveService);
-  private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
 
@@ -140,27 +153,20 @@ export class ArchiveButtonComponent {
     }
   }
 
-  confirmArchiveEntity(event: Event, type: 'area' | 'sector' | 'crag') {
+  confirmArchiveEntity(_event: Event, type: 'area' | 'sector' | 'crag') {
     const messageKeys = {
       area: marker('archive.askConfirmArchiveArea'),
       sector: marker('archive.askConfirmArchiveSector'),
       crag: marker('archive.askConfirmArchiveCrag'),
     };
 
-    this.confirmationService.confirm({
-      target: event.target,
-      message: this.translocoService.translate(messageKeys[type]),
-      acceptLabel: this.translocoService.translate(
-        marker('archive.yesArchive'),
-      ),
-      acceptButtonStyleClass: 'p-button-primary',
-      rejectButtonStyleClass: 'p-button-secondary',
-      rejectLabel: this.translocoService.translate(marker('archive.noCancel')),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.doArchiveEntity(type);
-      },
-    });
+    this.openConfirm(
+      'entity',
+      this.translocoService.translate(messageKeys[type]),
+      this.translocoService.translate(marker('archive.yesArchive')),
+      this.translocoService.translate(marker('archive.noCancel')),
+      type,
+    );
   }
 
   doArchiveEntity(type: 'area' | 'sector' | 'crag') {
@@ -187,30 +193,49 @@ export class ArchiveButtonComponent {
     this.subscribeArchive(archiveRequest, false, previous);
   }
 
-  confirmArchiveTopoImage(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
-      message: this.translocoService.translate(
+  confirmArchiveTopoImage(_event: Event) {
+    this.openConfirm(
+      'topo',
+      this.translocoService.translate(
         this.topoImage.publicationStatus === 'archived'
           ? marker('archive.askAlsoUnArchiveLines')
           : marker('archive.askAlsoArchiveLines'),
       ),
-      acceptLabel: this.translocoService.translate(
-        marker('archive.yesWithLines'),
-      ),
-      acceptButtonStyleClass: 'p-button-primary',
-      rejectButtonStyleClass: 'p-button-secondary',
-      rejectLabel: this.translocoService.translate(
-        marker('archive.noWithoutLines'),
-      ),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.doArchiveTopoImage(true);
-      },
-      reject: () => {
-        this.doArchiveTopoImage(false);
-      },
-    });
+      this.translocoService.translate(marker('archive.yesWithLines')),
+      this.translocoService.translate(marker('archive.noWithoutLines')),
+    );
+  }
+
+  acceptConfirm(): void {
+    if (this.confirmMode === 'entity' && this.confirmEntityType) {
+      this.doArchiveEntity(this.confirmEntityType);
+    }
+    if (this.confirmMode === 'topo') {
+      this.doArchiveTopoImage(true);
+    }
+    this.archiveDialog?.close();
+  }
+
+  rejectConfirm(): void {
+    if (this.confirmMode === 'topo') {
+      this.doArchiveTopoImage(false);
+    }
+    this.archiveDialog?.close();
+  }
+
+  private openConfirm(
+    mode: 'entity' | 'topo',
+    message: string,
+    acceptLabel: string,
+    rejectLabel: string,
+    entityType: 'area' | 'sector' | 'crag' | null = null,
+  ): void {
+    this.confirmMode = mode;
+    this.confirmEntityType = entityType;
+    this.confirmMessage = message;
+    this.acceptLabel = acceptLabel;
+    this.rejectLabel = rejectLabel;
+    this.archiveDialog?.open();
   }
 
   doArchiveTopoImage(cascadeToLines: boolean) {

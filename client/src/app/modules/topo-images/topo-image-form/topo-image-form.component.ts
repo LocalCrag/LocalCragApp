@@ -45,22 +45,28 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { PageTitleService } from '../../../services/core/page-title.service';
-
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { InputText } from 'primeng/inputtext';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
-import { Button } from 'primeng/button';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { AreasService } from '../../../services/crud/areas.service';
 import { UploadService } from '../../../services/crud/upload.service';
 import { ApiService } from '../../../services/core/api.service';
-import { FileUpload } from 'primeng/fileupload';
-import { ProgressBar } from 'primeng/progressbar';
-import { DividerModule } from 'primeng/divider';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmProgress, HlmProgressIndicator } from '@spartan-ng/helm/progress';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeftRight,
+  lucideBan,
+  lucideLoaderCircle,
+  lucideSave,
+  lucideUpload,
+} from '@ng-icons/lucide';
 
 /**
  * Component for uploading topo images.
@@ -78,18 +84,28 @@ import { DividerModule } from 'primeng/divider';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    InputText,
     WysiwygEditorComponent,
     CoordinatesComponent,
-    Button,
     MoveObjectDialogComponent,
     HasPermissionDirective,
-    FileUpload,
-    ProgressBar,
-    DividerModule,
+    HlmButton,
+    HlmInput,
+    HlmProgress,
+    HlmProgressIndicator,
+    HlmSeparator,
+    NgIcon,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'topoImage' }],
+  providers: [
+    { provide: TRANSLOCO_SCOPE, useValue: 'topoImage' },
+    provideIcons({
+      lucideArrowLeftRight,
+      lucideBan,
+      lucideLoaderCircle,
+      lucideSave,
+      lucideUpload,
+    }),
+  ],
 })
 export class TopoImageFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -263,11 +279,44 @@ export class TopoImageFormComponent implements OnInit {
   /**
    * Appends one detail form for each file in a completed upload.
    */
-  addUploadedImages(event: any) {
-    this.showProgressBar = false;
-    for (const fileBody of event.originalEvent.body) {
-      this.addImageGroup(File.deserialize(fileBody));
+  onTopoFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []).filter(
+      (file) =>
+        file.size <= this.maxImageSize &&
+        ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'].includes(
+          file.type,
+        ),
+    );
+    input.value = '';
+    if (!files.length) {
+      return;
     }
+    this.uploadSequentially(files, 0);
+  }
+
+  private uploadSequentially(files: globalThis.File[], index: number) {
+    if (index >= files.length) {
+      this.showProgressBar = false;
+      return;
+    }
+    this.startProgress();
+    this.uploadService.uploadFileWithProgress(files[index]).subscribe({
+      next: (progress) => {
+        if (progress.total) {
+          this.setProgress({
+            progress: Math.round((progress.loaded / progress.total) * 100),
+          });
+        }
+        if (progress.file) {
+          this.addImageGroup(progress.file);
+        }
+      },
+      error: () => {
+        this.showProgressBar = false;
+      },
+      complete: () => this.uploadSequentially(files, index + 1),
+    });
   }
 
   startProgress() {

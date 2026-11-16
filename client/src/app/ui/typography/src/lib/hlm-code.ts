@@ -1,0 +1,15 @@
+import { Directive } from '@angular/core';
+import { classes } from '@spartan-ng/helm/utils';
+
+export const hlmCode =
+  'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-base font-semibold';
+
+@Directive({
+  selector: '[hlmCode]',
+  exportAs: 'hlmCode',
+})
+export class HlmCode {
+  constructor() {
+    classes(() => hlmCode);
+  }
+}

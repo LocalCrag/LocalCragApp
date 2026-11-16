@@ -16,8 +16,8 @@ import {
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/api';
-import { ToggleSwitch } from 'primeng/toggleswitch';
+import { HlmSwitch } from '@spartan-ng/helm/switch';
+import { MenuItem } from '../../shared/models/menu-item';
 import { combineLatest } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { selectIsModerator } from '../../../ngrx/selectors/auth.selectors';
@@ -27,7 +27,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-topo-quality-page',
-  imports: [RouterOutlet, TranslocoDirective, ToggleSwitch, FormsModule],
+  imports: [RouterOutlet, TranslocoDirective, HlmSwitch, FormsModule],
   templateUrl: './topo-quality-page.component.html',
   styleUrl: './topo-quality-page.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,

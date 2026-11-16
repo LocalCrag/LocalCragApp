@@ -17,11 +17,10 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-crag-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent],
   templateUrl: './crag-ascents.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crag-ascents.component.scss',

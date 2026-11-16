@@ -2,7 +2,7 @@
   <div class="content flex flex-col gap-6 p-6">
     @if (catalogActive()) {
       <label class="flex items-center gap-2 self-end">
-        <p-toggleswitch
+        <hlm-switch
           [ngModel]="excludeSecret"
           (ngModelChange)="onExcludeSecret($event)"
           inputId="exclude-secret-spots"

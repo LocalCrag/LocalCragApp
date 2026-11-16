@@ -5,17 +5,13 @@
 
       {{ t("activateAccountDescription") }}
 
-      <p-button
-        label="{{ t('activateNowButtonLabel') }}"
-        (click)="logout()"
-      ></p-button>
+      <button hlmBtn type="button" (click)="logout()">
+        {{ t("activateNowButtonLabel") }}
+      </button>
 
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        class="link-button"
-        styleClass="p-button-link"
-        [routerLink]="'/'"
-      ></p-button>
+      <a hlmBtn variant="ghost" class="link-button" routerLink="/">
+        {{ t("cancelButtonLabel") }}
+      </a>
     </div>
   </div>
 </ng-container>

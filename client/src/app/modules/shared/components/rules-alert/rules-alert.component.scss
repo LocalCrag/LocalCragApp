@@ -27,7 +27,8 @@ lc-rules-alert {
       gap: 0.5rem;
       font-weight: 600;
 
-      i {
+      i,
+      ng-icon {
         font-size: 1.1rem;
       }
     }
@@ -49,7 +50,7 @@ lc-rules-alert {
       gap: 0.25rem;
       flex-shrink: 0;
 
-      .p-button-label {
+      button {
         color: var(--p-primary-contrast-color);
       }
     }

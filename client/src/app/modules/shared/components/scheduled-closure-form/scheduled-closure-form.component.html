@@ -4,38 +4,51 @@
     <div class="flex flex-col gap-2">
       <div class="flex flex-col gap-2 mb-2">
         @for (schedule of schedules; track schedule) {
-          <div class="flex flex-row gap-1">
-            <p-tag class="schedule-tag">
-              <i class="pi pi-calendar mr-2"></i>
+          <div class="schedule-row">
+            <ng-icon name="lucideCalendar" />
+            <span class="schedule-label">
               {{ t(scheduleTitleKey(schedule.scheduleType)) }}
               @if (scheduleSummary(schedule)) {
-                <span>: {{ scheduleSummary(schedule) }}</span>
+                <span class="schedule-summary">· {{ scheduleSummary(schedule) }}</span>
               }
-              <p-button
+            </span>
+            <span class="schedule-actions">
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon-sm"
                 [disabled]="isDisabled"
-                text
-                icon="pi pi-pencil"
                 (click)="configDialog.open(schedule)"
-              />
-              <p-button
+              >
+                <ng-icon name="lucidePencil" />
+              </button>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                class="text-destructive"
                 [disabled]="isDisabled"
-                text
-                severity="danger"
-                icon="pi pi-trash"
                 (click)="removeSchedule(schedule)"
-              />
-            </p-tag>
+              >
+                <ng-icon name="lucideTrash" />
+              </button>
+            </span>
           </div>
         }
       </div>
 
-      <p-button
-        icon="pi pi-plus"
-        [label]="t('addSchedule')"
-        class="w-full"
+      <button
+        hlmBtn
+        type="button"
+        class="w-fit"
         [disabled]="isDisabled"
         (click)="configDialog.open()"
-      />
+      >
+        <ng-icon name="lucidePlus" />
+        {{ t("addSchedule") }}
+      </button>
       <lc-scheduled-closure-config-dialog
         #configDialog
         (newSchedule)="addSchedule($event)"

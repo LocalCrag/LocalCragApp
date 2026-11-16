@@ -10,11 +10,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { Password } from 'primeng/password';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMail, lucideSmartphone } from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { firstValueFrom } from 'rxjs';
 import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -22,6 +23,7 @@ import { AppState } from '../../../ngrx/reducers';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { User } from '../../../models/user';
 import { TwoFactorService } from '../../../services/crud/two-factor.service';
+import { PasswordInputComponent } from '../../shared/forms/controls/password-input/password-input.component';
 
 type Method = 'totp' | 'email';
 
@@ -30,14 +32,16 @@ type Method = 'totp' | 'email';
   templateUrl: './account-two-factor.component.html',
   styleUrl: './account-two-factor.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideIcons({ lucideMail, lucideSmartphone })],
   imports: [
     TranslocoDirective,
     FormsModule,
-    DividerModule,
-    Button,
-    Message,
-    InputText,
-    Password,
+    NgIcon,
+    HlmAlert,
+    HlmButton,
+    HlmInput,
+    HlmSeparator,
+    PasswordInputComponent,
   ],
 })
 export class AccountTwoFactorComponent implements OnInit {

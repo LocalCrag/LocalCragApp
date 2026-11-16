@@ -4,23 +4,16 @@
   }
 }
 
-.p-menu-item.topo-image-menu-danger {
-  .p-menu-item-icon,
-  .p-menu-item-label {
-    color: var(--p-red-500, #ef4444);
-  }
-}
-
 .line-context-menu {
-  .high-priority .pi {
+  .high-priority ng-icon {
     color: red;
   }
 
-  .medium-priority .pi {
+  .medium-priority ng-icon {
     color: blue;
   }
 
-  .low-priority .pi {
+  .low-priority ng-icon {
     color: grey;
   }
 }
@@ -62,7 +55,7 @@ lc-topo-image-list {
       background-color: inherit;
     }
 
-    .p-rating-icon {
+    .text-primary {
       color: inherit;
     }
 
@@ -73,7 +66,7 @@ lc-topo-image-list {
 }
 
 lc-topo-image-list {
-  p-rating {
+  .line-table-info-rating {
     padding: 0.75rem 0;
   }
 
@@ -109,7 +102,7 @@ lc-topo-image-list {
       text-align: left;
       cursor: pointer;
 
-      .pi {
+      ng-icon {
         font-size: 0.75rem;
       }
 
@@ -210,9 +203,22 @@ lc-topo-image-list {
 
     .line-table-info-actions {
       justify-content: flex-end;
+      gap: 0.125rem;
 
-      p-button {
-        margin-right: -0.75rem;
+      button {
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+
+      lc-tick-button {
+        display: flex;
+      }
+
+      .ticked-icon {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: var(--ticked-color);
       }
     }
 

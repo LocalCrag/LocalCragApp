@@ -1,23 +1,9 @@
 <ng-container *transloco="let t; read: 'users.list'">
   <div class="content">
-    <p-data-view
-      #dv
-      [value]="filteredUsers"
-      [sortField]="sortField"
-      [sortOrder]="sortOrder"
-    >
-      <ng-template #emptymessage>
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          searchQuery.trim()
-            ? t("noUsersMatchSearchEmptyMessage")
-            : t("noUsersFoundEmptyMessage")
-        }}</p-message>
-      </ng-template>
-      <ng-template #header>
-        <div class="flex flex-col sm:flex-row justify-between gap-2">
+    <div class="flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <input
             type="search"
-            pInputText
+            hlmInput
             [ngModel]="searchQuery"
             (ngModelChange)="onSearchChange($event)"
             [placeholder]="t('searchPlaceholder')"
@@ -25,48 +11,27 @@
             class="user-list-search"
             data-cy="user-list-search"
           />
-          <p-select
-            [options]="sortOptions"
-            [(ngModel)]="sortKey"
-            [disabled]="loading === loadingStates.LOADING"
-            optionLabel="label"
-            (onChange)="onSortChange($event)"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (sortKey) {
-                <div class="flex items-center gap-2">
-                  @if (sortKey.icon) {
-                    <i [class]="sortKey.icon"></i>
-                  }
-                  <div>{{ sortKey.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
+          <hlm-select class="sm:shrink-0" [(ngModel)]="sortKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortChange({ value: $event })"><hlm-select-trigger class="w-full sm:w-auto"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
                 @if (option.icon) {
-                  <i [class]="option.icon"></i>
+                  <ng-icon [name]="option.icon" />
                 }
                 <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
+              </div></hlm-select-item>}</hlm-select-content></hlm-select>
         </div>
-      </ng-template>
-      <ng-template let-users #list>
-        @if (loading === loadingStates.LOADING) {
+@if (!(filteredUsers?.length) && loading !== loadingStates.LOADING) {
+<div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
+          searchQuery.trim()
+            ? t("noUsersMatchSearchEmptyMessage")
+            : t("noUsersFoundEmptyMessage")
+        }}</p></div>
+}
+@if (loading === loadingStates.LOADING) {
           <lc-user-list-skeleton></lc-user-list-skeleton>
         }
         @if (loading !== loadingStates.LOADING) {
-          <p-menu
-            #userMenu
-            [model]="userActionItems"
-            [popup]="true"
-            appendTo="body"
-          ></p-menu>
+          
           <div class="grid grid-cols-12">
-            @for (user of users; track user.id; let first = $first) {
+            @for (user of sortClientList(filteredUsers); track user.id; let first = $first) {
               <div
                 class="col-span-12 user-list-row"
                 [ngClass]="{ 'border-t border-surface': !first }"
@@ -105,24 +70,27 @@
                   </div>
                 </a>
                 <div class="user-list-row__actions">
-                  <p-button
-                    icon="pi pi-ellipsis-v"
-                    (click)="openUserActions($event, user)"
-                    severity="secondary"
-                    [rounded]="true"
-                    [text]="true"
-                    class="user-actions"
-                    [disabled]="!isUserActionsEnabled(user)"
-                    [attr.aria-label]="t('userActions')"
-                  ></p-button>
+                  <button hlmBtn type="button" variant="secondary" size="icon" class="user-actions rounded-full" [hlmDropdownMenuTrigger]="userMenu" (click)="openUserActions($event, user)" [disabled]="!isUserActionsEnabled(user)" [attr.aria-label]="t('userActions')"><ng-icon name="lucideEllipsisVertical" /></button>
                 </div>
               </div>
             }
           </div>
         }
-      </ng-template>
-    </p-data-view>
   </div>
 
-  <p-confirm-dialog [style]="{ maxWidth: '800px' }"></p-confirm-dialog>
+  
+<ng-template #userMenu>
+  <div hlmDropdownMenu>
+    @for (item of userActionItems; track item.label) {
+      @if (item.visible !== false) {
+        <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
+          @if (menuIcon(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    }
+  </div>
+</ng-template>
 </ng-container>

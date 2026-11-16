@@ -7,6 +7,8 @@
   "closableForm.scheduledClosureStartLabel": "Da",
   "closableForm.scheduledClosureEndLabel": "Fino a",
   "closableForm.fixedEndBeforeStartValidationError": "La data di fine deve essere uguale o successiva alla data di inizio.",
+  "closableForm.annualDatesRequiredValidationError": "La data di inizio e la data di fine sono obbligatorie.",
+  "closableForm.annualCoversEntireYearValidationError": "L'intervallo non deve coprire l'intero anno.",
   "closableForm.closureMaterializationInfo": "Dopo il salvataggio possono essere necessari alcuni secondi prima che gli stati di chiusura siano aggiornati negli spot figli.",
   "closableFormScheduleDialog.cancel": "Annulla",
   "closableFormScheduleDialog.ok": "OK",

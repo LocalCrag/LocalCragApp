@@ -17,19 +17,20 @@
           margin-bottom: 1rem;
         "
       ></iframe>
-      <p-message icon="pi pi-info-circle">
-        <div class="block">
+      <div hlmAlert>
+        <ng-icon name="lucideInfo" />
+        <div hlmAlertDescription class="block">
           {{ t("blocWeatherInfo") }}<br />
           <small>{{ t("blocWeatherInfoModel") }}</small>
         </div>
-      </p-message>
+      </div>
     }
     @if (!blocWeatherConfig) {
-      <p-skeleton
-        width="100%"
-        [height]="iframeHeight + 'px'"
-        borderRadius="8px"
-      ></p-skeleton>
+      <div
+        hlmSkeleton
+        style="width: 100%; border-radius: 8px"
+        [style.height]="iframeHeight + 'px'"
+      ></div>
     }
   </div>
 </ng-container>

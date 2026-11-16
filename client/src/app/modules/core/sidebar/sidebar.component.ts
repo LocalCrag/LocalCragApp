@@ -7,47 +7,98 @@ import {
   ViewEncapsulation,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { Popover } from 'primeng/popover';
-import { RatingModule } from 'primeng/rating';
-import { Skeleton } from 'primeng/skeleton';
-import { TagModule } from 'primeng/tag';
 import { Ascent } from '../../../models/ascent';
 import { InstanceStatistics } from '../../../models/instance-statistics';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCalendar, lucideStar, lucideTicket } from '@ng-icons/lucide';
+import {
+  OverlayPositionBuilder,
+  type ConnectedPosition,
+} from '@angular/cdk/overlay';
+import { BrnOverlay, BrnOverlayContent } from '@spartan-ng/brain/overlay';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmPopoverContent } from '@spartan-ng/helm/popover';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  providers: [provideIcons({ lucideCalendar, lucideStar, lucideTicket })],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    NgIcon,
+    BrnOverlay,
+    BrnOverlayContent,
+    HlmPopoverContent,
+    HlmBadge,
+    HlmSkeleton,
     TranslocoDirective,
     RouterLink,
     LineGradePipe,
-    Skeleton,
-    Popover,
-    RatingModule,
-    TagModule,
-    FormsModule,
     DatePipe,
     TopoHierarchyBreadcrumbsComponent,
   ],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   private statisticsService = inject(StatisticsService);
+  private positionBuilder = inject(OverlayPositionBuilder);
   private hideTimeout: ReturnType<typeof setTimeout> | null = null;
   private showTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly showDelayMs = 350;
   private readonly hideDelayMs = 150;
 
-  @ViewChild('ascentPopover') ascentPopover: Popover;
+  @ViewChild(BrnOverlay) ascentPopover?: BrnOverlay;
+
+  /**
+   * Beside the hovered row, tops aligned when the card fits in the viewport.
+   * Spartan's popover always anchors below its origin and ignores
+   * `attachPositions`, so this strategy is passed in directly.
+   */
+  readonly ascentPopoverPositions: ConnectedPosition[] = [
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'top',
+      offsetX: 8,
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'end',
+      overlayY: 'top',
+      offsetX: -8,
+    },
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetX: 8,
+    },
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'bottom',
+      offsetX: -8,
+    },
+  ];
+
+  readonly ascentPopoverStrategy = this.positionBuilder
+    .flexibleConnectedTo({ x: 0, y: 0 })
+    .withPositions(this.ascentPopoverPositions)
+    .withFlexibleDimensions(false)
+    .withPush(true)
+    .withViewportMargin(8);
 
   stats: InstanceStatistics | null = null;
   loading = true;
@@ -76,7 +127,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     const target = (event.currentTarget || event.target) as HTMLElement;
 
-    if (this.ascentPopover.overlayVisible) {
+    if (this.ascentPopover?.stateComputed() === 'open') {
       this.openAscentPopover(target, ascent);
       return;
     }
@@ -96,66 +147,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.clearHideTimeout();
     this.clearShowTimeout();
     this.hideTimeout = setTimeout(() => {
-      this.ascentPopover?.hide();
+      this.ascentPopover?.close();
       this.activeAscent = null;
     }, this.hideDelayMs);
   }
 
-  /**
-   * Places the ascent popover to the right of its trigger row.
-   *
-   * PrimeNG's `p-popover` only aligns above/below the target (`absolutePosition`).
-   * For the left sidebar we need a right-side placement so the overlay sits over the
-   * main content instead of covering the list. This runs after PrimeNG's own align
-   * (via `onShow`, and again when switching rows while already open) and overrides
-   * left/top, clears the below/above gutter + flip classes, and falls back to the
-   * left side only when there is not enough horizontal space.
-   */
-  positionAscentPopoverRight(): void {
-    const container = this.ascentPopover?.container;
-    const target = this.ascentPopover?.target as HTMLElement | undefined;
-    if (!container || !target) {
-      return;
-    }
-
-    const gap = 8;
-    const targetRect = target.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-
-    // Prefer: flush with the row top, immediately to the right of the sidebar item.
-    let left = targetRect.right + gap + scrollX;
-    let top = targetRect.top + scrollY;
-
-    // Keep the panel inside the viewport vertically.
-    const maxTop = scrollY + window.innerHeight - containerRect.height - gap;
-    top = Math.min(
-      Math.max(scrollY + gap, top),
-      Math.max(scrollY + gap, maxTop),
-    );
-
-    // Fallback: mirror to the left if the panel would overflow the window edge.
-    if (targetRect.right + gap + containerRect.width > window.innerWidth) {
-      left = targetRect.left - gap - containerRect.width + scrollX;
-    }
-
-    container.style.insetInlineStart = `${left}px`;
-    container.style.top = `${top}px`;
-    // Undo PrimeNG's default below/above gutter and flip styling.
-    container.style.marginTop = '0';
-    container.style.marginBottom = '0';
-    container.removeAttribute('data-p-popover-flipped');
-    container.classList.remove('p-popover-flipped');
-  }
-
   private openAscentPopover(target: HTMLElement, ascent: Ascent): void {
     this.activeAscent = ascent;
-    const wasVisible = this.ascentPopover.overlayVisible;
-    this.ascentPopover.show(null, target);
-    if (wasVisible) {
-      requestAnimationFrame(() => this.positionAscentPopoverRight());
+    const popover = this.ascentPopover;
+    if (!popover) {
+      return;
     }
+    this.ascentPopoverStrategy.setOrigin(target);
+    if (popover.stateComputed() === 'open') {
+      // Opening again does not move an overlay that is already open.
+      popover.updatePosition();
+      return;
+    }
+    popover.open();
   }
 
   private clearHideTimeout(): void {

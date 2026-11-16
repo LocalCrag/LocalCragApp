@@ -28,16 +28,16 @@ import { TwoFactorChallenge } from '../../../models/two-factor-challenge';
 import { TwoFactorPromptComponent } from '../two-factor-prompt/two-factor-prompt.component';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
-import { Button } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { PasswordInputComponent } from '../../shared/forms/controls/password-input/password-input.component';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { PasskeyService } from '../../../services/crud/passkey.service';
 import {
@@ -59,16 +59,16 @@ import {
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
-    InputText,
-    Password,
-    Button,
+    HlmInput,
+    HlmButton,
+    HlmSeparator,
     RouterLink,
     AsyncPipe,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    DividerModule,
+    PasswordInputComponent,
     TwoFactorPromptComponent,
   ],
 })

@@ -83,7 +83,7 @@
 .rock-explorer__filters {
   position: absolute;
   z-index: 2;
-  top: 3.5rem;
+  top: 4rem;
   left: 0.75rem;
   display: flex;
   flex-wrap: wrap;
@@ -96,24 +96,19 @@
   border: 1px solid var(--p-content-border-color);
   border-radius: var(--p-content-border-radius);
 
-  > p-select,
-  > p-autoComplete,
-  > p-button {
+  > hlm-select,
+  > button {
     display: flex;
   }
 
-  > p-autoComplete {
+  > hlm-select {
     min-width: 12rem;
-  }
-
-  > p-button ::ng-deep .p-button {
-    height: 100%;
   }
 }
 
 :host
   ::ng-deep
-  p-button.rock-explorer__filter-btn
+  button.rock-explorer__filter-btn
   .rock-explorer__filter-label-group {
   display: inline-flex;
   align-items: center;
@@ -122,7 +117,7 @@
 
 :host
   ::ng-deep
-  p-button.rock-explorer__filter-btn
+  button.rock-explorer__filter-btn
   .rock-explorer__filter-active-dot {
   flex-shrink: 0;
   width: 0.5rem;
@@ -149,7 +144,7 @@
 .rock-explorer__map-pick-banner {
   position: absolute;
   z-index: 4;
-  top: 3.5rem;
+  top: 4rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

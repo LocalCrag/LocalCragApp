@@ -1,3 +1,5 @@
+<ng-container *transloco="let t; read: 'reactions'">
+  <h2 class="mb-3 text-base font-medium">{{ t("infoModalTitle") }}</h2>
 <ul class="reactions-info-list">
   @for (reaction of reactions; track reaction.user.id) {
     <li class="reactions-info-item">
@@ -8,3 +10,4 @@
     </li>
   }
 </ul>
+</ng-container>

@@ -1,7 +1,15 @@
 import { LineType } from '../../../enums/line-type';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
-import { SelectItem } from 'primeng/api';
+
+export interface SelectOption<T = unknown> {
+  label?: string;
+  value: T;
+  icon?: string;
+  disabled?: boolean;
+  styleClass?: string;
+  title?: string;
+}
 
 export type LineListVideoFilterMode = 'any' | 'yes' | 'no';
 export type LineListClimbFilterMode = 'any' | 'climbed' | 'notClimbed';
@@ -158,7 +166,7 @@ export function sanitizeLineListAdvancedFilters(
   };
 }
 
-export type LineListScaleSelectItem = SelectItem<
+export type LineListScaleSelectItem = SelectOption<
   { lineType: LineType; gradeScale: string } | undefined
 >;
 

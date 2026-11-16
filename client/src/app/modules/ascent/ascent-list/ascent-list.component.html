@@ -1,68 +1,20 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
-  <p-data-view #dv [value]="ascents">
-    <ng-template #emptymessage>
-      @if (
-        ascents?.length === 0 &&
-        !(loading === loadingStates.LOADING && currentPage === 1)
-      ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
-          {{ t("noAscentsFoundMessage") }}
-        </p-message>
-      }
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-col justify-between gap-2">
+  <div class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4">
         <div
           class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
         >
           {{ t("orderByLabel") }}
-          <div>
-            <p-select
-              [options]="orderOptions"
-              [(ngModel)]="orderKey"
-              [disabled]="
+          <div class="flex flex-wrap items-center gap-2">
+            <hlm-select [(ngModel)]="orderKey" [disabled]="
                 loading === loadingStates.LOADING && currentPage === 1
-              "
-              optionLabel="label"
-              (onChange)="loadFirstPage()"
-              styleClass="md:mb-0"
-            >
-              <ng-template #selectedItem>
-                @if (orderKey) {
-                  <div class="flex items-center gap-2">
-                    <div>{{ orderKey.label }}</div>
-                  </div>
-                }
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex items-center gap-2">
+              " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
-            <p-select
-              [disabled]="
+                </div></hlm-select-item>}</hlm-select-content></hlm-select>
+            <hlm-select [(ngModel)]="orderDirectionKey" [disabled]="
                 loading === loadingStates.LOADING && currentPage === 1
-              "
-              [options]="orderDirectionOptions"
-              [(ngModel)]="orderDirectionKey"
-              optionLabel="label"
-              (onChange)="loadFirstPage()"
-              styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
-            >
-              <ng-template #selectedItem>
-                @if (orderDirectionKey) {
-                  <div class="flex items-center gap-2">
-                    <div>{{ orderDirectionKey.label }}</div>
-                  </div>
-                }
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex items-center gap-2">
+              " (ngModelChange)="loadFirstPage()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderDirectionOptions; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
                   <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
+                </div></hlm-select-item>}</hlm-select-content></hlm-select>
           </div>
         </div>
 
@@ -70,31 +22,13 @@
           class="gap-2 flex items-start sm:items-center flex-col sm:flex-row"
         >
           @if (availableScales.length > 2) {
-            <div>
+            <div class="flex flex-wrap items-center gap-2">
               {{ t("lineType") }}
-              <p-select
-                [options]="availableScales"
-                [disabled]="
+              <hlm-select [(ngModel)]="scaleKey" [disabled]="
                   loading === loadingStates.LOADING && currentPage === 1
-                "
-                [(ngModel)]="scaleKey"
-                optionLabel="label"
-                (onChange)="selectScale()"
-                styleClass="md:mb-0 sm:ml-2 sm:mt-0 mt-2"
-              >
-                <ng-template #selectedItem2>
-                  @if (scaleKey) {
-                    <div class="flex items-center gap-2">
-                      <div>{{ scaleKey.label }}</div>
-                    </div>
-                  }
-                </ng-template>
-                <ng-template let-option #item2>
-                  <div class="flex items-center gap-2">
+                " (ngModelChange)="selectScale()"><hlm-select-trigger class="w-full md:mb-0"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of availableScales; track $index) {<hlm-select-item [value]="option"><div class="flex items-center gap-2">
                     <div>{{ option.label }}</div>
-                  </div>
-                </ng-template>
-              </p-select>
+                  </div></hlm-select-item>}</hlm-select-content></hlm-select>
             </div>
           }
         </div>
@@ -104,40 +38,9 @@
         >
           {{ t("filterLabel") }}
           <div class="flex flex-wrap gap-2 items-center">
-            <p-toggle-button
-              [(ngModel)]="filterFlash"
-              [dt]="toggleButtonDt"
-              [onLabel]="t('flash')"
-              [offLabel]="t('flash')"
-              [disabled]="
-                loading === loadingStates.LOADING && currentPage === 1
-              "
-              (onChange)="loadFirstPage()"
-              data-cy="filterFlash"
-            />
-            <p-toggle-button
-              [(ngModel)]="filterWithKneepad"
-              [dt]="toggleButtonDt"
-              [onLabel]="t('withKneepad')"
-              [offLabel]="t('withKneepad')"
-              [disabled]="
-                loading === loadingStates.LOADING && currentPage === 1
-              "
-              (onChange)="loadFirstPage()"
-              data-cy="filterWithKneepad"
-            />
-            <p-toggle-button
-              *isGymMode="false"
-              [(ngModel)]="filterFa"
-              [dt]="toggleButtonDt"
-              [onLabel]="t('fa')"
-              [offLabel]="t('fa')"
-              [disabled]="
-                loading === loadingStates.LOADING && currentPage === 1
-              "
-              (onChange)="loadFirstPage()"
-              data-cy="filterFa"
-            />
+            <button hlmToggle variant="outline" type="button" data-cy="filterFlash" [state]="filterFlash ? 'on' : 'off'" (stateChange)="filterFlash = $event === 'on'">{{ t('flash') }}</button>
+            <button hlmToggle variant="outline" type="button" data-cy="filterWithKneepad" [state]="filterWithKneepad ? 'on' : 'off'" (stateChange)="filterWithKneepad = $event === 'on'">{{ t('withKneepad') }}</button>
+            <button hlmToggle variant="outline" type="button" data-cy="filterFa" [state]="filterFa ? 'on' : 'off'" (stateChange)="filterFa = $event === 'on'">{{ t('fa') }}</button>
           </div>
         </div>
 
@@ -158,9 +61,15 @@
           />
         }
       </div>
-    </ng-template>
-    <ng-template let-ascents #list>
-      @if (
+@if (!(ascents?.length)) {
+@if (
+        ascents?.length === 0 &&
+        !(loading === loadingStates.LOADING && currentPage === 1)
+      ) {
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noAscentsFoundMessage") }}</p></div>
+      }
+}
+@if (
         (loading === loadingStates.LOADING && currentPage === 1) ||
         ascents === undefined
       ) {
@@ -222,27 +131,18 @@
                       {{ ascent.comment }}
                     </div>
                     <div class="ascent-table-rating">
-                      <p-rating
-                        [ngModel]="ascent.rating"
-                        [readonly]="true"
-                      ></p-rating>
+                      <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
                     </div>
                     <div class="ascent-table-grade">
                       <div class="grade">
                         @if (ascent | upgrade) {
-                          <i
-                            class="pi pi-angle-double-up"
-                            style="color: green"
-                          ></i>
+                          <ng-icon name="lucideChevronsUp" />
                         }
                         @if (ascent | consensusGrade) {
-                          <i class="pi pi-check"></i>
+                          <ng-icon name="lucideCheck" />
                         }
                         @if (ascent | downgrade) {
-                          <i
-                            class="pi pi-angle-double-down"
-                            style="color: red"
-                          ></i>
+                          <ng-icon name="lucideChevronsDown" />
                         }
                         <div class="ml-1 grade-name">
                           {{
@@ -265,20 +165,13 @@
                     </div>
                     <div class="ascent-table-properties">
                       @if (ascent.fa) {
-                        <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                        <span hlmBadge>{{ t('fa') }}</span>
                       }
                       @if (ascent.flash) {
-                        <p-tag
-                          value="{{ t('flash') }}"
-                          icon="pi pi-bolt"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('flash') }}</span>
                       }
                       @if (ascent.withKneepad) {
-                        <p-tag
-                          value="{{ t('withKneepad') }}"
-                          icon="pi pi-ticket"
-                          data-cy="kneepadtag"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('withKneepad') }}</span>
                       }
                       @if (ascent.video) {
                         <lc-ascent-video-marks
@@ -287,7 +180,7 @@
                       }
                     </div>
                     <div class="ascent-table-date" data-cy="ascent-date">
-                      <i class="pi pi-calendar"></i>
+                      <ng-icon name="lucideCalendar" />
                       @if (ascent.date) {
                         {{ ascent.date | date }}
                       } @else if (ascent.year) {
@@ -296,20 +189,7 @@
                     </div>
                     <div class="ascent-actions">
                       @if (canShowAscentActions(ascent)) {
-                        <p-menu
-                          #menuLarge
-                          [model]="ascentActionItems"
-                          [popup]="true"
-                          [appendTo]="'body'"
-                        ></p-menu>
-                        <p-button
-                          icon="pi pi-ellipsis-v"
-                          styleClass="p-button-rounded p-button-text"
-                          data-cy="ascent-actions-button"
-                          (click)="
-                            openAscentActionsMenu($event, ascent, menuLarge)
-                          "
-                        ></p-button>
+                        <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
                       }
                     </div>
                   </div>
@@ -353,27 +233,18 @@
                       {{ ascent.comment }}
                     </div>
                     <div class="ascent-table-rating">
-                      <p-rating
-                        [ngModel]="ascent.rating"
-                        [readonly]="true"
-                      ></p-rating>
+                      <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
                     </div>
                     <div class="ascent-table-grade">
                       <div class="grade">
                         @if (ascent | upgrade) {
-                          <i
-                            class="pi pi-angle-double-up"
-                            style="color: green"
-                          ></i>
+                          <ng-icon name="lucideChevronsUp" />
                         }
                         @if (ascent | consensusGrade) {
-                          <i class="pi pi-check"></i>
+                          <ng-icon name="lucideCheck" />
                         }
                         @if (ascent | downgrade) {
-                          <i
-                            class="pi pi-angle-double-down"
-                            style="color: red"
-                          ></i>
+                          <ng-icon name="lucideChevronsDown" />
                         }
                         <div class="ml-1 grade-name">
                           {{
@@ -396,20 +267,13 @@
                     </div>
                     <div class="ascent-table-properties">
                       @if (ascent.fa) {
-                        <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                        <span hlmBadge>{{ t('fa') }}</span>
                       }
                       @if (ascent.flash) {
-                        <p-tag
-                          value="{{ t('flash') }}"
-                          icon="pi pi-bolt"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('flash') }}</span>
                       }
                       @if (ascent.withKneepad) {
-                        <p-tag
-                          value="{{ t('withKneepad') }}"
-                          icon="pi pi-ticket"
-                          data-cy="kneepadtag"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('withKneepad') }}</span>
                       }
                       @if (ascent.video) {
                         <lc-ascent-video-marks
@@ -418,7 +282,7 @@
                       }
                     </div>
                     <div class="ascent-table-date" data-cy="ascent-date">
-                      <i class="pi pi-calendar"></i>
+                      <ng-icon name="lucideCalendar" />
                       @if (ascent.date) {
                         {{ ascent.date | date }}
                       } @else if (ascent.year) {
@@ -427,20 +291,7 @@
                     </div>
                     <div class="ascent-actions">
                       @if (canShowAscentActions(ascent)) {
-                        <p-menu
-                          #menuMedium
-                          [model]="ascentActionItems"
-                          [popup]="true"
-                          [appendTo]="'body'"
-                        ></p-menu>
-                        <p-button
-                          icon="pi pi-ellipsis-v"
-                          styleClass="p-button-rounded p-button-text"
-                          data-cy="ascent-actions-button"
-                          (click)="
-                            openAscentActionsMenu($event, ascent, menuMedium)
-                          "
-                        ></p-button>
+                        <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
                       }
                     </div>
                   </div>
@@ -481,20 +332,7 @@
                       </div>
                       <div class="ascent-actions">
                         @if (canShowAscentActions(ascent)) {
-                          <p-menu
-                            #menuSmall
-                            [model]="ascentActionItems"
-                            [popup]="true"
-                            [appendTo]="'body'"
-                          ></p-menu>
-                          <p-button
-                            icon="pi pi-ellipsis-v"
-                            styleClass="p-button-rounded p-button-text"
-                            data-cy="ascent-actions-button"
-                            (click)="
-                              openAscentActionsMenu($event, ascent, menuSmall)
-                            "
-                          ></p-button>
+                          <button hlmBtn type="button" variant="ghost" size="icon" data-cy="ascent-actions-button" [hlmDropdownMenuTrigger]="ascentMenu" (click)="openAscentActionsMenu($event, ascent)"><ng-icon name="lucideEllipsisVertical" /></button>
                         }
                       </div>
                     </div>
@@ -503,20 +341,13 @@
                     </div>
                     <div class="property-row-very-small">
                       @if (ascent.fa) {
-                        <p-tag value="{{ t('fa') }}" icon="pi pi-star"></p-tag>
+                        <span hlmBadge>{{ t('fa') }}</span>
                       }
                       @if (ascent.flash) {
-                        <p-tag
-                          value="{{ t('flash') }}"
-                          icon="pi pi-bolt"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('flash') }}</span>
                       }
                       @if (ascent.withKneepad) {
-                        <p-tag
-                          value="{{ t('withKneepad') }}"
-                          icon="pi pi-ticket"
-                          data-cy="kneepadtag"
-                        ></p-tag>
+                        <span hlmBadge>{{ t('withKneepad') }}</span>
                       }
                       @if (ascent.video) {
                         <lc-ascent-video-marks
@@ -528,19 +359,13 @@
                       <div class="ascent-table-properties">
                         <div class="grade">
                           @if (ascent | upgrade) {
-                            <i
-                              class="pi pi-angle-double-up"
-                              style="color: green"
-                            ></i>
+                            <ng-icon name="lucideChevronsUp" />
                           }
                           @if (ascent | consensusGrade) {
-                            <i class="pi pi-check"></i>
+                            <ng-icon name="lucideCheck" />
                           }
                           @if (ascent | downgrade) {
-                            <i
-                              class="pi pi-angle-double-down"
-                              style="color: red"
-                            ></i>
+                            <ng-icon name="lucideChevronsDown" />
                           }
                           <div class="ml-1 grade-name">
                             {{
@@ -561,26 +386,13 @@
                           </div>
                         </div>
                         @if (ascent.fa) {
-                          <p-tag
-                            class="property-small"
-                            value="{{ t('fa') }}"
-                            icon="pi pi-star"
-                          ></p-tag>
+                          <span hlmBadge class="property-small">{{ t('fa') }}</span>
                         }
                         @if (ascent.flash) {
-                          <p-tag
-                            class="property-small"
-                            value="{{ t('flash') }}"
-                            icon="pi pi-bolt"
-                          ></p-tag>
+                          <span hlmBadge class="property-small">{{ t('flash') }}</span>
                         }
                         @if (ascent.withKneepad) {
-                          <p-tag
-                            class="property-small"
-                            value="{{ t('withKneepad') }}"
-                            icon="pi pi-ticket"
-                            data-cy="kneepadtag"
-                          ></p-tag>
+                          <span hlmBadge class="property-small">{{ t('withKneepad') }}</span>
                         }
                         @if (ascent.video) {
                           <lc-ascent-video-marks
@@ -590,13 +402,10 @@
                         }
                       </div>
                       <div class="ascent-table-rating">
-                        <p-rating
-                          [ngModel]="ascent.rating"
-                          [readonly]="true"
-                        ></p-rating>
+                        <span class="inline-flex text-primary"><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 1" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 2" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 3" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 4" /><ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="((ascent.rating) ?? 0) < 5" /></span>
                       </div>
                       <div class="ascent-table-date" data-cy="ascent-date">
-                        <i class="pi pi-calendar"></i>
+                        <ng-icon name="lucideCalendar" />
                         @if (ascent.date) {
                           {{ ascent.date | date }}
                         } @else if (ascent.year) {
@@ -611,22 +420,24 @@
           }
         </div>
       }
-    </ng-template>
-  </p-data-view>
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+      <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <hlm-spinner /> } {{ t('loadMore') }}</button>
     </div>
   }
 
-  <p-confirmpopup></p-confirmpopup>
+  
+<ng-template #ascentMenu>
+  <div hlmDropdownMenu>
+    @for (item of ascentActionItems; track item.label) {
+      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
+        @if (menuIcon(item.icon); as name) {
+          <ng-icon [name]="name" />
+        }
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>
 </ng-container>

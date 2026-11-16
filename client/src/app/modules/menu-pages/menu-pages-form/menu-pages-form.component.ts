@@ -22,33 +22,31 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
 import { EMPTY, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { MenuPage } from '../../../models/menu-page';
 import { MenuPagesService } from '../../../services/crud/menu-pages.service';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { InputTextModule } from 'primeng/inputtext';
 
-import { PaginatorModule } from 'primeng/paginator';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-menu-pages-form',
   imports: [
-    ButtonModule,
-    ConfirmPopupModule,
     WysiwygEditorComponent,
-    InputTextModule,
-    PaginatorModule,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -56,13 +54,18 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    HlmInput,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './menu-pages-form.component.html',
   styleUrl: './menu-pages-form.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [ConfirmationService],
+  providers: [provideIcons({ lucideBan, lucideSave, lucideTrash2 })],
 })
 export class MenuPagesFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public menuPageForm: FormGroup;
@@ -78,7 +81,6 @@ export class MenuPagesFormComponent implements OnInit {
   private menuPagesService = inject(MenuPagesService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private pageTitleService = inject(PageTitleService);
 
   /**
@@ -195,20 +197,18 @@ export class MenuPagesFormComponent implements OnInit {
    * Asks if the menu page should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteMenuPage(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteMenuPage(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('menuPages.askReallyWantToDeleteMenuPage'),
       ),
       acceptLabel: this.translocoService.translate(
         marker('menuPages.yesDelete'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('menuPages.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteMenuPage();
       },

@@ -1,27 +1,27 @@
 <ng-container *transloco="let t">
-  <p-inputgroup>
-    <p-inputgroup-addon>
+  <div hlmInputGroup>
+    <div hlmInputGroupAddon>
       @if (!loading) {
-        <i class="pi pi-search"></i>
+        <ng-icon name="lucideSearch" />
       }
       @if (loading) {
-        <i class="pi pi-spin pi-spinner"></i>
+        <ng-icon name="lucideLoader2" class="animate-spin" />
       }
-    </p-inputgroup-addon>
+    </div>
     <input
       #queryInput
+      hlmInputGroupInput
       type="text"
-      pInputText
       [ngModel]="query"
       (ngModelChange)="onQueryChange($event)"
       (keydown.enter)="submit()"
       [placeholder]="t('rockExplorer.locationSearchPlaceholder')"
       [attr.aria-label]="t('rockExplorer.locationSearchGo')"
     />
-    <p-inputgroup-addon>
-      <p-button icon="pi pi-times" (click)="close()" />
-    </p-inputgroup-addon>
-  </p-inputgroup>
+    <div hlmInputGroupAddon align="inline-end">
+      <button hlmBtn type="button" size="icon" variant="ghost" (click)="close()"><ng-icon name="lucideX" /></button>
+    </div>
+  </div>
 
   @if (places.length > 0) {
     <div class="spacer"></div>
@@ -35,7 +35,7 @@
             [attr.aria-selected]="false"
             (click)="selectPlace(place)"
           >
-            <i class="pi pi-map-marker" aria-hidden="true"></i>
+            <ng-icon name="lucideMapPin" />
             <span>{{ place.label }}</span>
           </button>
         </li>
@@ -44,10 +44,9 @@
   }
 
   @if (errorMessage) {
-    <p-message
-      severity="warn"
-      styleClass="rock-explorer-location-search-dialog__error"
-      >{{ errorMessage }}</p-message
-    >
+    <div hlmAlert variant="destructive" class="rock-explorer-location-search-dialog__error">
+      <ng-icon name="lucideTriangleAlert" />
+      <p hlmAlertDescription>{{ errorMessage }}</p>
+    </div>
   }
 </ng-container>

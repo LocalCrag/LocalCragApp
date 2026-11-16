@@ -1,0 +1,140 @@
+:host {
+  display: block;
+
+  [data-slot='tabs'] {
+    width: 100%;
+    min-width: 0;
+    gap: 0;
+  }
+
+  [data-slot='tabs-trigger'] {
+    flex: 0 0 auto;
+    height: 3rem;
+    border-radius: 0;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    padding: 0 0.9rem;
+    font-size: 0.95rem;
+    color: var(--p-text-muted-color);
+
+    &::after {
+      display: none;
+    }
+
+    ng-icon {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    &[data-state='active'] {
+      color: var(--p-text-color);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &:hover:not([data-state='active']) {
+      color: var(--p-text-color);
+      background: transparent;
+    }
+  }
+}
+
+:host(.chrome-tabs--plain) {
+  box-shadow: inset 0 -1px 0 var(--p-content-border-color);
+
+  [data-slot='tabs-trigger'] {
+    height: 2.85rem;
+    padding: 0 1.125rem;
+    font-weight: 600;
+
+    &[data-state='active'] {
+      color: var(--p-primary-color);
+      box-shadow: inset 0 -2px 0 var(--p-primary-color);
+    }
+
+    &:hover:not([data-state='active']) {
+      color: var(--p-text-color);
+    }
+  }
+}
+
+:host(.chrome-tabs--plain) ::ng-deep .chrome-tabs__list {
+  height: 2.85rem;
+  box-shadow: none;
+}
+
+:host(.chrome-tabs--plain) ::ng-deep [data-slot='tabs-paginated-list'] > button {
+  height: 2.85rem;
+}
+
+:host(.chrome-tabs--overlay) {
+  background: rgb(0 0 0 / 0.55);
+
+  [data-slot='tabs-trigger'] {
+    cursor: pointer;
+    color: rgb(255 255 255 / 0.72);
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.55);
+
+    &[data-state='active'] {
+      color: #fff;
+      background: rgb(255 255 255 / 0.14);
+      box-shadow: none;
+    }
+
+    &:hover:not([data-state='active']) {
+      color: #fff;
+      background: rgb(255 255 255 / 0.08);
+    }
+  }
+
+  .chrome-tabs__badge {
+    background: rgb(255 255 255 / 0.22);
+    color: #fff;
+  }
+}
+
+.chrome-tabs__badge {
+  margin-left: 0.15rem;
+  border-radius: 999px;
+}
+
+:host ::ng-deep .chrome-tabs__list,
+:host ::ng-deep [data-slot='tabs-paginated-list'] {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0;
+}
+
+:host ::ng-deep .chrome-tabs__list {
+  height: 3rem;
+  width: max-content;
+  min-width: 100%;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  justify-content: flex-start;
+  box-shadow: none;
+}
+
+:host ::ng-deep [data-slot='tabs-paginated-list'] > button {
+  width: 2.5rem;
+  height: 3rem;
+  border-radius: 0;
+  color: var(--p-text-muted-color);
+}
+
+:host(.chrome-tabs--overlay) ::ng-deep [data-slot='tabs-paginated-list'] > button {
+  color: #fff;
+  background: transparent;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+  }
+}

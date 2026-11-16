@@ -6,17 +6,20 @@
       class="flex flex-row"
       [class]="{ 'gap-2': colorForm?.get('customColor').value }"
     >
-      <p-select
+      <hlm-select
         formControlName="customColor"
-        [options]="[
-          { value: false, label: t('globalColor') },
-          { value: true, label: t('customColor') },
-        ]"
-        optionLabel="label"
-        optionValue="value"
+        class="w-full"
         lcFormControl
-        styleClass="w-full"
-      />
+        [itemToString]="colorModeLabel"
+      >
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item [value]="false">{{ t("globalColor") }}</hlm-select-item>
+          <hlm-select-item [value]="true">{{ t("customColor") }}</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
       @if (colorForm?.get("customColor").value) {
         <ngx-colors
           ngx-colors-trigger

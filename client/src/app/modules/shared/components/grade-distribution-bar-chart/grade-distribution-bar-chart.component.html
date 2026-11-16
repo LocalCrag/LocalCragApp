@@ -1,8 +1,9 @@
 <ng-container *transloco="let t">
   @if ((!gradeDistribution || chartData.length === 0) && !diagramsSuppressed) {
-    <p-message severity="info" icon="pi pi-info-circle">{{
-      t("noDataAvailable")
-    }}</p-message>
+    <div hlmAlert class="lc-chart-message">
+      <ng-icon name="lucideInfo" />
+      {{ t("noDataAvailable") }}
+    </div>
   }
   @for (chartDataElement of chartData; track chartDataElement) {
     <div>
@@ -12,11 +13,13 @@
         </h6>
       }
       @if (gradeDistribution) {
-        <p-chart
-          type="bar"
-          [data]="chartDataElement.data"
-          [options]="chartDataElement.chartOptions ?? options"
-        ></p-chart>
+        <div class="lc-chart">
+          <canvas
+            lcChartJs="bar"
+            [data]="chartDataElement.data"
+            [options]="chartDataElement.chartOptions ?? options"
+          ></canvas>
+        </div>
       }
       <div class="total">
         {{ t("totalLines") }}:

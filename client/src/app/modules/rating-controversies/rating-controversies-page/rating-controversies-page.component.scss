@@ -186,12 +186,12 @@
 }
 
 @media (max-width: 639px) {
-  :host ::ng-deep .controversy-filters .p-selectbutton {
+  .controversy-filters [data-slot='toggle-group'] {
     display: flex;
     width: 100%;
   }
 
-  :host ::ng-deep .controversy-filters .p-togglebutton {
+  .controversy-filters [data-slot='toggle-group-item'] {
     flex: 1 1 0;
     justify-content: center;
     white-space: nowrap;

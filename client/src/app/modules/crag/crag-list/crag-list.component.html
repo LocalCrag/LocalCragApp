@@ -1,75 +1,23 @@
 <ng-container *transloco="let t; read: 'crag.cragList'">
-  <p-data-view
-    #dv
-    [value]="crags"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
-  >
-    <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
-        >{{ t("noCragsFoundEmptyMessage") }}
-      </p-message>
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
+  
+      <div class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4">
         <div class="flex flex-wrap items-center gap-2">
           {{ t("orderByLabel") }}
-          <p-select
-            [options]="orderOptions"
-            [(ngModel)]="orderKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderKey) {
-                <div>{{ orderKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-          <p-select
-            [options]="orderDirectionOptions"
-            [(ngModel)]="orderDirectionKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderDirectionKey) {
-                <div>{{ orderDirectionKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
+          <hlm-select [(ngModel)]="orderKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortControlsChange()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          <hlm-select [(ngModel)]="orderDirectionKey" [disabled]="loading === loadingStates.LOADING" (ngModelChange)="onSortControlsChange()"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of orderDirectionOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
         </div>
         <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            label="{{ t('newCragButtonLabel') }}"
-            icon="pi pi-plus"
-            routerLink="/topo/create-crag"
-            [disabled]="loading === loadingStates.LOADING"
-            *isModerator="true"
-            class="responsive-button"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderCragsButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderCrags()"
-            [disabled]="crags?.length < 2 || loading === loadingStates.LOADING"
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
+          <a hlmBtn class="responsive-button" routerLink="/topo/create-crag" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucidePlus" /> {{ t('newCragButtonLabel') }}</a>
+          <button hlmBtn type="button" class="responsive-button" (click)="reorderCrags()" [disabled]="crags?.length < 2 || loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucideArrowUpDown" /> {{ t('reorderCragsButtonLabel') }}</button>
         </div>
       </div>
-    </ng-template>
-    <ng-template let-crags #list>
+    
+
+      @if (!crags?.length && loading !== loadingStates.LOADING) {
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noCragsFoundEmptyMessage") }}</p></div>
+      }
+    
+
       @if (loading === loadingStates.LOADING) {
         <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
       }
@@ -144,6 +92,5 @@
           }
         </div>
       }
-    </ng-template>
-  </p-data-view>
+    
 </ng-container>

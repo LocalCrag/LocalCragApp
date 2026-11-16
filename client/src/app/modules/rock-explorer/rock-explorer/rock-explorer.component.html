@@ -1,60 +1,27 @@
 <div class="rock-explorer" *transloco="let t">
-  <p-toast />
-  <p-confirmpopup />
+  
+  
 
-  <p-dialog
-    [header]="t('rockExplorer.deviceLockTitle')"
-    [(visible)]="recording.deviceLockDialogVisible"
-    [modal]="true"
-    [closable]="true"
-    [dismissableMask]="false"
-    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
-    (onHide)="recording.cancelDeviceLockDialog()"
-  >
+  <hlm-dialog [state]="recording.deviceLockDialogVisible ? 'open' : 'closed'" (closed)="recording.deviceLockDialogVisible = false"><hlm-dialog-content *hlmDialogPortal class="sm:max-w-md"><div hlmDialogHeader><h2 hlmDialogTitle>{{ t('rockExplorer.deviceLockTitle') }}</h2></div>
     <p>{{ t("rockExplorer.deviceLockMessage") }}</p>
     <div class="rock-explorer__device-lock-actions">
-      <p-button
-        [label]="t('rockExplorer.deviceLockCancel')"
-        severity="secondary"
-        [text]="true"
-        (onClick)="recording.cancelDeviceLockDialog()"
-      />
-      <p-button
-        [label]="t('rockExplorer.deviceLockClone')"
-        (onClick)="recording.confirmDeviceLockClone()"
-      />
+      <button hlmBtn type="button" variant="secondary" (click)="recording.cancelDeviceLockDialog()">{{ t('rockExplorer.deviceLockCancel') }}</button>
+      <button hlmBtn type="button" (click)="recording.confirmDeviceLockClone()">{{ t('rockExplorer.deviceLockClone') }}</button>
     </div>
-  </p-dialog>
+  </hlm-dialog-content></hlm-dialog>
 
-  <p-dialog
-    [header]="t('rockExplorer.publishTitle')"
-    [(visible)]="recording.publishDialogVisible"
-    [modal]="true"
-    [closable]="!recording.publishInFlight"
-    [dismissableMask]="false"
-    [style]="{ width: 'min(24rem, calc(100vw - 2rem))' }"
-    (onHide)="recording.cancelPublishDialog()"
-  >
+  <hlm-dialog [state]="recording.publishDialogVisible ? 'open' : 'closed'" (closed)="recording.publishDialogVisible = false"><hlm-dialog-content *hlmDialogPortal class="sm:max-w-md"><div hlmDialogHeader><h2 hlmDialogTitle>{{ t('rockExplorer.publishTitle') }}</h2></div>
     <div class="rock-explorer__publish-form">
       <label class="rock-explorer__publish-label" for="re-publish-potential">
         {{ t("rockExplorer.publishPotential") }}
       </label>
-      <p-select
-        inputId="re-publish-potential"
-        [options]="ui.potentialOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="recording.publishPotential"
-        [placeholder]="t('rockExplorer.publishPotential')"
-        [disabled]="recording.publishInFlight"
-        styleClass="w-full"
-      />
+      <hlm-select [(ngModel)]="recording.publishPotential" [itemToString]="ui.potentialLabel" [disabled]="recording.publishInFlight"><hlm-select-trigger class="w-full" id="re-publish-potential"><hlm-select-value [placeholder]="t('rockExplorer.publishPotential')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.potentialOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
       <label class="rock-explorer__publish-label" for="re-publish-title">
         {{ t("rockExplorer.publishTitleField") }}
       </label>
       <input
         id="re-publish-title"
-        pInputText
+        hlmInput
         class="w-full"
         [(ngModel)]="recording.publishTitle"
         [disabled]="recording.publishInFlight"
@@ -65,7 +32,7 @@
       </label>
       <textarea
         id="re-publish-description"
-        pTextarea
+        hlmTextarea
         class="w-full"
         rows="3"
         [(ngModel)]="recording.publishDescription"
@@ -73,20 +40,10 @@
       ></textarea>
     </div>
     <div class="rock-explorer__device-lock-actions">
-      <p-button
-        [label]="t('rockExplorer.publishCancel')"
-        severity="secondary"
-        [text]="true"
-        [disabled]="recording.publishInFlight"
-        (onClick)="recording.cancelPublishDialog()"
-      />
-      <p-button
-        [label]="t('rockExplorer.publishConfirm')"
-        [loading]="recording.publishInFlight"
-        (onClick)="recording.confirmPublishDialog()"
-      />
+      <button hlmBtn type="button" variant="secondary" (click)="recording.cancelPublishDialog()" [disabled]="recording.publishInFlight">{{ t('rockExplorer.publishCancel') }}</button>
+      <button hlmBtn type="button" [disabled]="recording.publishInFlight" (click)="recording.confirmPublishDialog()">@if (recording.publishInFlight) { <hlm-spinner /> } {{ t('rockExplorer.publishConfirm') }}</button>
     </div>
-  </p-dialog>
+  </hlm-dialog-content></hlm-dialog>
 
   <input
     #recordImageInput
@@ -112,15 +69,7 @@
         [style.left.px]="ctx.x"
         [style.top.px]="ctx.y"
       >
-        <p-button
-          icon="pi pi-copy"
-          [label]="t('copyCoordinatesToClipboard')"
-          size="small"
-          severity="secondary"
-          [text]="true"
-          styleClass="rock-explorer__map-context-copy"
-          (onClick)="copyMapContextCoordinates()"
-        />
+        <button hlmBtn type="button" variant="secondary" class="rock-explorer__map-context-copy" (click)="copyMapContextCoordinates()"><ng-icon name="lucideCopy" /> {{ t('copyCoordinatesToClipboard') }}</button>
         @if (ctx.hits.length) {
           <div class="rock-explorer__vector-identify-title">
             {{ t("rockExplorer.mapStyle.vectorIdentifyTitle") }}

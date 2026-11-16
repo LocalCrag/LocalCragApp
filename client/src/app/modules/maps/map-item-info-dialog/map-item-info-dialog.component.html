@@ -1,28 +1,34 @@
 <ng-container *transloco="let t; read: 'maps.mapItemInfoDialog'">
-  <p-dialog
-    header="{{ feature?.properties.name || t('block') }}"
-    [modal]="true"
-    [(visible)]="isOpen"
-    [dismissableMask]="true"
+  <hlm-dialog
+    [state]="isOpen ? 'open' : 'closed'"
+    (closed)="isOpen = false"
   >
-    <div class="flex justify-end gap-2 flex-col">
-      <div
-        [innerHTML]="$safeNavigationMigration(feature?.properties.description)"
-      ></div>
-      <p-button
-        [label]="t('navigateToItem')"
-        (onClick)="navigateToItem()"
-        icon=" pi pi-directions"
-        class="w-full"
-      />
-      @if (getCanOpenFeature()) {
-        <p-button
-          [label]="t('openItem')"
-          (onClick)="openItem()"
-          icon=" pi pi-info-circle"
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>
+          {{ feature?.properties.name || t("block") }}
+        </h2>
+      </div>
+      <div class="flex justify-end gap-2 flex-col">
+        <div
+          [innerHTML]="$safeNavigationMigration(feature?.properties.description)"
+        ></div>
+        <button
+          hlmBtn
+          type="button"
           class="w-full"
-        />
-      }
-    </div>
-  </p-dialog>
+          (click)="navigateToItem()"
+        >
+          <ng-icon name="lucideNavigation" />
+          {{ t("navigateToItem") }}
+        </button>
+        @if (getCanOpenFeature()) {
+          <button hlmBtn type="button" class="w-full" (click)="openItem()">
+            <ng-icon name="lucideInfo" />
+            {{ t("openItem") }}
+          </button>
+        }
+      </div>
+    </hlm-dialog-content>
+  </hlm-dialog>
 </ng-container>

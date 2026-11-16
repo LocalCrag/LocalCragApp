@@ -27,13 +27,13 @@
       >
         @if (commentCount > 0) {
           <span class="comment-default">
-            <i class="pi pi-comment"></i>
+            <ng-icon name="lucideMessageSquare" />
             <span class="comment-total">{{ commentCount }}</span>
           </span>
         }
         @if (isLoggedIn || promptForAccount) {
           <span class="comment-hover-hint">
-            <i class="pi pi-comment"></i>
+            <ng-icon name="lucideMessageSquare" />
           </span>
         }
       </button>
@@ -61,34 +61,35 @@
       }
       <span class="reaction-hover-hint" *isLoggedIn="true">
         <span class="reaction-emoji">😊</span>
-        <i class="pi pi-plus"></i>
+        <ng-icon name="lucidePlus" />
       </span>
     </div>
   </div>
 </div>
 
-<p-popover
+<hlm-popover
   *isLoggedIn="true"
-  #popover
-  appendTo="body"
-  styleClass="reaction-popover"
-  (onShow)="onPickerShow()"
-  (onHide)="onPickerHide()"
+  #popover="brnPopover"
+  [attachTo]="reactionBar"
+  align="end"
+  (stateChanged)="onPopoverState($event)"
 >
-  <div class="reaction-picker">
-    @for (emoji of availableReactions; track emoji) {
-      <button
-        class="reaction-option"
-        [class.active]="myReaction === emoji"
-        (click)="selectReaction(emoji)"
-      >
-        {{ emoji }}
-      </button>
-    }
-    @if (totalReactions > 0) {
-      <button class="reaction-info-btn" (click)="openInfoModal($event)">
-        <i class="pi pi-info-circle"></i>
-      </button>
-    }
+  <div hlmPopoverContent *hlmPopoverPortal class="reaction-popover w-max flex-row">
+    <div class="reaction-picker">
+      @for (emoji of availableReactions; track emoji) {
+        <button
+          class="reaction-option"
+          [class.active]="myReaction === emoji"
+          (click)="selectReaction(emoji)"
+        >
+          {{ emoji }}
+        </button>
+      }
+      @if (totalReactions > 0) {
+        <button class="reaction-info-btn" type="button" (click)="openInfoModal($event)">
+          <ng-icon name="lucideInfo" />
+        </button>
+      }
+    </div>
   </div>
-</p-popover>
+</hlm-popover>

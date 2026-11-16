@@ -15,7 +15,9 @@ import {
 import { forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ChartModule } from 'primeng/chart';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 
 import { MOBILE_BREAKPOINT } from '../../../../utility/misc/breakpoints';
 import { Store } from '@ngrx/store';
@@ -38,7 +40,7 @@ import { LineType } from '../../../../enums/line-type';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
-import { Message } from 'primeng/message';
+import { ChartJsDirective } from '../../directives/chart-js.directive';
 Chart.register(ChartDataLabels);
 
 type BarChartData = {
@@ -56,7 +58,8 @@ type BarChartData = {
  */
 @Component({
   selector: 'lc-grade-distribution-bar-chart',
-  imports: [ChartModule, TranslocoDirective, Message],
+  imports: [ChartJsDirective, TranslocoDirective, HlmAlert, NgIcon],
+  providers: [provideIcons({ lucideInfo })],
   templateUrl: './grade-distribution-bar-chart.component.html',
   styleUrl: './grade-distribution-bar-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,

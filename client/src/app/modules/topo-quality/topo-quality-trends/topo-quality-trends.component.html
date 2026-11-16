@@ -1,33 +1,25 @@
 <ng-container *transloco="let t; read: 'topoQuality.ui'">
   @if (failed) {
-    <p-message severity="error" icon="pi pi-times-circle">{{
+    <div hlmAlert variant="destructive"><ng-icon name="lucideCircleX" /><p hlmAlertDescription>{{
       t("loadFailed")
-    }}</p-message>
+    }}</p></div>
   }
 
   @if (loading) {
     <div class="trends-range" aria-hidden="true">
-      <p-skeleton width="18rem" height="2.5rem" />
-      <p-skeleton width="14rem" height="2.5rem" />
+      <div hlmSkeleton style="width: 18rem; height: 2.5rem"></div>
+      <div hlmSkeleton style="width: 14rem; height: 2.5rem"></div>
     </div>
     <section class="trends-section">
-      <p-skeleton width="10rem" height="1.5rem" />
-      <p-skeleton
-        width="24rem"
-        height="1rem"
-        styleClass="trends-skeleton-hint"
-      />
-      <p-skeleton height="280px" />
+      <div hlmSkeleton style="width: 10rem; height: 1.5rem"></div>
+      <div hlmSkeleton class="trends-skeleton-hint" style="width: 24rem; height: 1rem"></div>
+      <div hlmSkeleton style="height: 280px"></div>
     </section>
     @if (gameEnabled) {
       <section class="trends-section">
-        <p-skeleton width="12rem" height="1.5rem" />
-        <p-skeleton
-          width="28rem"
-          height="1rem"
-          styleClass="trends-skeleton-hint"
-        />
-        <p-skeleton height="280px" />
+        <div hlmSkeleton style="width: 12rem; height: 1.5rem"></div>
+        <div hlmSkeleton class="trends-skeleton-hint" style="width: 28rem; height: 1rem"></div>
+        <div hlmSkeleton style="height: 280px"></div>
       </section>
     }
   }
@@ -35,25 +27,24 @@
   @if (!loading && !failed) {
     <div class="trends-range">
       @if (rangeOptions.length > 1) {
-        <p-selectbutton
-          [options]="rangeOptions"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="range"
-          (ngModelChange)="paint()"
-          [allowEmpty]="false"
-          data-cy="topo-quality-trend-range"
-        />
+        <div hlmToggleGroup type="single" [(ngModel)]="range" (ngModelChange)="paint()" [nullable]="false" data-cy="topo-quality-trend-range">@for (option of rangeOptions; track $index) {<button hlmToggleGroupItem type="button" [value]="option.value">{{ option.label }}</button>}</div>
       }
-      <p-select
-        [options]="scopes"
-        optionLabel="name"
-        optionValue="key"
+      <hlm-select
+        class="trends-scope"
         [(ngModel)]="scopeKey"
-        (ngModelChange)="paint()"
-        appendTo="body"
+        [itemToString]="scopeLabel"
         data-cy="topo-quality-trend-scope"
-      />
+        (ngModelChange)="paint()"
+      >
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of scopes; track option.key) {
+            <hlm-select-item [value]="option.key">{{ option.name }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
     </div>
     <section class="trends-section">
       <div class="trends-toolbar">
@@ -61,16 +52,12 @@
       </div>
       <p class="trends-hint">{{ t("qualityHistoryHint") }}</p>
       @if (qualityEmpty) {
-        <p-message severity="info" icon="pi pi-info-circle">{{
+        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
           t("rangeEmpty")
-        }}</p-message>
+        }}</p></div>
       } @else if (qualityData) {
         <div class="chart-wrap">
-          <p-chart
-            type="line"
-            [data]="qualityData"
-            [options]="qualityOptions"
-          />
+          <canvas lcChartJs="line" [data]="qualityData" [options]="qualityOptions"></canvas>
         </div>
       }
     </section>
@@ -80,27 +67,18 @@
         <div class="trends-toolbar">
           <h3>{{ t("pointsHistory") }}</h3>
           <label class="trends-cumulative">
-            <p-toggleswitch
-              [(ngModel)]="cumulative"
-              (ngModelChange)="paint()"
-              inputId="topo-points-cumulative"
-              data-cy="topo-quality-points-cumulative"
-            />
+            <hlm-switch [(ngModel)]="cumulative" (ngModelChange)="paint()" inputId="topo-points-cumulative" data-cy="topo-quality-points-cumulative"></hlm-switch>
             {{ t("cumulative") }}
           </label>
         </div>
         <p class="trends-hint">{{ t("pointsHistoryHint") }}</p>
         @if (pointsEmpty) {
-          <p-message severity="info" icon="pi pi-info-circle">{{
+          <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
             t(pointsFilteredOut ? "rangeEmpty" : "pointsEmpty")
-          }}</p-message>
+          }}</p></div>
         } @else {
           <div class="chart-wrap">
-            <p-chart
-              type="line"
-              [data]="pointsData"
-              [options]="pointsOptions"
-            />
+            <canvas lcChartJs="line" [data]="pointsData" [options]="pointsOptions"></canvas>
           </div>
         }
       </section>

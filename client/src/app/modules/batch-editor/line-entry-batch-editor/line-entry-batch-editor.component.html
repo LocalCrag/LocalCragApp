@@ -2,22 +2,12 @@
   <div class="content p-6">
     <p class="mt-0">{{ t("batchImageUploadDescription") }}</p>
     @if (topoImageBatchUploadForm) {
-      <form [formGroup]="topoImageBatchUploadForm" lcForm>
-        <p-stepper [(value)]="currentStep" class="basis-[50rem]">
-          <p-step-list>
-            <p-step [value]="1" [disabled]="currentStepInvalid">{{
-              t("images")
-            }}</p-step>
-            <p-step [value]="2" [disabled]="currentStepInvalid">{{
-              t("lines")
-            }}</p-step>
-            <p-step [value]="3" [disabled]="currentStepInvalid"
-              >{{ t("linePaths") }}
-            </p-step>
-          </p-step-list>
-          <p-step-panels>
-            <p-step-panel [value]="1">
-              <ng-template #content>
+      <form class="mt-6" [formGroup]="topoImageBatchUploadForm" lcForm>
+        <spartan-stepper [linear]="true">
+          <spartan-step
+            [stepControl]="topoImageBatchUploadForm.get('images')"
+            [label]="t('images')"
+          >
                 <div class="flex flex-col gap-2" lcControlGroup>
                   <lc-multi-image-upload
                     lcFormControl
@@ -29,44 +19,27 @@
                   }}</small>
                 </div>
                 <div class="flex pt-6 justify-between">
-                  <p-button
-                    [label]="t('cancel')"
-                    severity="secondary"
-                    icon="pi pi-ban"
-                    class="responsive-button"
-                    [loading]="loadingState === loadingStates.LOADING"
-                    (onClick)="cancel()"
-                  />
-                  <p-button
-                    [label]="t('Next')"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
-                    class="responsive-button"
-                    (onClick)="nextStep()"
-                  />
+                  <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="cancel()">
+                    @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideBan" /> }
+                    {{ t('cancel') }}
+                  </button>
+                  <button hlmBtn type="button" class="responsive-button" spartanStepperNext>
+                    {{ t('Next') }}
+                    <ng-icon name="lucideArrowRight" />
+                  </button>
                 </div>
-              </ng-template>
-            </p-step-panel>
-            <p-step-panel [value]="2">
-              <ng-template #content>
+          </spartan-step>
+          <spartan-step
+            [stepControl]="topoImageBatchUploadForm.get('lines')"
+            [label]="t('lines')"
+          >
                 <div formGroupName="lines">
                   @if (typeOptions?.length > 1) {
                     <div class="flex flex-col gap-2 max-w-80" lcControlGroup>
                       <label class="form-label" for="type">{{
                         t("lineTypeLabel")
                       }}</label>
-                      <p-select
-                        formControlName="type"
-                        id="type"
-                        [options]="typeOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        lcFormControl
-                      >
-                        <ng-template let-selectedType #selectedItem>{{
-                          selectedType.label
-                        }}</ng-template>
-                      </p-select>
+                      <hlm-select formControlName="type" id="type" lcFormControl [itemToString]="selectLabel"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of typeOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
                     </div>
                   }
                   @if (scaleOptions?.length > 1) {
@@ -74,14 +47,7 @@
                       <label class="form-label" for="scale">{{
                         t("lineScaleLabel")
                       }}</label>
-                      <p-select
-                        formControlName="scale"
-                        id="scale"
-                        [options]="scaleOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        lcFormControl
-                      ></p-select>
+                      <hlm-select formControlName="scale" id="scale" lcFormControl [itemToString]="selectLabel"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of scaleOptions; track option.value) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
                     </div>
                   }
                   @if (faFormat === faFormats.DATE && (gymMode$ | async)) {
@@ -89,16 +55,9 @@
                       <label class="form-label" for="fa-year">{{
                         t("lineFADateLabel")
                       }}</label>
-                      <p-date-picker
-                        id="fa-date"
-                        formControlName="faDate"
-                        view="date"
-                        inputId="faDate"
-                        lcFormControl
-                        [maxDate]="today"
-                        [readonlyInput]="true"
-                        data-cy="line-form-faDate"
-                      ></p-date-picker>
+                      <hlm-date-picker formControlName="faDate" lcFormControl [maxDate]="today" [autoCloseOnSelect]="true" [formatDate]="formatDay" data-cy="line-form-faDate">
+                        <hlm-date-picker-input inputId="faDate" />
+                      </hlm-date-picker>
                       <small class="lc-error" *lcIfError="'dateInFuture'">{{
                         t("dateInFutureValidationError")
                       }}</small>
@@ -124,69 +83,53 @@
                       </div>
                     }
                   </div>
-                  <p-button
-                    (click)="addLine()"
-                    styleClass="w-full md:w-auto"
-                    icon="pi pi-plus"
-                    [label]="t('addLine')"
-                  ></p-button>
+                  <button hlmBtn type="button" class="w-full md:w-auto" (click)="addLine()">
+                    <ng-icon name="lucidePlus" />
+                    {{ t('addLine') }}
+                  </button>
                 </div>
                 @if (getDisplayUserGrades() | async) {
-                  <p-message styleClass="mt-12" severity="warn">{{
-                    t("displayUserGradesActive")
-                  }}</p-message>
+                  <div hlmAlert variant="warning" class="mt-12">
+                    <ng-icon name="lucideTriangleAlert" />
+                    <p hlmAlertDescription>{{ t("displayUserGradesActive") }}</p>
+                  </div>
                 }
                 <div class="flex pt-6 justify-between">
                   <div class="lc-button-group">
-                    <p-button
-                      [label]="t('Back')"
-                      severity="secondary"
-                      icon="pi pi-arrow-left"
-                      class="responsive-button"
-                      [disabled]="loadingState === loadingStates.LOADING"
-                      (onClick)="previousStep()"
-                    />
-                    <p-button
-                      [label]="t('cancel')"
-                      severity="secondary"
-                      class="responsive-button"
-                      icon="pi pi-ban"
-                      [loading]="loadingState === loadingStates.LOADING"
-                      (onClick)="cancel()"
-                    />
+                    <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" spartanStepperPrevious>
+                      <ng-icon name="lucideArrowLeft" />
+                      {{ t('Back') }}
+                    </button>
+                    <button hlmBtn type="button" variant="secondary" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="cancel()">
+                      @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideBan" /> }
+                      {{ t('cancel') }}
+                    </button>
                   </div>
-                  <p-button
-                    [label]="t('saveLinesAndTopoImagesAndNext')"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
-                    [loading]="loadingState === loadingStates.LOADING"
-                    class="responsive-button"
-                    (onClick)="saveLinesAndTopoImages()"
-                  />
+                  <button hlmBtn type="button" class="responsive-button" [disabled]="loadingState === loadingStates.LOADING" (click)="saveLinesAndTopoImages()">
+                    @if (loadingState === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> }
+                    {{ t('saveLinesAndTopoImagesAndNext') }}
+                    <ng-icon name="lucideArrowRight" />
+                  </button>
                 </div>
-              </ng-template>
-            </p-step-panel>
-            <p-step-panel [value]="3">
-              <ng-template #content>
+          </spartan-step>
+          <spartan-step [label]="t('linePaths')">
                 <div class="flex flex-col gap-2" lcControlGroup>
                   <label class="form-label" for="topoImage">{{
                     t("topoImageLabel")
                   }}</label>
-                  <p-select
-                    id="topoImage"
-                    formControlName="selectedTopoImage"
-                    [options]="topoImages"
-                    data-cy="line-dropdown"
-                    placeholder="{{ t('topoImagePlaceholder') }}"
-                  >
-                    <ng-template #selectedItem>
-                      <!--We show the placeholder as selected item as the actual image is displayed in the line path editor-->
-                      {{ t("topoImagePlaceholder") }}
-                    </ng-template>
-                    <ng-template let-topoImage #item>
-                      <p-image [src]="topoImage.image.thumbnailS"></p-image>
-                    </ng-template>
-                  </p-select>
+                  <hlm-select id="topoImage" formControlName="selectedTopoImage" data-cy="line-dropdown">
+                    <hlm-select-trigger class="w-full">
+                      <span hlmSelectPlaceholder>{{ t('topoImagePlaceholder') }}</span>
+                      <ng-template hlmSelectValueTemplate>{{ t('topoImagePlaceholder') }}</ng-template>
+                    </hlm-select-trigger>
+                    <hlm-select-content *hlmSelectPortal>
+                      @for (option of topoImages; track option.id) {
+                        <hlm-select-item [value]="option">
+                          <img [src]="option.image.thumbnailS" alt="" />
+                        </hlm-select-item>
+                      }
+                    </hlm-select-content>
+                  </hlm-select>
                 </div>
                 <lc-line-path-form
                   [embedded]="true"
@@ -197,10 +140,8 @@
                     )
                   "
                 ></lc-line-path-form>
-              </ng-template>
-            </p-step-panel>
-          </p-step-panels>
-        </p-stepper>
+          </spartan-step>
+        </spartan-stepper>
       </form>
     }
   </div>

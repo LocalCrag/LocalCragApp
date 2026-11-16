@@ -10,14 +10,7 @@
         <h2>{{ t("rockExplorer.listTitle") }}</h2>
       </div>
       <div class="rock-explorer__panel-header-actions">
-        <p-button
-          icon="pi pi-times"
-          [rounded]="true"
-          [text]="true"
-          severity="secondary"
-          [attr.aria-label]="t('rockExplorer.listClose')"
-          (onClick)="ui.dispatch({ type: 'closeListPanel' })"
-        />
+        <button hlmBtn type="button" variant="secondary" size="icon" class="rounded-full" (click)="ui.dispatch({ type: 'closeListPanel' })" [attr.aria-label]="t('rockExplorer.listClose')"><ng-icon name="lucideX" /></button>
       </div>
     </header>
 
@@ -25,86 +18,29 @@
       <div class="rock-explorer-list__filters">
         <input
           type="search"
-          pInputText
+          hlmInput
           [ngModel]="titleQueryInput"
           (ngModelChange)="onTitleQueryChange($event)"
           [placeholder]="t('rockExplorer.fields.title')"
           class="rock-explorer-list__title-filter"
         />
-        <p-select
-          [options]="ui.potentialOptions()"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="potentialFilter"
-          (ngModelChange)="onFilterChange()"
-          [placeholder]="t('rockExplorer.fields.potential')"
-          [showClear]="true"
-          appendTo="body"
-        >
-          <ng-template let-option #item>
-            <span class="rock-explorer-list__potential-option">
+        <hlm-select [(ngModel)]="potentialFilter" [itemToString]="ui.potentialLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.potential')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.potentialOptions(); track $index) {<hlm-select-item [value]="option.value"><span class="rock-explorer-list__potential-option">
               <span
                 class="rock-explorer-list__potential-swatch"
                 [style.background]="ui.potentialColor(option.value)"
                 aria-hidden="true"
               ></span>
               {{ option.label }}
-            </span>
-          </ng-template>
-          <ng-template let-option #selectedItem>
-            <span class="rock-explorer-list__potential-option">
-              <span
-                class="rock-explorer-list__potential-swatch"
-                [style.background]="ui.potentialColor(option.value)"
-                aria-hidden="true"
-              ></span>
-              {{ option.label }}
-            </span>
-          </ng-template>
-        </p-select>
-        <p-select
-          [options]="ui.rockQualityOptions()"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="rockQualityFilter"
-          (ngModelChange)="onFilterChange()"
-          [placeholder]="t('rockExplorer.fields.rockQuality')"
-          [showClear]="true"
-          appendTo="body"
-        />
-        <p-select
-          [options]="ui.rockTypeOptions()"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="rockTypeFilter"
-          (ngModelChange)="onFilterChange()"
-          [placeholder]="t('rockExplorer.fields.rockType')"
-          [showClear]="true"
-          appendTo="body"
-        />
+            </span></hlm-select-item>}</hlm-select-content></hlm-select>
+        <hlm-select [(ngModel)]="rockQualityFilter" [itemToString]="ui.rockQualityLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.rockQuality')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockQualityOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+        <hlm-select [(ngModel)]="rockTypeFilter" [itemToString]="ui.rockTypeLabel" (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="t('rockExplorer.fields.rockType')" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of ui.rockTypeOptions(); track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
         @if (hasActiveFilters) {
-          <p-button
-            [label]="t('rockExplorer.clearFilters')"
-            icon="pi pi-filter-slash"
-            size="small"
-            severity="secondary"
-            [text]="true"
-            (onClick)="clearFilters()"
-          />
+          <button hlmBtn type="button" variant="secondary" size="sm" (click)="clearFilters()"><ng-icon name="lucideFunnelX" /> {{ t('rockExplorer.clearFilters') }}</button>
         }
       </div>
 
-      <p-table
-        [value]="viewRows"
-        [paginator]="viewRows.length > rows"
-        [rows]="rows"
-        [first]="first"
-        (onPage)="onPage($event)"
-        styleClass="rock-explorer-list__table"
-        [scrollable]="true"
-        scrollHeight="flex"
-      >
-        <ng-template #header>
+      <div class="rock-explorer-list__table overflow-auto"><table><thead>
+        
           <tr>
             <th>
               <button
@@ -113,7 +49,7 @@
                 (click)="onSort('title')"
               >
                 {{ t("rockExplorer.fields.title") }}
-                <i [class]="sortIcons.title" aria-hidden="true"></i>
+                <ng-icon [name]="sortIconName(sortIcons.title)" />
               </button>
             </th>
             <th>
@@ -123,7 +59,7 @@
                 (click)="onSort('potential')"
               >
                 {{ t("rockExplorer.fields.potential") }}
-                <i [class]="sortIcons.potential" aria-hidden="true"></i>
+                <ng-icon [name]="sortIconName(sortIcons.potential)" />
               </button>
             </th>
             <th>
@@ -133,7 +69,7 @@
                 (click)="onSort('areaSqM')"
               >
                 {{ t("rockExplorer.fields.areaSize") }}
-                <i [class]="sortIcons.areaSqM" aria-hidden="true"></i>
+                <ng-icon [name]="sortIconName(sortIcons.areaSqM)" />
               </button>
             </th>
             <th>
@@ -143,7 +79,7 @@
                 (click)="onSort('rockQuality')"
               >
                 {{ t("rockExplorer.fields.rockQuality") }}
-                <i [class]="sortIcons.rockQuality" aria-hidden="true"></i>
+                <ng-icon [name]="sortIconName(sortIcons.rockQuality)" />
               </button>
             </th>
             <th>
@@ -153,12 +89,12 @@
                 (click)="onSort('rockType')"
               >
                 {{ t("rockExplorer.fields.rockType") }}
-                <i [class]="sortIcons.rockType" aria-hidden="true"></i>
+                <ng-icon [name]="sortIconName(sortIcons.rockType)" />
               </button>
             </th>
           </tr>
-        </ng-template>
-        <ng-template #body let-row>
+        </thead><tbody>
+        @for (row of viewRows.slice(first, first + rows); track row.id) {
           <tr
             class="rock-explorer-list__row"
             [class.rock-explorer-list__row--active]="
@@ -174,13 +110,7 @@
             <td>{{ row.displayTitle }}</td>
             <td>
               @if (row.potential) {
-                <p-tag
-                  [value]="row.displayPotential"
-                  [style]="{
-                    background: row.potentialColor,
-                    color: '#fff',
-                  }"
-                />
+                <span hlmBadge>{{ row.displayPotential }}</span>
               } @else {
                 —
               }
@@ -189,15 +119,19 @@
             <td>{{ row.displayRockQuality }}</td>
             <td>{{ row.displayRockType }}</td>
           </tr>
-        </ng-template>
-        <ng-template #emptymessage>
+                }
+        @if (!viewRows.length) {
           <tr>
             <td colspan="5" class="rock-explorer-list__empty">
               {{ t("rockExplorer.listEmpty") }}
             </td>
           </tr>
-        </ng-template>
-      </p-table>
+                }
+        </tbody></table></div>
+        <div class="mt-3 flex justify-end gap-2">
+          <button hlmBtn type="button" variant="outline" size="sm" [disabled]="first === 0" (click)="onPage({ first: first - rows, rows: rows })">‹</button>
+          <button hlmBtn type="button" variant="outline" size="sm" [disabled]="first + rows >= viewRows.length" (click)="onPage({ first: first + rows, rows: rows })">›</button>
+        </div>
     </div>
   </aside>
 }

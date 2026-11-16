@@ -6,14 +6,10 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TimelineModule } from 'primeng/timeline';
-import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
 import { HistoryItem } from '../../../models/history-item';
 import { HistoryItemType } from '../../../enums/history-item-type';
@@ -31,7 +27,6 @@ import {
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
-import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map, switchMap } from 'rxjs/operators';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
@@ -42,26 +37,49 @@ import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowDown,
+  lucideArrowUp,
+  lucideInfo,
+  lucidePlus,
+  lucideSettings,
+} from '@ng-icons/lucide';
 import {
   LineHistoryLocation,
   lineHistoryLocation,
 } from '../line-history-location';
 
+import { HlmCard } from '@spartan-ng/helm/card';
+
 @Component({
+  providers: [
+    provideIcons({
+      lucideArrowDown,
+      lucideArrowUp,
+      lucideInfo,
+      lucidePlus,
+      lucideSettings,
+    }),
+  ],
   selector: 'lc-history-list',
   imports: [
-    BreadcrumbModule,
-    CardModule,
+    HlmCard,
     TranslocoDirective,
-    TimelineModule,
-    ButtonModule,
     AsyncPipe,
-    NgClass,
-    MessageModule,
     RouterLink,
     InfiniteScrollDirective,
     DatePipe,
     TopoHierarchyBreadcrumbsComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
@@ -121,6 +139,14 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
       return null;
     }
     return lineHistoryLocation(event.object as Line);
+  }
+
+  objectName(event: HistoryItem): string {
+    const object: object = event.object;
+    if ('name' in object && typeof object.name === 'string') {
+      return object.name;
+    }
+    return '';
   }
 
   getHeader(event: HistoryItem): string {
@@ -265,17 +291,17 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
 
   getIcon(event: HistoryItem): string {
     if (event.type === HistoryItemType.CREATED) {
-      return 'pi pi-plus';
+      return 'lucidePlus';
     }
     if (event.type === HistoryItemType.UPDATED) {
       if (Number(event.newValue) >= 0) {
         if (Number(event.oldValue) < Number(event.newValue)) {
-          return 'pi pi-arrow-up';
+          return 'lucideArrowUp';
         } else if (Number(event.oldValue) > Number(event.newValue)) {
-          return 'pi pi-arrow-down';
+          return 'lucideArrowDown';
         }
       }
-      return 'pi pi-cog';
+      return 'lucideSettings';
     }
     return '';
   }

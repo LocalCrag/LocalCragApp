@@ -10,7 +10,6 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { DialogService } from 'primeng/dynamicdialog';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError, switchMap, take } from 'rxjs/operators';
 import { EMPTY, forkJoin, throwError } from 'rxjs';
@@ -31,6 +30,16 @@ import {
   formatVideoStart,
   providerForUrl,
 } from '../../../utility/video-source';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import {
+  lucideExternalLink,
+  lucideInstagram,
+  lucideLink,
+  lucidePencil,
+  lucideVideo,
+  lucideYoutube,
+} from '@ng-icons/lucide';
 
 interface PlayableVideo {
   key: string;
@@ -51,13 +60,23 @@ interface PlayableVideo {
   selector: 'lc-line-videos',
   templateUrl: './line-videos.component.html',
   styleUrl: './line-videos.component.scss',
-  providers: [DialogService],
+  providers: [
+    provideIcons({
+      lucideExternalLink,
+      lucideInstagram,
+      lucideLink,
+      lucidePencil,
+      lucideVideo,
+      lucideYoutube,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     VideoPlayerComponent,
     HasPermissionDirective,
     RouterLink,
+    NgIcon,
   ],
 })
 export class LineVideosComponent implements OnInit {
@@ -66,7 +85,7 @@ export class LineVideosComponent implements OnInit {
   selectedKey: string | null = null;
   private requestedAscentId: string | null = null;
 
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private linesService = inject(LinesService);
   private translocoService = inject(TranslocoService);
   private router = inject(Router);
@@ -186,7 +205,7 @@ export class LineVideosComponent implements OnInit {
         video: this.videoForAscent(video.ascentId),
       },
     );
-    ref?.onClose.pipe(take(1)).subscribe((next: Video | null | undefined) => {
+    ref?.closed$.pipe(take(1)).subscribe((next: Video | null | undefined) => {
       if (next === undefined || !video.ascentId) {
         return;
       }
@@ -212,15 +231,14 @@ export class LineVideosComponent implements OnInit {
   sourceIcon(source: string | null): string {
     switch (source) {
       case 'youtube':
-        return 'pi pi-youtube';
-      case 'vimeo':
-        return 'pi pi-vimeo';
+        return 'lucideYoutube';
       case 'instagram':
-        return 'pi pi-instagram';
+        return 'lucideInstagram';
       case 'upload':
-        return 'pi pi-video';
+      case 'vimeo':
+        return 'lucideVideo';
       default:
-        return 'pi pi-link';
+        return 'lucideLink';
     }
   }
 

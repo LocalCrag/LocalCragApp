@@ -1,12 +1,15 @@
 <ng-container *transloco="let t; read: 'projectClimbedForm'">
+  <lc-project-climbed-form-title />
   <form [formGroup]="projectClimbedForm" lcForm>
-    <p-message severity="info">{{ t("projectClimbedInfoMessage") }}</p-message>
+    <div hlmAlert>
+      <p hlmAlertDescription>{{ t("projectClimbedInfoMessage") }}</p>
+    </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <textarea
         rows="5"
         cols="30"
-        pTextarea
+        hlmTextarea
         lcFormControl
         formControlName="message"
         class="w-full mt-6"
@@ -20,12 +23,18 @@
   </form>
 
   <div class="form-actions">
-    <p-button
-      label="{{ t('sendProjectClimbedMessageButtonLabel') }}"
+    <button
+      hlmBtn
+      type="button"
+      class="w-full"
       (click)="sendMessage()"
-      styleClass="w-full"
-      [loading]="loadingState === loadingStates.LOADING"
+      [disabled]="loadingState === loadingStates.LOADING"
       data-cy="submit"
-    ></p-button>
+    >
+      @if (loadingState === loadingStates.LOADING) {
+        <hlm-spinner />
+      }
+      {{ t("sendProjectClimbedMessageButtonLabel") }}
+    </button>
   </div>
 </ng-container>

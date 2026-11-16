@@ -6,18 +6,38 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { Coordinates } from '../../../../interfaces/coordinates.interface';
-import { SplitButtonModule } from 'primeng/splitbutton';
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../../models/menu-item';
 import { ClipboardService } from '../../../../services/core/clipboard.service';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { LanguageService } from '../../../../services/core/language.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmButtonGroup } from '@spartan-ng/helm/button-group';
+import {
+  HlmDropdownMenu,
+  HlmDropdownMenuItem,
+  HlmDropdownMenuTrigger,
+} from '@spartan-ng/helm/dropdown-menu';
+import {
+  lucideNameFromPrimeIcon,
+  sharedLucideIcons,
+} from '../../utils/prime-icon';
 
 @Component({
   selector: 'lc-coordinates-button',
-  imports: [TranslocoDirective, SplitButtonModule],
+  imports: [
+    TranslocoDirective,
+    NgIcon,
+    HlmButton,
+    HlmButtonGroup,
+    HlmDropdownMenu,
+    HlmDropdownMenuItem,
+    HlmDropdownMenuTrigger,
+  ],
+  providers: [provideIcons(sharedLucideIcons)],
   templateUrl: './coordinates-button.component.html',
   styleUrl: './coordinates-button.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -43,13 +63,21 @@ export class CoordinatesButtonComponent {
       });
   }
 
+  iconName(icon?: string): string | null {
+    return lucideNameFromPrimeIcon(icon);
+  }
+
+  runItem(item: MenuItem): void {
+    item.command?.();
+  }
+
   private buildItems() {
     this.items = [
       {
         label: this.translocoService.translate(
           marker('copyCoordinatesToClipboard'),
         ),
-        icon: 'pi pi-copy',
+        icon: 'lucideCopy',
         command: () => {
           this.clipboardService.copyTextToClipboard(
             `${this.coordinates.lat}, ${this.coordinates.lng}`,
@@ -60,7 +88,7 @@ export class CoordinatesButtonComponent {
         label: this.translocoService.translate(
           marker('openCoordinatesInGoogleMaps'),
         ),
-        icon: 'pi pi-map',
+        icon: 'lucideMap',
         command: () => {
           this.openCoordinates();
         },

@@ -1,11 +1,23 @@
 <div class="p-6 flex gap-6 flex-col">
   @for (i of Array.from({ length: 10 }); track $index) {
     <div class="flex gap-6 items-center">
-      <p-skeleton shape="circle" size="4rem" class="mr-2"></p-skeleton>
+      <div
+        hlmSkeleton
+        class="mr-2 shrink-0"
+        style="width: 4rem; height: 4rem; border-radius: 9999px"
+      ></div>
       <div style="flex: 1">
-        <p-skeleton width="100%" height="2rem" class="mb-2"></p-skeleton>
+        <div
+          hlmSkeleton
+          class="mb-2"
+          style="width: 100%; height: 2rem"
+        ></div>
       </div>
-      <p-skeleton size="3rem" class="mb-2"></p-skeleton>
+      <div
+        hlmSkeleton
+        class="mb-2 shrink-0"
+        style="width: 3rem; height: 3rem"
+      ></div>
     </div>
   }
 </div>

@@ -1,105 +1,38 @@
 <ng-container *transloco="let t; read: 'topoImage.topoImageList'">
-  <p-data-view
-    #dv
-    [value]="topoImages"
-    [sortField]="showArchive ? null : sortField"
-    [sortOrder]="sortOrder"
-  >
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
+  
+      <div class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4">
         <div class="flex flex-col sm:flex-row gap-2">
-          <p-select
-            [disabled]="loading === loadingStates.LOADING"
-            [options]="sortOptions"
-            [(ngModel)]="sortKey"
-            optionLabel="label"
-            (onChange)="onSortChange($event)"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (sortKey) {
-                <div class="flex items-center gap-2">
-                  @if (sortKey.icon) {
-                    <i [class]="sortKey.icon"></i>
-                  }
-                  <div>{{ sortKey.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
-                @if (option.icon) {
-                  <i [class]="option.icon"></i>
-                }
-                <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
+          <hlm-select [disabled]="loading === loadingStates.LOADING" [(ngModel)]="sortKey" (ngModelChange)="onSortChange($event)"><hlm-select-trigger class="w-full"><hlm-select-value /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of sortOptions; track $index) {<hlm-select-item [value]="option">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
           <div *isGymMode="true">
-            <p-button
-              [disabled]="loading === loadingStates.LOADING"
-              label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
-              [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
-              *isModerator="true"
-              class="responsive-button"
-              (click)="toggleArchive()"
-            ></p-button>
+            <button hlmBtn type="button" class="responsive-button" (click)="toggleArchive()" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon [name]="showArchive ? 'lucideEyeOff' : 'lucideEye'" /> {{ showArchive ? t('hideArchive') : t('showArchive') }}</button>
           </div>
         </div>
         <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('newTopoImageButtonLabel') }}"
-            icon="pi pi-image"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+          <a hlmBtn class="responsive-button" routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
               areaSlug
-            }}/add-topo-image"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('suggestTopoImageButtonLabel') }}"
-            icon="pi pi-image"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+            }}/add-topo-image" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucideImage" /> {{ t('newTopoImageButtonLabel') }}</a>
+          <a hlmBtn class="responsive-button" routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
               areaSlug
-            }}/add-topo-image"
-            *canSuggest="true"
-          ></p-button>
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('topoImageBatchUploadButtonLabel') }}"
-            icon="pi pi-images"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+            }}/add-topo-image" [disabled]="loading === loadingStates.LOADING" *canSuggest="true"><ng-icon name="lucideImage" /> {{ t('suggestTopoImageButtonLabel') }}</a>
+          <a hlmBtn class="responsive-button" routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
               areaSlug
-            }}/line-entry-batch-editor"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderTopoImagesButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderTopoImages()"
-            [disabled]="
+            }}/line-entry-batch-editor" [disabled]="loading === loadingStates.LOADING" *isModerator="true"><ng-icon name="lucideImages" /> {{ t('topoImageBatchUploadButtonLabel') }}</a>
+          <button hlmBtn type="button" class="responsive-button" (click)="reorderTopoImages()" [disabled]="
               showArchive ||
               topoImages?.length < 2 ||
               loading === loadingStates.LOADING
-            "
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
+            " *isModerator="true"><ng-icon name="lucideArrowUpDown" /> {{ t('reorderTopoImagesButtonLabel') }}</button>
         </div>
       </div>
-    </ng-template>
-    <ng-template #emptymessage>
-      @if (!(loading === loadingStates.LOADING && currentPage <= 1)) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
+    
+
+      @if (!(loading === loadingStates.LOADING && currentPage <= 1) && !topoImages?.length) {
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
           t("noTopoImagesFoundEmptyMessage")
-        }}</p-message>
+        }}</p></div>
       }
-    </ng-template>
-    <ng-template let-topoImages #list>
+    
+
       @if (loading === loadingStates.LOADING && currentPage <= 1) {
         <lc-topo-image-list-skeleton></lc-topo-image-list-skeleton>
       }
@@ -146,9 +79,7 @@
                       class="flex table-header flex-col sm:flex-row gap-2 items-center"
                     >
                       @if (topoImage.linePaths.length === 0) {
-                        <p-message severity="info"
-                          >{{ t("noLineAssignedToTopoImage") }}
-                        </p-message>
+                        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("noLineAssignedToTopoImage") }}</p></div>
                       }
                       @if (topoImage.linePaths.length > 0) {
                         <div>
@@ -159,19 +90,13 @@
                         <div
                           class="lc-button-group justify-end grow items-center self-end sm:self-center"
                         >
-                          <p-button
-                            icon="pi pi-ellipsis-v"
-                            styleClass="p-button-rounded p-button-text p-button-secondary"
-                            (click)="openTopoImageActions($event, topoImage)"
-                            [ariaLabel]="t('actions')"
-                            [disabled]="
-                              topoImage.loadingState !== loadingStates.DEFAULT
-                            "
-                            [loading]="
+                          <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full" [hlmDropdownMenuTrigger]="topoImageMenu" (mousedown)="prepareTopoImageActions($event, topoImage)" [disabled]="(
                               topoImage.loadingState === loadingStates.LOADING
-                            "
-                            data-cy="topo-image-actions"
-                          ></p-button>
+                            ) || (
+                              topoImage.loadingState !== loadingStates.DEFAULT
+                            )" [attr.aria-label]="t('actions')" data-cy="topo-image-actions">@if (
+                              topoImage.loadingState === loadingStates.LOADING
+                            ) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideEllipsisVertical" /> }</button>
                         </div>
                       }
                     </div>
@@ -226,31 +151,14 @@
                             }
                           </div>
                           <div class="line-table-info-rating">
-                            <p-rating
-                              [ngModel]="
-                                displayUserRating
-                                  ? linePath.line.userRating
-                                  : linePath.line.authorRating
-                              "
-                              [readonly]="true"
-                            ></p-rating>
+<span class="inline-flex text-primary" aria-hidden="true">@for (star of [1, 2, 3, 4, 5]; track star) {<ng-icon name="lucideStar" class="[&_svg]:fill-current" [class.opacity-30]="star > (displayUserRating ? linePath.line.userRating : linePath.line.authorRating)" />}</span>
                           </div>
                           <div class="line-table-info-actions">
                             @if (linePath.line.commentCount > 0) {
-                              <p-button
-                                icon="pi pi-comment"
-                                styleClass="p-button-rounded p-button-text"
-                                (click)="openComments($event, linePath.line)"
-                              >
-                              </p-button>
+                              <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full" (click)="openComments($event, linePath.line)"><ng-icon name="lucideMessageSquare" /></button>
                             }
                             @if (linePath.line.videos?.length > 0) {
-                              <p-button
-                                icon="pi pi-video"
-                                styleClass="p-button-rounded p-button-text"
-                                (click)="openVideo($event, linePath.line)"
-                              >
-                              </p-button>
+                              <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full" (click)="openVideo($event, linePath.line)"><ng-icon name="lucideVideo" /></button>
                             }
                             @if (
                               linePath.line.publicationStatus === "published" ||
@@ -262,25 +170,22 @@
                               ></lc-tick-button>
                             }
                             <ng-container *isModerator="true">
-                              <p-button
-                                icon="pi pi-trash"
-                                styleClass="p-button-rounded p-button-danger p-button-text"
-                                [loading]="
-                                  linePath.loadingState ===
-                                  loadingStates.LOADING
-                                "
-                                [disabled]="
-                                  topoImage.loadingState !==
-                                  loadingStates.DEFAULT
-                                "
-                                (click)="
+                              <button hlmBtn type="button" variant="ghost" size="icon" class="rounded-full text-destructive" (click)="
                                   confirmDeleteLinePath(
                                     $event,
                                     linePath,
                                     topoImage
                                   )
-                                "
-                              ></p-button>
+                                " [disabled]="(
+                                  linePath.loadingState ===
+                                  loadingStates.LOADING
+                                ) || (
+                                  topoImage.loadingState !==
+                                  loadingStates.DEFAULT
+                                )">@if (
+                                  linePath.loadingState ===
+                                  loadingStates.LOADING
+                                ) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } @else { <ng-icon name="lucideTrash2" /> }</button>
                             </ng-container>
                           </div>
                         </a>
@@ -304,15 +209,13 @@
                           (click)="toggleVariants(topoImage)"
                           data-cy="variant-toggle"
                         >
-                          <i
-                            class="pi"
-                            [class.pi-chevron-down]="
+                          <ng-icon
+                            [name]="
                               variantsExpanded(topoImage)
+                                ? 'lucideChevronDown'
+                                : 'lucideChevronRight'
                             "
-                            [class.pi-chevron-right]="
-                              !variantsExpanded(topoImage)
-                            "
-                          ></i>
+                          />
                           <span>
                             {{
                               variantsExpanded(topoImage)
@@ -347,35 +250,77 @@
           }
         </div>
       }
-    </ng-template>
-  </p-data-view>
+    
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+      <button hlmBtn type="button" (click)="loadNextPage()" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <ng-icon name="lucideLoaderCircle" class="animate-spin" /> } {{ t('loadMore') }}</button>
     </div>
   }
 
-  <p-menu
-    #topoImageMenu
-    [model]="topoImageActionItems"
-    [popup]="true"
-    appendTo="body"
-  ></p-menu>
-  <p-contextmenu
-    #lineMenu
-    [model]="lineActionItems"
-    styleClass="line-context-menu"
-    appendTo="body"
-    data-cy="line-context-menu"
-  ></p-contextmenu>
-  <p-confirmpopup></p-confirmpopup>
+  <ng-template #topoImageMenu>
+    <div hlmDropdownMenu>
+      @for (item of topoImageActionItems; track item.id ?? item.label) {
+        @if (item.separator) {
+          <div hlmDropdownMenuSeparator></div>
+        } @else {
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            [disabled]="!!item.disabled"
+            [variant]="item.styleClass === 'topo-image-menu-danger' ? 'destructive' : 'default'"
+            (triggered)="runMenuCommand(item, $event)"
+          >
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+        }
+      }
+    </div>
+  </ng-template>
+  <div
+    class="sr-only"
+    #lineMenuHost
+    [hlmContextMenuTrigger]="lineContextMenu"
+  ></div>
+  <ng-template #lineContextMenu>
+    <div hlmDropdownMenu class="line-context-menu" data-cy="line-context-menu">
+      @for (item of lineActionItems; track item.id ?? item.label) {
+        @if (item.separator) {
+          <div hlmDropdownMenuSeparator></div>
+        } @else if (item.items?.length) {
+          <button type="button" [hlmDropdownMenuSubTrigger]="todoMenu">
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+          <ng-template #todoMenu>
+            <div hlmDropdownMenuSub>
+              @for (child of item.items; track child.id) {
+                <button
+                  hlmDropdownMenuItem
+                  type="button"
+                  [class]="child.styleClass"
+                  (triggered)="runMenuCommand(child, $event)"
+                >
+                  <ng-icon [name]="menuIcon(child.icon)" />
+                  {{ child.label }}
+                </button>
+              }
+            </div>
+          </ng-template>
+        } @else {
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            [disabled]="!!item.disabled"
+            (triggered)="runMenuCommand(item, $event)"
+          >
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+        }
+      }
+    </div>
+  </ng-template>
+  
 </ng-container>

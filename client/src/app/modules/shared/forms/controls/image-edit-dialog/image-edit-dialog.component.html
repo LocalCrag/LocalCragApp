@@ -1,17 +1,17 @@
 <ng-container *transloco="let t; read: 'singleImageUploader'">
-  <p-dialog
-    [header]="t('editImageTitle')"
-    [visible]="visible"
-    (visibleChange)="visibleChange.emit($event)"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    [closable]="!saving"
-    [closeOnEscape]="!saving"
-    appendTo="body"
-    styleClass="lc-image-edit-dialog"
-    [style]="{ width: 'min(44rem, 96vw)' }"
+  <hlm-dialog
+    [state]="visible ? 'open' : 'closed'"
+    [disableClose]="saving"
+    (closed)="visibleChange.emit(false)"
   >
+    <hlm-dialog-content
+      *hlmDialogPortal
+      class="lc-image-edit-dialog w-[min(44rem,96vw)] sm:max-w-3xl"
+      [showCloseButton]="!saving"
+    >
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ t("editImageTitle") }}</h2>
+      </div>
     <div class="edit-layout">
       <div
         #stage
@@ -73,51 +73,62 @@
       <p class="edit-hint">{{ t("editImageHint") }}</p>
     </div>
 
-    <ng-template #footer>
-      <div class="edit-footer">
+      <div hlmDialogFooter class="edit-footer">
         <div class="edit-footer__tools">
-          <p-button
-            icon="pi pi-replay"
-            severity="secondary"
-            [outlined]="true"
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="icon"
             [disabled]="saving"
-            [pTooltip]="t('rotateLeftButtonLabel')"
-            [ariaLabel]="t('rotateLeftButtonLabel')"
-            tooltipPosition="top"
-            (onClick)="rotateLeft()"
-          />
-          <p-button
-            icon="pi pi-refresh"
-            severity="secondary"
-            [outlined]="true"
+            [hlmTooltip]="t('rotateLeftButtonLabel')"
+            [attr.aria-label]="t('rotateLeftButtonLabel')"
+            position="top"
+            (click)="rotateLeft()"
+          >
+            <ng-icon name="lucideRotateCcw" />
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="icon"
             [disabled]="saving"
-            [pTooltip]="t('rotateRightButtonLabel')"
-            [ariaLabel]="t('rotateRightButtonLabel')"
-            tooltipPosition="top"
-            (onClick)="rotateRight()"
-          />
-          <p-button
-            [label]="t('resetEditButtonLabel')"
-            severity="secondary"
-            [outlined]="true"
+            [hlmTooltip]="t('rotateRightButtonLabel')"
+            [attr.aria-label]="t('rotateRightButtonLabel')"
+            position="top"
+            (click)="rotateRight()"
+          >
+            <ng-icon name="lucideRotateCw" />
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
             [disabled]="saving"
-            (onClick)="reset()"
-          />
+            (click)="reset()"
+          >
+            {{ t("resetEditButtonLabel") }}
+          </button>
         </div>
         <div class="edit-footer__confirm">
-          <p-button
-            [label]="t('cancelEditButtonLabel')"
-            severity="secondary"
+          <button
+            hlmBtn
+            type="button"
+            variant="secondary"
             [disabled]="saving"
-            (onClick)="cancel()"
-          />
-          <p-button
-            [label]="t('applyEditButtonLabel')"
-            [loading]="saving"
-            (onClick)="apply()"
-          />
+            (click)="cancel()"
+          >
+            {{ t("cancelEditButtonLabel") }}
+          </button>
+          <button hlmBtn type="button" [disabled]="saving" (click)="apply()">
+            @if (saving) {
+              <hlm-spinner />
+            }
+            {{ t("applyEditButtonLabel") }}
+          </button>
         </div>
       </div>
-    </ng-template>
-  </p-dialog>
+    </hlm-dialog-content>
+  </hlm-dialog>
 </ng-container>

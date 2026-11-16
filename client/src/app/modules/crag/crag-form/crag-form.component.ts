@@ -22,7 +22,6 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { ConfirmationService } from 'primeng/api';
 import {
   TranslocoDirective,
   TranslocoPipe,
@@ -37,24 +36,31 @@ import {
   disabledMarkerTypesCrag,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
-import { Checkbox } from 'primeng/checkbox';
-import { Button } from 'primeng/button';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
-import { Tooltip } from 'primeng/tooltip';
 import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideBan,
+  lucideCircleQuestionMark,
+  lucideLoaderCircle,
+  lucideSave,
+  lucideTrash2,
+} from '@ng-icons/lucide';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 
 /**
  * A component for creating and editing crags.
@@ -63,30 +69,39 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
   selector: 'lc-crag-form',
   templateUrl: './crag-form.component.html',
   styleUrls: ['./crag-form.component.scss'],
-  providers: [ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideBan,
+      lucideCircleQuestionMark,
+      lucideLoaderCircle,
+      lucideSave,
+      lucideTrash2,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     ReactiveFormsModule,
     ControlGroupDirective,
     FormDirective,
-    InputText,
     FormControlDirective,
     IfErrorDirective,
     WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
-    Checkbox,
     TranslocoPipe,
-    Button,
-    ConfirmPopup,
     SingleImageUploadComponent,
-    Tooltip,
     OutdoorModeDirective,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    HlmButton,
+    HlmInput,
+    HlmCheckbox,
+    HlmTooltip,
+    NgIcon,
   ],
 })
 export class CragFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public cragForm: FormGroup;
@@ -104,7 +119,6 @@ export class CragFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private cragsService = inject(CragsService);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private languageService = inject(LanguageService);
   private pageTitleService = inject(PageTitleService);
 
@@ -267,19 +281,17 @@ export class CragFormComponent implements OnInit {
    * Asks if the crag should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteCrag(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteCrag(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('crag.askReallyWantToDeleteCrag'),
       ),
       acceptLabel: this.translocoService.translate(marker('crag.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(marker('crag.noDontDelete')),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteCrag();
       },
+      destructive: true,
     });
   }
 

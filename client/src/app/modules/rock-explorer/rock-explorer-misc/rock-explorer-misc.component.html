@@ -1,31 +1,19 @@
 <ng-container *transloco="let t">
   <section class="rock-explorer-misc">
-    <p-menu
-      #parkingMenu
-      [model]="parkingMenuItems"
-      [popup]="true"
-      appendTo="body"
-    />
+    
 
     <div class="rock-explorer-misc__section">
       <div class="rock-explorer-misc__section-header">
         <h3>{{ t("rockExplorer.parkingSites") }}</h3>
         @if (editMode) {
-          <p-button
-            [label]="t('rockExplorer.addParking')"
-            icon="pi pi-plus"
-            size="small"
-            [text]="true"
-            [disabled]="saving"
-            (onClick)="addParkingSite()"
-          />
+          <button hlmBtn type="button" variant="ghost" size="sm" (click)="addParkingSite()" [disabled]="saving"><ng-icon name="lucidePlus" /> {{ t('rockExplorer.addParking') }}</button>
         }
       </div>
 
       @if (parkingSites.length === 0) {
-        <p-message severity="info" icon="pi pi-info-circle">{{
+        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
           t("rockExplorer.noParking")
-        }}</p-message>
+        }}</p></div>
       } @else {
         <div class="rock-explorer-misc__list">
           @for (site of parkingSites; track site.id) {
@@ -39,7 +27,7 @@
               @if (editMode) {
                 <div class="rock-explorer-misc__fields">
                   <input
-                    pInputText
+                    hlmInput
                     class="rock-explorer-misc__title"
                     [ngModel]="site.title"
                     (ngModelChange)="
@@ -50,7 +38,7 @@
                     [disabled]="saving"
                   />
                   <textarea
-                    pTextarea
+                    hlmTextarea
                     rows="2"
                     class="rock-explorer-misc__description"
                     [ngModel]="site.description"
@@ -70,25 +58,8 @@
                   }
                 </div>
                 <div class="rock-explorer-misc__actions">
-                  <p-button
-                    icon="pi pi-map-marker"
-                    [rounded]="true"
-                    [text]="true"
-                    size="small"
-                    [severity]="parkingButtonSeverity(site)"
-                    [disabled]="saving"
-                    [attr.aria-label]="t('rockExplorer.parkingPickOnMap')"
-                    (onClick)="openParkingMenu($event, site, parkingMenu)"
-                  />
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [text]="true"
-                    [rounded]="true"
-                    size="small"
-                    [disabled]="saving"
-                    (click)="confirmDeleteParking($event, site)"
-                  />
+                  <button hlmBtn type="button" [variant]="parkingButtonSeverity(site)" size="icon-sm" class="rounded-full" [hlmDropdownMenuTrigger]="parkingMenu" (click)="openParkingMenu($event, site)" [disabled]="saving" [attr.aria-label]="t('rockExplorer.parkingPickOnMap')"><ng-icon name="lucideMapPin" /></button>
+                  <button hlmBtn type="button" variant="destructive" size="icon-sm" class="rounded-full" [disabled]="saving" (click)="confirmDeleteParking($event, site)"><ng-icon name="lucideTrash2" /></button>
                 </div>
               } @else {
                 <div class="rock-explorer-misc__view">
@@ -102,13 +73,7 @@
                   }
                 </div>
                 @if (parkingHasCoordinates(site)) {
-                  <p-button
-                    icon="pi pi-eye"
-                    [rounded]="true"
-                    [text]="true"
-                    size="small"
-                    (onClick)="focusParking(site)"
-                  />
+                  <button hlmBtn type="button" variant="ghost" size="icon-sm" class="rounded-full" (click)="focusParking(site)"><ng-icon name="lucideEye" /></button>
                 }
               }
             </div>
@@ -121,21 +86,14 @@
       <div class="rock-explorer-misc__section-header">
         <h3>{{ t("rockExplorer.paths") }}</h3>
         @if (editMode) {
-          <p-button
-            [label]="t('rockExplorer.addPath')"
-            icon="pi pi-plus"
-            size="small"
-            [text]="true"
-            [disabled]="saving || !!drawingPathId"
-            (onClick)="addPath()"
-          />
+          <button hlmBtn type="button" variant="ghost" size="sm" (click)="addPath()" [disabled]="saving || !!drawingPathId"><ng-icon name="lucidePlus" /> {{ t('rockExplorer.addPath') }}</button>
         }
       </div>
 
       @if (paths.length === 0) {
-        <p-message severity="info" icon="pi pi-info-circle">{{
+        <div hlmAlert><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{
           t("rockExplorer.noPaths")
-        }}</p-message>
+        }}</p></div>
       } @else {
         <div class="rock-explorer-misc__list">
           @for (path of paths; track path.id) {
@@ -149,7 +107,7 @@
               @if (editMode) {
                 <div class="rock-explorer-misc__fields">
                   <input
-                    pInputText
+                    hlmInput
                     class="rock-explorer-misc__title"
                     [ngModel]="path.title"
                     (ngModelChange)="path.title = $event"
@@ -158,7 +116,7 @@
                     [disabled]="saving"
                   />
                   <textarea
-                    pTextarea
+                    hlmTextarea
                     rows="2"
                     class="rock-explorer-misc__description"
                     [ngModel]="path.description"
@@ -170,37 +128,10 @@
                   @if (drawingPathId === path.id) {
                     <div class="rock-explorer-misc__draw-bar">
                       <div class="rock-explorer-misc__draw-actions">
-                        <p-button
-                          [label]="t('rockExplorer.undoVertex')"
-                          icon="pi pi-undo"
-                          size="small"
-                          [text]="true"
-                          [disabled]="pathDraftVertices.length === 0"
-                          (onClick)="undoPathVertex()"
-                        />
-                        <p-button
-                          [label]="t('rockExplorer.deletePathVertex')"
-                          icon="pi pi-trash"
-                          size="small"
-                          [text]="true"
-                          severity="danger"
-                          [disabled]="selectedPathVertexIndex === null"
-                          (onClick)="deletePathVertex()"
-                        />
-                        <p-button
-                          [label]="t('rockExplorer.finishPath')"
-                          icon="pi pi-check"
-                          size="small"
-                          [disabled]="pathDraftVertices.length < 2"
-                          (onClick)="finishPathDraw()"
-                        />
-                        <p-button
-                          [label]="t('rockExplorer.cancelDraw')"
-                          severity="secondary"
-                          size="small"
-                          [text]="true"
-                          (onClick)="cancelPathDraw()"
-                        />
+                        <button hlmBtn type="button" variant="ghost" size="sm" (click)="undoPathVertex()" [disabled]="pathDraftVertices.length === 0"><ng-icon name="lucideUndo2" /> {{ t('rockExplorer.undoVertex') }}</button>
+                        <button hlmBtn type="button" variant="destructive" size="sm" (click)="deletePathVertex()" [disabled]="selectedPathVertexIndex === null"><ng-icon name="lucideTrash2" /> {{ t('rockExplorer.deletePathVertex') }}</button>
+                        <button hlmBtn type="button" size="sm" (click)="finishPathDraw()" [disabled]="pathDraftVertices.length < 2"><ng-icon name="lucideCheck" /> {{ t('rockExplorer.finishPath') }}</button>
+                        <button hlmBtn type="button" variant="secondary" size="sm" (click)="cancelPathDraw()">{{ t('rockExplorer.cancelDraw') }}</button>
                       </div>
                     </div>
                   } @else if (!pathHasGeometry(path)) {
@@ -211,35 +142,12 @@
                 </div>
                 <div class="rock-explorer-misc__actions">
                   @if (drawingPathId !== path.id) {
-                    <p-button
-                      icon="pi pi-pencil"
-                      [rounded]="true"
-                      [text]="true"
-                      size="small"
-                      [disabled]="saving || !!drawingPathId"
-                      [attr.aria-label]="t('rockExplorer.drawPath')"
-                      (onClick)="startPathDraw(path)"
-                    />
+                    <button hlmBtn type="button" variant="ghost" size="icon-sm" class="rounded-full" (click)="startPathDraw(path)" [disabled]="saving || !!drawingPathId" [attr.aria-label]="t('rockExplorer.drawPath')"><ng-icon name="lucidePencil" /></button>
                     @if (pathHasGeometry(path)) {
-                      <p-button
-                        icon="pi pi-eye"
-                        [rounded]="true"
-                        [text]="true"
-                        size="small"
-                        [disabled]="saving"
-                        (onClick)="focusPath(path)"
-                      />
+                      <button hlmBtn type="button" variant="ghost" size="icon-sm" class="rounded-full" (click)="focusPath(path)" [disabled]="saving"><ng-icon name="lucideEye" /></button>
                     }
                   }
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [text]="true"
-                    [rounded]="true"
-                    size="small"
-                    [disabled]="saving"
-                    (click)="confirmDeletePath($event, path)"
-                  />
+                  <button hlmBtn type="button" variant="destructive" size="icon-sm" class="rounded-full" [disabled]="saving" (click)="confirmDeletePath($event, path)"><ng-icon name="lucideTrash2" /></button>
                 </div>
               } @else {
                 <div class="rock-explorer-misc__view">
@@ -253,13 +161,7 @@
                   }
                 </div>
                 @if (pathHasGeometry(path)) {
-                  <p-button
-                    icon="pi pi-eye"
-                    [rounded]="true"
-                    [text]="true"
-                    size="small"
-                    (onClick)="focusPath(path)"
-                  />
+                  <button hlmBtn type="button" variant="ghost" size="icon-sm" class="rounded-full" (click)="focusPath(path)"><ng-icon name="lucideEye" /></button>
                 }
               }
             </div>
@@ -268,15 +170,7 @@
       }
     </div>
 
-    <p-dialog
-      [header]="t('rockExplorer.parkingGpsDialogTitle')"
-      [modal]="true"
-      [(visible)]="coordinatesDialogVisible"
-      [style]="{ width: 'min(28rem, 95vw)' }"
-      appendTo="body"
-      [draggable]="false"
-      (onHide)="closeCoordinatesDialog()"
-    >
+    <hlm-dialog [state]="coordinatesDialogVisible ? 'open' : 'closed'" (closed)="coordinatesDialogVisible = false"><hlm-dialog-content *hlmDialogPortal class="sm:max-w-md"><div hlmDialogHeader><h2 hlmDialogTitle>{{ t('rockExplorer.parkingGpsDialogTitle') }}</h2></div>
       <div class="rock-explorer-misc__gps-dialog">
         <lc-coordinates
           idPrefix="misc-parking-gps-"
@@ -286,18 +180,21 @@
         ></lc-coordinates>
       </div>
       <div class="rock-explorer-misc__gps-dialog-actions">
-        <p-button
-          [label]="t('rockExplorer.imageGpsDialogCancel')"
-          severity="secondary"
-          [text]="true"
-          (onClick)="closeCoordinatesDialog()"
-        />
-        <p-button
-          [label]="t('rockExplorer.imageGpsDialogApply')"
-          icon="pi pi-check"
-          (onClick)="applyCoordinatesDialog()"
-        />
+        <button hlmBtn type="button" variant="secondary" (click)="closeCoordinatesDialog()">{{ t('rockExplorer.imageGpsDialogCancel') }}</button>
+        <button hlmBtn type="button" (click)="applyCoordinatesDialog()"><ng-icon name="lucideCheck" /> {{ t('rockExplorer.imageGpsDialogApply') }}</button>
       </div>
-    </p-dialog>
+    </hlm-dialog-content></hlm-dialog>
   </section>
+<ng-template #parkingMenu>
+  <div hlmDropdownMenu>
+    @for (item of parkingMenuItems; track item.label) {
+      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
+        @if (menuIcon(item.icon); as name) {
+          <ng-icon [name]="name" />
+        }
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>
 </ng-container>

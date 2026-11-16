@@ -11,12 +11,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
-import { ChartModule } from 'primeng/chart';
-import { Message } from 'primeng/message';
-import { Select } from 'primeng/select';
-import { Skeleton } from 'primeng/skeleton';
-import { SelectButton } from 'primeng/selectbutton';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { forkJoin, of } from 'rxjs';
 import { ChartData } from 'chart.js';
 import { filter, take } from 'rxjs/operators';
@@ -27,6 +21,15 @@ import {
 import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ThemeService } from '../../../services/core/theme.service';
 import { TopoQualityService } from '../../../services/crud/topo-quality.service';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmSwitch } from '@spartan-ng/helm/switch';
+import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
+import { NgIcon } from '@ng-icons/core';
+import { ChartJsDirective } from '../../shared/directives/chart-js.directive';
+import { provideIcons } from '@ng-icons/core';
+import { lucideCircleX, lucideInfo } from '@ng-icons/lucide';
 import {
   getChartThemeColors,
   resolveCssColorVar,
@@ -50,16 +53,19 @@ const SERIES_COLORS = [
 ];
 
 @Component({
+  providers: [provideIcons({ lucideCircleX, lucideInfo })],
   selector: 'lc-topo-quality-trends',
   imports: [
     TranslocoDirective,
     FormsModule,
-    ChartModule,
-    Message,
-    Select,
-    Skeleton,
-    SelectButton,
-    ToggleSwitch,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmSwitch,
+    ...HlmToggleGroupImports,
+    HlmSkeleton,
+    NgIcon,
+    ChartJsDirective,
   ],
   templateUrl: './topo-quality-trends.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -80,6 +86,8 @@ export class TopoQualityTrendsComponent implements OnInit {
   rangeOptions: { value: TrendRange; label: string }[] = [];
   scopeKey = 'region';
   scopes: { key: string; name: string }[] = [];
+  scopeLabel = (key: string): string =>
+    this.scopes.find((scope) => scope.key === key)?.name || key;
   qualityData: ChartData | null = null;
   qualityOptions: unknown = null;
   pointsData: ChartData | null = null;

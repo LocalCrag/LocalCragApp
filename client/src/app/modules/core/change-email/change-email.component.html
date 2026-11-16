@@ -4,24 +4,19 @@
       <h3>{{ t("changeEmailTitle") }}</h3>
 
       @if (loading) {
-        <p-progress-spinner ariaLabel="loading"></p-progress-spinner>
+        <hlm-spinner aria-label="loading"></hlm-spinner>
       }
 
       @if (!loading && !error) {
-        <p-message severity="success"
-          >{{ t("emailChangedSuccessfully") }}
-        </p-message>
+        <div hlmAlert>{{ t("emailChangedSuccessfully") }}</div>
       }
 
       @if (!loading && error) {
-        <p-message severity="error">{{ t("emailChangeError") }} </p-message>
+        <div hlmAlert variant="destructive">{{ t("emailChangeError") }}</div>
       }
 
       @if (!loading && !error) {
-        <p-button
-          label="{{ t('takeMeToTheRock') }}"
-          routerLink="/topo"
-        ></p-button>
+        <a hlmBtn routerLink="/topo">{{ t("takeMeToTheRock") }}</a>
       }
     </div>
   </div>

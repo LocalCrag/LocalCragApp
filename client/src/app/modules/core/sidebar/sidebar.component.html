@@ -77,7 +77,7 @@
       @if (loading) {
         <div class="stat-grid">
           @for (i of [1, 2, 3, 4]; track i) {
-            <p-skeleton height="3.5rem" styleClass="stat-skeleton" />
+            <div hlmSkeleton class="stat-skeleton" style="height: 3.5rem"></div>
           }
         </div>
       } @else if (stats) {
@@ -103,16 +103,16 @@
     </div>
   </nav>
 
-  <p-popover
-    #ascentPopover
-    appendTo="body"
-    styleClass="sidebar-ascent-popover"
-    [focusOnShow]="false"
-    (onShow)="positionAscentPopoverRight()"
+  <div
+    brnOverlay
+    [positionStrategy]="ascentPopoverStrategy"
+    [autoFocus]="false"
   >
+    <ng-template brnOverlayContent>
     @if (activeAscent; as ascent) {
       <div
-        class="sidebar-ascent-popover-content"
+        class="sidebar-ascent-popover sidebar-ascent-popover-content"
+        hlmPopoverContent
         *transloco="let at; read: 'ascents.ascentList'"
         (mouseenter)="keepAscentPopover()"
         (mouseleave)="scheduleHideAscentPopover()"
@@ -127,23 +127,36 @@
 
         <div class="sidebar-ascent-popover-meta">
           <span class="sidebar-ascent-popover-date">
-            <i class="pi pi-calendar" aria-hidden="true"></i>
+            <ng-icon name="lucideCalendar" />
             @if (ascent.date) {
               {{ ascent.date | date }}
             } @else if (ascent.year) {
               {{ ascent.year }}
             }
           </span>
-          <p-rating [ngModel]="ascent.rating" [readonly]="true" />
+          <span class="inline-flex text-primary" aria-hidden="true">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <ng-icon
+                name="lucideStar"
+                [class.opacity-30]="star > ascent.rating"
+              />
+            }
+          </span>
         </div>
 
         @if (ascent.fa || ascent.withKneepad) {
           <div class="sidebar-ascent-popover-tags">
             @if (ascent.fa) {
-              <p-tag [value]="at('fa')" icon="pi pi-star" />
+              <span hlmBadge>
+                <ng-icon name="lucideStar" />
+                {{ at("fa") }}
+              </span>
             }
             @if (ascent.withKneepad) {
-              <p-tag [value]="at('withKneepad')" icon="pi pi-ticket" />
+              <span hlmBadge>
+                <ng-icon name="lucideTicket" />
+                {{ at("withKneepad") }}
+              </span>
             }
           </div>
         }
@@ -153,5 +166,6 @@
         }
       </div>
     }
-  </p-popover>
+    </ng-template>
+  </div>
 </ng-container>

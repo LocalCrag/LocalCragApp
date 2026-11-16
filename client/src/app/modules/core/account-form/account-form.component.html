@@ -16,7 +16,7 @@
       <div class="card-container block" lcControlGroup>
         <input
           type="text"
-          pInputText
+          hlmInput
           formControlName="firstname"
           placeholder="{{ t('firstnamePlaceholder') }}"
           lcFormControl
@@ -33,7 +33,7 @@
       <div class="card-container block" lcControlGroup>
         <input
           type="text"
-          pInputText
+          hlmInput
           formControlName="lastname"
           placeholder="{{ t('lastnamePlaceholder') }}"
           lcFormControl
@@ -51,7 +51,7 @@
         <div class="card-container block" lcControlGroup>
           <input
             type="text"
-            pInputText
+            hlmInput
             formControlName="email"
             placeholder="{{ t('emailPlaceholder') }}"
             lcFormControl
@@ -75,7 +75,7 @@
           <div class="card-container block" lcControlGroup>
             <input
               type="text"
-              pInputText
+              hlmInput
               formControlName="emailConfirm"
               placeholder="{{ t('emailConfirmPlaceholder') }}"
               lcFormControl
@@ -99,22 +99,13 @@
     </form>
 
     @if (savePressed && emailsDontMatch()) {
-      <p-message severity="error" class="mt-12">
-        {{ t("emailsDontMatchAlertText") }}
-      </p-message>
+      <div hlmAlert variant="destructive" class="mt-12">{{ t("emailsDontMatchAlertText") }}</div>
     }
 
-    <p-button
-      class="mt-6 block"
-      label="{{ t('saveAccountSettingsButtonLabel') }}"
-      (click)="save()"
-      [loading]="loadingState === loadingStates.LOADING"
-    ></p-button>
+    <button hlmBtn type="button" class="mt-6 block" (click)="save()" [disabled]="loadingState === loadingStates.LOADING">{{ t('saveAccountSettingsButtonLabel') }}</button>
 
     @if (emailChangedPostSave) {
-      <p-message severity="info" class="mt-6 w-full max-w-35rem">
-        {{ t("emailAddressChangeInfoText") }}
-      </p-message>
+      <div hlmAlert class="mt-6 w-full max-w-35rem">{{ t("emailAddressChangeInfoText") }}</div>
     }
 
     <lc-account-settings-form></lc-account-settings-form>
@@ -123,29 +114,23 @@
 
     <lc-account-two-factor></lc-account-two-factor>
 
-    <p-divider align="center" class="mt-20">
-      <b>{{ t("dangerZoneTitle") }}</b>
-    </p-divider>
+    <div class="mt-20 flex items-center gap-3">
+  <div hlmSeparator class="flex-1"></div>
+  <b>{{ t("dangerZoneTitle") }}</b>
+  <div hlmSeparator class="flex-1"></div>
+</div>
 
-    <p-message
-      severity="info"
-      class="w-full"
-      icon="pi pi-info-circle"
-      *isSuperadmin="true"
-    >
+    <div hlmAlert class="w-full" *isSuperadmin="true">
+      <ng-icon name="lucideInfo" />
       {{ t("superadminsCannotDeleteOwnUser") }}
-    </p-message>
+    </div>
 
     <div class="flex flex-col gap-6 mt-6" *isSuperadmin="false">
       <div class="text-surface-600 dark:text-surface-200">
         {{ t("deleteAccountInfoText") }}
       </div>
       <div>
-        <p-button
-          label="{{ t('deleteAccountButtonLabel') }}"
-          severity="danger"
-          (click)="openDeleteDialog()"
-        ></p-button>
+        <button hlmBtn type="button" variant="destructive" (click)="openDeleteDialog()">{{ t('deleteAccountButtonLabel') }}</button>
       </div>
     </div>
   </div>

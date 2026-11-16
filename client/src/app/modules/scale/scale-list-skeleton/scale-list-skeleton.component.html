@@ -4,8 +4,8 @@
       <div
         class="flex items-center justify-between px-4 min-h-12 border-b border-surface"
       >
-        <p-skeleton height="1.25rem" width="6rem" />
-        <p-skeleton height="1.25rem" width="1.25rem" />
+        <div hlmSkeleton style="height: 1.25rem; width: 6rem"></div>
+        <div hlmSkeleton style="height: 1.25rem; width: 1.25rem"></div>
       </div>
       @for (row of [1, 2, 3]; track row) {
         <div
@@ -13,8 +13,8 @@
           [class.border-t]="row > 1"
           [class.border-surface]="row > 1"
         >
-          <p-skeleton height="1.25rem" width="40%" />
-          <p-skeleton height="1.25rem" width="4rem" />
+          <div hlmSkeleton style="height: 1.25rem; width: 40%"></div>
+          <div hlmSkeleton style="height: 1.25rem; width: 4rem"></div>
         </div>
       }
     </div>

@@ -19,19 +19,23 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { DatePicker } from 'primeng/datepicker';
-import { Textarea } from 'primeng/textarea';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { AppNotificationsService } from '../../../services/core/app-notifications.service';
-import { Message } from 'primeng/message';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmToggle } from '@spartan-ng/helm/toggle';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
 
 const STATUS_OPTIONS: BlocWeatherReportStatus[] = [
   'dry',
@@ -48,21 +52,25 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
 };
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-report-conditions-dialog',
   imports: [
     ReactiveFormsModule,
-    DialogModule,
-    ButtonModule,
-    ToggleButtonModule,
-    DatePicker,
-    Textarea,
     TranslocoDirective,
     TranslocoPipe,
-    Message,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    HlmTextarea,
+    HlmToggle,
+    ...HlmDialogImports,
+    HlmSpinner,
+    NgIcon,
   ],
   templateUrl: './report-conditions-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

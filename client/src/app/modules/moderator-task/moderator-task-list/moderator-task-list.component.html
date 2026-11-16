@@ -1,146 +1,80 @@
 <ng-container *transloco="let t; read: 'moderatorTasks'">
-  <p-data-view [value]="dataViewRows">
-    <ng-template #emptymessage>
-      @if (
+  <div class="task-list-header-row flex w-full flex-wrap items-end gap-x-6 gap-y-3 px-4 py-4">
+        <div
+          class="task-list-filters-row flex min-w-0 grow flex-wrap items-end gap-x-6 gap-y-3"
+        >
+          <button hlmBtn type="button" class="responsive-button" [disabled]="
+              usersLoading ||
+              (loading === loadingStates.LOADING && currentPage === 1)
+            " (click)="toggleMyTasksFilter()"><ng-icon name="lucideUser" /> {{ t('myTasksButton') }}</button>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{
+              t("filterAssignee")
+            }}</span>
+            <hlm-select [(ngModel)]="filterAssigneeId" [itemToString]="filterOptionLabel" [disabled]="
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
+              " (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="filterAnyLabel" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of assigneeFilterOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          </div>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{ t("filterCreator") }}</span>
+            <hlm-select [(ngModel)]="filterCreatorId" [itemToString]="filterOptionLabel" [disabled]="
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
+              " (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="filterAnyLabel" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of userFilterOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          </div>
+          <div class="task-list-filter-field">
+            <span class="task-list-filter-label">{{
+              t("filterFinisher")
+            }}</span>
+            <hlm-select [(ngModel)]="filterFinisherId" [itemToString]="filterOptionLabel" [disabled]="
+                usersLoading ||
+                (loading === loadingStates.LOADING && currentPage === 1)
+              " (ngModelChange)="onFilterChange()"><hlm-select-trigger class="w-full"><hlm-select-value [placeholder]="filterAnyLabel" /></hlm-select-trigger><hlm-select-content *hlmSelectPortal>@for (option of userFilterOptions; track $index) {<hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>}</hlm-select-content></hlm-select>
+          </div>
+        </div>
+        <div class="task-list-header-actions shrink-0">
+          <a hlmBtn class="responsive-button" [routerLink]="createLink"><ng-icon name="lucidePlus" /> {{ t('createTaskButton') }}</a>
+        </div>
+      </div>
+@if (!(dataViewRows?.length)) {
+@if (
         !(loading === loadingStates.LOADING && currentPage === 1) &&
         tasks.length === 0 &&
         !filtersActive
       ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
-          {{ t("emptyList") }}
-        </p-message>
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("emptyList") }}</p></div>
       }
       @if (
         !(loading === loadingStates.LOADING && currentPage === 1) &&
         tasks.length === 0 &&
         filtersActive
       ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
-          {{ t("emptyFilterList") }}
-        </p-message>
+        <div hlmAlert class="m-4"><ng-icon name="lucideInfo" /><p hlmAlertDescription>{{ t("emptyFilterList") }}</p></div>
       }
-    </ng-template>
-    <ng-template #header>
-      <div class="task-list-header-row flex flex-wrap items-end gap-2 w-full">
-        <div
-          class="task-list-filters-row flex flex-wrap items-end gap-2 grow min-w-0"
-        >
-          <p-button
-            [label]="t('myTasksButton')"
-            icon="pi pi-user"
-            class="responsive-button"
-            [outlined]="!myTasksActive"
-            [disabled]="
-              usersLoading ||
-              (loading === loadingStates.LOADING && currentPage === 1)
-            "
-            (click)="toggleMyTasksFilter()"
-          ></p-button>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{
-              t("filterAssignee")
-            }}</span>
-            <p-select
-              [options]="assigneeFilterOptions"
-              [(ngModel)]="filterAssigneeId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{ t("filterCreator") }}</span>
-            <p-select
-              [options]="userFilterOptions"
-              [(ngModel)]="filterCreatorId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{
-              t("filterFinisher")
-            }}</span>
-            <p-select
-              [options]="userFilterOptions"
-              [(ngModel)]="filterFinisherId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-        </div>
-        <div class="task-list-header-actions shrink-0">
-          <p-button
-            [label]="t('createTaskButton')"
-            icon="pi pi-plus"
-            [routerLink]="createLink"
-            class="responsive-button"
-          ></p-button>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template let-rows #list>
-      @if (loading === loadingStates.LOADING && currentPage === 1) {
+}
+@if (loading === loadingStates.LOADING && currentPage === 1) {
         <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
       }
       @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        @if (rows.length > 0) {
-          <p-menu
-            #taskMenu
-            [model]="taskActionItems"
-            [popup]="true"
-            [appendTo]="'body'"
-          ></p-menu>
-          <p-confirmpopup></p-confirmpopup>
+        @if (dataViewRows.length > 0) {
+          
+          
         }
 
         <div class="task-list-section flex flex-col gap-6">
-          @for (row of rows; track trackListRow($index, row)) {
+          @for (row of dataViewRows; track trackListRow($index, row)) {
             @if (row.kind === "divider") {
-              <p-divider
-                align="center"
-                type="solid"
-                class="task-section-divider"
-              >
-                <b>{{ t("completedSection") }}</b>
-              </p-divider>
+              <div class="flex items-center gap-3 task-section-divider"><div hlmSeparator class="flex-1"></div><b>{{ t("completedSection") }}</b><div hlmSeparator class="flex-1"></div></div>
             } @else {
               @let task = row.task;
               <div
                 class="task-row border border-surface rounded-border"
                 [ngClass]="{ 'task-row-completed': task.completed }"
               >
-                <p-button
-                  class="task-row-actions-button"
-                  icon="pi pi-ellipsis-v"
-                  styleClass="p-button-rounded p-button-text p-button-secondary"
-                  (click)="openTaskActions($event, task)"
-                ></p-button>
+                <button hlmBtn type="button" variant="secondary" size="icon" class="task-row-actions-button" [hlmDropdownMenuTrigger]="taskMenu" (click)="openTaskActions($event, task)"><ng-icon name="lucideEllipsisVertical" /></button>
                 <div class="task-row-inner">
-                  <p-checkbox
-                    class="task-row-checkbox"
-                    [binary]="true"
-                    [ngModel]="task.completed"
-                    [disabled]="isToggling(task.id)"
-                    (onChange)="toggleComplete(task)"
-                  ></p-checkbox>
+                  <hlm-checkbox class="task-row-checkbox" [ngModel]="task.completed" [disabled]="isToggling(task.id)" (ngModelChange)="toggleComplete(task)"></hlm-checkbox>
                   <div class="task-row-main min-w-0">
                     <h3 class="m-0 task-row-title">{{ task.title }}</h3>
                     <div
@@ -247,20 +181,22 @@
           }
         </div>
       }
-    </ng-template>
-  </p-data-view>
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
-      <p-button
-        [label]="t('loadMore')"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+      <button hlmBtn type="button" [disabled]="loading === loadingStates.LOADING" (scrolled)="loadNextPage()" (click)="loadNextPage()" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50">@if (loading === loadingStates.LOADING) { <hlm-spinner /> } {{ t('loadMore') }}</button>
     </div>
   }
+<ng-template #taskMenu>
+  <div hlmDropdownMenu>
+    @for (item of taskActionItems; track item.label) {
+      <button hlmDropdownMenuItem type="button" [disabled]="!!item.disabled" (click)="item.command?.()">
+        @if (menuIcon(item.icon); as name) {
+          <ng-icon [name]="name" />
+        }
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>
 </ng-container>
