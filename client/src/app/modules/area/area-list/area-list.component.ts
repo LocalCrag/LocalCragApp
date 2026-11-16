@@ -133,7 +133,9 @@ export class AreaListComponent implements OnInit {
       title: this.translocoService.translate(marker('reorderAreasDialogTitle')),
       contentClass: 'sm:max-w-lg',
       context: {
-        items: this.areas,
+        items: [...this.areas].sort(
+          (left, right) => (left.orderIndex ?? 0) - (right.orderIndex ?? 0),
+        ),
         itemsName: this.translocoService.translate(
           marker('reorderAreasDialogItemsName'),
         ),

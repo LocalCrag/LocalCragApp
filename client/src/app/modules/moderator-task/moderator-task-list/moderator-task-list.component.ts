@@ -39,6 +39,9 @@ import {
   ModeratorTaskListQuery,
   ModeratorTaskScope,
 } from '../moderator-task-target';
+
+/** Selectable stand-in for "any". Spartan ignores a null option from the keyboard. */
+const FILTER_ANY = '__any__';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
@@ -154,9 +157,9 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
 
   public get filtersActive(): boolean {
     return (
-      this.filterAssigneeId != null ||
-      this.filterCreatorId != null ||
-      this.filterFinisherId != null
+      this.isSpecificFilter(this.filterAssigneeId) ||
+      this.isSpecificFilter(this.filterCreatorId) ||
+      this.isSpecificFilter(this.filterFinisherId)
     );
   }
 
@@ -235,7 +238,9 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
     if (!this.currentUserId) {
       return;
     }
-    this.filterAssigneeId = this.myTasksActive ? null : this.currentUserId;
+    this.filterAssigneeId = this.myTasksActive
+      ? FILTER_ANY
+      : this.currentUserId;
     this.loadFirstPage();
   }
 
@@ -260,8 +265,12 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
         scope: this.scope,
         page: this.currentPage,
         ...this.buildAssigneeListQuery(),
-        createdById: this.filterCreatorId,
-        finishedById: this.filterFinisherId,
+        createdById: this.isSpecificFilter(this.filterCreatorId)
+          ? this.filterCreatorId
+          : null,
+        finishedById: this.isSpecificFilter(this.filterFinisherId)
+          ? this.filterFinisherId
+          : null,
       })
       .subscribe({
         next: (page) => {
@@ -409,7 +418,7 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
     if (this.filterAssigneeId === ASSIGNEE_FILTER_UNASSIGNED) {
       return { assignedToUnassigned: true };
     }
-    if (this.filterAssigneeId != null) {
+    if (this.isSpecificFilter(this.filterAssigneeId)) {
       return { assignedToId: this.filterAssigneeId };
     }
     return {};
@@ -421,19 +430,19 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
         return false;
       }
     } else if (
-      this.filterAssigneeId != null &&
+      this.isSpecificFilter(this.filterAssigneeId) &&
       task.assignedTo?.id !== this.filterAssigneeId
     ) {
       return false;
     }
     if (
-      this.filterCreatorId != null &&
+      this.isSpecificFilter(this.filterCreatorId) &&
       task.createdBy?.id !== this.filterCreatorId
     ) {
       return false;
     }
     if (
-      this.filterFinisherId != null &&
+      this.isSpecificFilter(this.filterFinisherId) &&
       task.finishedBy?.id !== this.filterFinisherId
     ) {
       return false;
@@ -492,11 +501,18 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
       value: user.id,
     }));
     this.assigneeFilterOptions = [
-      { label: anyLabel, value: null },
+      { label: anyLabel, value: FILTER_ANY },
       { label: unassignedLabel, value: ASSIGNEE_FILTER_UNASSIGNED },
       ...userOptions,
     ];
-    this.userFilterOptions = [{ label: anyLabel, value: null }, ...userOptions];
+    this.userFilterOptions = [
+      { label: anyLabel, value: FILTER_ANY },
+      ...userOptions,
+    ];
+  }
+
+  private isSpecificFilter(value: string | null): value is string {
+    return value != null && value !== FILTER_ANY;
   }
 
   private formatUserName(user: User): string {

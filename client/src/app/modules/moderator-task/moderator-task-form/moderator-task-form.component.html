@@ -41,6 +41,17 @@
             }
           </hlm-select-content></hlm-select
         >
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="sm"
+          class="self-start"
+          [disabled]="!taskForm.get('assignedTo').value"
+          (click)="taskForm.get('assignedTo').setValue(null)"
+        >
+          {{ t("clearAssignee") }}
+        </button>
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>

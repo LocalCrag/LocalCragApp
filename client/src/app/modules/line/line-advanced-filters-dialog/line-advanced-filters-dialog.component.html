@@ -9,7 +9,7 @@
           <label class="block text-sm mb-1">{{ t("lineType") }}</label>
           <hlm-select
             [(ngModel)]="dialogScaleKey"
-            (valueChange)="onDialogScaleChange()"
+            (ngModelChange)="onDialogScaleChange()"
             class="w-full"
             ><hlm-select-trigger class="w-full"
               ><hlm-select-value /></hlm-select-trigger

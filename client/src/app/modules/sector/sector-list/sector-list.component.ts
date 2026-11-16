@@ -131,7 +131,9 @@ export class SectorListComponent implements OnInit {
       ),
       contentClass: 'sm:max-w-lg',
       context: {
-        items: this.sectors,
+        items: [...this.sectors].sort(
+          (left, right) => (left.orderIndex ?? 0) - (right.orderIndex ?? 0),
+        ),
         itemsName: this.translocoService.translate(
           marker('reorderSectorsDialogItemsName'),
         ),

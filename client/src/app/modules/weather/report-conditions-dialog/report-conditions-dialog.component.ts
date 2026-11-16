@@ -83,7 +83,7 @@ export class ReportConditionsDialogComponent {
   public loading = false;
   public submitted = false;
   public form: FormGroup;
-  public maxDate = new Date(Date.now() + 60_000);
+  public maxDatetimeLocal = toDatetimeLocalValue(new Date());
 
   public get dryDt() {
     return this.buildToggleDt('green');
@@ -150,6 +150,7 @@ export class ReportConditionsDialogComponent {
   public open(config: BlocWeatherConfig) {
     this.config = config;
     this.submitted = false;
+    this.refreshMaxDatetime();
     this.form = this.fb.group(
       {
         dry: [false],
@@ -182,8 +183,8 @@ export class ReportConditionsDialogComponent {
 
   public setNow() {
     const now = new Date();
-    this.maxDate = new Date(now.getTime() + 60_000);
-    this.form.get('observedAt').setValue(now);
+    this.refreshMaxDatetime(now);
+    this.form.get('observedAt').setValue(toDatetimeLocalValue(now));
   }
 
   public close() {
@@ -196,12 +197,19 @@ export class ReportConditionsDialogComponent {
       this.formDirective.markAsTouched();
       return;
     }
+    const observedAt = fromDatetimeLocal(this.form.get('observedAt').value);
+    if (!observedAt || observedAt.getTime() > Date.now() + 60_000) {
+      this.form.get('observedAt').setErrors({ maxDate: true });
+      this.form.get('observedAt').markAsTouched();
+      this.formDirective.markAsTouched();
+      return;
+    }
     const status = STATUS_OPTIONS.find(
       (s) => this.form.get(s).value === true,
     ) as BlocWeatherReportStatus;
     this.loading = true;
     this.blocWeatherService
-      .reportConditions(this.config, status, this.form.get('observedAt').value)
+      .reportConditions(this.config, status, observedAt)
       .subscribe({
         next: () => {
           this.notifications.toast('BLOCWEATHER_REPORT_SUCCESS');
@@ -214,4 +222,36 @@ export class ReportConditionsDialogComponent {
         },
       });
   }
+
+  private refreshMaxDatetime(now = new Date()) {
+    this.maxDatetimeLocal = toDatetimeLocalValue(
+      new Date(now.getTime() + 60_000),
+    );
+  }
+}
+
+function toDatetimeLocalValue(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function fromDatetimeLocal(value: unknown): Date | null {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+  if (typeof value !== 'string' || value === '') {
+    return null;
+  }
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value);
+  if (!match) {
+    return null;
+  }
+  const parsed = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+    Number(match[4]),
+    Number(match[5]),
+  );
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }

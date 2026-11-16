@@ -51,6 +51,7 @@ import { AppLevelAlertsEffects } from 'src/app/ngrx/effects/app-level-alerts.eff
 import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
+import { provideCalendarI18n } from '../../services/core/calendar-i18n';
 import { LanguageService } from '../../services/core/language.service';
 import { InstanceSettings } from '../../models/instance-settings';
 import {
@@ -254,6 +255,7 @@ export const appConfig: ApplicationConfig = {
       );
       return initializerFn();
     }),
+    ...provideCalendarI18n(),
     provideAppInitializer(() => {
       const initializerFn = preloadMenus(inject(MenuItemsService));
       return initializerFn();

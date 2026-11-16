@@ -75,6 +75,7 @@
                 type="datetime-local"
                 hlmInput
                 formControlName="observedAt"
+                [max]="maxDatetimeLocal"
                 lcFormControl
                 class="flex-1"
               />
@@ -89,6 +90,9 @@
             </div>
             <small class="lc-error" *lcIfError="'required'">{{
               "validation.required" | transloco
+            }}</small>
+            <small class="lc-error" *lcIfError="'maxDate'">{{
+              t("blocWeather.reportConditionsFutureTime")
             }}</small>
           </div>
 

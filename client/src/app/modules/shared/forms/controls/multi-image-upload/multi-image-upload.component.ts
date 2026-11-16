@@ -32,7 +32,8 @@ import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { ImageEditDialogComponent } from '../image-edit-dialog/image-edit-dialog.component';
-import { uploadFormFiles } from '../upload-form-files';
+import { splitFilesByMaxSize, uploadFormFiles } from '../upload-form-files';
+import { toastNotification } from '../../../../../ngrx/actions/notifications.actions';
 import { sharedLucideIcons } from '../../../utils/prime-icon';
 
 /**
@@ -234,15 +235,26 @@ export class MultiImageUploadComponent implements OnInit, ControlValueAccessor {
     if (!files.length) {
       return;
     }
-    if (
-      this.maxImageSize &&
-      files.some((file) => file.size > this.maxImageSize)
-    ) {
-      this.showProgressBar = false;
+    const { accepted, oversized } = splitFilesByMaxSize(
+      files,
+      this.maxImageSize,
+    );
+    if (oversized) {
+      this.store.dispatch(
+        toastNotification(
+          'IMAGE_TOO_LARGE',
+          {},
+          {
+            max: Math.round(this.maxImageSize / 1048576),
+          },
+        ),
+      );
+    }
+    if (!accepted.length) {
       return;
     }
     this.startProgress();
-    uploadFormFiles(this.http, this.uploadUrl, files, {
+    uploadFormFiles(this.http, this.uploadUrl, accepted, {
       onProgress: (progress) => this.setProgress({ progress }),
       onBody: (body) => this.setMedia({ originalEvent: { body } }),
       onError: () => {

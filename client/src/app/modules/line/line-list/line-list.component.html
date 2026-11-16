@@ -72,7 +72,7 @@
                 [disabled]="
                   loading === loadingStates.LOADING && currentPage === 1
                 "
-                (valueChange)="selectScale()"
+                (ngModelChange)="selectScale()"
                 class="md:mb-0"
                 ><hlm-select-trigger class="w-full"
                   ><hlm-select-value /></hlm-select-trigger

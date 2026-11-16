@@ -19,7 +19,8 @@ import { File } from '../../../../../models/file';
 import { ApiService } from '../../../../../services/core/api.service';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSpinner } from '@spartan-ng/helm/spinner';
-import { uploadFormFiles } from '../upload-form-files';
+import { splitFilesByMaxSize, uploadFormFiles } from '../upload-form-files';
+import { toastNotification } from '../../../../../ngrx/actions/notifications.actions';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { Store } from '@ngrx/store';
 
@@ -167,15 +168,26 @@ export class AvatarUploadComponent implements OnInit, ControlValueAccessor {
     if (!files.length) {
       return;
     }
-    if (
-      this.maxImageSize &&
-      files.some((file) => file.size > this.maxImageSize)
-    ) {
-      this.showProgressBar = false;
+    const { accepted, oversized } = splitFilesByMaxSize(
+      files,
+      this.maxImageSize,
+    );
+    if (oversized) {
+      this.store.dispatch(
+        toastNotification(
+          'IMAGE_TOO_LARGE',
+          {},
+          {
+            max: Math.round(this.maxImageSize / 1048576),
+          },
+        ),
+      );
+    }
+    if (!accepted.length) {
       return;
     }
     this.startProgress();
-    uploadFormFiles(this.http, this.uploadUrl, files, {
+    uploadFormFiles(this.http, this.uploadUrl, accepted, {
       onProgress: (progress) => this.setProgress({ progress }),
       onBody: (body) => this.setMedia({ originalEvent: { body } }),
       onError: () => {

@@ -81,6 +81,17 @@
                 }
               </hlm-select-content></hlm-select
             >
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              size="sm"
+              class="self-start"
+              [disabled]="!menuItemForm.get('parent').value"
+              (click)="menuItemForm.get('parent').setValue(null)"
+            >
+              {{ t("clearParent") }}
+            </button>
             <small class="text-sm text-surface-500">{{
               menuItemForm.get("type").value === containerType
                 ? t("containerHelp")

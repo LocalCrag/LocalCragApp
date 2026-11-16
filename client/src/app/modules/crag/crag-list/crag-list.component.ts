@@ -119,7 +119,9 @@ export class CragListComponent implements OnInit {
       title: this.translocoService.translate(marker('reorderCragsDialogTitle')),
       contentClass: 'sm:max-w-lg',
       context: {
-        items: this.crags,
+        items: [...this.crags].sort(
+          (left, right) => (left.orderIndex ?? 0) - (right.orderIndex ?? 0),
+        ),
         itemsName: this.translocoService.translate(
           marker('reorderCragsDialogItemsName'),
         ),

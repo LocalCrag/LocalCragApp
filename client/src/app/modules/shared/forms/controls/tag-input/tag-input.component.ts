@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BrnComboboxMultiple } from '@spartan-ng/brain/combobox';
 import { HlmComboboxImports } from '@spartan-ng/helm/combobox';
-import { map, of, Subject, switchMap } from 'rxjs';
+import { catchError, map, of, Subject, switchMap } from 'rxjs';
 import { Searchable } from '../../../../../models/searchable';
 import { SearchService } from '../../../../../services/crud/search.service';
 import { SearchableComponent } from '../../../../core/searchable/searchable.component';
@@ -90,11 +90,10 @@ export class TagInputComponent implements ControlValueAccessor, AfterViewInit {
           if (!trimmed) {
             return of([] as Searchable[]);
           }
-          return this.searchService
-            .search(trimmed)
-            .pipe(
-              map((results) => results.filter((item) => this.isAllowed(item))),
-            );
+          return this.searchService.search(trimmed).pipe(
+            map((results) => results.filter((item) => this.isAllowed(item))),
+            catchError(() => of([] as Searchable[])),
+          );
         }),
         takeUntilDestroyed(this.destroyRef),
       )
