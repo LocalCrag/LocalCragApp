@@ -3,7 +3,10 @@
     hlmBadge
     variant="secondary"
     [class.clickable]="!!routerLink"
+    [tabindex]="routerLink ? 0 : null"
     (click)="onClick($event)"
+    (keydown.enter)="onClick($event)"
+    (keydown.space)="onClick($event)"
   >
     <ng-icon name="lucideCheck" />
     {{

@@ -1166,11 +1166,12 @@ export class LineFormComponent implements OnInit {
         return match.label;
       }
     }
-    if (value === 'link') {
-      return this.translocoService.translate('line.lineForm.videoSourceLink');
-    }
-    if (value === 'upload') {
-      return this.translocoService.translate('line.lineForm.videoSourceUpload');
+    if (value === 'link' || value === 'upload') {
+      // Keep this dynamic. A string literal is extracted into the root
+      // catalogs as an empty key; the copy lives in the line scope.
+      const sourceKey =
+        value === 'link' ? 'videoSourceLink' : 'videoSourceUpload';
+      return this.translocoService.translate(`line.lineForm.${sourceKey}`);
     }
     if (typeof value === 'string') {
       const translated = this.translocoService.translate(value);

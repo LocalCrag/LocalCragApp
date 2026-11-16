@@ -10,7 +10,7 @@
     <div class="flex justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
         <div class="flex flex-col gap-2 grow" lcControlGroup>
-          <hlm-date-picker
+          <hlm-month-year-picker
             [autoCloseOnSelect]="true"
             formControlName="year"
             lcFormControl
@@ -18,7 +18,7 @@
             [formatDate]="formatYear"
             class="w-full"
             ><hlm-date-picker-input inputId="year"
-          /></hlm-date-picker>
+          /></hlm-month-year-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("yearInFutureValidationError")
           }}</small>
@@ -328,6 +328,7 @@
           {{ t("fa") }}
           <span
             class="inline-flex pointer-events-auto"
+            tabindex="-1"
             [hlmTooltip]="t('firstAscentExplanation')"
             position="top"
             [attr.aria-label]="t('firstAscentExplanation')"

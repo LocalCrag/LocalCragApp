@@ -60,6 +60,12 @@ export default defineConfig([
   },
   {
     files: ["src/app/ui/**/*.ts"],
+    // Copied Spartan components ship their own eslint-disable comments.
+    // Selector rules are already off for this folder, so those comments
+    // are unused and should not be reported.
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
     rules: {
       "@angular-eslint/component-selector": "off",
       "@angular-eslint/directive-selector": "off",

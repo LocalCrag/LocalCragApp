@@ -18,7 +18,7 @@ export class AscentCountComponent {
 
   private router = inject(Router);
 
-  onClick(event: MouseEvent) {
+  onClick(event: Event) {
     if (!this.routerLink) {
       return;
     }

@@ -22,7 +22,7 @@ export class CommentCountComponent {
     return this.commentCount > 9 ? '9+' : String(this.commentCount);
   }
 
-  onClick(event: MouseEvent) {
+  onClick(event: Event) {
     if (!this.routerLink) {
       return;
     }

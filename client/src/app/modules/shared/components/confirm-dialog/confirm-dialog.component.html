@@ -9,6 +9,7 @@
     hlmBtn
     type="button"
     [variant]="destructive ? 'destructive' : 'default'"
+    data-cy="confirm-accept"
     (click)="accept()"
   >
     {{ acceptLabel }}

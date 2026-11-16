@@ -591,6 +591,7 @@
         <button
           hlmDropdownMenuItem
           type="button"
+          [attr.id]="item.id"
           [disabled]="!!item.disabled"
           (click)="item.command?.()"
         >

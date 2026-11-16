@@ -4,7 +4,10 @@
     variant="secondary"
     [attr.aria-label]="t('ariaLabel', { count: commentCount })"
     [class.clickable]="!!routerLink"
+    [tabindex]="routerLink ? 0 : null"
     (click)="onClick($event)"
+    (keydown.enter)="onClick($event)"
+    (keydown.space)="onClick($event)"
   >
     <ng-icon name="lucideMessageSquare" />
     {{ displayCount }}

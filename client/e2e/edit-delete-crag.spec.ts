@@ -36,7 +36,9 @@ test.describe('Edit and delete crag', () => {
       .locator('[data-cy="crag-form-portraitImage"] input')
       .setInputFiles(sampleImagePath);
     await page.locator('[data-cy="open-marker-config-modal"]').nth(0).click();
-    await page.locator('[data-cy="type-dropdown"] > div').click();
+    await page
+      .locator('[data-cy="type-dropdown"] [data-slot="select-trigger"]')
+      .click();
     await page.locator('[data-cy="type-dropdown-item"]').nth(0).click();
     await page.locator('[data-cy="lat"]').fill('90');
     await page.locator('[data-cy="lng"]').fill('180');
@@ -70,7 +72,7 @@ test.describe('Edit and delete crag', () => {
     );
     await page.goto(`/topo/${renamedSlug}/edit`);
     await page.locator('[data-cy="delete"]').click();
-    await page.locator('.p-confirmpopup-accept-button').nth(0).click();
+    await page.locator('[data-cy="confirm-accept"]').nth(0).click();
     await deleteCragPromise;
 
     const listCragsPromise = page.waitForResponse(

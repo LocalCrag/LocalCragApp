@@ -27,6 +27,7 @@
         [attr.aria-label]="t('choosePriority')"
         [disabled]="saving"
         [hlmDropdownMenuTrigger]="priorityMenu"
+        (click)="$event.preventDefault(); $event.stopPropagation()"
       >
         <ng-icon name="lucideChevronDown" />
       </button>

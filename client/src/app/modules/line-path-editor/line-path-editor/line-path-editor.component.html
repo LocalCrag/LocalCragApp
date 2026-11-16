@@ -58,9 +58,11 @@
           ];
           track option.value
         ) {
-          <hlm-select-item [value]="option.value">{{
-            option.label
-          }}</hlm-select-item>
+          <hlm-select-item
+            [value]="option.value"
+            [attr.data-cy]="'draw-mode-' + option.value"
+            >{{ option.label }}</hlm-select-item
+          >
         }
       </hlm-select-content>
     </hlm-select>

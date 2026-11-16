@@ -10,7 +10,10 @@ test.describe('Boulder lookup workflow', () => {
     await expect(page.locator('[data-cy="page-tabs-menu"]')).toBeVisible({
       timeout: 10_000,
     });
-    await page.locator('[data-cy="page-tabs-menu"] p-tab').nth(2).click();
+    await page
+      .locator('[data-cy="page-tabs-menu"] [role="tab"]')
+      .nth(2)
+      .click();
     await page
       .locator('[data-cy="line-list-item"]')
       .filter({ hasText: 'Super-Spreader 8A' })
