@@ -247,7 +247,9 @@
                     <span hlmBadge>{{ t("flash") }}</span>
                   }
                   @if (ascent.withKneepad) {
-                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                    <span hlmBadge data-cy="kneepadtag">{{
+                      t("withKneepad")
+                    }}</span>
                   }
                   @if (ascent.video) {
                     <lc-ascent-video-marks
@@ -376,7 +378,9 @@
                     <span hlmBadge>{{ t("flash") }}</span>
                   }
                   @if (ascent.withKneepad) {
-                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                    <span hlmBadge data-cy="kneepadtag">{{
+                      t("withKneepad")
+                    }}</span>
                   }
                   @if (ascent.video) {
                     <lc-ascent-video-marks
@@ -470,7 +474,9 @@
                     <span hlmBadge>{{ t("flash") }}</span>
                   }
                   @if (ascent.withKneepad) {
-                    <span hlmBadge>{{ t("withKneepad") }}</span>
+                    <span hlmBadge data-cy="kneepadtag">{{
+                      t("withKneepad")
+                    }}</span>
                   }
                   @if (ascent.video) {
                     <lc-ascent-video-marks
@@ -517,9 +523,12 @@
                       }}</span>
                     }
                     @if (ascent.withKneepad) {
-                      <span hlmBadge class="property-small">{{
-                        t("withKneepad")
-                      }}</span>
+                      <span
+                        hlmBadge
+                        class="property-small"
+                        data-cy="kneepadtag"
+                        >{{ t("withKneepad") }}</span
+                      >
                     }
                     @if (ascent.video) {
                       <lc-ascent-video-marks

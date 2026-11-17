@@ -33,14 +33,17 @@ export class LineBoolPropListComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     const host = this.elementRef.nativeElement;
-    const update = () => this.zone.run(() => this.refreshLabel());
+    // Defer the tooltip text so writing it during the current check does not
+    // throw ExpressionChangedAfterItHasBeenCheckedError.
+    const update = () =>
+      queueMicrotask(() => this.zone.run(() => this.refreshLabel()));
     this.mutationObserver = new MutationObserver(update);
     this.mutationObserver.observe(host, {
       childList: true,
       subtree: true,
       characterData: true,
     });
-    this.refreshLabel();
+    update();
   }
 
   ngOnDestroy() {

@@ -33,8 +33,7 @@ test.describe('Create line', () => {
       .click();
     await page.locator('[data-cy="rating"] button').nth(3).click();
     await page.locator('[data-cy="line-form-faName"]').fill('Shawn Raboutou');
-    await page.locator('[data-cy="line-form-faYear"] input').click();
-    await chooseMonthYear(page);
+    await chooseMonthYear(page, { picker: '[data-cy="line-form-faYear"]' });
     await page
       .locator('[data-cy="line-form-highball"] [role="checkbox"]')
       .click();

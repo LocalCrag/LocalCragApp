@@ -51,8 +51,12 @@ test.describe('Ascent lifespan workflow', () => {
     await page.goto('/topo/brione/pampelmousse/shark-attack/topo-images');
     await page.locator('[data-cy="tick-button"]').nth(1).click();
     await page.locator('[data-cy="yearOnly"]').click();
-    await page.locator('#year').click();
-    await chooseMonthYear(page, ascentYear);
+    await chooseMonthYear(page, {
+      year: ascentYear,
+      picker: page.locator('hlm-month-year-picker').filter({
+        has: page.locator('#year'),
+      }),
+    });
     await page.locator('[data-cy="rating"] button').nth(3).click();
     await page.locator('[data-cy="comment"]').focus();
     await page.locator('[data-cy="comment"]').fill('Year-only ascent');

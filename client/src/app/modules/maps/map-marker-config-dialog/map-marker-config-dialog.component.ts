@@ -39,7 +39,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmDialog, HlmDialogImports } from '@spartan-ng/helm/dialog';
 
 @Component({
   selector: 'lc-map-marker-config-dialog',
@@ -65,6 +65,7 @@ import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 })
 export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(HlmDialog) private dialogHost?: HlmDialog;
 
   @Output() newMarker = new EventEmitter<MapMarker>();
 
@@ -155,6 +156,8 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
 
   public close() {
     this.isOpen = false;
+    // The controlled `state` binding does not dismiss the overlay on its own.
+    this.dialogHost?.close();
   }
 
   public save() {
@@ -167,7 +170,7 @@ export class MapMarkerConfigDialogComponent implements OnInit, OnChanges {
       if (!this.marker.id) {
         this.newMarker.emit(this.marker);
       }
-      this.isOpen = false;
+      this.close();
     } else {
       this.mapMarkerForm.markAllAsTouched();
     }
