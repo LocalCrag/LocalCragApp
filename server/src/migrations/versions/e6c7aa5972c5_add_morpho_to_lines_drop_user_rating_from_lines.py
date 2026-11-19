@@ -37,7 +37,7 @@ def downgrade():
         batch_op.drop_column("morpho")
 
     with op.batch_alter_table("ascents", schema=None) as batch_op:
-        batch_op.drop_constraint(None, type_="foreignkey")
+        batch_op.drop_constraint("ascents_created_by_id_fkey", type_="foreignkey")
         batch_op.create_foreign_key(
             "ascents_created_by_id_fkey", "users", ["created_by_id"], ["id"], ondelete="SET NULL"
         )

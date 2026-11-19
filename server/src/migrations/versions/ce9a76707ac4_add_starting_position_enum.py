@@ -40,4 +40,6 @@ def downgrade():
     with op.batch_alter_table("lines", schema=None) as batch_op:
         batch_op.drop_column("starting_position")
 
+    sa.Enum(name="startingpositionenum").drop(op.get_bind(), checkfirst=True)
+
     # ### end Alembic commands ###

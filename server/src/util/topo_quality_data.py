@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from sqlalchemy import or_
-from sqlalchemy.orm import load_only, noload
+from sqlalchemy.orm import lazyload, load_only
 
 from extensions import db
 from models.area import Area
@@ -281,7 +281,7 @@ def _published(model, *criteria):
         columns.append(Sector.crag_id)
     elif model is Area:
         columns.append(Area.sector_id)
-    query = model.query.options(load_only(*columns), noload(model.portrait_image)).filter(
+    query = model.query.options(load_only(*columns), lazyload(model.portrait_image)).filter(
         model.publication_status == PublicationStatusEnum.PUBLISHED
     )
     for criterion in criteria:

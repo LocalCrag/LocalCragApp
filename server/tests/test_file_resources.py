@@ -53,7 +53,7 @@ def test_clear_file_focus(client, any_file, moderator_token):
 
 def test_transform_image_rotates_and_keeps_original(client, user_token, s3_mock):
     uploaded = _upload_test_image(client, user_token)
-    source = File.query.get(uploaded["id"])
+    source = db.session.get(File, uploaded["id"])
     source.exif_lat = 50.1
     source.exif_lng = 7.2
     db.session.commit()
@@ -69,8 +69,8 @@ def test_transform_image_rotates_and_keeps_original(client, user_token, s3_mock)
     assert transformed["width"] == uploaded["height"]
     assert transformed["height"] == uploaded["width"]
     assert transformed["originalFilename"] == uploaded["originalFilename"]
-    assert File.query.get(uploaded["id"]) is not None
-    stored = File.query.get(transformed["id"])
+    assert db.session.get(File, uploaded["id"]) is not None
+    stored = db.session.get(File, transformed["id"])
     assert stored.exif_lat == 50.1
     assert stored.exif_lng == 7.2
     assert s3_mock.get_object(Bucket=current_app.config["S3_BUCKET"], Key=stored.filename) is not None
@@ -150,7 +150,7 @@ def test_moderator_can_transform_another_users_file(client, user_token, moderato
 
 def test_file_without_creator_is_staff_only(client, user_token, moderator_token, s3_mock):
     uploaded = _upload_test_image(client, user_token)
-    source = File.query.get(uploaded["id"])
+    source = db.session.get(File, uploaded["id"])
     source.created_by_id = None
     db.session.commit()
 
