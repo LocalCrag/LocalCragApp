@@ -4,7 +4,7 @@ For the full local toolchain (Docker vs native, Husky, object storage), see [doc
 
 ## Setup
 
-- Install [node](https://nodejs.org/en/download/package-manager), at least v21
+- Install [Node.js 24](https://nodejs.org/en/download/package-manager)
 - Install dependencies `npm i`
 - Run the client for development `npm run dev` (runs the Tailwind CLI in watch mode alongside `ng serve`, so changes to templates, `src/tailwind.css` and `src/app/styles/*.scss` hot-reload)
 - `npm run start` also works but compiles Tailwind only once (no Tailwind watch); prefer `npm run dev` while developing
