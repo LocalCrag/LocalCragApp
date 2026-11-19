@@ -26,8 +26,8 @@
           {{ searchable.line.name }}{{ assumedGradeSuffix() | async }}
         </div>
         <div class="search-result-meta">
-          <b>{{ t(searchable.line.type) }}</b
-          >, {{ searchable.line.area.name }}<!--
+          <b>{{ t(searchable.line.type) }}</b>,
+          {{ searchable.line.area.name }}<!--
             -->
           @if (searchable.line.area.sector.slug !== environment.skippedSlug) {
             , {{ searchable.line.area.sector.name }}

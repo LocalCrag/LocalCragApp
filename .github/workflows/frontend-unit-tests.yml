@@ -14,10 +14,10 @@ jobs:
         working-directory: ./client
     steps:
       - uses: actions/checkout@v5
-      - name: Use node.js v22
+      - name: Use node.js v24
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Install dependencies
         run: npm ci
       - name: Run unit tests

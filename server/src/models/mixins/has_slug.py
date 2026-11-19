@@ -1,7 +1,6 @@
 import re
 
 from sqlalchemy import event
-from sqlalchemy.orm import declarative_mixin
 
 from extensions import db
 
@@ -19,7 +18,6 @@ def str_to_slug(name: str) -> str:
     return name.strip("-")
 
 
-@declarative_mixin
 class HasSlug:
     """
     Mixin class that adds a slug column to a model.

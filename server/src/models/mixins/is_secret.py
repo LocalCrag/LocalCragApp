@@ -1,6 +1,5 @@
 from sqlalchemy import select
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import declarative_mixin
 
 from extensions import db
 from models.secret_topo_entity import SecretTopoEntity
@@ -14,7 +13,6 @@ _SECRET_PENDING_ATTR = "_secret_pending"
 _SECRET_CACHE_ATTR = "_secret_cache"
 
 
-@declarative_mixin
 class IsSecret:
     """Secret membership backed by ``secret_topo_entities`` (not a database column).
 

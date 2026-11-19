@@ -3,6 +3,7 @@ import datetime
 import pytz
 from flask import jsonify, request
 from flask.views import MethodView
+from sqlalchemy import select
 from webargs.flaskparser import parser
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -132,7 +133,7 @@ class GetModeratorTasks(MethodView):
         scope_type, scope_id = _resolve_scope_from_request()
         page = int(request.args.get("page") or 1)
         per_page = int(request.args.get("per_page") or 10)
-        query = ModeratorTask.query
+        query = select(ModeratorTask)
         query = filter_tasks_by_scope(query, scope_type, scope_id)
         query = _apply_task_list_filters(query)
         query = _order_tasks_for_list(query)

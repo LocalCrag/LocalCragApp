@@ -135,4 +135,6 @@ def downgrade():
     op.drop_table("areas")
     op.drop_table("crags")
     op.drop_table("regions")
+    # SQLAlchemy 2.1 no longer drops named types with the table.
+    sa.Enum(name="linetypeenum").drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###

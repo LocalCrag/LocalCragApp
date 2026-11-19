@@ -45,12 +45,12 @@ def downgrade():
         batch_op.drop_column("blocweather_url")
 
     with op.batch_alter_table("comments", schema=None) as batch_op:
-        batch_op.drop_constraint(None, type_="unique")
+        batch_op.drop_constraint("comments_id_key", type_="unique")
 
     with op.batch_alter_table("areas", schema=None) as batch_op:
         batch_op.drop_column("blocweather_url")
 
     with op.batch_alter_table("account_settings", schema=None) as batch_op:
-        batch_op.drop_constraint(None, type_="unique")
+        batch_op.drop_constraint("account_settings_id_key", type_="unique")
 
     # ### end Alembic commands ###
