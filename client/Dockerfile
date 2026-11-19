@@ -5,7 +5,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM nginx:1.30.7-alpine
 COPY --from=builder /app/dist/client/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf.template
 
