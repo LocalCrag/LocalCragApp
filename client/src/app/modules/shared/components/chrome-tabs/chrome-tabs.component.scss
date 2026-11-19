@@ -180,10 +180,7 @@
   );
 }
 
-:host-context([dir="rtl"])
-  ::ng-deep
-  [data-slot="tabs-paginated-list"]
-  > div {
+:host-context([dir="rtl"]) ::ng-deep [data-slot="tabs-paginated-list"] > div {
   -webkit-mask-image: linear-gradient(
     to left,
     transparent 0,
