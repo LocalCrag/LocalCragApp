@@ -44,7 +44,6 @@ import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -66,10 +65,12 @@ type GalleryMasonryCell =
 
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-gallery',
   imports: [
+    LoadingButtonComponent,
     ...HlmDialogImports,
     GalleryImageComponent,
     TranslocoDirective,
@@ -79,7 +80,6 @@ import { ConfirmDialogService } from '../../shared/components/confirm-dialog/con
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './gallery.component.html',

@@ -99,7 +99,6 @@ import {
   lucideCircleQuestionMark,
   lucideClock,
   lucideInfo,
-  lucideLoaderCircle,
   lucidePlus,
   lucideSave,
   lucideStar,
@@ -109,6 +108,7 @@ import {
   lucideX,
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /** Both ends are required together, and the lower grade cannot be harder. */
 function assumedGradeBoundsValidator(control: AbstractControl) {
@@ -141,7 +141,6 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
       lucideCircleQuestionMark,
       lucideClock,
       lucideInfo,
-      lucideLoaderCircle,
       lucidePlus,
       lucideSave,
       lucideStar,
@@ -153,6 +152,7 @@ function assumedGradeBoundsValidator(control: AbstractControl) {
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     FormDirective,

@@ -56,11 +56,11 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBan,
   lucideCircleQuestionMark,
-  lucideLoaderCircle,
   lucideSave,
   lucideTrash2,
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /**
  * A component for creating and editing crags.
@@ -73,13 +73,13 @@ import { ConfirmDialogService } from '../../shared/components/confirm-dialog/con
     provideIcons({
       lucideBan,
       lucideCircleQuestionMark,
-      lucideLoaderCircle,
       lucideSave,
       lucideTrash2,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     ControlGroupDirective,

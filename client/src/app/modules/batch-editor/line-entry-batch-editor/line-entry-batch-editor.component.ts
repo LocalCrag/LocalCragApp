@@ -52,11 +52,11 @@ import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideArrowLeft,
   lucideArrowRight,
   lucideBan,
-  lucideLoaderCircle,
   lucidePlus,
   lucideTriangleAlert,
 } from '@ng-icons/lucide';
@@ -64,6 +64,7 @@ import {
 @Component({
   selector: 'lc-line-entry-batch-editor',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -88,7 +89,6 @@ import {
       lucideArrowLeft,
       lucideArrowRight,
       lucideBan,
-      lucideLoaderCircle,
       lucidePlus,
       lucideTriangleAlert,
     }),

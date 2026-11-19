@@ -88,17 +88,18 @@ import {
   lucideEyeOff,
   lucideFilter,
   lucideInfo,
-  lucideLoaderCircle,
   lucidePlus,
   lucideStar,
   lucideVideo,
 } from '@ng-icons/lucide';
 import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-line-list',
   imports: [
+    LoadingButtonComponent,
     AscentCountComponent,
     CommentCountComponent,
     HasPermissionDirective,
@@ -133,7 +134,6 @@ import { BrnDialogRef } from '@spartan-ng/brain/dialog';
       lucideEyeOff,
       lucideFilter,
       lucideInfo,
-      lucideLoaderCircle,
       lucidePlus,
       lucideStar,
       lucideVideo,

@@ -89,14 +89,12 @@
       {{ t("cancelButtonLabel") }}
     </button>
     <button
-      hlmBtn
-      type="button"
-      [disabled]="loadingState === loadingStates.LOADING"
+      lcLoadingButton
+      [loading]="loadingState === loadingStates.LOADING"
       (click)="saveItems()"
+      [disabled]="loadingState === loadingStates.LOADING"
+      type="button"
     >
-      @if (loadingState === loadingStates.LOADING) {
-        <hlm-spinner />
-      }
       {{ t("saveButtonLabel") }}
     </button>
   </div>

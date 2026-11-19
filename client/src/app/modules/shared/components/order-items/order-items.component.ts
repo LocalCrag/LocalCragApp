@@ -22,8 +22,8 @@ import {
   lucideGripVertical,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { LineGradePipe } from '../../pipes/line-grade.pipe';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 interface OrderItemsDialogContext {
   items: AbstractModel[];
@@ -46,13 +46,13 @@ interface OrderItemsDialogContext {
   styleUrls: ['./order-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     DragDropModule,
     TranslocoDirective,
     AsyncPipe,
     TranslocoPipe,
     NgIcon,
     HlmButton,
-    HlmSpinner,
     LineGradePipe,
   ],
   providers: [

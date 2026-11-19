@@ -194,7 +194,7 @@
               </div>
             }
             <div
-              class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
+              class="flex min-w-0 flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
             >
               <div
                 class="flex flex-col items-center sm:items-start gap-4 line-info-container"
@@ -202,18 +202,19 @@
                 <div
                   class="text-2xl text-surface-900 dark:text-surface-0 line-name flex flex-col md:flex-row items-center justify-between"
                 >
-                  <div>
+                  <div class="text-center sm:text-start">
                     <strong>{{ line.name }}</strong>
                     {{ line | lineGrade }}
                     <lc-topo-hierarchy-breadcrumbs
-                      class="mt-1"
+                      class="mt-4"
                       [crag]="line.crag"
                       [sector]="line.sector"
                       [area]="line.area"
                       [stopPropagation]="true"
                     ></lc-topo-hierarchy-breadcrumbs>
                   </div>
-                  <span class="self-center md:self-end"
+                  <span
+                    class="mt-4 flex h-4 items-center self-center text-base leading-none md:mt-0 md:self-end"
                     ><span class="inline-flex text-primary" aria-hidden="true">
                       @for (star of [1, 2, 3, 4, 5]; track star) {
                         <ng-icon
@@ -337,18 +338,16 @@
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
       <button
-        hlmBtn
-        type="button"
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
         (click)="loadNextPage()"
-        [disabled]="loading === loadingStates.LOADING"
         (scrolled)="loadNextPage()"
-        infiniteScroll
+        [disabled]="loading === loadingStates.LOADING"
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
+        infiniteScroll
+        type="button"
       >
-        @if (loading === loadingStates.LOADING) {
-          <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-        }
         {{ t("loadMore") }}
       </button>
     </div>

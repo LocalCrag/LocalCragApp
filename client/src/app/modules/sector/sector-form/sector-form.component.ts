@@ -66,12 +66,12 @@ import {
   lucideBan,
   lucideCircleQuestionMark,
   lucideInfo,
-  lucideLoaderCircle,
   lucideSave,
   lucideTrash2,
   lucideTriangleAlert,
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -86,7 +86,6 @@ import { ConfirmDialogService } from '../../shared/components/confirm-dialog/con
       lucideBan,
       lucideCircleQuestionMark,
       lucideInfo,
-      lucideLoaderCircle,
       lucideSave,
       lucideTrash2,
       lucideTriangleAlert,
@@ -94,6 +93,7 @@ import { ConfirmDialogService } from '../../shared/components/confirm-dialog/con
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     WysiwygEditorComponent,

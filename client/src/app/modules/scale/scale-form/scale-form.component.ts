@@ -54,10 +54,10 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideArrowDownAZ,
   lucideBan,
@@ -73,6 +73,7 @@ import {
   templateUrl: './scale-form.component.html',
   styleUrl: './scale-form.component.scss',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     TranslocoPipe,
@@ -94,7 +95,6 @@ import {
     HlmInput,
     HlmCheckbox,
     HlmSeparator,
-    HlmSpinner,
     NgIcon,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -1,5 +1,18 @@
+@property --chrome-tab-fade-start {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --chrome-tab-fade-end {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 :host {
   display: block;
+  --chrome-tab-fade-size: 4.5rem;
 
   [data-slot="tabs"] {
     width: 100%;
@@ -68,7 +81,7 @@
   ::ng-deep
   [data-slot="tabs-paginated-list"]
   > button {
-  height: 2.85rem;
+  height: 100%;
 }
 
 :host(.chrome-tabs--overlay) {
@@ -121,11 +134,127 @@
   box-shadow: none;
 }
 
+:host ::ng-deep [data-slot="tabs-paginated-list"] {
+  --chrome-tab-fade-start: 0px;
+  --chrome-tab-fade-end: 0px;
+  transition:
+    --chrome-tab-fade-start 0.25s ease,
+    --chrome-tab-fade-end 0.25s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+:host
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]:has(
+    > button[data-pagination="previous"]:not(.opacity-0)
+  ) {
+  --chrome-tab-fade-start: var(--chrome-tab-fade-size);
+}
+
+:host
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]:has(
+    > button[data-pagination="next"]:not(.opacity-0)
+  ) {
+  --chrome-tab-fade-end: var(--chrome-tab-fade-size);
+}
+
+/* Tabs slide under the chevrons and dissolve instead of ending on a hard edge. */
+:host ::ng-deep [data-slot="tabs-paginated-list"] > div {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+}
+
+:host-context([dir="rtl"])
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > div {
+  -webkit-mask-image: linear-gradient(
+    to left,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to left,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+}
+
 :host ::ng-deep [data-slot="tabs-paginated-list"] > button {
-  width: 2.5rem;
-  height: 3rem;
   border-radius: 0;
   color: var(--p-text-muted-color);
+  background-color: transparent;
+  background-repeat: no-repeat;
+
+  &[data-pagination="previous"] {
+    inset-inline-start: 0;
+    justify-content: flex-start;
+    padding-inline-start: 0.35rem;
+    background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+      transparent 72%
+    );
+  }
+
+  &[data-pagination="next"] {
+    inset-inline-end: 0;
+    justify-content: flex-end;
+    padding-inline-end: 0.35rem;
+    background-image: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+      transparent 72%
+    );
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background-color: transparent;
+    color: var(--p-text-color);
+  }
+}
+
+:host-context([dir="rtl"])
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="previous"] {
+  background-image: linear-gradient(
+    to left,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+    transparent 72%
+  );
+}
+
+:host-context([dir="rtl"])
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="next"] {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+    transparent 72%
+  );
 }
 
 :host(.chrome-tabs--overlay)
@@ -133,14 +262,52 @@
   [data-slot="tabs-paginated-list"]
   > button {
   color: #fff;
-  background: transparent;
+
+  &[data-pagination="previous"] {
+    background-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 78%
+    );
+  }
+
+  &[data-pagination="next"] {
+    background-image: linear-gradient(
+      to left,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 78%
+    );
+  }
 
   &:not(:disabled) {
     cursor: pointer;
   }
 
-  &:hover:not(:disabled) {
-    background: rgb(255 255 255 / 0.12);
+  &:hover:not(:disabled),
+  &:focus-visible {
     color: #fff;
+    background-color: transparent;
   }
+}
+
+:host-context([dir="rtl"]).chrome-tabs--overlay
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="previous"] {
+  background-image: linear-gradient(
+    to left,
+    rgb(0 0 0 / 0.45) 0%,
+    transparent 78%
+  );
+}
+
+:host-context([dir="rtl"]).chrome-tabs--overlay
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="next"] {
+  background-image: linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.45) 0%,
+    transparent 78%
+  );
 }

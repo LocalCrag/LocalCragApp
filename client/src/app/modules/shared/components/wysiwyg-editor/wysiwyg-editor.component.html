@@ -381,14 +381,12 @@
       @if (videoUploadsEnabled) {
         <div hlmDialogFooter>
           <button
-            hlmBtn
-            type="button"
-            [disabled]="uploading"
+            lcLoadingButton
+            [loading]="uploading"
             (click)="openFilePicker(videoInput)"
+            [disabled]="uploading"
+            type="button"
           >
-            @if (uploading) {
-              <hlm-spinner />
-            }
             {{ "wysiwygEditor.uploadVideo" | transloco }}
           </button>
         </div>

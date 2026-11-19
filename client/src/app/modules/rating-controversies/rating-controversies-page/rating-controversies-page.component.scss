@@ -54,11 +54,8 @@
   column-gap: 0.75rem;
   padding: 0.625rem 0.75rem;
   border-radius: 0.75rem;
-  background: var(--p-surface-100);
-}
-
-:host-context(html.lc-dark) .controversy__compare {
-  background: var(--p-surface-800);
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .controversy__side {
@@ -93,6 +90,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+
+  > button,
+  > a {
+    width: 100%;
+  }
 }
 
 .controversy-reset {
@@ -116,22 +118,6 @@
 :host ::ng-deep {
   .controversy-min-ascents__select {
     width: 5.5rem;
-  }
-
-  .controversy__actions p-button,
-  .controversy__actions .p-button,
-  .controversy-reset .p-button {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .controversy__actions p-button {
-    display: flex;
-    min-width: 0;
-  }
-
-  .controversy__side .p-rating {
-    gap: 0.125rem;
   }
 }
 
@@ -162,6 +148,11 @@
   .controversy__actions {
     display: flex;
     justify-content: flex-end;
+
+    > button,
+    > a {
+      width: auto;
+    }
   }
 
   .controversy-reset {
@@ -172,17 +163,6 @@
     }
   }
 
-  :host ::ng-deep {
-    .controversy__actions p-button {
-      display: inline-flex;
-      width: auto;
-    }
-
-    .controversy__actions .p-button,
-    .controversy-reset .p-button {
-      width: auto;
-    }
-  }
 }
 
 @media (max-width: 639px) {

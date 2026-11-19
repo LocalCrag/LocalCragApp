@@ -155,29 +155,24 @@
                       class="lc-button-group justify-end grow items-center self-end sm:self-center"
                     >
                       <button
-                        hlmBtn
+                        lcLoadingButton
                         type="button"
                         variant="ghost"
                         size="icon"
+                        icon="lucideEllipsisVertical"
                         class="rounded-full"
                         [hlmDropdownMenuTrigger]="topoImageMenu"
                         (mousedown)="prepareTopoImageActions($event, topoImage)"
+                        [loading]="
+                          topoImage.loadingState === loadingStates.LOADING
+                        "
                         [disabled]="
                           topoImage.loadingState === loadingStates.LOADING ||
                           topoImage.loadingState !== loadingStates.DEFAULT
                         "
                         [attr.aria-label]="t('actions')"
                         data-cy="topo-image-actions"
-                      >
-                        @if (topoImage.loadingState === loadingStates.LOADING) {
-                          <ng-icon
-                            name="lucideLoaderCircle"
-                            class="animate-spin"
-                          />
-                        } @else {
-                          <ng-icon name="lucideEllipsisVertical" />
-                        }
-                      </button>
+                      ></button>
                     </div>
                   }
                 </div>
@@ -216,6 +211,7 @@
                         }
                         @if (!linePath.line.closed) {
                           <lc-line-bool-prop-list
+                            class="clip-line"
                             [line]="linePath.line"
                           ></lc-line-bool-prop-list>
                         }
@@ -284,30 +280,23 @@
                         }
                         <ng-container *isModerator="true">
                           <button
-                            hlmBtn
+                            lcLoadingButton
                             type="button"
                             variant="ghost"
                             size="icon"
+                            icon="lucideTrash2"
                             class="rounded-full text-destructive"
                             (click)="
                               confirmDeleteLinePath($event, linePath, topoImage)
+                            "
+                            [loading]="
+                              linePath.loadingState === loadingStates.LOADING
                             "
                             [disabled]="
                               linePath.loadingState === loadingStates.LOADING ||
                               topoImage.loadingState !== loadingStates.DEFAULT
                             "
-                          >
-                            @if (
-                              linePath.loadingState === loadingStates.LOADING
-                            ) {
-                              <ng-icon
-                                name="lucideLoaderCircle"
-                                class="animate-spin"
-                              />
-                            } @else {
-                              <ng-icon name="lucideTrash2" />
-                            }
-                          </button>
+                          ></button>
                         </ng-container>
                       </div>
                     </a>
@@ -376,18 +365,16 @@
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
       <button
-        hlmBtn
-        type="button"
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
         (click)="loadNextPage()"
-        [disabled]="loading === loadingStates.LOADING"
         (scrolled)="loadNextPage()"
-        infiniteScroll
+        [disabled]="loading === loadingStates.LOADING"
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
+        infiniteScroll
+        type="button"
       >
-        @if (loading === loadingStates.LOADING) {
-          <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-        }
         {{ t("loadMore") }}
       </button>
     </div>

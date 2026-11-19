@@ -13,8 +13,6 @@ import {
 } from '@angular/forms';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
-import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Line } from '../../../models/line';
@@ -28,15 +26,15 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-project-climbed-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     HlmAlert,
     HlmAlertDescription,
-    HlmButton,
-    HlmSpinner,
     TranslocoDirective,
     TranslocoPipe,
     HlmTextarea,

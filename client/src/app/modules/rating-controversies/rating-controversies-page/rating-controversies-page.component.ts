@@ -39,9 +39,9 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideArrowRight,
   lucideCircleX,
@@ -60,6 +60,7 @@ interface ControversyRow extends RatingControversy {
   ],
   selector: 'lc-rating-controversies-page',
   imports: [
+    LoadingButtonComponent,
     NgTemplateOutlet,
     TranslocoDirective,
     RouterLink,
@@ -73,7 +74,6 @@ interface ControversyRow extends RatingControversy {
     HlmInput,
     ...HlmToggleGroupImports,
     HlmSkeleton,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './rating-controversies-page.component.html',

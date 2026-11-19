@@ -32,10 +32,10 @@ import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { HlmToggle } from '@spartan-ng/helm/toggle';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 const STATUS_OPTIONS: BlocWeatherReportStatus[] = [
   'dry',
@@ -55,6 +55,7 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
   providers: [provideIcons({ lucideInfo })],
   selector: 'lc-report-conditions-dialog',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -69,7 +70,6 @@ const atLeastOneStatusValidator: ValidatorFn = (group: AbstractControl) => {
     HlmTextarea,
     HlmToggle,
     ...HlmDialogImports,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './report-conditions-dialog.component.html',

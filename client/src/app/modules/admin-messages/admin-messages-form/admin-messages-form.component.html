@@ -40,16 +40,14 @@
 
     <div class="form-actions">
       <button
-        hlmBtn
-        type="button"
-        class="responsive-button"
-        [disabled]="loadingState === loadingStates.LOADING"
+        lcLoadingButton
+        icon="lucideSave"
+        [loading]="loadingState === loadingStates.LOADING"
         (click)="saveAdminMessage()"
+        [disabled]="loadingState === loadingStates.LOADING"
+        class="responsive-button"
+        type="button"
       >
-        @if (loadingState === loadingStates.LOADING) {
-          <hlm-spinner />
-        }
-        <ng-icon name="lucideSave" />
         {{
           editMode
             ? t("editAdminMessageButtonLabel")
@@ -67,17 +65,15 @@
       </button>
       @if (editMode) {
         <button
-          hlmBtn
+          lcLoadingButton
+          icon="lucideTrash2"
+          [loading]="loadingState === loadingStates.LOADING"
+          (click)="confirmDeleteAdminMessage($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
           type="button"
           variant="destructive"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
-          (click)="confirmDeleteAdminMessage($event)"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideTrash2" />
           {{ t("deleteAdminMessageButtonLabel") }}
         </button>
       }

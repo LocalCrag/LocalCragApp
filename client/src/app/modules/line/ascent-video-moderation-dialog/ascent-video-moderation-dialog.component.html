@@ -59,15 +59,13 @@
       {{ t("removeAscentVideoReject") }}
     </button>
     <button
-      hlmBtn
-      type="button"
+      lcLoadingButton
+      [loading]="saving"
       (click)="save()"
       [disabled]="saving"
       [variant]="removing ? 'destructive' : 'default'"
+      type="button"
     >
-      @if (saving) {
-        <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-      }
       {{ removing ? t("removeAscentVideoAccept") : t("saveAscentVideos") }}
     </button>
   </div>

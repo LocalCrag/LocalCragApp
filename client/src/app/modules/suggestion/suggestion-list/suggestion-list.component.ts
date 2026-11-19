@@ -27,10 +27,10 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 type ReviewAction = 'publish' | 'reject';
 
@@ -54,6 +54,7 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
   providers: [provideIcons({ lucideInfo })],
   selector: 'lc-suggestion-list',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     FormsModule,
     RouterLink,
@@ -64,7 +65,6 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
     HlmAlertDescription,
     HlmTextarea,
     ...HlmDialogImports,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './suggestion-list.component.html',

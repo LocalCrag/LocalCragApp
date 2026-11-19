@@ -121,10 +121,13 @@
           >
             {{ t("cancelEditButtonLabel") }}
           </button>
-          <button hlmBtn type="button" [disabled]="saving" (click)="apply()">
-            @if (saving) {
-              <hlm-spinner />
-            }
+          <button
+            lcLoadingButton
+            [loading]="saving"
+            (click)="apply()"
+            [disabled]="saving"
+            type="button"
+          >
             {{ t("applyEditButtonLabel") }}
           </button>
         </div>

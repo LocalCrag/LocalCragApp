@@ -344,16 +344,14 @@
 
   <div class="form-actions">
     <button
-      hlmBtn
-      type="button"
-      class="w-full"
-      [disabled]="loadingState === loadingStates.LOADING"
+      lcLoadingButton
+      [loading]="loadingState === loadingStates.LOADING"
       (click)="saveAscent()"
+      [disabled]="loadingState === loadingStates.LOADING"
+      class="w-full"
       data-cy="submit"
+      type="button"
     >
-      @if (loadingState === loadingStates.LOADING) {
-        <hlm-spinner />
-      }
       {{ !editMode ? t("addAscentButtonLabel") : t("editAscentButtonLabel") }}
     </button>
   </div>

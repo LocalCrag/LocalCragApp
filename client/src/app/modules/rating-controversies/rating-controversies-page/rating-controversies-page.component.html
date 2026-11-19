@@ -107,7 +107,7 @@
                 /></span>
               }
             </div>
-            <ng-icon name="lucideArrowRight" />
+            <ng-icon class="controversy__arrow" name="lucideArrowRight" />
             <div class="controversy__side controversy__side--end">
               <span class="controversy__label">{{ t("community") }}</span>
               @if (kind === "grade") {
@@ -139,26 +139,24 @@
           }
           <div class="controversy__actions">
             <button
-              hlmBtn
-              type="button"
-              size="sm"
-              [disabled]="dismissingId === row.id"
+              lcLoadingButton
+              [loading]="dismissingId === row.id"
               (click)="dismiss(row)"
-              variant="outline"
               [attr.data-cy]="'rating-controversy-dismiss-' + row.slug"
+              [disabled]="dismissingId === row.id"
+              size="sm"
+              type="button"
+              variant="outline"
             >
-              @if (dismissingId === row.id) {
-                <hlm-spinner />
-              }
               {{ t("dismiss") }}
             </button>
             <a
-              pButton
-              size="small"
+              hlmBtn
+              size="sm"
               [routerLink]="row.routerLink"
               [attr.data-cy]="'rating-controversy-open-' + row.slug"
             >
-              <span pButtonLabel>{{ t("open") }}</span>
+              {{ t("open") }}
             </a>
           </div>
         </article>
@@ -197,18 +195,16 @@
     @if (hasNextPage && !unavailable && !loadingFirstPage) {
       <div class="flex justify-center">
         <button
-          hlmBtn
-          type="button"
-          [disabled]="loading === loadingStates.LOADING"
-          (scrolled)="loadNextPage()"
+          lcLoadingButton
+          [loading]="loading === loadingStates.LOADING"
           (click)="loadNextPage()"
-          infiniteScroll
+          (scrolled)="loadNextPage()"
+          [disabled]="loading === loadingStates.LOADING"
           [infiniteScrollDistance]="2"
           [infiniteScrollThrottle]="50"
+          infiniteScroll
+          type="button"
         >
-          @if (loading === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
           {{ t("loadMore") }}
         </button>
       </div>

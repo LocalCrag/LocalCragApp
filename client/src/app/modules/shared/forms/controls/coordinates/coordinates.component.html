@@ -36,24 +36,20 @@
       <div class="flex flex-col gap-2">
         <label [attr.for]="locationButtonId">&nbsp;</label>
         <button
-          hlmBtn
-          type="button"
+          lcLoadingButton
+          icon="lucideMapPin"
+          [loading]="positionLoading"
+          (click)="getGeoLocation()"
+          [disabled]="positionLoading"
           [id]="locationButtonId"
           class="responsive-button"
-          [disabled]="positionLoading"
-          (click)="getGeoLocation()"
+          type="button"
         >
-          @if (positionLoading) {
-            <hlm-spinner />
-          } @else {
-            <ng-icon name="lucideMapPin" />
-          }
           {{ t("getCoordinatesPosition") }}
         </button>
       </div>
     </div>
   </form>
-
   @if (coordinatesLoadingSuccess || coordinatesLoadingError) {
     <div class="mt-6">
       @if (coordinatesLoadingSuccess && !positionLoading) {

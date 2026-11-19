@@ -38,14 +38,15 @@ import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prom
 import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-comments',
   imports: [
+    LoadingButtonComponent,
     CommentEditorComponent,
     CommentsSkeletonComponent,
     InfiniteScrollDirective,
@@ -54,7 +55,6 @@ import { lucideInfo } from '@ng-icons/lucide';
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './comments.component.html',

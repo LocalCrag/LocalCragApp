@@ -39,15 +39,16 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-moderator-task-form',
   imports: [
+    LoadingButtonComponent,
     WysiwygEditorComponent,
     ReactiveFormsModule,
     TranslocoDirective,
@@ -59,7 +60,6 @@ import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
     HlmButton,
     ...HlmSelectImports,
     HlmInput,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './moderator-task-form.component.html',

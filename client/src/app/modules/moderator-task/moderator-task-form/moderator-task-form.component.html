@@ -71,15 +71,13 @@
 
     <div class="form-actions">
       <button
-        hlmBtn
-        type="button"
-        [disabled]="loadingState === loadingStates.LOADING"
+        lcLoadingButton
+        icon="lucideSave"
+        [loading]="loadingState === loadingStates.LOADING"
         (click)="saveTask()"
+        [disabled]="loadingState === loadingStates.LOADING"
+        type="button"
       >
-        @if (loadingState === loadingStates.LOADING) {
-          <hlm-spinner />
-        }
-        <ng-icon name="lucideSave" />
         {{ editMode ? t("saveTaskButton") : t("createTaskButton") }}
       </button>
       <button hlmBtn type="button" variant="secondary" (click)="cancel()">
@@ -87,16 +85,15 @@
       </button>
       @if (editMode) {
         <button
-          hlmBtn
+          lcLoadingButton
+          icon="lucideTrash2"
+          [loading]="loadingState === loadingStates.LOADING"
+          (click)="confirmDelete($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
           type="button"
           variant="destructive"
-          [disabled]="loadingState === loadingStates.LOADING"
-          (click)="confirmDelete($event)"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideTrash2" /> {{ t("deleteTaskButton") }}
+           {{ t("deleteTaskButton") }}
         </button>
       }
     </div>

@@ -42,30 +42,28 @@
     <div class="form-actions">
       @if (!editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveMenuPage()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("createMenuPageButtonLabel") }}
+           {{ t("createMenuPageButtonLabel") }}
         </button>
       }
       @if (editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveMenuPage()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("editMenuPageButtonLabel") }}
+           {{ t("editMenuPageButtonLabel") }}
         </button>
       }
       <button
@@ -79,17 +77,16 @@
       </button>
       @if (editMode) {
         <button
-          hlmBtn
+          lcLoadingButton
+          icon="lucideTrash2"
+          [loading]="loadingState === loadingStates.LOADING"
+          (click)="confirmDeleteMenuPage($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
           type="button"
           variant="destructive"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
-          (click)="confirmDeleteMenuPage($event)"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideTrash2" /> {{ t("deleteMenuPageButtonLabel") }}
+           {{ t("deleteMenuPageButtonLabel") }}
         </button>
       }
     </div>

@@ -50,7 +50,6 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -69,6 +68,7 @@ export type RockExplorerPanelTab = 'info' | 'images' | 'comments' | 'misc';
 type PanelTab = RockExplorerPanelTab;
 
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   ChromeTab,
   ChromeTabsComponent,
@@ -89,6 +89,7 @@ import {
   ],
   selector: 'lc-rock-explorer-panel',
   imports: [
+    LoadingButtonComponent,
     ...HlmPopoverImports,
     ...HlmPopoverImports,
     ChromeTabsComponent,
@@ -112,7 +113,6 @@ import {
     ...HlmSelectImports,
     HlmInput,
     HlmTextarea,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './rock-explorer-panel.component.html',

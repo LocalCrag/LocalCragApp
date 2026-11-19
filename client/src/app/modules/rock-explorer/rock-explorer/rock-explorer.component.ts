@@ -83,14 +83,15 @@ import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideCopy } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-rock-explorer',
   imports: [
+    LoadingButtonComponent,
     FormsModule,
     TranslocoDirective,
     RockExplorerPanelComponent,
@@ -102,7 +103,6 @@ import { lucideCopy } from '@ng-icons/lucide';
     HlmInput,
     HlmTextarea,
     ...HlmDialogImports,
-    HlmSpinner,
     NgIcon,
   ],
   providers: [RockExplorerUiService, provideIcons({ lucideCopy })],

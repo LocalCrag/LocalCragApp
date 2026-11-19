@@ -92,14 +92,12 @@
           {{ t("rockExplorer.publishCancel") }}
         </button>
         <button
-          hlmBtn
-          type="button"
-          [disabled]="recording.publishInFlight"
+          lcLoadingButton
+          [loading]="recording.publishInFlight"
           (click)="recording.confirmPublishDialog()"
+          [disabled]="recording.publishInFlight"
+          type="button"
         >
-          @if (recording.publishInFlight) {
-            <hlm-spinner />
-          }
           {{ t("rockExplorer.publishConfirm") }}
         </button>
       </div>

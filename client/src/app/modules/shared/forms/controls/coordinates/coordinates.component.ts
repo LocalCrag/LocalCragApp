@@ -19,13 +19,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Coordinates } from '../../../../../interfaces/coordinates.interface';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
 import { lucideMapPin } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { HlmAlert } from '@spartan-ng/helm/alert';
-import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { latValidator } from '../../../../../utility/validators/lat.validator';
 import { lngValidator } from '../../../../../utility/validators/lng.validator';
 
@@ -35,16 +33,15 @@ import { ControlGroupDirective } from '../../control-group.directive';
 import { FormControlDirective } from '../../form-control.directive';
 import { IfErrorDirective } from '../../if-error.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LoadingButtonComponent } from '../../../components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-coordinates',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
-    NgIcon,
     HlmInput,
-    HlmButton,
-    HlmSpinner,
     HlmAlert,
     FormDirective,
     ControlGroupDirective,

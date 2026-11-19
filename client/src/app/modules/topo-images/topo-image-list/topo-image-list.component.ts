@@ -105,7 +105,6 @@ import {
   lucideImage,
   lucideImages,
   lucideInfo,
-  lucideLoaderCircle,
   lucideMessageSquare,
   lucidePencil,
   lucidePlus,
@@ -119,6 +118,7 @@ import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 import { CdkContextMenuTrigger } from '@angular/cdk/menu';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 interface ActionMenuItem {
   id?: string;
@@ -160,7 +160,6 @@ interface TopoSortOption {
       lucideImage,
       lucideImages,
       lucideInfo,
-      lucideLoaderCircle,
       lucideMessageSquare,
       lucidePencil,
       lucidePlus,
@@ -174,6 +173,7 @@ interface TopoSortOption {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     FormsModule,
     GymModeDirective,

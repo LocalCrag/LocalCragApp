@@ -197,35 +197,29 @@
       <div class="form-actions">
         @if (!editMode) {
           <button
-            hlmBtn
-            type="button"
-            class="responsive-button"
+            lcLoadingButton
+            icon="lucideSave"
+            [loading]="loadingState === loadingStates.LOADING"
             (click)="saveCrag()"
             [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="submit"
+            type="button"
           >
-            @if (loadingState === loadingStates.LOADING) {
-              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-            } @else {
-              <ng-icon name="lucideSave" />
-            }
             {{ t("createSectorButtonLabel") }}
           </button>
         }
         @if (editMode) {
           <button
-            hlmBtn
-            type="button"
-            class="responsive-button"
+            lcLoadingButton
+            icon="lucideSave"
+            [loading]="loadingState === loadingStates.LOADING"
             (click)="saveCrag()"
             [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="submit"
+            type="button"
           >
-            @if (loadingState === loadingStates.LOADING) {
-              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-            } @else {
-              <ng-icon name="lucideSave" />
-            }
             {{ t("editSectorButtonLabel") }}
           </button>
         }
@@ -252,19 +246,16 @@
             </button>
           }
           <button
-            hlmBtn
-            type="button"
-            variant="destructive"
-            class="responsive-button"
+            lcLoadingButton
+            icon="lucideTrash2"
+            [loading]="loadingState === loadingStates.LOADING"
             (click)="confirmDeleteSector($event)"
             [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="delete"
+            type="button"
+            variant="destructive"
           >
-            @if (loadingState === loadingStates.LOADING) {
-              <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-            } @else {
-              <ng-icon name="lucideTrash2" />
-            }
             {{ t("deleteSectorButtonLabel") }}
           </button>
         }

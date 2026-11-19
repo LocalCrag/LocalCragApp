@@ -33,14 +33,12 @@
         </button>
       }
       <button
-        hlmBtn
-        type="button"
-        [disabled]="saving || form.invalid"
+        lcLoadingButton
+        [loading]="saving"
         (click)="send()"
+        [disabled]="saving || form.invalid"
+        type="button"
       >
-        @if (saving) {
-          <hlm-spinner />
-        }
         {{ t("postComment") }}
       </button>
     </div>

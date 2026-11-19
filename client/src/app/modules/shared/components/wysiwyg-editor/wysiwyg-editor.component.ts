@@ -51,7 +51,6 @@ import {
   HlmDropdownMenuTrigger,
 } from '@spartan-ng/helm/dropdown-menu';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { sharedLucideIcons } from '../../utils/prime-icon';
@@ -96,6 +95,7 @@ import {
 import { sanitizePastedHtml } from './wysiwyg-paste';
 import { videoNodeForUrl } from './wysiwyg-video-url';
 import { $isWysiwygVideoNode } from './wysiwyg-video.node';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 export type WysiwygToolbar = 'basic' | 'rich' | 'rich-no-video';
 
@@ -116,12 +116,12 @@ interface MediaChrome {
   styleUrl: './wysiwyg-editor.component.scss',
   host: { class: 'lc-wysiwyg-editor' },
   imports: [
+    LoadingButtonComponent,
     TranslocoPipe,
     ReactiveFormsModule,
     NgIcon,
     HlmButton,
     HlmInput,
-    HlmSpinner,
     HlmTooltip,
     HlmContextMenuTrigger,
     HlmDropdownMenu,

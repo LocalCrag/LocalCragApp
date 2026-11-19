@@ -235,38 +235,32 @@
           </button>
           @if (reviewActionChosen) {
             <button
-              hlmBtn
-              type="button"
-              [disabled]="saving"
+              lcLoadingButton
+              [loading]="saving"
               (click)="confirm()"
+              [disabled]="saving"
+              type="button"
             >
-              @if (saving) {
-                <hlm-spinner />
-              }
               {{ t("confirm") }}
             </button>
           } @else {
             <button
-              hlmBtn
-              type="button"
-              [disabled]="saving"
+              lcLoadingButton
+              [loading]="saving"
               (click)="confirm('publish')"
+              [disabled]="saving"
+              type="button"
             >
-              @if (saving) {
-                <hlm-spinner />
-              }
               {{ t("publish") }}
             </button>
             <button
-              hlmBtn
+              lcLoadingButton
+              [loading]="saving"
+              (click)="confirm('reject')"
+              [disabled]="saving"
               type="button"
               variant="destructive"
-              [disabled]="saving"
-              (click)="confirm('reject')"
             >
-              @if (saving) {
-                <hlm-spinner />
-              }
               {{ t("reject") }}
             </button>
           }

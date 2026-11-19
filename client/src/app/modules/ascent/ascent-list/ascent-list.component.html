@@ -577,18 +577,16 @@
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
       <button
-        hlmBtn
-        type="button"
-        [disabled]="loading === loadingStates.LOADING"
-        (scrolled)="loadNextPage()"
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
         (click)="loadNextPage()"
-        infiniteScroll
+        (scrolled)="loadNextPage()"
+        [disabled]="loading === loadingStates.LOADING"
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
+        infiniteScroll
+        type="button"
       >
-        @if (loading === loadingStates.LOADING) {
-          <hlm-spinner />
-        }
         {{ t("loadMore") }}
       </button>
     </div>

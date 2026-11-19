@@ -14,7 +14,8 @@ import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 
 /**
  * Component that lists boolean properties of lines in text form.
- * When the list is clipped, hovering it shows the full text.
+ * The text wraps. Add the `clip-line` class where it must stay on one line;
+ * hovering a clipped list shows the full text.
  */
 @Component({
   selector: 'lc-line-bool-prop-list',

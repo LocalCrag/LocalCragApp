@@ -61,10 +61,13 @@
           >
             {{ t("moveObjectDialog.cancel") }}
           </button>
-          <button hlmBtn type="button" [disabled]="loading" (click)="submit()">
-            @if (loading) {
-              <hlm-spinner />
-            }
+          <button
+            lcLoadingButton
+            [loading]="loading"
+            (click)="submit()"
+            [disabled]="loading"
+            type="button"
+          >
             {{ t("moveObjectDialog.submit") }}
           </button>
         </div>

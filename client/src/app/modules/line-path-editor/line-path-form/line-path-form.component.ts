@@ -65,12 +65,12 @@ import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideArrowDown,
   lucideArrowUp,
   lucideBan,
   lucideInfo,
-  lucideLoaderCircle,
   lucideSave,
   lucideTrash2,
 } from '@ng-icons/lucide';
@@ -92,6 +92,7 @@ interface LinePathDraft {
   templateUrl: './line-path-form.component.html',
   styleUrl: './line-path-form.component.scss',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
@@ -122,7 +123,6 @@ interface LinePathDraft {
       lucideArrowUp,
       lucideBan,
       lucideInfo,
-      lucideLoaderCircle,
       lucideSave,
       lucideTrash2,
     }),

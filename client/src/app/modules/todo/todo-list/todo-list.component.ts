@@ -60,15 +60,15 @@ interface SelectItem<T = any> {
 
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   providers: [provideIcons({ lucideInfo, lucideTrash2 })],
   selector: 'lc-todo-list',
   imports: [
+    LoadingButtonComponent,
     HlmButton,
     ...HlmSelectImports,
-    HlmSpinner,
     RouterLink,
     GradeRangeSliderComponent,
     TranslocoDirective,

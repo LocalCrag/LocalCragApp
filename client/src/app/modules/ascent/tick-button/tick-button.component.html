@@ -6,6 +6,7 @@
       variant="ghost"
       [size]="showLabel ? 'default' : 'icon'"
       class="tick-button rounded-full"
+      [class.icon-only]="!showLabel"
       data-cy="tick-button"
       (click)="addAscent($event)"
       [ngClass]="{ disabled: ticked }"

@@ -59,9 +59,9 @@ import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
 import { HlmToggle } from '@spartan-ng/helm/toggle';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideCircleQuestionMark,
   lucideClock,
@@ -86,6 +86,7 @@ import {
   ],
   selector: 'lc-ascent-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -106,7 +107,6 @@ import {
     HlmToggle,
     HlmTooltip,
     HlmSeparator,
-    HlmSpinner,
     NgIcon,
     AscentFormTitleComponent,
   ],

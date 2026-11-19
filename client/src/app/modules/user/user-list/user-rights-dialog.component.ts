@@ -17,7 +17,7 @@ import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 export interface UserRightsDialogData {
   userId: string;
@@ -42,12 +42,12 @@ export function userPromotionTarget(user: User): UserPromotionTargets {
   selector: 'lc-user-rights-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LoadingButtonComponent,
     FormsModule,
     TranslocoDirective,
     HlmButton,
     ...HlmSelectImports,
     HlmCheckbox,
-    HlmSpinner,
   ],
   templateUrl: './user-rights-dialog.component.html',
   styleUrl: './user-rights-dialog.component.scss',

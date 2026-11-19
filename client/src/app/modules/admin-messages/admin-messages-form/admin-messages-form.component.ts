@@ -35,15 +35,16 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-admin-messages-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -54,7 +55,6 @@ import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
     HlmButton,
     HlmInput,
     HlmTextarea,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './admin-messages-form.component.html',

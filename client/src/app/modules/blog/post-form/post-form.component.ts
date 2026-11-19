@@ -36,11 +36,11 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -48,6 +48,7 @@ import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
 @Component({
   selector: 'lc-post-form',
   imports: [
+    LoadingButtonComponent,
     WysiwygEditorComponent,
     ReactiveFormsModule,
     TranslocoDirective,
@@ -58,7 +59,6 @@ import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
     IfErrorDirective,
     HlmButton,
     HlmInput,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './post-form.component.html',

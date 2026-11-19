@@ -24,7 +24,6 @@ import { HlmAlert } from '@spartan-ng/helm/alert';
 import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { SearchService } from '../../../../services/crud/search.service';
 import { Searchable } from '../../../../models/searchable';
 import { ObjectType } from '../../../../models/object';
@@ -39,15 +38,16 @@ import { ControlGroupDirective } from '../../forms/control-group.directive';
 import { FormControlDirective } from '../../forms/form-control.directive';
 import { IfErrorDirective } from '../../forms/if-error.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-move-object-dialog',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     NgIcon,
     HlmAlert,
     HlmButton,
-    HlmSpinner,
     ...HlmDialogImports,
     ...HlmAutocompleteImports,
     TranslocoDirective,

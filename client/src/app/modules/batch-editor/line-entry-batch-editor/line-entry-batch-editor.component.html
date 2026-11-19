@@ -20,18 +20,15 @@
             </div>
             <div class="flex pt-6 justify-between">
               <button
-                hlmBtn
+                lcLoadingButton
+                icon="lucideBan"
+                [loading]="loadingState === loadingStates.LOADING"
+                (click)="cancel()"
+                [disabled]="loadingState === loadingStates.LOADING"
+                class="responsive-button"
                 type="button"
                 variant="secondary"
-                class="responsive-button"
-                [disabled]="loadingState === loadingStates.LOADING"
-                (click)="cancel()"
               >
-                @if (loadingState === loadingStates.LOADING) {
-                  <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-                } @else {
-                  <ng-icon name="lucideBan" />
-                }
                 {{ t("cancel") }}
               </button>
               <button
@@ -162,33 +159,29 @@
                   {{ t("Back") }}
                 </button>
                 <button
-                  hlmBtn
+                  lcLoadingButton
+                  icon="lucideBan"
+                  [loading]="loadingState === loadingStates.LOADING"
+                  (click)="cancel()"
+                  [disabled]="loadingState === loadingStates.LOADING"
+                  class="responsive-button"
                   type="button"
                   variant="secondary"
-                  class="responsive-button"
-                  [disabled]="loadingState === loadingStates.LOADING"
-                  (click)="cancel()"
                 >
-                  @if (loadingState === loadingStates.LOADING) {
-                    <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-                  } @else {
-                    <ng-icon name="lucideBan" />
-                  }
                   {{ t("cancel") }}
                 </button>
               </div>
               <button
-                hlmBtn
-                type="button"
-                class="responsive-button"
-                [disabled]="loadingState === loadingStates.LOADING"
+                lcLoadingButton
+                icon="lucideArrowRight"
+                iconEnd
+                [loading]="loadingState === loadingStates.LOADING"
                 (click)="saveLinesAndTopoImages()"
+                [disabled]="loadingState === loadingStates.LOADING"
+                class="responsive-button"
+                type="button"
               >
-                @if (loadingState === loadingStates.LOADING) {
-                  <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-                }
                 {{ t("saveLinesAndTopoImagesAndNext") }}
-                <ng-icon name="lucideArrowRight" />
               </button>
             </div>
           </spartan-step>

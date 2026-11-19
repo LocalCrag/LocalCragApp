@@ -13,4 +13,28 @@ lc-tick-button {
     padding: 0.1rem;
     color: var(--p-primary-contrast-color);
   }
+
+  // Icon-only ticks match the line list: an outlined circle, filled once climbed.
+  button.tick-button.icon-only {
+    border-color: var(--border);
+    background-color: transparent;
+
+    &:hover:not(:disabled) {
+      background-color: var(--accent);
+    }
+
+    &:has(.ticked-icon) {
+      background-color: var(--ticked-color);
+      background-clip: border-box;
+      border-color: var(--ticked-color);
+      color: var(--p-primary-contrast-color);
+
+      .ticked-icon {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+      }
+    }
+  }
 }

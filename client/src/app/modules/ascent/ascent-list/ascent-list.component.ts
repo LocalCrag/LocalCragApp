@@ -63,7 +63,6 @@ import { MenuItem } from '../../shared/models/menu-item';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { HlmBadge } from '@spartan-ng/helm/badge';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -90,10 +89,12 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmToggle } from '@spartan-ng/helm/toggle';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-ascent-list',
   imports: [
+    LoadingButtonComponent,
     ...HlmSelectImports,
     HlmToggle,
     ...HlmDropdownMenuImports,
@@ -119,7 +120,6 @@ import { ConfirmDialogService } from '../../shared/components/confirm-dialog/con
     HlmAlert,
     HlmAlertDescription,
     HlmBadge,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './ascent-list.component.html',

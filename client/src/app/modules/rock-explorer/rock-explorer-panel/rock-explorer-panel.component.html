@@ -329,14 +329,12 @@
               </button>
             } @else {
               <button
-                hlmBtn
-                type="button"
-                [disabled]="!!gallery?.saving"
+                lcLoadingButton
+                [loading]="!!gallery?.saving"
                 (click)="gallery?.saveAll()"
+                [disabled]="!!gallery?.saving"
+                type="button"
               >
-                @if (!!gallery?.saving) {
-                  <hlm-spinner />
-                }
                 {{ t("rockExplorer.save") }}
               </button>
               <button
@@ -356,14 +354,12 @@
               </button>
             } @else {
               <button
-                hlmBtn
-                type="button"
-                [disabled]="!!misc?.saving"
+                lcLoadingButton
+                [loading]="!!misc?.saving"
                 (click)="misc?.saveAll()"
+                [disabled]="!!misc?.saving"
+                type="button"
               >
-                @if (!!misc?.saving) {
-                  <hlm-spinner />
-                }
                 {{ t("rockExplorer.save") }}
               </button>
               <button
@@ -617,14 +613,12 @@
 
       <div class="rock-explorer__panel-footer">
         <button
-          hlmBtn
-          type="button"
-          [disabled]="ui.saving()"
+          lcLoadingButton
+          [loading]="ui.saving()"
           (click)="onSaveFeature()"
+          [disabled]="ui.saving()"
+          type="button"
         >
-          @if (ui.saving()) {
-            <hlm-spinner />
-          }
           {{ t("rockExplorer.save") }}
         </button>
         @if (ui.editingFeature()?.id) {

@@ -10,10 +10,9 @@ import { providerForUrl } from '../../../utility/video-source';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoaderCircle } from '@ng-icons/lucide';
 import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 const MAX_START_SECONDS = 24 * 60 * 60;
 const MAX_MESSAGE_LENGTH = 2000;
@@ -44,14 +43,13 @@ export function openAscentVideoModerationDialog(
   styleUrl: './ascent-video-moderation-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     FormsModule,
     TranslocoDirective,
     HlmButton,
     HlmInput,
     HlmTextarea,
-    NgIcon,
   ],
-  providers: [provideIcons({ lucideLoaderCircle })],
 })
 export class AscentVideoModerationDialogComponent {
   public draft: Video | null = null;

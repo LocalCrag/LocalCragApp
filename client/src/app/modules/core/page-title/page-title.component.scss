@@ -284,6 +284,12 @@
     align-self: stretch;
     margin-inline: calc(-1 * var(--page-chrome-inline-padding));
     width: auto;
+
+    /* Overlay padding shrinks on a phone; the bar must follow or the
+       chevrons hang past the screen edge. */
+    @include m.on-mobile {
+      margin-inline: calc(-1 * var(--lc-card-padding-inline));
+    }
   }
 
   lc-chrome-tabs.page-chrome__tabs:not(.chrome-tabs--overlay) {

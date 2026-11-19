@@ -60,10 +60,10 @@ import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmProgress, HlmProgressIndicator } from '@spartan-ng/helm/progress';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideArrowLeftRight,
   lucideBan,
-  lucideLoaderCircle,
   lucideSave,
   lucideUpload,
 } from '@ng-icons/lucide';
@@ -76,6 +76,7 @@ import {
   templateUrl: './topo-image-form.component.html',
   styleUrls: ['./topo-image-form.component.scss'],
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
@@ -101,7 +102,6 @@ import {
     provideIcons({
       lucideArrowLeftRight,
       lucideBan,
-      lucideLoaderCircle,
       lucideSave,
       lucideUpload,
     }),

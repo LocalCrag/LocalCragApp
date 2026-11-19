@@ -24,16 +24,14 @@
 
   <div class="form-actions">
     <button
-      hlmBtn
-      type="button"
-      class="w-full"
+      lcLoadingButton
+      [loading]="loadingState === loadingStates.LOADING"
       (click)="sendMessage()"
       [disabled]="loadingState === loadingStates.LOADING"
+      class="w-full"
       data-cy="submit"
+      type="button"
     >
-      @if (loadingState === loadingStates.LOADING) {
-        <hlm-spinner />
-      }
       {{ t("sendProjectClimbedMessageButtonLabel") }}
     </button>
   </div>

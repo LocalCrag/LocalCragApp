@@ -24,15 +24,13 @@
       {{ t("removeFaCancel") }}
     </button>
     <button
-      hlmBtn
-      type="button"
-      variant="destructive"
+      lcLoadingButton
+      [loading]="saving"
       (click)="confirm()"
       [disabled]="saving"
+      type="button"
+      variant="destructive"
     >
-      @if (saving) {
-        <hlm-spinner />
-      }
       {{ t("yesRemoveFa") }}
     </button>
   </div>

@@ -117,15 +117,13 @@
             {{ t("blocWeather.reportConditionsCancel") }}
           </button>
           <button
-            hlmBtn
+            lcLoadingButton
+            [loading]="loading"
+            (click)="submit()"
+            [disabled]="loading"
             type="button"
             variant="default"
-            [disabled]="loading"
-            (click)="submit()"
           >
-            @if (loading) {
-              <hlm-spinner />
-            }
             {{ t("blocWeather.reportConditionsSubmit") }}
           </button>
         </div></hlm-dialog-content

@@ -503,16 +503,15 @@
       <div hlmSeparator class="mt-12"></div>
       <div class="form-actions justify-end">
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === LoadingState.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === LoadingState.LOADING"
           (click)="saveScale()"
+          [disabled]="loadingState === LoadingState.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === LoadingState.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("saveScale") }}
+           {{ t("saveScale") }}
         </button>
         <button
           hlmBtn

@@ -41,11 +41,11 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 interface SelectItem<T = any> {
   label?: string;
@@ -56,6 +56,7 @@ interface SelectItem<T = any> {
 @Component({
   selector: 'lc-app-alerts-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -68,7 +69,6 @@ interface SelectItem<T = any> {
     ...HlmDatePickerImports,
     HlmInput,
     HlmTextarea,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './app-alerts-form.component.html',

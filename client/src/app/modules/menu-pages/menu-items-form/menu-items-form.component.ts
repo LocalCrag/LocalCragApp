@@ -45,7 +45,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import {
   lucideNameFromPrimeIcon,
   sharedLucideIcons,
@@ -54,6 +53,7 @@ import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   buildMenuItemTree,
   descendantIds,
@@ -63,6 +63,7 @@ import {
 @Component({
   selector: 'lc-menu-items-form',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     TranslocoPipe,
@@ -73,7 +74,6 @@ import {
     HlmButton,
     ...HlmSelectImports,
     HlmInput,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './menu-items-form.component.html',

@@ -39,7 +39,6 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -55,6 +54,7 @@ import {
 } from '../line-history-location';
 
 import { HlmCard } from '@spartan-ng/helm/card';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   providers: [
@@ -68,6 +68,7 @@ import { HlmCard } from '@spartan-ng/helm/card';
   ],
   selector: 'lc-history-list',
   imports: [
+    LoadingButtonComponent,
     HlmCard,
     TranslocoDirective,
     AsyncPipe,
@@ -78,7 +79,6 @@ import { HlmCard } from '@spartan-ng/helm/card';
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
-    HlmSpinner,
     NgIcon,
   ],
   templateUrl: './history-list.component.html',

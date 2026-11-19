@@ -39,10 +39,10 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   lucideBan,
   lucideCircleQuestionMark,
-  lucideLoaderCircle,
   lucideSave,
 } from '@ng-icons/lucide';
 
@@ -52,6 +52,7 @@ import {
 @Component({
   selector: 'lc-region-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     WysiwygEditorComponent,
     TranslocoDirective,
@@ -70,7 +71,6 @@ import {
     provideIcons({
       lucideBan,
       lucideCircleQuestionMark,
-      lucideLoaderCircle,
       lucideSave,
     }),
   ],

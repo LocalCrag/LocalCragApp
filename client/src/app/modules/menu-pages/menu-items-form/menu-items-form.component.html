@@ -198,31 +198,29 @@
     <div class="form-actions">
       @if (!editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveMenuItem()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
           data-cy="submit"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("createMenuItemButtonLabel") }}
+           {{ t("createMenuItemButtonLabel") }}
         </button>
       }
       @if (editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveMenuItem()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("editMenuItemButtonLabel") }}
+           {{ t("editMenuItemButtonLabel") }}
         </button>
       }
       <button
@@ -236,17 +234,16 @@
       </button>
       @if (editMode) {
         <button
-          hlmBtn
+          lcLoadingButton
+          icon="lucideTrash2"
+          [loading]="loadingState === loadingStates.LOADING"
+          (click)="confirmDeleteMenuItem($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
           type="button"
           variant="destructive"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
-          (click)="confirmDeleteMenuItem($event)"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideTrash2" /> {{ t("deleteMenuItemButtonLabel") }}
+           {{ t("deleteMenuItemButtonLabel") }}
         </button>
       }
     </div>

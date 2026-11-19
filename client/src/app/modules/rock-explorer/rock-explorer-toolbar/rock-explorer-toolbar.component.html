@@ -148,25 +148,23 @@
             </button>
             @if (ui.syncStatus(); as status) {
               <button
-                hlmBtn
-                type="button"
-                [variant]="status === 'error' ? 'destructive' : 'secondary'"
-                class="{{
-                  'rock-explorer__sync-status rock-explorer__sync-status--' +
-                    status
-                }}"
+                lcLoadingButton
+                icon="lucideRefreshCw"
+                [loading]="status === 'syncing'"
+                (click)="ui.dispatch({ type: 'syncNow' })"
                 [disabled]="
                   !ui.storageOk() ||
                   !ui.activeLocalDraftId() ||
                   status === 'syncing' ||
                   !ui.online()
                 "
-                (click)="ui.dispatch({ type: 'syncNow' })"
+                [variant]="status === 'error' ? 'destructive' : 'secondary'"
+                class="{{
+                  'rock-explorer__sync-status rock-explorer__sync-status--' +
+                    status
+                }}"
+                type="button"
               >
-                @if (status === "syncing") {
-                  <hlm-spinner />
-                }
-                <ng-icon name="lucideRefreshCw" />
                 {{ t("rockExplorer.syncStatus." + status) }}
               </button>
             }
@@ -211,20 +209,18 @@
         [tooltipDisabled]="!ui.polygonSelfIntersecting()"
       >
         <button
-          hlmBtn
-          type="button"
-          variant="default"
+          lcLoadingButton
+          icon="lucideCheck"
+          [loading]="ui.saving()"
+          (click)="ui.dispatch({ type: 'finishPolygon' })"
           [disabled]="
             ui.polygonVertexCount() < 3 ||
             ui.polygonSelfIntersecting() ||
             ui.saving()
           "
-          (click)="ui.dispatch({ type: 'finishPolygon' })"
+          type="button"
+          variant="default"
         >
-          @if (ui.saving()) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideCheck" />
           {{
             ui.geometryEditActive()
               ? t("rockExplorer.saveGeometry")

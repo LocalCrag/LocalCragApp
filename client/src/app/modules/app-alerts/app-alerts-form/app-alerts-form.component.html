@@ -175,30 +175,28 @@
     <div class="form-actions">
       @if (!editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveAppAlert()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("createAppAlertButtonLabel") }}
+           {{ t("createAppAlertButtonLabel") }}
         </button>
       }
       @if (editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveAppAlert()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideSave" /> {{ t("editAppAlertButtonLabel") }}
+           {{ t("editAppAlertButtonLabel") }}
         </button>
       }
       <button
@@ -212,17 +210,16 @@
       </button>
       @if (editMode) {
         <button
-          hlmBtn
+          lcLoadingButton
+          icon="lucideTrash2"
+          [loading]="loadingState === loadingStates.LOADING"
+          (click)="confirmDeleteAppAlert($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
           type="button"
           variant="destructive"
-          class="responsive-button"
-          [disabled]="loadingState === loadingStates.LOADING"
-          (click)="confirmDeleteAppAlert($event)"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <hlm-spinner />
-          }
-          <ng-icon name="lucideTrash2" /> {{ t("deleteAppAlertButtonLabel") }}
+           {{ t("deleteAppAlertButtonLabel") }}
         </button>
       }
     </div>

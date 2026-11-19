@@ -34,10 +34,13 @@
     <button hlmBtn type="button" variant="ghost" (click)="close()">
       {{ t("cancel") }}
     </button>
-    <button hlmBtn type="button" [disabled]="saving" (click)="save()">
-      @if (saving) {
-        <hlm-spinner />
-      }
+    <button
+      lcLoadingButton
+      [loading]="saving"
+      (click)="save()"
+      [disabled]="saving"
+      type="button"
+    >
       {{ t("save") }}
     </button>
   </div>

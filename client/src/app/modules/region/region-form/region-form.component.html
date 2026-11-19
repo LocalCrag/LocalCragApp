@@ -92,17 +92,14 @@
     <div class="form-actions">
       @if (editMode) {
         <button
-          hlmBtn
-          type="button"
-          class="responsive-button"
+          lcLoadingButton
+          icon="lucideSave"
+          [loading]="loadingState === loadingStates.LOADING"
           (click)="saveRegion()"
           [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
         >
-          @if (loadingState === loadingStates.LOADING) {
-            <ng-icon name="lucideLoaderCircle" class="animate-spin" />
-          } @else {
-            <ng-icon name="lucideSave" />
-          }
           {{ t("editRegionButtonLabel") }}
         </button>
       }

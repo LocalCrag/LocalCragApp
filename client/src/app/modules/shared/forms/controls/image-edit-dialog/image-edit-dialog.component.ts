@@ -18,8 +18,8 @@ import { lucideRotateCcw, lucideRotateCw } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { LoadingButtonComponent } from '../../../components/loading-button/loading-button.component';
 import {
   CropEdges,
   displaySize,
@@ -52,10 +52,10 @@ const HANDLE_EDGES: Record<Exclude<CropDragMode, 'move'>, CropEdges> = {
 @Component({
   selector: 'lc-image-edit-dialog',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     NgIcon,
     HlmButton,
-    HlmSpinner,
     HlmTooltip,
     ...HlmDialogImports,
   ],

@@ -4,22 +4,22 @@ import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 export const FA_REMOVAL_MESSAGE_MAX_LENGTH = 2000;
 
 @Component({
   selector: 'lc-remove-fa-dialog',
   imports: [
+    LoadingButtonComponent,
     FormsModule,
     TranslocoDirective,
     HlmButton,
-    HlmSpinner,
     HlmTextarea,
   ],
   templateUrl: './remove-fa-dialog.component.html',

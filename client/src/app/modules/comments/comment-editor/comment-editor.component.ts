@@ -23,24 +23,24 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { getObjectType } from '../../../models/object';
 import { CommentsContextService } from '../comments-context.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-comment-editor',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
     HlmButton,
-    HlmSpinner,
     HlmTextarea,
     TranslocoDirective,
     TranslocoPipe,

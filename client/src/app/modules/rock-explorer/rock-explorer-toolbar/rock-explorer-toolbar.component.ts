@@ -20,7 +20,6 @@ import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
-import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { HlmSliderImports } from '@spartan-ng/helm/slider';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
@@ -53,10 +52,12 @@ import {
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-rock-explorer-toolbar',
   imports: [
+    LoadingButtonComponent,
     HlmInput,
     ...HlmPopoverImports,
     ...HlmPopoverImports,
@@ -66,7 +67,6 @@ import { HlmTooltip } from '@spartan-ng/helm/tooltip';
     HlmButton,
     ...HlmSelectImports,
     HlmCheckbox,
-    HlmSpinner,
     HlmTooltip,
     ...HlmSliderImports,
     NgIcon,
