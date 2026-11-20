@@ -35,7 +35,10 @@ export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
-  public version = environment.version;
+  /** Release versions are semver and keep a "v" prefix. Next builds are a build id. */
+  public versionLabel = /^\d/.test(environment.version)
+    ? `v${environment.version}`
+    : environment.version;
 
   private skippedHierarchyLayers$: Observable<number>;
   private menuItemsService = inject(MenuItemsService);
