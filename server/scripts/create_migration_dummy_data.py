@@ -12,8 +12,12 @@ a comment on every row.
 Run from server/src:
 
     PYTHONPATH=. LOCALCRAG_CONFIG=config/test-ci.cfg pipenv run python ../scripts/create_migration_dummy_data.py
+
+Deployed instances use ``seed_demo_instance.py`` instead. That script wipes
+existing data and calls ``create_migration_dummy_data(demo=True)``.
 """
 
+import contextvars
 import datetime
 import logging
 import time
@@ -98,6 +102,10 @@ from models.webauthn_challenge import WebAuthnChallenge
 
 logger = logging.getLogger(__name__)
 
+# Shared password for every seeded user. Printed by the demo wipe script; never mailed.
+MIGRATION_USER_PASSWORD = "migration-dummy"
+_demo_mode: contextvars.ContextVar[bool] = contextvars.ContextVar("localcrag_demo_seed", default=False)
+
 USER_COUNT = 200
 TARGET_LINE_COUNT = 3000
 ASCENTS_PER_USER = 50
@@ -138,17 +146,31 @@ ROCK_TYPES = tuple(RockExplorerRockTypeEnum)
 TODO_PRIORITIES = tuple(TodoPriorityEnum)
 
 
-def create_migration_dummy_data():
-    """Insert a production-sized graph. Refuses to run when that graph is already present."""
+def create_migration_dummy_data(*, demo: bool = False):
+    """Insert a production-sized graph. Refuses to run when that graph is already present.
+
+    The migration check calls this with the defaults. ``demo=True`` is only for a
+    deployed instance: seeded users are not superadmins, their mail preferences are
+    off, notifications are already delivered, and image rows are real uploads.
+    """
     ensure_secret_listeners_registered()
     add_scales()
+    token = _demo_mode.set(demo)
+    try:
+        _insert_migration_dummy_data(demo)
+    finally:
+        _demo_mode.reset(token)
 
+
+def _insert_migration_dummy_data(demo: bool):
     with app.app_context():
         if User.find_by_email("migration-user-000@localcrag.invalid"):
             raise SystemExit("Migration dummy data is already loaded.")
 
+        if demo:
+            _upload_demo_image.count = 0
         timer = _Timer()
-        password_hash = User.generate_hash("migration-dummy")
+        password_hash = User.generate_hash(MIGRATION_USER_PASSWORD)
         users, admin = _create_users(password_hash)
         timer.mark(f"users ({len(users)})")
         _enrich_instance_settings()
@@ -189,10 +211,19 @@ def create_migration_dummy_data():
         _create_two_factor_challenge(admin)
         _create_release_notes()
         timer.mark("remaining entities")
+        if demo:
+            _assign_demo_avatars(users, admin)
+            _mark_demo_notifications_delivered()
+            timer.mark("demo avatars and delivered notifications")
         _assert_counts(len(lines))
         db.session.commit()
         timer.mark("commit")
         logger.info("Dummy data ready in %.1fs", timer.total)
+        if demo:
+            logger.info(
+                "Demo users sign in as migration-user-NNN@localcrag.invalid with password %s.",
+                MIGRATION_USER_PASSWORD,
+            )
 
 
 def _crag_plans():
@@ -227,7 +258,9 @@ def _create_users(password_hash: str):
         user.lastname = f"User {index:03d}"
         user.activated = index % 11 != 0
         user.activated_at = now if user.activated else None
-        user.superadmin = index == 0
+        user.superadmin = index == 0 and not _demo_mode.get()
+        if _demo_mode.get():
+            user.email_two_factor_enabled = False
         user.admin = index < 3
         user.moderator = index < 3 or index % 20 == 0
         user.member = index % 4 != 3
@@ -250,7 +283,14 @@ def _create_users(password_hash: str):
         settings.notification_digest_frequency = digests[index % 2]
         settings.exclude_from_rankings = index % 17 == 0
         settings.todo_list_private = index % 13 == 0
-        settings.comment_reply_mails_enabled = index % 5 != 0
+        if _demo_mode.get():
+            settings.comment_reply_mails_enabled = False
+            settings.reaction_notifications_enabled = False
+            settings.system_notifications_enabled = False
+            settings.moderator_task_notifications_enabled = False
+            settings.admin_message_notifications_enabled = False
+        else:
+            settings.comment_reply_mails_enabled = index % 5 != 0
         db.session.add(settings)
     db.session.flush()
     return users, users[1]
@@ -1129,6 +1169,8 @@ def _create_release_notes():
 
 
 def _file(admin: User, filename: str, width: int, height: int) -> File:
+    if _demo_mode.get():
+        return _upload_demo_image(admin, filename, width, height)
     file = File()
     file.original_filename = filename
     file.filename = f"migration-{filename}"
@@ -1140,6 +1182,53 @@ def _file(admin: User, filename: str, width: int, height: int) -> File:
     file.focus_y = 0.4
     file.created_by_id = admin.id
     return file
+
+
+def _upload_demo_image(admin: User, filename: str, width: int, height: int) -> File:
+    """Store a generated JPEG and its thumbnails under a unique object key."""
+    import uuid
+    import zlib
+
+    from PIL import Image, ImageDraw
+
+    from uploader.media_upload_handler import persist_processed_image
+
+    width = max(width, 1)
+    height = max(height, 1)
+    seed = zlib.crc32(filename.encode())
+    color = (
+        40 + (seed & 0xFF) % 180,
+        40 + ((seed >> 8) & 0xFF) % 180,
+        40 + ((seed >> 16) & 0xFF) % 180,
+    )
+    image = Image.new("RGB", (width, height), color)
+    accent = tuple(255 - channel for channel in color)
+    ImageDraw.Draw(image).rectangle([8, 8, max(width // 2, 9), max(height // 2, 9)], fill=accent)
+    image.format = "JPEG"
+    file = persist_processed_image(image, filename, uuid.uuid4().hex, None, None)
+    file.focus_y = 0.4
+    file.created_by_id = admin.id
+    uploaded = getattr(_upload_demo_image, "count", 0) + 1
+    _upload_demo_image.count = uploaded
+    if uploaded == 1 or uploaded % 25 == 0:
+        logger.info("Uploaded %s demo images", uploaded)
+    return file
+
+
+def _assign_demo_avatars(users, admin: User):
+    for index, user in enumerate(users):
+        avatar = _file(admin, f"avatar-{index}.jpg", 400, 400)
+        db.session.add(avatar)
+        db.session.flush()
+        user.avatar_id = avatar.id
+    db.session.flush()
+
+
+def _mark_demo_notifications_delivered():
+    now = _naive_utc()
+    for notification in Notification.query.filter(Notification.delivered_at.is_(None)):
+        notification.delivered_at = now
+    db.session.flush()
 
 
 def _path_points(line_index: int, path_index: int) -> list[float]:

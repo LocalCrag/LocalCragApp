@@ -3,6 +3,7 @@ import ssl
 from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import getaddresses
 
 import html2text
 from flask import current_app, render_template
@@ -62,11 +63,30 @@ def _apply_instance_branding(i18n_keyword_arg_dict):
     return i18n_keyword_arg_dict
 
 
+def _is_reserved_invalid_recipient(header_value) -> bool:
+    """True when every address uses the reserved ``.invalid`` TLD.
+
+    Those addresses are seed and test accounts. Skipping them keeps a deployed
+    instance from handing them to SMTP while real recipients, including the
+    superadmin, are still delivered.
+    """
+    if not header_value:
+        return False
+    addresses = [address.strip().lower() for _, address in getaddresses([header_value]) if address and address.strip()]
+    if not addresses:
+        return header_value.strip().lower().endswith(".invalid")
+    return all(address.endswith(".invalid") for address in addresses)
+
+
 def send_generic_mail(msg):
     """
     Sends the passed mail.
     :param msg: Mail to send.
     """
+
+    if _is_reserved_invalid_recipient(msg["To"]):
+        current_app.logger.info("Skipping mail to reserved address %s", msg["To"])
+        return
 
     if current_app.config["PRINT_MAILS_TO_CONSOLE"]:
         log_decoded_email_parts(msg)
