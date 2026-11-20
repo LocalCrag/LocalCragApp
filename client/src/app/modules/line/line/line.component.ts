@@ -4,11 +4,11 @@ import {
   inject,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { Area } from '../../../models/area';
-import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -27,10 +27,8 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-
 import { ScalesService } from '../../../services/crud/scales.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
-
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,6 +42,17 @@ import { RegionService } from '../../../services/crud/region.service';
 import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
+
 @Component({
   selector: 'lc-line',
   templateUrl: './line.component.html',
@@ -55,6 +64,7 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
     DraftTagComponent,
     RouterOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
@@ -62,9 +72,12 @@ export class LineComponent implements OnInit {
   public sector: Sector;
   public area: Area;
   public line: Line;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
-  private breadcrumbHome: MenuItem = { icon: 'pi pi-map', routerLink: '/topo' };
+  private breadcrumbHome: PageMenuItem = {
+    icon: 'pi pi-map',
+    routerLink: '/topo',
+  };
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);

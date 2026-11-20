@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
 
 @Component({
   selector: 'lc-expand-button',
-  imports: [ButtonModule],
+  imports: [HlmButton, NgIcon],
+  providers: [provideIcons({ lucideChevronDown, lucideChevronUp })],
   templateUrl: './expand-button.component.html',
   styleUrl: './expand-button.component.scss',
 })

@@ -2,10 +2,20 @@
   display: block;
 }
 
+.storage-usage-bar {
+  display: flex;
+  height: 0.625rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  background: #6b7280;
+}
+
 .storage-usage-labels {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1.25rem;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
 

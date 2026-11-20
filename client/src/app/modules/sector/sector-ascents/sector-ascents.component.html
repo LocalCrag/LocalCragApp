@@ -1,4 +1,4 @@
 <lc-ascent-list
-  [sectorId]="sector?.id"
+  [sectorId]="$safeNavigationMigration(sector?.id)"
   [parentLoading]="!sector"
 ></lc-ascent-list>

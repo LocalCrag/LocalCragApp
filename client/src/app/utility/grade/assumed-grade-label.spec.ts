@@ -22,26 +22,24 @@ describe('assumed grade label', () => {
     expect(formatAssumedGradeRange(names, 10, 99)).toBe('');
   });
 
-  it('appends the interval only for a project grade', (done) => {
+  it('appends the interval only for a project grade', async () => {
     const scales = {
       gradeNameByValueMap: () => of(names),
     } as unknown as ScalesService;
 
     withAssumedGradeRange(scales, line, -1, 'Project').subscribe((label) => {
       expect(label).toBe('Project (~6A–7A)');
-      done();
     });
   });
 
-  it('leaves a real grade unchanged', (done) => {
+  it('leaves a real grade unchanged', async () => {
     const scales = {
-      gradeNameByValueMap: jasmine.createSpy('gradeNameByValueMap'),
+      gradeNameByValueMap: vi.fn().mockName('gradeNameByValueMap'),
     } as unknown as ScalesService;
 
     withAssumedGradeRange(scales, line, 16, '7A').subscribe((label) => {
       expect(label).toBe('7A');
       expect(scales.gradeNameByValueMap).not.toHaveBeenCalled();
-      done();
     });
   });
 });

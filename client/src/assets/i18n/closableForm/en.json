@@ -7,6 +7,8 @@
   "closableForm.scheduledClosureStartLabel": "From",
   "closableForm.scheduledClosureEndLabel": "Until",
   "closableForm.fixedEndBeforeStartValidationError": "The end date must be on or after the start date.",
+  "closableForm.annualDatesRequiredValidationError": "Start and end date are required.",
+  "closableForm.annualCoversEntireYearValidationError": "The range must not cover the entire year.",
   "closableForm.closureMaterializationInfo": "After saving, it can take a few seconds until closed states are updated across child spots.",
   "closableFormScheduleDialog.cancel": "Cancel",
   "closableFormScheduleDialog.ok": "OK",

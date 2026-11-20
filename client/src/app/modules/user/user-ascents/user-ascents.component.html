@@ -5,10 +5,14 @@
 @if (!user) {
   @for (i of Array.from({ length: 10 }); track $index) {
     <div class="flex mb-2">
-      <p-skeleton shape="circle" size="4rem" class="mr-2"></p-skeleton>
+      <div
+        hlmSkeleton
+        class="mr-2 shrink-0"
+        style="width: 4rem; height: 4rem; border-radius: 9999px"
+      ></div>
       <div style="flex: 1">
-        <p-skeleton width="100%" class="mb-2"></p-skeleton>
-        <p-skeleton width="75%"></p-skeleton>
+        <div hlmSkeleton class="mb-2" style="width: 100%; height: 1rem"></div>
+        <div hlmSkeleton style="width: 75%; height: 1rem"></div>
       </div>
     </div>
   }

@@ -84,6 +84,48 @@ If you want to use LocalCrag for your own crag, either deploy [via docker](./doc
 - You can configure your instance by visiting `/instance-settings`
 - If you choose to use Matomo tracking, be sure to set up your Matomo instance in a way that anonymizes user data. Currently, there is no opt-in cookie banner provided, so tracking has to follow your local privacy legislation.
 
+### Demo data
+
+`server/scripts/seed_demo_instance.py` fills a database with a large fake dataset (about 200 users, 10 crags, 3000 lines, ascents, comments, reactions, and photos). Use it on a production-like deployment you are testing, or on your own local database. Avatars, topo images, and crag photos cycle through CC0 and public-domain pictures shipped in `server/scripts/demo_images/`. Sources and licenses are in `server/scripts/demo_images/SOURCES.md`.
+
+The script deletes every user except the superadmin, all climbing content, all sessions, and every object in the bucket named in the config it loads. It keeps the superadmin, that account's settings, instance settings, and grade scales. The superadmin password stays the same. Everyone has to sign in again.
+
+It refuses to run unless `LOCALCRAG_DEMO_SEED=destroy` is set and the database has exactly one superadmin. Before deleting, it logs the database host and the superadmin email. Check that host in the log before you let it continue. SMTP settings stay as configured. Test addresses are on `@localcrag.invalid`, and the server does not hand those addresses to SMTP, so test users get no mail. The superadmin's real address still does.
+
+Test users sign in as `migration-user-NNN@localcrag.invalid` with password `migration-dummy`. Their display names, and the line, sector, and area names, come from public listings on [Climbing History](https://climbing-history.org/). The script does not run on install or upgrade.
+
+Migrations must already have created the superadmin. Object storage must be running and match the `S3_*` settings, because the script empties that bucket and uploads the bundled photos.
+
+#### Local database
+
+From `server/src`, with `src/config/dev.cfg` pointing at the database you want to fill:
+
+```bash
+LOCALCRAG_CONFIG=config/dev.cfg \
+LOCALCRAG_DEMO_SEED=destroy \
+PYTHONPATH=. \
+pipenv run python ../scripts/seed_demo_instance.py
+```
+
+`pipenv` is the one installed under `server/`. The database that gets wiped is `SQLALCHEMY_DATABASE_URI` in `dev.cfg`.
+
+#### Deployed instance
+
+From the server container, in `/app/src` (the server image already sets `PYTHONPATH`):
+
+```bash
+LOCALCRAG_DEMO_SEED=destroy python ../scripts/seed_demo_instance.py
+```
+
+On a Helm install named `localcrag`:
+
+```bash
+kubectl exec -n <namespace> deploy/localcrag-server -c server -- \
+  sh -c 'cd /app/src && LOCALCRAG_DEMO_SEED=destroy python ../scripts/seed_demo_instance.py'
+```
+
+The server image has to include the script.
+
 ## Contributing
 
 LocalCrag is an open-source project, and we welcome contributions from the community.

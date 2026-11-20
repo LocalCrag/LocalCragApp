@@ -1,8 +1,17 @@
-import { Component, DestroyRef, Input, OnChanges, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnChanges,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ChartModule } from 'primeng/chart';
-import { Message } from 'primeng/message';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { ChartJsDirective } from '../../shared/directives/chart-js.directive';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
 import { getChartThemeColors } from '../../../utility/chart-theme';
@@ -12,8 +21,16 @@ Chart.register(ChartDataLabels);
 
 @Component({
   selector: 'lc-ascents-per-year-chart',
-  imports: [TranslocoDirective, ChartModule, Message],
+  imports: [
+    TranslocoDirective,
+    ChartJsDirective,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideInfo })],
   templateUrl: './ascents-per-year-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ascents-per-year-chart.component.scss',
 })
 export class AscentsPerYearChartComponent implements OnChanges {

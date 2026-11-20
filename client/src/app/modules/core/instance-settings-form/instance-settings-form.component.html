@@ -1,55 +1,50 @@
-<ng-container *transloco="let t; read: 'instanceSettings.instanceSettingsForm'">
-  <div class="content p-6">
-    <form [formGroup]="instanceSettingsForm" lcForm>
-      <p-tabs [(value)]="activeTab">
-        <p-tablist>
-          <p-tab value="general">{{ t("commonSettings") }}</p-tab>
-          <p-tab value="appearance">{{ t("imagesSettings") }}</p-tab>
-          <p-tab value="analytics">{{ t("matomoSettings") }}</p-tab>
-          <p-tab value="maps">{{ t("mapSettings") }}</p-tab>
-          <p-tab value="storage">{{ t("storageSettings") }}</p-tab>
-        </p-tablist>
-      </p-tabs>
+<div class="content p-6">
+  <form [formGroup]="instanceSettingsForm" lcForm>
+    <lc-chrome-tabs
+      appearance="plain"
+      [tabs]="settingsTabs"
+      [tab]="activeTab"
+      (tabActivated)="onSettingsTab($event)"
+    />
 
-      @if (activeTab === "general") {
-        <lc-instance-settings-general-tab
-          [group]="generalGroup()"
-          [loading]="loadingState === loadingStates.LOADING"
-          [save]="saveGeneralTab"
-        />
-      }
+    @if (activeTab === "general") {
+      <lc-instance-settings-general-tab
+        [group]="generalGroup()"
+        [loading]="loadingState === loadingStates.LOADING"
+        [save]="saveGeneralTab"
+      />
+    }
 
-      @if (activeTab === "appearance") {
-        <lc-instance-settings-appearance-tab
-          [group]="appearanceGroup()"
-          [loading]="loadingState === loadingStates.LOADING"
-          [save]="saveAppearanceTab"
-        />
-      }
+    @if (activeTab === "appearance") {
+      <lc-instance-settings-appearance-tab
+        [group]="appearanceGroup()"
+        [loading]="loadingState === loadingStates.LOADING"
+        [save]="saveAppearanceTab"
+      />
+    }
 
-      @if (activeTab === "analytics") {
-        <lc-instance-settings-analytics-tab
-          [group]="analyticsGroup()"
-          [loading]="loadingState === loadingStates.LOADING"
-          [save]="saveAnalyticsTab"
-        />
-      }
+    @if (activeTab === "analytics") {
+      <lc-instance-settings-analytics-tab
+        [group]="analyticsGroup()"
+        [loading]="loadingState === loadingStates.LOADING"
+        [save]="saveAnalyticsTab"
+      />
+    }
 
-      @if (activeTab === "maps") {
-        <lc-instance-settings-maps-tab
-          [group]="mapsGroup()"
-          [loading]="loadingState === loadingStates.LOADING"
-          [save]="saveMapsTab"
-        />
-      }
+    @if (activeTab === "maps") {
+      <lc-instance-settings-maps-tab
+        [group]="mapsGroup()"
+        [loading]="loadingState === loadingStates.LOADING"
+        [save]="saveMapsTab"
+      />
+    }
 
-      @if (activeTab === "storage") {
-        <lc-instance-settings-storage-tab
-          [group]="storageGroup()"
-          [loading]="loadingState === loadingStates.LOADING"
-          [save]="saveStorageTab"
-        />
-      }
-    </form>
-  </div>
-</ng-container>
+    @if (activeTab === "storage") {
+      <lc-instance-settings-storage-tab
+        [group]="storageGroup()"
+        [loading]="loadingState === loadingStates.LOADING"
+        [save]="saveStorageTab"
+      />
+    }
+  </form>
+</div>

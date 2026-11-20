@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Sector } from '../../../models/sector';
@@ -11,6 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-sector-ranking',
   imports: [RankingListComponent],
   templateUrl: './sector-ranking.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sector-ranking.component.scss',
 })
 export class SectorRankingComponent implements OnInit {

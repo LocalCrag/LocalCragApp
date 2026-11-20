@@ -7,7 +7,7 @@ test.describe('Auth test', () => {
     await login(page);
     await expect(page.locator('[data-cy="navbar-login"]')).toHaveCount(0);
     await page.locator('[data-cy="auth-menu-button"]').click();
-    await page.locator('[data-cy="auth-menu"] #auth-menu-logout').click();
+    await page.locator('[data-cy="auth-menu-logout"]').click();
     await expect(page).toHaveURL(/\/login/);
   });
 });

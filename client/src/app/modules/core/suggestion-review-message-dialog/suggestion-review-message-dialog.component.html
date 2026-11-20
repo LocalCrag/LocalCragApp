@@ -1,5 +1,8 @@
 <ng-container *transloco="let t; read: 'suggestionReview.dialog'">
   <div class="flex flex-col gap-4">
+    @if (title) {
+      <h2 class="text-lg font-semibold">{{ title }}</h2>
+    }
     @if (message) {
       <div class="suggestion-review-message-dialog-body">{{ message }}</div>
     }
@@ -43,12 +46,10 @@
   </div>
   <div class="flex w-full justify-end gap-2 mt-6">
     @if (targetLink) {
-      <p-button
-        [label]="t('viewDetails')"
-        [text]="true"
-        (click)="viewDetails()"
-      ></p-button>
+      <button hlmBtn type="button" variant="ghost" (click)="viewDetails()">
+        {{ t("viewDetails") }}
+      </button>
     }
-    <p-button [label]="t('close')" (click)="close()"></p-button>
+    <button hlmBtn type="button" (click)="close()">{{ t("close") }}</button>
   </div>
 </ng-container>

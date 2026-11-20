@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
-import { DatePicker } from 'primeng/datepicker';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
 import { LineType } from '../../../enums/line-type';
@@ -22,6 +22,13 @@ import {
   LineListScaleSelectItem,
   sanitizeLineListAdvancedFilters,
 } from '../line-list-filters/line-list-filter.logic';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideRefreshCw, lucideX } from '@ng-icons/lucide';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 
 export interface LineAdvancedFiltersDialogData {
   initial: LineListAdvancedFilters;
@@ -35,16 +42,19 @@ export interface LineAdvancedFiltersDialogData {
   selector: 'lc-line-advanced-filters-dialog',
   templateUrl: './line-advanced-filters-dialog.component.html',
   styleUrl: './line-advanced-filters-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     TranslocoDirective,
-    Button,
-    Checkbox,
-    Select,
-    DatePicker,
     GradeRangeSliderComponent,
     RatingRangeSliderComponent,
+    HlmButton,
+    HlmCheckbox,
+    ...HlmSelectImports,
+    ...HlmDatePickerImports,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideCheck, lucideRefreshCw, lucideX })],
 })
 export class LineAdvancedFiltersDialogComponent implements OnInit {
   draft: LineListAdvancedFilters;
@@ -103,12 +113,13 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
 
   protected scalesService = inject(ScalesService);
 
-  private dialogConfig = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private dialogContext =
+    injectBrnDialogContext<LineAdvancedFiltersDialogData>();
+  private ref = inject(BrnDialogRef);
   private transloco = inject(TranslocoService);
 
   constructor() {
-    const data = this.dialogConfig.data as LineAdvancedFiltersDialogData;
+    const data = this.dialogContext;
 
     // Advanced filters (rating, bools, FA year, etc.) — independent of header grade slider.
     this.draft = sanitizeLineListAdvancedFilters(
@@ -268,6 +279,24 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
     this.dialogScaleKey = defaultScale;
     this.applyScaleKeyToGradeBounds(this.dialogScaleKey);
   }
+
+  formatYear = (date: Date) => String(date.getFullYear());
+
+  selectLabel = (value: unknown): string => {
+    const lists = [
+      this.videoOptions,
+      this.climbOptions,
+      this.startingPositionOptions,
+      this.dryingOptions,
+    ];
+    for (const list of lists) {
+      const match = list?.find((option) => option.value === value);
+      if (match?.label) {
+        return match.label;
+      }
+    }
+    return value == null ? '' : String(value);
+  };
 
   cancel(): void {
     this.ref.close();

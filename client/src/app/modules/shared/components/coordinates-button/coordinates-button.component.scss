@@ -1,14 +1,18 @@
 @use "../../../../styles/media-queries" as m;
 
 lc-coordinates-button {
-  .p-splitbutton-button {
-    padding-left: 0;
-    padding-right: 0;
+  // The pin sits one button-gap (8px) from the label. Drop the label's end
+  // padding and inset the chevron by that same gap so both icons match.
+  [data-slot="button-group"] > button:first-child {
+    padding-inline-end: 0;
   }
 
-  .p-button-icon-only {
-    width: 1.5rem;
-    padding-left: 0.5rem;
+  [data-slot="button-group"] > button:last-child {
+    width: auto;
+    height: auto;
+    align-self: stretch;
+    padding-inline-start: 7px;
+    padding-inline-end: 0.5rem;
   }
 
   .p-tieredmenu {

@@ -7,6 +7,8 @@
   "closableForm.scheduledClosureStartLabel": "Von",
   "closableForm.scheduledClosureEndLabel": "Bis",
   "closableForm.fixedEndBeforeStartValidationError": "Das Enddatum muss am oder nach dem Startdatum liegen.",
+  "closableForm.annualDatesRequiredValidationError": "Start- und Enddatum sind erforderlich.",
+  "closableForm.annualCoversEntireYearValidationError": "Der Zeitraum darf nicht das ganze Jahr abdecken.",
   "closableForm.closureMaterializationInfo": "Nach dem Speichern kann es einige Sekunden dauern, bis Sperrzustände bei untergeordneten Spots aktualisiert sind.",
   "closableFormScheduleDialog.cancel": "Abbrechen",
   "closableFormScheduleDialog.ok": "OK",

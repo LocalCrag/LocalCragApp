@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { MessageService } from 'primeng/api';
+import { toast } from '@spartan-ng/brain/sonner';
 import {
   getNotification,
   NotificationKey,
@@ -9,14 +9,13 @@ import {
 import { TranslocoHashMap } from '../../utility/types/transloco';
 
 /**
- * Shows PrimeNG toasts for app notification keys.
+ * Shows toaster notifications for app notification keys.
  * Success, info, warning, and error toasts are shown on every viewport.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AppNotificationsService {
-  private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
 
   /**
@@ -35,42 +34,34 @@ export class AppNotificationsService {
   }
 
   private success(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'success',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.success(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private error(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.error(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private info(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'info',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.info(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private warning(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'warn',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.warning(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 

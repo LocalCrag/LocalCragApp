@@ -9,6 +9,7 @@ import {
   OnDestroy,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,14 +19,6 @@ import {
   NavigationControl,
 } from 'maplibre-gl';
 import { FeatureCollection, Geometry } from 'geojson';
-import { Toast } from 'primeng/toast';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmPopup } from 'primeng/confirmpopup';
-import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -83,29 +76,42 @@ import {
 } from '../../../models/map-overlay';
 import { ROCK_EXPLORER_LAYERS } from '../map/rock-explorer-map.constants';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
+import { toast } from '@spartan-ng/brain/sonner';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideCopy } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-rock-explorer',
   imports: [
+    LoadingButtonComponent,
     FormsModule,
-    Toast,
-    ConfirmPopup,
-    Dialog,
-    Button,
-    Select,
-    InputText,
-    Textarea,
     TranslocoDirective,
     RockExplorerPanelComponent,
     RockExplorerToolbarComponent,
     RockExplorerSessionsComponent,
     RockExplorerListComponent,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    HlmTextarea,
+    ...HlmDialogImports,
+    NgIcon,
   ],
-  providers: [MessageService, ConfirmationService, RockExplorerUiService],
+  providers: [RockExplorerUiService, provideIcons({ lucideCopy })],
   templateUrl: './rock-explorer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer.component.scss',
 })
 export class RockExplorerComponent implements AfterViewInit, OnDestroy {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild('map') private mapContainer?: ElementRef<HTMLElement>;
   @ViewChild('mapContextPopoverPanel')
   private mapContextPopoverPanel?: ElementRef<HTMLElement>;
@@ -166,8 +172,6 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
-  private messageService = inject(MessageService);
-  private confirmationService = inject(ConfirmationService);
   private transloco = inject(TranslocoService);
   private pendingImages = inject(RockExplorerPendingImageService);
 
@@ -287,8 +291,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       cdr: c.cdr,
       destroyRef: c.destroyRef,
       ngZone: c.ngZone,
-      messageService: c.messageService,
-      confirmationService: c.confirmationService,
+      openConfirm: (options) => c.openConfirm(options),
       reloadFeatures: () => c.reloadFeatures(c.lastFilters),
       applyFeatureToPanel: (feature, formActive) =>
         c.applyFeatureToPanel(feature, formActive),
@@ -535,10 +538,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         },
         error: () => {
           this.loading = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(marker('rockExplorer.loadError')),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.loadError')),
+          );
           this.cdr.detectChanges();
         },
       });
@@ -783,10 +785,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         this.ui.saving.set(false);
         this.mapInteraction.setRockExplorerDrawMode('select');
         this.reloadFeatures(this.lastFilters);
-        this.messageService.add({
-          severity: 'success',
-          summary: this.transloco.translate(marker('rockExplorer.saveSuccess')),
-        });
+        toast.success(
+          this.transloco.translate(marker('rockExplorer.saveSuccess')),
+        );
         this.recording.syncRecordingSessionFromEditedFeature(saved);
         void this.recording.persistAndSync(true);
         if (saved?.id) {
@@ -797,10 +798,7 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       },
       error: () => {
         this.ui.saving.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: this.transloco.translate(marker('rockExplorer.saveError')),
-        });
+        toast.error(this.transloco.translate(marker('rockExplorer.saveError')));
       },
     });
   }
@@ -835,12 +833,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           next: (saved) => {
             this.ui.saving.set(false);
             this.reloadFeatures(this.lastFilters);
-            this.messageService.add({
-              severity: 'success',
-              summary: this.transloco.translate(
-                marker('rockExplorer.saveSuccess'),
-              ),
-            });
+            toast.success(
+              this.transloco.translate(marker('rockExplorer.saveSuccess')),
+            );
             if (saved?.id) {
               this.applyFeatureToPanel(saved, false);
             }
@@ -849,12 +844,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
           },
           error: () => {
             this.ui.saving.set(false);
-            this.messageService.add({
-              severity: 'error',
-              summary: this.transloco.translate(
-                marker('rockExplorer.saveError'),
-              ),
-            });
+            toast.error(
+              this.transloco.translate(marker('rockExplorer.saveError')),
+            );
             this.cdr.detectChanges();
             resolve(false);
           },
@@ -873,39 +865,31 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         next: () => {
           this.closePanel();
           this.reloadFeatures(this.lastFilters);
-          this.messageService.add({
-            severity: 'success',
-            summary: this.transloco.translate(
-              marker('rockExplorer.deleteSuccess'),
-            ),
-          });
+          toast.success(
+            this.transloco.translate(marker('rockExplorer.deleteSuccess')),
+          );
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.deleteError'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.deleteError')),
+          );
         },
       });
   }
 
-  public confirmDelete(event: Event) {
+  public confirmDelete(_event: Event) {
     if (!this.ui.editingFeature()?.id) {
       return;
     }
-    this.confirmationService.confirm({
-      target: event.currentTarget ?? event.target,
+    this.openConfirm({
       message: this.transloco.translate(marker('rockExplorer.deleteConfirm')),
       acceptLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteYes'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteNo'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteFeature();
       },
@@ -1154,12 +1138,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
         },
         error: () => {
           this.pendingDeepLinkFeatureId = null;
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.featureNotFound'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.featureNotFound')),
+          );
           this.syncFeatureUrl(null);
         },
       });
@@ -1347,5 +1328,9 @@ export class RockExplorerComponent implements AfterViewInit, OnDestroy {
       maxZoom: 16,
       duration: 700,
     });
+  }
+
+  openConfirm(options: Parameters<ConfirmDialogService['open']>[0]): void {
+    this.confirmDialog.open(options);
   }
 }

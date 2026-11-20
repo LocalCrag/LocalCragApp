@@ -2,20 +2,19 @@
   <div class="content notifications-page">
     <div class="p-6">
       <div class="notifications-page-actions">
-        <p-button
-          [label]="t('notificationsMarkAllRead')"
-          [text]="true"
-          [disabled]="unreadCount() === 0"
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
           (click)="markAllRead()"
-        />
+          [disabled]="unreadCount() === 0"
+        >
+          {{ t("notificationsMarkAllRead") }}
+        </button>
       </div>
 
       @if (notifications.length === 0) {
-        <p-message
-          severity="info"
-          styleClass="w-full"
-          [text]="t('notificationsEmpty')"
-        />
+        <div hlmAlert class="w-full">{{ t("notificationsEmpty") }}</div>
       } @else {
         <div class="notifications-page-list">
           @for (notification of notifications; track notification.id) {
@@ -34,11 +33,11 @@
                       notification.properties.reaction?.emoji || "😊"
                     }}</span>
                   } @else if (notification.type === "comment_reply") {
-                    <i class="pi pi-comment"></i>
+                    <ng-icon name="lucideMessageCircle" />
                   } @else if (notification.type === "release_notes") {
-                    <i class="pi pi-megaphone"></i>
+                    <ng-icon name="lucideMegaphone" />
                   } @else if (notification.type === "admin_message") {
-                    <i class="pi pi-envelope"></i>
+                    <ng-icon name="lucideMail" />
                   } @else if (
                     notification.type === "moderator_task_completed" ||
                     notification.type === "moderator_task_created" ||
@@ -46,15 +45,15 @@
                       "moderator_task_created_and_assigned" ||
                     notification.type === "moderator_task_assigned"
                   ) {
-                    <i class="pi pi-list-check"></i>
+                    <ng-icon name="lucideListChecks" />
                   } @else if (
                     notification.type === "suggestion_submitted" ||
                     notification.type === "suggestion_published" ||
                     notification.type === "suggestion_rejected"
                   ) {
-                    <i class="pi pi-flag"></i>
+                    <ng-icon name="lucideFlag" />
                   } @else {
-                    <i class="pi pi-cog"></i>
+                    <ng-icon name="lucideSettings" />
                   }
                 </div>
                 <div class="notifications-page-item-content">
@@ -82,11 +81,14 @@
 
       @if (hasNextPage) {
         <div class="notifications-page-load-more">
-          <p-button
-            [label]="t('history.loadMore')"
-            [loading]="loading"
+          <button
+            hlmBtn
+            type="button"
             (click)="loadNextPage()"
-          />
+            [disabled]="loading"
+          >
+            {{ t("history.loadMore") }}
+          </button>
         </div>
       }
     </div>

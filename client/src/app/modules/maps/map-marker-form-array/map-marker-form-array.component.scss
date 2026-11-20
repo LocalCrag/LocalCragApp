@@ -1,0 +1,47 @@
+lc-map-marker-form-array {
+  .marker-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.5rem;
+    padding: 0.2rem 0.25rem 0.2rem 0.75rem;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 0.5rem;
+    background: var(--p-content-hover-background);
+
+    > ng-icon {
+      flex-shrink: 0;
+      color: var(--p-text-muted-color);
+    }
+  }
+
+  .marker-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .marker-name {
+    color: var(--p-text-muted-color);
+  }
+
+  .marker-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+}
+
+.marker-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+
+  :first-child {
+    margin-top: 0;
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+}

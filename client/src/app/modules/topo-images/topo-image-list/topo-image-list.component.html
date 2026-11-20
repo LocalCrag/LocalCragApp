@@ -1,383 +1,452 @@
 <ng-container *transloco="let t; read: 'topoImage.topoImageList'">
-  <p-dataView
-    #dv
-    [value]="topoImages"
-    [sortField]="showArchive ? null : sortField"
-    [sortOrder]="sortOrder"
+  <div
+    class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4"
   >
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
-        <div class="flex flex-col sm:flex-row gap-2">
-          <p-select
-            [disabled]="loading === loadingStates.LOADING"
-            [options]="sortOptions"
-            [(ngModel)]="sortKey"
-            optionLabel="label"
-            (onChange)="onSortChange($event)"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (sortKey) {
-                <div class="flex items-center gap-2">
-                  @if (sortKey.icon) {
-                    <i [class]="sortKey.icon"></i>
-                  }
-                  <div>{{ sortKey.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
-                @if (option.icon) {
-                  <i [class]="option.icon"></i>
-                }
-                <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
-          <div *isGymMode="true">
-            <p-button
-              [disabled]="loading === loadingStates.LOADING"
-              label="{{ showArchive ? t('hideArchive') : t('showArchive') }}"
-              [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
-              *isModerator="true"
-              class="responsive-button"
-              (click)="toggleArchive()"
-            ></p-button>
-          </div>
-        </div>
-        <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('newTopoImageButtonLabel') }}"
-            icon="pi pi-image"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-              areaSlug
-            }}/add-topo-image"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('suggestTopoImageButtonLabel') }}"
-            icon="pi pi-image"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-              areaSlug
-            }}/add-topo-image"
-            *canSuggest="true"
-          ></p-button>
-          <p-button
-            [disabled]="loading === loadingStates.LOADING"
-            label="{{ t('topoImageBatchUploadButtonLabel') }}"
-            icon="pi pi-images"
-            class="responsive-button"
-            routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-              areaSlug
-            }}/line-entry-batch-editor"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderTopoImagesButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderTopoImages()"
-            [disabled]="
-              showArchive ||
-              topoImages?.length < 2 ||
-              loading === loadingStates.LOADING
-            "
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template #emptymessage>
-      @if (!(loading === loadingStates.LOADING && currentPage <= 1)) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-          t("noTopoImagesFoundEmptyMessage")
-        }}</p-message>
-      }
-    </ng-template>
-    <ng-template let-topoImages #list>
-      @if (loading === loadingStates.LOADING && currentPage <= 1) {
-        <lc-topo-image-list-skeleton></lc-topo-image-list-skeleton>
-      }
-      @if (loading !== loadingStates.LOADING || currentPage > 1) {
-        <div class="grid grid-cols-12">
-          @for (topoImage of topoImages; track topoImage; let first = $first) {
-            <div
-              class="col-span-12"
-              data-cy="topo-image-list-item"
-              [id]="topoImage.id"
-            >
-              <div
-                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
-                [ngClass]="{
-                  'border-t border-surface': !first,
-                  archived: topoImage.publicationStatus === 'archived',
-                }"
-              >
-                <div
-                  class="w-full sm:w-9/12 xl:w-5/12 self-start topo-image-column"
-                  [id]="'topo-image-' + topoImage.id"
-                >
-                  <div class="relative">
-                    <lc-topo-image
-                      [topoImage]="topoImage"
-                      [showLineNumbers]="true"
-                      [includeVariants]="variantsShown(topoImage)"
-                      tabuHoldsVisibility="hover"
-                      class="shadow block xl:block mx-auto rounded-border"
-                    ></lc-topo-image>
-                    @if (topoImage.publicationStatus === "draft") {
-                      <lc-draft-tag
-                        class="draft-tag-overlay pointer-events-none absolute top-2 left-2 z-10"
-                      ></lc-draft-tag>
-                    }
-                  </div>
-                  <lc-topo-image-details
-                    [topoImage]="topoImage"
-                  ></lc-topo-image-details>
-                </div>
-                <div class="flex flex-col flex-1 gap-6 w-full">
-                  <div class="line-table">
-                    <div
-                      class="flex table-header flex-col sm:flex-row gap-2 items-center"
-                    >
-                      @if (topoImage.linePaths.length === 0) {
-                        <p-message
-                          severity="info"
-                          text="{{ t('noLineAssignedToTopoImage') }}"
-                        >
-                        </p-message>
-                      }
-                      @if (topoImage.linePaths.length > 0) {
-                        <div>
-                          {{ t("lines") }}
-                        </div>
-                      }
-                      @if (showTopoImageActions(topoImage)) {
-                        <div
-                          class="lc-button-group justify-end grow items-center self-end sm:self-center"
-                        >
-                          <p-button
-                            icon="pi pi-ellipsis-v"
-                            styleClass="p-button-rounded p-button-text p-button-secondary"
-                            (click)="openTopoImageActions($event, topoImage)"
-                            [ariaLabel]="t('actions')"
-                            [disabled]="
-                              topoImage.loadingState !== loadingStates.DEFAULT
-                            "
-                            [loading]="
-                              topoImage.loadingState === loadingStates.LOADING
-                            "
-                            data-cy="topo-image-actions"
-                          ></p-button>
-                        </div>
-                      }
-                    </div>
-                    <div class="line-table-wrapper">
-                      <ng-template #lineRow let-linePath>
-                        <a
-                          class="line-table-row"
-                          [href]="lineHref(linePath)"
-                          (click)="openLine($event, linePath)"
-                          (contextmenu)="
-                            openLineMenu($event, linePath, topoImage)
-                          "
-                          (mouseenter)="onLineEnter(linePath, topoImage)"
-                          (mouseleave)="onLineLeave(linePath)"
-                          [ngClass]="{
-                            ticked: ticks.has(linePath.line.id),
-                            highlighted: isLinePinned(linePath),
-                          }"
-                          data-cy="line-row"
-                        >
-                          <div class="line-table-column-number">
-                            <lc-line-number-badge
-                              [number]="lineNumber(linePath, topoImage)"
-                              [color]="linePath.line | topoLineColor"
-                            ></lc-line-number-badge>
-                          </div>
-                          <div class="line-table-info-name">
-                            {{ linePath.line.name }}
-                          </div>
-                          <div class="line-table-info-grade">
-                            <div class="grade-ellipsis">
-                              {{ linePath.line | lineGrade }}
-                            </div>
-                          </div>
-                          <div class="line-table-info-style">
-                            @if (linePath.line.publicationStatus === "draft") {
-                              <lc-draft-tag></lc-draft-tag>
-                            }
-                            @if (!linePath.line.closed) {
-                              <lc-line-bool-prop-list
-                                [line]="linePath.line"
-                              ></lc-line-bool-prop-list>
-                            }
-                            @if (linePath.line.closed) {
-                              <lc-closed-spot-tag
-                                spotType="line"
-                                [slug]="linePath.line.slug"
-                                [closureIsPermanent]="
-                                  linePath.line.closureIsPermanent
-                                "
-                              ></lc-closed-spot-tag>
-                            }
-                          </div>
-                          <div class="line-table-info-rating">
-                            <p-rating
-                              [ngModel]="
-                                displayUserRating
-                                  ? linePath.line.userRating
-                                  : linePath.line.authorRating
-                              "
-                              [readonly]="true"
-                            ></p-rating>
-                          </div>
-                          <div class="line-table-info-actions">
-                            @if (linePath.line.commentCount > 0) {
-                              <p-button
-                                icon="pi pi-comment"
-                                styleClass="p-button-rounded p-button-text"
-                                (click)="openComments($event, linePath.line)"
-                              >
-                              </p-button>
-                            }
-                            @if (linePath.line.videos?.length > 0) {
-                              <p-button
-                                icon="pi pi-video"
-                                styleClass="p-button-rounded p-button-text"
-                                (click)="openVideo($event, linePath.line)"
-                              >
-                              </p-button>
-                            }
-                            @if (
-                              linePath.line.publicationStatus === "published" ||
-                              linePath.line.publicationStatus === "archived"
-                            ) {
-                              <lc-tick-button
-                                [line]="linePath.line"
-                                [ticked]="ticks.has(linePath.line.id)"
-                              ></lc-tick-button>
-                            }
-                            <ng-container *isModerator="true">
-                              <p-button
-                                icon="pi pi-trash"
-                                styleClass="p-button-rounded p-button-danger p-button-text"
-                                [loading]="
-                                  linePath.loadingState ===
-                                  loadingStates.LOADING
-                                "
-                                [disabled]="
-                                  topoImage.loadingState !==
-                                  loadingStates.DEFAULT
-                                "
-                                (click)="
-                                  confirmDeleteLinePath(
-                                    $event,
-                                    linePath,
-                                    topoImage
-                                  )
-                                "
-                              ></p-button>
-                            </ng-container>
-                          </div>
-                        </a>
-                      </ng-template>
-                      @for (
-                        linePath of primaryLinePaths(topoImage);
-                        track linePath
-                      ) {
-                        <ng-container
-                          *ngTemplateOutlet="
-                            lineRow;
-                            context: { $implicit: linePath }
-                          "
-                        ></ng-container>
-                      }
-                      @if (canHideVariants(topoImage)) {
-                        <button
-                          type="button"
-                          class="variant-toggle"
-                          [class.is-open]="variantsExpanded(topoImage)"
-                          (click)="toggleVariants(topoImage)"
-                          data-cy="variant-toggle"
-                        >
-                          <i
-                            class="pi"
-                            [class.pi-chevron-down]="
-                              variantsExpanded(topoImage)
-                            "
-                            [class.pi-chevron-right]="
-                              !variantsExpanded(topoImage)
-                            "
-                          ></i>
-                          <span>
-                            {{
-                              variantsExpanded(topoImage)
-                                ? t("hideVariants", {
-                                    count: variantCount(topoImage),
-                                  })
-                                : t("showVariants", {
-                                    count: variantCount(topoImage),
-                                  })
-                            }}
-                          </span>
-                        </button>
-                      }
-                      @if (variantsShown(topoImage)) {
-                        @for (
-                          linePath of variantLinePaths(topoImage);
-                          track linePath
-                        ) {
-                          <ng-container
-                            *ngTemplateOutlet="
-                              lineRow;
-                              context: { $implicit: linePath }
-                            "
-                          ></ng-container>
-                        }
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="flex flex-col sm:flex-row gap-2">
+      <hlm-select
+        [disabled]="loading === loadingStates.LOADING"
+        [(ngModel)]="sortKey"
+        (ngModelChange)="onSortChange($event)"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of sortOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
           }
-        </div>
-      }
-    </ng-template>
-  </p-dataView>
+        </hlm-select-content></hlm-select
+      >
+      <div *isGymMode="true">
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
+          (click)="toggleArchive()"
+          [disabled]="loading === loadingStates.LOADING"
+          *isModerator="true"
+        >
+          <ng-icon [name]="showArchive ? 'lucideEyeOff' : 'lucideEye'" />
+          {{ showArchive ? t("hideArchive") : t("showArchive") }}
+        </button>
+      </div>
+    </div>
+    <div class="lc-button-group justify-start sm:justify-end">
+      <a
+        hlmBtn
+        class="responsive-button"
+        routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+          areaSlug
+        }}/add-topo-image"
+        [disabled]="loading === loadingStates.LOADING"
+        *isModerator="true"
+        ><ng-icon name="lucideImage" /> {{ t("newTopoImageButtonLabel") }}</a
+      >
+      <a
+        hlmBtn
+        class="responsive-button"
+        routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+          areaSlug
+        }}/add-topo-image"
+        [disabled]="loading === loadingStates.LOADING"
+        *canSuggest="true"
+        ><ng-icon name="lucideImage" />
+        {{ t("suggestTopoImageButtonLabel") }}</a
+      >
+      <a
+        hlmBtn
+        class="responsive-button"
+        routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+          areaSlug
+        }}/line-entry-batch-editor"
+        [disabled]="loading === loadingStates.LOADING"
+        *isModerator="true"
+        ><ng-icon name="lucideImages" />
+        {{ t("topoImageBatchUploadButtonLabel") }}</a
+      >
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="reorderTopoImages()"
+        [disabled]="
+          showArchive ||
+          topoImages?.length < 2 ||
+          loading === loadingStates.LOADING
+        "
+        *isModerator="true"
+      >
+        <ng-icon name="lucideArrowUpDown" />
+        {{ t("reorderTopoImagesButtonLabel") }}
+      </button>
+    </div>
+  </div>
 
-  @if (hasNextPage) {
-    <div class="flex justify-center mt-20">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
-        (click)="loadNextPage()"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+  @if (
+    !(loading === loadingStates.LOADING && currentPage <= 1) &&
+    !topoImages?.length
+  ) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noTopoImagesFoundEmptyMessage") }}</p>
     </div>
   }
 
-  <p-menu
-    #topoImageMenu
-    [model]="topoImageActionItems"
-    [popup]="true"
-    appendTo="body"
-  ></p-menu>
-  <p-contextmenu
-    #lineMenu
-    [model]="lineActionItems"
-    styleClass="line-context-menu"
-    appendTo="body"
-    data-cy="line-context-menu"
-  ></p-contextmenu>
-  <p-confirmpopup></p-confirmpopup>
+  @if (loading === loadingStates.LOADING && currentPage <= 1) {
+    <lc-topo-image-list-skeleton></lc-topo-image-list-skeleton>
+  }
+  @if (loading !== loadingStates.LOADING || currentPage > 1) {
+    <div class="grid grid-cols-12">
+      @for (topoImage of topoImages; track topoImage; let first = $first) {
+        <div
+          class="col-span-12"
+          data-cy="topo-image-list-item"
+          [id]="topoImage.id"
+        >
+          <div
+            class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
+            [ngClass]="{
+              'border-t border-surface': !first,
+              archived: topoImage.publicationStatus === 'archived',
+            }"
+          >
+            <div
+              class="w-full sm:w-9/12 xl:w-5/12 self-start topo-image-column"
+              [id]="'topo-image-' + topoImage.id"
+            >
+              <div class="relative">
+                <lc-topo-image
+                  [topoImage]="topoImage"
+                  [showLineNumbers]="true"
+                  [includeVariants]="variantsShown(topoImage)"
+                  tabuHoldsVisibility="hover"
+                  class="shadow block xl:block mx-auto rounded-border"
+                ></lc-topo-image>
+                @if (topoImage.publicationStatus === "draft") {
+                  <lc-draft-tag
+                    class="draft-tag-overlay pointer-events-none absolute top-2 left-2 z-10"
+                  ></lc-draft-tag>
+                }
+              </div>
+              <lc-topo-image-details
+                [topoImage]="topoImage"
+              ></lc-topo-image-details>
+            </div>
+            <div class="flex flex-col flex-1 gap-6 w-full">
+              <div class="line-table">
+                <div
+                  class="flex table-header flex-col sm:flex-row gap-2 items-center"
+                >
+                  @if (topoImage.linePaths.length === 0) {
+                    <div hlmAlert>
+                      <ng-icon name="lucideInfo" />
+                      <p hlmAlertDescription>
+                        {{ t("noLineAssignedToTopoImage") }}
+                      </p>
+                    </div>
+                  }
+                  @if (topoImage.linePaths.length > 0) {
+                    <div>
+                      {{ t("lines") }}
+                    </div>
+                  }
+                  @if (showTopoImageActions(topoImage)) {
+                    <div
+                      class="lc-button-group justify-end grow items-center self-end sm:self-center"
+                    >
+                      <button
+                        lcLoadingButton
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        icon="lucideEllipsisVertical"
+                        class="rounded-full"
+                        [hlmDropdownMenuTrigger]="topoImageMenu"
+                        (mousedown)="prepareTopoImageActions($event, topoImage)"
+                        [loading]="
+                          topoImage.loadingState === loadingStates.LOADING
+                        "
+                        [disabled]="
+                          topoImage.loadingState === loadingStates.LOADING ||
+                          topoImage.loadingState !== loadingStates.DEFAULT
+                        "
+                        [attr.aria-label]="t('actions')"
+                        data-cy="topo-image-actions"
+                      ></button>
+                    </div>
+                  }
+                </div>
+                <div class="line-table-wrapper">
+                  <ng-template #lineRow let-linePath>
+                    <a
+                      class="line-table-row"
+                      [href]="lineHref(linePath)"
+                      (click)="openLine($event, linePath)"
+                      (contextmenu)="openLineMenu($event, linePath, topoImage)"
+                      (mouseenter)="onLineEnter(linePath, topoImage)"
+                      (mouseleave)="onLineLeave(linePath)"
+                      [ngClass]="{
+                        ticked: ticks.has(linePath.line.id),
+                        highlighted: isLinePinned(linePath),
+                      }"
+                      data-cy="line-row"
+                    >
+                      <div class="line-table-column-number">
+                        <lc-line-number-badge
+                          [number]="lineNumber(linePath, topoImage)"
+                          [color]="linePath.line | topoLineColor"
+                        ></lc-line-number-badge>
+                      </div>
+                      <div class="line-table-info-name">
+                        {{ linePath.line.name }}
+                      </div>
+                      <div class="line-table-info-grade">
+                        <div class="grade-ellipsis">
+                          {{ linePath.line | lineGrade }}
+                        </div>
+                      </div>
+                      <div class="line-table-info-style">
+                        @if (linePath.line.publicationStatus === "draft") {
+                          <lc-draft-tag></lc-draft-tag>
+                        }
+                        @if (!linePath.line.closed) {
+                          <lc-line-bool-prop-list
+                            class="clip-line"
+                            [line]="linePath.line"
+                          ></lc-line-bool-prop-list>
+                        }
+                        @if (linePath.line.closed) {
+                          <lc-closed-spot-tag
+                            spotType="line"
+                            [slug]="linePath.line.slug"
+                            [closureIsPermanent]="
+                              linePath.line.closureIsPermanent
+                            "
+                          ></lc-closed-spot-tag>
+                        }
+                      </div>
+                      <div class="line-table-info-rating">
+                        <span
+                          class="inline-flex text-primary"
+                          aria-hidden="true"
+                        >
+                          @for (star of [1, 2, 3, 4, 5]; track star) {
+                            <ng-icon
+                              name="lucideStar"
+                              class="[&_svg]:fill-current"
+                              [class.opacity-30]="
+                                star >
+                                (displayUserRating
+                                  ? linePath.line.userRating
+                                  : linePath.line.authorRating)
+                              "
+                            />
+                          }
+                        </span>
+                      </div>
+                      <div class="line-table-info-actions">
+                        @if (linePath.line.commentCount > 0) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="rounded-full"
+                            (click)="openComments($event, linePath.line)"
+                          >
+                            <ng-icon name="lucideMessageSquare" />
+                          </button>
+                        }
+                        @if (linePath.line.videos?.length > 0) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="rounded-full"
+                            (click)="openVideo($event, linePath.line)"
+                          >
+                            <ng-icon name="lucideVideo" />
+                          </button>
+                        }
+                        @if (
+                          linePath.line.publicationStatus === "published" ||
+                          linePath.line.publicationStatus === "archived"
+                        ) {
+                          <lc-tick-button
+                            [line]="linePath.line"
+                            [ticked]="ticks.has(linePath.line.id)"
+                          ></lc-tick-button>
+                        }
+                        <ng-container *isModerator="true">
+                          <button
+                            lcLoadingButton
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            icon="lucideTrash2"
+                            class="rounded-full text-destructive"
+                            (click)="
+                              confirmDeleteLinePath($event, linePath, topoImage)
+                            "
+                            [loading]="
+                              linePath.loadingState === loadingStates.LOADING
+                            "
+                            [disabled]="
+                              linePath.loadingState === loadingStates.LOADING ||
+                              topoImage.loadingState !== loadingStates.DEFAULT
+                            "
+                            [attr.aria-label]="t('deleteLinePathButtonLabel')"
+                          ></button>
+                        </ng-container>
+                      </div>
+                    </a>
+                  </ng-template>
+                  @for (
+                    linePath of primaryLinePaths(topoImage);
+                    track linePath
+                  ) {
+                    <ng-container
+                      *ngTemplateOutlet="
+                        lineRow;
+                        context: { $implicit: linePath }
+                      "
+                    ></ng-container>
+                  }
+                  @if (canHideVariants(topoImage)) {
+                    <button
+                      type="button"
+                      class="variant-toggle"
+                      [class.is-open]="variantsExpanded(topoImage)"
+                      (click)="toggleVariants(topoImage)"
+                      data-cy="variant-toggle"
+                    >
+                      <ng-icon
+                        [name]="
+                          variantsExpanded(topoImage)
+                            ? 'lucideChevronDown'
+                            : 'lucideChevronRight'
+                        "
+                      />
+                      <span>
+                        {{
+                          variantsExpanded(topoImage)
+                            ? t("hideVariants", {
+                                count: variantCount(topoImage),
+                              })
+                            : t("showVariants", {
+                                count: variantCount(topoImage),
+                              })
+                        }}
+                      </span>
+                    </button>
+                  }
+                  @if (variantsShown(topoImage)) {
+                    @for (
+                      linePath of variantLinePaths(topoImage);
+                      track linePath
+                    ) {
+                      <ng-container
+                        *ngTemplateOutlet="
+                          lineRow;
+                          context: { $implicit: linePath }
+                        "
+                      ></ng-container>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (hasNextPage) {
+    <div class="flex justify-center mt-20">
+      <button
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
+        (click)="loadNextPage()"
+        (scrolled)="loadNextPage()"
+        [disabled]="loading === loadingStates.LOADING"
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        infiniteScroll
+        type="button"
+      >
+        {{ t("loadMore") }}
+      </button>
+    </div>
+  }
+
+  <ng-template #topoImageMenu>
+    <div hlmDropdownMenu>
+      @for (item of topoImageActionItems; track item.id ?? item.label) {
+        @if (item.separator) {
+          <div hlmDropdownMenuSeparator></div>
+        } @else {
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            [disabled]="!!item.disabled"
+            [variant]="
+              item.styleClass === 'topo-image-menu-danger'
+                ? 'destructive'
+                : 'default'
+            "
+            (triggered)="runMenuCommand(item, $event)"
+          >
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+        }
+      }
+    </div>
+  </ng-template>
+  <div
+    class="sr-only"
+    #lineMenuHost
+    [hlmContextMenuTrigger]="lineContextMenu"
+  ></div>
+  <ng-template #lineContextMenu>
+    <div hlmDropdownMenu class="line-context-menu" data-cy="line-context-menu">
+      @for (item of lineActionItems; track item.id ?? item.label) {
+        @if (item.separator) {
+          <div hlmDropdownMenuSeparator></div>
+        } @else if (item.items?.length) {
+          <button type="button" [hlmDropdownMenuSubTrigger]="todoMenu">
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+          <ng-template #todoMenu>
+            <div hlmDropdownMenuSub>
+              @for (child of item.items; track child.id) {
+                <button
+                  hlmDropdownMenuItem
+                  type="button"
+                  [class]="child.styleClass"
+                  (triggered)="runMenuCommand(child, $event)"
+                >
+                  <ng-icon [name]="menuIcon(child.icon)" />
+                  {{ child.label }}
+                </button>
+              }
+            </div>
+          </ng-template>
+        } @else {
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            [disabled]="!!item.disabled"
+            (triggered)="runMenuCommand(item, $event)"
+          >
+            <ng-icon [name]="menuIcon(item.icon)" />
+            {{ item.label }}
+          </button>
+        }
+      }
+    </div>
+  </ng-template>
 </ng-container>

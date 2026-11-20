@@ -1,1 +1,4 @@
-<lc-ascent-list [cragId]="crag?.id" [parentLoading]="!crag"></lc-ascent-list>
+<lc-ascent-list
+  [cragId]="$safeNavigationMigration(crag?.id)"
+  [parentLoading]="!crag"
+></lc-ascent-list>

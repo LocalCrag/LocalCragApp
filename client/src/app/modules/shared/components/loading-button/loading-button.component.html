@@ -1,0 +1,11 @@
+@if (spinnerLeads()) {
+  <ng-icon name="lucideLoader2" class="animate-spin" />
+} @else if (!iconEnd() && icon(); as leadingIcon) {
+  <ng-icon [name]="leadingIcon" />
+}
+<ng-content />
+@if (spinnerFollows()) {
+  <ng-icon name="lucideLoader2" class="animate-spin" />
+} @else if (iconEnd() && icon(); as trailingIcon) {
+  <ng-icon [name]="trailingIcon" />
+}

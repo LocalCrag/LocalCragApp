@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   AbstractControl,
@@ -33,6 +33,7 @@ function minCount(min: number) {
     FormArrayDirective,
     IfErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <form [formGroup]="form" lcForm>
       <div lcControlGroup>
@@ -45,7 +46,8 @@ function minCount(min: number) {
   `,
 })
 class ArrayHostComponent {
-  @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(FormDirective)
+  formDirective: FormDirective;
 
   readonly form = new FormGroup({
     grades: new FormArray(
@@ -63,6 +65,7 @@ class ArrayHostComponent {
     FormControlDirective,
     IfErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <form [formGroup]="form" lcForm>
       <div lcControlGroup>
@@ -118,7 +121,7 @@ describe('lcFormArray', () => {
   it('marks the form array touched when the form is marked touched', () => {
     fixture.componentInstance.formDirective.markAsTouched();
 
-    expect(fixture.componentInstance.form.controls.grades.touched).toBeTrue();
+    expect(fixture.componentInstance.form.controls.grades.touched).toBe(true);
     expect(fixture.nativeElement.querySelector('.not-unique')).not.toBeNull();
   });
 });
@@ -131,6 +134,7 @@ describe('lcFormArray', () => {
     FormArrayDirective,
     IfErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <form [formGroup]="form" lcForm>
       <div formArrayName="grades">

@@ -4,14 +4,13 @@ import {
   HostListener,
   inject,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Line } from '../../../models/line';
 import { LinesService } from '../../../services/crud/lines.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
 import { TicksService } from '../../../services/crud/ticks.service';
@@ -24,13 +23,11 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
-import { Button } from 'primeng/button';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { ArchiveButtonComponent } from '../../archive/archive-button/archive-button.component';
 import { TodoButtonComponent } from '../../todo/todo-button/todo-button.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
-import { Skeleton } from 'primeng/skeleton';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { LineBoolPropListComponent } from '../line-bool-prop-list/line-bool-prop-list.component';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
@@ -39,12 +36,22 @@ import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-se
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LineConsensusComponent } from '../line-consensus/line-consensus.component';
-import { GalleriaModule } from 'primeng/galleria';
 import {
   GalleryPreviewDirection,
   galleryPreviewSwipeDirection,
   stepGalleryPreview,
 } from '../../../utility/gallery-preview';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowUpDown,
+  lucideChevronLeft,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 
 /**
  * Component that shows detailed information about a line.
@@ -53,31 +60,35 @@ import {
   selector: 'lc-line-info',
   templateUrl: './line-info.component.html',
   styleUrls: ['./line-info.component.scss'],
-  providers: [DialogService],
+  providers: [
+    provideIcons({ lucideArrowUpDown, lucideChevronLeft, lucideChevronRight }),
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ClosedSpotAlertComponent,
     UpcomingClosureAlertComponent,
     TranslocoDirective,
     TopoImageDetailsComponent,
-    Button,
     HasPermissionDirective,
     GymModeDirective,
     ArchiveButtonComponent,
     TodoButtonComponent,
     TickButtonComponent,
-    Skeleton,
     SanitizeHtmlPipe,
     LineBoolPropListComponent,
     TopoImageViewerComponent,
     DatePipe,
     RouterLink,
     LineConsensusComponent,
-    GalleriaModule,
+    HlmButton,
+    HlmSkeleton,
+    ...HlmDialogImports,
+    NgIcon,
   ],
 })
 export class LineInfoComponent implements OnInit {
   public line: Line;
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
   public ticks: Set<string>;
   public todos: Set<string>;
   public displayUserRating?: boolean = undefined;
@@ -93,7 +104,7 @@ export class LineInfoComponent implements OnInit {
   private isTodoService = inject(IsTodoService);
   private actions$ = inject(Actions);
   private translocoService = inject(TranslocoService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private linePathsService = inject(LinePathsService);
   private linesService = inject(LinesService);
   private store = inject(Store);
@@ -244,11 +255,11 @@ export class LineInfoComponent implements OnInit {
    */
   reorderLinePaths() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      modal: true,
-      header: this.translocoService.translate(
+      title: this.translocoService.translate(
         marker('reorderLinePathsForLineDialogTitle'),
       ),
-      data: {
+      contentClass: 'sm:max-w-lg',
+      context: {
         items: this.line.topoImages,
         itemsName: this.translocoService.translate(
           marker('reorderLinePathsForLineDialogItemsName'),
@@ -261,7 +272,7 @@ export class LineInfoComponent implements OnInit {
         idAccessor: (item: any) => item.linePaths[0].id,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.ref.closed$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }

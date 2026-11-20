@@ -3,20 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  ViewChild,
   inject,
 } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoadingState } from '../../../enums/loading-state';
 import { NgClass } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
-import {
-  ConfirmationService,
-  MenuItem,
-  PrimeIcons,
-  SelectItem,
-} from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -29,49 +20,82 @@ import { UsersService } from '../../../services/crud/users.service';
 import { FormsModule } from '@angular/forms';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user-role-tag.component';
-import { Menu, MenuModule } from 'primeng/menu';
 import { take } from 'rxjs/operators';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Select } from 'primeng/select';
 import { UserListSkeletonComponent } from '../user-list-skeleton/user-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RouterLink } from '@angular/router';
-import { InputText } from 'primeng/inputtext';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowDownAZ,
+  lucideArrowDownZA,
+  lucideEllipsisVertical,
+  lucideInfo,
+  lucideSend,
+  lucideShield,
+  lucideTrash,
+} from '@ng-icons/lucide';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
 import {
   UserRightsDialogComponent,
   userPromotionTarget,
 } from './user-rights-dialog.component';
 
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
+
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+
 @Component({
   selector: 'lc-user-list',
   imports: [
+    ...HlmSelectImports,
+    ...HlmDropdownMenuImports,
     TranslocoDirective,
-    ButtonModule,
-    DataViewModule,
     NgClass,
     FormsModule,
     UserAvatarComponent,
     UserRoleTagComponent,
-    MenuModule,
-    ConfirmDialogModule,
-    Select,
     UserListSkeletonComponent,
-    Message,
     DatePipe,
     RouterLink,
-    InputText,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    NgIcon,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ConfirmationService, DialogService],
+  providers: [
+    provideIcons({
+      lucideArrowDownAZ,
+      lucideArrowDownZA,
+      lucideEllipsisVertical,
+      lucideInfo,
+      lucideSend,
+      lucideShield,
+      lucideTrash,
+    }),
+  ],
 })
 export class UserListComponent implements OnInit {
-  @ViewChild('userMenu') userMenu: Menu;
+  private confirmDialog = inject(ConfirmDialogService);
+  readonly menuIcon = lucideNameFromPrimeIcon;
 
   public users: User[] = [];
   public filteredUsers: User[] | null = null;
@@ -88,13 +112,12 @@ export class UserListComponent implements OnInit {
   private isAdmin = false;
   private clickedUser: User | null = null;
   private usersService = inject(UsersService);
-  private confirmationService = inject(ConfirmationService);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private changeDetector = inject(ChangeDetectorRef);
-  private rightsDialogRef: DynamicDialogRef | undefined;
+  private rightsDialogRef: BrnDialogRef | undefined;
 
   ngOnInit() {
     this.pageTitleService.setTitle(
@@ -116,12 +139,12 @@ export class UserListComponent implements OnInit {
       this.loading = LoadingState.DEFAULT;
       this.sortOptions = [
         {
-          icon: PrimeIcons.SORT_ALPHA_DOWN,
+          icon: 'lucideArrowDownAZ',
           label: this.translocoService.translate(marker('sortAZ')),
           value: '!fullname',
         },
         {
-          icon: 'pi pi-sort-alpha-down-alt',
+          icon: 'lucideArrowDownZA',
           label: this.translocoService.translate(marker('sortZA')),
           value: 'fullname',
         },
@@ -165,7 +188,6 @@ export class UserListComponent implements OnInit {
     event.stopPropagation();
     this.clickedUser = user;
     this.userActionItems = this.buildUserActionItems();
-    this.userMenu.toggle(event);
   }
 
   private buildUserActionItems(): MenuItem[] {
@@ -226,8 +248,8 @@ export class UserListComponent implements OnInit {
   }
 
   confirmDeleteUser(user: User) {
-    this.confirmationService.confirm({
-      header: this.translocoService.translate(
+    this.confirmDialog.open({
+      title: this.translocoService.translate(
         marker('users.askReallyWantToDeleteUserTitle'),
       ),
       message: this.translocoService.translate(
@@ -235,11 +257,10 @@ export class UserListComponent implements OnInit {
         { username: user.fullname },
       ),
       acceptLabel: this.translocoService.translate(marker('users.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('users.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteUser(user);
       },
@@ -255,25 +276,45 @@ export class UserListComponent implements OnInit {
 
   openRightsDialog(user: User) {
     this.rightsDialogRef?.close();
-    this.rightsDialogRef = this.dialogService.open(UserRightsDialogComponent, {
-      header: this.translocoService.translate(
-        marker('users.list.rightsDialogTitle'),
-      ),
-      data: {
-        userId: user.id,
-        role: userPromotionTarget(user),
-        suggestionsEnabled: user.suggestionsEnabled,
+    this.rightsDialogRef = this.dialogService.open<boolean>(
+      UserRightsDialogComponent,
+      {
+        title: this.translocoService.translate(
+          marker('users.list.rightsDialogTitle'),
+        ),
+        contentClass: 'sm:max-w-md',
+        context: {
+          userId: user.id,
+          role: userPromotionTarget(user),
+          suggestionsEnabled: user.suggestionsEnabled,
+        },
       },
-      modal: true,
-      dismissableMask: true,
-      closeOnEscape: true,
-      width: '28rem',
-      breakpoints: { '640px': '95vw' },
-    });
-    this.rightsDialogRef.onClose.subscribe((saved: boolean) => {
+    );
+    this.rightsDialogRef.closed$.subscribe((saved) => {
       if (saved) {
         this.refreshData();
       }
+    });
+  }
+
+  sortClientList<T>(items: T[] | null | undefined): T[] {
+    if (!items || !this.sortField) {
+      return items ?? [];
+    }
+    const direction = this.sortOrder ?? 1;
+    return [...items].sort((a: any, b: any) => {
+      const left = a?.[this.sortField];
+      const right = b?.[this.sortField];
+      if (left === right) {
+        return 0;
+      }
+      if (left == null) {
+        return 1;
+      }
+      if (right == null) {
+        return -1;
+      }
+      return left > right ? direction : -direction;
     });
   }
 }

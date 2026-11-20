@@ -13,7 +13,7 @@ import {
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../models/menu-item';
 
 @Directive({
   selector: '[lcSetActiveTab]',
@@ -48,13 +48,15 @@ export class SetActiveTabDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private updateActiveTabIndex() {
-    const activeItem = this.items.findIndex((item) =>
-      this.router.isActive(item.routerLink, {
-        paths: item.routerLinkActiveOptions?.exact ? 'exact' : 'subset',
-        fragment: 'ignored',
-        matrixParams: 'ignored',
-        queryParams: 'ignored',
-      }),
+    const activeItem = (this.items ?? []).findIndex(
+      (item) =>
+        !!item.routerLink &&
+        this.router.isActive(item.routerLink, {
+          paths: item.routerLinkActiveOptions?.exact ? 'exact' : 'subset',
+          fragment: 'ignored',
+          matrixParams: 'ignored',
+          queryParams: 'ignored',
+        }),
     );
 
     this.activeTabIndexSignal.set(activeItem !== -1 ? activeItem : 0);

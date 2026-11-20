@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,15 +14,10 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { catchError, forkJoin, of, switchMap, throwError } from 'rxjs';
-import { Select } from 'primeng/select';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
-import { InputTextModule } from 'primeng/inputtext';
 
 import { LoadingState } from '../../../enums/loading-state';
 import { PageTitleService } from '../../../services/core/page-title.service';
@@ -35,15 +36,20 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-moderator-task-form',
   imports: [
-    ButtonModule,
-    ConfirmPopupModule,
+    LoadingButtonComponent,
     WysiwygEditorComponent,
-    InputTextModule,
-    Select,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -51,12 +57,18 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    NgIcon,
   ],
   templateUrl: './moderator-task-form.component.html',
   styleUrl: './moderator-task-form.component.scss',
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideIcons({ lucideBan, lucideSave, lucideTrash2 })],
 })
 export class ModeratorTaskFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public taskForm: FormGroup;
@@ -82,7 +94,6 @@ export class ModeratorTaskFormComponent implements OnInit {
   private areasService = inject(AreasService);
   private linesService = inject(LinesService);
   private usersService = inject(UsersService);
-  private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
 
@@ -205,13 +216,12 @@ export class ModeratorTaskFormComponent implements OnInit {
     this.router.navigate([this.listLink]);
   }
 
-  public confirmDelete(event: Event): void {
-    this.confirmationService.confirm({
-      target: event.target as HTMLElement,
+  public confirmDelete(_event: Event): void {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('moderatorTasks.deleteConfirm'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
+      destructive: true,
       accept: () => {
         this.loadingState = LoadingState.LOADING;
         this.moderatorTasksService.deleteTask(this.taskId).subscribe({
@@ -235,6 +245,9 @@ export class ModeratorTaskFormComponent implements OnInit {
   public assigneeLabel(user: User): string {
     return `${user.firstname} ${user.lastname}`.trim();
   }
+
+  assigneeItemLabel = (user: User | null): string =>
+    user ? this.assigneeLabel(user) : '';
 
   private resolveTargetObjectId() {
     const params = this.route.snapshot.paramMap;

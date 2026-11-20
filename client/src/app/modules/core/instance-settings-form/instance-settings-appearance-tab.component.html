@@ -37,11 +37,12 @@
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="bg-image">{{ t("bgImageLabel") }}</label>
-        <span
-          class="pi pi-question-circle ml-2"
-          [pTooltip]="t('bgImageTooltip')"
-          tooltipPosition="right"
-        ></span>
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
+          [hlmTooltip]="t('bgImageTooltip')"
+          position="right"
+        />
       </div>
       <lc-single-image-upload
         id="bg-image"
@@ -51,22 +52,25 @@
       ></lc-single-image-upload>
     </div>
 
-    <p-divider align="center" type="solid" class="mt-8 mb-2"
-      ><b>{{ t("arrowsSettings") }}</b></p-divider
-    >
+    <div class="mt-8 mb-2 flex items-center gap-3">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("arrowsSettings") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-col gap-2" lcControlGroup>
       <div class="form-label flex items-center">
         <label for="color-lines-by-scale">{{
           t("colorLinesByScaleLabel")
         }}</label>
-        <span
-          class="pi pi-question-circle ml-2"
-          [pTooltip]="t('colorLinesByScaleTooltip')"
-          tooltipPosition="right"
-        ></span>
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
+          [hlmTooltip]="t('colorLinesByScaleTooltip')"
+          position="right"
+        />
       </div>
-      <p-toggleswitch
+      <hlm-switch
         inputId="color-lines-by-scale"
         formControlName="colorLinesByScale"
       />
@@ -76,63 +80,60 @@
       <label class="form-label" for="arrow-color">{{
         t("arrowColorLabel")
       }}</label>
-      <p-colorPicker
-        formControlName="arrowColor"
-        id="arrow-color"
-      ></p-colorPicker>
+      <ngx-colors ngx-colors-trigger formControlName="arrowColor"></ngx-colors>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="arrowTextColor">{{
         t("arrowTextColorLabel")
       }}</label>
-      <p-colorPicker
+      <ngx-colors
+        ngx-colors-trigger
         formControlName="arrowTextColor"
-        id="arrowTextColor"
-      ></p-colorPicker>
+      ></ngx-colors>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="arrow-highlight-color">{{
         t("arrowHighlightColorLabel")
       }}</label>
-      <p-colorPicker
+      <ngx-colors
+        ngx-colors-trigger
         formControlName="arrowHighlightColor"
-        id="arrow-highlight-color"
-      ></p-colorPicker>
+      ></ngx-colors>
     </div>
     <div class="flex flex-col gap-2" lcControlGroup>
       <label class="form-label" for="arrow-highlight-text-color">{{
         t("arrowHighlightTextColorLabel")
       }}</label>
-      <p-colorPicker
-        id="arrow-highlight-text-color"
+      <ngx-colors
+        ngx-colors-trigger
         formControlName="arrowHighlightTextColor"
-      ></p-colorPicker>
+      ></ngx-colors>
     </div>
 
-    <p-divider align="center" type="solid" class="mt-8 mb-2"
-      ><b>{{ t("chartSettings") }}</b></p-divider
-    >
+    <div class="mt-8 mb-2 flex items-center gap-3">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("chartSettings") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="lc-theme-variant-pair">
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="bar-chart-color">{{
           t("barChartColorLabel")
         }}</label>
-        <p-colorPicker
-          id="bar-chart-color"
+        <ngx-colors
+          ngx-colors-trigger
           formControlName="barChartColor"
-          format="rgb"
-        ></p-colorPicker>
+        ></ngx-colors>
       </div>
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="dark-bar-chart-color">{{
           t("darkBarChartColorLabel")
         }}</label>
-        <p-colorPicker
-          id="dark-bar-chart-color"
+        <ngx-colors
+          ngx-colors-trigger
           formControlName="darkBarChartColor"
-          format="rgb"
-        ></p-colorPicker>
+        ></ngx-colors>
       </div>
     </div>
 
@@ -141,32 +142,32 @@
         <label class="form-label" for="bar-chart-accent-color">{{
           t("barChartAccentColorLabel")
         }}</label>
-        <p-colorPicker
-          id="bar-chart-accent-color"
+        <ngx-colors
+          ngx-colors-trigger
           formControlName="barChartAccentColor"
-          format="rgb"
-        ></p-colorPicker>
+        ></ngx-colors>
       </div>
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="dark-bar-chart-accent-color">{{
           t("darkBarChartAccentColorLabel")
         }}</label>
-        <p-colorPicker
-          id="dark-bar-chart-accent-color"
+        <ngx-colors
+          ngx-colors-trigger
           formControlName="darkBarChartAccentColor"
-          format="rgb"
-        ></p-colorPicker>
+        ></ngx-colors>
       </div>
     </div>
 
     <div class="form-actions">
-      <p-button
-        label="{{ t('editInstanceSettingsButtonLabel') }}"
-        (click)="save()"
-        icon="pi pi-save"
+      <button
+        hlmBtn
+        type="button"
         class="responsive-button"
-        [loading]="loading"
-      ></p-button>
+        (click)="save()"
+        [disabled]="loading"
+      >
+        <ng-icon name="lucideSave" /> {{ t("editInstanceSettingsButtonLabel") }}
+      </button>
     </div>
   </div>
 </ng-container>

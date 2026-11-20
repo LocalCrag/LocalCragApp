@@ -1,18 +1,16 @@
 <ng-container *transloco="let t; read: 'line.batchLineForm'">
   @if (lineForm) {
     <form [formGroup]="lineForm" lcForm>
-      <div class="flex md:flex-row flex-col gap-2">
-        <div class="flex shrink-0 items-start">
-          <p-tag
-            value="#{{ index + 1 }}"
-            [rounded]="true"
-            styleClass="form-item-index"
-          />
+      <div class="flex flex-col gap-2 md:flex-row md:items-start">
+        <div class="flex shrink-0 items-center">
+          <span hlmBadge variant="secondary" class="h-9 min-w-9"
+            >#{{ index + 1 }}</span
+          >
         </div>
-        <div class="flex-1 flex flex-col" lcControlGroup>
+        <div class="flex min-w-0 flex-1 flex-col" lcControlGroup>
           <input
             type="text"
-            pInputText
+            hlmInput
             id="name"
             formControlName="name"
             placeholder="{{ t('lineNamePlaceholder') }}"
@@ -27,7 +25,7 @@
           }}</small>
         </div>
         @if (gymMode$ | async) {
-          <div class="flex-1 flex flex-col" lcControlGroup>
+          <div class="flex min-w-0 flex-1 flex-col" lcControlGroup>
             <lc-advanced-color-picker
               id="color"
               formControlName="color"
@@ -35,62 +33,62 @@
             />
           </div>
         }
-        <div class="flex-1 flex flex-col" lcControlGroup>
-          <p-select
+        <div class="flex min-w-0 flex-1 flex-col" lcControlGroup>
+          <hlm-select
+            [itemToString]="selectLabel"
             formControlName="grade"
             id="grade"
-            [options]="grades"
             data-cy="grade-dropdown"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="{{ t('gradePlaceholder') }}"
             lcFormControl
+            ><hlm-select-trigger class="w-full"
+              ><hlm-select-value
+                [placeholder]="t('gradePlaceholder')" /></hlm-select-trigger
+            ><hlm-select-content *hlmSelectPortal>
+              @for (option of grades; track option.value) {
+                <hlm-select-item
+                  [value]="option.value"
+                  data-cy="grade-dropdown-item"
+                  >{{ option.name | translateSpecialGrades }}</hlm-select-item
+                >
+              }
+            </hlm-select-content></hlm-select
           >
-            <ng-template let-grade #item>
-              <div class="flex items-center" data-cy="grade-dropdown-item">
-                <div>{{ grade.name | translateSpecialGrades }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-selectedGrade #selectedItem>
-              {{ selectedGrade.name | translateSpecialGrades }}
-            </ng-template>
-          </p-select>
           <small class="lc-error mt-1" *lcIfError="'required'">{{
             "validation.required" | transloco
           }}</small>
         </div>
         @if (type === lineTypes.BOULDER && (gymMode$ | async) === false) {
-          <div class="flex-1 flex flex-col" lcControlGroup>
-            <p-select
+          <div class="flex min-w-0 flex-1 flex-col" lcControlGroup>
+            <hlm-select
               id="starting-position"
               formControlName="startingPosition"
-              [options]="startingPositions"
               lcFormControl
               data-cy="starting-position-dropdown"
+              ><hlm-select-trigger class="w-full"
+                ><ng-template hlmSelectValueTemplate let-value>{{
+                  value | transloco
+                }}</ng-template></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of startingPositions; track $index) {
+                  <hlm-select-item
+                    [value]="option"
+                    data-cy="starting-position-dropdown-item"
+                    >{{ option | transloco }}</hlm-select-item
+                  >
+                }
+              </hlm-select-content></hlm-select
             >
-              <ng-template let-startingPosition #item>
-                <div
-                  class="flex items-center"
-                  data-cy="starting-position-dropdown-item"
-                >
-                  <div>{{ startingPosition | transloco }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-selectedItem #selectedItem>
-                {{ selectedItem | transloco }}
-              </ng-template>
-            </p-select>
             <small class="lc-error mt-1" *lcIfError="'required'">{{
               "validation.required" | transloco
             }}</small>
           </div>
         }
         @if (gymMode$ | async) {
-          <div class="flex-1 flex flex-col" lcControlGroup>
+          <div class="flex min-w-0 flex-1 flex-col" lcControlGroup>
             <input
               id="fa-name"
               type="text"
-              pInputText
+              hlmInput
               formControlName="faName"
               placeholder="{{ t('lineFANamePlaceholder') }}"
               lcFormControl
@@ -100,13 +98,18 @@
             }}</small>
           </div>
         }
-        <div class="shrink-0 flex md:items-start sm:items-end justify-end">
-          <p-button
-            icon="pi pi-trash"
-            severity="danger"
+        <div class="flex shrink-0 items-center justify-end">
+          <button
+            hlmBtn
+            type="button"
+            variant="destructive"
+            size="icon"
+            class="size-9"
             (click)="delete.emit()"
             [disabled]="deleteDisabled"
-          ></p-button>
+          >
+            <ng-icon name="lucideTrash2" />
+          </button>
         </div>
       </div>
     </form>

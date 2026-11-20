@@ -1,15 +1,15 @@
 @for (i of Array.from({ length: 5 }); track $index) {
   <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6">
     <div class="w-full sm:w-9/12 xl:w-5/12 self-start">
-      <p-skeleton height="20rem"></p-skeleton>
+      <div hlmSkeleton class="h-80 w-full"></div>
     </div>
     <div class="w-full sm:w-full xl:w-7/12 flex flex-col gap-2">
-      <p-skeleton height="3rem"></p-skeleton>
-      <p-skeleton height="1.5rem"></p-skeleton>
-      <p-skeleton height="1.5rem"></p-skeleton>
-      <p-skeleton height="1.5rem"></p-skeleton>
-      <p-skeleton height="1.5rem"></p-skeleton>
-      <p-skeleton height="1.5rem"></p-skeleton>
+      <div hlmSkeleton class="h-12 w-full"></div>
+      <div hlmSkeleton class="h-6 w-full"></div>
+      <div hlmSkeleton class="h-6 w-full"></div>
+      <div hlmSkeleton class="h-6 w-full"></div>
+      <div hlmSkeleton class="h-6 w-full"></div>
+      <div hlmSkeleton class="h-6 w-full"></div>
     </div>
   </div>
 }

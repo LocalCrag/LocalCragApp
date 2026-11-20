@@ -1,112 +1,115 @@
 <ng-container *transloco="let t">
   @if (gradeDistributionEmpty) {
-    <p-skeleton width="100%" height="2rem"></p-skeleton>
+    <div hlmSkeleton class="h-8 w-full"></div>
   }
 
   @if (!gradeDistributionEmpty) {
     @for (data of stackChartData; track data) {
       <div class="mb-6">
-        <p-meterGroup
-          [value]="data.meterValues"
-          [min]="0"
-          [max]="data.total - data.projects - data.ungraded"
-        >
-          <ng-template #label>
+        <div class="flex h-2 w-full overflow-hidden rounded-full">
+          @for (meterValue of data.meterValues; track meterValue) {
             <div
-              class="p-metergroup-labels p-component p-metergroup-labels-horizontal flex gap-6"
-            >
-              @if (data.total - data.projects > 0) {
-                <div class="p-metergroup-label font-bold">
-                  {{ data.total - data.projects }}
-                  {{ stackChartData.length > 1 ? data.gradeScale : "" }}
-                  {{ t("lines") }}:
-                </div>
-              }
-              @for (meterValue of data.meterValues; track meterValue) {
-                <div class="p-metergroup-label">
-                  <p-tag
-                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
-                    [style]="{
-                      backgroundColor: meterValue.color,
-                      color: textColor(meterValue.color, '#2e3132'),
-                    }"
-                    (click)="
-                      onGradeRangeClick(
-                        $event,
-                        data,
-                        meterValue.minGrade,
-                        meterValue.maxGrade
-                      )
-                    "
-                  >
-                    <span class="leveled-grade-tag">
-                      <span class="leveled-grade-tag__count">{{
-                        meterValue.value
-                      }}</span>
-                      <span
-                        class="leveled-grade-tag__sep"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="leveled-grade-tag__label">{{
-                        meterValue.label
-                      }}</span>
-                    </span>
-                  </p-tag>
-                </div>
-              }
-              @if (data.ungraded > 0) {
-                <div class="p-metergroup-label">
-                  <p-tag
-                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
-                    [style]="{
-                      backgroundColor: stackedChartProjectColor,
-                      color: textColor(stackedChartProjectColor, '#2e3132'),
-                    }"
-                    (click)="onGradeRangeClick($event, data, 0, 0)"
-                  >
-                    <span class="leveled-grade-tag">
-                      <span class="leveled-grade-tag__count">{{
-                        data.ungraded
-                      }}</span>
-                      <span
-                        class="leveled-grade-tag__sep"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="leveled-grade-tag__label">{{
-                        t("leveledGradeDistributionUngraded")
-                      }}</span>
-                    </span>
-                  </p-tag>
-                </div>
-              }
-              @if (data.projects > 0) {
-                <div class="p-metergroup-label">
-                  <p-tag
-                    [class.leveled-grade-tag--clickable]="!!linesListUrl"
-                    [style]="{
-                      backgroundColor: stackedChartProjectColor,
-                      color: textColor(stackedChartProjectColor, '#2e3132'),
-                    }"
-                    (click)="onGradeRangeClick($event, data, -2, -1)"
-                  >
-                    <span class="leveled-grade-tag">
-                      <span class="leveled-grade-tag__count">{{
-                        data.projects
-                      }}</span>
-                      <span
-                        class="leveled-grade-tag__sep"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="leveled-grade-tag__label">{{
-                        t("leveledGradeDistributionProjects")
-                      }}</span>
-                    </span>
-                  </p-tag>
-                </div>
-              }
+              [style.width]="meterWidth(data, meterValue.value)"
+              [style.backgroundColor]="meterValue.color"
+            ></div>
+          }
+        </div>
+        <div
+          class="p-metergroup-labels p-component p-metergroup-labels-horizontal mt-4 flex gap-6"
+        >
+          @if (data.total - data.projects > 0) {
+            <div class="p-metergroup-label font-bold">
+              {{ data.total - data.projects }}
+              {{ stackChartData.length > 1 ? data.gradeScale : "" }}
+              {{ t("lines") }}:
             </div>
-          </ng-template>
-        </p-meterGroup>
+          }
+          @for (meterValue of data.meterValues; track meterValue) {
+            <div class="p-metergroup-label">
+              <button
+                hlmBadge
+                type="button"
+                class="leveled-grade-tag h-auto border-transparent"
+                [class.leveled-grade-tag--clickable]="!!linesListUrl"
+                [style.backgroundColor]="meterValue.color"
+                [style.color]="textColor(meterValue.color, '#2e3132')"
+                (click)="
+                  onGradeRangeClick(
+                    $event,
+                    data,
+                    meterValue.minGrade,
+                    meterValue.maxGrade
+                  )
+                "
+              >
+                <span class="leveled-grade-tag">
+                  <span class="leveled-grade-tag__count">{{
+                    meterValue.value
+                  }}</span>
+                  <span
+                    class="leveled-grade-tag__sep"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="leveled-grade-tag__label">{{
+                    meterValue.label
+                  }}</span>
+                </span>
+              </button>
+            </div>
+          }
+          @if (data.ungraded > 0) {
+            <div class="p-metergroup-label">
+              <button
+                hlmBadge
+                type="button"
+                class="leveled-grade-tag h-auto border-transparent"
+                [class.leveled-grade-tag--clickable]="!!linesListUrl"
+                [style.backgroundColor]="stackedChartProjectColor"
+                [style.color]="textColor(stackedChartProjectColor, '#2e3132')"
+                (click)="onGradeRangeClick($event, data, 0, 0)"
+              >
+                <span class="leveled-grade-tag">
+                  <span class="leveled-grade-tag__count">{{
+                    data.ungraded
+                  }}</span>
+                  <span
+                    class="leveled-grade-tag__sep"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="leveled-grade-tag__label">{{
+                    t("leveledGradeDistributionUngraded")
+                  }}</span>
+                </span>
+              </button>
+            </div>
+          }
+          @if (data.projects > 0) {
+            <div class="p-metergroup-label">
+              <button
+                hlmBadge
+                type="button"
+                class="leveled-grade-tag h-auto border-transparent"
+                [class.leveled-grade-tag--clickable]="!!linesListUrl"
+                [style.backgroundColor]="stackedChartProjectColor"
+                [style.color]="textColor(stackedChartProjectColor, '#2e3132')"
+                (click)="onGradeRangeClick($event, data, -2, -1)"
+              >
+                <span class="leveled-grade-tag">
+                  <span class="leveled-grade-tag__count">{{
+                    data.projects
+                  }}</span>
+                  <span
+                    class="leveled-grade-tag__sep"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="leveled-grade-tag__label">{{
+                    t("leveledGradeDistributionProjects")
+                  }}</span>
+                </span>
+              </button>
+            </div>
+          }
+        </div>
       </div>
     }
   }

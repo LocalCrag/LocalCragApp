@@ -18,3 +18,9 @@
 .lc-control-group.disabled {
   opacity: 0.5;
 }
+
+// Checkbox hosts are display:contents, so the 18px box and the label are
+// siblings in the row. Stretch pins the box to the top of the text line.
+.flex:not(.flex-col):has(> hlm-checkbox) {
+  align-items: center;
+}

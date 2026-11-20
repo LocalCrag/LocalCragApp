@@ -12,7 +12,7 @@ describe('lngValidator', () => {
     const correctUrlCtrl1 = new FormControl('180.37606632952576');
     const correctUrlCtrl1ValidationResult1 = lngValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLng: true,
       }),
     );
@@ -22,7 +22,7 @@ describe('lngValidator', () => {
     const correctUrlCtrl1 = new FormControl('-180.37606632952576');
     const correctUrlCtrl1ValidationResult1 = lngValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLng: true,
       }),
     );
@@ -32,7 +32,7 @@ describe('lngValidator', () => {
     const correctUrlCtrl1 = new FormControl('Test');
     const correctUrlCtrl1ValidationResult1 = lngValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidLng: true,
       }),
     );

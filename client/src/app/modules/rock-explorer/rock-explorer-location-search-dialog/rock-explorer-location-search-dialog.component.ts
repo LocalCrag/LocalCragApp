@@ -7,17 +7,12 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 import {
   Subject,
   catchError,
@@ -32,20 +27,39 @@ import { GeocodingService } from '../../../services/core/geocoding.service';
 import { GeocodePlace } from '../../../utility/geo/geocode-places';
 import { parseCoordinatesInput } from '../../../utility/geo/parse-coordinates';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideLoader2,
+  lucideMapPin,
+  lucideSearch,
+  lucideX,
+} from '@ng-icons/lucide';
+
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 
 @Component({
+  providers: [
+    provideIcons({ lucideLoader2, lucideMapPin, lucideSearch, lucideX }),
+  ],
   selector: 'lc-rock-explorer-location-search-dialog',
   imports: [
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmInputGroupImports,
     FormsModule,
     TranslocoDirective,
-    ButtonModule,
-    InputTextModule,
-    InputGroup,
-    InputGroupAddon,
-    MessageModule,
+    HlmButton,
+    HlmInput,
+    NgIcon,
   ],
   templateUrl: './rock-explorer-location-search-dialog.component.html',
   styleUrl: './rock-explorer-location-search-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class RockExplorerLocationSearchDialogComponent implements AfterViewInit {
@@ -56,7 +70,7 @@ export class RockExplorerLocationSearchDialogComponent implements AfterViewInit 
   loading = false;
   places: GeocodePlace[] = [];
 
-  private ref = inject(DynamicDialogRef);
+  private ref = inject(BrnDialogRef);
   private transloco = inject(TranslocoService);
   private ui = inject(RockExplorerUiService);
   private geocoding = inject(GeocodingService);

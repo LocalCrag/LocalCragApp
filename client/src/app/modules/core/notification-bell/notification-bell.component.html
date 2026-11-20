@@ -1,105 +1,106 @@
 <ng-container *transloco="let t; read: 'menu'">
-  <p-popover
-    #notificationsPopover
-    appendTo="body"
-    styleClass="notifications-popover-panel"
-  >
-    <div class="notifications-popover" (scroll)="onPopoverScroll($event)">
-      <div class="notifications-popover-header">
-        <button
-          type="button"
-          class="notifications-footer-link"
-          (click)="notificationsPopover.hide(); $event.stopPropagation()"
-          routerLink="/notifications"
-        >
-          {{ t("notificationsOpenDetailPage") }}
-        </button>
-        <button
-          type="button"
-          class="notifications-footer-link"
-          [disabled]="unreadCount() === 0"
-          (click)="markAllRead(notificationsPopover)"
-        >
-          {{ t("notificationsMarkAllRead") }}
-        </button>
-      </div>
-      @if (notifications.length === 0 && !loading) {
-        <div class="notifications-empty">{{ t("notificationsEmpty") }}</div>
-      } @else {
-        @for (item of notifications; track item.id) {
-          <div
-            class="notifications-item"
-            [class.is-read]="item.isDismissed"
-            role="button"
-            tabindex="0"
-            (click)="openNotification(item, notificationsPopover)"
-            (keydown.enter)="openNotification(item, notificationsPopover)"
+  <div brnPopover align="end" class="notifications-popover-panel">
+    <ng-template brnPopoverContent>
+      <div
+        class="notifications-popover"
+        hlmPopoverContent
+        (scroll)="onPopoverScroll($event)"
+      >
+        <div class="notifications-popover-header">
+          <button
+            type="button"
+            class="notifications-footer-link"
+            (click)="closeNotifications(); $event.stopPropagation()"
+            routerLink="/notifications"
           >
-            <div class="notifications-item-icon">
-              @if (notificationUi.isReaction(item)) {
-                <span>{{ item.properties.reaction?.emoji || "😊" }}</span>
-              } @else if (item.type === "comment_reply") {
-                <i class="pi pi-comment"></i>
-              } @else if (item.type === "release_notes") {
-                <i class="pi pi-megaphone"></i>
-              } @else if (item.type === "admin_message") {
-                <i class="pi pi-envelope"></i>
-              } @else if (
-                item.type === "moderator_task_completed" ||
-                item.type === "moderator_task_created" ||
-                item.type === "moderator_task_created_and_assigned" ||
-                item.type === "moderator_task_assigned"
-              ) {
-                <i class="pi pi-list-check"></i>
-              } @else if (
-                item.type === "suggestion_submitted" ||
-                item.type === "suggestion_published" ||
-                item.type === "suggestion_rejected"
-              ) {
-                <i class="pi pi-flag"></i>
-              } @else {
-                <i class="pi pi-cog"></i>
+            {{ t("notificationsOpenDetailPage") }}
+          </button>
+          <button
+            type="button"
+            class="notifications-footer-link"
+            [disabled]="unreadCount() === 0"
+            (click)="markAllRead()"
+          >
+            {{ t("notificationsMarkAllRead") }}
+          </button>
+        </div>
+        @if (notifications.length === 0 && !loading) {
+          <div class="notifications-empty">{{ t("notificationsEmpty") }}</div>
+        } @else {
+          @for (item of notifications; track item.id) {
+            <div
+              class="notifications-item"
+              [class.is-read]="item.isDismissed"
+              role="button"
+              tabindex="0"
+              (click)="openNotification(item)"
+              (keydown.enter)="openNotification(item)"
+            >
+              <div class="notifications-item-icon">
+                @if (notificationUi.isReaction(item)) {
+                  <span>{{ item.properties.reaction?.emoji || "😊" }}</span>
+                } @else if (item.type === "comment_reply") {
+                  <ng-icon name="lucideMessageCircle" />
+                } @else if (item.type === "release_notes") {
+                  <ng-icon name="lucideMegaphone" />
+                } @else if (item.type === "admin_message") {
+                  <ng-icon name="lucideMail" />
+                } @else if (
+                  item.type === "moderator_task_completed" ||
+                  item.type === "moderator_task_created" ||
+                  item.type === "moderator_task_created_and_assigned" ||
+                  item.type === "moderator_task_assigned"
+                ) {
+                  <ng-icon name="lucideListChecks" />
+                } @else if (
+                  item.type === "suggestion_submitted" ||
+                  item.type === "suggestion_published" ||
+                  item.type === "suggestion_rejected"
+                ) {
+                  <ng-icon name="lucideFlag" />
+                } @else {
+                  <ng-icon name="lucideSettings" />
+                }
+              </div>
+              <div class="notifications-item-main">
+                <div class="notifications-item-text">
+                  {{ notificationUi.notificationText(item) }}
+                </div>
+              </div>
+              @if (!item.isDismissed) {
+                <div class="notifications-item-actions">
+                  <button
+                    type="button"
+                    class="notifications-item-more"
+                    [attr.aria-label]="t('notificationsMarkReadOnly')"
+                    [title]="t('notificationsMarkReadOnly')"
+                    (click)="
+                      $event.stopPropagation(); markNotificationRead(item)
+                    "
+                  >
+                    <ng-icon name="lucideCheck" />
+                  </button>
+                </div>
               }
             </div>
-            <div class="notifications-item-main">
-              <div class="notifications-item-text">
-                {{ notificationUi.notificationText(item) }}
-              </div>
-            </div>
-            @if (!item.isDismissed) {
-              <div class="notifications-item-actions">
-                <button
-                  type="button"
-                  class="notifications-item-more"
-                  [attr.aria-label]="t('notificationsMarkReadOnly')"
-                  [title]="t('notificationsMarkReadOnly')"
-                  (click)="$event.stopPropagation(); markNotificationRead(item)"
-                >
-                  <i class="pi pi-check"></i>
-                </button>
-              </div>
-            }
+          }
+        }
+        @if (loading) {
+          <div class="notifications-loading">
+            <hlm-spinner class="size-6" />
           </div>
         }
-      }
-      @if (loading) {
-        <div class="notifications-loading">
-          <p-progressSpinner
-            strokeWidth="6"
-            animationDuration=".8s"
-            [style]="{ width: '1.5rem', height: '1.5rem' }"
-          />
-        </div>
-      }
-    </div>
-  </p-popover>
+      </div>
+    </ng-template>
+  </div>
 
   <button
+    #bell
     type="button"
     class="notifications-bell"
-    (click)="onBellClick($event, notificationsPopover)"
+    (click)="onBellClick(bell)"
   >
-    <i class="pi pi-bell"></i>
+    <ng-icon name="lucideBell" />
     @if (unreadCount() > 0) {
       <span class="notifications-badge">{{
         unreadCount() > 99 ? "99+" : unreadCount()

@@ -22,8 +22,8 @@ describe('image edit geometry', () => {
   });
 
   it('keeps a full-frame crop full when rotated', () => {
-    expect(isFullCrop(rotateCrop(FULL_CROP, 1))).toBeTrue();
-    expect(isFullCrop(rotateCrop(FULL_CROP, -1))).toBeTrue();
+    expect(isFullCrop(rotateCrop(FULL_CROP, 1))).toBe(true);
+    expect(isFullCrop(rotateCrop(FULL_CROP, -1))).toBe(true);
   });
 
   it('steps rotation through the four right angles', () => {
@@ -71,16 +71,16 @@ describe('canEditUploadedImage', () => {
   const owner = { id: 'user-1' };
 
   it('allows the uploader and staff', () => {
-    expect(canEditUploadedImage(owner, 'user-1')).toBeTrue();
-    expect(
-      canEditUploadedImage({ id: 'mod', moderator: true }, 'user-1'),
-    ).toBeTrue();
-    expect(canEditUploadedImage({ id: 'admin', admin: true }, null)).toBeTrue();
+    expect(canEditUploadedImage(owner, 'user-1')).toBe(true);
+    expect(canEditUploadedImage({ id: 'mod', moderator: true }, 'user-1')).toBe(
+      true,
+    );
+    expect(canEditUploadedImage({ id: 'admin', admin: true }, null)).toBe(true);
   });
 
   it('hides the edit for someone else and for a missing uploader', () => {
-    expect(canEditUploadedImage(owner, 'user-2')).toBeFalse();
-    expect(canEditUploadedImage(owner, null)).toBeFalse();
-    expect(canEditUploadedImage(null, 'user-1')).toBeFalse();
+    expect(canEditUploadedImage(owner, 'user-2')).toBe(false);
+    expect(canEditUploadedImage(owner, null)).toBe(false);
+    expect(canEditUploadedImage(null, 'user-1')).toBe(false);
   });
 });

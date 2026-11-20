@@ -1,12 +1,26 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-import { DialogService } from 'primeng/dynamicdialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideFlag,
+  lucideListChecks,
+  lucideMail,
+  lucideMegaphone,
+  lucideMessageCircle,
+  lucideSettings,
+} from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { NotificationsService } from '../../../services/crud/notifications.service';
 import { NotificationItem } from '../../../models/notification-item';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -23,14 +37,22 @@ import { SuggestionReviewMessageDialogService } from '../suggestion-review-messa
 
 @Component({
   selector: 'lc-notification-list',
-  imports: [TranslocoDirective, ButtonModule, MessageModule, DatePipe],
+  imports: [TranslocoDirective, NgIcon, HlmAlert, HlmButton, DatePipe],
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     LineGradePipe,
     NotificationPresentationService,
-    DialogService,
+    provideIcons({
+      lucideFlag,
+      lucideListChecks,
+      lucideMail,
+      lucideMegaphone,
+      lucideMessageCircle,
+      lucideSettings,
+    }),
     AdminMessageDialogService,
     ModerationMessageDialogService,
     SuggestionReviewMessageDialogService,

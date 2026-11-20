@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { Title } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
@@ -9,6 +15,7 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
   selector: 'lc-register-check-mailbox',
   imports: [TranslocoDirective],
   templateUrl: './register-check-mailbox.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register-check-mailbox.component.scss',
 })
 export class RegisterCheckMailboxComponent implements OnInit {

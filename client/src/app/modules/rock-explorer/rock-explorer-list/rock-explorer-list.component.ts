@@ -14,14 +14,22 @@ import { FormsModule } from '@angular/forms';
 import { FeatureCollection, Geometry } from 'geojson';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { TableModule, TablePageEvent } from 'primeng/table';
-import { Tag } from 'primeng/tag';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowDown,
+  lucideArrowUp,
+  lucideArrowUpDown,
+  lucideFunnelX,
+  lucideX,
+} from '@ng-icons/lucide';
 import {
   RockExplorerListRow,
   compareRockExplorerListRows,
@@ -45,15 +53,24 @@ export type RockExplorerListDisplayRow = RockExplorerListRow & {
 };
 
 @Component({
+  providers: [
+    provideIcons({
+      lucideArrowDown,
+      lucideArrowUp,
+      lucideArrowUpDown,
+      lucideFunnelX,
+      lucideX,
+    }),
+  ],
   selector: 'lc-rock-explorer-list',
   imports: [
     FormsModule,
     TranslocoDirective,
-    Button,
-    InputText,
-    Select,
-    TableModule,
-    Tag,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    HlmBadge,
+    NgIcon,
   ],
   templateUrl: './rock-explorer-list.component.html',
   styleUrl: './rock-explorer-list.component.scss',
@@ -141,7 +158,17 @@ export class RockExplorerListComponent implements OnChanges {
     this.cdr.markForCheck();
   }
 
-  onPage(event: TablePageEvent): void {
+  sortIconName(icon: string): string {
+    if (icon.includes('up')) {
+      return 'lucideArrowUp';
+    }
+    if (icon.includes('down')) {
+      return 'lucideArrowDown';
+    }
+    return 'lucideArrowUpDown';
+  }
+
+  onPage(event: { first?: number; rows?: number }): void {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? this.rows;
   }

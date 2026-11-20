@@ -16,7 +16,7 @@
           <div class="caption">
             <div class="caption-copy">
               <div class="caption-kicker">
-                <i [class]="sourceIcon(selected.source)" aria-hidden="true"></i>
+                <ng-icon [name]="sourceIcon(selected.source)" />
                 <span class="badge">{{
                   selected.kind === "line"
                     ? t("lineVideoBadge")
@@ -56,7 +56,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i class="pi pi-external-link" aria-hidden="true"></i>
+                <ng-icon name="lucideExternalLink" />
                 <span>{{ t("videoOpenExternal") }}</span>
               </a>
             }
@@ -76,10 +76,7 @@
               [attr.aria-pressed]="selected?.key === item.key"
               (click)="select(item)"
             >
-              <i
-                [class]="'choice-icon ' + sourceIcon(item.source)"
-                aria-hidden="true"
-              ></i>
+              <ng-icon class="choice-icon" [name]="sourceIcon(item.source)" />
               <span class="badge">{{
                 item.kind === "line"
                   ? t("lineVideoBadge")
@@ -113,7 +110,7 @@
                 [attr.title]="t('editAscentVideos')"
                 (click)="openModeration(item)"
               >
-                <i class="pi pi-pencil" aria-hidden="true"></i>
+                <ng-icon name="lucidePencil" />
               </button>
             }
           </div>
@@ -122,7 +119,7 @@
     </section>
   } @else if (line) {
     <div class="empty">
-      <i class="pi pi-video" aria-hidden="true"></i>
+      <ng-icon name="lucideVideo" />
       <p>{{ t("noVideos") }}</p>
     </div>
   }

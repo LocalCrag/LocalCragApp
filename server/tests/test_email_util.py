@@ -16,9 +16,11 @@ from models.user import User
 from util.email import (
     _apply_instance_branding,
     _html_to_plain_text,
+    _is_reserved_invalid_recipient,
     build_i18n_keyword_arg_dict,
     log_decoded_email_parts,
     send_comment_created_email,
+    send_generic_mail,
     send_notification_digest_email,
     send_project_climbed_email,
     send_user_registered_email,
@@ -101,6 +103,44 @@ def test_log_decoded_email_parts_logs_markup_then_plain(caplog):
             assert "Could not decode part" not in out
         finally:
             app.logger.removeHandler(caplog.handler)
+
+
+def test_reserved_invalid_tld_is_not_handed_to_smtp(smtp_mock):
+    assert _is_reserved_invalid_recipient("migration-user-000@localcrag.invalid")
+    assert _is_reserved_invalid_recipient("User <Migration-User-000@LocalCrag.INVALID>")
+    assert not _is_reserved_invalid_recipient("member@localcrag.invalid.org")
+    assert not _is_reserved_invalid_recipient("person@example.com")
+
+    reserved = MIMEMultipart()
+    reserved["From"] = "noreply@example.com"
+    reserved["To"] = "migration-user-000@localcrag.invalid"
+    reserved["Subject"] = "should not send"
+    fixture_domain = MIMEMultipart()
+    fixture_domain["From"] = "noreply@example.com"
+    fixture_domain["To"] = "member@localcrag.invalid.org"
+    fixture_domain["Subject"] = "should send"
+    deliverable = MIMEMultipart()
+    deliverable["From"] = "noreply@example.com"
+    deliverable["To"] = "person@example.com"
+    deliverable["Subject"] = "should send"
+
+    with app.app_context():
+        config_keys = ("PRINT_MAILS_TO_CONSOLE", "SMTP_TYPE", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASSWORD")
+        previous = {key: app.config.get(key) for key in config_keys}
+        app.config["PRINT_MAILS_TO_CONSOLE"] = False
+        app.config["SMTP_TYPE"] = "smtps"
+        app.config["SMTP_HOST"] = "smtp.example.com"
+        app.config["SMTP_PORT"] = 465
+        app.config["SMTP_USER"] = "user"
+        app.config["SMTP_PASSWORD"] = "password"
+        try:
+            send_generic_mail(reserved)
+            assert smtp_mock.call_count == 0
+            send_generic_mail(fixture_domain)
+            send_generic_mail(deliverable)
+            assert smtp_mock.call_count == 2
+        finally:
+            app.config.update(previous)
 
 
 def test_comment_created_email_uses_receiver_language(client, smtp_mock):

@@ -8,6 +8,7 @@ import {
   ViewChild,
   afterNextRender,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/reducers';
@@ -35,8 +36,9 @@ import {
 } from '@angular/router';
 import { FooterComponent } from './footer/footer.component';
 import { RefreshLoginModalComponent } from './refresh-login-modal/refresh-login-modal.component';
-import { Toast } from 'primeng/toast';
+import { HlmToaster } from '@spartan-ng/helm/sonner';
 import { Subscription } from 'rxjs';
+import { ThemeService } from '../../services/core/theme.service';
 
 /**
  * Application shell: fixed site header, main layout, and global chrome.
@@ -49,6 +51,7 @@ import { Subscription } from 'rxjs';
   selector: 'lc-root',
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PageTitleComponent,
     RulesAlertComponent,
@@ -59,11 +62,12 @@ import { Subscription } from 'rxjs';
     RouterOutlet,
     FooterComponent,
     RefreshLoginModalComponent,
-    Toast,
+    HlmToaster,
   ],
 })
 export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
   public store = inject<Store<AppState>>(Store);
+  readonly theme = inject(ThemeService);
 
   @ViewChild('siteHeader')
   private siteHeader?: ElementRef<HTMLElement>;
@@ -76,19 +80,6 @@ export class CoreComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Full-bleed map pages (e.g. Rock Explorer): header only, no chrome. */
   fullscreenMap = false;
-
-  /**
-   * Default toast width is 25rem. On narrow screens that overflows the
-   * bottom-right anchor, so shrink it and keep it inside the safe area.
-   */
-  readonly toastBreakpoints = {
-    '30rem': {
-      width: 'calc(100vw - 2rem)',
-      right: '1rem',
-      left: 'auto',
-      bottom: 'max(1rem, env(safe-area-inset-bottom))',
-    },
-  };
 
   private readonly hostEl = inject(ElementRef<HTMLElement>);
   private title = inject(Title);

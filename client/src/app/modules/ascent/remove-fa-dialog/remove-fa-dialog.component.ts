@@ -1,21 +1,29 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Textarea } from 'primeng/textarea';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { reloadAfterAscent } from '../../../ngrx/actions/ascent.actions';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Ascent } from '../../../models/ascent';
 import { AscentsService } from '../../../services/crud/ascents.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 export const FA_REMOVAL_MESSAGE_MAX_LENGTH = 2000;
 
 @Component({
   selector: 'lc-remove-fa-dialog',
-  imports: [FormsModule, TranslocoDirective, ButtonModule, Textarea],
+  imports: [
+    LoadingButtonComponent,
+    FormsModule,
+    TranslocoDirective,
+    HlmButton,
+    HlmTextarea,
+  ],
   templateUrl: './remove-fa-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './remove-fa-dialog.component.scss',
 })
 export class RemoveFaDialogComponent {
@@ -23,12 +31,12 @@ export class RemoveFaDialogComponent {
   public saving = false;
   public readonly maxLength = FA_REMOVAL_MESSAGE_MAX_LENGTH;
 
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private context = injectBrnDialogContext<{ ascent: Ascent }>();
+  private ref = inject(BrnDialogRef);
   private ascentsService = inject(AscentsService);
   private store = inject(Store);
 
-  private readonly ascent: Ascent = this.config.data.ascent;
+  private readonly ascent: Ascent = this.context.ascent;
 
   public cancel(): void {
     this.ref.close();

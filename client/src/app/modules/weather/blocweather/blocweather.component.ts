@@ -5,21 +5,33 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   BlocWeatherConfig,
   BlocWeatherService,
 } from '../../../services/crud/blocweather.service';
-import { Skeleton } from 'primeng/skeleton';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Message } from 'primeng/message';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CurrentConditionsComponent } from '../current-conditions/current-conditions.component';
 
 @Component({
   selector: 'lc-blocweather',
-  imports: [Skeleton, Message, TranslocoDirective, CurrentConditionsComponent],
+  imports: [
+    HlmAlert,
+    HlmAlertDescription,
+    HlmSkeleton,
+    NgIcon,
+    TranslocoDirective,
+    CurrentConditionsComponent,
+  ],
+  providers: [provideIcons({ lucideInfo })],
   templateUrl: './blocweather.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blocweather.component.scss',
 })
 export class BlocweatherComponent implements OnInit, OnDestroy {

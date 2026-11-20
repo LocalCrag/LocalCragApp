@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { RockExplorerFeature } from '../../../models/rock-explorer-feature';
@@ -36,11 +37,11 @@ function remoteDraft(opts: {
 describe('RockExplorerDraftReconcileService', () => {
   let store: RockExplorerDraftStoreService;
   let reconcile: RockExplorerDraftReconcileService;
-  let listDrafts: jasmine.Spy;
+  let listDrafts: Mock;
 
   beforeEach(async () => {
     await deleteRockExplorerDraftDb();
-    listDrafts = jasmine.createSpy('listDrafts').and.returnValue(of([]));
+    listDrafts = vi.fn().mockName('listDrafts').mockReturnValue(of([]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -63,7 +64,7 @@ describe('RockExplorerDraftReconcileService', () => {
   });
 
   it('inserts remote drafts missing from IndexedDB', async () => {
-    listDrafts.and.returnValue(
+    listDrafts.mockReturnValue(
       of([
         remoteDraft({
           id: 'srv-new',
@@ -94,7 +95,7 @@ describe('RockExplorerDraftReconcileService', () => {
       title: 'Old local',
     });
 
-    listDrafts.and.returnValue(
+    listDrafts.mockReturnValue(
       of([
         remoteDraft({
           id: 'srv-1',
@@ -126,7 +127,7 @@ describe('RockExplorerDraftReconcileService', () => {
       createdAt: Date.now(),
     });
 
-    listDrafts.and.returnValue(
+    listDrafts.mockReturnValue(
       of([
         remoteDraft({
           id: 'srv-2',
@@ -148,7 +149,7 @@ describe('RockExplorerDraftReconcileService', () => {
       syncStatus: 'synced',
       updatedAt: Date.now(),
     });
-    listDrafts.and.returnValue(of([]));
+    listDrafts.mockReturnValue(of([]));
 
     const result = await reconcile.pullAndMerge({ online: true });
     expect(result.deleted).toBe(1);
@@ -156,7 +157,7 @@ describe('RockExplorerDraftReconcileService', () => {
   });
 
   it('skips pull when offline', async () => {
-    listDrafts.and.returnValue(
+    listDrafts.mockReturnValue(
       of([
         remoteDraft({
           id: 'srv-x',

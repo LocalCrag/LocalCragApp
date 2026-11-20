@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -26,8 +27,8 @@ import {
   TranslocoService,
 } from '@jsverse/transloco';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -40,12 +41,13 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
   selector: 'lc-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
-    InputText,
-    Button,
+    HlmInput,
+    HlmButton,
     AsyncPipe,
     FormDirective,
     ControlGroupDirective,

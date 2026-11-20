@@ -1,14 +1,16 @@
 <ng-container *transloco="let t; read: 'topoQuality.ui'">
   @if (failed) {
-    <p-message severity="error" icon="pi pi-times-circle">{{
-      t("loadFailed")
-    }}</p-message>
+    <div hlmAlert variant="destructive">
+      <ng-icon name="lucideCircleX" />
+      <p hlmAlertDescription>{{ t("loadFailed") }}</p>
+    </div>
   }
 
   @if (!loading && rows.length === 0) {
-    <p-message severity="info" icon="pi pi-info-circle">{{
-      t("rankingEmpty")
-    }}</p-message>
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("rankingEmpty") }}</p>
+    </div>
   }
 
   <ol class="quality-ranking">
@@ -25,29 +27,33 @@
   </ol>
 
   @if (canRestart && rows.length > 0) {
-    <p-divider />
+    <div hlmSeparator></div>
     <section class="quality-restart" data-cy="topo-quality-restart">
       <h3>{{ t("restartTitle") }}</h3>
       <p>{{ t("restartWarning") }}</p>
       <label for="restart-confirmation">{{ t("restartHint") }}</label>
       <input
-        pInputText
+        hlmInput
         id="restart-confirmation"
         [(ngModel)]="confirmation"
         autocomplete="off"
         data-cy="topo-quality-restart-input"
       />
-      <p-button
-        [label]="t('restartButton')"
-        severity="danger"
+      <button
+        hlmBtn
+        type="button"
+        variant="destructive"
+        (click)="restart()"
         [disabled]="confirmation !== 'RESTART'"
-        (onClick)="restart()"
         data-cy="topo-quality-restart-button"
-      />
+      >
+        {{ t("restartButton") }}
+      </button>
       @if (restartFailed) {
-        <p-message severity="error" icon="pi pi-times-circle">{{
-          t("restartFailed")
-        }}</p-message>
+        <div hlmAlert variant="destructive">
+          <ng-icon name="lucideCircleX" />
+          <p hlmAlertDescription>{{ t("restartFailed") }}</p>
+        </div>
       }
     </section>
   }

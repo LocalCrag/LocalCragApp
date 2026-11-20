@@ -1,4 +1,4 @@
-:host.draft-tag-overlay ::ng-deep .p-tag {
+:host.draft-tag-overlay ::ng-deep [hlmBadge] {
   background: var(--p-orange-500);
   color: var(--p-orange-50);
 }

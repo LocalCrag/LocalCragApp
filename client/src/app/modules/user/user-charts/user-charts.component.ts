@@ -1,5 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
@@ -14,7 +20,7 @@ import { AscentsPerYearChartComponent } from '../ascents-per-year-chart/ascents-
 import { SessionPointsChartComponent } from '../session-points-chart/session-points-chart.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
 import { GradeDistribution } from '../../../models/scale';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import {
   GlobalRank,
   HardestGradeBucket,
@@ -40,10 +46,11 @@ import { ThemeService } from '../../../services/core/theme.service';
     SessionPointsChartComponent,
     GymModeDirective,
     TranslocoDirective,
-    SkeletonModule,
+    HlmSkeleton,
     CompletionComponent,
   ],
   templateUrl: './user-charts.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-charts.component.scss',
 })
 export class UserChartsComponent implements OnInit {

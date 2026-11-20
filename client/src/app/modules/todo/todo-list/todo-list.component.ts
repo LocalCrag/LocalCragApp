@@ -16,8 +16,6 @@ import {
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SelectItem } from 'primeng/api';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -27,17 +25,10 @@ import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { Todo } from '../../../models/todo';
 import { TodosService } from '../../../services/crud/todos.service';
 import { ApiQueryParams } from '../../../utility/http/query-params';
-import { AvatarModule } from 'primeng/avatar';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { DataViewModule } from 'primeng/dataview';
-import { MenuModule } from 'primeng/menu';
 import { NgClass } from '@angular/common';
-import { RatingModule } from 'primeng/rating';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
-import { TagModule } from 'primeng/tag';
 import { TodoPriorityButtonComponent } from '../todo-priority-button/todo-priority-button.component';
 import { TickButtonComponent } from '../../ascent/tick-button/tick-button.component';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
@@ -48,39 +39,50 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { Select } from 'primeng/select';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineListSkeletonComponent } from '../../line/line-list-skeleton/line-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo, lucideTrash2 } from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
+
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
+  providers: [provideIcons({ lucideInfo, lucideTrash2 })],
   selector: 'lc-todo-list',
   imports: [
-    AvatarModule,
-    ButtonModule,
-    ConfirmPopupModule,
-    DataViewModule,
-    MenuModule,
-    RatingModule,
+    LoadingButtonComponent,
+    HlmButton,
+    ...HlmSelectImports,
     RouterLink,
     GradeRangeSliderComponent,
-    TagModule,
     TranslocoDirective,
     FormsModule,
     NgClass,
     TodoPriorityButtonComponent,
     TickButtonComponent,
-    Select,
     InfiniteScrollDirective,
     LineListSkeletonComponent,
-    Message,
     LineGradePipe,
     TopoHierarchyBreadcrumbsComponent,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -95,7 +97,7 @@ export class TodoListComponent implements OnInit, PaginatedListView {
   public listPrivate = false;
   public loading: LoadingState = LoadingState.DEFAULT;
   public todos: Todo[];
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
   public hasNextPage = true;
   public currentPage = 0;
 

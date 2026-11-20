@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
@@ -19,9 +20,8 @@ import {
   STACKED_CHART_PROJECT_COLOR,
 } from '../../../../utility/scale/stacked-chart-brackets';
 import { textColor } from '../../../../utility/misc/color';
-import { Tag } from 'primeng/tag';
-import { MeterGroup } from 'primeng/metergroup';
-import { Skeleton } from 'primeng/skeleton';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import {
   defaultLineListAdvancedFilters,
   LineListFiltersPersisted,
@@ -53,7 +53,8 @@ type StackChartData = {
   templateUrl: './leveled-grade-distribution.component.html',
   styleUrls: ['./leveled-grade-distribution.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Tag, MeterGroup, Skeleton, TranslocoDirective],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [HlmBadge, HlmSkeleton, TranslocoDirective],
 })
 export class LeveledGradeDistributionComponent implements OnInit {
   @Input() fetchingObservable: Observable<GradeDistribution>;
@@ -261,4 +262,12 @@ export class LeveledGradeDistributionComponent implements OnInit {
 
   protected readonly textColor = textColor;
   protected readonly stackedChartProjectColor = STACKED_CHART_PROJECT_COLOR;
+
+  meterWidth(data: StackChartData, value: number): string {
+    const total = data.total - data.projects - data.ungraded;
+    if (total <= 0) {
+      return '0%';
+    }
+    return `${(value / total) * 100}%`;
+  }
 }

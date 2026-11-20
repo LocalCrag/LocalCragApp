@@ -19,19 +19,18 @@
         [ngClass]="{ 'no-sub-menu': !item.items }"
         [href]="item.item.routerLink || item.item.url || '#'"
       >
-        @if (item.item.icon) {
-          <span class="p-menuitem-icon menu-icon" [ngClass]="item.item.icon">
-          </span>
+        @if (iconName(item.item.icon); as name) {
+          <ng-icon class="menu-icon" [name]="name" />
         }
         <span>{{ item.item.label }}</span>
       </a>
       @if (item.items?.length > 0) {
         <div tabindex="0" class="item-angle" (click)="onAngleClick(item)">
           @if (root) {
-            <i class="ml-2 pi pi-angle-down"></i>
+            <ng-icon class="ml-2" name="lucideChevronDown" />
           }
           @if (!root) {
-            <i class="ml-2 pi pi-angle-right"></i>
+            <ng-icon class="ml-2" name="lucideChevronRight" />
           }
         </div>
       }

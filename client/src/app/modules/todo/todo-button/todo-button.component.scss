@@ -1,12 +1,4 @@
 lc-todo-button {
-  button > span {
-    display: flex;
-  }
-
-  .hide-label .p-button-label {
-    display: none;
-  }
-
   .is-todo-icon {
     background-color: var(--p-blue-500);
     border-radius: 0.25rem;
@@ -18,24 +10,18 @@ lc-todo-button {
     display: inline-flex;
     align-items: center;
   }
-
-  .todo-priority-trigger {
-    width: 1.5rem;
-    padding-left: 0;
-    padding-right: 0;
-  }
 }
 
 .todo-add-priority-menu {
-  .high-priority .pi {
+  .high-priority ng-icon {
     color: red;
   }
 
-  .medium-priority .pi {
+  .medium-priority ng-icon {
     color: blue;
   }
 
-  .low-priority .pi {
+  .low-priority ng-icon {
     color: grey;
   }
 }

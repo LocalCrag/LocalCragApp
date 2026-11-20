@@ -102,7 +102,7 @@ Do **not** run `npx husky init` — that recreates hooks and can overwrite the p
 ### What runs
 
 - **Server** (`server/package.json`): Black, flake8, and isort on staged `*.py` via Pipenv.
-- **Client** (`client/package.json`): Prettier and ESLint on staged JS/TS (and Prettier on i18n JSON).
+- **Client** (`client/package.json`): Prettier and ESLint on staged JS, TS, and HTML (and Prettier on i18n JSON).
 
 ## Tests (pointers)
 

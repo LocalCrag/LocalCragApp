@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RouterOutlet } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -7,7 +6,7 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 
 @Component({
   selector: 'lc-ascents',
-  imports: [BreadcrumbModule, RouterOutlet, TranslocoDirective],
+  imports: [RouterOutlet, TranslocoDirective],
   templateUrl: './ascents.component.html',
   styleUrl: './ascents.component.scss',
 })

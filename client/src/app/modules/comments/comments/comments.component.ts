@@ -8,6 +8,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommentEditorComponent } from '../comment-editor/comment-editor.component';
@@ -22,10 +23,8 @@ import {
   PaginatedListView,
 } from '../../../utility/paginated-list';
 import { CommentsService } from '../../../services/crud/comments.service';
-import { Button } from 'primeng/button';
 import { CommentsSkeletonComponent } from '../comments-skeleton/comments-skeleton.component';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { Message } from 'primeng/message';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { CommentComponent } from '../comment/comment.component';
 import { CommentsContextService } from '../comments-context.service';
@@ -34,24 +33,34 @@ import { Store } from '@ngrx/store';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 import { selectSoftGating } from '../../../ngrx/selectors/instance-settings.selectors';
 import { combineLatest } from 'rxjs';
-import { DialogService } from 'primeng/dynamicdialog';
 import { TranslocoService } from '@jsverse/transloco';
 import { openAccountPrompt } from '../../core/account-prompt-dialog/account-prompt-dialog.component';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-comments',
   imports: [
+    LoadingButtonComponent,
     CommentEditorComponent,
-    Button,
     CommentsSkeletonComponent,
     InfiniteScrollDirective,
-    Message,
     TranslocoDirective,
     CommentComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
-  providers: [CommentsContextService, DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [CommentsContextService, provideIcons({ lucideInfo })],
 })
 export class CommentsComponent implements OnChanges, PaginatedListView {
   /** Target entity to list/create comments for. */
@@ -70,7 +79,7 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
   public softGating = false;
 
   private destroyRef = inject(DestroyRef);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private commentsService = inject(CommentsService);

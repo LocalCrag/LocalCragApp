@@ -1,50 +1,65 @@
 <ng-container *transloco="let t; read: 'maps.markerList'">
-  <div class="flex flex-col gap-2 mb-2">
+  <div class="mb-2 flex flex-col gap-2">
     @for (marker of markers; track marker) {
-      <div class="flex flex-row gap-1">
-        <p-tag class="coordinates-tag">
-          <i class="pi pi-map-marker mr-2"></i>
-          {{ t(marker.type) }} {{ marker.name ? ": " + marker.name : "" }}
+      <div class="marker-row">
+        <ng-icon name="lucideMapPin" />
+        <span class="marker-label">
+          {{ t(marker.type) }}
+          @if (marker.name) {
+            <span class="marker-name">· {{ marker.name }}</span>
+          }
+        </span>
+        <span class="marker-actions">
           @if (marker.description) {
-            <p-button
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              size="icon-sm"
               [disabled]="isDisabled"
-              text
-              class=""
-              icon="pi pi-align-left"
               (click)="showDescriptionDialog($event, marker)"
             >
-            </p-button>
+              <ng-icon name="lucideAlignLeft" />
+            </button>
           }
-          <p-button
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon-sm"
             [disabled]="isDisabled"
-            text
-            icon="pi pi-pencil"
             (click)="configDialog.open(marker)"
             data-cy="edit-marker"
           >
-          </p-button>
-          <p-button
+            <ng-icon name="lucidePencil" />
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            class="text-destructive"
             [disabled]="isDisabled"
-            text
-            severity="danger"
-            icon="pi pi-trash"
             (click)="removeMarker(marker)"
             data-cy="remove-marker"
           >
-          </p-button>
-        </p-tag>
+            <ng-icon name="lucideTrash2" />
+          </button>
+        </span>
       </div>
     }
   </div>
 
-  <p-button
-    icon="pi pi-plus"
+  <button
+    hlmBtn
+    type="button"
+    class="w-fit"
     data-cy="open-marker-config-modal"
-    label="{{ t('addMarker') }}"
     (click)="configDialog.open()"
-    class="w-full"
     [disabled]="isDisabled"
-  ></p-button>
+  >
+    <ng-icon name="lucidePlus" /> {{ t("addMarker") }}
+  </button>
   <lc-map-marker-config-dialog
     #configDialog
     [defaultMarkerType]="defaultMarkerType"
@@ -52,5 +67,23 @@
     [existingMarkers]="markers"
     [disabledMarkerTypes]="disabledMarkerTypes"
   ></lc-map-marker-config-dialog>
-  <p-confirmDialog></p-confirmDialog>
+
+  <hlm-dialog
+    [state]="descriptionMarker ? 'open' : 'closed'"
+    (closed)="closeDescription()"
+  >
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      @if (descriptionMarker) {
+        <div hlmDialogHeader>
+          <h2 hlmDialogTitle>
+            {{ descriptionMarker.name || t(descriptionMarker.type) }}
+          </h2>
+        </div>
+        <div
+          class="marker-description"
+          [innerHTML]="descriptionMarker.description | sanitizeHtml"
+        ></div>
+      }
+    </hlm-dialog-content>
+  </hlm-dialog>
 </ng-container>

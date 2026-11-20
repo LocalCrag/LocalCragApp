@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { TagModule } from 'primeng/tag';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 import { User } from '../../../../models/user';
 
 type UserRoleTag = {
@@ -9,11 +9,11 @@ type UserRoleTag = {
 };
 
 /**
- * Highest-role PrimeNG tag, matching the exclusive hierarchy used in the user list.
+ * Highest-role badge, matching the exclusive hierarchy used in the user list.
  */
 @Component({
   selector: 'lc-user-role-tag',
-  imports: [TagModule, TranslocoDirective],
+  imports: [HlmBadge, TranslocoDirective],
   templateUrl: './user-role-tag.component.html',
   styleUrl: './user-role-tag.component.scss',
 })
@@ -39,5 +39,33 @@ export class UserRoleTagComponent {
       return { key: 'member', severity: 'info' };
     }
     return null;
+  }
+
+  protected badgeVariant(
+    severity: UserRoleTag['severity'],
+  ): 'default' | 'secondary' | 'destructive' | 'outline' {
+    if (severity === 'danger') {
+      return 'destructive';
+    }
+    if (severity === 'secondary') {
+      return 'secondary';
+    }
+    if (severity === 'contrast') {
+      return 'outline';
+    }
+    return 'default';
+  }
+
+  protected badgeClass(severity: UserRoleTag['severity']): string {
+    switch (severity) {
+      case 'success':
+        return 'border-transparent bg-emerald-600 text-white';
+      case 'info':
+        return 'border-transparent bg-sky-600 text-white';
+      case 'warn':
+        return 'border-transparent bg-amber-500 text-white';
+      default:
+        return '';
+    }
   }
 }

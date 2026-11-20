@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
-
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-form-skeleton',
-  imports: [SkeletonModule],
+  imports: [HlmSkeleton],
   templateUrl: './form-skeleton.component.html',
   styleUrl: './form-skeleton.component.scss',
 })

@@ -3,63 +3,80 @@
     @for (file of files; track file; let i = $index) {
       <div class="image-item">
         <div class="image-wrapper">
-          <p-image
-            [src]="file.path"
-            [preview]="!isDisabled"
-            [alt]="file.originalFilename"
-            width="250"
+          <button
+            type="button"
+            class="image-preview"
+            [disabled]="isDisabled"
+            (click)="previewUrl = file.path"
           >
-            <ng-template #indicator>
-              <i class="pi pi-eye"></i>
-            </ng-template>
-          </p-image>
+            <img [src]="file.path" [alt]="file.originalFilename" width="250" />
+            @if (!isDisabled) {
+              <span class="image-preview-mask">
+                <ng-icon name="lucideEye" />
+              </span>
+            }
+          </button>
           @if (!isDisabled) {
-            <p-button
-              icon="pi pi-times"
+            <button
+              hlmBtn
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              class="image-remove rounded-full"
               (click)="removeMedia(i)"
-              styleClass="p-button-rounded p-button-secondary p-button-sm p-button-text"
-            ></p-button>
+            >
+              <ng-icon name="lucideX" />
+            </button>
           }
         </div>
         @if (!isDisabled && file.width && file.height && canEdit(file)) {
-          <p-button
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="sm"
             class="image-edit-button"
-            icon="pi pi-pencil"
-            [label]="t('editImageButtonLabel')"
-            severity="secondary"
-            [outlined]="true"
-            size="small"
             [disabled]="transforming"
-            [pTooltip]="t('editImageTooltip')"
-            tooltipPosition="right"
+            [hlmTooltip]="t('editImageTooltip')"
+            position="right"
             (click)="openImageEdit(file)"
-          />
+          >
+            <ng-icon name="lucidePencil" />
+            {{ t("editImageButtonLabel") }}
+          </button>
         }
       </div>
     }
   </div>
 
   @if (!isDisabled) {
-    <p-fileupload
-      mode="basic"
+    <button
+      hlmBtn
+      type="button"
+      class="lc-file-trigger"
       [hidden]="showProgressBar"
-      [name]="'upload'"
-      [url]="uploadUrl"
-      accept="image/jpeg,image/png,image/gif,image/bmp"
-      [multiple]="true"
-      [maxFileSize]="maxImageSize"
-      (onError)="showProgressBar = false"
-      (onBeforeUpload)="startProgress()"
-      (onProgress)="setProgress($event)"
-      (onUpload)="setMedia($event)"
-      [auto]="true"
-      chooseLabel="{{ t('browseFilesButtonLabel') }}"
+      (click)="fileInput.click()"
     >
-    </p-fileupload>
+      <ng-icon name="lucideUpload" />
+      {{ t("browseFilesButtonLabel") }}
+    </button>
+    <input
+      #fileInput
+      type="file"
+      class="hidden"
+      accept="image/jpeg,image/png,image/gif,image/bmp"
+      multiple
+      (change)="onFilesSelected($event)"
+    />
   }
 
   @if (showProgressBar) {
-    <p-progress-bar [mode]="progressMode" [value]="progress"></p-progress-bar>
+    <div
+      hlmProgress
+      [value]="progressMode === 'indeterminate' ? null : progress"
+    >
+      <div hlmProgressIndicator></div>
+    </div>
   }
 
   <lc-image-edit-dialog
@@ -71,4 +88,12 @@
     (visibleChange)="onImageEditVisible($event)"
     (applyEdit)="applyImageEdit($event)"
   />
+
+  @if (previewUrl) {
+    <hlm-dialog state="open" (closed)="previewUrl = null">
+      <hlm-dialog-content *hlmDialogPortal class="sm:max-w-3xl">
+        <img [src]="previewUrl" alt="" class="w-full" />
+      </hlm-dialog-content>
+    </hlm-dialog>
+  }
 </ng-container>

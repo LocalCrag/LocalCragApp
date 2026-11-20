@@ -1,8 +1,20 @@
-import { Component, forwardRef, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  forwardRef,
+  inject,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCalendar,
+  lucidePencil,
+  lucidePlus,
+  lucideTrash,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
 import {
   ClosureSchedule,
   ClosureScheduleType,
@@ -15,8 +27,8 @@ import { formatScheduleSummary } from '../../utils/scheduled-closure-form';
   selector: 'lc-scheduled-closure-form',
   imports: [
     TranslocoDirective,
-    Button,
-    Tag,
+    NgIcon,
+    HlmButton,
     ScheduledClosureConfigDialogComponent,
     ControlGroupDirective,
   ],
@@ -29,6 +41,7 @@ import { formatScheduleSummary } from '../../utils/scheduled-closure-form';
       multi: true,
     },
     { provide: TRANSLOCO_SCOPE, useValue: 'closableForm' },
+    provideIcons({ lucideCalendar, lucidePencil, lucidePlus, lucideTrash }),
   ],
   encapsulation: ViewEncapsulation.None,
 })
@@ -36,8 +49,11 @@ export class ScheduledClosureFormComponent implements ControlValueAccessor {
   schedules: ClosureSchedule[] = [];
   isDisabled = false;
 
+  private cdr = inject(ChangeDetectorRef);
+
   writeValue(value: ClosureSchedule[] | null): void {
     this.schedules = value ?? [];
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: (value: ClosureSchedule[]) => void): void {
@@ -48,6 +64,7 @@ export class ScheduledClosureFormComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+    this.cdr.markForCheck();
   }
 
   propagateChange = (_: ClosureSchedule[]) => {};

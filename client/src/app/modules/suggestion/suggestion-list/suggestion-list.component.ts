@@ -1,12 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { Message } from 'primeng/message';
-import { Textarea } from 'primeng/textarea';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
@@ -22,6 +23,14 @@ import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { TopoImageViewerComponent } from '../../shared/components/topo-image/topo-image-viewer.component';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 type ReviewAction = 'publish' | 'reject';
 
@@ -42,19 +51,24 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
 }
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-suggestion-list',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
-    ButtonModule,
-    DialogModule,
-    Message,
     FormsModule,
     RouterLink,
-    Textarea,
     TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmTextarea,
+    ...HlmDialogImports,
+    NgIcon,
   ],
   templateUrl: './suggestion-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './suggestion-list.component.scss',
 })
 export class SuggestionListComponent implements OnInit {

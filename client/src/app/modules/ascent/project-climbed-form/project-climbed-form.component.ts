@@ -1,42 +1,51 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { DividerModule } from 'primeng/divider';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { Line } from '../../../models/line';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Ascent } from '../../../models/ascent';
 import { Store } from '@ngrx/store';
 import { AscentsService } from '../../../services/crud/ascents.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { Textarea } from 'primeng/textarea';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { ProjectClimbedFormTitleComponent } from '../project-climbed-form-title/project-climbed-form-title.component';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-project-climbed-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
-    DividerModule,
-    ButtonModule,
-    MessageModule,
+    HlmAlert,
+    HlmAlertDescription,
     TranslocoDirective,
     TranslocoPipe,
-    Textarea,
+    HlmTextarea,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    ProjectClimbedFormTitleComponent,
   ],
   templateUrl: './project-climbed-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-climbed-form.component.scss',
 })
 export class ProjectClimbedFormComponent implements OnInit {
@@ -48,15 +57,18 @@ export class ProjectClimbedFormComponent implements OnInit {
   public line: Line;
 
   private fb = inject(FormBuilder);
-  private dialogConfig = inject(DynamicDialogConfig);
+  private dialogContext = injectBrnDialogContext<{
+    line?: Line;
+    ascent?: Ascent;
+  }>();
   private store = inject(Store);
-  private ref = inject(DynamicDialogRef);
+  private ref = inject(BrnDialogRef);
   private ascentsService = inject(AscentsService);
 
   constructor() {
-    this.line = this.dialogConfig.data.line
-      ? this.dialogConfig.data.line
-      : this.dialogConfig.data.ascent.line;
+    this.line = this.dialogContext.line
+      ? this.dialogContext.line
+      : this.dialogContext.ascent.line;
   }
 
   ngOnInit() {

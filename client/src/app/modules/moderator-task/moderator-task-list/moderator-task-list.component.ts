@@ -5,22 +5,12 @@ import {
   DestroyRef,
   inject,
   OnInit,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, switchMap } from 'rxjs';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
-import { Select } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DataViewModule } from 'primeng/dataview';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { DividerModule } from 'primeng/divider';
-import { Menu, MenuModule } from 'primeng/menu';
-import { Message } from 'primeng/message';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -49,25 +39,49 @@ import {
   ModeratorTaskListQuery,
   ModeratorTaskScope,
 } from '../moderator-task-target';
+
+/** Selectable stand-in for "any". Spartan ignores a null option from the keyboard. */
+const FILTER_ANY = '__any__';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { ModeratorTaskListSkeletonComponent } from '../moderator-task-list-skeleton/moderator-task-list-skeleton.component';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideEllipsisVertical,
+  lucideInfo,
+  lucidePencil,
+  lucidePlus,
+  lucideTrash,
+  lucideUser,
+} from '@ng-icons/lucide';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
 
 type TaskListRow = { kind: 'task'; task: ModeratorTask } | { kind: 'divider' };
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
+
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-moderator-task-list',
   imports: [
+    LoadingButtonComponent,
+    ...HlmDropdownMenuImports,
     TranslocoDirective,
-    ButtonModule,
-    CheckboxModule,
-    DataViewModule,
-    DividerModule,
-    MenuModule,
-    ConfirmPopupModule,
-    Message,
-    Select,
     FormsModule,
     RouterLink,
     NgClass,
@@ -76,14 +90,31 @@ type TaskListRow = { kind: 'task'; task: ModeratorTask } | { kind: 'divider' };
     UserAvatarComponent,
     InfiniteScrollDirective,
     ModeratorTaskListSkeletonComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmCheckbox,
+    HlmSeparator,
+    NgIcon,
   ],
   templateUrl: './moderator-task-list.component.html',
   styleUrl: './moderator-task-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideEllipsisVertical,
+      lucideInfo,
+      lucidePencil,
+      lucidePlus,
+      lucideTrash,
+      lucideUser,
+    }),
+  ],
 })
 export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
-  @ViewChild('taskMenu') taskMenu: Menu;
+  private confirmDialog = inject(ConfirmDialogService);
+  readonly menuIcon = lucideNameFromPrimeIcon;
 
   public tasks: ModeratorTask[] = [];
   public loading = LoadingState.DEFAULT;
@@ -99,6 +130,13 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
   public filterAssigneeId: string | null = null;
   public filterCreatorId: string | null = null;
   public filterFinisherId: string | null = null;
+  public filterAnyLabel = '';
+
+  filterOptionLabel = (value: string | null): string =>
+    this.assigneeFilterOptions.find((option) => option.value === value)
+      ?.label ??
+    this.userFilterOptions.find((option) => option.value === value)?.label ??
+    '';
 
   private scope: ModeratorTaskScope;
   private currentUserId: string | null = null;
@@ -109,7 +147,6 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
   private router = inject(Router);
   private store = inject(Store);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private moderatorTasksService = inject(ModeratorTasksService);
   private usersService = inject(UsersService);
   private regionService = inject(RegionService);
@@ -120,9 +157,9 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
 
   public get filtersActive(): boolean {
     return (
-      this.filterAssigneeId != null ||
-      this.filterCreatorId != null ||
-      this.filterFinisherId != null
+      this.isSpecificFilter(this.filterAssigneeId) ||
+      this.isSpecificFilter(this.filterCreatorId) ||
+      this.isSpecificFilter(this.filterFinisherId)
     );
   }
 
@@ -201,7 +238,9 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
     if (!this.currentUserId) {
       return;
     }
-    this.filterAssigneeId = this.myTasksActive ? null : this.currentUserId;
+    this.filterAssigneeId = this.myTasksActive
+      ? FILTER_ANY
+      : this.currentUserId;
     this.loadFirstPage();
   }
 
@@ -226,8 +265,12 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
         scope: this.scope,
         page: this.currentPage,
         ...this.buildAssigneeListQuery(),
-        createdById: this.filterCreatorId,
-        finishedById: this.filterFinisherId,
+        createdById: this.isSpecificFilter(this.filterCreatorId)
+          ? this.filterCreatorId
+          : null,
+        finishedById: this.isSpecificFilter(this.filterFinisherId)
+          ? this.filterFinisherId
+          : null,
       })
       .subscribe({
         next: (page) => {
@@ -300,16 +343,14 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
   public openTaskActions(event: Event, task: ModeratorTask): void {
     this.clickedTask = task;
     this.taskActionItems = this.buildTaskActionItems();
-    this.taskMenu.toggle(event);
   }
 
-  public confirmDeleteTask(event: Event, task: ModeratorTask): void {
-    this.confirmationService.confirm({
-      target: event.target as HTMLElement,
+  public confirmDeleteTask(task: ModeratorTask): void {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('moderatorTasks.deleteConfirm'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
+      destructive: true,
       accept: () => this.deleteTask(task),
     });
   }
@@ -334,8 +375,8 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
           marker('moderatorTasks.deleteTaskButton'),
         ),
         icon: 'pi pi-trash',
-        command: (menuEvent) => {
-          this.confirmDeleteTask(menuEvent.originalEvent, task);
+        command: () => {
+          this.confirmDeleteTask(task);
         },
       },
     ];
@@ -377,7 +418,7 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
     if (this.filterAssigneeId === ASSIGNEE_FILTER_UNASSIGNED) {
       return { assignedToUnassigned: true };
     }
-    if (this.filterAssigneeId != null) {
+    if (this.isSpecificFilter(this.filterAssigneeId)) {
       return { assignedToId: this.filterAssigneeId };
     }
     return {};
@@ -389,19 +430,19 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
         return false;
       }
     } else if (
-      this.filterAssigneeId != null &&
+      this.isSpecificFilter(this.filterAssigneeId) &&
       task.assignedTo?.id !== this.filterAssigneeId
     ) {
       return false;
     }
     if (
-      this.filterCreatorId != null &&
+      this.isSpecificFilter(this.filterCreatorId) &&
       task.createdBy?.id !== this.filterCreatorId
     ) {
       return false;
     }
     if (
-      this.filterFinisherId != null &&
+      this.isSpecificFilter(this.filterFinisherId) &&
       task.finishedBy?.id !== this.filterFinisherId
     ) {
       return false;
@@ -448,6 +489,7 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
     const anyLabel = this.translocoService.translate(
       marker('moderatorTasks.filterAnyUser'),
     );
+    this.filterAnyLabel = anyLabel;
     const unassignedLabel = this.translocoService.translate(
       marker('moderatorTasks.unassigned'),
     );
@@ -459,11 +501,18 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
       value: user.id,
     }));
     this.assigneeFilterOptions = [
-      { label: anyLabel, value: null },
+      { label: anyLabel, value: FILTER_ANY },
       { label: unassignedLabel, value: ASSIGNEE_FILTER_UNASSIGNED },
       ...userOptions,
     ];
-    this.userFilterOptions = [{ label: anyLabel, value: null }, ...userOptions];
+    this.userFilterOptions = [
+      { label: anyLabel, value: FILTER_ANY },
+      ...userOptions,
+    ];
+  }
+
+  private isSpecificFilter(value: string | null): value is string {
+    return value != null && value !== FILTER_ANY;
   }
 
   private formatUserName(user: User): string {

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -11,6 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-crag-ranking',
   imports: [RankingListComponent],
   templateUrl: './crag-ranking.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crag-ranking.component.scss',
 })
 export class CragRankingComponent implements OnInit {

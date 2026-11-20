@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormArray,
@@ -29,38 +30,41 @@ import {
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { MultiImageUploadComponent } from '../../shared/forms/controls/multi-image-upload/multi-image-upload.component';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
-import {
-  Step,
-  StepList,
-  StepPanel,
-  StepPanels,
-  Stepper,
-} from 'primeng/stepper';
 import { LineEntryBatchLineFormComponent } from '../line-entry-batch-line-form/line-entry-batch-line-form.component';
 import { AsyncPipe } from '@angular/common';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { defaultScaleName, Scale } from '../../../models/scale';
 import { LineType } from '../../../enums/line-type';
-import { DatePicker } from 'primeng/datepicker';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { dateNotInFutureValidator } from '../../../utility/validators/date-not-in-future.validator';
-import { Message } from 'primeng/message';
 import { map, take } from 'rxjs/operators';
 import { BatchEditorService } from '../../../services/crud/batch-editor.service';
 import { LinePathFormComponent } from '../../line-path-editor/line-path-form/line-path-form.component';
 import { TopoImage } from '../../../models/topo-image';
-import { Image } from 'primeng/image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { filterSelectableGrades } from '../../../utility/grade/filter-selectable-grades';
 import { Grade } from '../../../models/scale';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { SpartanStepper, SpartanStepperImports } from '../../../ui/stepper/src';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  lucideArrowLeft,
+  lucideArrowRight,
+  lucideBan,
+  lucidePlus,
+  lucideTriangleAlert,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-line-entry-batch-editor',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
@@ -68,26 +72,34 @@ import { Grade } from '../../../models/scale';
     TranslocoDirective,
     MultiImageUploadComponent,
     FormControlDirective,
-    Stepper,
-    StepList,
-    Step,
-    StepPanels,
-    StepPanel,
     LineEntryBatchLineFormComponent,
-    Button,
-    Select,
-    DatePicker,
     AsyncPipe,
-    Message,
     LinePathFormComponent,
     FormsModule,
-    Image,
+    HlmButton,
+    ...SpartanStepperImports,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    ...HlmDatePickerImports,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideArrowLeft,
+      lucideArrowRight,
+      lucideBan,
+      lucidePlus,
+      lucideTriangleAlert,
+    }),
   ],
   templateUrl: './line-entry-batch-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './line-entry-batch-editor.component.scss',
 })
 export class LineEntryBatchEditorComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
+  @ViewChild(SpartanStepper) stepper: SpartanStepper;
 
   public topoImageBatchUploadForm: FormGroup;
   public loadingState = LoadingState.DEFAULT;
@@ -101,7 +113,6 @@ export class LineEntryBatchEditorComponent implements OnInit {
   public faFormats = FaDefaultFormat;
 
   public today = new Date(new Date().getFullYear(), 11, 31);
-  public currentStep = 1;
 
   public groupedScales: Record<LineType, Scale[]> = null;
   public defaultScales: Record<LineType, string | null> = {
@@ -248,48 +259,6 @@ export class LineEntryBatchEditorComponent implements OnInit {
     });
   }
 
-  public validateCurrentStep() {
-    if (this.currentStep === 1) {
-      this.topoImageBatchUploadForm.get('images').markAsTouched();
-    }
-    if (this.currentStep === 2) {
-      this.topoImageBatchUploadForm.get('lines').markAllAsTouched();
-    }
-  }
-
-  get currentStepInvalid(): boolean {
-    if (this.currentStep === 1) {
-      return this.topoImageBatchUploadForm.get('images').invalid;
-    }
-    if (this.currentStep === 2) {
-      return this.topoImageBatchUploadForm.get('lines').invalid;
-    }
-    if (this.currentStep === 3) {
-      return false;
-    }
-    return false;
-  }
-
-  nextStep() {
-    if (this.currentStepInvalid) {
-      this.validateCurrentStep();
-      return;
-    }
-    if (this.currentStep < 3) {
-      this.currentStep++;
-    }
-  }
-
-  previousStep() {
-    if (this.currentStepInvalid) {
-      this.validateCurrentStep();
-      return;
-    }
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
-  }
-
   get lines(): FormArray {
     return this.topoImageBatchUploadForm.get('lines.lines') as FormArray;
   }
@@ -356,12 +325,23 @@ export class LineEntryBatchEditorComponent implements OnInit {
               .get('selectedTopoImage')
               .setValue(this.topoImages[0]);
           }
-          this.nextStep();
+          this.stepper?.next();
         });
     } else {
-      this.validateCurrentStep();
+      this.topoImageBatchUploadForm.get('lines').markAllAsTouched();
     }
   }
+
+  formatDay = (date: Date) =>
+    `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+
+  selectLabel = (value: unknown): string => {
+    const match = [
+      ...(this.typeOptions ?? []),
+      ...(this.scaleOptions ?? []),
+    ].find((option) => option.value === value);
+    return match?.label ?? (value == null ? '' : String(value));
+  };
 
   private buildTypeOptions() {
     this.typeOptions = Object.entries(this.groupedScales)

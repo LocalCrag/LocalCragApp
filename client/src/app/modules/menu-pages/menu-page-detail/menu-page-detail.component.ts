@@ -1,9 +1,15 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingState } from '../../../enums/loading-state';
 import { MenuPage } from '../../../models/menu-page';
@@ -14,8 +20,9 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 
 @Component({
   selector: 'lc-menu-page-detail',
-  imports: [SkeletonModule, SanitizeHtmlPipe],
+  imports: [HlmSkeleton, SanitizeHtmlPipe],
   templateUrl: './menu-page-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu-page-detail.component.scss',
 })
 export class MenuPageDetailComponent implements OnInit {

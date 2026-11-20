@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, of, throwError } from 'rxjs';
@@ -73,7 +74,7 @@ describe('topoLinePaintFrom', () => {
 });
 
 describe('TopoLineColorPipe', () => {
-  let getScale: jasmine.Spy;
+  let getScale: Mock;
   let settings$: BehaviorSubject<Record<string, unknown>>;
   let pipe: TopoLineColorPipe;
 
@@ -90,7 +91,7 @@ describe('TopoLineColorPipe', () => {
   } as unknown as FullScale;
 
   beforeEach(() => {
-    getScale = jasmine.createSpy('getScale').and.returnValue(of(scale));
+    getScale = vi.fn().mockName('getScale').mockReturnValue(of(scale));
     settings$ = new BehaviorSubject<Record<string, unknown>>({
       ...settings,
     });
@@ -134,7 +135,7 @@ describe('TopoLineColorPipe', () => {
   });
 
   it('keeps the line color when the scale cannot be loaded', () => {
-    getScale.and.returnValue(throwError(() => new Error('missing')));
+    getScale.mockReturnValue(throwError(() => new Error('missing')));
     settings$.next({ ...settings, colorLinesByScale: true });
     expect(pipe.transform(line)).toBe('#112233');
   });

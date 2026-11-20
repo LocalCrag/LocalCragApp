@@ -8,17 +8,20 @@
     <header class="rock-explorer__panel-header">
       <div class="rock-explorer-sessions__title">
         <h2>{{ t("rockExplorer.sessionsTitle") }}</h2>
-        <p-tag [value]="t('rockExplorer.beta')" severity="warn" />
+        <span hlmBadge variant="outline">{{ t("rockExplorer.beta") }}</span>
       </div>
       <div class="rock-explorer__panel-header-actions">
-        <p-button
-          icon="pi pi-times"
-          [rounded]="true"
-          [text]="true"
-          severity="secondary"
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon"
+          class="rounded-full"
           [attr.aria-label]="t('rockExplorer.sessionsClose')"
-          (onClick)="ui.dispatch({ type: 'closeSessionsPanel' })"
-        />
+          (click)="ui.dispatch({ type: 'closeSessionsPanel' })"
+        >
+          <ng-icon name="lucideX" />
+        </button>
       </div>
     </header>
 
@@ -53,53 +56,65 @@
                 </span>
               </div>
               <div class="rock-explorer-sessions__actions">
-                <p-button
-                  [label]="t('rockExplorer.sessionsShowOnMap')"
-                  size="small"
-                  severity="secondary"
-                  (onClick)="
+                <button
+                  hlmBtn
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  (click)="
                     ui.dispatch({
                       type: 'showDraftOnMap',
                       localId: draft.localId,
                     })
                   "
-                />
-                <p-button
-                  [label]="t('rockExplorer.sessionsContinue')"
-                  size="small"
-                  severity="secondary"
-                  (onClick)="
+                >
+                  {{ t("rockExplorer.sessionsShowOnMap") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  (click)="
                     ui.dispatch({
                       type: 'continueDraft',
                       localId: draft.localId,
                     })
                   "
-                />
-                <p-button
-                  [label]="t('rockExplorer.sessionsFinish')"
-                  size="small"
-                  severity="secondary"
+                >
+                  {{ t("rockExplorer.sessionsContinue") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  size="sm"
+                  variant="outline"
                   [disabled]="!ui.online()"
-                  (onClick)="
+                  (click)="
                     ui.dispatch({
                       type: 'publishDraft',
                       localId: draft.localId,
                     })
                   "
-                />
-                <p-button
-                  [label]="t('rockExplorer.sessionsDelete')"
-                  size="small"
-                  severity="danger"
-                  [text]="true"
-                  (onClick)="
+                >
+                  {{ t("rockExplorer.sessionsFinish") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  class="text-destructive"
+                  (click)="
                     ui.dispatch({
                       type: 'deleteDraft',
                       localId: draft.localId,
                       event: $event,
                     })
                   "
-                />
+                >
+                  {{ t("rockExplorer.sessionsDelete") }}
+                </button>
               </div>
             </li>
           }
@@ -108,13 +123,16 @@
     </div>
 
     <div class="rock-explorer__panel-footer">
-      <p-button
-        icon="pi pi-circle-fill"
-        [label]="t('rockExplorer.modeRecord')"
-        (onClick)="ui.dispatch({ type: 'enterRecord' })"
+      <button
+        hlmBtn
+        type="button"
+        class="w-full rock-explorer-sessions__record-btn"
         [disabled]="!ui.canStartRecord()"
-        styleClass="w-full rock-explorer-sessions__record-btn"
-      />
+        (click)="ui.dispatch({ type: 'enterRecord' })"
+      >
+        <ng-icon name="lucideCircle" />
+        {{ t("rockExplorer.modeRecord") }}
+      </button>
     </div>
   </aside>
 }

@@ -12,7 +12,7 @@
           <div class="card-container block" lcControlGroup>
             <input
               type="text"
-              pInputText
+              hlmInput
               formControlName="email"
               placeholder="{{ t('emailPlaceholder') }}"
               autocomplete="username webauthn"
@@ -28,15 +28,13 @@
           </div>
 
           <div class="card-container block" lcControlGroup>
-            <p-password
+            <lc-password-input
               formControlName="password"
-              [toggleMask]="true"
-              [feedback]="false"
               autocomplete="current-password"
               lcFormControl
               placeholder="{{ t('passwordPlaceholder') }}"
               data-cy="login-form-password"
-            ></p-password>
+            />
             <small class="lc-error" *lcIfError="'required'">{{
               "validation.required" | transloco
             }}</small>
@@ -46,40 +44,47 @@
           </div>
         </form>
 
-        <p-button
-          label="{{ t('loginButtonLabel') }}"
+        <button
+          hlmBtn
+          type="button"
           (click)="login()"
           data-cy="login-form-submit"
-          [loading]="(loadingState$ | async) === loadingStates.LOADING"
-        ></p-button>
+          [disabled]="(loadingState$ | async) === loadingStates.LOADING"
+        >
+          {{ t("loginButtonLabel") }}
+        </button>
 
         @if (passkeySupported) {
-          <p-divider align="center" class="w-full">
-            {{ t("passkeyOr") }}
-          </p-divider>
+          <div class="my-4 flex w-full items-center gap-3">
+            <div hlmSeparator class="flex-1"></div>
+            <span>{{ t("passkeyOr") }}</span>
+            <div hlmSeparator class="flex-1"></div>
+          </div>
 
-          <p-button
-            label="{{ t('passkeyButtonLabel') }}"
-            severity="secondary"
+          <button
+            hlmBtn
+            variant="secondary"
+            type="button"
             (click)="loginWithPasskey()"
             data-cy="login-form-passkey"
-            [loading]="passkeyLoading"
-          ></p-button>
+            [disabled]="passkeyLoading"
+          >
+            {{ t("passkeyButtonLabel") }}
+          </button>
         }
 
-        <p-button
-          label="{{ t('forgotPasswordButtonLabel') }}"
-          styleClass="p-button-link"
+        <a
+          hlmBtn
+          variant="ghost"
           class="link-button"
-          [routerLink]="'/forgot-password'"
-        ></p-button>
+          routerLink="/forgot-password"
+        >
+          {{ t("forgotPasswordButtonLabel") }}
+        </a>
 
-        <p-button
-          label="{{ t('registerButtonLabel') }}"
-          styleClass="p-button-link"
-          class="link-button"
-          [routerLink]="'/register'"
-        ></p-button>
+        <a hlmBtn variant="ghost" class="link-button" routerLink="/register">
+          {{ t("registerButtonLabel") }}
+        </a>
       }
     </div>
   </div>

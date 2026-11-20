@@ -112,7 +112,7 @@
   align-items: center;
   gap: 0.25rem 0.75rem;
 
-  p-rating {
+  > span {
     display: inline-flex;
     align-items: center;
   }
@@ -146,8 +146,4 @@
   gap: 0.05rem;
   color: var(--p-primary-color);
   font-size: 0.85rem;
-
-  .pi-star {
-    opacity: 0.35;
-  }
 }

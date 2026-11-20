@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -11,13 +12,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
 import {
   TranslocoDirective,
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { LoadingState } from '../../../enums/loading-state';
 import { UsersService } from '../../../services/crud/users.service';
@@ -39,13 +38,10 @@ import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
 
 import { emailsValidator } from '../../../utility/validators/emails.validator';
-import { MessageModule } from 'primeng/message';
 
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { DividerModule } from 'primeng/divider';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DeleteOwnUserDialogComponent } from '../delete-own-user-dialog/delete-own-user-dialog.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -53,23 +49,31 @@ import { AccountSettingsFormComponent } from '../account-settings-form/account-s
 import { AccountPasskeysComponent } from '../account-passkeys/account-passkeys.component';
 import { AccountTwoFactorComponent } from '../account-two-factor/account-two-factor.component';
 import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user-role-tag.component';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
 
 @Component({
   selector: 'lc-account-form',
   imports: [
+    NgIcon,
+    HlmSeparator,
+    HlmInput,
+    HlmAlert,
+    HlmButton,
     ReactiveFormsModule,
-    ButtonModule,
     TranslocoDirective,
     TranslocoPipe,
-    InputTextModule,
     AvatarUploadComponent,
-    MessageModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    DividerModule,
-    HasPermissionDirective,
     HasPermissionDirective,
     AccountSettingsFormComponent,
     AccountPasskeysComponent,
@@ -78,7 +82,8 @@ import { UserRoleTagComponent } from '../../shared/components/user-role-tag/user
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.scss',
-  providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideIcons({ lucideInfo })],
 })
 export class AccountFormComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -92,7 +97,7 @@ export class AccountFormComponent implements OnInit {
   public currentUser: User;
   public deleteLoadingState: LoadingState = LoadingState.DEFAULT;
   public deleteError = false;
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef<boolean> | undefined;
 
   private destroyRef = inject(DestroyRef);
   private usersService = inject(UsersService);
@@ -101,7 +106,7 @@ export class AccountFormComponent implements OnInit {
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
 
   ngOnInit(): void {
     this.buildForm();
@@ -214,15 +219,11 @@ export class AccountFormComponent implements OnInit {
   public openDeleteDialog() {
     this.deleteError = false;
     this.ref = this.dialogService.open(DeleteOwnUserDialogComponent, {
-      header: this.translocoService.translate(
-        marker('accountForm.deleteAccountDialogTitle'),
-      ),
-      data: { email: this.currentUser?.email },
-      width: '500px',
-      dismissableMask: true,
-      closable: false,
+      context: { email: this.currentUser?.email },
+      showCloseButton: false,
+      contentClass: 'max-w-[500px]',
     });
-    this.ref.onClose.pipe(take(1)).subscribe((confirmed: boolean) => {
+    this.ref.closed$.pipe(take(1)).subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.deleteLoadingState = LoadingState.LOADING;
         this.usersService.deleteOwnUser().subscribe({

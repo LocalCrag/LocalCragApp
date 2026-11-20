@@ -2,13 +2,10 @@
   <div class="content">
     <div class="p-6">
       <div class="mb-4">
-        <p-button
-          [routerLink]="['/news']"
-          [label]="t('postDetail.backToNews')"
-          icon="pi pi-arrow-left"
-          [text]="true"
-          styleClass="p-0"
-        ></p-button>
+        <a hlmBtn variant="ghost" class="p-0" [routerLink]="['/news']">
+          <ng-icon name="lucideArrowLeft" />
+          {{ t("postDetail.backToNews") }}
+        </a>
       </div>
       @if (post) {
         <div
@@ -33,15 +30,17 @@
           [innerHTML]="post.text | sanitizeHtml"
           class="wysiwyg-content mb-6"
         ></div>
-        <p-button
+        <a
           *isModerator="true"
-          label="{{ t('postList.editPostButtonLabel') }}"
-          icon="pi pi-file-edit"
+          hlmBtn
+          variant="ghost"
+          class="mb-0"
           [routerLink]="['/news', post.slug, 'edit']"
-          [text]="true"
-          styleClass="mb-0"
-        ></p-button>
-        <p-divider type="solid"></p-divider>
+        >
+          <ng-icon name="lucideFilePen" />
+          {{ t("postList.editPostButtonLabel") }}
+        </a>
+        <div hlmSeparator class="my-4"></div>
       }
       @if (post) {
         <lc-comments [object]="post"></lc-comments>

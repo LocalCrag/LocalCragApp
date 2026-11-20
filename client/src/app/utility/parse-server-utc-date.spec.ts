@@ -35,12 +35,12 @@ describe('rules read round-trip (#1230)', () => {
         .replace(/\.\d{3}/, ''),
     );
 
-    expect(isRulesUnread(acknowledgedFromApi, rulesUpdatedAt)).toBeFalse();
+    expect(isRulesUnread(acknowledgedFromApi, rulesUpdatedAt)).toBe(false);
   });
 
   it('still detects a newer rules version as unread', () => {
     const acknowledged = parseServerUtcDate('2026-07-24T12:00:00');
     const current = parseServerUtcDate('2026-07-25T08:00:00');
-    expect(isRulesUnread(acknowledged, current)).toBeTrue();
+    expect(isRulesUnread(acknowledged, current)).toBe(true);
   });
 });

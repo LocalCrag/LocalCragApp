@@ -1,5 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
-import { MessageModule } from 'primeng/message';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
   ClosureReasonAlert,
@@ -11,10 +13,10 @@ import { DatePipe } from '../../pipes/date.pipe';
 
 @Component({
   selector: 'lc-upcoming-closure-alert',
-  imports: [MessageModule, TranslocoDirective],
+  imports: [HlmAlert, NgIcon, TranslocoDirective],
+  providers: [provideIcons({ lucideInfo }), DatePipe],
   templateUrl: './upcoming-closure-alert.component.html',
   styleUrl: './upcoming-closure-alert.component.scss',
-  providers: [DatePipe],
 })
 export class UpcomingClosureAlertComponent {
   @Input() warnings: ClosureReasonAlert[] = [];

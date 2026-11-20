@@ -1,60 +1,61 @@
 <ng-container *transloco="let t; read: 'linePath.linePathForm'">
   @if (noSelectableLines) {
-    <p-message
-      class="mt-4 block"
-      severity="info"
-      icon="pi pi-info-circle"
-      styleClass="w-full"
-    >
-      {{ canOnlyDrawOwnDrafts ? t("noOwnLinesToDraw") : t("noLinesToDraw") }}
-    </p-message>
+    <div hlmAlert class="mt-4 w-full">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>
+        {{ canOnlyDrawOwnDrafts ? t("noOwnLinesToDraw") : t("noLinesToDraw") }}
+      </p>
+    </div>
   } @else if (linePathForm) {
     <form [formGroup]="linePathForm" lcForm>
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="line">{{ t("lineLabel") }}</label>
-        <p-select
+        <hlm-select
           id="line"
           formControlName="line"
-          [options]="lines"
           data-cy="line-dropdown"
-          placeholder="{{ t('linePlaceholder') }}"
           lcFormControl
-          (onChange)="onLineChange($event.value)"
+          [isItemEqualToValue]="sameLine"
+          (valueChange)="onLineChange($event)"
         >
-          <ng-template let-line #item>
-            <div class="flex items-center gap-2" data-cy="line-dropdown-item">
-              @if (getLineNumber(line); as lineNumber) {
-                <lc-line-number-badge
-                  [number]="lineNumber"
-                  [color]="line | topoLineColor"
-                ></lc-line-number-badge>
-              } @else {
-                <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
-              }
-              <div>
-                {{ line.name }}
-                {{ line | lineGrade }}
-              </div>
-            </div>
-          </ng-template>
-          <ng-template let-selectedItem #selectedItem>
-            @if (selectedItem) {
-              <div class="flex items-center gap-2">
-                @if (getLineNumber(selectedItem); as lineNumber) {
+          <hlm-select-trigger class="w-full">
+            <span hlmSelectPlaceholder>{{ t("linePlaceholder") }}</span>
+            <ng-template hlmSelectValueTemplate let-line>
+              <span class="flex items-center gap-2">
+                @if (getLineNumber(line); as lineNumber) {
                   <lc-line-number-badge
                     [number]="lineNumber"
-                    [color]="selectedItem | topoLineColor"
+                    [color]="line | topoLineColor"
                   ></lc-line-number-badge>
                 } @else {
-                  <p-tag [value]="t('notOnImage')" severity="secondary"></p-tag>
+                  <span hlmBadge variant="secondary">{{
+                    t("notOnImage")
+                  }}</span>
                 }
-                <div>
-                  {{ selectedItem.name }} {{ selectedItem | lineGrade }}
-                </div>
-              </div>
+                <span>{{ line.name }} {{ line | lineGrade }}</span>
+              </span>
+            </ng-template>
+          </hlm-select-trigger>
+          <hlm-select-content *hlmSelectPortal>
+            @for (option of lines; track option.id) {
+              <hlm-select-item [value]="option" data-cy="line-dropdown-item">
+                <span class="flex items-center gap-2">
+                  @if (getLineNumber(option); as lineNumber) {
+                    <lc-line-number-badge
+                      [number]="lineNumber"
+                      [color]="option | topoLineColor"
+                    ></lc-line-number-badge>
+                  } @else {
+                    <span hlmBadge variant="secondary">{{
+                      t("notOnImage")
+                    }}</span>
+                  }
+                  <span>{{ option.name }} {{ option | lineGrade }}</span>
+                </span>
+              </hlm-select-item>
             }
-          </ng-template>
-        </p-select>
+          </hlm-select-content>
+        </hlm-select>
         <small class="lc-error" *lcIfError="'required'">{{
           "validation.required" | transloco
         }}</small>
@@ -88,37 +89,66 @@
           }
           @if (editorDrawMode === "line" && (isMobile$ | async) === false) {
             <div class="line-path-order-panel w-72 flex-none">
-              <p-orderList
-                [value]="orderedDrafts"
-                [header]="t('drawnLinesHeader')"
-                [dragdrop]="!canOnlyDrawOwnDrafts"
-                [listStyle]="{ 'max-height': '28rem' }"
-                (onReorder)="onDraftsReordered()"
-              >
-                <ng-template let-draft #item>
-                  <div
-                    class="drawn-line-item"
+              <div class="mb-2 font-semibold">{{ t("drawnLinesHeader") }}</div>
+              <ul class="flex max-h-[28rem] flex-col gap-1 overflow-auto">
+                @for (
+                  draft of orderedDrafts;
+                  track draft.line.id;
+                  let i = $index
+                ) {
+                  <li
+                    class="drawn-line-item flex items-center gap-2"
                     [class.selected]="draft.line.id === selectedLineId"
-                    tabindex="0"
-                    (click)="selectDraft(draft)"
-                    (keydown.enter)="selectDraft(draft)"
-                    (keydown.space)="
-                      $event.preventDefault(); selectDraft(draft)
-                    "
+                    [attr.draggable]="canOnlyDrawOwnDrafts ? 'false' : 'true'"
+                    (dragstart)="dragDraftIndex = i"
+                    (dragover)="$event.preventDefault()"
+                    (drop)="dropDraft(i)"
                   >
-                    @if (getLineNumber(draft.line); as lineNumber) {
-                      <lc-line-number-badge
-                        [number]="lineNumber"
-                        [color]="draft.line | topoLineColor"
-                      ></lc-line-number-badge>
-                    }
-                    <div class="drawn-line-item-label">
-                      {{ draft.line.name }}
-                      {{ draft.line | lineGrade }}
+                    <div
+                      class="flex min-w-0 flex-1 items-center gap-2"
+                      tabindex="0"
+                      (click)="selectDraft(draft)"
+                      (keydown.enter)="selectDraft(draft)"
+                      (keydown.space)="
+                        $event.preventDefault(); selectDraft(draft)
+                      "
+                    >
+                      @if (getLineNumber(draft.line); as lineNumber) {
+                        <lc-line-number-badge
+                          [number]="lineNumber"
+                          [color]="draft.line | topoLineColor"
+                        ></lc-line-number-badge>
+                      }
+                      <div class="drawn-line-item-label">
+                        {{ draft.line.name }}
+                        {{ draft.line | lineGrade }}
+                      </div>
                     </div>
-                  </div>
-                </ng-template>
-              </p-orderList>
+                    @if (!canOnlyDrawOwnDrafts) {
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        (click)="moveDraft(i, -1)"
+                        [disabled]="i === 0"
+                      >
+                        <ng-icon name="lucideArrowUp" />
+                      </button>
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        (click)="moveDraft(i, 1)"
+                        [disabled]="i === orderedDrafts.length - 1"
+                      >
+                        <ng-icon name="lucideArrowDown" />
+                      </button>
+                    }
+                  </li>
+                }
+              </ul>
               @if (orderedDrafts.length === 0) {
                 <p class="drawn-lines-empty">{{ t("noDrawnLinesYet") }}</p>
               }
@@ -134,12 +164,10 @@
                   {{ t("tabuAreasHeader") }}
                 </div>
                 @if (!isSelectedLineDrawn()) {
-                  <p-message
-                    severity="info"
-                    icon="pi pi-info-circle"
-                    styleClass="tabu-requires-line-path"
-                    >{{ t("tabuRequiresLinePath") }}</p-message
-                  >
+                  <div hlmAlert class="tabu-requires-line-path">
+                    <ng-icon name="lucideInfo" />
+                    <p hlmAlertDescription>{{ t("tabuRequiresLinePath") }}</p>
+                  </div>
                 }
                 @if (allTabuAreas.length === 0) {
                   <p class="drawn-lines-empty">
@@ -154,14 +182,14 @@
                           !isTabuAssignedToSelectedLine(area.id)
                         "
                       >
-                        <p-checkbox
-                          [binary]="true"
-                          [ngModel]="isTabuAssignedToSelectedLine(area.id)"
-                          [ngModelOptions]="{ standalone: true }"
+                        <hlm-checkbox
+                          [checked]="isTabuAssignedToSelectedLine(area.id)"
                           [inputId]="'tabu-area-' + i"
                           [attr.data-cy]="'tabu-assign-checkbox-' + i"
                           [disabled]="!isSelectedLineDrawn()"
-                          (onChange)="onTabuCheckboxChange(area.id, $event)"
+                          (checkedChange)="
+                            onTabuCheckboxChange(area.id, $event)
+                          "
                         />
                         <label
                           class="tabu-area-item-label"
@@ -170,15 +198,17 @@
                           {{ t("tabuArea", { n: i + 1 }) }}
                         </label>
                         @if (canDeleteTabuArea(area.id)) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [rounded]="true"
-                            [text]="true"
-                            severity="danger"
-                            size="small"
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            class="rounded-full"
                             [attr.data-cy]="'tabu-area-delete-' + i"
                             (click)="onTabuAreaDeleted(area.id)"
-                          ></p-button>
+                          >
+                            <ng-icon name="lucideTrash2" />
+                          </button>
                         }
                       </li>
                     }
@@ -202,24 +232,31 @@
 
   <div class="form-actions">
     @if (!noSelectableLines) {
-      <p-button
-        label="{{ t('saveAllLinePathsButtonLabel') }}"
+      <button
+        lcLoadingButton
+        icon="lucideSave"
+        [loading]="loadingState === loadingStates.LOADING"
         (click)="saveAllLinePaths()"
-        icon="pi pi-save"
+        [disabled]="loadingState === loadingStates.LOADING"
         class="responsive-button"
         data-cy="submit"
-        [loading]="loadingState === loadingStates.LOADING"
-      ></p-button>
+        type="button"
+      >
+        {{ t("saveAllLinePathsButtonLabel") }}
+      </button>
     }
     @if (!embedded) {
-      <p-button
-        label="{{ t('leaveEditorButtonLabel') }}"
-        (click)="leaveEditor()"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
         class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
+        (click)="leaveEditor()"
         data-cy="leave-editor"
-      ></p-button>
+      >
+        <ng-icon name="lucideBan" />
+        {{ t("leaveEditorButtonLabel") }}
+      </button>
     }
   </div>
 </ng-container>

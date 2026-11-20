@@ -53,7 +53,7 @@ test.describe('Topo images test', () => {
 
     await page.goto('/topo/brione/pampelmousse/shark-attack/add-topo-image');
     await page
-      .locator('[data-cy="topo-image-input"] input')
+      .locator('[data-cy="topo-image-input"]')
       .setInputFiles(sampleImagePath);
     await uploadFilePromise;
     await expect(
@@ -95,9 +95,11 @@ test.describe('Topo images test', () => {
     await page.goto(
       `/topo/brione/pampelmousse/shark-attack/topo-images/${topoImageId}/edit-line-paths`,
     );
-    await page.locator('[data-cy="line-dropdown"] > div').click({
-      timeout: 15_000,
-    });
+    await page
+      .locator('[data-cy="line-dropdown"] [data-slot="select-trigger"]')
+      .click({
+        timeout: 15_000,
+      });
     await page.locator('[data-cy="line-dropdown-item"]').nth(0).click();
     const editor = page.locator('lc-topo-image-editor');
     await expect(editor.locator('canvas').first()).toBeVisible();
@@ -118,7 +120,9 @@ test.describe('Topo images test', () => {
     await clickCanvas(0.22, 0.78);
     await clickCanvas(0.4, 0.9);
 
-    await page.locator('[data-cy="draw-mode"] > div').click();
+    await page
+      .locator('[data-cy="draw-mode"] [data-slot="select-trigger"]')
+      .click();
     await page.locator('[data-cy="draw-mode-tabu"]').click();
     await expect(page.locator('[data-cy="draw-mode-tabu"]')).toBeHidden();
     await expect(page.locator('[data-cy="finish-tabu-area"]')).toBeVisible();
@@ -126,11 +130,11 @@ test.describe('Topo images test', () => {
     await clickCanvas(0.62, 0.12);
     await clickCanvas(0.9, 0.12);
     await clickCanvas(0.9, 0.55);
-    const finishTabu = page.locator('[data-cy="finish-tabu-area"] button');
+    const finishTabu = page.locator('[data-cy="finish-tabu-area"]');
     await expect(finishTabu).toBeEnabled();
     await finishTabu.click();
     await expect(
-      page.locator('[data-cy="tabu-assign-checkbox-0"]'),
+      page.locator('[data-cy="tabu-assign-checkbox-0"] [role="checkbox"]'),
     ).toBeVisible();
 
     await page.locator('[data-cy="submit"]').click();

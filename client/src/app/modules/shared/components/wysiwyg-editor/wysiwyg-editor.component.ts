@@ -13,6 +13,7 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -37,16 +38,22 @@ import {
   $patchStyleText,
 } from '@lexical/selection';
 import { $findMatchingParent } from '@lexical/utils';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { CdkContextMenuTrigger } from '@angular/cdk/menu';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/api';
-import { Tooltip } from 'primeng/tooltip';
-import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Menu } from 'primeng/menu';
-import { ContextMenu } from 'primeng/contextmenu';
-import { SelectButton } from 'primeng/selectbutton';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmContextMenuTrigger } from '@spartan-ng/helm/context-menu';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import {
+  HlmDropdownMenu,
+  HlmDropdownMenuItem,
+  HlmDropdownMenuTrigger,
+} from '@spartan-ng/helm/dropdown-menu';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { sharedLucideIcons } from '../../utils/prime-icon';
 import { FormDirective } from '../../forms/form.directive';
 import { ControlGroupDirective } from '../../forms/control-group.directive';
 import { FormControlDirective } from '../../forms/form-control.directive';
@@ -88,6 +95,7 @@ import {
 import { sanitizePastedHtml } from './wysiwyg-paste';
 import { videoNodeForUrl } from './wysiwyg-video-url';
 import { $isWysiwygVideoNode } from './wysiwyg-video.node';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 export type WysiwygToolbar = 'basic' | 'rich' | 'rich-no-video';
 
@@ -108,26 +116,32 @@ interface MediaChrome {
   styleUrl: './wysiwyg-editor.component.scss',
   host: { class: 'lc-wysiwyg-editor' },
   imports: [
+    LoadingButtonComponent,
     TranslocoPipe,
     ReactiveFormsModule,
-    Tooltip,
-    Dialog,
-    Button,
-    InputText,
-    Menu,
-    ContextMenu,
-    SelectButton,
+    NgIcon,
+    HlmButton,
+    HlmInput,
+    HlmTooltip,
+    HlmContextMenuTrigger,
+    HlmDropdownMenu,
+    HlmDropdownMenuItem,
+    HlmDropdownMenuTrigger,
+    ...HlmDialogImports,
+    ...HlmToggleGroupImports,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => WysiwygEditorComponent),
       multi: true,
     },
+    provideIcons(sharedLucideIcons),
   ],
 })
 export class WysiwygEditorComponent
@@ -141,7 +155,8 @@ export class WysiwygEditorComponent
   @ViewChild('editorRoot') editorRoot: ElementRef<HTMLDivElement>;
   @ViewChild('surface') surface: ElementRef<HTMLDivElement>;
   @ViewChild(FormDirective) dialogForm: FormDirective;
-  @ViewChild('mediaMenu') mediaMenu?: ContextMenu;
+  @ViewChild('mediaMenuHost', { read: CdkContextMenuTrigger })
+  mediaMenu?: CdkContextMenuTrigger;
 
   readonly linkForm = new FormGroup({
     url: new FormControl('', {
@@ -169,9 +184,6 @@ export class WysiwygEditorComponent
   videoUploadsEnabled = false;
   panel: 'link' | 'video' | 'size' | null = null;
   videoSource: 'link' | 'upload' | null = null;
-  videoMenuItems: MenuItem[] = [];
-  mediaMenuItems: MenuItem[] = [];
-  sizeModeOptions: { label: string; value: 'full' | 'px' }[] = [];
   bold = false;
   italic = false;
   underline = false;
@@ -201,7 +213,6 @@ export class WysiwygEditorComponent
   private host = inject(ElementRef<HTMLElement>);
   private uploadService = inject(UploadService);
   private store = inject(Store);
-  private transloco = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
   private ngZone = inject(NgZone);
 
@@ -216,17 +227,9 @@ export class WysiwygEditorComponent
     if (this.editorId) {
       host.removeAttribute('id');
     }
-    this.refreshVideoMenu();
-    this.refreshSizeMenu();
     this.sizeForm.controls.mode.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.sizeForm.controls.width.updateValueAndValidity());
-    this.transloco.langChanges$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.refreshVideoMenu();
-        this.refreshSizeMenu();
-      });
     this.store
       .select(selectInstanceSettingsState)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -412,10 +415,6 @@ export class WysiwygEditorComponent
       this.canRemoveLink = this.selectionHasLink();
       this.linkForm.reset({ url: this.currentLinkUrl() });
     }
-  }
-
-  openVideoMenu(event: Event, menu: Menu) {
-    menu.toggle(event);
   }
 
   openVideo(source: 'link' | 'upload') {
@@ -604,7 +603,7 @@ export class WysiwygEditorComponent
     event.stopPropagation();
     this.sizeTargetKey = key;
     this.selectMedia(key);
-    this.mediaMenu?.show(event);
+    this.mediaMenu?.open({ x: event.clientX, y: event.clientY });
   }
 
   openSizeDialog() {
@@ -870,41 +869,6 @@ export class WysiwygEditorComponent
         node.setWidth(width);
       }
     });
-  }
-
-  private refreshSizeMenu() {
-    this.mediaMenuItems = [
-      {
-        label: this.transloco.translate('wysiwygEditor.size'),
-        icon: 'pi pi-expand',
-        command: () => this.ngZone.run(() => this.openSizeDialog()),
-      },
-    ];
-    this.sizeModeOptions = [
-      {
-        label: this.transloco.translate('wysiwygEditor.fullWidth'),
-        value: 'full',
-      },
-      {
-        label: this.transloco.translate('wysiwygEditor.widthPx'),
-        value: 'px',
-      },
-    ];
-  }
-
-  private refreshVideoMenu() {
-    this.videoMenuItems = [
-      {
-        label: this.transloco.translate('wysiwygEditor.videoLink'),
-        icon: 'pi pi-link',
-        command: () => this.ngZone.run(() => this.openVideo('link')),
-      },
-      {
-        label: this.transloco.translate('wysiwygEditor.videoUpload'),
-        icon: 'pi pi-upload',
-        command: () => this.ngZone.run(() => this.openVideo('upload')),
-      },
-    ];
   }
 
   private syncEditable() {

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,12 +17,12 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-crag-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent],
   templateUrl: './crag-ascents.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crag-ascents.component.scss',
 })
 export class CragAscentsComponent implements OnInit {

@@ -4,27 +4,20 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RankingService } from '../../../services/crud/ranking.service';
 import { Ranking } from '../../../models/ranking';
 import { LoadingState } from '../../../enums/loading-state';
 import { LineType } from '../../../enums/line-type';
-import { DataViewModule } from 'primeng/dataview';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { SelectItem } from 'primeng/api';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
 import { RouterLink } from '@angular/router';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { Select } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { RankingListSkeletonComponent } from '../ranking-list-skeleton/ranking-list-skeleton.component';
-import { Message } from 'primeng/message';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { RegionService } from '../../../services/crud/region.service';
@@ -38,28 +31,45 @@ import { selectRankingPastWeeks } from '../../../ngrx/selectors/instance-setting
 import { Observable } from 'rxjs';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { RankingExample, rankingExampleFromGrades } from './ranking-example';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
+
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmSwitch } from '@spartan-ng/helm/switch';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-ranking-list',
   imports: [
-    DataViewModule,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmSwitch,
+    ...HlmDialogImports,
     TranslocoDirective,
     NgClass,
-    ButtonModule,
-    ConfirmPopupModule,
     UserAvatarComponent,
     RouterLink,
     FormsModule,
-    DialogModule,
     HasPermissionDirective,
-    Select,
-    ToggleSwitch,
     RankingListSkeletonComponent,
-    Message,
     AsyncPipe,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
   ],
   templateUrl: './ranking-list.component.html',
   styleUrl: './ranking-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class RankingListComponent implements OnInit {
@@ -274,6 +284,27 @@ export class RankingListComponent implements OnInit {
         return;
       }
       this.rankingExample = rankingExampleFromGrades(scale.grades);
+    });
+  }
+
+  sortClientList<T>(items: T[] | null | undefined): T[] {
+    if (!items || !this.sortField) {
+      return items ?? [];
+    }
+    const direction = this.sortOrder ?? 1;
+    return [...items].sort((a: any, b: any) => {
+      const left = a?.[this.sortField];
+      const right = b?.[this.sortField];
+      if (left === right) {
+        return 0;
+      }
+      if (left == null) {
+        return 1;
+      }
+      if (right == null) {
+        return -1;
+      }
+      return left > right ? direction : -direction;
     });
   }
 }

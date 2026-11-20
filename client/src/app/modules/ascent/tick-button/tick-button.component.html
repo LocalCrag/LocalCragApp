@@ -1,21 +1,24 @@
 <ng-container *transloco="let t; read: 'tickButton'">
   @if (visible) {
-    <p-button
-      styleClass="p-button-rounded p-button-text p-button-secondary tick-button"
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      [size]="showLabel ? 'default' : 'icon'"
+      class="tick-button rounded-full"
+      [class.icon-only]="!showLabel"
       data-cy="tick-button"
-      label="{{ ticked ? t('lineClimbed') : t('addAscent') }}"
       (click)="addAscent($event)"
-      [ngClass]="{ 'hide-label': !showLabel, disabled: ticked }"
+      [ngClass]="{ disabled: ticked }"
       [disabled]="ticked"
+      [attr.aria-label]="
+        showLabel ? null : ticked ? t('lineClimbed') : t('addAscent')
+      "
     >
-      <ng-template #icon>
-        @if (!ticked) {
-          <i class="pi pi-check"></i>
-        }
-        @if (ticked) {
-          <i class="pi pi-check ticked-icon"></i>
-        }
-      </ng-template>
-    </p-button>
+      <ng-icon name="lucideCheck" [class.ticked-icon]="ticked" />
+      @if (showLabel) {
+        {{ ticked ? t("lineClimbed") : t("addAscent") }}
+      }
+    </button>
   }
 </ng-container>

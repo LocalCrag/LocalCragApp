@@ -4,7 +4,7 @@
       <div class="flex flex-col gap-2" lcControlGroup>
         <label class="form-label" for="message">{{ t("messageLabel") }}</label>
         <textarea
-          pTextarea
+          hlmTextarea
           id="message"
           formControlName="message"
           rows="3"
@@ -23,14 +23,20 @@
         <label class="form-label" for="severity">{{
           t("severityLabel")
         }}</label>
-        <p-select
-          inputId="severity"
+        <hlm-select
           formControlName="severity"
-          [options]="severityOptions"
-          optionLabel="label"
-          optionValue="value"
+          [itemToString]="severityLabel"
           lcFormControl
-        ></p-select>
+          ><hlm-select-trigger class="w-full" id="severity"
+            ><hlm-select-value /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of severityOptions; track option.value) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
       </div>
 
       <div class="flex flex-col gap-2" lcControlGroup>
@@ -39,7 +45,7 @@
         }}</label>
         <input
           type="text"
-          pInputText
+          hlmInput
           id="readMoreUrl"
           formControlName="readMoreUrl"
           placeholder="{{ t('readMoreUrlPlaceholder') }}"
@@ -58,71 +64,164 @@
           <label class="form-label" for="startsAt">{{
             t("startsAtLabel")
           }}</label>
-          <p-datepicker
-            inputId="startsAt"
-            formControlName="startsAt"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            lcFormControl
-          ></p-datepicker>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
+          <div class="flex items-start gap-2">
+            <hlm-date-picker
+              class="min-w-0 flex-1"
+              formControlName="startsDate"
+              lcFormControl
+              [autoCloseOnSelect]="true"
+              [formatDate]="formatDay"
+              [transformDate]="dateOnly"
+            >
+              <hlm-date-picker-input
+                inputId="startsAt"
+                [formatInputDate]="formatDay"
+                [parseDate]="parseDay"
+              />
+            </hlm-date-picker>
+            <input
+              hlmInput
+              class="w-28 shrink-0"
+              id="startsTime"
+              formControlName="startsTime"
+              lcFormControl
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="5"
+              [placeholder]="t('timePlaceholder')"
+              [attr.aria-label]="t('timeLabel')"
+            />
+          </div>
+          @if (
+            appAlertForm.get("startsDate")?.touched &&
+            appAlertForm.get("startsDate")?.hasError("required")
+          ) {
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
+          }
+          @if (
+            appAlertForm.get("startsTime")?.touched &&
+            appAlertForm.get("startsTime")?.hasError("required")
+          ) {
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
+          }
+          @if (
+            appAlertForm.get("startsTime")?.touched &&
+            appAlertForm.get("startsTime")?.hasError("invalidTime")
+          ) {
+            <small class="lc-error">{{ t("invalidTime") }}</small>
+          }
         </div>
 
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="endsAt">{{ t("endsAtLabel") }}</label>
-          <p-datepicker
-            inputId="endsAt"
-            formControlName="endsAt"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            lcFormControl
-          ></p-datepicker>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
+          <div class="flex items-start gap-2">
+            <hlm-date-picker
+              class="min-w-0 flex-1"
+              formControlName="endsDate"
+              lcFormControl
+              [autoCloseOnSelect]="true"
+              [formatDate]="formatDay"
+              [transformDate]="dateOnly"
+            >
+              <hlm-date-picker-input
+                inputId="endsAt"
+                [formatInputDate]="formatDay"
+                [parseDate]="parseDay"
+              />
+            </hlm-date-picker>
+            <input
+              hlmInput
+              class="w-28 shrink-0"
+              id="endsTime"
+              formControlName="endsTime"
+              lcFormControl
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="5"
+              [placeholder]="t('timePlaceholder')"
+              [attr.aria-label]="t('timeLabel')"
+            />
+          </div>
+          @if (
+            appAlertForm.get("endsDate")?.touched &&
+            appAlertForm.get("endsDate")?.hasError("required")
+          ) {
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
+          }
+          @if (
+            appAlertForm.get("endsTime")?.touched &&
+            appAlertForm.get("endsTime")?.hasError("required")
+          ) {
+            <small class="lc-error">{{
+              "validation.required" | transloco
+            }}</small>
+          }
+          @if (
+            appAlertForm.get("endsTime")?.touched &&
+            appAlertForm.get("endsTime")?.hasError("invalidTime")
+          ) {
+            <small class="lc-error">{{ t("invalidTime") }}</small>
+          }
         </div>
       </div>
     </form>
 
     <div class="form-actions">
       @if (!editMode) {
-        <p-button
-          label="{{ t('createAppAlertButtonLabel') }}"
-          (click)="saveAppAlert()"
-          icon="pi pi-save"
-          class="responsive-button"
+        <button
+          lcLoadingButton
+          icon="lucideSave"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="saveAppAlert()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+        >
+          {{ t("createAppAlertButtonLabel") }}
+        </button>
       }
       @if (editMode) {
-        <p-button
-          label="{{ t('editAppAlertButtonLabel') }}"
-          (click)="saveAppAlert()"
-          icon="pi pi-save"
-          class="responsive-button"
+        <button
+          lcLoadingButton
+          icon="lucideSave"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="saveAppAlert()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+        >
+          {{ t("editAppAlertButtonLabel") }}
+        </button>
       }
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
         class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+        (click)="cancel()"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
       @if (editMode) {
-        <p-button
-          label="{{ t('deleteAppAlertButtonLabel') }}"
-          (click)="confirmDeleteAppAlert($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
+        <button
+          lcLoadingButton
+          icon="lucideTrash2"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="confirmDeleteAppAlert($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+          variant="destructive"
+        >
+          {{ t("deleteAppAlertButtonLabel") }}
+        </button>
       }
-      <p-confirmpopup></p-confirmpopup>
     </div>
   </div>
 </ng-container>

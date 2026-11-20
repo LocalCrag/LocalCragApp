@@ -4,14 +4,15 @@
     routerLink="/topo-quality"
     queryParamsHandling="preserve"
   >
-    <span class="pi pi-arrow-left"></span>
+    <ng-icon name="lucideArrowLeft" />
     {{ t("back") }}
   </a>
 
   @if (failed) {
-    <p-message severity="error" icon="pi pi-times-circle">{{
-      t("loadFailed")
-    }}</p-message>
+    <div hlmAlert variant="destructive">
+      <ng-icon name="lucideCircleX" />
+      <p hlmAlertDescription>{{ t("loadFailed") }}</p>
+    </div>
   }
 
   @if (detail) {
@@ -30,11 +31,12 @@
           <header>
             <strong>{{ t("check." + check.key) }}</strong>
             <span
-              class="pi pi-question-circle quality-hint-icon"
-              [pTooltip]="t('checkHint.' + check.key)"
-              tooltipPosition="top"
-              tooltipStyleClass="quality-hint"
-            ></span>
+              class="quality-hint-icon"
+              [hlmTooltip]="t('checkHint.' + check.key)"
+              position="top"
+            >
+              <ng-icon name="lucideCircleQuestionMark" />
+            </span>
             @if (check.bonus) {
               <span class="quality-bonus-tag">{{ t("bonusTag") }}</span>
             }

@@ -1,25 +1,22 @@
 <ng-container *transloco="let t; read: 'history'">
   <div class="content">
     @if (historyItems?.length > 0) {
-      <p-timeline
-        [value]="historyItems"
-        [align]="(isMobile$ | async) ? 'left' : 'alternate'"
-        styleClass="customized-timeline"
-        [ngClass]="{ mobile: isMobile$ | async }"
-      >
-        <ng-template #marker let-event>
-          <span
-            class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
-            [class.created]="event.type === historyItemType.CREATED"
-            [class.updated]="event.type === historyItemType.UPDATED"
-          >
-            <i [class]="getIcon(event)"></i>
-          </span>
-        </ng-template>
-        <ng-template #content let-event>
-          <p-card>
-            <ng-template #title>
-              <span>{{ getHeader(event) + ": " + event.object.name }}</span>
+      <div class="flex flex-col gap-6">
+        @for (event of historyItems; track $index) {
+          <div class="flex gap-3">
+            <span
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white shadow-sm"
+              [class.created]="event.type === historyItemType.CREATED"
+              [class.updated]="event.type === historyItemType.UPDATED"
+            >
+              @if (getIcon(event)) {
+                <ng-icon [name]="getIcon(event)" />
+              }
+            </span>
+            <div hlmCard class="flex-1 p-4">
+              <div class="font-medium">
+                {{ getHeader(event) + ": " + objectName(event) }}
+              </div>
               @if (lineLocation(event); as location) {
                 <div class="history-line-location">
                   <lc-topo-hierarchy-breadcrumbs
@@ -29,41 +26,52 @@
                   ></lc-topo-hierarchy-breadcrumbs>
                 </div>
               }
-            </ng-template>
-            <ng-template #subtitle>
-              {{ event.timeCreated | date }},
-              <a class="username" routerLink="{{ event.createdBy.routerLink }}"
-                >{{ event.createdBy.firstname }}
-                {{ event.createdBy.lastname }}</a
+              <div class="text-sm text-muted-foreground">
+                {{ event.timeCreated | date }},
+                <a
+                  class="username"
+                  routerLink="{{ event.createdBy.routerLink }}"
+                  >{{ event.createdBy.firstname }}
+                  {{ event.createdBy.lastname }}</a
+                >
+              </div>
+              <div>{{ getDescription(event) | async }}</div>
+              <button
+                hlmBtn
+                type="button"
+                variant="ghost"
+                class="card-button"
+                (click)="openObject(event)"
               >
-            </ng-template>
-            <div>{{ getDescription(event) | async }}</div>
-            <p-button
-              styleClass="card-button"
-              [label]="t('openObject')"
-              (click)="openObject(event)"
-              [text]="true"
-            />
-          </p-card>
-        </ng-template>
-      </p-timeline>
+                {{ t("openObject") }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
     }
     @if (hasNextPage) {
       <div class="flex justify-center mt-20">
-        <p-button
-          label="{{ t('loadMore') }}"
+        <button
+          lcLoadingButton
+          [loading]="loading === loadingStates.LOADING && currentPage > 1"
+          type="button"
+          [disabled]="loading === loadingStates.LOADING && currentPage > 1"
           (scrolled)="loadNextPage()"
           (click)="loadNextPage()"
           infiniteScroll
           [infiniteScrollDistance]="2"
           [infiniteScrollThrottle]="50"
-          [loading]="loading === loadingStates.LOADING && currentPage > 1"
-        ></p-button>
+        >
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
     @if (historyItems.length === 0) {
-      <p-message severity="info" styleClass="w-full" [text]="t('noHistory')">
-      </p-message>
+      <div hlmAlert class="w-full">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noHistory") }}</p>
+      </div>
     }
   </div>
 </ng-container>

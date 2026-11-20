@@ -6,8 +6,9 @@
     </div>
     <div class="progress-inner-container">
       <div>
-        <p-progressBar [value]="itemProgress.progress" [showValue]="false">
-        </p-progressBar>
+        <div hlmProgress [value]="itemProgress.progress" [max]="100">
+          <div hlmProgressIndicator></div>
+        </div>
       </div>
       <div class="percentage">{{ itemProgress.progress }}%</div>
     </div>

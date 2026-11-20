@@ -1,9 +1,22 @@
 <ng-container *transloco="let t; read: 'linePathEditor'">
-  <p-contextmenu
-    #anchorMenu
-    [model]="anchorMenuItems"
-    appendTo="body"
-  ></p-contextmenu>
+  <div
+    class="sr-only"
+    #anchorMenuHost
+    [hlmContextMenuTrigger]="anchorMenu"
+  ></div>
+  <ng-template #anchorMenu>
+    <div hlmDropdownMenu>
+      <button
+        hlmDropdownMenuItem
+        type="button"
+        variant="destructive"
+        (triggered)="deletePendingAnchor()"
+      >
+        <ng-icon name="lucideTrash2" />
+        {{ t("deleteAnchor") }}
+      </button>
+    </div>
+  </ng-template>
 
   @if (topoImage) {
     <lc-topo-image-editor
@@ -25,60 +38,73 @@
   }
 
   <div class="editor-toolbar mt-2 flex flex-wrap items-center gap-2">
-    <p-select
+    <hlm-select
       class="draw-mode-select"
-      [options]="[
-        { label: t('drawModeLine'), value: 'line' },
-        { label: t('drawModeTabu'), value: 'tabu' },
-      ]"
-      optionLabel="label"
-      optionValue="value"
       [ngModel]="drawMode"
       (ngModelChange)="setDrawMode($event)"
       [disabled]="isDisabled"
-      size="small"
-      appendTo="body"
       data-cy="draw-mode"
     >
-      <ng-template let-option #item>
-        <span [attr.data-cy]="'draw-mode-' + option.value">{{
-          option.label
-        }}</span>
-      </ng-template>
-    </p-select>
-    <p-button
-      styleClass="rotate-icon"
-      severity="secondary"
-      size="small"
-      icon="pi pi-refresh"
-      label="{{ drawMode === 'tabu' ? t('undoTabu') : t('undo') }}"
+      <hlm-select-trigger class="w-full">
+        <ng-template hlmSelectValueTemplate let-value>
+          {{ value === "tabu" ? t("drawModeTabu") : t("drawModeLine") }}
+        </ng-template>
+      </hlm-select-trigger>
+      <hlm-select-content *hlmSelectPortal>
+        @for (
+          option of [
+            { label: t("drawModeLine"), value: "line" },
+            { label: t("drawModeTabu"), value: "tabu" },
+          ];
+          track option.value
+        ) {
+          <hlm-select-item
+            [value]="option.value"
+            [attr.data-cy]="'draw-mode-' + option.value"
+            >{{ option.label }}</hlm-select-item
+          >
+        }
+      </hlm-select-content>
+    </hlm-select>
+    <button
+      hlmBtn
+      type="button"
+      variant="secondary"
+      size="sm"
+      (click)="undo()"
       [disabled]="
         drawMode === 'tabu'
           ? !inProgressVertices.length
           : !linePath?.path?.length
       "
-      (click)="undo()"
-    ></p-button>
+    >
+      <ng-icon class="rotate-icon" name="lucideRefreshCw" />
+      {{ drawMode === "tabu" ? t("undoTabu") : t("undo") }}
+    </button>
     @if (drawMode === "line") {
-      <p-button
-        severity="secondary"
-        size="small"
-        icon="pi pi-trash"
-        label="{{ t('restart') }}"
-        [disabled]="!linePath?.path?.length"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
         (click)="restart()"
-      ></p-button>
+        [disabled]="!linePath?.path?.length"
+      >
+        <ng-icon name="lucideTrash2" /> {{ t("restart") }}
+      </button>
     }
     @if (drawMode === "tabu") {
-      <p-button
-        severity="secondary"
-        size="small"
-        icon="pi pi-check"
-        label="{{ t('finishTabuArea') }}"
-        data-cy="finish-tabu-area"
-        [disabled]="!canFinishTabuPolygon()"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
         (click)="finishTabuPolygon()"
-      ></p-button>
+        [disabled]="!canFinishTabuPolygon()"
+        data-cy="finish-tabu-area"
+      >
+        <ng-icon name="lucideCheck" /> {{ t("finishTabuArea") }}
+      </button>
     }
   </div>
 </ng-container>

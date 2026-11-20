@@ -6,8 +6,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Tag } from '../../../../models/tag';
-import { TagModule } from 'primeng/tag';
-import { AvatarModule } from 'primeng/avatar';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 import { RouterLink } from '@angular/router';
 import { EntityLinkPipe } from '../../pipes/entity-link.pipe';
 import { SearchableComponent } from '../../../core/searchable/searchable.component';
@@ -15,13 +14,7 @@ import { Searchable, SearchableObject } from '../../../../models/searchable';
 
 @Component({
   selector: 'lc-tag',
-  imports: [
-    TagModule,
-    AvatarModule,
-    EntityLinkPipe,
-    RouterLink,
-    SearchableComponent,
-  ],
+  imports: [HlmBadge, EntityLinkPipe, RouterLink, SearchableComponent],
   templateUrl: './tag.component.html',
   styleUrl: './tag.component.scss',
   encapsulation: ViewEncapsulation.None,

@@ -3,6 +3,8 @@ import { AsyncPipe } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircleAlert } from '@ng-icons/lucide';
 import { AppState } from '../../../ngrx/reducers';
 import { selectShowOfflineAlert } from '../../../ngrx/selectors/app-level-alerts.selectors';
 import { ConnectivityProbeService } from '../../../services/core/connectivity-probe.service';
@@ -33,7 +35,8 @@ import { ConnectivityProbeService } from '../../../services/core/connectivity-pr
   selector: 'lc-offline-alert',
   templateUrl: './offline-alert.component.html',
   styleUrls: ['./offline-alert.component.scss'],
-  imports: [TranslocoDirective, AsyncPipe],
+  imports: [TranslocoDirective, AsyncPipe, NgIcon],
+  providers: [provideIcons({ lucideCircleAlert })],
 })
 export class OfflineAlertComponent {
   private store = inject<Store<AppState>>(Store);

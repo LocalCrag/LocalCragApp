@@ -7,7 +7,7 @@
         }}</label>
         <input
           type="text"
-          pInputText
+          hlmInput
           id="title"
           formControlName="title"
           placeholder="{{ t('menuPageTitlePlaceholder') }}"
@@ -41,41 +41,54 @@
 
     <div class="form-actions">
       @if (!editMode) {
-        <p-button
-          label="{{ t('createMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
+        <button
+          lcLoadingButton
+          icon="lucideSave"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="saveMenuPage()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+        >
+          {{ t("createMenuPageButtonLabel") }}
+        </button>
       }
       @if (editMode) {
-        <p-button
-          label="{{ t('editMenuPageButtonLabel') }}"
-          (click)="saveMenuPage()"
-          icon="pi pi-save"
-          class="responsive-button"
+        <button
+          lcLoadingButton
+          icon="lucideSave"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="saveMenuPage()"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+        >
+          {{ t("editMenuPageButtonLabel") }}
+        </button>
       }
-      <p-button
-        label="{{ t('cancelButtonLabel') }}"
-        (click)="cancel()"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
         class="responsive-button"
-        styleClass="p-button-secondary"
-        icon="pi pi-ban"
-      ></p-button>
+        (click)="cancel()"
+      >
+        <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+      </button>
       @if (editMode) {
-        <p-button
-          label="{{ t('deleteMenuPageButtonLabel') }}"
-          (click)="confirmDeleteMenuPage($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
+        <button
+          lcLoadingButton
+          icon="lucideTrash2"
           [loading]="loadingState === loadingStates.LOADING"
-        ></p-button>
+          (click)="confirmDeleteMenuPage($event)"
+          [disabled]="loadingState === loadingStates.LOADING"
+          class="responsive-button"
+          type="button"
+          variant="destructive"
+        >
+          {{ t("deleteMenuPageButtonLabel") }}
+        </button>
       }
-      <p-confirmpopup></p-confirmpopup>
     </div>
   </div>
 </ng-container>

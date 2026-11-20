@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { MenuItemType } from '../../../enums/menu-item-type';
@@ -12,7 +18,7 @@ import {
   selectSkippedHierarchyLayers,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { environment } from '../../../../environments/environment';
-import { Button } from 'primeng/button';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -22,13 +28,17 @@ import { take } from 'rxjs/operators';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [Button, TranslocoDirective, RouterLink, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [HlmButton, TranslocoDirective, RouterLink, AsyncPipe],
 })
 export class FooterComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public menuItems: { title: string; routerLink: string; link: string }[] = [];
   public copyrightOwner$: Observable<string>;
-  public version = environment.version;
+  /** Release versions are semver and keep a "v" prefix. Next builds are a build id. */
+  public versionLabel = /^\d/.test(environment.version)
+    ? `v${environment.version}`
+    : environment.version;
 
   private skippedHierarchyLayers$: Observable<number>;
   private menuItemsService = inject(MenuItemsService);

@@ -23,7 +23,7 @@ describe('RockExplorerDraftStoreService', () => {
   });
 
   it('probeOpen resolves true when IndexedDB works', async () => {
-    expect(await store.probeOpen()).toBeTrue();
+    expect(await store.probeOpen()).toBe(true);
   });
 
   it('putSnapshot writes pending draft and count reflects rows', async () => {
@@ -41,7 +41,9 @@ describe('RockExplorerDraftStoreService', () => {
     expect(
       (
         record.snapshot.feature['paths'] as {
-          geometry: { coordinates: unknown[] };
+          geometry: {
+            coordinates: unknown[];
+          };
         }[]
       )[0].geometry.coordinates.length,
     ).toBe(1);
@@ -101,7 +103,7 @@ describe('RockExplorerDraftStoreService', () => {
 
   it('getByServerId finds draft and putSnapshot can preserve updatedAt', async () => {
     const session = new RockExplorerRecordingSession('d');
-    const updatedAt = 1_700_000_000_000;
+    const updatedAt = 1700000000000;
     await store.putSnapshot('by-srv', session, {
       serverId: 'server-42',
       syncStatus: 'synced',

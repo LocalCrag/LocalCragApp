@@ -1,153 +1,142 @@
 <ng-container *transloco="let t; read: 'sector.sectorList'">
-  <p-dataView
-    #dv
-    [value]="sectors"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
+  <div
+    class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4"
   >
-    <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
-        >{{ t("noSectorsFoundEmptyMessage") }}
-      </p-message>
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
-        <div class="flex flex-wrap items-center gap-2">
-          {{ t("orderByLabel") }}
-          <p-select
-            [options]="orderOptions"
-            [(ngModel)]="orderKey"
-            optionLabel="label"
-            (onChange)="onSortControlsChange()"
-            [disabled]="loading === loadingStates.LOADING"
-            styleClass="md:mb-0"
+    <div class="flex flex-wrap items-center gap-2">
+      {{ t("orderByLabel") }}
+      <hlm-select
+        [(ngModel)]="orderKey"
+        (ngModelChange)="onSortControlsChange()"
+        [disabled]="loading === loadingStates.LOADING"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <hlm-select
+        [(ngModel)]="orderDirectionKey"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onSortControlsChange()"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderDirectionOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+    </div>
+    <div class="lc-button-group justify-start sm:justify-end">
+      <a
+        hlmBtn
+        class="responsive-button"
+        routerLink="/topo/{{ cragSlug }}/create-sector"
+        [disabled]="loading === loadingStates.LOADING"
+        *isModerator="true"
+        ><ng-icon name="lucidePlus" /> {{ t("newSectorButtonLabel") }}</a
+      >
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="reorderSectors()"
+        [disabled]="sectors?.length < 2 || loading === loadingStates.LOADING"
+        *isModerator="true"
+      >
+        <ng-icon name="lucideArrowUpDown" />
+        {{ t("reorderSectorsButtonLabel") }}
+      </button>
+    </div>
+  </div>
+
+  @if (!sectors?.length && loading !== loadingStates.LOADING) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noSectorsFoundEmptyMessage") }}</p>
+    </div>
+  }
+
+  @if (loading === loadingStates.LOADING) {
+    <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
+  }
+  @if (loading !== loadingStates.LOADING) {
+    <div class="grid grid-cols-12">
+      @for (sector of sectors; track sector; let first = $first) {
+        <a
+          class="col-span-12 clickable-data-item"
+          routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
+          data-cy="sector-list-item"
+        >
+          <div
+            class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
+            [ngClass]="{ 'border-t border-surface': !first }"
           >
-            <ng-template #selectedItem>
-              @if (orderKey) {
-                <div>{{ orderKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-          <p-select
-            [options]="orderDirectionOptions"
-            [(ngModel)]="orderDirectionKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderDirectionKey) {
-                <div>{{ orderDirectionKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-        </div>
-        <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            label="{{ t('newSectorButtonLabel') }}"
-            icon="pi pi-plus"
-            class="responsive-button"
-            [disabled]="loading === loadingStates.LOADING"
-            routerLink="/topo/{{ cragSlug }}/create-sector"
-            *isModerator="true"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderSectorsButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderSectors()"
-            [disabled]="
-              sectors?.length < 2 || loading === loadingStates.LOADING
-            "
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template let-sectors #list>
-      @if (loading === loadingStates.LOADING) {
-        <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
-      }
-      @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12">
-          @for (sector of sectors; track sector; let first = $first) {
-            <a
-              class="col-span-12 clickable-data-item"
-              routerLink="/topo/{{ cragSlug }}/{{ sector.slug }}/areas"
-              data-cy="sector-list-item"
+            <img
+              class="w-9/12 sm:w-64 xl:w-40 shadow block xl:block mx-auto rounded-border"
+              [src]="
+                sector.portraitImage
+                  ? sector.portraitImage.thumbnailM
+                  : 'assets/placeholder.png'
+              "
+              [alt]="sector.name"
+            />
+            <div
+              class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
             >
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
-                [ngClass]="{ 'border-t border-surface': !first }"
+                class="flex flex-col items-center sm:items-start gap-4 w-full"
               >
-                <img
-                  class="w-9/12 sm:w-64 xl:w-40 shadow block xl:block mx-auto rounded-border"
-                  [src]="
-                    sector.portraitImage
-                      ? sector.portraitImage.thumbnailM
-                      : 'assets/placeholder.png'
-                  "
-                  [alt]="sector.name"
-                />
-                <div
-                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
-                >
+                <div class="flex justify-between w-full">
+                  <span class="text-2xl font-bold black-font">
+                    {{ sector.name }}
+                  </span>
+                  <lc-archive-button
+                    *isModerator="true"
+                    [showLabel]="true"
+                    [sector]="sector"
+                  />
+                </div>
+                @if (sector.shortDescription) {
                   <div
-                    class="flex flex-col items-center sm:items-start gap-4 w-full"
-                  >
-                    <div class="flex justify-between w-full">
-                      <span class="text-2xl font-bold black-font">
-                        {{ sector.name }}
-                      </span>
-                      <lc-archive-button
-                        *isModerator="true"
-                        [showLabel]="true"
-                        [sector]="sector"
-                      />
-                    </div>
-                    @if (sector.shortDescription) {
-                      <div
-                        [innerHTML]="sector.shortDescription | sanitizeHtml"
-                        class="wysiwyg-content"
-                      ></div>
-                    }
-                    <lc-leveled-grade-distribution
-                      [fetchingObservable]="
-                        sectorsService.getSectorGrades(sector.slug)
-                      "
-                      [linesListUrl]="
-                        '/topo/' + cragSlug + '/' + sector.slug + '/lines'
-                      "
-                    ></lc-leveled-grade-distribution>
-                    <lc-ascent-count
-                      [ascentCount]="sector.ascentCount"
-                    ></lc-ascent-count>
-                    <div class="flex gap-1">
-                      @if (sector.closed) {
-                        <lc-closed-spot-tag
-                          spotType="sector"
-                          [slug]="sector.slug"
-                          [closureIsPermanent]="sector.closureIsPermanent"
-                        ></lc-closed-spot-tag>
-                      }
-                      @if (sector.secret) {
-                        <lc-secret-spot-tag></lc-secret-spot-tag>
-                      }
-                    </div>
-                  </div>
+                    [innerHTML]="sector.shortDescription | sanitizeHtml"
+                    class="wysiwyg-content"
+                  ></div>
+                }
+                <lc-leveled-grade-distribution
+                  [fetchingObservable]="
+                    sectorsService.getSectorGrades(sector.slug)
+                  "
+                  [linesListUrl]="
+                    '/topo/' + cragSlug + '/' + sector.slug + '/lines'
+                  "
+                ></lc-leveled-grade-distribution>
+                <lc-ascent-count
+                  [ascentCount]="sector.ascentCount"
+                ></lc-ascent-count>
+                <div class="flex gap-1">
+                  @if (sector.closed) {
+                    <lc-closed-spot-tag
+                      spotType="sector"
+                      [slug]="sector.slug"
+                      [closureIsPermanent]="sector.closureIsPermanent"
+                    ></lc-closed-spot-tag>
+                  }
+                  @if (sector.secret) {
+                    <lc-secret-spot-tag></lc-secret-spot-tag>
+                  }
                 </div>
               </div>
-            </a>
-          }
-        </div>
+            </div>
+          </div>
+        </a>
       }
-    </ng-template>
-  </p-dataView>
+    </div>
+  }
 </ng-container>

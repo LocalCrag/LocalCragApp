@@ -9,26 +9,19 @@
             <strong class="mr-2">
               {{ t("lineType") }}
             </strong>
-            <p-select
-              [options]="availableScales"
-              [(ngModel)]="scaleKey"
-              optionLabel="label"
-              (onChange)="selectScale()"
-              styleClass="md:mb-0"
-            >
-              <ng-template #selectedItem>
-                @if (scaleKey) {
-                  <div class="flex items-center gap-2">
-                    <div>{{ scaleKey.label }}</div>
-                  </div>
+            <hlm-select [(ngModel)]="scaleKey" (ngModelChange)="selectScale()"
+              ><hlm-select-trigger class="w-full md:mb-0"
+                ><hlm-select-value /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (option of availableScales; track $index) {
+                  <hlm-select-item [value]="option"
+                    ><div class="flex items-center gap-2">
+                      <div>{{ option.label }}</div>
+                    </div></hlm-select-item
+                  >
                 }
-              </ng-template>
-              <ng-template let-option #item>
-                <div class="flex items-center gap-2">
-                  <div>{{ option.label }}</div>
-                </div>
-              </ng-template>
-            </p-select>
+              </hlm-select-content></hlm-select
+            >
           </div>
         }
         @if (scaleKey?.value) {
@@ -43,13 +36,12 @@
           />
         }
         <div class="w-full flex items-center mt-6">
-          <p-checkbox
+          <hlm-checkbox
             inputId="includeClosedSpots"
             name="includeClosedSpots"
-            [binary]="true"
             [(ngModel)]="includeClosed"
-            (onChange)="onIncludeClosedChange()"
-          ></p-checkbox>
+            (ngModelChange)="onIncludeClosedChange()"
+          ></hlm-checkbox>
           <label [for]="'includeClosedSpots'" class="ml-2">{{
             t("includeClosedSpots")
           }}</label>
@@ -71,7 +63,6 @@
           [expanded]="regionExpanded"
           (expandedChange)="regionExpanded = !regionExpanded"
         ></lc-expand-button>
-        <div></div>
       </div>
       @if (regionExpanded) {
         @for (crag of crags; track crag) {
@@ -127,7 +118,7 @@
                                   [id]="area.id"
                                 >
                                 </lc-completion-progress-bar>
-                                <div></div>
+                                <div class="progress-bar-spacer"></div>
                               </div>
                             }
                           </div>
@@ -145,8 +136,9 @@
   }
 
   @if (completion && Object.keys(completion.crags).length === 0) {
-    <p-message severity="info" icon="pi pi-info-circle">
-      {{ t("noLinesInThisGradeRange") }}
-    </p-message>
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noLinesInThisGradeRange") }}</p>
+    </div>
   }
 </ng-container>

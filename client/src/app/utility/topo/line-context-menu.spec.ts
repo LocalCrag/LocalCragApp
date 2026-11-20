@@ -1,4 +1,4 @@
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../../modules/shared/models/menu-item';
 import { TodoPriority } from '../../enums/todo-priority';
 import {
   buildLineContextMenuItems,
@@ -22,11 +22,11 @@ const labels: LineContextMenuLabels = {
 
 function actions(): LineContextMenuActions {
   return {
-    openInNewTab: jasmine.createSpy('openInNewTab'),
-    addTodo: jasmine.createSpy('addTodo'),
-    openTodoList: jasmine.createSpy('openTodoList'),
-    tick: jasmine.createSpy('tick'),
-    toggleHighlight: jasmine.createSpy('toggleHighlight'),
+    openInNewTab: vi.fn().mockName('openInNewTab'),
+    addTodo: vi.fn().mockName('addTodo'),
+    openTodoList: vi.fn().mockName('openTodoList'),
+    tick: vi.fn().mockName('tick'),
+    toggleHighlight: vi.fn().mockName('toggleHighlight'),
   };
 }
 
@@ -75,7 +75,8 @@ describe('topo line context menu', () => {
     const addTodo = item(built.items, 'line-add-todo');
     const medium = item(addTodo?.items ?? [], 'line-todo-priority-medium');
     medium?.command?.({} as never);
-    expect(built.actions.addTodo).toHaveBeenCalledOnceWith(TodoPriority.MEDIUM);
+    expect(built.actions.addTodo).toHaveBeenCalledTimes(1);
+    expect(built.actions.addTodo).toHaveBeenCalledWith(TodoPriority.MEDIUM);
     expect(item(built.items, 'line-tick')?.disabled).toBeFalsy();
   });
 
@@ -90,7 +91,7 @@ describe('topo line context menu', () => {
     const built = menu({ ticked: true });
     const tick = item(built.items, 'line-tick');
     expect(tick?.label).toBe('climbed');
-    expect(tick?.disabled).toBeTrue();
+    expect(tick?.disabled).toBe(true);
     expect(item(built.items, 'line-add-todo')).toBeUndefined();
   });
 

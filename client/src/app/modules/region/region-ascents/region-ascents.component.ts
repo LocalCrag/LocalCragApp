@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
@@ -7,12 +12,12 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { AscentListComponent } from '../../ascent/ascent-list/ascent-list.component';
-import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'lc-region-ascents',
-  imports: [AscentListComponent, SkeletonModule],
+  imports: [AscentListComponent],
   templateUrl: './region-ascents.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-ascents.component.scss',
 })
 export class RegionAscentsComponent implements OnInit {

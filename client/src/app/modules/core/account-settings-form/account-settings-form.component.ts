@@ -1,12 +1,19 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ToggleSwitch } from 'primeng/toggleswitch';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSwitch } from '@spartan-ng/helm/switch';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { FormDirective } from '../../shared/forms/form.directive';
-import { Button } from 'primeng/button';
 import { LoadingState } from '../../../enums/loading-state';
 import { AccountService } from '../../../services/crud/account.service';
 import { AccountSettings } from '../../../models/account-settings';
@@ -25,17 +32,19 @@ export const NOTIFICATION_MAIL_SETTINGS_FRAGMENT = 'notification-mails';
 @Component({
   selector: 'lc-account-settings-form',
   imports: [
-    ToggleSwitch,
+    HlmSwitch,
     ReactiveFormsModule,
     FormControlDirective,
     ControlGroupDirective,
     TranslocoDirective,
     FormDirective,
-    Button,
+    HlmButton,
+    HlmInput,
     LanguageSelectComponent,
     HasPermissionDirective,
   ],
   templateUrl: './account-settings-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-settings-form.component.scss',
 })
 export class AccountSettingsFormComponent implements OnInit {

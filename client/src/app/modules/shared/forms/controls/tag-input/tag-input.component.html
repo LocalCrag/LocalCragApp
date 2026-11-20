@@ -1,23 +1,34 @@
-<p-autoComplete
-  [ngModel]="value"
-  (ngModelChange)="onValueChange($event)"
+<hlm-combobox-multiple
+  #combo="brnComboboxMultiple"
+  class="w-full"
+  [value]="value"
   [disabled]="disabled"
-  [suggestions]="suggestions"
-  (completeMethod)="loadSuggestions($event)"
-  [multiple]="true"
-  [unique]="true"
-  [dataKey]="'id'"
-  [optionLabel]="'name'"
-  [forceSelection]="true"
-  [placeholder]="placeholder"
-  [appendTo]="'body'"
-  [panelStyleClass]="'searchable-autocomplete'"
-  fluid
+  [itemToString]="searchableLabel"
+  [isItemEqualToValue]="sameSearchable"
+  [filter]="showSuggestion"
+  (valueChange)="onValueChange($event)"
+  (searchChange)="loadSuggestions($event)"
 >
-  <ng-template let-searchable #item>
-    <lc-searchable
-      [searchable]="searchable"
-      [disableNavigation]="true"
-    ></lc-searchable>
-  </ng-template>
-</p-autoComplete>
+  <div hlmComboboxChips>
+    @for (item of value; track item.id) {
+      <hlm-combobox-chip [value]="item">{{ item.name }}</hlm-combobox-chip>
+    }
+    <input
+      hlmComboboxChipInput
+      [attr.placeholder]="placeholder"
+      (click)="$event.stopPropagation()"
+    />
+  </div>
+  <div hlmComboboxContent *hlmComboboxPortal>
+    <div hlmComboboxList class="searchable-autocomplete">
+      @for (searchable of suggestions; track searchable.id) {
+        <hlm-combobox-item [value]="searchable">
+          <lc-searchable
+            [searchable]="searchable"
+            [disableNavigation]="true"
+          ></lc-searchable>
+        </hlm-combobox-item>
+      }
+    </div>
+  </div>
+</hlm-combobox-multiple>

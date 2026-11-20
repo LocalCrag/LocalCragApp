@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -20,7 +21,6 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -40,20 +40,13 @@ import {
   disabledMarkerTypesSector,
   MapMarkerType,
 } from '../../../enums/map-marker-type';
-
-import { InputText } from 'primeng/inputtext';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
-import { Checkbox } from 'primeng/checkbox';
-import { Message } from 'primeng/message';
-import { Button } from 'primeng/button';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
-import { Tooltip } from 'primeng/tooltip';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { Crag } from '../../../models/crag';
@@ -62,6 +55,23 @@ import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeftRight,
+  lucideBan,
+  lucideCircleQuestionMark,
+  lucideInfo,
+  lucideSave,
+  lucideTrash2,
+  lucideTriangleAlert,
+} from '@ng-icons/lucide';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /**
  * Form component for creating and editing sectors.
@@ -70,32 +80,46 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
   selector: 'lc-sector-form',
   templateUrl: './sector-form.component.html',
   styleUrls: ['./sector-form.component.scss'],
-  providers: [ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideArrowLeftRight,
+      lucideBan,
+      lucideCircleQuestionMark,
+      lucideInfo,
+      lucideSave,
+      lucideTrash2,
+      lucideTriangleAlert,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
-    InputText,
     WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
-    Checkbox,
     TranslocoPipe,
-    Message,
-    Button,
-    ConfirmPopup,
     FormSkeletonComponent,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
-    Tooltip,
     OutdoorModeDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    HlmCheckbox,
+    HlmTooltip,
+    NgIcon,
   ],
 })
 export class SectorFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
@@ -118,7 +142,6 @@ export class SectorFormComponent implements OnInit {
   private cragsService = inject(CragsService);
   private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
 
@@ -288,21 +311,19 @@ export class SectorFormComponent implements OnInit {
    * Asks if the sector should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteSector(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteSector(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('sector.askReallyWantToDeleteSector'),
       ),
       acceptLabel: this.translocoService.translate(marker('sector.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('sector.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteSector();
       },
+      destructive: true,
     });
   }
 

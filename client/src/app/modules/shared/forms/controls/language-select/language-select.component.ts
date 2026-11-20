@@ -1,7 +1,9 @@
 import {
+  ChangeDetectorRef,
   Component,
   forwardRef,
   HostBinding,
+  inject,
   Input,
   ViewEncapsulation,
 } from '@angular/core';
@@ -10,14 +12,13 @@ import {
   LANGUAGE_CODES,
   LanguageCode,
 } from '../../../../../utility/types/language';
-import { FormsModule } from '@angular/forms';
-import { Select } from 'primeng/select';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
 
 @Component({
   selector: 'lc-language-select',
   standalone: true,
-  imports: [FormsModule, Select, TranslocoPipe],
+  imports: [...HlmSelectImports, TranslocoPipe],
   templateUrl: './language-select.component.html',
   styleUrls: ['./language-select.component.scss'],
   providers: [
@@ -31,8 +32,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 })
 export class LanguageSelectComponent implements ControlValueAccessor {
   readonly languages = [...LANGUAGE_CODES];
-  /** Above `.site-header` (z-index: 1100) so the panel is not hidden behind the navbar. */
-  readonly selectOverlayOptions = { baseZIndex: 1200 };
   value: LanguageCode | null = null;
   disabled = false;
 
@@ -43,9 +42,11 @@ export class LanguageSelectComponent implements ControlValueAccessor {
 
   private onChange: (value: LanguageCode | null) => void = () => {};
   private onTouched: () => void = () => {};
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   writeValue(value: LanguageCode | null): void {
     this.value = value;
+    this.changeDetectorRef.markForCheck();
   }
 
   registerOnChange(fn: (value: LanguageCode | null) => void): void {
@@ -58,6 +59,7 @@ export class LanguageSelectComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.changeDetectorRef.markForCheck();
   }
 
   getFlagSrc(code: LanguageCode | null): string | undefined {
