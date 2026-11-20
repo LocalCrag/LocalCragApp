@@ -1196,6 +1196,7 @@
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Linien ordnen",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Bild bearbeiten",
   "topoImage.topoImageList.deleteTopoImageButtonLabel": "Bild löschen",
+  "topoImage.topoImageList.deleteLinePathButtonLabel": "Linienverlauf löschen",
   "topoImage.topoImageList.openInNewTab": "In neuem Tab öffnen",
   "topoImage.topoImageList.highlightOnImage": "Auf dem Bild hervorheben",
   "topoImage.topoImageList.removeHighlight": "Hervorhebung entfernen",

@@ -1196,6 +1196,7 @@
   "topoImage.topoImageList.reorderLinePathsButtonLabel": "Ordina problemi",
   "topoImage.topoImageList.editTopoImageButtonLabel": "Modifica immagine",
   "topoImage.topoImageList.deleteTopoImageButtonLabel": "Elimina immagine",
+  "topoImage.topoImageList.deleteLinePathButtonLabel": "Elimina tracciatura",
   "topoImage.topoImageList.openInNewTab": "Apri in una nuova scheda",
   "topoImage.topoImageList.highlightOnImage": "Evidenzia sull'immagine",
   "topoImage.topoImageList.removeHighlight": "Rimuovi evidenziazione",
