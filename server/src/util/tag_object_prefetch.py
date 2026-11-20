@@ -6,8 +6,8 @@ as a separate lookup when Marshmallow serializes ``TagSchema``.
 
 Call :func:`prefetch_tag_objects` on the flattened tag list **after** the gallery query
 and **before** schema dump. Tags are grouped by ``object_type``, loaded with one query per
-type, then attached via :func:`sqlalchemy.orm.attributes.set_committed_value` so the
-generic relationship does not re-query on access.
+type, then stored in the generic relationship's instance cache so it does not re-query
+on access. The relationship is a hybrid property, so it is not an instrumented attribute.
 
 Supported ``object_type`` values are listed in :data:`_OBJECT_TYPE_MODEL`; unknown types
 are skipped.
@@ -21,8 +21,6 @@ Typical usage::
 """
 
 from collections import defaultdict
-
-from sqlalchemy.orm.attributes import set_committed_value
 
 from models.area import Area
 from models.crag import Crag
@@ -68,4 +66,7 @@ def prefetch_tag_objects(tags: list[Tag]) -> None:
             continue
         obj = objects_by_type_and_id.get(tag.object_type, {}).get(tag.object_id)
         if obj is not None:
-            set_committed_value(tag, "object", obj)
+            # generic_relationship caches the target on the instance dict. Writing that
+            # cache avoids a query without marking object_type or object_id as modified.
+            cache_key = Tag.object.fget.__self__.cache_key
+            tag.__dict__[cache_key] = obj

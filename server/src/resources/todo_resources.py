@@ -16,6 +16,7 @@ from models.enums.line_type_enum import LineTypeEnum
 from models.enums.publication_status_enum import PublicationStatusEnum
 from models.instance_settings import InstanceSettings
 from models.line import Line
+from models.sector import Sector
 from models.todo import Todo
 from models.user import User
 from util.auth_session import (
@@ -125,7 +126,7 @@ class GetTodos(MethodView):
             Line.publication_status == PublicationStatusEnum.PUBLISHED,
         )
         if crag_id:
-            query = query.join(Area.sector).filter_by(crag_id=crag_id)
+            query = query.join(Area.sector).filter(Sector.crag_id == crag_id)
         if sector_id:
             query = query.filter(Area.sector_id == sector_id)
         if area_id:
@@ -137,12 +138,12 @@ class GetTodos(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
+            min_grade = int(min_grade_value)
+            max_grade = int(max_grade_value)
             if instance_settings.display_user_grades:
-                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+                query = query.filter(Line.user_grade_value <= max_grade, Line.user_grade_value >= min_grade)
             else:
-                query = query.filter(
-                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
-                )
+                query = query.filter(Line.author_grade_value <= max_grade, Line.author_grade_value >= min_grade)
 
         # Filter by priority
         if priority:
@@ -211,7 +212,7 @@ class GetIsTodo(MethodView):
             .filter(Todo.created_by_id == user.id)
         )
         if crag_id:
-            query = query.join(Area.sector).filter_by(crag_id=crag_id)
+            query = query.join(Area.sector).filter(Sector.crag_id == crag_id)
         if sector_id:
             query = query.filter(Area.sector_id == sector_id)
         if area_id:

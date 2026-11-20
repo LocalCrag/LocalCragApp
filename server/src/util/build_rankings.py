@@ -2,6 +2,7 @@ import datetime
 from bisect import insort
 
 from sqlalchemy import select, text
+from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.orm.attributes import flag_modified
 
 from extensions import db
@@ -217,7 +218,7 @@ def build_rankings():
                 Line.publication_status == PublicationStatusEnum.PUBLISHED,
             )
             .order_by(Line.id, Ascent.id)
-            .distinct(Line.id)
+            .ext(distinct_on(Line.id))
         )
         if cutoff_date is not None:
             query = query.filter(Ascent.ascent_date >= cutoff_date)

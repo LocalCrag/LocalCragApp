@@ -1,12 +1,10 @@
 from sqlalchemy import event
-from sqlalchemy.orm import declarative_mixin
 
 from extensions import db
 from models.enums.searchable_item_type_enum import SearchableItemTypeEnum
 from models.searchable import Searchable
 
 
-@declarative_mixin
 class IsSearchable:
     search_name_target_columns = ["name"]
     searchable_type: SearchableItemTypeEnum = SearchableItemTypeEnum.LINE

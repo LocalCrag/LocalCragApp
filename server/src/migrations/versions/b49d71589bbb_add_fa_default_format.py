@@ -29,4 +29,6 @@ def downgrade():
     with op.batch_alter_table("instance_settings", schema=None) as batch_op:
         batch_op.drop_column("fa_default_format")
 
+    sa.Enum(name="fadefaultformatenum").drop(op.get_bind(), checkfirst=True)
+
     # ### end Alembic commands ###

@@ -7,7 +7,7 @@ This guide is the hub for setting up LocalCrag for local development. Detailed n
 | Tool | Notes |
 |------|--------|
 | **Git** | Clone the repository |
-| **Node.js** | Client: Node ≥ 21 (see [client README](../client/README.md)) |
+| **Node.js** | Client: Node 24, which includes npm 11 (see [client README](../client/README.md)) |
 | **npm** | Used for the client, root Husky install, and server `lint-staged` |
 | **Python** | `3.14` (see `server/Pipfile` `[requires]`) |
 | **Pipenv** | Server dependency management |

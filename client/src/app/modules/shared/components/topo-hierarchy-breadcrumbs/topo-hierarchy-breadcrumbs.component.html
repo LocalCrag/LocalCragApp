@@ -8,11 +8,9 @@
           tabindex="0"
           (click)="onNestedSegmentClick($event, cragLink)"
           (keydown.enter)="onNestedSegmentClick($event, cragLink)"
-          >{{ crag.name }}</span
-        >,
+          >{{ crag.name }}</span>,
       } @else {
-        <a [routerLink]="cragLink">{{ crag.name }}</a
-        >,
+        <a [routerLink]="cragLink">{{ crag.name }}</a>,
       }
     }
     @if (showSector && sector) {
@@ -23,11 +21,9 @@
           tabindex="0"
           (click)="onNestedSegmentClick($event, sectorLink)"
           (keydown.enter)="onNestedSegmentClick($event, sectorLink)"
-          >{{ sector.name }}</span
-        >,
+          >{{ sector.name }}</span>,
       } @else {
-        <a [routerLink]="sectorLink">{{ sector.name }}</a
-        >,
+        <a [routerLink]="sectorLink">{{ sector.name }}</a>,
       }
     }
     @if (showArea && area) {
