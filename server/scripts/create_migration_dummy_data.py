@@ -456,22 +456,29 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
             if sequence % 3:
                 line.type = LineTypeEnum.BOULDER
                 line.grade_scale = "FB"
-                line.author_grade_value = (sequence % 28) + 1
+                real_grade = (sequence % 28) + 1
             else:
                 line.type = LineTypeEnum.SPORT
                 line.grade_scale = "UIAA"
-                line.author_grade_value = (sequence % 27) + 1
+                real_grade = (sequence % 27) + 1
                 if _demo_mode.get():
                     line.routesetter = _demo_climber_name(sequence)
                     line.bolter = _demo_climber_name(sequence + 1)
                 else:
                     line.routesetter = "Migration User"
                     line.bolter = "Migration User"
-            if sequence % 41 == 0:
-                line.author_grade_value = -2
+            line.author_grade_value = -2 if sequence % 41 == 0 else real_grade
             line.user_grade_value = line.author_grade_value
-            line.assumed_grade_min = line.author_grade_value if sequence % 15 == 0 else None
-            line.assumed_grade_max = line.author_grade_value + 1 if line.assumed_grade_min is not None else None
+            # An assumed interval is only meaningful on a project, and both ends
+            # have to be real grades (value > 0). Project keys such as
+            # CLOSED_PROJECT are not grades.
+            if line.author_grade_value < 0 and sequence % 15 == 0:
+                ceiling = 28 if line.type == LineTypeEnum.BOULDER else 30
+                line.assumed_grade_min = real_grade
+                line.assumed_grade_max = min(real_grade + 2, ceiling)
+            else:
+                line.assumed_grade_min = None
+                line.assumed_grade_max = None
             line.fa_year = 2008 + (sequence % 18)
             line.fa_name = _demo_climber_name(sequence) if _demo_mode.get() else "Migration User"
             line.drying = DryingEnum.FAST if sequence % 2 == 0 else DryingEnum.SLOW

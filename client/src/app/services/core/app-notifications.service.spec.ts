@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import { toast } from '@spartan-ng/brain/sonner';
+import { of } from 'rxjs';
 import { AppNotificationsService } from './app-notifications.service';
+import { LanguageService } from './language.service';
 
 vi.mock('@spartan-ng/brain/sonner', () => ({
   toast: Object.assign(vi.fn(), {
@@ -26,6 +28,12 @@ describe('AppNotificationsService', () => {
           provide: TranslocoService,
           useValue: {
             translate: (key: string) => key,
+          },
+        },
+        {
+          provide: LanguageService,
+          useValue: {
+            whenTranslationsReady: () => of(undefined),
           },
         },
       ],

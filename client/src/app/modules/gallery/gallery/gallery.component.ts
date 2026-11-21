@@ -20,6 +20,7 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
 import { GalleryImageSkeletonComponent } from '../gallery-image-skeleton/gallery-image-skeleton.component';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 import { LoadingState } from '../../../enums/loading-state';
 import {
   beginPaginatedPageLoad,
@@ -76,6 +77,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
     TranslocoDirective,
     HasPermissionDirective,
     GalleryImageSkeletonComponent,
+    ListSkeletonComponent,
     InfiniteScrollDirective,
     HlmButton,
     HlmAlert,
@@ -102,7 +104,7 @@ export class GalleryComponent implements OnInit, PaginatedListView {
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public previewVisible = false;
   public previewIndex = 0;
 

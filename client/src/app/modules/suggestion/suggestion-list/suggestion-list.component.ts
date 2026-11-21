@@ -30,6 +30,8 @@ import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideInfo } from '@ng-icons/lucide';
+import { LoadingState } from '../../../enums/loading-state';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 type ReviewAction = 'publish' | 'reject';
@@ -60,6 +62,7 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
     RouterLink,
     TopoImageViewerComponent,
     TopoHierarchyBreadcrumbsComponent,
+    ListSkeletonComponent,
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
@@ -74,6 +77,8 @@ interface SuggestionTopoImageView extends SuggestionTopoImage {
 export class SuggestionListComponent implements OnInit {
   lines: SuggestionLineView[] = [];
   topoImages: SuggestionTopoImageView[] = [];
+  loading = LoadingState.INITIAL_LOADING;
+  loadingStates = LoadingState;
   dialogVisible = false;
   message = '';
   saving = false;
@@ -102,18 +107,27 @@ export class SuggestionListComponent implements OnInit {
   }
 
   load() {
-    this.suggestionsService.getQueue().subscribe((queue) => {
-      this.lines = queue.lines.map((line) => ({
-        ...line,
-        preview: this.linePreview(line),
-      }));
-      this.topoImages = queue.topoImages.map((image) => {
-        const preview = TopoImage.deserialize(image);
-        preview.linePaths = [];
-        preview.tabuAreas = [];
-        return { ...image, preview };
-      });
-      this.openFromQuery();
+    this.loading = LoadingState.LOADING;
+    this.suggestionsService.getQueue().subscribe({
+      next: (queue) => {
+        this.lines = queue.lines.map((line) => ({
+          ...line,
+          preview: this.linePreview(line),
+        }));
+        this.topoImages = queue.topoImages.map((image) => {
+          const preview = TopoImage.deserialize(image);
+          preview.linePaths = [];
+          preview.tabuAreas = [];
+          return { ...image, preview };
+        });
+        this.loading = LoadingState.DEFAULT;
+        this.openFromQuery();
+      },
+      error: () => {
+        this.lines = [];
+        this.topoImages = [];
+        this.loading = LoadingState.DEFAULT;
+      },
     });
   }
 

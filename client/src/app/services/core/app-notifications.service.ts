@@ -7,6 +7,7 @@ import {
   NotificationType,
 } from '../../utility/notifications';
 import { TranslocoHashMap } from '../../utility/types/transloco';
+import { LanguageService } from './language.service';
 
 /**
  * Shows toaster notifications for app notification keys.
@@ -17,6 +18,7 @@ import { TranslocoHashMap } from '../../utility/types/transloco';
 })
 export class AppNotificationsService {
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
 
   /**
    * Pushes a toast notification.
@@ -71,28 +73,32 @@ export class AppNotificationsService {
     messageParams: TranslocoHashMap = {},
   ) {
     const notificationDefinition = getNotification(notificationKey);
-    const title = this.translocoService.translate(
-      notificationDefinition.title,
-      titleParams,
-    );
-    const message = this.translocoService.translate(
-      notificationDefinition.message,
-      messageParams,
-    );
     const styleClass = notificationDefinition.styleClass;
-    switch (notificationDefinition.type) {
-      case NotificationType.ERROR:
-        this.error(title, message, styleClass);
-        break;
-      case NotificationType.WARNING:
-        this.warning(title, message, styleClass);
-        break;
-      case NotificationType.SUCCESS:
-        this.success(title, message, styleClass);
-        break;
-      case NotificationType.INFO:
-        this.info(title, message, styleClass);
-        break;
-    }
+    // Login and account-language saves switch the catalog in the same turn
+    // the toast is queued. Translating before that file arrives returns the key.
+    this.languageService.whenTranslationsReady().subscribe(() => {
+      const title = this.translocoService.translate(
+        notificationDefinition.title,
+        titleParams,
+      );
+      const message = this.translocoService.translate(
+        notificationDefinition.message,
+        messageParams,
+      );
+      switch (notificationDefinition.type) {
+        case NotificationType.ERROR:
+          this.error(title, message, styleClass);
+          break;
+        case NotificationType.WARNING:
+          this.warning(title, message, styleClass);
+          break;
+        case NotificationType.SUCCESS:
+          this.success(title, message, styleClass);
+          break;
+        case NotificationType.INFO:
+          this.info(title, message, styleClass);
+          break;
+      }
+    });
   }
 }

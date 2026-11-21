@@ -51,7 +51,7 @@ import {
   ],
 })
 export class ScaleListComponent implements OnInit {
-  public loadingState: LoadingState;
+  public loadingState = LoadingState.LOADING;
   public scalesByType: Record<LineType, Scale[]> = {
     [LineType.BOULDER]: [],
     [LineType.SPORT]: [],

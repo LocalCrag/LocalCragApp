@@ -21,6 +21,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -28,6 +29,7 @@ import {
   lucideArrowUp,
   lucideArrowUpDown,
   lucideFunnelX,
+  lucideInfo,
   lucideX,
 } from '@ng-icons/lucide';
 import {
@@ -59,6 +61,7 @@ export type RockExplorerListDisplayRow = RockExplorerListRow & {
       lucideArrowUp,
       lucideArrowUpDown,
       lucideFunnelX,
+      lucideInfo,
       lucideX,
     }),
   ],
@@ -70,6 +73,8 @@ export type RockExplorerListDisplayRow = RockExplorerListRow & {
     ...HlmSelectImports,
     HlmInput,
     HlmBadge,
+    HlmAlert,
+    HlmAlertDescription,
     NgIcon,
   ],
   templateUrl: './rock-explorer-list.component.html',

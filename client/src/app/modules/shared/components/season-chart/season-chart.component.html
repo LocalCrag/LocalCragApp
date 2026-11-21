@@ -1,13 +1,12 @@
 <ng-container *transloco="let t">
-  @if (!seasonEmpty) {
-    <div class="lc-chart relative h-72">
+  @if (showChart) {
+    <div class="lc-chart">
       <canvas lcChartJs="line" [data]="data" [options]="options"></canvas>
     </div>
-  }
-  @if (seasonEmpty) {
+  } @else {
     <div hlmAlert>
       <ng-icon name="lucideInfo" />
-      {{ t("noDataAvailable") }}
+      <p hlmAlertDescription>{{ t("seasonChart.needsData") }}</p>
     </div>
   }
 </ng-container>

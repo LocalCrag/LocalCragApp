@@ -161,7 +161,7 @@ export class AscentListComponent
   @Input() parentLoading = false;
 
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public ascents: Ascent[];
   public ref: BrnDialogRef | undefined;
   public hasNextPage = true;
@@ -452,8 +452,7 @@ export class AscentListComponent
 
   editAscent(ascent: Ascent) {
     this.ref = this.dialogService.open(AscentFormComponent, {
-      contentClass:
-        'sm:max-w-xl max-h-[min(40rem,calc(100dvh-2rem))] overflow-y-auto',
+      contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
       context: {
         ascent,
       },
@@ -465,7 +464,7 @@ export class AscentListComponent
       title: this.translocoService.translate(
         marker('comments.ascentDialogTitle'),
       ),
-      contentClass: 'sm:max-w-xl',
+      contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
       context: {
         object: ascent,
         commentCount: ascent.commentCount,

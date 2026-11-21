@@ -66,6 +66,7 @@ import {
   advancedLineListFiltersActive,
   defaultLineListAdvancedFilters,
   defaultLineListScaleKey,
+  lineListSliderScale,
   LineListAdvancedFilters,
   LineListFiltersDialogResult,
   LineListFiltersPersisted,
@@ -146,7 +147,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
 })
 export class LineListComponent implements OnInit, PaginatedListView {
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public lines: Line[];
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
@@ -263,31 +264,21 @@ export class LineListComponent implements OnInit, PaginatedListView {
   }
 
   selectScale() {
-    if (this.scaleKey?.value) {
-      this.gradeScaleBoundsLoading = true;
-      this.scalesService
-        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
-        .subscribe((scale) => {
-          this.maxGradeValue = Math.max(
-            ...scale.grades.map((grade) => grade.value),
-          );
-          this.gradeFilterRange = [-2, this.maxGradeValue];
-          this.loadedGradeFilterRange = [...this.gradeFilterRange];
-          this.gradeScaleBoundsLoading = false;
-          this.persistLineListFilters();
-          this.loadFirstPage();
-        });
-    } else {
-      this.gradeScaleBoundsLoading = false;
-      this.maxGradeValue = null;
-      this.gradeFilterRange = [-2, null];
-      this.loadedGradeFilterRange = [...this.gradeFilterRange];
-      this.persistLineListFilters();
-      this.loadFirstPage();
-    }
+    this.loadSliderBounds(() => this.loadFirstPage());
   }
 
   reloadOnSlideEnd() {
+    if (
+      !this.scaleKey?.value &&
+      this.maxGradeValue !== null &&
+      (this.gradeFilterRange[0] !== this.minGradeValue ||
+        this.gradeFilterRange[1] !== this.maxGradeValue)
+    ) {
+      const sliderScale = this.sliderScaleItem;
+      if (sliderScale) {
+        this.scaleKey = sliderScale;
+      }
+    }
     const lo = this.gradeFilterRange[0];
     const hi = this.gradeFilterRange[1];
     const prev = this.loadedGradeFilterRange;
@@ -316,7 +307,7 @@ export class LineListComponent implements OnInit, PaginatedListView {
         title: this.translocoService.translate(
           marker('line.lineList.advancedFiltersDialogTitle'),
         ),
-        contentClass: 'sm:max-w-lg',
+        contentClass: 'sm:max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto',
         context: data,
       },
     );
@@ -338,9 +329,13 @@ export class LineListComponent implements OnInit, PaginatedListView {
           this.scaleKey = match ?? result.scaleKey;
           this.gradeFilterRange = [...result.gradeFilterRange];
           this.maxGradeValue = result.maxGradeValue;
-          this.gradeScaleBoundsLoading = false;
-          this.persistLineListFilters();
-          this.loadFirstPage();
+          if (this.sliderScaleItem?.value && this.maxGradeValue == null) {
+            this.loadSliderBounds(() => this.loadFirstPage());
+          } else {
+            this.gradeScaleBoundsLoading = false;
+            this.persistLineListFilters();
+            this.loadFirstPage();
+          }
         }
       });
   }
@@ -548,48 +543,60 @@ export class LineListComponent implements OnInit, PaginatedListView {
       }
     }
 
-    if (this.scaleKey?.value) {
-      // Concrete scale: load max grade for the slider, then restore or default the range.
-      this.gradeScaleBoundsLoading = true;
-      this.scalesService
-        .getScale(this.scaleKey.value.lineType, this.scaleKey.value.gradeScale)
-        .subscribe((scale) => {
-          this.maxGradeValue = Math.max(
-            ...scale.grades.map((grade) => grade.value),
-          );
-          if (
-            persisted?.grade?.range?.length === 2 &&
-            typeof persisted.grade.range[0] === 'number' &&
-            typeof persisted.grade.range[1] === 'number'
-          ) {
-            // Clamp stored range to current scale bounds (list context may have changed).
-            this.gradeFilterRange = [
-              Math.max(
-                -2,
-                Math.min(persisted.grade.range[0], this.maxGradeValue),
-              ),
-              Math.max(
-                -2,
-                Math.min(persisted.grade.range[1], this.maxGradeValue),
-              ),
-            ];
-          } else {
-            this.gradeFilterRange = [-2, this.maxGradeValue];
-          }
-          this.loadedGradeFilterRange = [...this.gradeFilterRange];
-          this.gradeScaleBoundsLoading = false;
-          this.persistLineListFilters();
-          onReady();
-        });
-    } else {
-      // "ALL" scale: no slider bounds; grade range is not sent to the API.
+    const persistedRange =
+      this.scaleKey?.value &&
+      persisted?.grade?.range?.length === 2 &&
+      typeof persisted.grade.range[0] === 'number' &&
+      typeof persisted.grade.range[1] === 'number'
+        ? persisted.grade.range
+        : null;
+    this.loadSliderBounds(onReady, persistedRange);
+  }
+
+  /** Grade scale currently drawn on the header slider. */
+  get sliderScaleItem(): LineListScaleSelectItem | undefined {
+    return lineListSliderScale(this.availableScales, this.scaleKey);
+  }
+
+  /**
+   * Loads min/max for the slider scale. A saved range is restored only for a
+   * concrete scale. "ALL" keeps the full range and does not filter by grade.
+   */
+  private loadSliderBounds(
+    onReady?: () => void,
+    persistedRange?: (number | null)[] | null,
+  ): void {
+    const sliderScale = this.sliderScaleItem;
+    if (!sliderScale?.value) {
       this.gradeScaleBoundsLoading = false;
       this.maxGradeValue = null;
       this.gradeFilterRange = [-2, null];
       this.loadedGradeFilterRange = [...this.gradeFilterRange];
       this.persistLineListFilters();
-      onReady();
+      onReady?.();
+      return;
     }
+
+    this.gradeScaleBoundsLoading = true;
+    this.scalesService
+      .getScale(sliderScale.value.lineType, sliderScale.value.gradeScale)
+      .subscribe((scale) => {
+        this.maxGradeValue = Math.max(
+          ...scale.grades.map((grade) => grade.value),
+        );
+        if (persistedRange) {
+          this.gradeFilterRange = [
+            Math.max(-2, Math.min(persistedRange[0], this.maxGradeValue)),
+            Math.max(-2, Math.min(persistedRange[1], this.maxGradeValue)),
+          ];
+        } else {
+          this.gradeFilterRange = [-2, this.maxGradeValue];
+        }
+        this.loadedGradeFilterRange = [...this.gradeFilterRange];
+        this.gradeScaleBoundsLoading = false;
+        this.persistLineListFilters();
+        onReady?.();
+      });
   }
 
   private persistLineListFilters(): void {

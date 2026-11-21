@@ -2,3 +2,14 @@
   margin-top: 1.5rem;
   display: block;
 }
+
+:host.closed-spot-alert--embedded {
+  margin-top: 0;
+}
+
+:host.closed-spot-alert--embedded [data-slot='alert'] {
+  border: none;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}

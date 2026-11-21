@@ -7,6 +7,7 @@ import {
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleHelp } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -16,12 +17,14 @@ import {
 } from '../../../../services/crud/closure-state.service';
 import { ClosedSpotAlertComponent } from '../closed-spot-alert/closed-spot-alert.component';
 import { ClosureReasonAlert } from '../../../../models/closure-reason-alert';
+import { injectDisableHeaderChipTooltip } from '../header-chip-tooltip';
 
 @Component({
   selector: 'lc-closed-spot-tag',
   imports: [
     NgIcon,
     HlmBadge,
+    HlmTooltip,
     ...HlmPopoverImports,
     HlmSpinner,
     TranslocoDirective,
@@ -33,6 +36,7 @@ import { ClosureReasonAlert } from '../../../../models/closure-reason-alert';
   styleUrl: './closed-spot-tag.component.scss',
 })
 export class ClosedSpotTagComponent {
+  protected readonly disableTooltip = injectDisableHeaderChipTooltip();
   @Input({ required: true }) spotType: ClosedSpotType;
   @Input({ required: true }) slug: string;
   /** When already loaded (e.g. detail view), skip the closure-state request. */

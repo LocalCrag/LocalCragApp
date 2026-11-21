@@ -103,14 +103,18 @@
           </div>
         </div>
 
-        @if (scaleKey?.value && !gradeScaleBoundsLoading) {
+        @if (
+          sliderScaleItem?.value &&
+          maxGradeValue !== null &&
+          !gradeScaleBoundsLoading
+        ) {
           <lc-grade-range-slider
             class="mt-1"
             [(range)]="gradeFilterRange"
             [min]="minGradeValue"
             [max]="maxGradeValue"
-            [lineType]="scaleKey.value.lineType"
-            [gradeScale]="scaleKey.value.gradeScale"
+            [lineType]="sliderScaleItem.value.lineType"
+            [gradeScale]="sliderScaleItem.value.gradeScale"
             [disabled]="loading === loadingStates.LOADING && currentPage === 1"
             (slideEnd)="reloadOnSlideEnd()"
           />
@@ -140,20 +144,23 @@
     </div>
   </div>
 
-  @if (
-    lines?.length === 0 &&
-    !(loading === loadingStates.LOADING && currentPage === 1)
-  ) {
+  @if (loading === loadingStates.DEFAULT && lines?.length === 0) {
     <div hlmAlert class="m-4">
       <ng-icon name="lucideInfo" />
       <p hlmAlertDescription>{{ t("noLinesFoundEmptyMessage") }}</p>
     </div>
   }
 
-  @if (loading === loadingStates.LOADING && currentPage === 1) {
+  @if (
+    loading === loadingStates.INITIAL_LOADING ||
+    (loading === loadingStates.LOADING && currentPage === 1)
+  ) {
     <lc-line-list-skeleton></lc-line-list-skeleton>
   }
-  @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+  @if (
+    loading === loadingStates.DEFAULT ||
+    (loading === loadingStates.LOADING && currentPage > 1)
+  ) {
     <div class="grid grid-cols-12">
       @for (line of lines; track line; let first = $first) {
         <a
@@ -200,35 +207,68 @@
                 class="flex flex-col items-center sm:items-start gap-4 line-info-container"
               >
                 <div
-                  class="text-2xl text-surface-900 dark:text-surface-0 line-name flex flex-col md:flex-row items-center justify-between"
+                  class="text-2xl text-surface-900 dark:text-surface-0 line-name flex w-full flex-col gap-4"
                 >
-                  <div class="text-center sm:text-start">
-                    <strong>{{ line.name }}</strong>
-                    {{ line | lineGrade }}
+                  <div class="flex w-full items-center gap-2">
+                    <div
+                      class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:justify-start"
+                    >
+                      <strong>{{ line.name }}</strong>
+                      @if (line.publicationStatus === "draft") {
+                        <lc-draft-tag
+                          class="spot-status-tag--beside"
+                        ></lc-draft-tag>
+                      }
+                      <span class="whitespace-nowrap">{{
+                        line | lineGrade
+                      }}</span>
+                    </div>
+                    @if (line.closed || line.secret) {
+                      <div class="ml-auto flex shrink-0 items-center gap-2">
+                        @if (line.closed) {
+                          <lc-closed-spot-tag
+                            class="spot-status-tag--beside"
+                            spotType="line"
+                            [slug]="line.slug"
+                            [closureIsPermanent]="line.closureIsPermanent"
+                          ></lc-closed-spot-tag>
+                        }
+                        @if (line.secret) {
+                          <lc-secret-spot-tag
+                            class="spot-status-tag--beside"
+                          ></lc-secret-spot-tag>
+                        }
+                      </div>
+                    }
+                  </div>
+                  <div class="flex w-full items-start justify-between gap-3">
                     <lc-topo-hierarchy-breadcrumbs
-                      class="mt-4"
+                      class="min-w-0 text-center sm:text-start"
                       [crag]="line.crag"
                       [sector]="line.sector"
                       [area]="line.area"
                       [stopPropagation]="true"
                     ></lc-topo-hierarchy-breadcrumbs>
+                    <span
+                      class="flex h-4 shrink-0 items-center self-center text-base leading-none"
+                      ><span
+                        class="inline-flex text-primary"
+                        aria-hidden="true"
+                      >
+                        @for (star of [1, 2, 3, 4, 5]; track star) {
+                          <ng-icon
+                            name="lucideStar"
+                            class="[&_svg]:fill-current"
+                            [class.opacity-30]="
+                              star >
+                              (displayUserRating
+                                ? line.userRating
+                                : line.authorRating)
+                            "
+                          />
+                        }</span
+                    ></span>
                   </div>
-                  <span
-                    class="mt-4 flex h-4 items-center self-center text-base leading-none md:mt-0 md:self-end"
-                    ><span class="inline-flex text-primary" aria-hidden="true">
-                      @for (star of [1, 2, 3, 4, 5]; track star) {
-                        <ng-icon
-                          name="lucideStar"
-                          class="[&_svg]:fill-current"
-                          [class.opacity-30]="
-                            star >
-                            (displayUserRating
-                              ? line.userRating
-                              : line.authorRating)
-                          "
-                        />
-                      }</span
-                  ></span>
                 </div>
                 <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
                 @if (line.description) {
@@ -310,21 +350,6 @@
                       [line]="line"
                       [ticked]="ticks.has(line.id)"
                     ></lc-tick-button>
-                  }
-                </div>
-                <div class="flex gap-1">
-                  @if (line.publicationStatus === "draft") {
-                    <lc-draft-tag></lc-draft-tag>
-                  }
-                  @if (line.closed) {
-                    <lc-closed-spot-tag
-                      spotType="line"
-                      [slug]="line.slug"
-                      [closureIsPermanent]="line.closureIsPermanent"
-                    ></lc-closed-spot-tag>
-                  }
-                  @if (line.secret) {
-                    <lc-secret-spot-tag></lc-secret-spot-tag>
                   }
                 </div>
               </div>

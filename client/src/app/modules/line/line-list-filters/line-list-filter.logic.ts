@@ -171,6 +171,20 @@ export type LineListScaleSelectItem = SelectOption<
 >;
 
 /**
+ * Scale shown on the grade slider. A chosen scale wins. "ALL" still uses the
+ * first concrete scale so the slider stays visible.
+ */
+export function lineListSliderScale(
+  availableScales: LineListScaleSelectItem[],
+  selected: LineListScaleSelectItem | undefined,
+): LineListScaleSelectItem | undefined {
+  if (selected?.value) {
+    return selected;
+  }
+  return availableScales.find((scale) => !!scale.value);
+}
+
+/**
  * `availableScales` is built with index 0 = "ALL" (`value: undefined`) and 1..n = concrete scales.
  * Use the only concrete scale when there is no multi-scale dropdown; otherwise default to "ALL".
  */

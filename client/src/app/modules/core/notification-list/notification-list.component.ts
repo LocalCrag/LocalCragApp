@@ -13,13 +13,15 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideFlag,
+  lucideInfo,
   lucideListChecks,
   lucideMail,
   lucideMegaphone,
   lucideMessageCircle,
   lucideSettings,
 } from '@ng-icons/lucide';
-import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { NotificationsService } from '../../../services/crud/notifications.service';
 import { NotificationItem } from '../../../models/notification-item';
@@ -37,7 +39,15 @@ import { SuggestionReviewMessageDialogService } from '../suggestion-review-messa
 
 @Component({
   selector: 'lc-notification-list',
-  imports: [TranslocoDirective, NgIcon, HlmAlert, HlmButton, DatePipe],
+  imports: [
+    TranslocoDirective,
+    NgIcon,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmButton,
+    DatePipe,
+    ListSkeletonComponent,
+  ],
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -47,6 +57,7 @@ import { SuggestionReviewMessageDialogService } from '../suggestion-review-messa
     NotificationPresentationService,
     provideIcons({
       lucideFlag,
+      lucideInfo,
       lucideListChecks,
       lucideMail,
       lucideMegaphone,

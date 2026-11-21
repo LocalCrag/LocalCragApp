@@ -1,0 +1,30 @@
+<ng-container *transloco="let t">
+  @if (closureBannerService.reasons$ | async; as reasons) {
+    @for (alert of reasons; track $index) {
+      <div
+        class="closure-banner"
+        [class.closure-banner--expanded]="isExpanded($index)"
+      >
+        <ng-icon name="lucideBan" />
+        <div class="closure-banner__body">
+          <span class="closure-banner__message" #bannerMessage>{{
+            alertMessage(alert)
+          }}</span>
+          @if (isOverflowing($index) || isExpanded($index)) {
+            <button
+              type="button"
+              class="closure-banner__toggle"
+              (click)="toggle($index)"
+            >
+              {{
+                isExpanded($index)
+                  ? t("closureBanner.showLess")
+                  : t("closureBanner.showMore")
+              }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+</ng-container>

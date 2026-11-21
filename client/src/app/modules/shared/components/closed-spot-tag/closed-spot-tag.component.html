@@ -1,19 +1,25 @@
 <ng-container *transloco="let t; read: 'closedSpotTag'">
-  <hlm-popover (stateChanged)="onPopoverState($event)">
+  <hlm-popover align="end" (stateChanged)="onPopoverState($event)">
     <button
       type="button"
       hlmPopoverTrigger
       class="closed-spot-tag-trigger"
       [attr.aria-label]="t('showReasons')"
+      [hlmTooltip]="t(isPermanentClosure ? 'closed' : 'temporarilyClosed')"
+      [tooltipDisabled]="disableTooltip()"
       (click)="onTagClick($event)"
     >
       <span hlmBadge variant="destructive" class="closed-spot-tag h-auto">
         <span class="closed-spot-tag-inner">
           <ng-icon name="lucideBan" aria-hidden="true" />
-          <span>{{
+          <span class="spot-status-tag__label">{{
             t(isPermanentClosure ? "closed" : "temporarilyClosed")
           }}</span>
-          <ng-icon name="lucideCircleHelp" aria-hidden="true" />
+          <ng-icon
+            class="closed-spot-tag__help"
+            name="lucideCircleHelp"
+            aria-hidden="true"
+          />
         </span>
       </span>
     </button>
@@ -30,6 +36,7 @@
           <span class="closed-spot-tag-error">{{ t("loadError") }}</span>
         } @else if (displayReasons !== null) {
           <lc-closed-spot-alert
+            class="closed-spot-alert--embedded"
             [reasons]="displayReasons"
           ></lc-closed-spot-alert>
         }

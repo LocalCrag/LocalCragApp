@@ -7,9 +7,9 @@
       <div hlmSeparator class="flex-1"></div>
     </div>
 
-    <div class="flex justify-center gap-2 mb-2">
+    <div class="flex min-w-0 flex-wrap justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
-        <div class="flex flex-col gap-2 grow" lcControlGroup>
+        <div class="flex min-w-0 flex-col gap-2 grow" lcControlGroup>
           <hlm-month-year-picker
             [autoCloseOnSelect]="true"
             formControlName="year"
@@ -28,7 +28,7 @@
         </div>
       }
       @if (!ascentForm.get("yearOnly").value) {
-        <div class="flex flex-col gap-2 grow" lcControlGroup>
+        <div class="flex min-w-0 flex-col gap-2 grow" lcControlGroup>
           <hlm-date-picker
             [autoCloseOnSelect]="true"
             formControlName="date"
@@ -57,7 +57,7 @@
       </button>
     </div>
 
-    <div class="flex justify-center gap-2">
+    <div class="flex flex-wrap justify-center gap-2">
       <button
         hlmBtn
         type="button"
@@ -94,7 +94,9 @@
     </div>
 
     <div class="flex flex-col gap-2 items-center" lcControlGroup>
-      <div class="flex flex-row gap-2 justify-center items-center">
+      <div
+        class="flex min-w-0 flex-row flex-wrap gap-2 justify-center items-center"
+      >
         <button
           hlmToggle
           type="button"
@@ -297,7 +299,10 @@
       <div hlmSeparator class="flex-1"></div>
     </div>
 
-    <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
+    <div
+      class="ascent-flag-row flex min-w-0 flex-row flex-wrap gap-2 items-center justify-center"
+      lcControlGroup
+    >
       <button
         hlmToggle
         type="button"

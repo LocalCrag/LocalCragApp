@@ -1,9 +1,17 @@
-:host {
-  display: inline-flex;
+@use '../spot-status-tag' as tag;
+
+@include tag.spot-status-tag-sizes(true);
+
+hlm-popover {
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .closed-spot-tag-trigger {
   display: inline-flex;
+  align-items: center;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -13,14 +21,15 @@
   gap: 0.35rem;
 }
 
-.closed-spot-tag-popover-content {
-  min-width: 14rem;
-  max-width: 24rem;
+.closed-spot-tag-popover {
+  width: min(22rem, calc(100vw - 1.5rem));
+  max-width: calc(100vw - 1.5rem);
 }
 
-:host ::ng-deep .closed-spot-tag-popover-content lc-closed-spot-alert {
-  display: block;
-  margin-top: 0;
+.closed-spot-tag-popover-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 :host ::ng-deep .closed-spot-tag-spinner {

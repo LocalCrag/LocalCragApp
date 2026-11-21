@@ -37,14 +37,16 @@ lc-topo-image-list {
   // Keeps the topo image in view while scrolling a long line list. Only in the
   // xl side-by-side layout; below that the image stacks above the lines.
   // Tall images stay in the page flow instead of scrolling inside the column.
+  // The header slides away while scrolling, so the clearance shrinks with it.
   @media (min-width: 80rem) {
     .topo-image-column {
       --topo-image-sticky-top: calc(
         var(--lc-menu-height, 3.25rem) + var(--lc-top-alerts-height, 0px) +
-          1.5rem
+          var(--lc-layout-gap, 1.5rem)
       );
       position: sticky;
       top: var(--topo-image-sticky-top);
+      transition: top 0.2s ease;
     }
   }
 
@@ -62,6 +64,14 @@ lc-topo-image-list {
     canvas {
       filter: grayscale(60%);
     }
+  }
+}
+
+@media (min-width: 80rem) {
+  :root:has(.site-header--hidden) lc-topo-image-list .topo-image-column {
+    --topo-image-sticky-top: calc(
+      var(--lc-top-alerts-height, 0px) + var(--lc-layout-gap, 1.5rem)
+    );
   }
 }
 
@@ -212,6 +222,20 @@ lc-topo-image-list {
         &:hover:not(:disabled) {
           background-color: var(--accent);
         }
+
+        &.line-status-icon {
+          border-color: transparent;
+          background-color: var(--p-red-700);
+          color: var(--p-primary-contrast-color);
+
+          &:hover:not(:disabled) {
+            background-color: color-mix(
+              in oklch,
+              var(--p-red-700) 85%,
+              black
+            );
+          }
+        }
       }
 
       lc-tick-button {
@@ -259,7 +283,10 @@ lc-topo-image-list {
       }
 
       .line-table-info-actions {
-        grid-column: 3;
+        // Span the name and the grade. A column of their own would be as wide
+        // as the buttons, and the short grade would leave the name wrapping
+        // beside a blank gap.
+        grid-column: 2 / -1;
         grid-row: 3;
         justify-self: end;
       }

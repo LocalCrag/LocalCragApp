@@ -6,27 +6,31 @@
     </div>
   }
 
-  @if (!loading && rows.length === 0) {
+  @if (loading) {
+    <lc-list-skeleton></lc-list-skeleton>
+  } @else if (rows.length === 0) {
     <div hlmAlert>
       <ng-icon name="lucideInfo" />
       <p hlmAlertDescription>{{ t("rankingEmpty") }}</p>
     </div>
   }
 
-  <ol class="quality-ranking">
-    @for (row of rows; track row.user.id) {
-      <li>
-        <span class="quality-rank">{{ row.rank }}</span>
-        <lc-user-avatar [user]="row.user" size="large" />
-        <a class="quality-user" [routerLink]="row.user.routerLink">
-          {{ row.user.fullname }}
-        </a>
-        <span class="quality-score">{{ row.points }}</span>
-      </li>
-    }
-  </ol>
+  @if (!loading && rows.length > 0) {
+    <ol class="quality-ranking">
+      @for (row of rows; track row.user.id) {
+        <li>
+          <span class="quality-rank">{{ row.rank }}</span>
+          <lc-user-avatar [user]="row.user" size="large" />
+          <a class="quality-user" [routerLink]="row.user.routerLink">
+            {{ row.user.fullname }}
+          </a>
+          <span class="quality-score">{{ row.points }}</span>
+        </li>
+      }
+    </ol>
+  }
 
-  @if (canRestart && rows.length > 0) {
+  @if (canRestart && !loading && rows.length > 0) {
     <div hlmSeparator></div>
     <section class="quality-restart" data-cy="topo-quality-restart">
       <h3>{{ t("restartTitle") }}</h3>

@@ -22,6 +22,7 @@ import { CommentsComponent } from '../../comments/comments/comments.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { DatePipe } from '../../shared/pipes/date.pipe';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { PageTitleService } from '../../../services/core/page-title.service';
 
 /**
  * Single news post with discussion.
@@ -52,6 +53,7 @@ export class PostDetailComponent implements OnInit {
   private title = inject(Title);
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
+  private pageTitleService = inject(PageTitleService);
 
   ngOnInit(): void {
     this.route.paramMap
@@ -63,6 +65,7 @@ export class PostDetailComponent implements OnInit {
       )
       .subscribe((post) => {
         this.post = post;
+        this.pageTitleService.setTitle(post.title, { heroDefaultBg: true });
         this.store
           .pipe(select(selectInstanceName), take(1))
           .subscribe((instanceName) => {

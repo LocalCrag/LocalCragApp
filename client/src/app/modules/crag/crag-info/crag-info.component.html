@@ -1,11 +1,6 @@
 <ng-container *transloco="let t; read: 'crag.crag'">
   <div class="p-6">
     @if (crag) {
-      @if (crag.closedReasons?.length) {
-        <lc-closed-spot-alert
-          [reasons]="crag.closedReasons"
-        ></lc-closed-spot-alert>
-      }
       @if (crag.upcomingClosureWarnings?.length) {
         <lc-upcoming-closure-alert
           [warnings]="crag.upcomingClosureWarnings"
@@ -38,7 +33,10 @@
       <lc-map [target]="crag"></lc-map>
       <h4>{{ t("season") }}:</h4>
       @if (season) {
-        <lc-season-chart [season]="season"></lc-season-chart>
+        <lc-season-chart
+          [season]="season"
+          [ascentCount]="crag.ascentCount"
+        ></lc-season-chart>
       }
       @if (!crag && !season) {
         <div hlmSkeleton class="h-4 w-full mb-2"></div>

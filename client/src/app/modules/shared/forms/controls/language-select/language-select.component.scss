@@ -15,6 +15,27 @@ lc-language-select {
   z-index: 1200;
 }
 
+// Header select: the panel is portaled, so size it from the flag-only options.
+hlm-select-content:has([data-flags-only]) {
+  min-width: 0;
+  width: max-content;
+  padding: 0.25rem;
+
+  [data-slot="select-item"] {
+    justify-content: center;
+    padding: 0.25rem;
+    width: auto;
+
+    ng-icon {
+      display: none;
+    }
+  }
+
+  [aria-selected="true"] .flag {
+    box-shadow: 0 0 0 2px var(--p-primary-color);
+  }
+}
+
 .language-option {
   display: flex;
   align-items: center;

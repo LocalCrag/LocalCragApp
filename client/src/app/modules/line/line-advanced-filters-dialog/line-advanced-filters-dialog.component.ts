@@ -16,6 +16,7 @@ import { RatingRangeSliderComponent } from '../../shared/components/rating-range
 import {
   defaultLineListAdvancedFilters,
   defaultLineListScaleKey,
+  lineListSliderScale,
   LineListAdvancedFilters,
   LineListBoolKey,
   LineListFiltersDialogResult,
@@ -112,6 +113,11 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
   ];
 
   protected scalesService = inject(ScalesService);
+
+  /** Grade scale drawn on the slider, including while the line type is "ALL". */
+  get sliderScaleItem(): LineListScaleSelectItem | undefined {
+    return lineListSliderScale(this.availableScales, this.dialogScaleKey);
+  }
 
   private dialogContext =
     injectBrnDialogContext<LineAdvancedFiltersDialogData>();
@@ -223,6 +229,9 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
         value,
       })),
     ];
+    if (this.maxGrade == null && this.sliderScaleItem?.value) {
+      this.applyScaleKeyToGradeBounds(this.dialogScaleKey);
+    }
   }
 
   /** User picked a different scale in the dialog — reload slider bounds for that scale. */
@@ -303,31 +312,38 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
   }
 
   apply(): void {
-    // Only pass a grade range when a concrete scale is selected; "ALL" clears header filtering.
+    const narrowed =
+      this.maxGrade != null &&
+      (this.gradeRange[0] !== this.minGradeValue ||
+        this.gradeRange[1] !== this.maxGrade);
+    const scaleKey = this.dialogScaleKey?.value
+      ? this.dialogScaleKey
+      : narrowed
+        ? this.sliderScaleItem
+        : this.dialogScaleKey;
     const gradeFilterRange: (number | null)[] =
-      this.maxGrade != null && this.dialogScaleKey?.value
+      scaleKey?.value && this.maxGrade != null
         ? [this.gradeRange[0], this.gradeRange[1]]
         : [-2, null];
     const payload: LineListFiltersDialogResult = {
       advanced: sanitizeLineListAdvancedFilters(this.draft),
-      scaleKey: this.dialogScaleKey,
+      scaleKey,
       gradeFilterRange,
-      maxGradeValue: this.maxGrade,
+      maxGradeValue: scaleKey?.value ? this.maxGrade : null,
     };
     this.ref.close(payload);
   }
 
   private applyScaleKeyToGradeBounds(scaleKey: LineListScaleSelectItem): void {
-    if (scaleKey?.value) {
+    const sliderScale = lineListSliderScale(this.availableScales, scaleKey);
+    if (sliderScale?.value) {
       this.scalesService
-        .getScale(scaleKey.value.lineType, scaleKey.value.gradeScale)
+        .getScale(sliderScale.value.lineType, sliderScale.value.gradeScale)
         .subscribe((scale) => {
           this.maxGrade = Math.max(...scale.grades.map((g) => g.value));
-          // Full range until the user narrows it on the slider.
           this.gradeRange = [-2, this.maxGrade];
         });
     } else {
-      // "ALL" — hide slider and do not filter by grade in the list query.
       this.maxGrade = null;
       this.gradeRange = [-2, -2];
     }

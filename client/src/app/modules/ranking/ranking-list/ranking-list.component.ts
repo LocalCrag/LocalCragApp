@@ -78,7 +78,7 @@ export class RankingListComponent implements OnInit {
 
   public loadingStates = LoadingState;
   public rankings: Ranking[];
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.LOADING;
   public sortField: string;
   public rankField: 'rankTop10' | 'rankTop50' | 'rankTotalCount' = 'rankTop10';
   public sortOrder = -1;

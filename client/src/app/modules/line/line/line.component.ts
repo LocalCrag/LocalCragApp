@@ -3,6 +3,8 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  TemplateRef,
+  ViewChild,
   ViewEncapsulation,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -38,6 +40,7 @@ import {
   resolveTopoPageTitleImage,
 } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
@@ -68,6 +71,9 @@ interface PageMenuItem {
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public sector: Sector;
   public area: Area;
@@ -92,6 +98,7 @@ export class LineComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private canEditLine = false;
   private currentUserId: string | null = null;
   private regionService = inject(RegionService);
@@ -103,6 +110,7 @@ export class LineComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.closureBannerService.setReasons([]);
         const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         const areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -161,6 +169,7 @@ export class LineComponent implements OnInit {
               (line.publicationStatus === 'draft' &&
                 line.createdById === currentUser?.id);
             this.rulesAlertService.setContext({ sector, crag, region });
+            this.closureBannerService.setReasons(line.closedReasons);
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
               instanceSettings.bgImage,
@@ -184,6 +193,8 @@ export class LineComponent implements OnInit {
                 this.pageTitleService.setPortraitTitle(
                   `${line.name} ${displayGrade}`,
                   image,
+                  null,
+                  { titleAddon: this.statusTagsTemplate },
                 );
                 const breadcrumbs = [
                   {

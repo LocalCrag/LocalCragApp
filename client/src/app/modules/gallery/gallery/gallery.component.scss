@@ -1,5 +1,4 @@
 :host {
-  margin-top: 1rem;
   display: block;
 }
 
@@ -22,24 +21,38 @@
 }
 
 .gallery-preview {
-  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   max-width: 100%;
   touch-action: pan-y;
 }
 
+.gallery-preview__stage {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.gallery-preview__frame {
+  position: relative;
+  min-width: 0;
+}
+
 .gallery-preview__img {
   display: block;
+  min-width: 0;
   max-width: 100%;
   max-height: 80vh;
-  margin: 0 auto;
   object-fit: contain;
 }
 
 .gallery-preview__nav {
-  z-index: 1;
+  display: flex;
+  flex: 0 0 2.25rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-preview__caption {

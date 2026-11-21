@@ -92,9 +92,7 @@
   </div>
   @if (!dataViewRows?.length) {
     @if (
-      !(loading === loadingStates.LOADING && currentPage === 1) &&
-      tasks.length === 0 &&
-      !filtersActive
+      loading === loadingStates.DEFAULT && tasks.length === 0 && !filtersActive
     ) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
@@ -102,9 +100,7 @@
       </div>
     }
     @if (
-      !(loading === loadingStates.LOADING && currentPage === 1) &&
-      tasks.length === 0 &&
-      filtersActive
+      loading === loadingStates.DEFAULT && tasks.length === 0 && filtersActive
     ) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
@@ -112,10 +108,16 @@
       </div>
     }
   }
-  @if (loading === loadingStates.LOADING && currentPage === 1) {
+  @if (
+    loading === loadingStates.INITIAL_LOADING ||
+    (loading === loadingStates.LOADING && currentPage === 1)
+  ) {
     <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
   }
-  @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+  @if (
+    loading === loadingStates.DEFAULT ||
+    (loading === loadingStates.LOADING && currentPage > 1)
+  ) {
     @if (dataViewRows.length > 0) {}
 
     <div class="task-list-section flex flex-col gap-6">

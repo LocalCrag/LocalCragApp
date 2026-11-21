@@ -1,17 +1,18 @@
-<div class="content">
-  <div class="flex gap-1">
-    @if (area?.closed) {
-      <lc-closed-spot-tag
-        spotType="area"
-        [slug]="area.slug"
-        [reasons]="area.closedReasons"
-        [closureIsPermanent]="area.closureIsPermanent"
-      ></lc-closed-spot-tag>
-    }
-    @if (area?.secret) {
-      <lc-secret-spot-tag></lc-secret-spot-tag>
-    }
-  </div>
+<ng-template #statusTags>
+  @if (area?.closed) {
+    <lc-closed-spot-tag
+      class="spot-status-tag--corner"
+      spotType="area"
+      [slug]="area.slug"
+      [reasons]="area.closedReasons"
+      [closureIsPermanent]="area.closureIsPermanent"
+    ></lc-closed-spot-tag>
+  }
+  @if (area?.secret) {
+    <lc-secret-spot-tag class="spot-status-tag--corner"></lc-secret-spot-tag>
+  }
+</ng-template>
 
+<div class="content">
   <router-outlet name="areaContent"></router-outlet>
 </div>

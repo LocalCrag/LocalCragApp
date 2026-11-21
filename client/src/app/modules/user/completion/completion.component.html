@@ -50,7 +50,16 @@
     </div>
   }
 
-  @if (completion && Object.keys(completion.crags).length > 0) {
+  @if (loading) {
+    <lc-list-skeleton></lc-list-skeleton>
+  } @else if (!completion || Object.keys(completion.crags).length === 0) {
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noLinesInThisGradeRange") }}</p>
+    </div>
+  }
+
+  @if (!loading && completion && Object.keys(completion.crags).length > 0) {
     <div>
       <div class="progress-bar-wrapper">
         <lc-completion-progress-bar
@@ -132,13 +141,6 @@
           </div>
         }
       }
-    </div>
-  }
-
-  @if (completion && Object.keys(completion.crags).length === 0) {
-    <div hlmAlert>
-      <ng-icon name="lucideInfo" />
-      <p hlmAlertDescription>{{ t("noLinesInThisGradeRange") }}</p>
     </div>
   }
 </ng-container>

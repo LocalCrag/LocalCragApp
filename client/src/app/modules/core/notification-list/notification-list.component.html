@@ -13,8 +13,13 @@
         </button>
       </div>
 
-      @if (notifications.length === 0) {
-        <div hlmAlert class="w-full">{{ t("notificationsEmpty") }}</div>
+      @if (loading && notifications.length === 0) {
+        <lc-list-skeleton></lc-list-skeleton>
+      } @else if (!loading && notifications.length === 0) {
+        <div hlmAlert class="w-full">
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("notificationsEmpty") }}</p>
+        </div>
       } @else {
         <div class="notifications-page-list">
           @for (notification of notifications; track notification.id) {

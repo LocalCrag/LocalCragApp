@@ -35,7 +35,7 @@
         }
       </div>
     </div>
-    @if (!menuItemsTop?.length && loading !== loadingStates.LOADING) {
+    @if (!menuItemsTop?.length && loading === loadingStates.DEFAULT) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("noMenuItemsFoundEmptyMessage") }}</p>
@@ -156,7 +156,7 @@
         }
       </div>
     </div>
-    @if (!menuItemsBottom?.length && loading !== loadingStates.LOADING) {
+    @if (!menuItemsBottom?.length && loading === loadingStates.DEFAULT) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("noMenuItemsFoundEmptyMessage") }}</p>

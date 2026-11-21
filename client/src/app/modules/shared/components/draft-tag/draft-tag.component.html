@@ -3,8 +3,10 @@
     hlmBadge
     variant="outline"
     class="border-transparent bg-amber-500 text-white"
+    [hlmTooltip]="t('label')"
+    [attr.aria-label]="t('label')"
   >
     <ng-icon name="lucidePencil" />
-    {{ t("label") }}
+    <span class="spot-status-tag__label">{{ t("label") }}</span>
   </span>
 </ng-container>

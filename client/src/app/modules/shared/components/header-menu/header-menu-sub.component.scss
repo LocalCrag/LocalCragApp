@@ -92,7 +92,7 @@ lc-header-menu-sub {
   overflow: visible;
   position: relative;
   user-select: none;
-  color: var(--p-text-muted-color);
+  color: var(--p-text-color);
   transition: box-shadow 0.2s;
   border-radius: var(--p-border-radius-md);
   flex-direction: column;
@@ -185,7 +185,7 @@ lc-header-menu-sub:not(.is-mobile) .root-child > .item-wrapper > .item-angle {
 }
 
 .menu-icon {
-  color: var(--p-text-muted-color);
+  color: var(--p-text-color);
   margin-right: 0.5rem;
 }
 

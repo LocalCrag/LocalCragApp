@@ -26,6 +26,7 @@ import { RegionService } from '../../../services/crud/region.service';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { NgIcon } from '@ng-icons/core';
@@ -49,6 +50,7 @@ interface SelectItem<T = any> {
     TranslocoDirective,
     HlmAlert,
     HlmAlertDescription,
+    ListSkeletonComponent,
     ...HlmSelectImports,
     HlmCheckbox,
     NgIcon,
@@ -63,6 +65,7 @@ export class CompletionComponent implements OnInit {
 
   public crags: Crag[];
   public completion: Completion;
+  public loading = true;
   public cragMap: Map<string, Crag> = new Map<string, Crag>();
   public sectorMap: Map<string, Sector> = new Map<string, Sector>();
   public areaMap: Map<string, Area> = new Map<string, Area>();
@@ -121,6 +124,7 @@ export class CompletionComponent implements OnInit {
   }
 
   public loadCompletion() {
+    this.loading = true;
     this.loadedGradeFilterRange = [...this.gradeFilterRange];
     const params: ApiQueryParams = {
       user_id: this.user.id,
@@ -136,11 +140,15 @@ export class CompletionComponent implements OnInit {
     if (this.includeClosed) {
       params.include_closed = '1';
     }
-    return this.statisticsService
-      .getCompletion(params)
-      .subscribe((completion) => {
+    return this.statisticsService.getCompletion(params).subscribe({
+      next: (completion) => {
         this.completion = completion;
-      });
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   public onIncludeClosedChange() {

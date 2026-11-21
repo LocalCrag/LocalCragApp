@@ -40,7 +40,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
-import { lucideInfo } from '@ng-icons/lucide';
+import { lucideInfo, lucideMessageSquare } from '@ng-icons/lucide';
 import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
@@ -60,7 +60,10 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [CommentsContextService, provideIcons({ lucideInfo })],
+  providers: [
+    CommentsContextService,
+    provideIcons({ lucideInfo, lucideMessageSquare }),
+  ],
 })
 export class CommentsComponent implements OnChanges, PaginatedListView {
   /** Target entity to list/create comments for. */
@@ -73,7 +76,7 @@ export class CommentsComponent implements OnChanges, PaginatedListView {
   public hasNextPage = true;
   public currentPage = 0;
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public commentsContextService = inject(CommentsContextService);
   public loggedIn = false;
   public softGating = false;

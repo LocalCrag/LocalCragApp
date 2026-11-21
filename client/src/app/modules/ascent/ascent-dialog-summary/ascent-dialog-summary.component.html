@@ -29,6 +29,7 @@
         @for (star of [1, 2, 3, 4, 5]; track star) {
           <ng-icon
             name="lucideStar"
+            class="[&_svg]:fill-current"
             [class.opacity-30]="(ascent.rating ?? 0) < star"
           />
         }

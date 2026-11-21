@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  @if (!crags?.length && loading !== loadingStates.LOADING) {
+  @if (!crags?.length && loading === loadingStates.DEFAULT) {
     <div hlmAlert class="m-4">
       <ng-icon name="lucideInfo" />
       <p hlmAlertDescription>{{ t("noCragsFoundEmptyMessage") }}</p>
@@ -92,15 +92,33 @@
               <div
                 class="flex flex-col items-center sm:items-start gap-4 w-full"
               >
-                <div class="flex justify-between w-full">
-                  <span class="text-2xl font-bold black-font">
+                <div class="flex w-full items-center justify-between gap-3">
+                  <span class="min-w-0 flex-1 text-2xl font-bold black-font">
                     {{ crag.name }}
                   </span>
-                  <lc-archive-button
-                    *isModerator="true"
-                    [showLabel]="true"
-                    [crag]="crag"
-                  />
+                  <div class="flex shrink-0 items-center">
+                    <div class="flex items-center gap-2">
+                      @if (crag?.closed) {
+                        <lc-closed-spot-tag
+                          class="spot-status-tag--beside"
+                          spotType="crag"
+                          [slug]="crag.slug"
+                          [closureIsPermanent]="crag.closureIsPermanent"
+                        ></lc-closed-spot-tag>
+                      }
+                      @if (crag?.secret) {
+                        <lc-secret-spot-tag
+                          class="spot-status-tag--beside"
+                        ></lc-secret-spot-tag>
+                      }
+                    </div>
+                    <lc-archive-button
+                      *isModerator="true"
+                      class="[&:has(button)]:ml-2"
+                      [showLabel]="true"
+                      [crag]="crag"
+                    />
+                  </div>
                 </div>
                 @if (crag.shortDescription) {
                   <div
@@ -115,18 +133,6 @@
                 <lc-ascent-count
                   [ascentCount]="crag.ascentCount"
                 ></lc-ascent-count>
-                <div class="flex gap-1">
-                  @if (crag?.closed) {
-                    <lc-closed-spot-tag
-                      spotType="crag"
-                      [slug]="crag.slug"
-                      [closureIsPermanent]="crag.closureIsPermanent"
-                    ></lc-closed-spot-tag>
-                  }
-                  @if (crag?.secret) {
-                    <lc-secret-spot-tag></lc-secret-spot-tag>
-                  }
-                </div>
               </div>
             </div>
           </div>

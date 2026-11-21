@@ -28,7 +28,7 @@
         >
       </div>
     </div>
-    @if (!posts?.length && loading !== loadingStates.LOADING) {
+    @if (!posts?.length && loading === loadingStates.DEFAULT) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("noPostsFoundEmptyMessage") }}</p>

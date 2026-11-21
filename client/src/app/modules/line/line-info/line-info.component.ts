@@ -20,7 +20,6 @@ import { IsTodoService } from '../../../services/crud/is-todo.service';
 import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { todoAdded } from '../../../ngrx/actions/todo.actions';
-import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { TopoImageDetailsComponent } from '../../topo-images/topo-image-details/topo-image-details.component';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
@@ -65,7 +64,6 @@ import { BrnDialogRef } from '@spartan-ng/brain/dialog';
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    ClosedSpotAlertComponent,
     UpcomingClosureAlertComponent,
     TranslocoDirective,
     TopoImageDetailsComponent,

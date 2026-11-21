@@ -24,6 +24,7 @@ import { filter, take } from 'rxjs/operators';
 import { NavigationService } from '../../services/core/navigation.service';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { RulesAlertComponent } from '../shared/components/rules-alert/rules-alert.component';
+import { ClosureBannerComponent } from '../shared/components/closure-banner/closure-banner.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppLevelAlertsComponent } from './app-level-alerts/app-level-alerts.component';
 import { TopAlertsComponent } from './top-alerts/top-alerts.component';
@@ -55,6 +56,7 @@ import { ThemeService } from '../../services/core/theme.service';
   imports: [
     PageTitleComponent,
     RulesAlertComponent,
+    ClosureBannerComponent,
     SidebarComponent,
     AppLevelAlertsComponent,
     TopAlertsComponent,

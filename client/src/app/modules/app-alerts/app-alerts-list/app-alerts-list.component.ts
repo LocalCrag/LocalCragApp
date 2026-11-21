@@ -31,6 +31,7 @@ import { HlmBadge } from '@spartan-ng/helm/badge';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideFilePen, lucideInfo, lucidePlus } from '@ng-icons/lucide';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 
 interface SelectItem<T = any> {
   label?: string;
@@ -52,6 +53,7 @@ interface SelectItem<T = any> {
     HlmAlertDescription,
     ...HlmSelectImports,
     HlmBadge,
+    ListSkeletonComponent,
     NgIcon,
   ],
   templateUrl: './app-alerts-list.component.html',

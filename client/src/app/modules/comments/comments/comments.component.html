@@ -1,31 +1,39 @@
 <ng-container *transloco="let t; read: 'comments'">
   <div [class.p-6]="!compact">
     @if (commentsContextService.object) {
-      <div class="mt-2 block" [class]="compact ? 'mb-6' : 'mb-12'">
+      <div class="block mb-4">
         @if (loggedIn) {
           <lc-comment-editor
             (created)="onCommentCreated($event)"
           ></lc-comment-editor>
         } @else if (softGating) {
           <button hlmBtn type="button" (click)="promptForAccount()">
+            <ng-icon name="lucideMessageSquare" />
             {{ t("editor.postComment") }}
           </button>
         }
       </div>
     }
 
-    <div class="flex gap-6 flex-col mt-2">
+    <div class="flex gap-6 flex-col">
       @for (comment of comments; track comment.id) {
         <lc-comment [comment]="comment"></lc-comment>
       }
     </div>
-    @if (loading === loadingStates.LOADING && currentPage === 1) {
+    @if (
+      loading === loadingStates.INITIAL_LOADING ||
+      (loading === loadingStates.LOADING && currentPage === 1)
+    ) {
       <lc-comments-skeleton></lc-comments-skeleton>
     }
     @if (loading === loadingStates.LOADING && currentPage > 1) {
       <lc-comments-skeleton></lc-comments-skeleton>
     }
-    @if (hasNextPage) {
+    @if (
+      hasNextPage &&
+      (loading === loadingStates.DEFAULT ||
+        (loading === loadingStates.LOADING && currentPage > 1))
+    ) {
       <div
         class="flex justify-center"
         [class.mt-20]="!compact"
@@ -46,7 +54,7 @@
         </button>
       </div>
     }
-    @if (!(loading === loadingStates.LOADING) && comments.length === 0) {
+    @if (loading === loadingStates.DEFAULT && comments.length === 0) {
       <div hlmAlert>
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("thisCommentFeedIsEmpty") }}</p>

@@ -10,11 +10,11 @@
     &:hover {
       text-decoration: underline;
     }
-
-    :where(html.lc-dark) & {
-      color: var(--p-text-color);
-    }
   }
+}
+
+:host-context(html.lc-dark) .ascent-dialog-summary a {
+  color: var(--p-text-color);
 }
 
 .ascent-dialog-summary-header {

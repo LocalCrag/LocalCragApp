@@ -95,7 +95,7 @@ export class TodoListComponent implements OnInit, PaginatedListView {
 
   public loadingStates = LoadingState;
   public listPrivate = false;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public todos: Todo[];
   public ref: BrnDialogRef | undefined;
   public hasNextPage = true;

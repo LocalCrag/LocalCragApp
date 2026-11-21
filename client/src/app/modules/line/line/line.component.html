@@ -1,20 +1,21 @@
-<div class="content">
-  <div class="flex gap-1">
-    @if (line?.publicationStatus === "draft") {
-      <lc-draft-tag></lc-draft-tag>
-    }
-    @if (line?.closed) {
-      <lc-closed-spot-tag
-        spotType="line"
-        [slug]="line.slug"
-        [reasons]="line.closedReasons"
-        [closureIsPermanent]="line.closureIsPermanent"
-      ></lc-closed-spot-tag>
-    }
-    @if (line?.secret) {
-      <lc-secret-spot-tag></lc-secret-spot-tag>
-    }
-  </div>
+<ng-template #statusTags>
+  @if (line?.publicationStatus === "draft") {
+    <lc-draft-tag class="spot-status-tag--corner"></lc-draft-tag>
+  }
+  @if (line?.closed) {
+    <lc-closed-spot-tag
+      class="spot-status-tag--corner"
+      spotType="line"
+      [slug]="line.slug"
+      [reasons]="line.closedReasons"
+      [closureIsPermanent]="line.closureIsPermanent"
+    ></lc-closed-spot-tag>
+  }
+  @if (line?.secret) {
+    <lc-secret-spot-tag class="spot-status-tag--corner"></lc-secret-spot-tag>
+  }
+</ng-template>
 
+<div class="content">
   <router-outlet name="lineContent"></router-outlet>
 </div>

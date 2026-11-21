@@ -192,7 +192,12 @@
             @if (!viewRows.length) {
               <tr>
                 <td colspan="5" class="rock-explorer-list__empty">
-                  {{ t("rockExplorer.listEmpty") }}
+                  <div hlmAlert>
+                    <ng-icon name="lucideInfo" />
+                    <p hlmAlertDescription>
+                      {{ t("rockExplorer.listEmpty") }}
+                    </p>
+                  </div>
                 </td>
               </tr>
             }

@@ -117,24 +117,24 @@
       />
     }
   </div>
-  @if (!ascents?.length) {
-    @if (
-      ascents?.length === 0 &&
-      !(loading === loadingStates.LOADING && currentPage === 1)
-    ) {
-      <div hlmAlert class="m-4">
-        <ng-icon name="lucideInfo" />
-        <p hlmAlertDescription>{{ t("noAscentsFoundMessage") }}</p>
-      </div>
-    }
+  @if (loading === loadingStates.DEFAULT && ascents?.length === 0) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noAscentsFoundMessage") }}</p>
+    </div>
   }
   @if (
+    loading === loadingStates.INITIAL_LOADING ||
     (loading === loadingStates.LOADING && currentPage === 1) ||
     ascents === undefined
   ) {
     <lc-ascent-list-skeleton></lc-ascent-list-skeleton>
   }
-  @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+  @if (
+    ascents !== undefined &&
+    (loading === loadingStates.DEFAULT ||
+      (loading === loadingStates.LOADING && currentPage > 1))
+  ) {
     <div class="grid grid-cols-12">
       @for (ascent of ascents; track ascent; let first = $first) {
         <div class="col-span-12" data-cy="ascent-list-item">
@@ -212,13 +212,16 @@
                 <div class="ascent-table-grade">
                   <div class="grade">
                     @if (ascent | upgrade) {
-                      <ng-icon name="lucideChevronsUp" />
+                      <ng-icon name="lucideChevronsUp" class="grade-shift-up" />
                     }
                     @if (ascent | consensusGrade) {
                       <ng-icon name="lucideCheck" />
                     }
                     @if (ascent | downgrade) {
-                      <ng-icon name="lucideChevronsDown" />
+                      <ng-icon
+                        name="lucideChevronsDown"
+                        class="grade-shift-down"
+                      />
                     }
                     <div class="ml-1 grade-name">
                       {{
@@ -343,13 +346,16 @@
                 <div class="ascent-table-grade">
                   <div class="grade">
                     @if (ascent | upgrade) {
-                      <ng-icon name="lucideChevronsUp" />
+                      <ng-icon name="lucideChevronsUp" class="grade-shift-up" />
                     }
                     @if (ascent | consensusGrade) {
                       <ng-icon name="lucideCheck" />
                     }
                     @if (ascent | downgrade) {
-                      <ng-icon name="lucideChevronsDown" />
+                      <ng-icon
+                        name="lucideChevronsDown"
+                        class="grade-shift-down"
+                      />
                     }
                     <div class="ml-1 grade-name">
                       {{
@@ -488,13 +494,19 @@
                   <div class="ascent-table-properties">
                     <div class="grade">
                       @if (ascent | upgrade) {
-                        <ng-icon name="lucideChevronsUp" />
+                        <ng-icon
+                          name="lucideChevronsUp"
+                          class="grade-shift-up"
+                        />
                       }
                       @if (ascent | consensusGrade) {
                         <ng-icon name="lucideCheck" />
                       }
                       @if (ascent | downgrade) {
-                        <ng-icon name="lucideChevronsDown" />
+                        <ng-icon
+                          name="lucideChevronsDown"
+                          class="grade-shift-down"
+                        />
                       }
                       <div class="ml-1 grade-name">
                         {{

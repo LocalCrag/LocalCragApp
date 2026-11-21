@@ -117,7 +117,7 @@ export class ModeratorTaskListComponent implements OnInit, PaginatedListView {
   readonly menuIcon = lucideNameFromPrimeIcon;
 
   public tasks: ModeratorTask[] = [];
-  public loading = LoadingState.DEFAULT;
+  public loading = LoadingState.INITIAL_LOADING;
   public loadingStates = LoadingState;
   public hasNextPage = true;
   public currentPage = 0;

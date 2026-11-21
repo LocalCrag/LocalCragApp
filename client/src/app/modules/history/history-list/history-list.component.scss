@@ -1,6 +1,22 @@
-@use "../../../styles/media-queries" as m;
+@use '../../../styles/media-queries' as m;
 
 lc-history-list {
+  .history-kind {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.4rem;
+    border-radius: 9999px;
+    color: white;
+    vertical-align: -0.2rem;
+
+    ng-icon {
+      font-size: 0.75rem;
+    }
+  }
+
   .updated {
     background-color: var(--p-yellow-400);
   }
@@ -9,33 +25,59 @@ lc-history-list {
     background-color: var(--p-green-600);
   }
 
-  .card-button {
-    margin-left: -1.25rem;
-    margin-right: -1.25rem;
+  .grade-shift-up,
+  .grade-shift-down {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+
+    ng-icon {
+      font-size: 1em;
+    }
+
+    svg path {
+      stroke: currentColor;
+    }
   }
 
-  .mobile {
-    .p-timeline-event-opposite {
-      display: none;
+  .grade-shift-up {
+    color: var(--p-green-600);
+  }
+
+  .grade-shift-down {
+    color: var(--p-red-600);
+  }
+
+  :where(html.lc-dark) & {
+    .grade-shift-up {
+      color: var(--p-green-400);
     }
-    .p-card-content {
-      padding: 0;
+
+    .grade-shift-down {
+      color: var(--p-red-400);
     }
-    .p-card-body {
-      padding-top: 0;
-    }
-    .p-card-title {
-      font-size: 1.25rem;
-      padding-bottom: 0.5rem;
-    }
+  }
+
+  .history-cell-wrap {
+    white-space: normal;
   }
 
   .username {
     color: var(--p-text-color);
   }
 
+  .history-object {
+    color: var(--p-text-color);
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .history-line-location {
-    margin-top: 0.25rem;
     font-weight: 400;
 
     lc-topo-hierarchy-breadcrumbs {
@@ -43,15 +85,93 @@ lc-history-list {
     }
   }
 
-  // In dark mode the inner timeline cards share the outer card's background,
-  // so the drop shadow is invisible. Lift them onto a slightly elevated
-  // surface (and add a subtle border) so they read as distinct cards.
-  :where(html.lc-dark) & .p-timeline-event-content .p-card {
-    background: color-mix(
-      in srgb,
-      var(--p-text-color) 6%,
-      var(--p-content-background)
-    );
-    border: 1px solid var(--p-content-border-color);
+  @include m.on-mobile {
+    .content {
+      padding: 0.25rem 1rem 1.5rem;
+    }
+
+    [data-slot='table-container'] {
+      overflow: visible;
+    }
+
+    table,
+    tbody {
+      display: block;
+      width: 100%;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      column-gap: 0.75rem;
+      row-gap: 0.15rem;
+      width: 100%;
+      padding: 0.85rem 0;
+    }
+
+    td {
+      display: block;
+      width: auto;
+      min-width: 0;
+      height: auto;
+      padding: 0;
+      white-space: normal;
+    }
+
+    .history-col-change {
+      order: 1;
+      flex: 1 1 auto;
+    }
+
+    .history-col-grade {
+      order: 2;
+      flex: none;
+      white-space: nowrap;
+    }
+
+    .history-col-grade:empty {
+      display: none;
+    }
+
+    .history-col-object,
+    .history-col-location {
+      order: 3;
+      flex: 1 0 100%;
+    }
+
+    .history-col-location {
+      order: 4;
+    }
+
+    .history-col-location:not(:has(.history-line-location)) {
+      display: none;
+    }
+
+    .history-col-user,
+    .history-col-date {
+      order: 5;
+      font-size: 0.875rem;
+      color: var(--p-text-muted-color);
+    }
+
+    .history-col-user {
+      flex: 1 1 auto;
+
+      .username {
+        color: var(--p-text-muted-color);
+      }
+    }
+
+    .history-col-date {
+      order: 6;
+      flex: none;
+      margin-left: auto;
+      white-space: nowrap;
+    }
   }
 }

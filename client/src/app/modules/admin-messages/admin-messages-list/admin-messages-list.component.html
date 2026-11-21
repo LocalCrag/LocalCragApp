@@ -28,13 +28,16 @@
         >
       </div>
     </div>
-    @if (!messages?.length && loading !== loadingStates.LOADING) {
+    @if (!messages?.length && loading === loadingStates.DEFAULT) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("noAdminMessagesFoundEmptyMessage") }}</p>
       </div>
     }
-    @if (loading !== loadingStates.LOADING) {
+    @if (loading === loadingStates.LOADING) {
+      <lc-list-skeleton></lc-list-skeleton>
+    }
+    @if (loading === loadingStates.DEFAULT) {
       <div class="grid grid-cols-12">
         @for (
           message of sortClientList(messages);

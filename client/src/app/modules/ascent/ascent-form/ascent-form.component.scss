@@ -1,5 +1,19 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+// The dialog's default max width is a percentage of a pane that is already
+// inset from the viewport, so the card is narrower than the screen and the
+// form rows spill out of it.
+[data-slot='dialog-content']:has(> lc-ascent-form) {
+  width: min(36rem, calc(100vw - 2rem));
+  max-width: min(36rem, calc(100vw - 2rem));
+}
+
 .ascent-form-alert {
-  max-width: 25rem;
+  max-width: 100%;
 }
 
 .ascent-section {
@@ -15,6 +29,15 @@
 
 .ascent-grade-select {
   width: 6.5rem;
+  max-width: 100%;
+}
+
+.ascent-flag-row > button {
+  max-width: 100%;
+  height: auto;
+  min-height: 2.25rem;
+  white-space: normal;
+  text-align: center;
 }
 
 button.ascent-flag[data-state="on"] {

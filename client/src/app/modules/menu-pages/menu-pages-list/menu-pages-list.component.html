@@ -27,7 +27,7 @@
         >
       </div>
     </div>
-    @if (!menuPages?.length && loading !== loadingStates.LOADING) {
+    @if (!menuPages?.length && loading === loadingStates.DEFAULT) {
       <div hlmAlert class="m-4">
         <ng-icon name="lucideInfo" />
         <p hlmAlertDescription>{{ t("noMenuPagesFoundEmptyMessage") }}</p>

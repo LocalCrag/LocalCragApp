@@ -3,6 +3,8 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  TemplateRef,
+  ViewChild,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
@@ -30,6 +32,7 @@ import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
 
 interface PageMenuItem {
@@ -52,6 +55,9 @@ interface PageMenuItem {
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
 export class SectorComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public sector: Sector;
   public items: PageMenuItem[];
@@ -70,6 +76,7 @@ export class SectorComponent implements OnInit {
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
   private hasBlocweather = false;
 
@@ -77,6 +84,7 @@ export class SectorComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.closureBannerService.setReasons([]);
         const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         forkJoin([
@@ -122,8 +130,10 @@ export class SectorComponent implements OnInit {
               sector.name,
               sector.portraitImage,
               bgImage,
+              { titleAddon: this.statusTagsTemplate },
             );
             this.rulesAlertService.setContext({ sector, crag, region });
+            this.closureBannerService.setReasons(sector.closedReasons);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

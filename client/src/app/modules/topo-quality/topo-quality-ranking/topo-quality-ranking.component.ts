@@ -23,6 +23,7 @@ import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideCircleX, lucideInfo } from '@ng-icons/lucide';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
 
 @Component({
   providers: [provideIcons({ lucideCircleX, lucideInfo })],
@@ -37,6 +38,7 @@ import { lucideCircleX, lucideInfo } from '@ng-icons/lucide';
     HlmAlertDescription,
     HlmInput,
     HlmSeparator,
+    ListSkeletonComponent,
     NgIcon,
   ],
   templateUrl: './topo-quality-ranking.component.html',

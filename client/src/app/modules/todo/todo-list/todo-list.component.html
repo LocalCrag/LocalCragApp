@@ -180,21 +180,22 @@
           />
         }
       </div>
-      @if (!todos?.length) {
-        @if (
-          todos?.length === 0 &&
-          !(loading === loadingStates.LOADING && currentPage === 1)
-        ) {
-          <div hlmAlert class="m-4">
-            <ng-icon name="lucideInfo" />
-            <p hlmAlertDescription>{{ t("noTodosFoundMessage") }}</p>
-          </div>
-        }
+      @if (loading === loadingStates.DEFAULT && todos?.length === 0) {
+        <div hlmAlert class="m-4">
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("noTodosFoundMessage") }}</p>
+        </div>
       }
-      @if (loading === loadingStates.LOADING && currentPage === 1) {
+      @if (
+        loading === loadingStates.INITIAL_LOADING ||
+        (loading === loadingStates.LOADING && currentPage === 1)
+      ) {
         <lc-line-list-skeleton></lc-line-list-skeleton>
       }
-      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
+      @if (
+        loading === loadingStates.DEFAULT ||
+        (loading === loadingStates.LOADING && currentPage > 1)
+      ) {
         <div class="grid grid-cols-12">
           @for (todo of todos; track todo; let first = $first) {
             <div class="col-span-12" data-cy="todo-list-item">

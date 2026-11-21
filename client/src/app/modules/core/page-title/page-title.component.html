@@ -81,38 +81,46 @@
             ></div>
             <div class="page-chrome__hero-overlay">
               <div class="page-chrome__hero-top">
-                @if (hasBreadcrumbs(state)) {
-                  <div
-                    class="page-chrome__breadcrumb page-chrome__breadcrumb--on-image"
-                  >
-                    <ng-container
-                      *ngTemplateOutlet="
-                        crumbs;
-                        context: {
-                          items: state.breadcrumbs,
-                          home: state.breadcrumbHome,
-                        }
-                      "
-                    />
-                  </div>
-                }
-                @if (state.template) {
-                  <h1 class="page-chrome__heading" data-cy="page-title-heading">
-                    <ng-container *ngTemplateOutlet="state.template" />
-                  </h1>
-                } @else if (state.title) {
-                  <h1 class="page-chrome__heading" data-cy="page-title-heading">
-                    {{ state.title }}
-                    @if (state.info) {
-                      <ng-icon
-                        name="lucideCircleHelp"
-                        class="page-chrome__info"
-                        [hlmTooltip]="state.info"
-                        position="right"
+                <div class="page-chrome__titles">
+                  @if (hasBreadcrumbs(state)) {
+                    <div
+                      class="page-chrome__breadcrumb page-chrome__breadcrumb--on-image"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          crumbs;
+                          context: {
+                            items: state.breadcrumbs,
+                            home: state.breadcrumbHome,
+                          }
+                        "
                       />
-                    }
-                  </h1>
-                }
+                    </div>
+                  }
+                  @if (state.template) {
+                    <h1
+                      class="page-chrome__heading"
+                      data-cy="page-title-heading"
+                    >
+                      <ng-container *ngTemplateOutlet="state.template" />
+                    </h1>
+                  } @else if (state.title) {
+                    <h1
+                      class="page-chrome__heading"
+                      data-cy="page-title-heading"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          heading;
+                          context: { $implicit: state }
+                        "
+                      />
+                    </h1>
+                  }
+                </div>
+                <ng-container
+                  *ngTemplateOutlet="titleAddons; context: { $implicit: state }"
+                />
               </div>
 
               @if (state.tabs?.length) {
@@ -129,36 +137,35 @@
           </div>
         } @else {
           <div class="page-chrome__header">
-            @if (hasBreadcrumbs(state)) {
-              <div class="page-chrome__breadcrumb">
-                <ng-container
-                  *ngTemplateOutlet="
-                    crumbs;
-                    context: {
-                      items: state.breadcrumbs,
-                      home: state.breadcrumbHome,
-                    }
-                  "
-                />
-              </div>
-            }
-            @if (state.template) {
-              <h1 class="page-chrome__heading" data-cy="page-title-heading">
-                <ng-container *ngTemplateOutlet="state.template" />
-              </h1>
-            } @else if (state.title) {
-              <h1 class="page-chrome__heading" data-cy="page-title-heading">
-                {{ state.title }}
-                @if (state.info) {
-                  <ng-icon
-                    name="lucideCircleHelp"
-                    class="page-chrome__info"
-                    [hlmTooltip]="state.info"
-                    position="right"
+            <div class="page-chrome__titles">
+              @if (hasBreadcrumbs(state)) {
+                <div class="page-chrome__breadcrumb">
+                  <ng-container
+                    *ngTemplateOutlet="
+                      crumbs;
+                      context: {
+                        items: state.breadcrumbs,
+                        home: state.breadcrumbHome,
+                      }
+                    "
                   />
-                }
-              </h1>
-            }
+                </div>
+              }
+              @if (state.template) {
+                <h1 class="page-chrome__heading" data-cy="page-title-heading">
+                  <ng-container *ngTemplateOutlet="state.template" />
+                </h1>
+              } @else if (state.title) {
+                <h1 class="page-chrome__heading" data-cy="page-title-heading">
+                  <ng-container
+                    *ngTemplateOutlet="heading; context: { $implicit: state }"
+                  />
+                </h1>
+              }
+            </div>
+            <ng-container
+              *ngTemplateOutlet="titleAddons; context: { $implicit: state }"
+            />
           </div>
 
           @if (state.tabs?.length) {
@@ -174,6 +181,26 @@
     }
   }
 }
+
+<ng-template #heading let-state>
+  <span class="page-chrome__heading-text">{{ state.title }}</span>
+  @if (state.info) {
+    <ng-icon
+      name="lucideCircleHelp"
+      class="page-chrome__info"
+      [hlmTooltip]="state.info"
+      position="right"
+    />
+  }
+</ng-template>
+
+<ng-template #titleAddons let-state>
+  @if (state.titleAddon) {
+    <div class="page-chrome__title-addons">
+      <ng-container *ngTemplateOutlet="state.titleAddon" />
+    </div>
+  }
+</ng-template>
 
 <ng-template #chromeTabs let-onImage="onImage" let-tabs="tabs">
   <lc-chrome-tabs

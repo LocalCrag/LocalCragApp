@@ -22,6 +22,8 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
+import { provideIcons } from '@ng-icons/core';
+import { lucideMessageSquare } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
@@ -48,6 +50,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
   templateUrl: './comment-editor.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./comment-editor.component.scss'],
+  providers: [provideIcons({ lucideMessageSquare })],
 })
 export class CommentEditorComponent implements OnInit, AfterViewInit {
   @Input() parentId: string | null = null;

@@ -3,6 +3,8 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  TemplateRef,
+  ViewChild,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
@@ -28,6 +30,7 @@ import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
 
 interface PageMenuItem {
@@ -50,6 +53,9 @@ interface PageMenuItem {
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 export class CragComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public items: PageMenuItem[];
 
@@ -66,6 +72,7 @@ export class CragComponent implements OnInit {
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
   private hasBlocweather = false;
 
@@ -73,6 +80,7 @@ export class CragComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
+        this.closureBannerService.setReasons([]);
         this.crag = null;
         const cragSlug = params.get('crag-slug');
 
@@ -108,8 +116,10 @@ export class CragComponent implements OnInit {
               crag.name,
               crag.portraitImage,
               bgImage,
+              { titleAddon: this.statusTagsTemplate },
             );
             this.rulesAlertService.setContext({ crag, region });
+            this.closureBannerService.setReasons(crag.closedReasons);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

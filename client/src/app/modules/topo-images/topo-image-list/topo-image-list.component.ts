@@ -14,6 +14,7 @@ import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -54,7 +55,6 @@ import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { ArchiveService } from '../../../services/crud/archive.service';
-import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import {
   openTickDialog,
   TickButtonComponent,
@@ -86,6 +86,7 @@ import {
   LineContextMenuLabels,
 } from '../../../utility/topo/line-context-menu';
 import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
@@ -94,6 +95,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideArchive,
   lucideArrowUpDown,
+  lucideBan,
   lucideCheck,
   lucideChevronDown,
   lucideChevronRight,
@@ -149,6 +151,7 @@ interface TopoSortOption {
     provideIcons({
       lucideArchive,
       lucideArrowUpDown,
+      lucideBan,
       lucideCheck,
       lucideChevronDown,
       lucideChevronRight,
@@ -175,6 +178,7 @@ interface TopoSortOption {
   imports: [
     LoadingButtonComponent,
     TranslocoDirective,
+    TranslocoPipe,
     FormsModule,
     GymModeDirective,
     HasPermissionDirective,
@@ -183,7 +187,6 @@ interface TopoSortOption {
     NgClass,
     NgTemplateOutlet,
     TopoImageDetailsComponent,
-    ClosedSpotTagComponent,
     TickButtonComponent,
     LineBoolPropListComponent,
     LineGradePipe,
@@ -193,6 +196,7 @@ interface TopoSortOption {
     DraftTagComponent,
     InfiniteScrollDirective,
     HlmButton,
+    HlmTooltip,
     HlmAlert,
     HlmAlertDescription,
     ...HlmSelectImports,

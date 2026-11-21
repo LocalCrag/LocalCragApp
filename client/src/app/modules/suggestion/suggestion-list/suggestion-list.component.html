@@ -1,14 +1,16 @@
 <ng-container *transloco="let t; read: 'suggestions'">
   <div class="content">
     <div class="p-6 flex flex-col gap-8">
-      @if (lines.length === 0 && topoImages.length === 0) {
+      @if (loading !== loadingStates.DEFAULT) {
+        <lc-list-skeleton></lc-list-skeleton>
+      } @else if (lines.length === 0 && topoImages.length === 0) {
         <div hlmAlert>
           <ng-icon name="lucideInfo" />
           <p hlmAlertDescription>{{ t("empty") }}</p>
         </div>
       }
 
-      @if (lines.length > 0) {
+      @if (loading === loadingStates.DEFAULT && lines.length > 0) {
         <section class="flex flex-col gap-3">
           <h2 class="text-xl m-0">{{ t("lines") }}</h2>
           @for (line of lines; track line.id) {
@@ -105,7 +107,7 @@
         </section>
       }
 
-      @if (topoImages.length > 0) {
+      @if (loading === loadingStates.DEFAULT && topoImages.length > 0) {
         <section class="flex flex-col gap-3">
           <h2 class="text-xl m-0">{{ t("topoImages") }}</h2>
           @for (image of topoImages; track image.id) {

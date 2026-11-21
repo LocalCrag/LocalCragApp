@@ -82,10 +82,7 @@
     </div>
   </div>
 
-  @if (
-    !(loading === loadingStates.LOADING && currentPage <= 1) &&
-    !topoImages?.length
-  ) {
+  @if (loading === loadingStates.DEFAULT && !topoImages?.length) {
     <div hlmAlert class="m-4">
       <ng-icon name="lucideInfo" />
       <p hlmAlertDescription>{{ t("noTopoImagesFoundEmptyMessage") }}</p>
@@ -134,9 +131,7 @@
             </div>
             <div class="flex flex-col flex-1 gap-6 w-full">
               <div class="line-table">
-                <div
-                  class="flex table-header flex-col sm:flex-row gap-2 items-center"
-                >
+                <div class="flex table-header flex-row gap-2 items-center">
                   @if (topoImage.linePaths.length === 0) {
                     <div hlmAlert>
                       <ng-icon name="lucideInfo" />
@@ -152,7 +147,7 @@
                   }
                   @if (showTopoImageActions(topoImage)) {
                     <div
-                      class="lc-button-group justify-end grow items-center self-end sm:self-center"
+                      class="lc-button-group justify-end grow items-center self-center"
                     >
                       <button
                         lcLoadingButton
@@ -197,8 +192,15 @@
                           [color]="linePath.line | topoLineColor"
                         ></lc-line-number-badge>
                       </div>
-                      <div class="line-table-info-name">
-                        {{ linePath.line.name }}
+                      <div
+                        class="line-table-info-name inline-flex flex-wrap items-center gap-1.5"
+                      >
+                        <span>{{ linePath.line.name }}</span>
+                        @if (linePath.line.publicationStatus === "draft") {
+                          <lc-draft-tag
+                            class="spot-status-tag--beside"
+                          ></lc-draft-tag>
+                        }
                       </div>
                       <div class="line-table-info-grade">
                         <div class="grade-ellipsis">
@@ -206,23 +208,11 @@
                         </div>
                       </div>
                       <div class="line-table-info-style">
-                        @if (linePath.line.publicationStatus === "draft") {
-                          <lc-draft-tag></lc-draft-tag>
-                        }
                         @if (!linePath.line.closed) {
                           <lc-line-bool-prop-list
                             class="clip-line"
                             [line]="linePath.line"
                           ></lc-line-bool-prop-list>
-                        }
-                        @if (linePath.line.closed) {
-                          <lc-closed-spot-tag
-                            spotType="line"
-                            [slug]="linePath.line.slug"
-                            [closureIsPermanent]="
-                              linePath.line.closureIsPermanent
-                            "
-                          ></lc-closed-spot-tag>
                         }
                       </div>
                       <div class="line-table-info-rating">
@@ -245,6 +235,42 @@
                         </span>
                       </div>
                       <div class="line-table-info-actions">
+                        @if (linePath.line.closed) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="line-status-icon rounded-full"
+                            [hlmTooltip]="'closedSpotTag.closed' | transloco"
+                            [attr.aria-label]="
+                              'closedSpotTag.closed' | transloco
+                            "
+                            (click)="
+                              $event.preventDefault(); $event.stopPropagation()
+                            "
+                          >
+                            <ng-icon name="lucideBan" />
+                          </button>
+                        }
+                        @if (linePath.line.secret) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="line-status-icon rounded-full"
+                            [hlmTooltip]="'secretSpotTag.secret' | transloco"
+                            [attr.aria-label]="
+                              'secretSpotTag.secret' | transloco
+                            "
+                            (click)="
+                              $event.preventDefault(); $event.stopPropagation()
+                            "
+                          >
+                            <ng-icon name="lucideEyeOff" />
+                          </button>
+                        }
                         @if (linePath.line.commentCount > 0) {
                           <button
                             hlmBtn

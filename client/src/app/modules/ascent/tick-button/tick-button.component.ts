@@ -102,15 +102,13 @@ export function openTickDialog(
       if (gradeValue >= 0) {
         dialogService.open(AscentFormComponent, {
           context: { line },
-          contentClass:
-            'sm:max-w-xl max-h-[min(40rem,calc(100dvh-2rem))] overflow-y-auto',
+          contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
         });
         return;
       }
       dialogService.open(ProjectClimbedFormComponent, {
         context: { line },
-        contentClass:
-          'sm:max-w-xl max-h-[min(40rem,calc(100dvh-2rem))] overflow-y-auto',
+        contentClass: 'sm:max-w-xl max-h-[calc(100dvh-2rem)] overflow-y-auto',
       });
     });
 }

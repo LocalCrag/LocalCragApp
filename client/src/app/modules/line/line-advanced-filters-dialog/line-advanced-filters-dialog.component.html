@@ -5,7 +5,7 @@
         {{ t("advancedFiltersGradeSection") }}
       </div>
       @if (availableScales.length > 2) {
-        <div class="mb-12">
+        <div>
           <label class="block text-sm mb-1">{{ t("lineType") }}</label>
           <hlm-select
             [(ngModel)]="dialogScaleKey"
@@ -23,13 +23,13 @@
           >
         </div>
       }
-      @if (dialogScaleKey?.value && maxGrade !== null) {
+      @if (sliderScaleItem?.value && maxGrade !== null) {
         <lc-grade-range-slider
           [(range)]="gradeRange"
           [min]="minGradeValue"
           [max]="maxGrade"
-          [lineType]="dialogScaleKey.value.lineType"
-          [gradeScale]="dialogScaleKey.value.gradeScale"
+          [lineType]="sliderScaleItem.value.lineType"
+          [gradeScale]="sliderScaleItem.value.gradeScale"
         />
       }
     </div>
