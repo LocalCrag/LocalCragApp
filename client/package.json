@@ -119,6 +119,9 @@
       "prettier --write .",
       "eslint"
     ],
+    "**/*.scss": [
+      "prettier --write ."
+    ],
     "src/assets/i18n/**/*.{json}": [
       "prettier --write ."
     ]

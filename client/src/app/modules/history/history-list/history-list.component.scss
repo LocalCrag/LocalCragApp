@@ -1,4 +1,4 @@
-@use '../../../styles/media-queries' as m;
+@use "../../../styles/media-queries" as m;
 
 lc-history-list {
   .history-kind {
@@ -90,7 +90,7 @@ lc-history-list {
       padding: 0.25rem 1rem 1.5rem;
     }
 
-    [data-slot='table-container'] {
+    [data-slot="table-container"] {
       overflow: visible;
     }
 

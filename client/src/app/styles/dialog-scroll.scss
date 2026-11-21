@@ -20,6 +20,6 @@
   }
 }
 
-[data-slot='dialog-content'].overflow-y-auto {
+[data-slot="dialog-content"].overflow-y-auto {
   @include persistent-dialog-scrollbar;
 }

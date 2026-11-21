@@ -229,11 +229,7 @@ lc-topo-image-list {
           color: var(--p-primary-contrast-color);
 
           &:hover:not(:disabled) {
-            background-color: color-mix(
-              in oklch,
-              var(--p-red-700) 85%,
-              black
-            );
+            background-color: color-mix(in oklch, var(--p-red-700) 85%, black);
           }
         }
       }

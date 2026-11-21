@@ -1,4 +1,4 @@
-@use '../../../styles/media-queries' as m;
+@use "../../../styles/media-queries" as m;
 
 @mixin spot-status-tag-sizes($solid: false) {
   :host {
@@ -6,7 +6,7 @@
     vertical-align: middle;
   }
 
-  :host.spot-status-tag--beside ::ng-deep [data-slot='badge'] {
+  :host.spot-status-tag--beside ::ng-deep [data-slot="badge"] {
     height: auto;
     min-height: 1.625rem;
     padding: 0.1rem 0.6rem;
@@ -20,7 +20,7 @@
     }
   }
 
-  :host.spot-status-tag--header ::ng-deep [data-slot='badge'] {
+  :host.spot-status-tag--header ::ng-deep [data-slot="badge"] {
     height: auto;
     min-height: 2rem;
     padding: 0.15rem 0.75rem;
@@ -35,11 +35,11 @@
     }
   }
 
-  :host.spot-status-tag--header ::ng-deep [data-slot='badge'] ng-icon {
+  :host.spot-status-tag--header ::ng-deep [data-slot="badge"] ng-icon {
     font-size: 1.05rem;
   }
 
-  :host.spot-status-tag--corner ::ng-deep [data-slot='badge'] {
+  :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] {
     height: auto;
     min-height: 1.625rem;
     padding: 0.08rem 0.55rem;
@@ -54,14 +54,14 @@
     }
   }
 
-  :host.spot-status-tag--corner ::ng-deep [data-slot='badge'] ng-icon {
+  :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] ng-icon {
     font-size: 0.9rem;
   }
 
   // Header chips sit in a column beside the title. On a phone the words
   // ("Temporarily closed") steal the title's width, so only the icon shows.
   @include m.on-mobile {
-    :host.spot-status-tag--corner ::ng-deep [data-slot='badge'] {
+    :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] {
       position: relative;
       justify-content: center;
       min-width: 1.75rem;

@@ -7,7 +7,7 @@
 // The dialog's default max width is a percentage of a pane that is already
 // inset from the viewport, so the card is narrower than the screen and the
 // form rows spill out of it.
-[data-slot='dialog-content']:has(> lc-ascent-form) {
+[data-slot="dialog-content"]:has(> lc-ascent-form) {
   width: min(36rem, calc(100vw - 2rem));
   max-width: min(36rem, calc(100vw - 2rem));
 }
