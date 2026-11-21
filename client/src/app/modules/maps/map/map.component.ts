@@ -8,6 +8,7 @@ import {
   OnDestroy,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -44,6 +45,7 @@ import {
   selector: 'lc-map',
   imports: [MapItemInfoDialogComponent, TranslocoDirective],
   templateUrl: './map.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './map.component.scss',
 })
 export class MapComponent implements AfterViewInit, OnDestroy {

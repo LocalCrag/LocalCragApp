@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   forwardRef,
   Input,
@@ -8,29 +9,33 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MapMarker } from '../../../models/map-marker';
 
-import {
-  TRANSLOCO_SCOPE,
-  TranslocoDirective,
-  TranslocoService,
-} from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
+import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
 import { MapMarkerConfigDialogComponent } from '../map-marker-config-dialog/map-marker-config-dialog.component';
-import { TagModule } from 'primeng/tag';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { marker as translocoMarker } from '@jsverse/transloco-keys-manager/marker';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideAlignLeft,
+  lucideMapPin,
+  lucidePencil,
+  lucidePlus,
+  lucideTrash2,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-map-marker-form-array',
   imports: [
     TranslocoDirective,
-    ButtonModule,
     MapMarkerConfigDialogComponent,
-    TagModule,
-    ConfirmDialogModule,
+    HlmButton,
+    ...HlmDialogImports,
+    SanitizeHtmlPipe,
+    NgIcon,
   ],
   templateUrl: './map-marker-form-array.component.html',
   styleUrl: './map-marker-form-array.component.scss',
@@ -40,8 +45,14 @@ import { toastNotification } from '../../../ngrx/actions/notifications.actions';
       useExisting: forwardRef(() => MapMarkerFormArrayComponent),
       multi: true,
     },
-    ConfirmationService,
     { provide: TRANSLOCO_SCOPE, useValue: 'maps' },
+    provideIcons({
+      lucideAlignLeft,
+      lucideMapPin,
+      lucidePencil,
+      lucidePlus,
+      lucideTrash2,
+    }),
   ],
   encapsulation: ViewEncapsulation.None,
 })
@@ -51,13 +62,14 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
 
   public markers: MapMarker[] = [];
   public isDisabled = false;
+  public descriptionMarker: MapMarker | null = null;
 
   private store = inject(Store);
-  private confirmationService = inject(ConfirmationService);
-  private translocoService = inject(TranslocoService);
+  private cdr = inject(ChangeDetectorRef);
 
   writeValue(value: MapMarker[]): void {
     this.markers = value;
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: any): void {
@@ -86,21 +98,16 @@ export class MapMarkerFormArrayComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean) {
     this.isDisabled = isDisabled;
+    this.cdr.markForCheck();
   }
 
   showDescriptionDialog(event: Event, marker: MapMarker) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: marker.description,
-      header: this.translocoService.translate(
-        translocoMarker('maps.markerList.header'),
-      ),
-      icon: 'pi pi-align-left',
-      acceptIcon: 'none',
-      rejectVisible: false,
-      acceptLabel: this.translocoService.translate(
-        translocoMarker('maps.markerList.closeDescriptionDialog'),
-      ),
-    });
+    event.preventDefault();
+    event.stopPropagation();
+    this.descriptionMarker = marker;
+  }
+
+  closeDescription() {
+    this.descriptionMarker = null;
   }
 }

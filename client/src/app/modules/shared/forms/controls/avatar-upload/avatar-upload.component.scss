@@ -11,13 +11,13 @@ lc-avatar-upload {
       background-repeat: no-repeat;
     }
 
-    p-progressspinner {
+    .avatar-spinner {
       position: absolute;
       bottom: 0;
       right: 0;
     }
 
-    p-button button {
+    .avatar-edit {
       width: 2rem;
       height: 2rem !important;
       padding: 0;

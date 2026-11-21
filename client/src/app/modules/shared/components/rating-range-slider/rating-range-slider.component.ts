@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { SliderModule } from 'primeng/slider';
+import { HlmSlider } from '@spartan-ng/helm/slider';
 import { SliderLabelsComponent } from '../slider-labels/slider-labels.component';
 
 @Component({
   selector: 'lc-rating-range-slider',
-  imports: [SliderLabelsComponent, SliderModule, FormsModule],
+  imports: [SliderLabelsComponent, HlmSlider],
   templateUrl: './rating-range-slider.component.html',
   styleUrl: './rating-range-slider.component.scss',
 })
@@ -18,6 +17,10 @@ export class RatingRangeSliderComponent {
   @Input() disabled = false;
 
   @Output() slideEnd = new EventEmitter<void>();
+
+  get sliderValue(): number[] {
+    return [this.range?.[0] ?? this.min, this.range?.[1] ?? this.max];
+  }
 
   onRangeChange(value: number[]): void {
     this.rangeChange.emit(value);

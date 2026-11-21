@@ -4,12 +4,13 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
 import {
   FormBuilder,
   FormGroup,
@@ -37,7 +38,6 @@ import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Title } from '@angular/platform-browser';
 import { emailRegex } from '../../../utility/regex/email-regex';
 import { UserValidatorsService } from '../../../services/core/user-validators.service';
-import { MessageModule } from 'primeng/message';
 import { emailsValidator } from '../../../utility/validators/emails.validator';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -51,21 +51,21 @@ import {
 @Component({
   selector: 'lc-register',
   imports: [
-    ButtonModule,
-    DividerModule,
-    InputTextModule,
-    PasswordModule,
+    HlmAlert,
+    HlmButton,
+    HlmInput,
+    HlmSeparator,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
     RouterLink,
-    MessageModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
   ],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {

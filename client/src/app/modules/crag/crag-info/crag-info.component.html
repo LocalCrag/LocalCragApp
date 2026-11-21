@@ -1,11 +1,6 @@
 <ng-container *transloco="let t; read: 'crag.crag'">
   <div class="p-6">
     @if (crag) {
-      @if (crag.closedReasons?.length) {
-        <lc-closed-spot-alert
-          [reasons]="crag.closedReasons"
-        ></lc-closed-spot-alert>
-      }
       @if (crag.upcomingClosureWarnings?.length) {
         <lc-upcoming-closure-alert
           [warnings]="crag.upcomingClosureWarnings"
@@ -38,17 +33,20 @@
       <lc-map [target]="crag"></lc-map>
       <h4>{{ t("season") }}:</h4>
       @if (season) {
-        <lc-season-chart [season]="season"></lc-season-chart>
+        <lc-season-chart
+          [season]="season"
+          [ascentCount]="crag.ascentCount"
+        ></lc-season-chart>
       }
       @if (!crag && !season) {
-        <p-skeleton width="100%" class="mb-2"></p-skeleton>
-        <p-skeleton width="90%" class="mb-2"></p-skeleton>
-        <p-skeleton width="87%" class="mb-2"></p-skeleton>
-        <p-skeleton width="70%" class="mb-2"></p-skeleton>
-        <p-skeleton width="65%" class="mb-2"></p-skeleton>
-        <p-skeleton width="45%" class="mb-6"></p-skeleton>
-        <p-skeleton height="4rem" class="mb-6"></p-skeleton>
-        <p-skeleton width="40%" height="4rem"></p-skeleton>
+        <div hlmSkeleton class="h-4 w-full mb-2"></div>
+        <div hlmSkeleton class="h-4 w-[90%] mb-2"></div>
+        <div hlmSkeleton class="h-4 w-[87%] mb-2"></div>
+        <div hlmSkeleton class="h-4 w-[70%] mb-2"></div>
+        <div hlmSkeleton class="h-4 w-[65%] mb-2"></div>
+        <div hlmSkeleton class="h-4 w-[45%] mb-6"></div>
+        <div hlmSkeleton class="h-16 w-full mb-6"></div>
+        <div hlmSkeleton class="h-16 w-[40%]"></div>
       }
     }
   </div>

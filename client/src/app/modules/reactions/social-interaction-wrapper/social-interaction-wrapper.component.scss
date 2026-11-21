@@ -336,11 +336,12 @@
 
 .reaction-picker {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 4px;
   padding: 4px;
   align-items: center;
-  max-width: calc(100vw - 32px);
+  width: max-content;
 }
 
 :host ::ng-deep .reaction-popover {

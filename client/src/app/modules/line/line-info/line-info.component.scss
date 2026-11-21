@@ -111,15 +111,15 @@
     margin: 0;
   }
 
-  ::ng-deep .p-button {
+  ::ng-deep button[hlmBtn] {
     padding-block: 0.3rem;
   }
 
-  ::ng-deep .p-button:has(.ticked-icon) {
+  ::ng-deep button[hlmBtn]:has(.ticked-icon) {
     color: var(--ticked-color);
   }
 
-  ::ng-deep .p-button:has(.is-todo-icon) {
+  ::ng-deep button[hlmBtn]:has(.is-todo-icon) {
     color: var(--p-blue-500);
   }
 }
@@ -135,7 +135,23 @@
 }
 
 .topo-preview__nav {
+  position: absolute;
+  top: 50%;
   z-index: 1;
+  transform: translateY(-50%);
+}
+
+.topo-preview__nav--prev {
+  left: 0.5rem;
+}
+
+.topo-preview__nav--next {
+  right: 0.5rem;
+}
+
+::ng-deep [data-slot="dialog-content"]:has(.topo-preview) {
+  width: min(90vw, 1400px);
+  max-width: 90vw;
 }
 
 @include m.on-mobile {

@@ -5,8 +5,10 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { AvatarModule } from 'primeng/avatar';
-import { ImageModule } from 'primeng/image';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye } from '@ng-icons/lucide';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { User } from '../../../../models/user';
 import {
   userAvatarGradientCss,
@@ -16,22 +18,20 @@ import {
 /**
  * Renders a user avatar using one of three template branches:
  *
- * 1. `p-image` (preview) — when `[preview]` is true and the user has an avatar file.
- *    PrimeNG Avatar has no fullscreen preview; `p-image` provides click-to-zoom.
- *    Both `[src]` and `[previewImageSrc]` are set to
- *    `thumbnailXL`: the former for the inline circle, the latter for the fullscreen overlay
- *    (PrimeNG falls back to `[src]` when `[previewImageSrc]` is omitted).
+ * 1. Preview image — when `[preview]` is true and the user has an avatar file.
+ *    Clicking opens a dialog with the full image.
  *
- * 2. `p-avatar` with `[image]` — default when the user has an avatar and preview is off.
+ * 2. Avatar image — default when the user has an avatar and preview is off.
  *    Uses the configurable `thumbnail` input (usually `thumbnailS` or `thumbnailM`) so lists
  *    stay lightweight.
  *
- * 3. `p-avatar` with `[label]` — when there is no image URL (no avatar and no imageFallback).
+ * 3. Initials — when there is no image URL (no avatar and no imageFallback).
  *    Shows generated initials on a deterministic gradient background.
  */
 @Component({
   selector: 'lc-user-avatar',
-  imports: [AvatarModule, ImageModule],
+  imports: [NgIcon, ...HlmAvatarImports, ...HlmDialogImports],
+  providers: [provideIcons({ lucideEye })],
   templateUrl: './user-avatar.component.html',
   styleUrl: './user-avatar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +49,7 @@ export class UserAvatarComponent implements OnChanges {
   imageUrl: string | null = null;
   previewImageUrl: string | null = null;
   previewEnabled = false;
+  previewOpen = false;
   previewStyleClass = '';
   initials = '';
   gradientStyle: Record<string, string> = {};
@@ -63,9 +64,7 @@ export class UserAvatarComponent implements OnChanges {
       this.imageFallback?.trim() || u?.avatar?.[this.thumbnail] || null;
     this.initials = userInitials(first, last);
     const seed = u?.slug?.trim() || `${first}\u0000${last}` || this.initials;
-    this.gradientStyle = this.imageUrl
-      ? {}
-      : { background: userAvatarGradientCss(seed) };
+    this.gradientStyle = { background: userAvatarGradientCss(seed) };
 
     this.fallbackClasses = [this.styleClass, 'lc-user-avatar--initials']
       .filter(Boolean)
@@ -80,5 +79,19 @@ export class UserAvatarComponent implements OnChanges {
       this.styleClass,
     ];
     this.previewStyleClass = previewClasses.filter(Boolean).join(' ');
+  }
+
+  get avatarSize(): 'default' | 'lg' {
+    return this.size === 'normal' ? 'default' : 'lg';
+  }
+
+  get avatarClass(): string {
+    const sizeClass =
+      this.size === 'xlarge'
+        ? 'size-16'
+        : this.size === 'large'
+          ? 'size-12'
+          : '';
+    return [this.styleClass, sizeClass].filter(Boolean).join(' ');
   }
 }

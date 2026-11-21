@@ -1,7 +1,8 @@
 @if (blocWeatherConfig) {
   <ng-container *transloco="let t; read: 'blocWeather'">
-    <p-message icon="pi pi-info-circle" class="mt-6 full-width-message">
-      <div class="flex justify-between">
+    <div hlmAlert class="mt-6 full-width-message">
+      <ng-icon name="lucideInfo" />
+      <div hlmAlertDescription class="flex w-full justify-between">
         <div class="flex items-center">
           <div>
             {{ t("currentConditions") }}:
@@ -27,14 +28,16 @@
             }
           </div>
         </div>
-        <p-button
-          link
-          [label]="t('reportConditions')"
-          severity="secondary"
-          (onClick)="reportConditionsDialog.open(blocWeatherConfig)"
-        />
+        <button
+          hlmBtn
+          type="button"
+          variant="link"
+          (click)="reportConditionsDialog.open(blocWeatherConfig)"
+        >
+          {{ t("reportConditions") }}
+        </button>
       </div>
-    </p-message>
+    </div>
 
     <lc-report-conditions-dialog
       #reportConditionsDialog

@@ -1,47 +1,86 @@
 <ng-container *transloco="let t; read: 'todoButton'">
   @if (!isTodo) {
     <span class="todo-add" [class.todo-add-labeled]="showLabel">
-      <p-button
-        styleClass="p-button-rounded p-button-text p-button-secondary todo-button"
+      <button
+        hlmBtn
+        type="button"
+        variant="ghost"
+        [size]="showLabel ? 'default' : 'icon'"
+        class="todo-button rounded-full"
         data-cy="todo-button"
-        [label]="showLabel ? t('addTodo') : undefined"
-        [ariaLabel]="t('addTodo')"
+        [attr.aria-label]="t('addTodo')"
         (click)="addWithPriority($event, priorities.MEDIUM)"
         [disabled]="saving"
-        [ngClass]="{ 'hide-label': !showLabel }"
       >
-        <ng-template #icon>
-          <i class="pi pi-plus"></i>
-        </ng-template>
-      </p-button>
-      <p-menu
-        #menu
-        [model]="priorityItems"
-        [popup]="true"
-        appendTo="body"
-        styleClass="todo-add-priority-menu"
-      ></p-menu>
-      <p-button
-        styleClass="p-button-rounded p-button-text p-button-secondary todo-priority-trigger"
+        <ng-icon name="lucidePlus" />
+        @if (showLabel) {
+          {{ t("addTodo") }}
+        }
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="ghost"
+        [size]="showLabel ? 'icon-sm' : 'icon'"
+        class="todo-priority-trigger rounded-full"
         data-cy="todo-priority-menu"
-        [ariaLabel]="t('choosePriority')"
-        icon="pi pi-chevron-down"
-        (click)="openPriorityMenu($event, menu)"
+        [attr.aria-label]="t('choosePriority')"
         [disabled]="saving"
-      ></p-button>
+        [hlmDropdownMenuTrigger]="priorityMenu"
+        (click)="$event.preventDefault(); $event.stopPropagation()"
+      >
+        <ng-icon name="lucideChevronDown" />
+      </button>
+      <ng-template #priorityMenu>
+        <div hlmDropdownMenu class="todo-add-priority-menu">
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            id="todo-priority-high"
+            class="high-priority"
+            (triggered)="addWithPriority(null, priorities.HIGH)"
+          >
+            <ng-icon name="lucideChevronUp" />
+            {{ "todos.priorityButton.highPriority" | transloco }}
+          </button>
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            id="todo-priority-medium"
+            class="medium-priority"
+            (triggered)="addWithPriority(null, priorities.MEDIUM)"
+          >
+            <ng-icon name="lucideChevronRight" />
+            {{ "todos.priorityButton.mediumPriority" | transloco }}
+          </button>
+          <button
+            hlmDropdownMenuItem
+            type="button"
+            id="todo-priority-low"
+            class="low-priority"
+            (triggered)="addWithPriority(null, priorities.LOW)"
+          >
+            <ng-icon name="lucideChevronDown" />
+            {{ "todos.priorityButton.lowPriority" | transloco }}
+          </button>
+        </div>
+      </ng-template>
     </span>
   } @else {
-    <p-button
-      styleClass="p-button-rounded p-button-text p-button-secondary todo-button"
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      [size]="showLabel ? 'default' : 'icon'"
+      class="todo-button rounded-full"
       data-cy="todo-button"
-      label="{{ showLabel ? t('onTodoList') : '' }}"
-      [ariaLabel]="t('onTodoList')"
+      [attr.aria-label]="t('onTodoList')"
       (click)="addWithPriority($event, priorities.MEDIUM)"
-      [ngClass]="{ 'hide-label': !showLabel }"
     >
-      <ng-template #icon>
-        <i class="pi pi-plus is-todo-icon"></i>
-      </ng-template>
-    </p-button>
+      <ng-icon name="lucidePlus" class="is-todo-icon" />
+      @if (showLabel) {
+        {{ t("onTodoList") }}
+      }
+    </button>
   }
 </ng-container>

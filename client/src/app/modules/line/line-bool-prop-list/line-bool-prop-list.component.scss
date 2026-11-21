@@ -5,5 +5,21 @@ span:nth-of-type(n + 2) {
 }
 
 :host {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
   font-style: italic;
+}
+
+.clip {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+:host(.clip-line) .clip {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

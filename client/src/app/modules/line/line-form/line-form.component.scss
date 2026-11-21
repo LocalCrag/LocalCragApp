@@ -1,6 +1,5 @@
 .video-row {
-  position: relative;
-  padding: 1rem 3.25rem 1rem 1rem;
+  padding: 1rem;
   border: 1px solid var(--p-content-border-color);
   border-radius: var(--p-content-border-radius, 0.75rem);
 
@@ -22,16 +21,6 @@
   min-width: 0;
 }
 
-.video-delete {
-  position: absolute;
-  top: 1rem;
-  right: 0.4rem;
-}
-
-.video-delete--labeled {
-  top: 2.75rem;
-}
-
 .video-title-row {
   display: flex;
   flex-direction: column;
@@ -41,6 +30,11 @@
     flex-direction: row;
     align-items: flex-start;
   }
+}
+
+.video-title-row--plain {
+  flex-direction: row;
+  align-items: flex-start;
 }
 
 .video-source {
@@ -58,12 +52,7 @@
 }
 
 .video-start {
-  max-width: 16rem;
-}
-
-.video-start-label {
-  color: var(--p-text-muted-color);
-  font-size: 0.875rem;
+  max-width: 36rem;
 }
 
 .hidden {

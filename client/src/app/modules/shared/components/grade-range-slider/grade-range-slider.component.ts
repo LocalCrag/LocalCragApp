@@ -1,7 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { SliderModule } from 'primeng/slider';
+import { HlmSlider } from '@spartan-ng/helm/slider';
 import { LineType } from '../../../../enums/line-type';
 import { ScalesService } from '../../../../services/crud/scales.service';
 import { TranslateSpecialGradesPipe } from '../../pipes/translate-special-grades.pipe';
@@ -11,8 +10,7 @@ import { SliderLabelsComponent } from '../slider-labels/slider-labels.component'
   selector: 'lc-grade-range-slider',
   imports: [
     SliderLabelsComponent,
-    SliderModule,
-    FormsModule,
+    HlmSlider,
     AsyncPipe,
     TranslateSpecialGradesPipe,
   ],
@@ -34,7 +32,11 @@ export class GradeRangeSliderComponent {
 
   protected scalesService = inject(ScalesService);
 
-  onRangeChange(value: (number | null)[]): void {
+  get sliderValue(): number[] {
+    return [this.range?.[0] ?? this.min, this.range?.[1] ?? this.max];
+  }
+
+  onRangeChange(value: number[]): void {
     this.rangeChange.emit(value);
   }
 }

@@ -3,6 +3,6 @@
   align-items: center;
 }
 
-:host:not(:has(p-tag)) {
+:host:not(:has([hlmBadge])) {
   display: none;
 }

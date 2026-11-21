@@ -5,20 +5,16 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
-import {
-  ConfirmationService,
-  MenuItem,
-  PrimeIcons,
-  SelectItem,
-} from 'primeng/api';
 import { forkJoin, mergeMap, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router, RouterLink, Scroll } from '@angular/router';
 import {
   TRANSLOCO_SCOPE,
   TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -29,9 +25,7 @@ import { TopoImagesService } from '../../../services/crud/topo-images.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { LinePath } from '../../../models/line-path';
 import { LinePathsService } from '../../../services/crud/line-paths.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
-
 import {
   Location,
   NgClass,
@@ -54,26 +48,17 @@ import { todoAdded } from '../../../ngrx/actions/todo.actions';
 import { highlightColor } from '../../../utility/misc/color';
 import { topoLinePaint$ } from '../../../utility/scale/topo-line-color';
 import { ScalesService } from '../../../services/crud/scales.service';
-import { DataView } from 'primeng/dataview';
-import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { GymModeDirective } from '../../shared/directives/gym-mode.directive';
-import { Button } from 'primeng/button';
-import { Menu } from 'primeng/menu';
-import { ContextMenu } from 'primeng/contextmenu';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
-import { Message } from 'primeng/message';
 import { TopoImageListSkeletonComponent } from '../topo-image-list-skeleton/topo-image-list-skeleton.component';
 import { TopoImageDetailsComponent } from '../topo-image-details/topo-image-details.component';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { ArchiveService } from '../../../services/crud/archive.service';
-import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
-import { Rating } from 'primeng/rating';
 import {
   openTickDialog,
   TickButtonComponent,
 } from '../../ascent/tick-button/tick-button.component';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { LineBoolPropListComponent } from '../../line/line-bool-prop-list/line-bool-prop-list.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -100,6 +85,59 @@ import {
   buildLineContextMenuItems,
   LineContextMenuLabels,
 } from '../../../utility/topo/line-context-menu';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmContextMenuTrigger } from '@spartan-ng/helm/context-menu';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArchive,
+  lucideArrowUpDown,
+  lucideBan,
+  lucideCheck,
+  lucideChevronDown,
+  lucideChevronRight,
+  lucideChevronUp,
+  lucideEllipsisVertical,
+  lucideExternalLink,
+  lucideEye,
+  lucideEyeOff,
+  lucideImage,
+  lucideImages,
+  lucideInfo,
+  lucideMessageSquare,
+  lucidePencil,
+  lucidePlus,
+  lucideShare2,
+  lucideStar,
+  lucideTrash2,
+  lucideUndo2,
+  lucideVideo,
+} from '@ng-icons/lucide';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { CdkContextMenuTrigger } from '@angular/cdk/menu';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+
+interface ActionMenuItem {
+  id?: string;
+  label?: string;
+  icon?: string;
+  separator?: boolean;
+  disabled?: boolean;
+  styleClass?: string;
+  items?: ActionMenuItem[];
+  command?: (event?: { originalEvent?: Event }) => void;
+  [key: string]: unknown;
+}
+
+interface TopoSortOption {
+  label: string;
+  value: string;
+}
 
 /**
  * Component that lists all topo images in an area.
@@ -109,31 +147,47 @@ import {
   templateUrl: './topo-image-list.component.html',
   styleUrls: ['./topo-image-list.component.scss'],
   providers: [
-    ConfirmationService,
-    DialogService,
     { provide: TRANSLOCO_SCOPE, useValue: 'topoImage' },
+    provideIcons({
+      lucideArchive,
+      lucideArrowUpDown,
+      lucideBan,
+      lucideCheck,
+      lucideChevronDown,
+      lucideChevronRight,
+      lucideChevronUp,
+      lucideEllipsisVertical,
+      lucideExternalLink,
+      lucideEye,
+      lucideEyeOff,
+      lucideImage,
+      lucideImages,
+      lucideInfo,
+      lucideMessageSquare,
+      lucidePencil,
+      lucidePlus,
+      lucideShare2,
+      lucideStar,
+      lucideTrash2,
+      lucideUndo2,
+      lucideVideo,
+    }),
   ],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
-    DataView,
-    Select,
+    TranslocoPipe,
     FormsModule,
     GymModeDirective,
-    Button,
-    Menu,
-    ContextMenu,
     HasPermissionDirective,
     RouterLink,
-    Message,
     TopoImageListSkeletonComponent,
     NgClass,
     NgTemplateOutlet,
     TopoImageDetailsComponent,
-    ClosedSpotTagComponent,
-    Rating,
     TickButtonComponent,
-    ConfirmPopup,
     LineBoolPropListComponent,
     LineGradePipe,
     TopoLineColorPipe,
@@ -141,28 +195,37 @@ import {
     LineNumberBadgeComponent,
     DraftTagComponent,
     InfiniteScrollDirective,
+    HlmButton,
+    HlmTooltip,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    ...HlmDropdownMenuImports,
+    HlmContextMenuTrigger,
+    NgIcon,
   ],
 })
 export class TopoImageListComponent implements OnInit, PaginatedListView {
-  @ViewChild('topoImageMenu') topoImageMenu: Menu;
-  @ViewChild('lineMenu') lineMenu: ContextMenu;
+  private confirmDialog = inject(ConfirmDialogService);
+  @ViewChild('lineMenuHost', { read: CdkContextMenuTrigger })
+  lineMenuTrigger?: CdkContextMenuTrigger;
 
   public topoImages: TopoImage[] = [];
   public currentPage = 0;
   public hasNextPage = false;
-  public topoImageActionItems: MenuItem[] = [];
-  public lineActionItems: MenuItem[] = [];
+  public topoImageActionItems: ActionMenuItem[] = [];
+  public lineActionItems: ActionMenuItem[] = [];
   public loading = LoadingState.LOADING;
   public loadingStates = LoadingState;
-  public sortOptions: SelectItem[];
-  public sortKey: SelectItem;
+  public sortOptions: TopoSortOption[];
+  public sortKey: TopoSortOption;
   public sortOrder = 1;
   public sortField: string;
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
   public areaSlug: string;
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
   public ticks: Set<string> = new Set();
   public isTodo: Set<string> = new Set();
   public showArchive = false;
@@ -192,14 +255,13 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
   private destroyRef = inject(DestroyRef);
   private topoImagesService = inject(TopoImagesService);
   private store = inject(Store);
-  private confirmationService = inject(ConfirmationService);
   private ticksService = inject(TicksService);
   private isTodoService = inject(IsTodoService);
   private todosService = inject(TodosService);
   private location = inject(Location);
   private areasService = inject(AreasService);
   private actions$ = inject(Actions);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private linePathsService = inject(LinePathsService);
   private archiveService = inject(ArchiveService);
   private route = inject(ActivatedRoute);
@@ -387,6 +449,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
         this.ticks = ticks;
         this.isTodo = isTodo;
         this.topoImages = topoImages;
+        this.sortTopoImages();
         this.loading = LoadingState.DEFAULT;
         this.ensureSortOptions();
         if (this.scrollTarget) {
@@ -554,8 +617,8 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    * Sets the sort field and order.
    * @param event Sort change event.
    */
-  onSortChange(event: any) {
-    const value = event.value.value;
+  onSortChange(option: { value: string }) {
+    const value = option?.value ?? '';
     if (value.indexOf('!') === 0) {
       this.sortOrder = 1;
       this.sortField = value.substring(1, value.length);
@@ -565,7 +628,26 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
     }
     if (this.showArchive) {
       this.loadFirstPage();
+    } else {
+      this.sortTopoImages();
     }
+  }
+
+  private sortTopoImages() {
+    if (!this.topoImages || !this.sortField || this.showArchive) {
+      return;
+    }
+    const field = this.sortField as keyof TopoImage;
+    const order = this.sortOrder;
+    this.topoImages = [...this.topoImages].sort((left, right) => {
+      const leftValue = left[field];
+      const rightValue = right[field];
+      const result =
+        typeof leftValue === 'string' || typeof rightValue === 'string'
+          ? String(leftValue ?? '').localeCompare(String(rightValue ?? ''))
+          : (Number(leftValue) || 0) - (Number(rightValue) || 0);
+      return result * order;
+    });
   }
 
   private ensureSortOptions() {
@@ -574,12 +656,10 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
     }
     this.sortOptions = [
       {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN_ALT,
         label: this.translocoService.translate(marker('sortAscending')),
         value: '!orderIndex',
       },
       {
-        icon: PrimeIcons.SORT_AMOUNT_DOWN,
         label: this.translocoService.translate(marker('sortDescending')),
         value: 'orderIndex',
       },
@@ -590,15 +670,40 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
   /**
    * Opens the overflow menu for one topo image.
    */
-  openTopoImageActions(event: Event, topoImage: TopoImage) {
+  prepareTopoImageActions(event: Event, topoImage: TopoImage) {
     this.actionAnchor = event.currentTarget ?? event.target;
     this.topoImageActionItems = this.buildTopoImageActionItems(topoImage);
-    this.topoImageMenu.toggle(event);
   }
 
-  private buildTopoImageActionItems(topoImage: TopoImage): MenuItem[] {
+  runMenuCommand(
+    item: { command?: (event?: { originalEvent?: Event }) => void },
+    event?: Event | void,
+  ) {
+    item.command?.({
+      originalEvent: event instanceof Event ? event : undefined,
+    });
+  }
+
+  menuIcon(icon?: string): string {
+    const value = icon ?? '';
+    if (value.includes('trash')) return 'lucideTrash2';
+    if (value.includes('external-link')) return 'lucideExternalLink';
+    if (value.includes('angle-up')) return 'lucideChevronUp';
+    if (value.includes('angle-down')) return 'lucideChevronDown';
+    if (value.includes('angle-right')) return 'lucideChevronRight';
+    if (value.includes('plus')) return 'lucidePlus';
+    if (value.includes('share')) return 'lucideShare2';
+    if (value.includes('sort')) return 'lucideArrowUpDown';
+    if (value.includes('check')) return 'lucideCheck';
+    if (value.includes('pencil')) return 'lucidePencil';
+    if (value.includes('undo')) return 'lucideUndo2';
+    if (value.includes('hammer')) return 'lucideArchive';
+    return 'lucideEllipsisVertical';
+  }
+
+  private buildTopoImageActionItems(topoImage: TopoImage): ActionMenuItem[] {
     const archived = topoImage.publicationStatus === 'archived';
-    const items: MenuItem[] = [];
+    const items: ActionMenuItem[] = [];
 
     if (this.canDrawLines(topoImage)) {
       items.push(
@@ -684,7 +789,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
       });
     }
 
-    const destructive: MenuItem[] = [];
+    const destructive: ActionMenuItem[] = [];
     if (this.canArchive(topoImage)) {
       destructive.push({
         id: 'archive-topo-image',
@@ -746,8 +851,8 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    * Asks whether linked lines should be archived together with the image.
    */
   confirmArchiveTopoImage(event: Event, topoImage: TopoImage) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
+    this.confirmDialog.open({
+      title: this.translocoService.translate(marker('archive.confirmTitle')),
       message: this.translocoService.translate(
         topoImage.publicationStatus === 'archived'
           ? marker('archive.askAlsoUnArchiveLines')
@@ -756,18 +861,16 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
       acceptLabel: this.translocoService.translate(
         marker('archive.yesWithLines'),
       ),
-      acceptButtonStyleClass: 'p-button-primary',
-      rejectButtonStyleClass: 'p-button-secondary',
       rejectLabel: this.translocoService.translate(
         marker('archive.noWithoutLines'),
       ),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.archiveTopoImage(topoImage, true);
       },
       reject: () => {
         this.archiveTopoImage(topoImage, false);
       },
+      destructive: false,
     });
   }
 
@@ -800,22 +903,20 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    * @param topoImage Topo image to delete.
    */
   confirmDeleteTopoImage(event: Event, topoImage: TopoImage) {
-    this.confirmationService.confirm({
-      target: event.target,
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('topoImage.askReallyWantToDeleteTopoImage'),
       ),
       acceptLabel: this.translocoService.translate(
         marker('topoImage.yesDelete'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('topoImage.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteTopoImage(topoImage);
       },
+      destructive: true,
     });
   }
 
@@ -848,22 +949,20 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
   ) {
     event.stopPropagation();
     event.preventDefault();
-    this.confirmationService.confirm({
-      target: event.target,
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('topoImage.askReallyWantToDeleteLinePath'),
       ),
       acceptLabel: this.translocoService.translate(
         marker('topoImage.yesDelete'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('topoImage.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteLinePath(linePath, topoImage);
       },
+      destructive: true,
     });
   }
 
@@ -1004,7 +1103,8 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
         toggleHighlight: () => this.togglePinnedHighlight(linePath, topoImage),
       },
     );
-    this.lineMenu?.show(this.contextMenuEvent(event));
+    const point = this.contextMenuPoint(event);
+    this.lineMenuTrigger?.open(point);
   }
 
   onLineEnter(linePath: LinePath, topoImage: TopoImage) {
@@ -1098,11 +1198,11 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    */
   reorderTopoImages() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      modal: true,
-      header: this.translocoService.translate(
+      title: this.translocoService.translate(
         marker('reorderTopoImagesDialogTitle'),
       ),
-      data: {
+      contentClass: 'sm:max-w-lg',
+      context: {
         items: this.topoImages,
         itemsName: this.translocoService.translate(
           marker('reorderTopoImagesDialogItemsName'),
@@ -1114,7 +1214,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
         showImage: true,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.ref.closed$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -1126,11 +1226,11 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    */
   reorderLinePaths(topoImage: TopoImage) {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      modal: true,
-      header: this.translocoService.translate(
+      title: this.translocoService.translate(
         marker('reorderLinePathsDialogTitle'),
       ),
-      data: {
+      contentClass: 'sm:max-w-lg',
+      context: {
         items: topoImage.linePaths,
         itemsName: this.translocoService.translate(
           marker('reorderLinePathsDialogItemsName'),
@@ -1142,7 +1242,7 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
         showLinePathLineName: true,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.ref.closed$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -1224,24 +1324,16 @@ export class TopoImageListComponent implements OnInit, PaginatedListView {
    * PrimeNG positions the menu from page coordinates. A touch context menu
    * sometimes only has the touch point.
    */
-  private contextMenuEvent(event: MouseEvent): MouseEvent {
-    if (event.pageX || event.pageY) {
-      return event;
+  private contextMenuPoint(event: MouseEvent): { x: number; y: number } {
+    if (event.clientX || event.clientY) {
+      return { x: event.clientX, y: event.clientY };
     }
     const touchEvent = event as MouseEvent & {
       touches?: TouchList;
       changedTouches?: TouchList;
     };
     const touch = touchEvent.touches?.[0] ?? touchEvent.changedTouches?.[0];
-    if (!touch) {
-      return event;
-    }
-    return {
-      pageX: touch.pageX,
-      pageY: touch.pageY,
-      preventDefault: () => event.preventDefault(),
-      stopPropagation: () => event.stopPropagation(),
-    } as MouseEvent;
+    return { x: touch?.clientX ?? 0, y: touch?.clientY ?? 0 };
   }
 
   protected readonly highlightColor = highlightColor;

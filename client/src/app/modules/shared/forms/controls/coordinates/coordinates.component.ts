@@ -8,6 +8,7 @@ import {
   Input,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -18,28 +19,30 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Coordinates } from '../../../../../interfaces/coordinates.interface';
+import { provideIcons } from '@ng-icons/core';
+import { lucideMapPin } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { InputTextModule } from 'primeng/inputtext';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
 import { latValidator } from '../../../../../utility/validators/lat.validator';
 import { lngValidator } from '../../../../../utility/validators/lng.validator';
 
 import { FormDirective } from '../../form.directive';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
 
 import { ControlGroupDirective } from '../../control-group.directive';
 import { FormControlDirective } from '../../form-control.directive';
 import { IfErrorDirective } from '../../if-error.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LoadingButtonComponent } from '../../../components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-coordinates',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
-    InputTextModule,
     ReactiveFormsModule,
-    ButtonModule,
-    MessageModule,
+    HlmInput,
+    HlmAlert,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -47,7 +50,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ],
   templateUrl: './coordinates.component.html',
   styleUrl: './coordinates.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
+    provideIcons({ lucideMapPin }),
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CoordinatesComponent),

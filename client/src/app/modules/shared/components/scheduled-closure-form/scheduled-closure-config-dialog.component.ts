@@ -7,21 +7,23 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TRANSLOCO_SCOPE, TranslocoDirective } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
-import { Dialog } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { Select } from 'primeng/select';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import {
+  TRANSLOCO_SCOPE,
+  TranslocoDirective,
+  TranslocoService,
+} from '@jsverse/transloco';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
 import {
   ClosureSchedule,
   ClosureScheduleType,
@@ -38,21 +40,20 @@ import {
   patchClosureScheduleDialogForm,
   readClosureScheduleFromDialogForm,
 } from '../../utils/scheduled-closure-form';
-import { PrimeNG } from 'primeng/config';
-import { toPrimeNgDayMonthFormat } from '../../../../models/closure-reason-alert';
+import { LanguageService } from '../../../../services/core/language.service';
 
 @Component({
   selector: 'lc-scheduled-closure-config-dialog',
   imports: [
     ReactiveFormsModule,
-    FormsModule,
     TranslocoDirective,
-    Dialog,
-    Button,
-    Select,
-    DatePickerModule,
-    InputText,
-    Message,
+    NgIcon,
+    HlmAlert,
+    HlmButton,
+    HlmInput,
+    ...HlmDialogImports,
+    ...HlmSelectImports,
+    ...HlmDatePickerImports,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
@@ -60,7 +61,11 @@ import { toPrimeNgDayMonthFormat } from '../../../../models/closure-reason-alert
   templateUrl: './scheduled-closure-config-dialog.component.html',
   styleUrl: './scheduled-closure-config-dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'closableForm' }],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    { provide: TRANSLOCO_SCOPE, useValue: 'closableForm' },
+    provideIcons({ lucideInfo }),
+  ],
 })
 export class ScheduledClosureConfigDialogComponent implements OnInit {
   @ViewChild(FormDirective) formDirective: FormDirective;
@@ -80,13 +85,28 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
-  private primeNG = inject(PrimeNG);
+  private languageService = inject(LanguageService);
+  private transloco = inject(TranslocoService);
 
-  get annualDateFormat(): string {
-    return toPrimeNgDayMonthFormat(
-      this.primeNG.getTranslation('dateFormat') || 'dd.mm.yy',
+  readonly formatPickerDate = (date: Date): string => {
+    const language = this.languageService.calculatedLanguage;
+    if (this.scheduleType === ClosureScheduleType.ANNUAL) {
+      return new Intl.DateTimeFormat(language, {
+        day: '2-digit',
+        month: '2-digit',
+      }).format(date);
+    }
+    return new Intl.DateTimeFormat(language, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  };
+
+  readonly scheduleTypeLabel = (type: ClosureScheduleType): string =>
+    this.transloco.translate(
+      `closableForm.closableForm.${this.scheduleTypeLabelKey(type)}`,
     );
-  }
 
   ngOnInit(): void {
     this.scheduleForm = buildClosureScheduleDialogForm(this.fb);
@@ -186,6 +206,7 @@ export class ScheduledClosureConfigDialogComponent implements OnInit {
     return !!endDate?.touched || !!startDate?.touched;
   }
 
+  /** t(closableForm.closableForm.annualDatesRequiredValidationError, closableForm.closableForm.annualCoversEntireYearValidationError) */
   get annualEndDateErrorKey(): string | null {
     const endDate = this.scheduleForm.get('endDate');
     if (!endDate) {

@@ -1,8 +1,15 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Crag } from '../../../models/crag';
-import { MenuItem } from 'primeng/api';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -11,7 +18,6 @@ import { catchError, map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { Title } from '@angular/platform-browser';
-
 import {
   selectGymMode,
   selectInstanceSettingsState,
@@ -19,26 +25,41 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
   imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 export class CragComponent implements OnInit {
-  public crag: Crag;
-  public items: MenuItem[];
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
 
-  private breadcrumbHome: MenuItem | undefined;
+  public crag: Crag;
+  public items: PageMenuItem[];
+
+  private breadcrumbHome: PageMenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -51,6 +72,7 @@ export class CragComponent implements OnInit {
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
   private hasBlocweather = false;
 
@@ -58,6 +80,7 @@ export class CragComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
+        this.closureBannerService.setReasons([]);
         this.crag = null;
         const cragSlug = params.get('crag-slug');
 
@@ -93,8 +116,10 @@ export class CragComponent implements OnInit {
               crag.name,
               crag.portraitImage,
               bgImage,
+              { titleAddon: this.statusTagsTemplate },
             );
             this.rulesAlertService.setContext({ crag, region });
+            this.closureBannerService.setReasons(crag.closedReasons);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

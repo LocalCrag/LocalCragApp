@@ -50,15 +50,17 @@
       [routerLink]="disableNavigation ? null : searchable.area.routerLink"
       (click)="onSearchResultClick()"
     >
-      <p-avatar
-        [image]="
-          searchable.area.portraitImage
-            ? searchable.area.portraitImage.thumbnailS
-            : 'assets/placeholder.png'
-        "
-        styleClass="mr-2"
-        size="normal"
-      ></p-avatar>
+      <span hlmAvatar class="mr-2">
+        <img
+          hlmAvatarImage
+          alt=""
+          [src]="
+            searchable.area.portraitImage
+              ? searchable.area.portraitImage.thumbnailS
+              : 'assets/placeholder.png'
+          "
+        />
+      </span>
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.area.name }}</div>
         <div class="search-result-meta">
@@ -83,15 +85,17 @@
       [routerLink]="disableNavigation ? null : searchable.sector.routerLink"
       (click)="onSearchResultClick()"
     >
-      <p-avatar
-        [image]="
-          searchable.sector.portraitImage
-            ? searchable.sector.portraitImage.thumbnailS
-            : 'assets/placeholder.png'
-        "
-        styleClass="mr-2"
-        size="normal"
-      ></p-avatar>
+      <span hlmAvatar class="mr-2">
+        <img
+          hlmAvatarImage
+          alt=""
+          [src]="
+            searchable.sector.portraitImage
+              ? searchable.sector.portraitImage.thumbnailS
+              : 'assets/placeholder.png'
+          "
+        />
+      </span>
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.sector.name }}</div>
         <div class="search-result-meta">
@@ -111,15 +115,17 @@
       [routerLink]="disableNavigation ? null : searchable.crag.routerLink"
       (click)="onSearchResultClick()"
     >
-      <p-avatar
-        [image]="
-          searchable.crag.portraitImage
-            ? searchable.crag.portraitImage.thumbnailS
-            : 'assets/placeholder.png'
-        "
-        styleClass="mr-2"
-        size="normal"
-      ></p-avatar>
+      <span hlmAvatar class="mr-2">
+        <img
+          hlmAvatarImage
+          alt=""
+          [src]="
+            searchable.crag.portraitImage
+              ? searchable.crag.portraitImage.thumbnailS
+              : 'assets/placeholder.png'
+          "
+        />
+      </span>
       <div class="search-result-description">
         <div class="search-result-name">{{ searchable.crag.name }}</div>
         <div class="search-result-meta">
@@ -157,12 +163,11 @@
       "
       (click)="onSearchResultClick()"
     >
-      <p-avatar
-        icon="pi pi-map"
-        styleClass="mr-2"
-        size="normal"
-        shape="circle"
-      ></p-avatar>
+      <span hlmAvatar class="mr-2">
+        <span hlmAvatarFallback>
+          <ng-icon name="lucideMap" />
+        </span>
+      </span>
       <div class="search-result-description">
         <div class="search-result-name">
           {{ searchable.rockExplorerFeature.title }}

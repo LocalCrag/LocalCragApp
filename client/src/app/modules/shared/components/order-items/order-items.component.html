@@ -1,60 +1,101 @@
 <ng-container *transloco="let t; read: 'orderItems'">
-  <p-orderList
-    [value]="items"
-    [listStyle]="{ height: '25rem' }"
-    [header]="itemsName"
-    [dragdrop]="(isMobile$ | async) === false"
+  <div class="mb-2 font-medium">{{ itemsName }}</div>
+  <div
+    class="h-[25rem] overflow-auto rounded-lg border"
+    cdkDropList
+    [cdkDropListDisabled]="(isMobile$ | async) === true"
+    (cdkDropListDropped)="drop($event)"
   >
-    <ng-template let-item #item>
-      @if (!showImage && !showLinePathLineName && item.name) {
-        <div class="flex flex-wrap p-2 items-center gap-6">
-          {{ item.name }}
-        </div>
-      }
-      @if (showLinePathLineName) {
-        <div class="flex flex-wrap p-2 items-center gap-6">
-          {{ item.line.name }}
-          {{ item.line | lineGrade }}
-        </div>
-      }
-      @if (showMenuItemTitle) {
-        <div
-          class="flex flex-wrap p-2 items-center gap-6"
-          [style.margin-left.rem]="(item.depth || 0) * 1.5"
-        >
-          {{ item.type | transloco }}
-          @if (item.type === menuItemTypes.MENU_PAGE) {
-            <span>({{ item.menuPage.title }})</span>
+    @for (item of items; track idAccessor(item); let index = $index) {
+      <div class="flex items-center gap-2 border-b p-2 last:border-b-0" cdkDrag>
+        @if ((isMobile$ | async) === false) {
+          <ng-icon
+            class="cursor-grab text-muted-foreground active:cursor-grabbing"
+            name="lucideGripVertical"
+            cdkDragHandle
+          />
+        }
+        <div class="min-w-0 flex-1">
+          @if (!showImage && !showLinePathLineName && item.name) {
+            <div class="flex flex-wrap items-center gap-6">
+              {{ item.name }}
+            </div>
           }
-          @if (
-            item.type === menuItemTypes.URL ||
-            item.type === menuItemTypes.CONTAINER
-          ) {
-            <span>({{ item.title }})</span>
+          @if (showLinePathLineName) {
+            <div class="flex flex-wrap items-center gap-6">
+              {{ item.line.name }}
+              {{ item.line | lineGrade }}
+            </div>
+          }
+          @if (showMenuItemTitle) {
+            <div
+              class="flex flex-wrap items-center gap-6"
+              [style.margin-left.rem]="(item.depth || 0) * 1.5"
+            >
+              {{ item.type | transloco }}
+              @if (item.type === menuItemTypes.MENU_PAGE) {
+                <span>({{ item.menuPage.title }})</span>
+              }
+              @if (
+                item.type === menuItemTypes.URL ||
+                item.type === menuItemTypes.CONTAINER
+              ) {
+                <span>({{ item.title }})</span>
+              }
+            </div>
+          }
+          @if (showImage) {
+            <img
+              alt="{{ t('orderItemImageAlt') }}"
+              class="mx-auto block w-5/12 rounded-border shadow sm:w-20 xl:block xl:w-20"
+              [src]="item.image.thumbnailM"
+            />
           }
         </div>
-      }
-      @if (showImage) {
-        <img
-          alt="{{ t('orderItemImageAlt') }}"
-          class="w-5/12 sm:w-20 xl:w-20 shadow block xl:block mx-auto rounded-border"
-          [src]="item.image.thumbnailM"
-        />
-      }
-    </ng-template>
-  </p-orderList>
+        <div class="flex flex-col">
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            [disabled]="index === 0"
+            (click)="moveItem(index, index - 1)"
+          >
+            <ng-icon name="lucideChevronUp" />
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            [disabled]="index === items.length - 1"
+            (click)="moveItem(index, index + 1)"
+          >
+            <ng-icon name="lucideChevronDown" />
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 
   <div class="form-actions mt-12 justify-end">
-    <p-button
-      label="{{ t('cancelButtonLabel') }}"
-      (click)="cancel()"
-      styleClass="p-button-secondary"
+    <button
+      hlmBtn
+      type="button"
+      variant="secondary"
       [disabled]="loadingState === loadingStates.LOADING"
-    ></p-button>
-    <p-button
-      label="{{ t('saveButtonLabel') }}"
-      (click)="saveItems()"
+      (click)="cancel()"
+    >
+      {{ t("cancelButtonLabel") }}
+    </button>
+    <button
+      lcLoadingButton
       [loading]="loadingState === loadingStates.LOADING"
-    ></p-button>
+      (click)="saveItems()"
+      [disabled]="loadingState === loadingStates.LOADING"
+      type="button"
+    >
+      {{ t("saveButtonLabel") }}
+    </button>
   </div>
 </ng-container>

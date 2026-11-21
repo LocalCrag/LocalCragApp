@@ -1,18 +1,19 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Button } from 'primeng/button';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { rootInject } from '../root-injector';
 
 @Component({
   selector: 'lc-account-prompt-dialog',
   templateUrl: './account-prompt-dialog.component.html',
   styleUrl: './account-prompt-dialog.component.scss',
-  imports: [TranslocoDirective, Button],
+  imports: [TranslocoDirective, HlmButton],
 })
 export class AccountPromptDialogComponent {
-  private ref = inject(DynamicDialogRef);
+  private ref = inject(BrnDialogRef);
   private router = inject(Router);
 
   goToLogin(): void {
@@ -28,15 +29,10 @@ export class AccountPromptDialogComponent {
 
 /** Asks a visitor to create an account instead of performing the action. */
 export function openAccountPrompt(
-  dialogService: DialogService,
-  translocoService: TranslocoService,
+  _dialogService: unknown,
+  _translocoService: TranslocoService,
 ): void {
-  dialogService.open(AccountPromptDialogComponent, {
-    modal: true,
-    closable: true,
-    dismissableMask: true,
-    focusOnShow: false,
-    header: translocoService.translate(marker('accountPrompt.title')),
-    width: '28rem',
+  rootInject(HlmDialogService).open(AccountPromptDialogComponent, {
+    contentClass: 'max-w-md',
   });
 }

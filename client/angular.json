@@ -104,6 +104,14 @@
                   "with": "src/app/modules/rock-explorer/rock-explorer-mock-gps.loader.prod.ts"
                 }
               ]
+            },
+            "testing": {
+              "aot": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "polyfills": ["zone.js"],
+              "assets": ["src/favicon.ico", "src/assets"],
+              "styles": ["src/tailwind.generated.css", "src/styles.scss"]
             }
           },
           "defaultConfiguration": "production"
@@ -130,15 +138,13 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/tailwind.generated.css", "src/styles.scss"],
-            "scripts": []
+            "setupFiles": ["src/vitest-setup.ts"],
+            "buildTarget": ":build:testing",
+            "runner": "vitest",
+            "runnerConfig": "vitest-base.config.mts"
           }
         },
         "lint": {

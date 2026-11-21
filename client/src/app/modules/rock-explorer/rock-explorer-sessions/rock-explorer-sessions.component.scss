@@ -70,13 +70,13 @@
   border-top: 1px solid var(--p-content-border-color);
   background: var(--p-content-background);
 
-  > p-button {
-    display: block;
+  > button {
+    display: inline-flex;
     width: 100%;
   }
 
-  ::ng-deep .rock-explorer-sessions__record-btn .p-button-icon {
-    color: var(--p-red-500, #ef4444);
+  .rock-explorer-sessions__record-btn ng-icon {
+    color: var(--destructive, #ef4444);
   }
 }
 

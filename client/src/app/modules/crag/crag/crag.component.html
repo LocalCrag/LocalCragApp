@@ -1,17 +1,18 @@
-<div class="content">
-  <div class="flex gap-1">
-    @if (crag?.closed) {
-      <lc-closed-spot-tag
-        spotType="crag"
-        [slug]="crag.slug"
-        [reasons]="crag.closedReasons"
-        [closureIsPermanent]="crag.closureIsPermanent"
-      ></lc-closed-spot-tag>
-    }
-    @if (crag?.secret) {
-      <lc-secret-spot-tag></lc-secret-spot-tag>
-    }
-  </div>
+<ng-template #statusTags>
+  @if (crag?.closed) {
+    <lc-closed-spot-tag
+      class="spot-status-tag--corner"
+      spotType="crag"
+      [slug]="crag.slug"
+      [reasons]="crag.closedReasons"
+      [closureIsPermanent]="crag.closureIsPermanent"
+    ></lc-closed-spot-tag>
+  }
+  @if (crag?.secret) {
+    <lc-secret-spot-tag class="spot-status-tag--corner"></lc-secret-spot-tag>
+  }
+</ng-template>
 
+<div class="content">
   <router-outlet name="cragContent"></router-outlet>
 </div>

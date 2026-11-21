@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { LoadingState } from '../../../enums/loading-state';
 import { forkJoin, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -8,7 +14,6 @@ import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { Area } from '../../../models/area';
 import { AreasService } from '../../../services/crud/areas.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OrderItemsComponent } from '../../shared/components/order-items/order-items.component';
 import {
   buildTopoListOrderDirectionOptions,
@@ -16,11 +21,7 @@ import {
   topoListSortFieldAndOrder,
   TopoListSortSelectOption,
 } from '../../../utility/topo-list-sort';
-
-import { DataView } from 'primeng/dataview';
-import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { NgClass } from '@angular/common';
 import { TopoDataviewSkeletonComponent } from '../../shared/components/topo-dataview-skeleton/topo-dataview-skeleton.component';
@@ -28,10 +29,16 @@ import { ArchiveButtonComponent } from '../../archive/archive-button/archive-but
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-import { Message } from 'primeng/message';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowUpDown, lucideInfo, lucidePlus } from '@ng-icons/lucide';
+import { HlmDialogService } from '@spartan-ng/helm/dialog';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 
 /**
  * Component that lists all areas in a sector.
@@ -40,13 +47,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'lc-area-list',
   templateUrl: './area-list.component.html',
   styleUrls: ['./area-list.component.scss'],
-  providers: [DialogService],
+  providers: [provideIcons({ lucideArrowUpDown, lucideInfo, lucidePlus })],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
-    DataView,
-    Select,
     FormsModule,
-    Button,
     RouterLink,
     HasPermissionDirective,
     TopoDataviewSkeletonComponent,
@@ -55,9 +60,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     AscentCountComponent,
     ClosedSpotTagComponent,
     SecretSpotTagComponent,
-    Message,
     LeveledGradeDistributionComponent,
     SanitizeHtmlPipe,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    NgIcon,
   ],
 })
 export class AreaListComponent implements OnInit {
@@ -75,11 +84,11 @@ export class AreaListComponent implements OnInit {
   public isMobile$: Observable<boolean>;
   public cragSlug: string;
   public sectorSlug: string;
-  public ref: DynamicDialogRef | undefined;
+  public ref: BrnDialogRef | undefined;
 
   private destroyRef = inject(DestroyRef);
   private store = inject(Store);
-  private dialogService = inject(DialogService);
+  private dialogService = inject(HlmDialogService);
   private route = inject(ActivatedRoute);
   private translocoService = inject(TranslocoService);
 
@@ -121,12 +130,12 @@ export class AreaListComponent implements OnInit {
    */
   reorderAreas() {
     this.ref = this.dialogService.open(OrderItemsComponent, {
-      modal: true,
-      header: this.translocoService.translate(
-        marker('reorderAreasDialogTitle'),
-      ),
-      data: {
-        items: this.areas,
+      title: this.translocoService.translate(marker('reorderAreasDialogTitle')),
+      contentClass: 'sm:max-w-lg',
+      context: {
+        items: [...this.areas].sort(
+          (left, right) => (left.orderIndex ?? 0) - (right.orderIndex ?? 0),
+        ),
         itemsName: this.translocoService.translate(
           marker('reorderAreasDialogItemsName'),
         ),
@@ -134,7 +143,7 @@ export class AreaListComponent implements OnInit {
         slugParameter: this.sectorSlug,
       },
     });
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    this.ref.closed$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.refreshData();
     });
   }
@@ -159,5 +168,17 @@ export class AreaListComponent implements OnInit {
     );
     this.sortField = sortField;
     this.sortOrder = sortOrder;
+    if (!this.areas) {
+      return;
+    }
+    this.areas = [...this.areas].sort((left, right) => {
+      const leftValue = left[sortField as keyof typeof left];
+      const rightValue = right[sortField as keyof typeof right];
+      const result =
+        typeof leftValue === 'string' || typeof rightValue === 'string'
+          ? String(leftValue ?? '').localeCompare(String(rightValue ?? ''))
+          : (Number(leftValue) || 0) - (Number(rightValue) || 0);
+      return result * sortOrder;
+    });
   }
 }

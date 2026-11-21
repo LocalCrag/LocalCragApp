@@ -16,11 +16,11 @@ describe('local-storage', () => {
       const storage = {
         getItem: () => null,
       } as unknown as Storage;
-      expect(probeLocalStorageAccess(() => storage)).toBeFalse();
+      expect(probeLocalStorageAccess(() => storage)).toBe(false);
     });
 
     it('treats a missing storage object as denied', () => {
-      expect(probeLocalStorageAccess(() => null)).toBeTrue();
+      expect(probeLocalStorageAccess(() => null)).toBe(true);
     });
 
     it('treats a throwing getter as denied', () => {
@@ -28,7 +28,7 @@ describe('local-storage', () => {
         probeLocalStorageAccess(() => {
           throw new DOMException(deniedMessage, 'SecurityError');
         }),
-      ).toBeTrue();
+      ).toBe(true);
     });
 
     it('treats a throwing read as denied', () => {
@@ -37,14 +37,14 @@ describe('local-storage', () => {
           throw new DOMException('The operation is insecure.', 'SecurityError');
         },
       } as unknown as Storage;
-      expect(probeLocalStorageAccess(() => storage)).toBeTrue();
+      expect(probeLocalStorageAccess(() => storage)).toBe(true);
     });
   });
 
   describe('isLocalStorageAccessDenied', () => {
     it('is false when the document allows localStorage', () => {
       const key = 'lc-storage-probe-test';
-      expect(isLocalStorageAccessDenied()).toBeFalse();
+      expect(isLocalStorageAccessDenied()).toBe(false);
       writeLocalStorageItem(key, 'ok');
       expect(readLocalStorageItem(key)).toBe('ok');
       localStorage.removeItem(key);
@@ -54,8 +54,8 @@ describe('local-storage', () => {
   describe('isLocalStorageAccessError', () => {
     it('matches the SecurityError reported by Sentry', () => {
       const error = new DOMException(deniedMessage, 'SecurityError');
-      expect(isLocalStorageAccessError(error)).toBeTrue();
-      expect(isLocalStorageAccessError(deniedMessage)).toBeTrue();
+      expect(isLocalStorageAccessError(error)).toBe(true);
+      expect(isLocalStorageAccessError(deniedMessage)).toBe(true);
     });
 
     it('ignores unrelated security errors', () => {
@@ -63,7 +63,7 @@ describe('local-storage', () => {
         'Failed to execute drawImage on CanvasRenderingContext2D',
         'SecurityError',
       );
-      expect(isLocalStorageAccessError(error)).toBeFalse();
+      expect(isLocalStorageAccessError(error)).toBe(false);
     });
   });
 
@@ -75,7 +75,7 @@ describe('local-storage', () => {
             values: [{ type: 'SecurityError', value: deniedMessage }],
           },
         }),
-      ).toBeTrue();
+      ).toBe(true);
     });
 
     it('keeps unrelated exceptions', () => {
@@ -90,7 +90,7 @@ describe('local-storage', () => {
             ],
           },
         }),
-      ).toBeFalse();
+      ).toBe(false);
     });
   });
 });

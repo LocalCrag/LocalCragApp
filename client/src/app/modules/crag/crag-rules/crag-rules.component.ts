@@ -1,21 +1,26 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-
-import { SkeletonModule } from 'primeng/skeleton';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
-
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 /**
  * Component that shows the rules of a crag.
  */
 @Component({
   selector: 'lc-crag-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
+  imports: [SanitizeHtmlPipe, RulesViewMetaComponent, HlmSkeleton],
   templateUrl: './crag-rules.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crag-rules.component.scss',
 })
 export class CragRulesComponent implements OnInit {

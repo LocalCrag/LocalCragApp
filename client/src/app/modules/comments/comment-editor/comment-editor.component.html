@@ -7,7 +7,7 @@
   >
     <div lcControlGroup class="flex flex-col gap-2">
       <textarea
-        pTextarea
+        hlmTextarea
         formControlName="message"
         lcFormControl
         [placeholder]="t('writeYourComment')"
@@ -22,20 +22,26 @@
 
     <div class="lc-button-group justify-end">
       @if (cancelable) {
-        <p-button
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
           [disabled]="saving"
           (click)="cancel()"
-          [label]="t('cancel')"
-          severity="secondary"
-          variant="outlined"
-        ></p-button>
+        >
+          {{ t("cancel") }}
+        </button>
       }
-      <p-button
+      <button
+        lcLoadingButton
+        icon="lucideMessageSquare"
         [loading]="saving"
         (click)="send()"
-        [disabled]="form.invalid"
-        [label]="t('postComment')"
-      ></p-button>
+        [disabled]="saving || form.invalid"
+        type="button"
+      >
+        {{ t("postComment") }}
+      </button>
     </div>
   </form>
 </ng-container>

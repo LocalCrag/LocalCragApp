@@ -1,149 +1,143 @@
 <ng-container *transloco="let t; read: 'crag.cragList'">
-  <p-dataView
-    #dv
-    [value]="crags"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
+  <div
+    class="flex flex-col sm:flex-row justify-between gap-2 border-b border-surface px-6 py-4"
   >
-    <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
-        >{{ t("noCragsFoundEmptyMessage") }}
-      </p-message>
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row justify-between gap-2">
-        <div class="flex flex-wrap items-center gap-2">
-          {{ t("orderByLabel") }}
-          <p-select
-            [options]="orderOptions"
-            [(ngModel)]="orderKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
+    <div class="flex flex-wrap items-center gap-2">
+      {{ t("orderByLabel") }}
+      <hlm-select
+        [(ngModel)]="orderKey"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onSortControlsChange()"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <hlm-select
+        [(ngModel)]="orderDirectionKey"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onSortControlsChange()"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderDirectionOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+    </div>
+    <div class="lc-button-group justify-start sm:justify-end">
+      <a
+        hlmBtn
+        class="responsive-button"
+        routerLink="/topo/create-crag"
+        [disabled]="loading === loadingStates.LOADING"
+        *isModerator="true"
+        ><ng-icon name="lucidePlus" /> {{ t("newCragButtonLabel") }}</a
+      >
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        (click)="reorderCrags()"
+        [disabled]="crags?.length < 2 || loading === loadingStates.LOADING"
+        *isModerator="true"
+      >
+        <ng-icon name="lucideArrowUpDown" /> {{ t("reorderCragsButtonLabel") }}
+      </button>
+    </div>
+  </div>
+
+  @if (!crags?.length && loading === loadingStates.DEFAULT) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noCragsFoundEmptyMessage") }}</p>
+    </div>
+  }
+
+  @if (loading === loadingStates.LOADING) {
+    <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
+  }
+  @if (loading !== loadingStates.LOADING) {
+    <div class="grid grid-cols-12">
+      @for (crag of crags; track crag; let first = $first) {
+        <a
+          class="col-span-12 clickable-data-item"
+          routerLink="/topo/{{ crag.slug }}/sectors"
+          data-cy="crag-list-item"
+        >
+          <div
+            class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
+            [ngClass]="{ 'border-t border-surface': !first }"
           >
-            <ng-template #selectedItem>
-              @if (orderKey) {
-                <div>{{ orderKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-          <p-select
-            [options]="orderDirectionOptions"
-            [(ngModel)]="orderDirectionKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING"
-            (onChange)="onSortControlsChange()"
-            styleClass="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderDirectionKey) {
-                <div>{{ orderDirectionKey.label }}</div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div>{{ option.label }}</div>
-            </ng-template>
-          </p-select>
-        </div>
-        <div class="lc-button-group justify-start sm:justify-end">
-          <p-button
-            label="{{ t('newCragButtonLabel') }}"
-            icon="pi pi-plus"
-            routerLink="/topo/create-crag"
-            [disabled]="loading === loadingStates.LOADING"
-            *isModerator="true"
-            class="responsive-button"
-          ></p-button>
-          <p-button
-            label="{{ t('reorderCragsButtonLabel') }}"
-            icon="pi pi-sort"
-            (click)="reorderCrags()"
-            [disabled]="crags?.length < 2 || loading === loadingStates.LOADING"
-            class="responsive-button"
-            *isModerator="true"
-          ></p-button>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template let-crags #list>
-      @if (loading === loadingStates.LOADING) {
-        <lc-topo-dataview-skeleton></lc-topo-dataview-skeleton>
-      }
-      @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12">
-          @for (crag of crags; track crag; let first = $first) {
-            <a
-              class="col-span-12 clickable-data-item"
-              routerLink="/topo/{{ crag.slug }}/sectors"
-              data-cy="crag-list-item"
+            <img
+              class="w-9/12 sm:w-64 xl:w-40 shadow block xl:block mx-auto rounded-border"
+              [src]="
+                crag.portraitImage
+                  ? crag.portraitImage.thumbnailM
+                  : 'assets/placeholder.png'
+              "
+              [alt]="crag.name"
+            />
+            <div
+              class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
             >
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
-                [ngClass]="{ 'border-t border-surface': !first }"
+                class="flex flex-col items-center sm:items-start gap-4 w-full"
               >
-                <img
-                  class="w-9/12 sm:w-64 xl:w-40 shadow block xl:block mx-auto rounded-border"
-                  [src]="
-                    crag.portraitImage
-                      ? crag.portraitImage.thumbnailM
-                      : 'assets/placeholder.png'
-                  "
-                  [alt]="crag.name"
-                />
-                <div
-                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
-                >
-                  <div
-                    class="flex flex-col items-center sm:items-start gap-4 w-full"
-                  >
-                    <div class="flex justify-between w-full">
-                      <span class="text-2xl font-bold black-font">
-                        {{ crag.name }}
-                      </span>
-                      <lc-archive-button
-                        *isModerator="true"
-                        [showLabel]="true"
-                        [crag]="crag"
-                      />
-                    </div>
-                    @if (crag.shortDescription) {
-                      <div
-                        [innerHTML]="crag.shortDescription | sanitizeHtml"
-                        class="wysiwyg-content"
-                      ></div>
-                    }
-                    <lc-leveled-grade-distribution
-                      [fetchingObservable]="
-                        cragsService.getCragGrades(crag.slug)
-                      "
-                      [linesListUrl]="'/topo/' + crag.slug + '/lines'"
-                    ></lc-leveled-grade-distribution>
-                    <lc-ascent-count
-                      [ascentCount]="crag.ascentCount"
-                    ></lc-ascent-count>
-                    <div class="flex gap-1">
+                <div class="flex w-full items-center justify-between gap-3">
+                  <span class="min-w-0 flex-1 text-2xl font-bold black-font">
+                    {{ crag.name }}
+                  </span>
+                  <div class="flex shrink-0 items-center">
+                    <div class="flex items-center gap-2">
                       @if (crag?.closed) {
                         <lc-closed-spot-tag
+                          class="spot-status-tag--beside"
                           spotType="crag"
                           [slug]="crag.slug"
                           [closureIsPermanent]="crag.closureIsPermanent"
                         ></lc-closed-spot-tag>
                       }
                       @if (crag?.secret) {
-                        <lc-secret-spot-tag></lc-secret-spot-tag>
+                        <lc-secret-spot-tag
+                          class="spot-status-tag--beside"
+                        ></lc-secret-spot-tag>
                       }
                     </div>
+                    <lc-archive-button
+                      *isModerator="true"
+                      class="[&:has(button)]:ml-2"
+                      [showLabel]="true"
+                      [crag]="crag"
+                    />
                   </div>
                 </div>
+                @if (crag.shortDescription) {
+                  <div
+                    [innerHTML]="crag.shortDescription | sanitizeHtml"
+                    class="wysiwyg-content"
+                  ></div>
+                }
+                <lc-leveled-grade-distribution
+                  [fetchingObservable]="cragsService.getCragGrades(crag.slug)"
+                  [linesListUrl]="'/topo/' + crag.slug + '/lines'"
+                ></lc-leveled-grade-distribution>
+                <lc-ascent-count
+                  [ascentCount]="crag.ascentCount"
+                ></lc-ascent-count>
               </div>
-            </a>
-          }
-        </div>
+            </div>
+          </div>
+        </a>
       }
-    </ng-template>
-  </p-dataView>
+    </div>
+  }
 </ng-container>

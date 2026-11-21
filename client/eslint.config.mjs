@@ -1,16 +1,8 @@
+// @ts-check
+import eslint from "@eslint/js";
 import { defineConfig, globalIgnores } from "eslint/config";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+import angular from "angular-eslint";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
   globalIgnores([
@@ -22,14 +14,12 @@ export default defineConfig([
   ]),
   {
     files: ["**/*.ts"],
-
-    extends: compat.extends(
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:@angular-eslint/recommended",
-      "plugin:@angular-eslint/template/process-inline-templates",
-    ),
-
+    extends: [
+      eslint.configs.recommended,
+      tseslint.configs.recommended,
+      angular.configs.tsRecommended,
+    ],
+    processor: angular.processInlineTemplates,
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "no-unused-vars": "off",
@@ -46,6 +36,8 @@ export default defineConfig([
       "no-control-regex": "off",
 
       "no-console": ["error", { allow: ["warn", "error"] }],
+
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
 
       "@angular-eslint/directive-selector": [
         "error",
@@ -67,16 +59,35 @@ export default defineConfig([
     },
   },
   {
+    files: ["src/app/ui/**/*.ts"],
+    // Copied Spartan components ship their own eslint-disable comments.
+    // Selector rules are already off for this folder, so those comments
+    // are unused and should not be reported.
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
+    rules: {
+      "@angular-eslint/component-selector": "off",
+      "@angular-eslint/directive-selector": "off",
+      "@angular-eslint/no-input-rename": "off",
+      "@angular-eslint/template/interactive-supports-focus": "off",
+    },
+  },
+  {
     files: ["**/*.html"],
-
-    extends: compat.extends(
-      "plugin:@angular-eslint/template/recommended",
-      "plugin:@angular-eslint/template/accessibility",
-    ),
-
+    extends: [
+      angular.configs.templateRecommended,
+      angular.configs.templateAccessibility,
+    ],
     rules: {
       "@angular-eslint/template/label-has-associated-control": "off",
       "@angular-eslint/template/click-events-have-key-events": "off",
+    },
+  },
+  {
+    files: ["src/app/ui/**"],
+    rules: {
+      "@angular-eslint/template/interactive-supports-focus": "off",
     },
   },
 ]);

@@ -8,17 +8,21 @@ import { selectNoClosedProjects } from '../../ngrx/selectors/instance-settings.s
 describe('TranslateSpecialGradesService', () => {
   let service: TranslateSpecialGradesService;
   let noClosedProjects$: BehaviorSubject<boolean>;
-  let transloco: jasmine.SpyObj<TranslocoService>;
+  let transloco: { translate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     noClosedProjects$ = new BehaviorSubject<boolean>(false);
-    transloco = jasmine.createSpyObj('TranslocoService', ['translate']);
-    transloco.translate.and.callFake(
+    transloco = {
+      translate: vi.fn().mockName('TranslocoService.translate'),
+    };
+    transloco.translate.mockImplementation(
       ((key: string) => key) as typeof transloco.translate,
     );
 
-    const store = jasmine.createSpyObj('Store', ['select']);
-    store.select.and.callFake((selector: unknown) => {
+    const store = {
+      select: vi.fn().mockName('Store.select'),
+    };
+    store.select.mockImplementation((selector: unknown) => {
       if (selector === selectNoClosedProjects) {
         return noClosedProjects$.asObservable();
       }

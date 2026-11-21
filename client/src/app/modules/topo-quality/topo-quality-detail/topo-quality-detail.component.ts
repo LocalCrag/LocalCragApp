@@ -1,11 +1,23 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { combineLatest, EMPTY } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { Message } from 'primeng/message';
-import { TooltipModule } from 'primeng/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeft,
+  lucideCircleQuestionMark,
+  lucideCircleX,
+} from '@ng-icons/lucide';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import {
   TopoQualityDetail,
   TopoQualityItem,
@@ -20,11 +32,17 @@ import { TopoQualityBarComponent } from '../topo-quality-bar/topo-quality-bar.co
   imports: [
     TranslocoDirective,
     RouterLink,
-    Message,
-    TooltipModule,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmTooltip,
+    NgIcon,
     TopoQualityBarComponent,
   ],
+  providers: [
+    provideIcons({ lucideArrowLeft, lucideCircleQuestionMark, lucideCircleX }),
+  ],
   templateUrl: './topo-quality-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './topo-quality-detail.component.scss',
 })
 export class TopoQualityDetailComponent implements OnInit {

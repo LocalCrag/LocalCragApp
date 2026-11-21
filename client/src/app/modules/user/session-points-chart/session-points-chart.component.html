@@ -2,37 +2,53 @@
   @if (sessions?.length) {
     <p class="session-hint">{{ t("sessionsHint") }}</p>
     <div class="session-controls">
-      <p-selectbutton
-        [options]="metricOptions"
-        optionLabel="label"
-        optionValue="value"
+      <div
+        hlmToggleGroup
+        type="single"
         [(ngModel)]="metric"
         (ngModelChange)="onControlsChange()"
-        [allowEmpty]="false"
+        [nullable]="false"
         data-cy="session-points-metric"
-      />
+      >
+        @for (option of metricOptions; track $index) {
+          <button hlmToggleGroupItem type="button" [value]="option.value">
+            {{ option.label }}
+          </button>
+        }
+      </div>
       @if (rangeOptions.length > 1) {
-        <p-selectbutton
-          [options]="rangeOptions"
-          optionLabel="label"
-          optionValue="value"
+        <div
+          hlmToggleGroup
+          type="single"
           [(ngModel)]="range"
           (ngModelChange)="onControlsChange()"
-          [allowEmpty]="false"
+          [nullable]="false"
           data-cy="session-points-range"
-        />
+        >
+          @for (option of rangeOptions; track $index) {
+            <button hlmToggleGroupItem type="button" [value]="option.value">
+              {{ option.label }}
+            </button>
+          }
+        </div>
       }
       @if (scaleOptions.length > 1) {
-        <p-select
-          [options]="scaleOptions"
-          optionLabel="label"
-          optionValue="key"
+        <hlm-select
           [(ngModel)]="scaleKey"
-          (ngModelChange)="onScaleChange()"
-          appendTo="body"
-          [attr.aria-label]="t('sessionScale')"
+          [itemToString]="scaleLabel"
           data-cy="session-points-scale"
-        />
+          (ngModelChange)="onScaleChange()"
+          [attr.aria-label]="t('sessionScale')"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of scaleOptions; track $index) {
+              <hlm-select-item [value]="option.key">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
       }
     </div>
   }
@@ -43,7 +59,11 @@
       data-cy="session-points-chart"
     >
       <div class="session-chart-wrap" [style.minWidth.px]="chartMinWidth">
-        <p-chart type="line" [data]="chartData" [options]="chartOptions" />
+        <canvas
+          lcChartJs="line"
+          [data]="chartData"
+          [options]="chartOptions"
+        ></canvas>
       </div>
       @if (selectedBar()) {
         <div class="session-breakdown" data-cy="session-points-breakdown">
@@ -57,10 +77,9 @@
       }
     </div>
   } @else {
-    <p-message
-      severity="info"
-      icon="pi pi-info-circle"
-      [text]="t('noSessionData')"
-    />
+    <div hlmAlert>
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noSessionData") }}</p>
+    </div>
   }
 </ng-container>

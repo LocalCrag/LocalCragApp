@@ -1,7 +1,11 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
@@ -20,15 +24,27 @@ import {
   selectBgImage,
 } from '../../../ngrx/selectors/instance-settings.selectors';
 
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
+
 @Component({
   selector: 'lc-region',
   imports: [RouterOutlet],
   templateUrl: './region.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region.component.scss',
 })
 export class RegionComponent implements OnInit {
   public region: Region;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
   private regionsService = inject(RegionService);
   private translocoService = inject(TranslocoService);

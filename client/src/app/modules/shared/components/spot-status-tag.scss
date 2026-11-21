@@ -1,0 +1,88 @@
+@use "../../../styles/media-queries" as m;
+
+@mixin spot-status-tag-sizes($solid: false) {
+  :host {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  :host.spot-status-tag--beside ::ng-deep [data-slot="badge"] {
+    height: auto;
+    min-height: 1.625rem;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+
+    @if $solid {
+      background-color: var(--p-red-700);
+      color: var(--p-primary-contrast-color);
+      border-color: transparent;
+    }
+  }
+
+  :host.spot-status-tag--header ::ng-deep [data-slot="badge"] {
+    height: auto;
+    min-height: 2rem;
+    padding: 0.15rem 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.25;
+    gap: 0.4rem;
+
+    @if $solid {
+      background-color: var(--p-red-700);
+      color: var(--p-primary-contrast-color);
+      border-color: transparent;
+    }
+  }
+
+  :host.spot-status-tag--header ::ng-deep [data-slot="badge"] ng-icon {
+    font-size: 1.05rem;
+  }
+
+  :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] {
+    height: auto;
+    min-height: 1.625rem;
+    padding: 0.08rem 0.55rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    gap: 0.3rem;
+
+    @if $solid {
+      background-color: var(--p-red-700);
+      color: var(--p-primary-contrast-color);
+      border-color: transparent;
+    }
+  }
+
+  :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] ng-icon {
+    font-size: 0.9rem;
+  }
+
+  // Header chips sit in a column beside the title. On a phone the words
+  // ("Temporarily closed") steal the title's width, so only the icon shows.
+  @include m.on-mobile {
+    :host.spot-status-tag--corner ::ng-deep [data-slot="badge"] {
+      position: relative;
+      justify-content: center;
+      min-width: 1.75rem;
+      min-height: 1.75rem;
+      padding: 0.2rem;
+    }
+
+    :host.spot-status-tag--corner ::ng-deep .closed-spot-tag__help {
+      display: none;
+    }
+
+    :host.spot-status-tag--corner ::ng-deep .spot-status-tag__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+}

@@ -25,6 +25,12 @@ lc-comment {
 
   .reply-button {
     margin-left: -0.6rem;
+    color: var(--p-primary-color);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--p-primary-color);
+    }
   }
 
   .reply-to-indicator {

@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Sector } from '../../../../models/sector';
 import { Area } from '../../../../models/area';
@@ -16,13 +17,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo, lucideTriangleAlert } from '@ng-icons/lucide';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import {
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from 'primeng/autocomplete';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { SearchService } from '../../../../services/crud/search.service';
 import { Searchable } from '../../../../models/searchable';
 import { ObjectType } from '../../../../models/object';
@@ -37,24 +38,28 @@ import { ControlGroupDirective } from '../../forms/control-group.directive';
 import { FormControlDirective } from '../../forms/form-control.directive';
 import { IfErrorDirective } from '../../forms/if-error.directive';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { Message } from 'primeng/message';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-move-object-dialog',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
-    DialogModule,
-    ButtonModule,
+    NgIcon,
+    HlmAlert,
+    HlmButton,
+    ...HlmDialogImports,
+    ...HlmAutocompleteImports,
     TranslocoDirective,
     TranslocoPipe,
-    AutoCompleteModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    Message,
   ],
+  providers: [provideIcons({ lucideInfo, lucideTriangleAlert })],
   templateUrl: './move-object-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './move-object-dialog.component.scss',
 })
 export class MoveObjectDialogComponent {
@@ -132,14 +137,16 @@ export class MoveObjectDialogComponent {
     this.form = null;
   }
 
-  searchSuggestions(event: AutoCompleteCompleteEvent) {
-    const query = event.query?.trim();
-    if (!query) {
+  searchableLabel = (item: Searchable | null): string => item?.name ?? '';
+
+  searchSuggestions(query: string) {
+    const trimmed = query?.trim();
+    if (!trimmed) {
       this.suggestions = [];
       return;
     }
     this.searchService
-      .search(query, this.targetObjectType)
+      .search(trimmed, this.targetObjectType)
       .subscribe((results) => {
         this.suggestions = this.currentParentId
           ? results.filter((s) => s.id !== this.currentParentId)

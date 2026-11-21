@@ -1,4 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -19,6 +25,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 @Component({
   selector: 'lc-user-todos',
   imports: [TodoListComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './user-todos.component.html',
 })
 export class UserTodosComponent implements OnInit {

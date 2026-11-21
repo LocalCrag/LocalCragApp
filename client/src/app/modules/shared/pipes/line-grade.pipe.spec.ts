@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -9,9 +10,11 @@ import { Line } from '../../../models/line';
 describe('LineGradePipe', () => {
   // gradeNameByValue stub maps each value to a recognizable name, so the test
   // can assert which grade value (author vs user) the pipe resolved.
-  let gradeNameByValue: jasmine.Spy;
-  let gradeNameByValueMap: jasmine.Spy;
-  let settings$: BehaviorSubject<{ displayUserGrades: boolean }>;
+  let gradeNameByValue: Mock;
+  let gradeNameByValueMap: Mock;
+  let settings$: BehaviorSubject<{
+    displayUserGrades: boolean;
+  }>;
   let pipe: LineGradePipe;
 
   // author grade 20, user grade 29 (distinct so the toggle/mode is observable)
@@ -23,13 +26,17 @@ describe('LineGradePipe', () => {
   } as unknown as Line;
 
   beforeEach(() => {
-    gradeNameByValue = jasmine
-      .createSpy('gradeNameByValue')
-      .and.callFake((_type, _scale, value) => of(`grade-${value}`));
-    gradeNameByValueMap = jasmine
-      .createSpy('gradeNameByValueMap')
-      .and.returnValue(of({ 10: '6A', 16: '7A' }));
-    settings$ = new BehaviorSubject<{ displayUserGrades: boolean }>({
+    gradeNameByValue = vi
+      .fn()
+      .mockName('gradeNameByValue')
+      .mockImplementation((_type, _scale, value) => of(`grade-${value}`));
+    gradeNameByValueMap = vi
+      .fn()
+      .mockName('gradeNameByValueMap')
+      .mockReturnValue(of({ 10: '6A', 16: '7A' }));
+    settings$ = new BehaviorSubject<{
+      displayUserGrades: boolean;
+    }>({
       displayUserGrades: false,
     });
 
@@ -127,7 +134,7 @@ describe('LineGradePipe', () => {
       assumedGradeMax: 16,
     } as unknown as Line;
 
-    gradeNameByValueMap.calls.reset();
+    gradeNameByValueMap.mockClear();
     expect(pipe.transform(graded)).toBe('grade-20');
     expect(gradeNameByValueMap).not.toHaveBeenCalled();
   });

@@ -6,7 +6,7 @@ import {
   Router,
   RoutesRecognized,
 } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '../../modules/shared/models/menu-item';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -34,6 +34,9 @@ export interface PageTitleState {
   /** Page heading string; ignored when `template` is set. */
   title: string | null;
 
+  /** Optional help text shown in a tooltip after the heading. */
+  info: string | null;
+
   /** Optional hero background image. */
   image: File | null;
 
@@ -48,6 +51,9 @@ export interface PageTitleState {
 
   /** Optional heading template (takes precedence over `title`). */
   template: TemplateRef<unknown> | null;
+
+  /** Optional content rendered after the heading text, such as status tags. */
+  titleAddon: TemplateRef<unknown> | null;
 
   /** Breadcrumb items for the header. */
   breadcrumbs: MenuItem[] | null;
@@ -80,14 +86,22 @@ export interface SetPageTitleOptions {
   heroDefaultBg?: boolean;
   /** Optional heading template; overrides the `title` string. */
   template?: TemplateRef<unknown> | null;
+
+  /** Optional content rendered after the heading text, such as status tags. */
+  titleAddon?: TemplateRef<unknown> | null;
+
+  /** Help text shown in a tooltip after the heading. */
+  info?: string | null;
 }
 
 const initialState: PageTitleState = {
   title: null,
+  info: null,
   image: null,
   heroDefaultBg: false,
   imageBackgroundStyles: null,
   template: null,
+  titleAddon: null,
   breadcrumbs: null,
   breadcrumbHome: null,
   tabs: null,
@@ -176,6 +190,8 @@ export class PageTitleService {
       heroDefaultBg: options?.heroDefaultBg ?? false,
       imageBackgroundStyles: imageFocusBackgroundStyles(image?.focusY) || null,
       template: options?.template ?? null,
+      titleAddon: options?.titleAddon ?? null,
+      info: options?.info ?? null,
     };
     // The header is checked before the new page's ngOnInit. Applying the title
     // in that same turn flips `loading` and throws NG0100.
@@ -204,11 +220,13 @@ export class PageTitleService {
     title: string,
     portraitImage?: File | null,
     fallbackImage?: File | null,
+    options?: Pick<SetPageTitleOptions, 'titleAddon'>,
   ): void {
     const image = resolvePageTitleImage(portraitImage, fallbackImage);
     this.setTitle(title, {
       image,
       heroDefaultBg: !image,
+      titleAddon: options?.titleAddon ?? null,
     });
   }
 

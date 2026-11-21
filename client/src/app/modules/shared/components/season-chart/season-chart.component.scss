@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.lc-chart {
+  height: 18rem;
+  display: block;
+  position: relative;
+
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ScalesService } from '../../../services/crud/scales.service';
 import {
   TranslocoDirective,
@@ -24,18 +30,9 @@ import { LineType } from '../../../enums/line-type';
 import { catchError } from 'rxjs/operators';
 import { EMPTY, throwError } from 'rxjs';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
-import { MessageModule } from 'primeng/message';
-import { DividerModule } from 'primeng/divider';
-import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
 import { FormArrayDirective } from '../../shared/forms/form-array.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -51,24 +48,36 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectNoClosedProjects } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AsyncPipe } from '@angular/common';
 import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bracket-preview.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  lucideArrowDownAZ,
+  lucideBan,
+  lucideCirclePlus,
+  lucideCircleX,
+  lucideInfo,
+  lucideSave,
+  lucideTrash2,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-scale-form',
   templateUrl: './scale-form.component.html',
   styleUrl: './scale-form.component.scss',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     TranslocoPipe,
-    InputTextModule,
-    InputNumberModule,
-    ButtonModule,
     FormsModule,
-    ConfirmPopupModule,
-    MessageModule,
-    DividerModule,
-    Checkbox,
-    Select,
     TranslateSpecialGradesPipe,
     FormArrayDirective,
     FormControlDirective,
@@ -79,10 +88,30 @@ import { ScaleBracketPreviewComponent } from '../scale-bracket-preview/scale-bra
     NgxColorsModule,
     AsyncPipe,
     ScaleBracketPreviewComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmInput,
+    HlmCheckbox,
+    HlmSeparator,
+    NgIcon,
   ],
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    provideIcons({
+      lucideArrowDownAZ,
+      lucideBan,
+      lucideCirclePlus,
+      lucideCircleX,
+      lucideInfo,
+      lucideSave,
+      lucideTrash2,
+    }),
+  ],
 })
 export class ScaleFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public scaleForm: FormGroup;
@@ -93,7 +122,6 @@ export class ScaleFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private scalesService = inject(ScalesService);
-  private confirmationService = inject(ConfirmationService);
   private translocoService = inject(TranslocoService);
   private route = inject(ActivatedRoute);
   protected router = inject(Router);
@@ -467,20 +495,18 @@ export class ScaleFormComponent implements OnInit {
     }
   }
 
-  confirmDeleteScale(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteScale(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('scale.scaleForm.confirmDeleteMessage'),
       ),
       acceptLabel: this.translocoService.translate(
         marker('scale.scaleForm.acceptConfirmDelete'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('scale.scaleForm.cancel'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: this.deleteScale.bind(this),
     });
   }
@@ -502,6 +528,9 @@ export class ScaleFormComponent implements OnInit {
 
   protected readonly LoadingState = LoadingState;
   protected readonly LineType = LineType;
+
+  lineTypeLabel = (value: string | null): string =>
+    value ? this.translocoService.translate(`scale.scaleForm.${value}`) : '';
   protected readonly stackedChartBracketColors =
     DEFAULT_STACKED_CHART_BRACKET_COLORS;
 }

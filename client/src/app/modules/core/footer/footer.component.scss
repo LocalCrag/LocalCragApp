@@ -12,14 +12,15 @@ lc-footer {
     color: var(--p-text-muted-color);
   }
 
-  .p-button-label {
-    color: var(--p-text-color);
-    font-weight: normal;
-  }
-
   .footer-menu {
     display: block;
     padding: 0.5rem;
+
+    a,
+    button {
+      color: var(--p-text-muted-color);
+      font-weight: 400;
+    }
 
     .p-button.p-button-text:not(:disabled):hover {
       background: var(--p-content-hover-background);

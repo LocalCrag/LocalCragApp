@@ -6,9 +6,12 @@ import {
   OnInit,
   SimpleChanges,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Message } from 'primeng/message';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
 import {
@@ -34,7 +37,9 @@ type TopoEntity = Crag | Sector | Area | Line;
  */
 @Component({
   selector: 'lc-duplicate-name-warning',
-  imports: [Message, TranslocoDirective, LineGradePipe],
+  imports: [HlmAlert, NgIcon, TranslocoDirective, LineGradePipe],
+  providers: [provideIcons({ lucideInfo })],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './duplicate-name-warning.component.html',
 })
 export class DuplicateNameWarningComponent implements OnInit, OnChanges {

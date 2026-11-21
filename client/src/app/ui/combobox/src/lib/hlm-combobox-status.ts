@@ -1,0 +1,18 @@
+import { Directive } from '@angular/core';
+import { BrnComboboxStatus } from '@spartan-ng/brain/combobox';
+import { classes } from '@spartan-ng/helm/utils';
+
+@Directive({
+  selector: '[hlmComboboxStatus],hlm-combobox-status',
+  exportAs: 'hlmComboboxStatus',
+  hostDirectives: [BrnComboboxStatus],
+  host: { 'data-slot': 'combobox-status' },
+})
+export class HlmComboboxStatus {
+  constructor() {
+    classes(
+      () =>
+        'text-muted-foreground gap-2 px-2.5 py-2 text-base flex w-full items-center justify-center text-center',
+    );
+  }
+}

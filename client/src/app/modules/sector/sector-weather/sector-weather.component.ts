@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocweatherComponent } from '../../weather/blocweather/blocweather.component';
@@ -7,6 +13,7 @@ import { BlocweatherComponent } from '../../weather/blocweather/blocweather.comp
   selector: 'lc-sector-weather',
   imports: [BlocweatherComponent],
   templateUrl: './sector-weather.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sector-weather.component.scss',
 })
 export class SectorWeatherComponent implements OnInit {

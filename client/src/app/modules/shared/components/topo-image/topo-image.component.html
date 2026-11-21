@@ -1,10 +1,11 @@
 <div #konvaContainer></div>
 
 @if (loading) {
-  <p-skeleton
-    [width]="skeletonWidth + 'px'"
-    [height]="skeletonHeight + 'px'"
-  ></p-skeleton>
+  <div
+    hlmSkeleton
+    [style.width.px]="skeletonWidth"
+    [style.height.px]="skeletonHeight"
+  ></div>
 }
 
 @if (expandable) {
@@ -16,7 +17,7 @@
     (click)="expand.emit()"
   >
     <span class="topo-image-open__icon" aria-hidden="true">
-      <i class="pi pi-eye"></i>
+      <ng-icon name="lucideEye" />
     </span>
   </button>
 }

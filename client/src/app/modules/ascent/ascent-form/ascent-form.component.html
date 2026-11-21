@@ -1,23 +1,24 @@
 <ng-container *transloco="let t; read: 'ascentForm'">
+  <lc-ascent-form-title />
   <form [formGroup]="ascentForm" lcForm>
-    <p-divider align="center" type="dotted">
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
       <b>{{ t("ascentDate") }}</b>
-    </p-divider>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
-    <div class="flex justify-center gap-2 mb-2">
+    <div class="flex min-w-0 flex-wrap justify-center gap-2 mb-2">
       @if (ascentForm.get("yearOnly").value) {
-        <div class="flex flex-col gap-2 grow" lcControlGroup>
-          <p-date-picker
+        <div class="flex min-w-0 flex-col gap-2 grow" lcControlGroup>
+          <hlm-month-year-picker
+            [autoCloseOnSelect]="true"
             formControlName="year"
-            view="year"
-            dateFormat="yy"
-            inputId="year"
             lcFormControl
-            appendTo="body"
             [maxDate]="today"
-            [readonlyInput]="true"
+            [formatDate]="formatYear"
             class="w-full"
-          ></p-date-picker>
+            ><hlm-date-picker-input inputId="year"
+          /></hlm-month-year-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("yearInFutureValidationError")
           }}</small>
@@ -27,17 +28,16 @@
         </div>
       }
       @if (!ascentForm.get("yearOnly").value) {
-        <div class="flex flex-col gap-2 grow" lcControlGroup>
-          <p-date-picker
+        <div class="flex min-w-0 flex-col gap-2 grow" lcControlGroup>
+          <hlm-date-picker
+            [autoCloseOnSelect]="true"
             formControlName="date"
-            view="date"
-            inputId="date"
             lcFormControl
             class="w-full"
-            appendTo="body"
             [maxDate]="today"
-            [readonlyInput]="true"
-          ></p-date-picker>
+            [formatDate]="formatDay"
+            ><hlm-date-picker-input inputId="date"
+          /></hlm-date-picker>
           <small class="lc-error" *lcIfError="'dateInFuture'">{{
             t("dateInFutureValidationError")
           }}</small>
@@ -46,121 +46,167 @@
           }}</small>
         </div>
       }
-      <p-toggleButton
-        formControlName="yearOnly"
-        [onLabel]="t('onlyYear')"
-        [offLabel]="t('onlyYear')"
+      <button
+        hlmToggle
+        type="button"
         data-cy="yearOnly"
-        [dt]="toggleButtonDt"
-      ></p-toggleButton>
-    </div>
-
-    <div class="flex justify-center gap-2">
-      <p-button
-        [label]="t('today')"
-        size="small"
-        severity="secondary"
-        (click)="setToToday()"
-      ></p-button>
-      <p-button
-        [label]="t('lastSaturday')"
-        size="small"
-        severity="secondary"
-        (click)="setToLastSaturday()"
-      ></p-button>
-      <p-button
-        [label]="t('lastSunday')"
-        size="small"
-        severity="secondary"
-        (click)="setToLastSunday()"
-      ></p-button>
-    </div>
-
-    <p-divider align="center" type="dotted">
-      <b>{{ t("personalGrade") }}</b>
-    </p-divider>
-
-    <div class="flex flex-row gap-2 justify-center items-center" lcControlGroup>
-      <p-toggleButton
-        formControlName="soft"
-        [onLabel]="t('soft')"
-        [offLabel]="t('soft')"
-        [dt]="toggleButtonDt"
-      ></p-toggleButton>
-      <p-select
-        formControlName="grade"
-        [options]="grades"
-        data-cy="grade-dropdown"
-        optionLabel="name"
-        placeholder="{{ t('gradePlaceholder') }}"
-        lcFormControl
+        [state]="ascentForm.get('yearOnly')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('yearOnly')?.setValue($event === 'on')"
       >
-        <ng-template let-grade #item>
-          <div class="flex items-center gap-2" data-cy="grade-dropdown-item">
-            <div>{{ grade.name | translateSpecialGrades }}</div>
-          </div>
-        </ng-template>
-        <ng-template let-selectedGrade #selectedItem>
-          {{ selectedGrade.name | translateSpecialGrades }}
-        </ng-template>
-      </p-select>
-      <p-toggleButton
-        formControlName="hard"
-        [onLabel]="t('hard')"
-        [offLabel]="t('hard')"
-        [dt]="toggleButtonDt"
-      ></p-toggleButton>
+        {{ t("onlyYear") }}
+      </button>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-2">
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToToday()"
+      >
+        {{ t("today") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToLastSaturday()"
+      >
+        {{ t("lastSaturday") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="sm"
+        (click)="setToLastSunday()"
+      >
+        {{ t("lastSunday") }}
+      </button>
+    </div>
+
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
+      <b>{{ t("personalGrade") }}</b>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
+
+    <div class="flex flex-col gap-2 items-center" lcControlGroup>
+      <div
+        class="flex min-w-0 flex-row flex-wrap gap-2 justify-center items-center"
+      >
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('soft')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('soft')?.setValue($event === 'on')"
+        >
+          {{ t("soft") }}
+        </button>
+        <hlm-select
+          formControlName="grade"
+          [itemToString]="gradeLabel"
+          lcFormControl
+          data-cy="grade-dropdown"
+          class="ascent-grade-select"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              placeholder="{{ t('gradePlaceholder') }}" /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (grade of grades; track $index) {
+              <hlm-select-item [value]="grade"
+                ><div
+                  class="flex items-center gap-2"
+                  data-cy="grade-dropdown-item"
+                >
+                  <div>{{ grade.name | translateSpecialGrades }}</div>
+                </div></hlm-select-item
+              >
+            }
+          </hlm-select-content></hlm-select
+        >
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('hard')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('hard')?.setValue($event === 'on')"
+        >
+          {{ t("hard") }}
+        </button>
+      </div>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
     </div>
     @if (gradeDifferenceWarning) {
-      <p-message severity="warn" styleClass="ascent-form-alert mt-2">
-        {{ t("unusualGradeDifferenceWarning") }}
-      </p-message>
+      <div hlmAlert variant="warning" class="ascent-form-alert mt-2">
+        <ng-icon name="lucideTriangleAlert" />
+        <p hlmAlertDescription>{{ t("unusualGradeDifferenceWarning") }}</p>
+      </div>
     }
 
-    <p-divider align="center" type="dotted">
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
       <b>{{ t("rating") }}</b>
-    </p-divider>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-col gap-2 items-center justify-center" lcControlGroup>
-      <p-rating
-        formControlName="rating"
-        lcFormControl
-        data-cy="rating"
-      ></p-rating>
+      <input type="hidden" formControlName="rating" lcFormControl />
+      <div class="ascent-rating" data-cy="rating" role="radiogroup">
+        @for (star of [1, 2, 3, 4, 5]; track star) {
+          <button
+            type="button"
+            (click)="ascentForm.get('rating')?.setValue(star)"
+            [attr.aria-label]="star"
+          >
+            <ng-icon
+              name="lucideStar"
+              class="[&_svg]:fill-current"
+              [class.opacity-30]="star > (ascentForm.get('rating')?.value ?? 0)"
+            />
+          </button>
+        }
+      </div>
       <small class="lc-error" *lcIfError="'required'">{{
         "validation.required" | transloco
       }}</small>
     </div>
 
-    <p-divider align="center" type="dotted">
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
       <b>{{ t("comment") }}</b>
-    </p-divider>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
     <div class="flex flex-row gap-2" lcControlGroup>
       <textarea
         rows="2"
         cols="30"
-        pTextarea
+        hlmTextarea
         lcFormControl
         formControlName="comment"
-        class="w-full"
+        class="w-full resize-y"
         data-cy="comment"
       ></textarea>
     </div>
 
     @if (videoFormOpen) {
-      <p-divider align="center" type="dotted">
+      <div class="ascent-section">
+        <div hlmSeparator class="flex-1"></div>
         <b>{{ t("video") }}</b>
-      </p-divider>
+        <div hlmSeparator class="flex-1"></div>
+      </div>
 
       <p class="mt-0 text-center">{{ t("videoHint") }}</p>
       <div class="flex flex-col gap-2" lcControlGroup>
         <input
           type="text"
-          pInputText
+          hlmInput
           formControlName="videoUrl"
           [placeholder]="t('videoUrlPlaceholder')"
           lcFormControl
@@ -173,7 +219,7 @@
       <div class="flex flex-col gap-2 mt-2" lcControlGroup>
         <input
           type="text"
-          pInputText
+          hlmInput
           formControlName="videoTitle"
           [placeholder]="t('videoTitlePlaceholder')"
           lcFormControl
@@ -189,7 +235,7 @@
               id="ascent-video-start"
               type="number"
               min="0"
-              pInputText
+              hlmInput
               formControlName="videoStartSeconds"
               lcFormControl
             />
@@ -198,92 +244,120 @@
               t("invalidStartSeconds")
             }}</small>
             <div>
-              <p-button
-                [label]="t('clearVideoStart')"
-                severity="secondary"
-                [text]="true"
-                size="small"
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                size="sm"
                 (click)="hideVideoStart()"
-              ></p-button>
+              >
+                <ng-icon name="lucideX" /> {{ t("clearVideoStart") }}
+              </button>
             </div>
           </div>
         } @else {
           <div class="mt-2">
-            <p-button
-              [label]="t('setVideoStart')"
-              icon="pi pi-clock"
-              severity="secondary"
-              [text]="true"
-              size="small"
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              size="sm"
               (click)="showVideoStart()"
-            ></p-button>
+            >
+              <ng-icon name="lucideClock" /> {{ t("setVideoStart") }}
+            </button>
           </div>
         }
       }
       <div class="flex justify-center mt-2">
-        <p-button
-          [label]="t('removeVideo')"
-          severity="secondary"
-          [text]="true"
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
           (click)="hideVideoForm()"
-        ></p-button>
+        >
+          {{ t("removeVideo") }}
+        </button>
       </div>
     } @else {
-      <div class="flex justify-center">
-        <p-button
-          [label]="t('addVideo')"
-          icon="pi pi-plus"
-          severity="secondary"
-          [text]="true"
+      <div class="mt-4 flex justify-center">
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
           data-cy="ascent-add-video"
           (click)="showVideoForm()"
-        ></p-button>
+        >
+          <ng-icon name="lucidePlus" /> {{ t("addVideo") }}
+        </button>
       </div>
     }
 
-    <p-divider align="center" type="dotted">
+    <div class="ascent-section">
+      <div hlmSeparator class="flex-1"></div>
       <b>{{ t("otherInfo") }}</b>
-    </p-divider>
+      <div hlmSeparator class="flex-1"></div>
+    </div>
 
-    <div class="flex flex-row gap-2 items-center justify-center" lcControlGroup>
-      <p-toggleButton
-        formControlName="flash"
-        [dt]="toggleButtonDt"
-        [onLabel]="t('flash')"
-        [offLabel]="t('flash')"
-      ></p-toggleButton>
-      <p-toggleButton
-        formControlName="withKneepad"
-        [dt]="toggleButtonDt"
-        [onLabel]="t('withKneepad')"
+    <div
+      class="ascent-flag-row flex min-w-0 flex-row flex-wrap gap-2 items-center justify-center"
+      lcControlGroup
+    >
+      <button
+        hlmToggle
+        type="button"
+        class="ascent-flag"
+        [state]="ascentForm.get('flash')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('flash')?.setValue($event === 'on')"
+      >
+        {{ t("flash") }}
+      </button>
+      <button
+        hlmToggle
+        type="button"
+        class="ascent-flag"
         data-cy="withKneepad"
-        [offLabel]="t('withKneepad')"
-      ></p-toggleButton>
+        [state]="ascentForm.get('withKneepad')?.value ? 'on' : 'off'"
+        (stateChange)="ascentForm.get('withKneepad')?.setValue($event === 'on')"
+      >
+        {{ t("withKneepad") }}
+      </button>
       @if ((gymMode$ | async) === false) {
-        <p-toggleButton
-          formControlName="fa"
-          [dt]="toggleButtonDt"
-          [onLabel]="t('fa')"
-          [offLabel]="t('fa')"
-        ></p-toggleButton>
+        <button
+          hlmToggle
+          type="button"
+          class="ascent-flag"
+          [state]="ascentForm.get('fa')?.value ? 'on' : 'off'"
+          (stateChange)="ascentForm.get('fa')?.setValue($event === 'on')"
+        >
+          {{ t("fa") }}
+          <span
+            class="inline-flex pointer-events-auto"
+            tabindex="-1"
+            [hlmTooltip]="t('firstAscentExplanation')"
+            position="top"
+            [attr.aria-label]="t('firstAscentExplanation')"
+            (click)="$event.stopPropagation()"
+            (pointerdown)="$event.stopPropagation()"
+          >
+            <ng-icon name="lucideCircleQuestionMark" />
+          </span>
+        </button>
       }
     </div>
-    @if (ascentForm.get("fa").value && (gymMode$ | async) === false) {
-      <p-message styleClass="mt-2 ascent-form-alert" severity="info">
-        {{ t("firstAscentExplanation") }}
-      </p-message>
-    }
   </form>
 
   <div class="form-actions">
-    <p-button
-      label="{{
-        !editMode ? t('addAscentButtonLabel') : t('editAscentButtonLabel')
-      }}"
-      (click)="saveAscent()"
-      styleClass="w-full"
+    <button
+      lcLoadingButton
       [loading]="loadingState === loadingStates.LOADING"
+      (click)="saveAscent()"
+      [disabled]="loadingState === loadingStates.LOADING"
+      class="w-full"
       data-cy="submit"
-    ></p-button>
+      type="button"
+    >
+      {{ !editMode ? t("addAscentButtonLabel") : t("editAscentButtonLabel") }}
+    </button>
   </div>
 </ng-container>

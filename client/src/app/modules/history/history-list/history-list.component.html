@@ -1,69 +1,108 @@
 <ng-container *transloco="let t; read: 'history'">
-  <div class="content">
-    @if (historyItems?.length > 0) {
-      <p-timeline
-        [value]="historyItems"
-        [align]="(isMobile$ | async) ? 'left' : 'alternate'"
-        styleClass="customized-timeline"
-        [ngClass]="{ mobile: isMobile$ | async }"
-      >
-        <ng-template #marker let-event>
-          <span
-            class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
-            [class.created]="event.type === historyItemType.CREATED"
-            [class.updated]="event.type === historyItemType.UPDATED"
-          >
-            <i [class]="getIcon(event)"></i>
-          </span>
-        </ng-template>
-        <ng-template #content let-event>
-          <p-card>
-            <ng-template #title>
-              <span>{{ getHeader(event) + ": " + event.object.name }}</span>
-              @if (lineLocation(event); as location) {
-                <div class="history-line-location">
-                  <lc-topo-hierarchy-breadcrumbs
-                    [crag]="location.crag"
-                    [sector]="location.sector"
-                    [area]="location.area"
-                  ></lc-topo-hierarchy-breadcrumbs>
-                </div>
-              }
-            </ng-template>
-            <ng-template #subtitle>
-              {{ event.timeCreated | date }},
-              <a class="username" routerLink="{{ event.createdBy.routerLink }}"
-                >{{ event.createdBy.firstname }}
-                {{ event.createdBy.lastname }}</a
-              >
-            </ng-template>
-            <div>{{ getDescription(event) | async }}</div>
-            <p-button
-              styleClass="card-button"
-              [label]="t('openObject')"
-              (click)="openObject(event)"
-              [text]="true"
-            />
-          </p-card>
-        </ng-template>
-      </p-timeline>
+  <div class="content p-6">
+    @if (
+      loading === loadingStates.INITIAL_LOADING ||
+      (loading === loadingStates.LOADING && currentPage <= 1)
+    ) {
+      <lc-list-skeleton></lc-list-skeleton>
+    } @else if (historyItems?.length > 0) {
+      <div hlmTableContainer>
+        <table hlmTable>
+          <thead hlmTHead>
+            <tr hlmTr>
+              <th hlmTh>{{ t("columnDate") }}</th>
+              <th hlmTh>{{ t("columnUser") }}</th>
+              <th hlmTh>{{ t("columnChange") }}</th>
+              <th hlmTh>{{ t("columnObject") }}</th>
+              <th hlmTh>{{ t("columnLocation") }}</th>
+              <th hlmTh>{{ t("columnGrade") }}</th>
+            </tr>
+          </thead>
+          <tbody hlmTBody>
+            @for (event of historyItems; track event.id) {
+              <tr hlmTr>
+                <td hlmTd class="history-col-date">
+                  {{ event.timeCreated | date: "datetime" }}
+                </td>
+                <td hlmTd class="history-col-user">
+                  <a class="username" [routerLink]="event.createdBy.routerLink"
+                    >{{ event.createdBy.firstname }}
+                    {{ event.createdBy.lastname }}</a
+                  >
+                </td>
+                <td hlmTd class="history-col-change">
+                  <span
+                    class="history-kind"
+                    [class.created]="event.type === historyItemType.CREATED"
+                    [class.updated]="
+                      event.type === historyItemType.UPDATED &&
+                      !isUpgrade(event) &&
+                      !isDowngrade(event)
+                    "
+                    [class.grade-shift-up]="isUpgrade(event)"
+                    [class.grade-shift-down]="isDowngrade(event)"
+                  >
+                    @if (getIcon(event)) {
+                      <ng-icon [name]="getIcon(event)" />
+                    }
+                  </span>
+                  {{ getHeader(event) }}
+                </td>
+                <td hlmTd class="history-col-object history-cell-wrap">
+                  @if (objectLink(event); as link) {
+                    <a class="history-object" [routerLink]="link">{{
+                      objectName(event)
+                    }}</a>
+                  } @else {
+                    {{ objectName(event) }}
+                  }
+                </td>
+                <td hlmTd class="history-col-location history-cell-wrap">
+                  @if (lineLocation(event); as location) {
+                    <div class="history-line-location">
+                      <lc-topo-hierarchy-breadcrumbs
+                        [crag]="location.crag"
+                        [sector]="location.sector"
+                        [area]="location.area"
+                      ></lc-topo-hierarchy-breadcrumbs>
+                    </div>
+                  }
+                </td>
+                <td hlmTd class="history-col-grade">
+                  {{ gradeChange(event) | async }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
-    @if (hasNextPage) {
-      <div class="flex justify-center mt-20">
-        <p-button
-          label="{{ t('loadMore') }}"
+    @if (
+      hasNextPage &&
+      loading !== loadingStates.INITIAL_LOADING &&
+      !(loading === loadingStates.LOADING && currentPage <= 1)
+    ) {
+      <div #loadMoreSentinel class="flex justify-center mt-6">
+        <button
+          lcLoadingButton
+          [loading]="loading === loadingStates.LOADING && currentPage > 1"
+          type="button"
+          [disabled]="loading === loadingStates.LOADING && currentPage > 1"
           (scrolled)="loadNextPage()"
           (click)="loadNextPage()"
           infiniteScroll
           [infiniteScrollDistance]="2"
           [infiniteScrollThrottle]="50"
-          [loading]="loading === loadingStates.LOADING && currentPage > 1"
-        ></p-button>
+        >
+          {{ t("loadMore") }}
+        </button>
       </div>
     }
-    @if (historyItems.length === 0) {
-      <p-message severity="info" styleClass="w-full" [text]="t('noHistory')">
-      </p-message>
+    @if (loading === loadingStates.DEFAULT && historyItems.length === 0) {
+      <div hlmAlert class="w-full">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("noHistory") }}</p>
+      </div>
     }
   </div>
 </ng-container>

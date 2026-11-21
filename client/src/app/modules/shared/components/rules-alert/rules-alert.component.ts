@@ -5,13 +5,16 @@ import {
   inject,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideTriangleAlert } from '@ng-icons/lucide';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Store } from '@ngrx/store';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { filter } from 'rxjs/operators';
 import { toastNotification } from '../../../../ngrx/actions/notifications.actions';
 import {
@@ -46,14 +49,17 @@ const SECTION_HEADER_KEY: Record<RulesAlertLevel, string> = {
   templateUrl: './rules-alert.component.html',
   styleUrl: './rules-alert.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AsyncPipe,
     TranslocoDirective,
-    ButtonModule,
-    DialogModule,
+    NgIcon,
+    HlmButton,
+    ...HlmDialogImports,
     SanitizeHtmlPipe,
     DatePipe,
   ],
+  providers: [provideIcons({ lucideTriangleAlert })],
 })
 export class RulesAlertComponent implements OnInit {
   protected rulesAlertService = inject(RulesAlertService);

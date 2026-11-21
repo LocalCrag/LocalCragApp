@@ -613,6 +613,11 @@ export const NOTIFICATIONS = {
     message: marker('notifications.TOPO_POINTS_LOST_MESSAGE'),
     styleClass: 'topo-points-toast topo-points-toast--loss',
   },
+  IMAGE_TOO_LARGE: {
+    type: NotificationType.ERROR,
+    title: marker('notifications.IMAGE_TOO_LARGE_TITLE'),
+    message: marker('notifications.IMAGE_TOO_LARGE_MESSAGE'),
+  },
 } satisfies { [key: string]: NotificationDefinition };
 
 export type NotificationKey = keyof typeof NOTIFICATIONS;

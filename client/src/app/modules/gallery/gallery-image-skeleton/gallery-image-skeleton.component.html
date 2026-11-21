@@ -1,15 +1,13 @@
-<p-card styleClass="gallery-image-card">
-  <ng-template #header>
-    <div
-      class="image-container"
-      [class.image-container--ratio]="aspectRatio"
-      [style.aspect-ratio]="aspectRatio"
-    >
-      <p-skeleton borderRadius="0" height="100%"></p-skeleton>
-    </div>
-  </ng-template>
-  <div class="tags">
-    <p-skeleton width="100px" height="1.5rem"></p-skeleton>
-    <p-skeleton width="100px" height="1.5rem"></p-skeleton>
+<div hlmCard class="gallery-image-card">
+  <div
+    class="image-container"
+    [class.image-container--ratio]="aspectRatio"
+    [style.aspect-ratio]="aspectRatio"
+  >
+    <div hlmSkeleton class="size-full" style="border-radius: 0"></div>
   </div>
-</p-card>
+  <div hlmCardContent class="tags">
+    <div hlmSkeleton style="width: 100px; height: 1.5rem"></div>
+    <div hlmSkeleton style="width: 100px; height: 1.5rem"></div>
+  </div>
+</div>

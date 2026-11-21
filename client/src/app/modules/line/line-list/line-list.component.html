@@ -1,373 +1,380 @@
 <ng-container *transloco="let t; read: 'line.lineList'">
-  <p-dataView #dv [value]="lines">
-    <ng-template #emptymessage>
-      @if (
-        lines?.length === 0 &&
-        !(loading === loadingStates.LOADING && currentPage === 1)
-      ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block"
-          >{{ t("noLinesFoundEmptyMessage") }}
-        </p-message>
-      }
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-col justify-between gap-2">
-        @if (cragSlug && sectorSlug && areaSlug) {
-          <div class="lc-button-group justify-start sm:justify-end">
-            <p-button
-              label="{{ t('newLineButtonLabel') }}"
-              icon="pi pi-plus"
-              routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                areaSlug
-              }}/create-line"
-              *isModerator="true"
-              class="responsive-button"
-            ></p-button>
-            <p-button
-              label="{{ t('suggestLineButtonLabel') }}"
-              icon="pi pi-plus"
-              routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
-                areaSlug
-              }}/create-line"
-              *canSuggest="true"
-              class="responsive-button"
-            ></p-button>
-          </div>
-        }
-
-        <div
-          class="line-list-sort-row flex flex-wrap items-center gap-2 w-full"
+  <div
+    class="flex flex-col sm:flex-col justify-between gap-2 border-b border-surface px-6 py-4"
+  >
+    @if (cragSlug && sectorSlug && areaSlug) {
+      <div class="lc-button-group justify-start sm:justify-end">
+        <a
+          hlmBtn
+          class="responsive-button"
+          routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+            areaSlug
+          }}/create-line"
+          *isModerator="true"
+          ><ng-icon name="lucidePlus" /> {{ t("newLineButtonLabel") }}</a
         >
-          {{ t("orderByLabel") }}
-          <p-select
-            [options]="orderOptions"
-            [(ngModel)]="orderKey"
-            optionLabel="label"
-            (onChange)="loadFirstPage()"
-            class="md:mb-0"
-            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
-          >
-            <ng-template #selectedItem>
-              @if (orderKey) {
-                <div class="flex items-center gap-2">
-                  <div>{{ orderKey.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
-                <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
-          <p-select
-            [options]="orderDirectionOptions"
-            [(ngModel)]="orderDirectionKey"
-            optionLabel="label"
-            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
-            (onChange)="loadFirstPage()"
-            class="md:mb-0"
-          >
-            <ng-template #selectedItem>
-              @if (orderDirectionKey) {
-                <div class="flex items-center gap-2">
-                  <div>{{ orderDirectionKey.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
-                <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
-        </div>
-
-        <div
-          class="line-list-grade-filters-row flex flex-wrap items-end gap-6 w-full"
+        <a
+          hlmBtn
+          class="responsive-button"
+          routerLink="/topo/{{ cragSlug }}/{{ sectorSlug }}/{{
+            areaSlug
+          }}/create-line"
+          *canSuggest="true"
+          ><ng-icon name="lucidePlus" /> {{ t("suggestLineButtonLabel") }}</a
         >
-          <div class="line-list-grade-filters-fields grow min-w-0">
+      </div>
+    }
+
+    <div class="line-list-sort-row flex flex-wrap items-center gap-2 w-full">
+      {{ t("orderByLabel") }}
+      <hlm-select
+        [(ngModel)]="orderKey"
+        (ngModelChange)="loadFirstPage()"
+        class="md:mb-0"
+        [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <hlm-select
+        [(ngModel)]="orderDirectionKey"
+        [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+        (ngModelChange)="loadFirstPage()"
+        class="md:mb-0"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of orderDirectionOptions; track $index) {
+            <hlm-select-item [value]="option">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+    </div>
+
+    <div
+      class="line-list-grade-filters-row flex flex-wrap items-end gap-6 w-full"
+    >
+      <div class="line-list-grade-filters-fields grow min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          @if (availableScales.length > 2) {
             <div class="flex flex-wrap items-center gap-2">
-              @if (availableScales.length > 2) {
-                <div>
-                  {{ t("lineType") }}
-                  <p-select
-                    [options]="availableScales"
-                    [(ngModel)]="scaleKey"
-                    [disabled]="
-                      loading === loadingStates.LOADING && currentPage === 1
-                    "
-                    optionLabel="label"
-                    (onChange)="selectScale()"
-                    class="md:mb-0"
-                  >
-                    <ng-template #selectedItem>
-                      @if (scaleKey) {
-                        <div class="flex items-center gap-2">
-                          <div>{{ scaleKey.label }}</div>
-                        </div>
-                      }
-                    </ng-template>
-                    <ng-template let-option #item>
-                      <div class="flex items-center gap-2">
-                        <div>{{ option.label }}</div>
-                      </div>
-                    </ng-template>
-                  </p-select>
-                </div>
-              }
-              <div *isGymMode="true">
-                <p-button
-                  [disabled]="
-                    loading === loadingStates.LOADING && currentPage === 1
-                  "
-                  label="{{
-                    showArchive ? t('hideArchive') : t('showArchive')
-                  }}"
-                  [icon]="'pi ' + (showArchive ? 'pi-eye-slash' : 'pi-eye')"
-                  *isModerator="true"
-                  class="responsive-button"
-                  (click)="toggleArchive()"
-                ></p-button>
-              </div>
-            </div>
-
-            @if (scaleKey?.value && !gradeScaleBoundsLoading) {
-              <lc-grade-range-slider
-                class="mt-1"
-                [(range)]="gradeFilterRange"
-                [min]="minGradeValue"
-                [max]="maxGradeValue"
-                [lineType]="scaleKey.value.lineType"
-                [gradeScale]="scaleKey.value.gradeScale"
+              {{ t("lineType") }}
+              <hlm-select
+                [(ngModel)]="scaleKey"
                 [disabled]="
                   loading === loadingStates.LOADING && currentPage === 1
                 "
-                (slideEnd)="reloadOnSlideEnd()"
-              />
-            }
-          </div>
-
-          <div class="line-list-filter-actions shrink-0">
-            <p-button
+                (ngModelChange)="selectScale()"
+                class="md:mb-0"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of availableScales; track $index) {
+                    <hlm-select-item [value]="option">{{
+                      option.label
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content></hlm-select
+              >
+            </div>
+          }
+          <div *isGymMode="true">
+            <button
+              hlmBtn
+              type="button"
+              class="responsive-button"
+              (click)="toggleArchive()"
               [disabled]="
                 loading === loadingStates.LOADING && currentPage === 1
               "
-              (click)="openAdvancedFiltersDialog()"
-              class="responsive-button line-list-filter-btn"
+              *isModerator="true"
             >
-              <ng-template #content>
-                <span class="p-button-icon pi pi-filter"></span>
-                <span class="line-list-filter-label-group">
-                  <span class="p-button-label">{{
-                    t("advancedFiltersButtonLabel")
-                  }}</span>
-                  @if (filtersMayHideLines()) {
-                    <span
-                      class="line-list-filter-active-dot"
-                      aria-hidden="true"
-                    ></span>
-                  }
-                </span>
-              </ng-template>
-            </p-button>
+              <ng-icon [name]="showArchive ? 'lucideEyeOff' : 'lucideEye'" />
+              {{ showArchive ? t("hideArchive") : t("showArchive") }}
+            </button>
           </div>
         </div>
+
+        @if (
+          sliderScaleItem?.value &&
+          maxGradeValue !== null &&
+          !gradeScaleBoundsLoading
+        ) {
+          <lc-grade-range-slider
+            class="mt-1"
+            [(range)]="gradeFilterRange"
+            [min]="minGradeValue"
+            [max]="maxGradeValue"
+            [lineType]="sliderScaleItem.value.lineType"
+            [gradeScale]="sliderScaleItem.value.gradeScale"
+            [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+            (slideEnd)="reloadOnSlideEnd()"
+          />
+        }
       </div>
-    </ng-template>
-    <ng-template let-lines #list>
-      @if (loading === loadingStates.LOADING && currentPage === 1) {
-        <lc-line-list-skeleton></lc-line-list-skeleton>
-      }
-      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        <div class="grid grid-cols-12">
-          @for (line of lines; track line; let first = $first) {
-            <a
-              class="col-span-12 clickable-data-item line-link"
-              [ngClass]="{ ticked: ticks.has(line.id) }"
-              routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
-                line.areaSlug
-              }}/{{ line.slug }}"
-              data-cy="line-list-item"
+
+      <div class="line-list-filter-actions shrink-0">
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button line-list-filter-btn"
+          (click)="openAdvancedFiltersDialog()"
+          [disabled]="loading === loadingStates.LOADING && currentPage === 1"
+        >
+          <ng-icon name="lucideFilter" />
+          <span class="line-list-filter-label-group">
+            <span>{{ t("advancedFiltersButtonLabel") }}</span>
+            @if (filtersMayHideLines()) {
+              <span
+                class="line-list-filter-active-dot"
+                aria-hidden="true"
+              ></span>
+            }
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading === loadingStates.DEFAULT && lines?.length === 0) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noLinesFoundEmptyMessage") }}</p>
+    </div>
+  }
+
+  @if (
+    loading === loadingStates.INITIAL_LOADING ||
+    (loading === loadingStates.LOADING && currentPage === 1)
+  ) {
+    <lc-line-list-skeleton></lc-line-list-skeleton>
+  }
+  @if (
+    loading === loadingStates.DEFAULT ||
+    (loading === loadingStates.LOADING && currentPage > 1)
+  ) {
+    <div class="grid grid-cols-12">
+      @for (line of lines; track line; let first = $first) {
+        <a
+          class="col-span-12 clickable-data-item line-link"
+          [ngClass]="{ ticked: ticks.has(line.id) }"
+          routerLink="/topo/{{ line.cragSlug }}/{{ line.sectorSlug }}/{{
+            line.areaSlug
+          }}/{{ line.slug }}"
+          data-cy="line-list-item"
+        >
+          <div
+            class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
+            [ngClass]="{
+              'border-t border-surface': !first,
+              archived: line.publicationStatus === 'archived',
+            }"
+          >
+            @if (line.topoImages.length > 0) {
+              <div
+                class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
+              >
+                <lc-topo-image
+                  class="shadow block rounded-border"
+                  [topoImage]="line.topoImages[0]"
+                  [color]="line.color ?? undefined"
+                ></lc-topo-image>
+              </div>
+            }
+            @if (line.topoImages.length === 0) {
+              <div
+                class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
+              >
+                <img
+                  class="w-full shadow block rounded-border"
+                  [src]="'assets/placeholder.png'"
+                  [alt]="line.name"
+                />
+              </div>
+            }
+            <div
+              class="flex min-w-0 flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
             >
               <div
-                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6"
-                [ngClass]="{
-                  'border-t border-surface': !first,
-                  archived: line.publicationStatus === 'archived',
-                }"
+                class="flex flex-col items-center sm:items-start gap-4 line-info-container"
               >
-                @if (line.topoImages.length > 0) {
-                  <div
-                    class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
-                  >
-                    <lc-topo-image
-                      class="shadow block rounded-border"
-                      [topoImage]="line.topoImages[0]"
-                      [color]="line.color ?? undefined"
-                    ></lc-topo-image>
-                  </div>
-                }
-                @if (line.topoImages.length === 0) {
-                  <div
-                    class="w-9/12 sm:w-64 xl:w-40 shrink-0 overflow-hidden mx-auto xl:self-start"
-                  >
-                    <img
-                      class="w-full shadow block rounded-border"
-                      [src]="'assets/placeholder.png'"
-                      [alt]="line.name"
-                    />
-                  </div>
-                }
                 <div
-                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
+                  class="text-2xl text-surface-900 dark:text-surface-0 line-name flex w-full flex-col gap-4"
                 >
-                  <div
-                    class="flex flex-col items-center sm:items-start gap-4 line-info-container"
-                  >
+                  <div class="flex w-full items-center gap-2">
                     <div
-                      class="text-2xl text-surface-900 dark:text-surface-0 line-name flex flex-col md:flex-row items-center justify-between"
+                      class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:justify-start"
                     >
-                      <div>
-                        <strong>{{ line.name }}</strong>
-                        {{ line | lineGrade }}
-                        <lc-topo-hierarchy-breadcrumbs
-                          class="mt-1"
-                          [crag]="line.crag"
-                          [sector]="line.sector"
-                          [area]="line.area"
-                          [stopPropagation]="true"
-                        ></lc-topo-hierarchy-breadcrumbs>
-                      </div>
-                      <p-rating
-                        [ngModel]="
-                          displayUserRating
-                            ? line.userRating
-                            : line.authorRating
-                        "
-                        [readonly]="true"
-                        class="self-center md:self-end"
-                      ></p-rating>
-                    </div>
-                    <lc-line-bool-prop-list
-                      [line]="line"
-                    ></lc-line-bool-prop-list>
-                    @if (line.description) {
-                      <div
-                        [innerHTML]="line.description | sanitizeHtml"
-                        class="wysiwyg-content"
-                      ></div>
-                    }
-                    <div class="flex flex-wrap items-center gap-2">
-                      @if (line.ascentCount > 0) {
-                        <lc-ascent-count
-                          [ascentCount]="line.ascentCount"
-                          [routerLink]="
-                            '/topo/' +
-                            line.cragSlug +
-                            '/' +
-                            line.sectorSlug +
-                            '/' +
-                            line.areaSlug +
-                            '/' +
-                            line.slug +
-                            '/ascents'
-                          "
-                        ></lc-ascent-count>
-                      }
-                      @if (line.commentCount > 0) {
-                        <lc-comment-count
-                          [commentCount]="line.commentCount"
-                          [routerLink]="
-                            '/topo/' +
-                            line.cragSlug +
-                            '/' +
-                            line.sectorSlug +
-                            '/' +
-                            line.areaSlug +
-                            '/' +
-                            line.slug +
-                            '/comments'
-                          "
-                        ></lc-comment-count>
-                      }
-                    </div>
-                    <div class="bottom-row">
-                      @if (line.videos?.length > 0) {
-                        <p-button
-                          icon="pi pi-video"
-                          styleClass="p-button-rounded p-button-text"
-                          label="{{ line.videos[0].title }}"
-                          (click)="openVideo($event, line)"
-                          class="video-button"
-                        >
-                        </p-button>
-                      }
-                      <div class="grow"></div>
-                      @if (
-                        line.publicationStatus === "published" ||
-                        line.publicationStatus === "archived"
-                      ) {
-                        <lc-archive-button
-                          [line]="line"
-                          [showLabel]="false"
-                          [style]="'plain'"
-                          *isModerator="true"
-                        ></lc-archive-button>
-                      }
-                      @if (
-                        line.publicationStatus === "published" &&
-                        !ticks.has(line.id)
-                      ) {
-                        <lc-todo-button
-                          [line]="line"
-                          [isTodo]="isTodo.has(line.id)"
-                          *isLoggedIn="true"
-                        ></lc-todo-button>
-                      }
-                      @if (line.publicationStatus !== "draft") {
-                        <lc-tick-button
-                          [line]="line"
-                          [ticked]="ticks.has(line.id)"
-                        ></lc-tick-button>
-                      }
-                    </div>
-                    <div class="flex gap-1">
+                      <strong>{{ line.name }}</strong>
                       @if (line.publicationStatus === "draft") {
-                        <lc-draft-tag></lc-draft-tag>
+                        <lc-draft-tag
+                          class="spot-status-tag--beside"
+                        ></lc-draft-tag>
                       }
-                      @if (line.closed) {
-                        <lc-closed-spot-tag
-                          spotType="line"
-                          [slug]="line.slug"
-                          [closureIsPermanent]="line.closureIsPermanent"
-                        ></lc-closed-spot-tag>
-                      }
-                      @if (line.secret) {
-                        <lc-secret-spot-tag></lc-secret-spot-tag>
-                      }
+                      <span class="whitespace-nowrap">{{
+                        line | lineGrade
+                      }}</span>
                     </div>
+                    @if (line.closed || line.secret) {
+                      <div class="ml-auto flex shrink-0 items-center gap-2">
+                        @if (line.closed) {
+                          <lc-closed-spot-tag
+                            class="spot-status-tag--beside"
+                            spotType="line"
+                            [slug]="line.slug"
+                            [closureIsPermanent]="line.closureIsPermanent"
+                          ></lc-closed-spot-tag>
+                        }
+                        @if (line.secret) {
+                          <lc-secret-spot-tag
+                            class="spot-status-tag--beside"
+                          ></lc-secret-spot-tag>
+                        }
+                      </div>
+                    }
+                  </div>
+                  <div class="flex w-full items-start justify-between gap-3">
+                    <lc-topo-hierarchy-breadcrumbs
+                      class="min-w-0 text-center sm:text-start"
+                      [crag]="line.crag"
+                      [sector]="line.sector"
+                      [area]="line.area"
+                      [stopPropagation]="true"
+                    ></lc-topo-hierarchy-breadcrumbs>
+                    <span
+                      class="flex h-4 shrink-0 items-center self-center text-base leading-none"
+                      ><span
+                        class="inline-flex text-primary"
+                        aria-hidden="true"
+                      >
+                        @for (star of [1, 2, 3, 4, 5]; track star) {
+                          <ng-icon
+                            name="lucideStar"
+                            class="[&_svg]:fill-current"
+                            [class.opacity-30]="
+                              star >
+                              (displayUserRating
+                                ? line.userRating
+                                : line.authorRating)
+                            "
+                          />
+                        }</span
+                    ></span>
                   </div>
                 </div>
+                <lc-line-bool-prop-list [line]="line"></lc-line-bool-prop-list>
+                @if (line.description) {
+                  <div
+                    [innerHTML]="line.description | sanitizeHtml"
+                    class="wysiwyg-content"
+                  ></div>
+                }
+                <div class="flex flex-wrap items-center gap-2">
+                  @if (line.ascentCount > 0) {
+                    <lc-ascent-count
+                      [ascentCount]="line.ascentCount"
+                      [routerLink]="
+                        '/topo/' +
+                        line.cragSlug +
+                        '/' +
+                        line.sectorSlug +
+                        '/' +
+                        line.areaSlug +
+                        '/' +
+                        line.slug +
+                        '/ascents'
+                      "
+                    ></lc-ascent-count>
+                  }
+                  @if (line.commentCount > 0) {
+                    <lc-comment-count
+                      [commentCount]="line.commentCount"
+                      [routerLink]="
+                        '/topo/' +
+                        line.cragSlug +
+                        '/' +
+                        line.sectorSlug +
+                        '/' +
+                        line.areaSlug +
+                        '/' +
+                        line.slug +
+                        '/comments'
+                      "
+                    ></lc-comment-count>
+                  }
+                </div>
+                <div class="bottom-row">
+                  @if (line.videos?.length > 0) {
+                    <button
+                      hlmBtn
+                      type="button"
+                      variant="ghost"
+                      class="video-button rounded-full"
+                      (click)="openVideo($event, line)"
+                    >
+                      <ng-icon name="lucideVideo" /> {{ line.videos[0].title }}
+                    </button>
+                  }
+                  <div class="grow"></div>
+                  @if (
+                    line.publicationStatus === "published" ||
+                    line.publicationStatus === "archived"
+                  ) {
+                    <lc-archive-button
+                      [line]="line"
+                      [showLabel]="false"
+                      [style]="'plain'"
+                      *isModerator="true"
+                    ></lc-archive-button>
+                  }
+                  @if (
+                    line.publicationStatus === "published" &&
+                    !ticks.has(line.id)
+                  ) {
+                    <lc-todo-button
+                      [line]="line"
+                      [isTodo]="isTodo.has(line.id)"
+                      *isLoggedIn="true"
+                    ></lc-todo-button>
+                  }
+                  @if (line.publicationStatus !== "draft") {
+                    <lc-tick-button
+                      [line]="line"
+                      [ticked]="ticks.has(line.id)"
+                    ></lc-tick-button>
+                  }
+                </div>
               </div>
-            </a>
-          }
-        </div>
+            </div>
+          </div>
+        </a>
       }
-    </ng-template>
-  </p-dataView>
+    </div>
+  }
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
-      <p-button
-        label="{{ t('loadMore') }}"
-        (scrolled)="loadNextPage()"
+      <button
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
         (click)="loadNextPage()"
-        infiniteScroll
+        (scrolled)="loadNextPage()"
+        [disabled]="loading === loadingStates.LOADING"
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+        infiniteScroll
+        type="button"
+      >
+        {{ t("loadMore") }}
+      </button>
     </div>
   }
 </ng-container>

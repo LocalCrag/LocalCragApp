@@ -1,7 +1,9 @@
-import { SelectItem } from 'primeng/api';
 import { LineType } from '../../../enums/line-type';
 import { ApiQueryParams } from '../../../utility/http/query-params';
-import { LineListAdvancedFilters } from './line-list-filter.logic';
+import {
+  LineListAdvancedFilters,
+  SelectOption,
+} from './line-list-filter.logic';
 
 /**
  * Appends line list filter query params for GET /lines
@@ -11,7 +13,7 @@ export function appendLineListQueryParams(
   params: ApiQueryParams,
   advanced: LineListAdvancedFilters,
   scaleKey:
-    | SelectItem<{ lineType: LineType; gradeScale: string } | undefined>
+    | SelectOption<{ lineType: LineType; gradeScale: string } | undefined>
     | undefined,
   gradeFilterRange: (number | null)[],
 ): void {

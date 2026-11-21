@@ -1,26 +1,29 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CragsService } from '../../../services/crud/crags.service';
 import { Crag } from '../../../models/crag';
-
 import { Observable } from 'rxjs';
 import { GradeDistribution } from '../../../models/scale';
 import { Coordinates } from '../../../interfaces/coordinates.interface';
 import { MapMarkerType } from '../../../enums/map-marker-type';
 import { Season } from '../../../models/season';
 import { TranslocoDirective } from '@jsverse/transloco';
-
-import { ClosedSpotAlertComponent } from '../../shared/components/closed-spot-alert/closed-spot-alert.component';
 import { UpcomingClosureAlertComponent } from '../../shared/components/upcoming-closure-alert/upcoming-closure-alert.component';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { MapComponent } from '../../maps/map/map.component';
 import { SeasonChartComponent } from '../../shared/components/season-chart/season-chart.component';
-import { Skeleton } from 'primeng/skeleton';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 /**
  * Component that shows information about a crag.
@@ -29,18 +32,18 @@ import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.direc
   selector: 'lc-crag-info',
   templateUrl: './crag-info.component.html',
   styleUrls: ['./crag-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
-    ClosedSpotAlertComponent,
     UpcomingClosureAlertComponent,
     GradeDistributionBarChartComponent,
     SanitizeHtmlPipe,
     CoordinatesButtonComponent,
     MapComponent,
     SeasonChartComponent,
-    Skeleton,
     CurrentConditionsComponent,
     OutdoorModeDirective,
+    HlmSkeleton,
   ],
 })
 export class CragInfoComponent implements OnInit {

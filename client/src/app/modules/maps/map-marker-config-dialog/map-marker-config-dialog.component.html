@@ -1,103 +1,110 @@
 <ng-container *transloco="let t; read: 'maps.mapMarkerForm'">
   @if (marker) {
-    <p-dialog
-      [header]="marker.id ? t('editMarker') : t('createMarker')"
-      [modal]="true"
-      [(visible)]="isOpen"
-    >
-      <form [formGroup]="mapMarkerForm" lcForm>
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="type">{{ t("typeLabel") }}</label>
-          <ng-container *transloco="let t2; read: 'maps.markerList'">
-            <p-select
-              id="type"
-              formControlName="type"
-              [options]="types"
-              data-cy="type-dropdown"
-              optionLabel="type"
-              placeholder="{{ t('typePlaceholder') }}"
-              lcFormControl
-              appendTo="body"
-            >
-              <ng-template let-type #item>
-                <div
-                  class="flex items-center gap-2"
-                  data-cy="type-dropdown-item"
-                >
-                  <div>{{ t2(type) }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-selectedType #selectedItem>
-                {{ t2(selectedType) }}
-              </ng-template>
-            </p-select>
-          </ng-container>
-          <small class="lc-error" *lcIfError="'required'">{{
-            "validation.required" | transloco
-          }}</small>
+    <hlm-dialog [state]="isOpen ? 'open' : 'closed'" (closed)="isOpen = false"
+      ><hlm-dialog-content
+        *hlmDialogPortal
+        class="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg"
+        ><div hlmDialogHeader>
+          <h2 hlmDialogTitle>
+            {{ marker.id ? t("editMarker") : t("createMarker") }}
+          </h2>
         </div>
-        <div class="flex flex-col gap-2" lcControlGroup>
-          <label class="form-label" for="coordinates">{{
-            t("coordinatesLabel")
-          }}</label>
-          <lc-coordinates
-            id="coordinates"
-            formControlName="coordinates"
-            lcFormControl
-            data-cy="marker-form-coordinates"
-            #coordinates
-          ></lc-coordinates>
-        </div>
-        @if (!nameAndDescriptionHidden) {
+        <form [formGroup]="mapMarkerForm" lcForm>
           <div class="flex flex-col gap-2" lcControlGroup>
-            <label class="form-label" for="name">{{
-              t("markerNameLabel")
-            }}</label>
-            <input
-              id="name"
-              type="text"
-              pInputText
-              formControlName="name"
-              placeholder="{{ t('markerNamePlaceholder') }}"
-              lcFormControl
-              data-cy="marker-form-name"
-            />
-            <small class="lc-error" *lcIfError="'maxlength'">{{
-              "validation.maxLength" | transloco: { max: 120 }
+            <label class="form-label" for="type">{{ t("typeLabel") }}</label>
+            <ng-container *transloco="let t2; read: 'maps.markerList'">
+              <hlm-select
+                formControlName="type"
+                [itemToString]="typeLabel"
+                lcFormControl
+                data-cy="type-dropdown"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value
+                    placeholder="{{
+                      t('typePlaceholder')
+                    }}" /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (type of types; track $index) {
+                    <hlm-select-item [value]="type"
+                      ><div
+                        class="flex items-center gap-2"
+                        data-cy="type-dropdown-item"
+                      >
+                        <div>{{ t2(type) }}</div>
+                      </div></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
+            </ng-container>
+            <small class="lc-error" *lcIfError="'required'">{{
+              "validation.required" | transloco
             }}</small>
           </div>
-        }
-        @if (!nameAndDescriptionHidden) {
           <div class="flex flex-col gap-2" lcControlGroup>
-            <label class="form-label" for="description">{{
-              t("markerDescriptionLabel")
+            <label class="form-label" for="coordinates">{{
+              t("coordinatesLabel")
             }}</label>
-            <lc-wysiwyg-editor
-              id="description"
-              formControlName="description"
+            <lc-coordinates
+              id="coordinates"
+              formControlName="coordinates"
               lcFormControl
-              [placeholder]="t('markerDescriptionPlaceholder')"
-              height="200px"
-              toolbar="basic"
-              data-cy="marker-form-description"
-            />
+              data-cy="marker-form-coordinates"
+              #coordinates
+            ></lc-coordinates>
           </div>
-        }
-      </form>
-      <ng-template #footer>
-        <p-button
-          [label]="t('cancel')"
-          severity="secondary"
-          (onClick)="close()"
-        />
-        <p-button
-          [label]="t('save')"
-          [disabled]="coordinates.positionLoading"
-          severity="primary"
-          data-cy="save-marker"
-          (onClick)="save()"
-        />
-      </ng-template>
-    </p-dialog>
+          @if (!nameAndDescriptionHidden) {
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="name">{{
+                t("markerNameLabel")
+              }}</label>
+              <input
+                id="name"
+                type="text"
+                hlmInput
+                formControlName="name"
+                placeholder="{{ t('markerNamePlaceholder') }}"
+                lcFormControl
+                data-cy="marker-form-name"
+              />
+              <small class="lc-error" *lcIfError="'maxlength'">{{
+                "validation.maxLength" | transloco: { max: 120 }
+              }}</small>
+            </div>
+          }
+          @if (!nameAndDescriptionHidden) {
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="description">{{
+                t("markerDescriptionLabel")
+              }}</label>
+              <lc-wysiwyg-editor
+                id="description"
+                formControlName="description"
+                lcFormControl
+                [placeholder]="t('markerDescriptionPlaceholder')"
+                height="200px"
+                toolbar="basic"
+                data-cy="marker-form-description"
+              />
+            </div>
+          }
+        </form>
+        <div hlmDialogFooter>
+          <button hlmBtn type="button" variant="secondary" (click)="close()">
+            {{ t("cancel") }}
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="default"
+            (click)="save()"
+            [disabled]="coordinates.positionLoading"
+            data-cy="save-marker"
+          >
+            {{ t("save") }}
+          </button>
+        </div></hlm-dialog-content
+      ></hlm-dialog
+    >
   }
 </ng-container>

@@ -7,7 +7,7 @@ import {
   inject,
 } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { ProgressBarModule } from 'primeng/progressbar';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { Completion } from '../../../models/statistics';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
@@ -24,7 +24,7 @@ type ItemProgress = {
 
 @Component({
   selector: 'lc-completion-progress-bar',
-  imports: [ProgressBarModule, AsyncPipe],
+  imports: [...HlmProgressImports, AsyncPipe],
   templateUrl: './completion-progress-bar.component.html',
   styleUrl: './completion-progress-bar.component.scss',
 })

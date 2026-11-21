@@ -1,10 +1,18 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { RatingModule } from 'primeng/rating';
-import { TagModule } from 'primeng/tag';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCalendar,
+  lucideCheck,
+  lucideChevronsDown,
+  lucideChevronsUp,
+  lucideStar,
+  lucideTicket,
+  lucideZap,
+} from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 import { Ascent } from '../../../models/ascent';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { UserAvatarComponent } from '../../shared/components/user-avatar/user-avatar.component';
@@ -23,9 +31,8 @@ import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
     UserAvatarComponent,
     TopoHierarchyBreadcrumbsComponent,
     RouterLink,
-    RatingModule,
-    FormsModule,
-    TagModule,
+    NgIcon,
+    HlmBadge,
     AsyncPipe,
     DatePipe,
     TranslateSpecialGradesPipe,
@@ -36,6 +43,17 @@ import { ConsensusGradePipe } from '../pipes/consensus-grade.pipe';
   ],
   templateUrl: './ascent-dialog-summary.component.html',
   styleUrl: './ascent-dialog-summary.component.scss',
+  providers: [
+    provideIcons({
+      lucideCalendar,
+      lucideCheck,
+      lucideChevronsDown,
+      lucideChevronsUp,
+      lucideStar,
+      lucideTicket,
+      lucideZap,
+    }),
+  ],
 })
 export class AscentDialogSummaryComponent {
   @Input({ required: true }) ascent!: Ascent;

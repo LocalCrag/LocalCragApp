@@ -1,15 +1,15 @@
 import { Component, Input, inject } from '@angular/core';
-import { MessageModule } from 'primeng/message';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
   ClosureReasonAlert,
-  formatClosureScheduleRange,
+  closureAlertMessage,
 } from '../../../../models/closure-reason-alert';
 import { LanguageService } from '../../../../services/core/language.service';
 
 @Component({
   selector: 'lc-closed-spot-alert',
-  imports: [MessageModule, TranslocoDirective],
+  imports: [HlmAlert, TranslocoDirective],
   templateUrl: './closed-spot-alert.component.html',
   styleUrl: './closed-spot-alert.component.scss',
 })
@@ -27,39 +27,10 @@ export class ClosedSpotAlertComponent {
   }
 
   alertText(alert: ClosureReasonAlert): string {
-    const range = formatClosureScheduleRange(
+    return closureAlertMessage(
       alert,
+      (key, params) => this.translocoService.translate(key, params),
       this.languageService.calculatedLanguage,
-    );
-    const reason = alert.reason?.trim() || null;
-
-    if (reason && range) {
-      return this.translocoService.translate(
-        'closedSpotAlert.closedWithReasonAndRange',
-        {
-          reason,
-          range,
-        },
-      );
-    }
-    if (reason) {
-      return this.translocoService.translate(
-        'closedSpotAlert.closedWithReason',
-        {
-          reason,
-        },
-      );
-    }
-    if (range) {
-      return this.translocoService.translate(
-        'closedSpotAlert.closedWithRange',
-        {
-          range,
-        },
-      );
-    }
-    return this.translocoService.translate(
-      'closedSpotAlert.closedWithoutReason',
     );
   }
 }

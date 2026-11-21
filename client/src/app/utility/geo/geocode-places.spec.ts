@@ -8,7 +8,7 @@ describe('geocode-places', () => {
   describe('buildPhotonGeocodeUrl', () => {
     it('encodes query and default limit', () => {
       const url = buildPhotonGeocodeUrl('München Hauptbahnhof');
-      expect(url.startsWith('https://photon.komoot.io/api/?')).toBeTrue();
+      expect(url.startsWith('https://photon.komoot.io/api/?')).toBe(true);
       const params = new URL(url).searchParams;
       expect(params.get('q')).toBe('München Hauptbahnhof');
       expect(params.get('limit')).toBe('5');

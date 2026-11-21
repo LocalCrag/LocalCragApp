@@ -1,0 +1,75 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.closure-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem calc(2 * var(--lc-card-padding-inline));
+  background-color: var(--p-red-700);
+  color: var(--p-primary-contrast-color);
+  font-weight: 600;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--p-primary-contrast-color) 35%, transparent);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  ng-icon {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__message {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__toggle {
+    flex: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  &--expanded {
+    align-items: flex-start;
+
+    .closure-banner__body {
+      display: block;
+    }
+
+    .closure-banner__message {
+      overflow: visible;
+      text-overflow: unset;
+      white-space: normal;
+    }
+
+    .closure-banner__toggle {
+      margin-inline-start: 0.35rem;
+    }
+  }
+}

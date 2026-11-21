@@ -1,0 +1,17 @@
+<p class="m-0 text-base">{{ message }}</p>
+<div class="mt-4 flex flex-wrap justify-end gap-2">
+  @if (rejectLabel) {
+    <button hlmBtn type="button" variant="outline" (click)="reject()">
+      {{ rejectLabel }}
+    </button>
+  }
+  <button
+    hlmBtn
+    type="button"
+    [variant]="destructive ? 'destructive' : 'default'"
+    data-cy="confirm-accept"
+    (click)="accept()"
+  >
+    {{ acceptLabel }}
+  </button>
+</div>

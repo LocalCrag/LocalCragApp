@@ -6,16 +6,13 @@ import {
   OnChanges,
   OnInit,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ChartModule } from 'primeng/chart';
-import { Message } from 'primeng/message';
-import { Select } from 'primeng/select';
-import { SelectButton } from 'primeng/selectbutton';
-import { Chart } from 'chart.js';
+import { Chart, ChartData } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
@@ -26,6 +23,13 @@ import { ThemeService } from '../../../services/core/theme.service';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { getChartThemeColors } from '../../../utility/chart-theme';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
+import { NgIcon } from '@ng-icons/core';
+import { ChartJsDirective } from '../../shared/directives/chart-js.directive';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
 import {
   GradeCount,
   SessionBar,
@@ -48,16 +52,20 @@ type Choice<T> = { value: T; label: string };
 type ScaleChoice = { key: string; label: string };
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-session-points-chart',
   imports: [
     TranslocoDirective,
     FormsModule,
-    ChartModule,
-    Message,
-    Select,
-    SelectButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    ...HlmToggleGroupImports,
+    NgIcon,
+    ChartJsDirective,
   ],
   templateUrl: './session-points-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './session-points-chart.component.scss',
 })
 export class SessionPointsChartComponent implements OnChanges, OnInit {
@@ -70,7 +78,9 @@ export class SessionPointsChartComponent implements OnChanges, OnInit {
   metricOptions: Choice<SessionMetric>[] = [];
   rangeOptions: Choice<SessionRange>[] = [];
   scaleOptions: ScaleChoice[] = [];
-  chartData: unknown = null;
+  scaleLabel = (key: string | null): string =>
+    this.scaleOptions.find((option) => option.key === key)?.label ?? '';
+  chartData: ChartData | null = null;
   chartOptions: unknown = null;
   chartMinWidth: number | null = null;
   bars: SessionBar[] = [];

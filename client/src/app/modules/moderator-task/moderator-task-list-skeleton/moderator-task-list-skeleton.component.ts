@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Skeleton } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-moderator-task-list-skeleton',
-  imports: [Skeleton],
+  imports: [HlmSkeleton],
   templateUrl: './moderator-task-list-skeleton.component.html',
 })
 export class ModeratorTaskListSkeletonComponent {}

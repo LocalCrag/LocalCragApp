@@ -27,17 +27,17 @@ describe('routeHidesPageTitle', () => {
   }
 
   it('returns false for an empty tree', () => {
-    expect(routeHidesPageTitle(snap())).toBeFalse();
+    expect(routeHidesPageTitle(snap())).toBe(false);
   });
 
   it('returns true when hidePageTitle is set on a descendant', () => {
     const root = snap({}, [snap({ hidePageTitle: true })]);
-    expect(routeHidesPageTitle(root)).toBeTrue();
+    expect(routeHidesPageTitle(root)).toBe(true);
   });
 
   it('returns true when fullscreenMap is set', () => {
     const root = snap({}, [snap({ fullscreenMap: true })]);
-    expect(routeHidesPageTitle(root)).toBeTrue();
+    expect(routeHidesPageTitle(root)).toBe(true);
   });
 });
 
@@ -59,12 +59,12 @@ describe('routePrefersHeroTitle', () => {
 
   it('returns true when pageTitleHero is set', () => {
     const root = snap({}, [snap({ pageTitleHero: true })]);
-    expect(routePrefersHeroTitle(root)).toBeTrue();
+    expect(routePrefersHeroTitle(root)).toBe(true);
   });
 
   it('returns false when pageTitleHero is explicitly false', () => {
     const root = snap({}, [snap({ pageTitleHero: false })]);
-    expect(routePrefersHeroTitle(root)).toBeFalse();
+    expect(routePrefersHeroTitle(root)).toBe(false);
   });
 });
 
@@ -125,12 +125,12 @@ describe('PageTitleService', () => {
   }
 
   it('starts not loading', async () => {
-    expect((await latestState()).loading).toBeFalse();
+    expect((await latestState()).loading).toBe(false);
   });
 
   it('enters loading on page-host change', async () => {
     service.setTitle('News');
-    expect((await latestState()).loading).toBeFalse();
+    expect((await latestState()).loading).toBe(false);
 
     const nextRoot = makeRoot('topo/:crag-slug');
     routerEvents.next(
@@ -140,13 +140,13 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeTrue();
+    expect(state.loading).toBe(true);
     expect(state.title).toBeNull();
   });
 
   it('uses hero-sized skeleton for pageTitleHero destinations', async () => {
     service.setTitle('News');
-    expect((await latestState()).heroDefaultBg).toBeFalse();
+    expect((await latestState()).heroDefaultBg).toBe(false);
 
     const nextRoot = makeRoot('topo/:crag-slug', { pageTitleHero: true });
     routerEvents.next(
@@ -156,13 +156,13 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeTrue();
-    expect(state.loadingHero).toBeTrue();
+    expect(state.loading).toBe(true);
+    expect(state.loadingHero).toBe(true);
   });
 
   it('uses hero-sized skeleton after a portrait title', async () => {
     service.setPortraitTitle('Crag', null, null);
-    expect((await latestState()).heroDefaultBg).toBeTrue();
+    expect((await latestState()).heroDefaultBg).toBe(true);
 
     const nextRoot = makeRoot('topo/:crag-slug/:sector-slug');
     routerEvents.next(
@@ -172,8 +172,8 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeTrue();
-    expect(state.loadingHero).toBeTrue();
+    expect(state.loading).toBe(true);
+    expect(state.loadingHero).toBe(true);
   });
 
   it('keeps tabs and breadcrumbs set in the same turn as the title', async () => {
@@ -182,7 +182,7 @@ describe('PageTitleService', () => {
     service.setTabs([{ label: 'Lines' }]);
 
     const state = await latestState();
-    expect(state.loading).toBeFalse();
+    expect(state.loading).toBe(false);
     expect(state.title).toBe('Shark Attack');
     expect(state.breadcrumbs).toEqual([{ label: 'Brione' }]);
     expect(state.breadcrumbHome).toEqual({ icon: 'pi pi-map' });
@@ -212,7 +212,7 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeTrue();
+    expect(state.loading).toBe(true);
     expect(state.title).toBeNull();
     expect(state.tabs).toBeNull();
   });
@@ -224,11 +224,11 @@ describe('PageTitleService', () => {
         root: nextRoot,
       } as never),
     );
-    expect((await latestState()).loading).toBeTrue();
+    expect((await latestState()).loading).toBe(true);
 
     service.setTitle('Scales');
     const state = await latestState();
-    expect(state.loading).toBeFalse();
+    expect(state.loading).toBe(false);
     expect(state.title).toBe('Scales');
   });
 
@@ -242,7 +242,7 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeFalse();
+    expect(state.loading).toBe(false);
     expect(state.title).toBeNull();
   });
 
@@ -280,7 +280,7 @@ describe('PageTitleService', () => {
     );
 
     const state = await latestState();
-    expect(state.loading).toBeFalse();
+    expect(state.loading).toBe(false);
     expect(state.title).toBe('Topo quality');
   });
 });

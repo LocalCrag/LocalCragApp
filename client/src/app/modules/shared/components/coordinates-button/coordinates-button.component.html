@@ -1,10 +1,30 @@
 <ng-container *transloco="let t; read: 'coordinatesButton'">
-  <p-split-button
-    label="{{ t('coordinates') }}"
-    icon="pi pi-map-marker"
-    text
-    (onClick)="openCoordinates()"
-    [model]="items"
-  >
-  </p-split-button>
+  <div hlmButtonGroup>
+    <button hlmBtn type="button" variant="ghost" (click)="openCoordinates()">
+      <ng-icon name="lucideMapPin" />
+      {{ t("coordinates") }}
+    </button>
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      size="icon"
+      [hlmDropdownMenuTrigger]="coordMenu"
+      [attr.aria-label]="t('coordinates')"
+    >
+      <ng-icon name="lucideChevronDown" />
+    </button>
+  </div>
+  <ng-template #coordMenu>
+    <div hlmDropdownMenu>
+      @for (item of items; track item.label) {
+        <button type="button" hlmDropdownMenuItem (triggered)="runItem(item)">
+          @if (iconName(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
 </ng-container>

@@ -1,8 +1,198 @@
-@import "tailwindcss";
-@import "tailwindcss-primeui";
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
 
+@import "@spartan-ng/brain/hlm-tailwind-preset.css";
 @source not "../e2e/**/*";
 @source not "../playwright-report/**/*";
 @source not "../test-results/**/*";
 
 @custom-variant dark (&:where(.lc-dark, .lc-dark *));
+
+:root {
+  color-scheme: light;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.546 0.215 262.881);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+:root.lc-dark {
+  color-scheme: dark;
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.623 0.214 259.815);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  button:not(:disabled),
+  input:is([type="button"], [type="submit"], [type="reset"]):not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="menuitemcheckbox"]:not([aria-disabled="true"]),
+  [role="menuitemradio"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+}
+
+/* Existing styles still read PrimeNG token names. Point them at Spartan. */
+:root {
+  --p-primary-color: var(--primary);
+  --p-primary-contrast-color: var(--primary-foreground);
+  --p-primary-500: var(--primary);
+  --p-primary-600: var(--primary);
+  --p-text-color: var(--foreground);
+  --p-text-muted-color: var(--muted-foreground);
+  --p-content-background: var(--card);
+  --p-content-border-color: var(--border);
+  --p-content-hover-background: var(--accent);
+  --p-content-border-radius: var(--radius);
+  --p-border-radius-md: var(--radius);
+  --p-card-border-radius: var(--radius);
+  --p-tag-rounded-border-radius: var(--radius);
+  --p-overlay-popover-background: var(--popover);
+  --p-highlight-background: var(--accent);
+  --p-form-field-background: var(--background);
+  --p-form-field-border-color: var(--input);
+  --p-form-field-hover-border-color: var(--ring);
+  --p-form-field-focus-border-color: var(--ring);
+  --p-form-field-invalid-border-color: var(--destructive);
+  --p-form-field-invalid-placeholder-color: var(--destructive);
+  --p-skeleton-background: var(--muted);
+  --p-skeleton-animation-background: var(--accent);
+  --p-breadcrumb-background: transparent;
+  --p-breadcrumb-padding: 0;
+  --p-breadcrumb-separator-color: var(--muted-foreground);
+  --p-breadcrumb-item-color: var(--muted-foreground);
+  --p-breadcrumb-item-hover-color: var(--foreground);
+  --p-breadcrumb-item-icon-color: var(--muted-foreground);
+  --p-breadcrumb-item-icon-hover-color: var(--foreground);
+  --p-tabs-tablist-background: transparent;
+  --p-tabs-tablist-border-width: 0;
+  --p-tabs-tab-background: transparent;
+  --p-tabs-tab-color: var(--muted-foreground);
+  --p-tabs-tab-hover-background: var(--accent);
+  --p-tabs-tab-hover-color: var(--foreground);
+  --p-tabs-tab-active-background: var(--background);
+  --p-tabs-tab-active-color: var(--foreground);
+  --p-tabs-active-bar-background: var(--primary);
+  --p-tabs-nav-button-background: var(--background);
+  --p-tabs-nav-button-color: var(--foreground);
+  --p-tabs-nav-button-hover-color: var(--foreground);
+  --p-tabs-nav-button-shadow: none;
+  --p-card-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  --p-overlay-popover-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+  --p-focus-ring-shadow: 0 0 0 2px var(--ring);
+  --p-avatar-lg-width: 3rem;
+  --p-surface-100: var(--muted);
+  --p-surface-200: var(--border);
+  --p-surface-500: var(--muted-foreground);
+  --p-surface-800: var(--foreground);
+  --p-surface-950: var(--foreground);
+  --p-gray-200: #e5e7eb;
+  --p-gray-500: #6b7280;
+  --p-red-400: #f87171;
+  --p-red-500: #ef4444;
+  --p-red-600: #dc2626;
+  --p-red-700: #b91c1c;
+  --p-orange-50: #fff7ed;
+  --p-orange-500: #f97316;
+  --p-orange-600: #ea580c;
+  --p-amber-500: #f59e0b;
+  --p-yellow-300: #fde047;
+  --p-yellow-400: #facc15;
+  --p-yellow-500: #eab308;
+  --p-yellow-700: #a16207;
+  --p-lime-500: #84cc16;
+  --p-green-50: #f0fdf4;
+  --p-green-400: #4ade80;
+  --p-green-500: #22c55e;
+  --p-green-600: #16a34a;
+  --p-teal-500: #14b8a6;
+  --p-cyan-500: #06b6d4;
+  --p-blue-400: #60a5fa;
+  --p-blue-500: #3b82f6;
+  --p-blue-600: #2563eb;
+  --p-blue-700: #1d4ed8;
+  --p-indigo-500: #6366f1;
+  --p-purple-500: #a855f7;
+  --p-pink-500: #ec4899;
+}

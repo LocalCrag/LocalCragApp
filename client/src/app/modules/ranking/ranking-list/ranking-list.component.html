@@ -1,179 +1,148 @@
 <ng-container *transloco="let t; read: 'ascents.ascentList'">
-  <p-dataView
-    #dv
-    [value]="rankings"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
+  <div
+    class="flex flex-col items-start gap-x-6 gap-y-3 px-6 py-4 sm:flex-row sm:flex-wrap sm:items-center"
   >
-    <ng-template #emptymessage>
-      <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">{{
-        t("noRankingsFoundMessage")
-      }}</p-message>
-    </ng-template>
-    <ng-template #header>
-      <div class="flex flex-col sm:flex-row gap-x-6 gap-y-4">
-        @if (lineTypes?.length > 1) {
-          <p-select
-            [options]="lineTypes"
-            [(ngModel)]="lineType"
-            (ngModelChange)="onLineTypeChange()"
-            optionLabel="label"
-            styleClass="md:mb-0 md:mr-2"
-            [disabled]="loading === loadingStates.LOADING"
-          >
-            <ng-template #selectedItem>
-              @if (lineType) {
-                <div class="flex items-center gap-2">
-                  <div>{{ lineType.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
+    @if (lineTypes?.length > 1) {
+      <hlm-select
+        [(ngModel)]="lineType"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="onLineTypeChange()"
+        ><hlm-select-trigger class="w-full md:mb-0"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of lineTypes; track $index) {
+            <hlm-select-item [value]="option"
+              ><div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
-        }
-        @if (scales?.length > 1) {
-          <p-select
-            [options]="scales"
-            [(ngModel)]="scale"
-            (ngModelChange)="loadRanking()"
-            optionLabel="label"
-            styleClass="md:mb-0 md:mr-2"
-            [disabled]="loading === loadingStates.LOADING"
-          >
-            <ng-template #selectedItem>
-              @if (scale) {
-                <div class="flex items-center gap-2">
-                  <div>{{ scale.label }}</div>
-                </div>
-              }
-            </ng-template>
-            <ng-template let-option #item>
-              <div class="flex items-center gap-2">
+              </div></hlm-select-item
+            >
+          }
+        </hlm-select-content></hlm-select
+      >
+    }
+    @if (scales?.length > 1) {
+      <hlm-select
+        [(ngModel)]="scale"
+        [disabled]="loading === loadingStates.LOADING"
+        (ngModelChange)="loadRanking()"
+        ><hlm-select-trigger class="w-full md:mb-0"
+          ><hlm-select-value /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of scales; track $index) {
+            <hlm-select-item [value]="option"
+              ><div class="flex items-center gap-2">
                 <div>{{ option.label }}</div>
-              </div>
-            </ng-template>
-          </p-select>
-        }
-        <p-select
-          [options]="rankingTypes"
-          [(ngModel)]="rankingType"
-          (ngModelChange)="onRankingTypeChange()"
-          optionLabel="label"
-          styleClass="md:mb-0 md:mr-2"
-          [disabled]="loading === loadingStates.LOADING"
-        >
-          <ng-template #selectedItem>
-            @if (rankingType) {
-              <div class="flex items-center gap-2">
-                <div>{{ rankingType.label }}</div>
-              </div>
-            }
-          </ng-template>
-          <ng-template let-option #item>
-            <div class="flex items-center gap-2">
+              </div></hlm-select-item
+            >
+          }
+        </hlm-select-content></hlm-select
+      >
+    }
+    <hlm-select
+      [(ngModel)]="rankingType"
+      [disabled]="loading === loadingStates.LOADING"
+      (ngModelChange)="onRankingTypeChange()"
+      ><hlm-select-trigger class="w-full md:mb-0"
+        ><hlm-select-value /></hlm-select-trigger
+      ><hlm-select-content *hlmSelectPortal>
+        @for (option of rankingTypes; track $index) {
+          <hlm-select-item [value]="option"
+            ><div class="flex items-center gap-2">
               <div>{{ option.label }}</div>
-            </div>
-          </ng-template>
-        </p-select>
-        <div class="secret-switch-container" *isMember="true">
-          <p-toggleswitch
-            [disabled]="loading === loadingStates.LOADING"
-            [(ngModel)]="secretRankings"
-            (ngModelChange)="loadRanking()"
-          />
-          {{ t("includeSecretSpots") }}
-        </div>
-        <p-button
-          class="ranking-info-button"
-          severity="secondary"
-          text
-          (click)="showDialog()"
-          icon="pi pi-external-link"
-          label="{{ t('aboutRankingsButtonLabel') }}"
-        ></p-button>
-        <p-dialog
-          header="{{ t('aboutRankingsHeader') }}"
-          [(visible)]="showInfoPopup"
-          [style]="{ 'max-width': '800px' }"
-          [dismissableMask]="true"
-          [closable]="true"
-          [modal]="true"
-        >
-          <p>{{ t("aboutRankingsText") }}</p>
-          @if (rankingExample) {
-            <p>
-              {{
-                t("aboutRankingsExample", {
-                  grade: rankingExample.grade,
-                  points: rankingExample.points,
-                  nextGrade: rankingExample.nextGrade,
-                  nextPoints: rankingExample.nextPoints,
-                })
-              }}
-            </p>
-          }
-          @if (rankingPastWeeks | async; as weeks) {
-            <p>
-              {{
-                t(
-                  weeks === 1
-                    ? "aboutRankingsTimeRangeSuffixSingular"
-                    : "aboutRankingsTimeRangeSuffix",
-                  weeks === 1 ? {} : { weeks }
-                )
-              }}
-            </p>
-          }
-        </p-dialog>
+            </div></hlm-select-item
+          >
+        }
+      </hlm-select-content></hlm-select
+    >
+    <div class="secret-switch-container" *isMember="true">
+      <hlm-switch
+        [disabled]="loading === loadingStates.LOADING"
+        [(ngModel)]="secretRankings"
+        (ngModelChange)="loadRanking()"
+      ></hlm-switch>
+      {{ t("includeSecretSpots") }}
+    </div>
+    <button hlmBtn type="button" variant="secondary" (click)="showDialog()">
+      <ng-icon name="lucideInfo" />
+      {{ t("aboutRankingsButtonLabel") }}
+    </button>
+  </div>
+  <hlm-dialog
+    [state]="showInfoPopup ? 'open' : 'closed'"
+    (closed)="showInfoPopup = false"
+  >
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ t("aboutRankingsHeader") }}</h2>
       </div>
-    </ng-template>
-    <ng-template #list>
-      @if (loading === loadingStates.LOADING) {
-        <lc-ranking-list-skeleton></lc-ranking-list-skeleton>
+      <p class="m-0">{{ t("aboutRankingsText") }}</p>
+      @if (rankingExample) {
+        <p class="m-0">
+          {{
+            t("aboutRankingsExample", {
+              grade: rankingExample.grade,
+              points: rankingExample.points,
+              nextGrade: rankingExample.nextGrade,
+              nextPoints: rankingExample.nextPoints,
+            })
+          }}
+        </p>
       }
-      @if (loading !== loadingStates.LOADING) {
-        <div class="grid grid-cols-12">
-          @for (
-            ranking of rankings;
-            track ranking;
-            let first = $first;
-            let index = $index
-          ) {
-            <div class="col-span-12">
-              <div
-                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ranking-table-container"
-                [ngClass]="{ 'border-t border-surface': !first }"
-              >
-                <div class="ranking-table-row">
-                  <div class="ranking-table-rank">
-                    {{ ranking[rankField] }}.
-                  </div>
-                  <div class="ranking-table-user-info">
-                    <lc-user-avatar
-                      [user]="ranking.user"
-                      styleClass="mr-2"
-                      size="large"
-                    />
-                    <a
-                      class="username"
-                      routerLink="{{ ranking.routerLinkUser }}"
-                      >{{ ranking.user.firstname }}
-                      {{ ranking.user.lastname }}</a
-                    >
-                  </div>
-                  <div class="ranking-table-score">
-                    {{ ranking[sortField] }}
-                  </div>
-                </div>
+      @if (rankingPastWeeks | async; as weeks) {
+        <p class="m-0">
+          {{
+            t(
+              weeks === 1
+                ? "aboutRankingsTimeRangeSuffixSingular"
+                : "aboutRankingsTimeRangeSuffix",
+              weeks === 1 ? {} : { weeks }
+            )
+          }}
+        </p>
+      }
+    </hlm-dialog-content>
+  </hlm-dialog>
+  @if (!rankings?.length && loading === loadingStates.DEFAULT) {
+    <div hlmAlert class="m-4">
+      <ng-icon name="lucideInfo" />
+      <p hlmAlertDescription>{{ t("noRankingsFoundMessage") }}</p>
+    </div>
+  }
+  @if (loading === loadingStates.LOADING) {
+    <lc-ranking-list-skeleton></lc-ranking-list-skeleton>
+  }
+  @if (loading !== loadingStates.LOADING) {
+    <div class="grid grid-cols-12">
+      @for (
+        ranking of sortClientList(rankings);
+        track ranking;
+        let first = $first;
+        let index = $index
+      ) {
+        <div class="col-span-12">
+          <div
+            class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 ranking-table-container"
+            [ngClass]="{ 'border-t border-surface': !first }"
+          >
+            <div class="ranking-table-row">
+              <div class="ranking-table-rank">{{ ranking[rankField] }}.</div>
+              <div class="ranking-table-user-info">
+                <lc-user-avatar
+                  [user]="ranking.user"
+                  styleClass="mr-2"
+                  size="large"
+                />
+                <a class="username" routerLink="{{ ranking.routerLinkUser }}"
+                  >{{ ranking.user.firstname }} {{ ranking.user.lastname }}</a
+                >
+              </div>
+              <div class="ranking-table-score">
+                {{ ranking[sortField] }}
               </div>
             </div>
-          }
+          </div>
         </div>
       }
-    </ng-template>
-  </p-dataView>
+    </div>
+  }
 </ng-container>

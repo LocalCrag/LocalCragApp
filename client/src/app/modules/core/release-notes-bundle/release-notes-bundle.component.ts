@@ -4,13 +4,14 @@ import {
   OnInit,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { MessageModule } from 'primeng/message';
+import { HlmAlert } from '@spartan-ng/helm/alert';
 import { ReleaseNotesService } from '../../../services/crud/release-notes.service';
 import {
   ReleaseNoteBundleItem,
@@ -36,9 +37,10 @@ import '../../../utility/release-note-transloco-keys';
 
 @Component({
   selector: 'lc-release-notes-bundle',
-  imports: [TranslocoDirective, MessageModule],
+  imports: [TranslocoDirective, HlmAlert],
   templateUrl: './release-notes-bundle.component.html',
   styleUrl: './release-notes-bundle.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class ReleaseNotesBundleComponent implements OnInit {

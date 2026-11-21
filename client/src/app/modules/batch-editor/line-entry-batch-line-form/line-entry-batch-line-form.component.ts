@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
@@ -28,7 +29,6 @@ import {
   TouchedChangeEvent,
 } from '@angular/forms';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { InputText } from 'primeng/inputtext';
 import {
   TranslocoDirective,
   TranslocoPipe,
@@ -54,10 +54,14 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { AdvancedColorPickerComponent } from '../../shared/forms/controls/advanced-color-picker/advanced-color-picker.component';
 import { AsyncPipe } from '@angular/common';
-import { Select } from 'primeng/select';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideTrash2 } from '@ng-icons/lucide';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 
 @Component({
   selector: 'lc-line-entry-batch-line-form',
@@ -67,16 +71,17 @@ import { Tag } from 'primeng/tag';
     FormDirective,
     FormsModule,
     IfErrorDirective,
-    InputText,
     ReactiveFormsModule,
     TranslocoDirective,
     AdvancedColorPickerComponent,
-    Select,
     TranslateSpecialGradesPipe,
     TranslocoPipe,
-    Tag,
     AsyncPipe,
-    Button,
+    HlmButton,
+    HlmInput,
+    ...HlmSelectImports,
+    HlmBadge,
+    NgIcon,
   ],
   providers: [
     {
@@ -89,8 +94,10 @@ import { Tag } from 'primeng/tag';
       useExisting: forwardRef(() => LineEntryBatchLineFormComponent),
       multi: true,
     },
+    provideIcons({ lucideTrash2 }),
   ],
   templateUrl: './line-entry-batch-line-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './line-entry-batch-line-form.component.scss',
 })
 export class LineEntryBatchLineFormComponent
@@ -135,6 +142,7 @@ export class LineEntryBatchLineFormComponent
   private route = inject(ActivatedRoute);
   private areasService = inject(AreasService);
   private translocoService = inject(TranslocoService);
+  private translateSpecialGradesService = inject(TranslateSpecialGradesService);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
   private scalesService = inject(ScalesService);
@@ -299,6 +307,14 @@ export class LineEntryBatchLineFormComponent
       faNameControl.enable();
     }
   }
+
+  selectLabel = (value: unknown): string => {
+    const grade = this.grades?.find((option) => option.value === value);
+    if (grade?.name) {
+      return this.translateSpecialGradesService.translate(grade.name);
+    }
+    return value == null ? '' : String(value);
+  };
 
   private buildTypeOptions() {
     this.typeOptions = Object.entries(this.groupedScales)

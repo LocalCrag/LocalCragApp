@@ -286,7 +286,7 @@
   -webkit-box-orient: vertical;
 }
 
-// Sit below the toolbar / topo–satellite toggle on the right.
+// Sit below the toolbar, including when the map buttons wrap onto a second row.
 :host ::ng-deep .maplibregl-ctrl-top-right {
-  top: 3.5rem;
+  top: calc(0.75rem + var(--rock-explorer-toolbar-height, 2.25rem) + 0.5rem);
 }

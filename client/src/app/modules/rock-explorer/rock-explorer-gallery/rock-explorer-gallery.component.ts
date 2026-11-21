@@ -10,20 +10,13 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { GalleriaModule } from 'primeng/galleria';
-import { Menu } from 'primeng/menu';
-import { Message } from 'primeng/message';
-import { Textarea } from 'primeng/textarea';
-import { Toast } from 'primeng/toast';
 import { forkJoin, of } from 'rxjs';
 import { catchError, filter, take } from 'rxjs/operators';
 import { Feature } from 'geojson';
@@ -50,32 +43,69 @@ import { GalleryImageSkeletonComponent } from '../../gallery/gallery-image-skele
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 import { CoordinatesComponent } from '../../shared/forms/controls/coordinates/coordinates.component';
 import { MultiImageUploadComponent } from '../../shared/forms/controls/multi-image-upload/multi-image-upload.component';
+import { toast } from '@spartan-ng/brain/sonner';
+import { MenuItem } from '../../shared/models/menu-item';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideCheck,
+  lucideEye,
+  lucideInfo,
+  lucideMapPin,
+  lucideMessageSquare,
+  lucidePencil,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
+import { lucideNameFromPrimeIcon } from '../../shared/utils/prime-icon';
+
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'lc-rock-explorer-gallery',
   imports: [
+    ...HlmDropdownMenuImports,
     FormsModule,
     ReactiveFormsModule,
-    GalleriaModule,
     MultiImageUploadComponent,
     GalleryImageSkeletonComponent,
     CoordinatesComponent,
-    Button,
-    DialogModule,
-    Menu,
-    Message,
-    Textarea,
-    Toast,
     HasPermissionDirective,
     TranslocoDirective,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmTextarea,
+    ...HlmDialogImports,
+    NgIcon,
   ],
-  providers: [MessageService],
+  providers: [
+    provideIcons({
+      lucideCheck,
+      lucideEye,
+      lucideInfo,
+      lucideMapPin,
+      lucideMessageSquare,
+      lucidePencil,
+      lucideTrash2,
+      lucideX,
+    }),
+  ],
   templateUrl: './rock-explorer-gallery.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-gallery.component.scss',
 })
 export class RockExplorerGalleryComponent
   implements OnInit, OnChanges, PaginatedListView
 {
+  private confirmDialog = inject(ConfirmDialogService);
+  readonly menuIcon = lucideNameFromPrimeIcon;
+
   @Input({ required: true }) object!: RockExplorerFeature;
   /** When false, omit the section heading (e.g. inside a tab). */
   @Input() showHeading = true;
@@ -119,8 +149,6 @@ export class RockExplorerGalleryComponent
   private destroyRef = inject(DestroyRef);
   private galleryService = inject(GalleryService);
   private store = inject(Store);
-  private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
   private transloco = inject(TranslocoService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -232,12 +260,9 @@ export class RockExplorerGalleryComponent
           });
           this.saving = false;
           if (failed > 0) {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.transloco.translate(
-                marker('rockExplorer.imageSaveError'),
-              ),
-            });
+            toast.error(
+              this.transloco.translate(marker('rockExplorer.imageSaveError')),
+            );
             this.cdr.detectChanges();
             return;
           }
@@ -251,12 +276,9 @@ export class RockExplorerGalleryComponent
         },
         error: () => {
           this.saving = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.imageSaveError'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.imageSaveError')),
+          );
           this.cdr.detectChanges();
         },
       });
@@ -356,18 +378,19 @@ export class RockExplorerGalleryComponent
     this.mapPickChange.emit(true);
   }
 
-  gpsButtonSeverity(image: GalleryImage): 'primary' | 'secondary' | 'danger' {
+  gpsButtonSeverity(
+    image: GalleryImage,
+  ): 'default' | 'secondary' | 'destructive' {
     if (this.pickingImageId === image.id) {
-      return 'danger';
+      return 'destructive';
     }
-    return this.getImageCoordinates(image) ? 'primary' : 'secondary';
+    return this.getImageCoordinates(image) ? 'default' : 'secondary';
   }
 
-  openGpsMenu(event: Event, image: GalleryImage, menu: Menu): void {
+  openGpsMenu(event: Event, image: GalleryImage): void {
     event.preventDefault();
     event.stopPropagation();
     this.gpsMenuItems = this.buildGpsMenuItems(image);
-    menu.toggle(event);
   }
 
   openCoordinatesDialog(image: GalleryImage): void {
@@ -525,10 +548,9 @@ export class RockExplorerGalleryComponent
         },
         error: () => {
           failPaginatedPageLoad(this);
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(marker('rockExplorer.loadError')),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.loadError')),
+          );
           this.cdr.detectChanges();
         },
       });
@@ -575,22 +597,18 @@ export class RockExplorerGalleryComponent
             this.countChange.emit(this.images.length);
             this.imagesChanged.emit();
             this.imagesLoaded.emit();
-            this.messageService.add({
-              severity: 'success',
-              summary: this.transloco.translate(
+            toast.success(
+              this.transloco.translate(
                 created.length === 1
                   ? marker('rockExplorer.imageUploadSuccess')
                   : marker('rockExplorer.imageUploadSuccessPlural'),
               ),
-            });
+            );
           }
           if (failed > 0) {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.transloco.translate(
-                marker('rockExplorer.imageUploadError'),
-              ),
-            });
+            toast.error(
+              this.transloco.translate(marker('rockExplorer.imageUploadError')),
+            );
           }
           this.uploadForm.reset({ images: [] }, { emitEvent: false });
           this.uploadForm.enable({ emitEvent: false });
@@ -601,12 +619,9 @@ export class RockExplorerGalleryComponent
           this.uploading = false;
           this.uploadForm.reset({ images: [] }, { emitEvent: false });
           this.uploadForm.enable({ emitEvent: false });
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.imageUploadError'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.imageUploadError')),
+          );
           this.cdr.detectChanges();
         },
       });
@@ -620,19 +635,17 @@ export class RockExplorerGalleryComponent
   }
 
   confirmDeleteImage(event: Event, image: GalleryImage): void {
-    this.confirmationService.confirm({
-      target: event.currentTarget ?? event.target,
+    this.confirmDialog.open({
       message: this.transloco.translate(
         marker('rockExplorer.imageDeleteConfirm'),
       ),
       acceptLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteYes'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteNo'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteImage(image);
       },
@@ -716,12 +729,9 @@ export class RockExplorerGalleryComponent
           this.cdr.detectChanges();
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.transloco.translate(
-              marker('rockExplorer.imageDeleteError'),
-            ),
-          });
+          toast.error(
+            this.transloco.translate(marker('rockExplorer.imageDeleteError')),
+          );
           this.cdr.detectChanges();
         },
       });

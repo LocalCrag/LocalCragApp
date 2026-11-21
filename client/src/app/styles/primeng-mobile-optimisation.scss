@@ -12,12 +12,11 @@ p-breadcrumb {
   }
 }
 
-// Hide button labels on small screens
-p-button.responsive-button,
-button.responsive-button {
-  .p-button-label {
-    @include m.on-mobile {
-      display: none;
-    }
+// Icon buttons drop their label below the mobile breakpoint. The text stays
+// available to screen readers. Buttons without an icon keep the label.
+.responsive-button:has(ng-icon) {
+  @include m.on-mobile {
+    font-size: 0;
+    gap: 0;
   }
 }

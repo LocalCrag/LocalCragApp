@@ -1,7 +1,14 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
-import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
@@ -22,28 +29,43 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-area',
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss'],
   imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public sector: Sector;
   public area: Area;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
-  private breadcrumbHome: MenuItem | undefined;
+  private breadcrumbHome: PageMenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -58,6 +80,7 @@ export class AreaComponent implements OnInit {
   private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
   private hasBlocweather = false;
 
@@ -65,6 +88,7 @@ export class AreaComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.closureBannerService.setReasons([]);
         const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         const areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -122,8 +146,10 @@ export class AreaComponent implements OnInit {
               area.name,
               area.portraitImage,
               bgImage,
+              { titleAddon: this.statusTagsTemplate },
             );
             this.rulesAlertService.setContext({ sector, crag, region });
+            this.closureBannerService.setReasons(area.closedReasons);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -6,10 +13,13 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ButtonModule } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircleHelp, lucideSave } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { selectItemLabel } from '../select-item-label';
 import { FaDefaultFormat } from '../../../enums/fa-default-format';
 import { LandingPage } from '../../../enums/landing-page';
 import { StartingPosition } from '../../../enums/starting-position';
@@ -26,19 +36,23 @@ import { MenuPagesService } from '../../../services/crud/menu-pages.service';
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
-    ButtonModule,
-    Select,
-    InputTextModule,
-    TooltipModule,
+    NgIcon,
+    HlmButton,
+    HlmInput,
+    HlmSelectImports,
+    HlmTooltip,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
     LanguageSelectComponent,
   ],
   templateUrl: './instance-settings-general-tab.component.html',
+  providers: [provideIcons({ lucideCircleHelp, lucideSave })],
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './instance-settings-general-tab.component.scss',
 })
 export class InstanceSettingsGeneralTabComponent implements OnInit {
+  protected readonly selectItemLabel = selectItemLabel;
   @Input({ required: true }) group!: FormGroup;
   @Input({ required: true }) save!: () => void;
   @Input() loading = false;

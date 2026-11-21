@@ -29,10 +29,6 @@
     .page-chrome__header {
       padding: 1.5rem 1.5rem 0;
     }
-
-    .page-chrome__tabs {
-      padding-inline: 1.5rem;
-    }
   }
 
   &__header {
@@ -51,6 +47,10 @@
 
   &__header &__breadcrumb {
     margin-bottom: 0.5rem;
+  }
+
+  &__titles &__breadcrumb {
+    margin-bottom: 0;
   }
 
   &__hero {
@@ -158,7 +158,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: var(--lc-card-padding-block) var(--page-chrome-inline-padding) 0;
+    padding: var(--page-chrome-inline-padding) var(--page-chrome-inline-padding)
+      0;
     background: linear-gradient(
       to bottom,
       var(--page-chrome-hero-overlay),
@@ -167,6 +168,7 @@
     );
 
     @include m.on-mobile {
+      padding-top: var(--lc-card-padding-inline);
       padding-inline: var(--lc-card-padding-inline);
     }
   }
@@ -176,6 +178,23 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  // Chips stay in the top-right column. Breadcrumb and heading share the
+  // other column, so the chip stack does not push the heading down.
+  &__hero-top:has(> .page-chrome__title-addons:not(:empty)),
+  &__header:has(> .page-chrome__title-addons:not(:empty)) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: 0.75rem;
+  }
+
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
   }
 
   &__hero-top &__breadcrumb {
@@ -193,17 +212,38 @@
     }
   }
 
+  &__info {
+    display: inline-block;
+    margin-inline-start: 0.5rem;
+    vertical-align: middle;
+    cursor: help;
+    font-size: 0.7em;
+    color: inherit;
+  }
+
   &__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.75rem;
+    row-gap: 0.35rem;
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.3;
     margin: 0;
     width: 100%;
+  }
 
-    &:has(lc-user-avatar) {
-      display: flex;
-      align-items: center;
-    }
+  &__heading-text {
+    min-width: 0;
+  }
+
+  &__title-addons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0.35rem;
   }
 
   &__breadcrumb {
@@ -252,12 +292,13 @@
       box-shadow: none;
     }
 
-    .p-breadcrumb-item-link,
-    .p-breadcrumb-item-icon,
-    .p-breadcrumb-item-label,
+    [data-slot="breadcrumb-list"],
+    [data-slot="breadcrumb-link"],
+    [data-slot="breadcrumb-page"],
+    [data-slot="breadcrumb-separator"],
     a {
       color: rgb(255 255 255 / 0.95);
-      text-shadow: 0 1px 8px rgb(0 0 0 / 0.55);
+      text-shadow: none;
     }
 
     .p-breadcrumb-separator,
@@ -278,139 +319,31 @@
     align-self: stretch;
     margin-inline: calc(-1 * var(--page-chrome-inline-padding));
     width: auto;
+
+    /* Overlay padding shrinks on a phone; the bar must follow or the
+       chevrons hang past the screen edge. */
+    @include m.on-mobile {
+      margin-inline: calc(-1 * var(--lc-card-padding-inline));
+    }
   }
 
-  &__tabs {
+  lc-chrome-tabs.page-chrome__tabs:not(.chrome-tabs--overlay) {
     display: block;
     padding: 0 var(--page-chrome-inline-padding);
 
     @include m.on-mobile {
       padding-inline: var(--lc-card-padding-inline);
     }
-
-    .p-tabs {
-      width: 100%;
-    }
-
-    .p-tablist,
-    .p-tablist-tab-list {
-      border: none;
-      border-bottom: none;
-    }
-
-    .p-tab {
-      border-bottom: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .p-tab-active {
-      color: var(--p-primary-color);
-    }
-
-    .p-tablist-active-bar {
-      display: none;
-    }
-
-    .p-tablist-tab-list :first-child {
-      padding-left: 0 !important;
-    }
   }
 
-  &__tab-badge.p-badge {
-    margin-left: 0.05rem;
+  &--without-image lc-chrome-tabs.page-chrome__tabs:not(.chrome-tabs--overlay) {
+    padding-inline: 1.5rem;
   }
 
+  /* Loading skeleton still uses this bar; loaded tabs live in lc-chrome-tabs. */
   &__tabs--on-image {
-    --p-tabs-tablist-background: transparent;
-    --p-tabs-tablist-border-width: 0;
-    --p-tabs-tab-background: transparent;
-    --p-tabs-tab-active-background: transparent;
-    --p-tabs-tab-hover-background: transparent;
-    --p-tabs-nav-button-background: rgb(0 0 0 / 0.9);
-    --p-tabs-active-bar-background: transparent;
-    --p-tabs-tab-color: rgb(255 255 255 / 0.62);
-    --p-tabs-tab-hover-color: rgb(255 255 255 / 0.82);
-    --p-tabs-tab-active-color: #fff;
-    --p-tabs-nav-button-color: rgb(255 255 255 / 0.88);
-    --p-tabs-nav-button-hover-color: #fff;
-    --p-tabs-nav-button-shadow: 0 0 1.5rem 1.5rem rgb(0 0 0);
-
     background: rgb(0 0 0 / 0.55);
     padding: 0;
-
-    @include m.on-mobile {
-      padding-inline: var(--lc-card-padding-inline);
-    }
-
-    .p-tablist,
-    .p-tablist-viewport,
-    .p-tablist-tab-list,
-    .p-tab {
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .p-tablist,
-    .p-tablist-tab-list {
-      border: none;
-      border-bottom: none;
-    }
-
-    .p-tab {
-      border-color: transparent;
-      border-bottom: none;
-      color: rgb(255 255 255 / 0.62);
-      text-shadow: 0 1px 8px rgb(0 0 0 / 0.55);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .p-tab-active {
-      background: transparent;
-      border-color: transparent;
-      color: #fff;
-    }
-
-    .p-tab:not(.p-tab-active):not(.p-disabled):hover {
-      background: transparent;
-      border-color: transparent;
-      color: rgb(255 255 255 / 0.82);
-    }
-
-    .p-tablist-active-bar {
-      display: none;
-    }
-
-    .p-tablist-nav-button {
-      color: rgb(255 255 255 / 0.88);
-      background: rgb(0 0 0 / 0.9);
-      box-shadow: var(--p-tabs-nav-button-shadow);
-    }
-
-    .p-tablist-nav-button:focus-visible,
-    .p-tablist-prev-button:focus-visible,
-    .p-tablist-next-button:focus-visible {
-      outline: none;
-      box-shadow: var(--p-tabs-nav-button-shadow);
-    }
-
-    .p-tablist-nav-button:hover {
-      background: rgb(0 0 0 / 0.9);
-      color: #fff;
-      box-shadow: var(--p-tabs-nav-button-shadow);
-    }
-
-    .p-tablist-tab-list :first-child {
-      padding-left: 0 !important;
-    }
-
-    .page-chrome__tab-badge.p-badge {
-      background: rgb(255 255 255 / 0.22);
-      color: #fff;
-    }
   }
 }
 

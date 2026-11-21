@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ButtonModule } from 'primeng/button';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
 
 export interface AdminMessageDialogData {
   title: string;
@@ -10,16 +10,17 @@ export interface AdminMessageDialogData {
 
 @Component({
   selector: 'lc-admin-message-dialog',
-  imports: [ButtonModule, TranslocoDirective],
+  imports: [HlmButton, TranslocoDirective],
   templateUrl: './admin-message-dialog.component.html',
   styleUrl: './admin-message-dialog.component.scss',
 })
 export class AdminMessageDialogComponent {
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private readonly dialogContext =
+    injectBrnDialogContext<AdminMessageDialogData>();
+  private ref = inject(BrnDialogRef);
 
-  public readonly title: string = this.config.data?.title ?? '';
-  public readonly text: string = this.config.data?.text ?? '';
+  public readonly title: string = this.dialogContext.title ?? '';
+  public readonly text: string = this.dialogContext.text ?? '';
 
   public close(): void {
     this.ref.close();

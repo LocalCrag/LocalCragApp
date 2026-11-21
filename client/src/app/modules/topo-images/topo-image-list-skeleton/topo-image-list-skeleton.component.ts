@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Skeleton } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-topo-image-list-skeleton',
-  imports: [Skeleton],
+  imports: [HlmSkeleton],
   templateUrl: './topo-image-list-skeleton.component.html',
   styleUrl: './topo-image-list-skeleton.component.scss',
 })

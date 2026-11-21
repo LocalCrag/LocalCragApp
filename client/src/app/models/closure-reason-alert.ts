@@ -106,6 +106,29 @@ export function formatClosureScheduleRange(
   return null;
 }
 
+export function closureAlertMessage(
+  alert: ClosureReasonAlert,
+  translate: (key: string, params?: Record<string, unknown>) => string,
+  language: LanguageCode,
+): string {
+  const range = formatClosureScheduleRange(alert, language);
+  const reason = alert.reason?.trim() || null;
+
+  if (reason && range) {
+    return translate('closedSpotAlert.closedWithReasonAndRange', {
+      reason,
+      range,
+    });
+  }
+  if (reason) {
+    return translate('closedSpotAlert.closedWithReason', { reason });
+  }
+  if (range) {
+    return translate('closedSpotAlert.closedWithRange', { range });
+  }
+  return translate('closedSpotAlert.closedWithoutReason');
+}
+
 export function deserializeClosureReasonAlerts(
   payload: any,
 ): ClosureReasonAlert[] {

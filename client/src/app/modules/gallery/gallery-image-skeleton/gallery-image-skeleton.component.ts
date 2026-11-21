@@ -1,12 +1,10 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { CardModule } from 'primeng/card';
-import { ImageModule } from 'primeng/image';
-import { SpeedDialModule } from 'primeng/speeddial';
-import { SkeletonModule } from 'primeng/skeleton';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-gallery-image-skeleton',
-  imports: [CardModule, ImageModule, SpeedDialModule, SkeletonModule],
+  imports: [HlmCardImports, HlmSkeleton],
   templateUrl: './gallery-image-skeleton.component.html',
   styleUrl: './gallery-image-skeleton.component.scss',
   encapsulation: ViewEncapsulation.None,

@@ -1,4 +1,10 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -12,6 +18,7 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
   selector: 'lc-forgot-password-check-mailbox',
   templateUrl: './forgot-password-check-mailbox.component.html',
   styleUrls: ['./forgot-password-check-mailbox.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoDirective],
 })
 export class ForgotPasswordCheckMailboxComponent implements OnInit {

@@ -59,16 +59,16 @@ describe('menu item tree', () => {
   it('allows a drop onto another header item and rejects cycles', () => {
     const items = [item('news', 0), item('page', 1), item('child', 2, 'page')];
 
-    expect(canNestMenuItem(items, items[1], items[0])).toBeTrue();
-    expect(canNestMenuItem(items, items[0], items[0])).toBeFalse();
-    expect(canNestMenuItem(items, items[2], items[1])).toBeFalse();
-    expect(canNestMenuItem(items, items[1], items[2])).toBeFalse();
+    expect(canNestMenuItem(items, items[1], items[0])).toBe(true);
+    expect(canNestMenuItem(items, items[0], items[0])).toBe(false);
+    expect(canNestMenuItem(items, items[2], items[1])).toBe(false);
+    expect(canNestMenuItem(items, items[1], items[2])).toBe(false);
 
     items[0].position = MenuItemPosition.BOTTOM;
-    expect(canNestMenuItem(items, items[1], items[0])).toBeFalse();
+    expect(canNestMenuItem(items, items[1], items[0])).toBe(false);
 
     const topo = item('topo', 3, null, MenuItemType.TOPO);
-    expect(canNestMenuItem([...items, topo], items[1], topo)).toBeFalse();
+    expect(canNestMenuItem([...items, topo], items[1], topo)).toBe(false);
   });
 
   it('lists descendants and stops on a cycle', () => {
@@ -76,8 +76,8 @@ describe('menu item tree', () => {
     expect(Array.from(descendantIds(items, 'a'))).toEqual(['b', 'c']);
 
     const cycle = [item('a', 0, 'b'), item('b', 1, 'a')];
-    expect(descendantIds(cycle, 'a').has('a')).toBeTrue();
-    expect(descendantIds(cycle, 'a').has('b')).toBeTrue();
+    expect(descendantIds(cycle, 'a').has('a')).toBe(true);
+    expect(descendantIds(cycle, 'a').has('b')).toBe(true);
   });
 
   it('reorders header items and nests when dropped inside', () => {

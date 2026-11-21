@@ -1,16 +1,23 @@
 <div class="user-list-skeleton">
   @for (i of Array.from({ length: 10 }); track $index) {
     <div class="user-list-skeleton__row">
-      <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+      <div
+        hlmSkeleton
+        class="shrink-0"
+        style="width: 2.5rem; height: 2.5rem; border-radius: 9999px"
+      ></div>
       <div class="user-list-skeleton__identity">
-        <p-skeleton width="10rem" height="1rem"></p-skeleton>
-        <p-skeleton width="14rem" height="0.75rem"></p-skeleton>
+        <div hlmSkeleton style="width: 10rem; height: 1rem"></div>
+        <div hlmSkeleton style="width: 14rem; height: 0.75rem"></div>
       </div>
       <div class="user-list-skeleton__meta">
-        <p-skeleton width="12rem" height="0.75rem"></p-skeleton>
+        <div hlmSkeleton style="width: 12rem; height: 0.75rem"></div>
       </div>
-      <p-skeleton width="5rem" height="1.5rem" borderRadius="1rem"></p-skeleton>
-      <p-skeleton width="4rem" height="2rem"></p-skeleton>
+      <div
+        hlmSkeleton
+        style="width: 5rem; height: 1.5rem; border-radius: 1rem"
+      ></div>
+      <div hlmSkeleton style="width: 4rem; height: 2rem"></div>
     </div>
   }
 </div>

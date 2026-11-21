@@ -1,13 +1,14 @@
 <ng-container *transloco="let t; read: 'faRemoval.dialog'">
+  @if (title) {
+    <h2 class="text-lg font-semibold mb-4">{{ title }}</h2>
+  }
   <div class="moderation-message-dialog-body">{{ message }}</div>
   <div class="flex w-full justify-end gap-2 mt-6">
     @if (ascentLink) {
-      <p-button
-        [label]="t('viewAscent')"
-        [text]="true"
-        (click)="viewAscent()"
-      ></p-button>
+      <button hlmBtn type="button" variant="ghost" (click)="viewAscent()">
+        {{ t("viewAscent") }}
+      </button>
     }
-    <p-button [label]="t('close')" (click)="close()"></p-button>
+    <button hlmBtn type="button" (click)="close()">{{ t("close") }}</button>
   </div>
 </ng-container>

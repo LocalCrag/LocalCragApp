@@ -43,48 +43,48 @@ describe('gallery membership after a tag edit', () => {
 
   it('keeps a photo tagged with the gallery object', () => {
     const image = imageWith(tagFor(sector, ObjectType.Sector));
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.Sector, 'es'),
-    ).toBeTrue();
+    expect(galleryImageBelongsToObject(image, ObjectType.Sector, 'es')).toBe(
+      true,
+    );
   });
 
   it('keeps a child line tag in the parent sector gallery', () => {
     const image = imageWith(tagFor(line, ObjectType.Line));
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.Sector, 'es'),
-    ).toBeTrue();
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.Crag, 'brione'),
-    ).toBeTrue();
+    expect(galleryImageBelongsToObject(image, ObjectType.Sector, 'es')).toBe(
+      true,
+    );
+    expect(galleryImageBelongsToObject(image, ObjectType.Crag, 'brione')).toBe(
+      true,
+    );
     expect(
       galleryImageBelongsToObject(image, ObjectType.Area, 'black-gate'),
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('drops a photo whose tag was replaced with another sector', () => {
     const image = imageWith(tagFor(otherSector, ObjectType.Sector));
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.Sector, 'es'),
-    ).toBeFalse();
+    expect(galleryImageBelongsToObject(image, ObjectType.Sector, 'es')).toBe(
+      false,
+    );
   });
 
   it('keeps a user tag only on that user gallery', () => {
     const user = new User();
     user.slug = 'ada';
     const image = imageWith(tagFor(user, ObjectType.User));
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.User, 'ada'),
-    ).toBeTrue();
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.User, 'grace'),
-    ).toBeFalse();
-    expect(
-      galleryImageBelongsToObject(image, ObjectType.Sector, 'es'),
-    ).toBeFalse();
+    expect(galleryImageBelongsToObject(image, ObjectType.User, 'ada')).toBe(
+      true,
+    );
+    expect(galleryImageBelongsToObject(image, ObjectType.User, 'grace')).toBe(
+      false,
+    );
+    expect(galleryImageBelongsToObject(image, ObjectType.Sector, 'es')).toBe(
+      false,
+    );
   });
 
   it('keeps every photo when the gallery has no object filter', () => {
     const image = imageWith(tagFor(otherSector, ObjectType.Sector));
-    expect(galleryImageBelongsToObject(image, undefined, undefined)).toBeTrue();
+    expect(galleryImageBelongsToObject(image, undefined, undefined)).toBe(true);
   });
 });

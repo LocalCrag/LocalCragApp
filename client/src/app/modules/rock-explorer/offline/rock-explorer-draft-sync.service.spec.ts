@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
@@ -14,13 +15,13 @@ import { RockExplorerDraftSyncService } from './rock-explorer-draft-sync.service
 describe('RockExplorerDraftSyncService', () => {
   let store: RockExplorerDraftStoreService;
   let sync: RockExplorerDraftSyncService;
-  let createFeature: jasmine.Spy;
-  let updateFeature: jasmine.Spy;
+  let createFeature: Mock;
+  let updateFeature: Mock;
 
   beforeEach(async () => {
     await deleteRockExplorerDraftDb();
-    createFeature = jasmine.createSpy('createFeature');
-    updateFeature = jasmine.createSpy('updateFeature');
+    createFeature = vi.fn().mockName('createFeature');
+    updateFeature = vi.fn().mockName('updateFeature');
 
     TestBed.configureTestingModule({
       providers: [
@@ -44,7 +45,10 @@ describe('RockExplorerDraftSyncService', () => {
 
   async function seedDraft(
     localId: string,
-    opts: { twoPoints?: boolean; serverId?: string | null } = {},
+    opts: {
+      twoPoints?: boolean;
+      serverId?: string | null;
+    } = {},
   ): Promise<void> {
     const session = new RockExplorerRecordingSession('device-1');
     session.tryAppendFix({ lng: 8, lat: 50 });
@@ -90,7 +94,7 @@ describe('RockExplorerDraftSyncService', () => {
     const created = new RockExplorerFeature();
     created.id = 'server-99';
     created.status = 'draft';
-    createFeature.and.returnValue(of(created));
+    createFeature.mockReturnValue(of(created));
 
     await sync.flush({ online: true });
 
@@ -109,7 +113,7 @@ describe('RockExplorerDraftSyncService', () => {
     const updated = new RockExplorerFeature();
     updated.id = 'srv-1';
     updated.status = 'draft';
-    updateFeature.and.returnValue(of(updated));
+    updateFeature.mockReturnValue(of(updated));
 
     await sync.flush({ online: true });
 
@@ -127,9 +131,12 @@ describe('RockExplorerDraftSyncService', () => {
       status: 409,
       statusText: 'Conflict',
     });
-    updateFeature.and.returnValue(throwError(() => conflict));
+    updateFeature.mockReturnValue(throwError(() => conflict));
 
-    const conflicts: { localId: string; serverId: string | null }[] = [];
+    const conflicts: {
+      localId: string;
+      serverId: string | null;
+    }[] = [];
     sync.onDeviceLockConflict = (e) => conflicts.push(e);
 
     await sync.flush({ online: true });
@@ -148,7 +155,7 @@ describe('RockExplorerDraftSyncService', () => {
     await seedDraft('L-net', { twoPoints: true });
     await sync.enqueueUpsert('L-net');
 
-    createFeature.and.returnValue(
+    createFeature.mockReturnValue(
       throwError(
         () => new HttpErrorResponse({ status: 0, statusText: 'Unknown Error' }),
       ),
@@ -156,7 +163,7 @@ describe('RockExplorerDraftSyncService', () => {
 
     await sync.flush({ online: true });
 
-    expect(createFeature.calls.count()).toBe(1);
+    expect(vi.mocked(createFeature).mock.calls.length).toBe(1);
     expect((await store.get('L-net'))?.syncStatus).toBe('error');
     expect(
       await rockExplorerDraftDb.ops.where('localId').equals('L-net').count(),
@@ -170,7 +177,7 @@ describe('RockExplorerDraftSyncService', () => {
     await sync.enqueueUpsert('L-b');
 
     const order: string[] = [];
-    createFeature.and.callFake((_feature: RockExplorerFeature) => {
+    createFeature.mockImplementation((_feature: RockExplorerFeature) => {
       order.push('call');
       const created = new RockExplorerFeature();
       created.id = `id-${order.length}`;

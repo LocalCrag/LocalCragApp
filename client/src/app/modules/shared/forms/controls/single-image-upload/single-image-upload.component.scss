@@ -11,8 +11,8 @@ lc-single-image-upload {
 
       .image-wrapper,
       .image-focus-preview,
-      .p-image,
-      .p-image img,
+      .image-preview,
+      .image-preview img,
       .image-focus-preview__image {
         width: 100%;
         max-width: 100%;
@@ -23,12 +23,12 @@ lc-single-image-upload {
         display: block;
       }
 
-      .p-image img,
+      .image-preview img,
       .image-focus-preview__image {
         height: auto;
       }
 
-      .p-image-preview-mask {
+      .image-preview-mask {
         width: 100% !important;
         height: 100% !important;
       }
@@ -51,13 +51,34 @@ lc-single-image-upload {
     display: inline-block;
     position: relative;
 
-    p-image {
+    .image-preview {
+      position: relative;
+      display: inline-block;
+      padding: 0;
+      border: 0;
+      background: transparent;
+
       img {
         border-radius: 6px;
       }
     }
 
-    p-button {
+    .image-preview-mask {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: rgb(0 0 0 / 0.35);
+      opacity: 0;
+    }
+
+    .image-preview:hover .image-preview-mask {
+      opacity: 1;
+    }
+
+    .image-remove {
       position: absolute;
       top: 6px;
       right: 6px;
@@ -137,8 +158,7 @@ lc-single-image-upload {
     }
   }
 
-  // Fix bad spacing below upload button
-  p-fileupload:not([hidden]) {
-    display: inline-block;
+  .lc-file-trigger:not([hidden]) {
+    width: fit-content;
   }
 }

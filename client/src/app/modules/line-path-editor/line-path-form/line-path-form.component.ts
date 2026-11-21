@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -39,20 +40,14 @@ import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.se
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { Select } from 'primeng/select';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 import { TopoLineColorPipe } from '../../shared/pipes/topo-line-color.pipe';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { Button } from 'primeng/button';
 import { TopoImage } from '../../../models/topo-image';
 import { LineNumberBadgeComponent } from '../../shared/components/line-number-badge/line-number-badge.component';
 import { sortLinePathsByOrderIndex } from '../../../utility/topo/line-path-numbering';
 import { DrawMode } from '../../../utility/topo/line-path-draw-mode';
-import { OrderList } from 'primeng/orderlist';
-import { Checkbox } from 'primeng/checkbox';
-import { Tag } from 'primeng/tag';
-import { Message } from 'primeng/message';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { ItemOrder } from '../../../interfaces/item-order.interface';
 import {
@@ -64,6 +59,21 @@ import {
   tabuAreasEqual,
   tabuPolygonHasKinks,
 } from '../../../utility/topo/tabu-holds';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  lucideArrowDown,
+  lucideArrowUp,
+  lucideBan,
+  lucideInfo,
+  lucideSave,
+  lucideTrash2,
+} from '@ng-icons/lucide';
 
 interface LinePathDraft {
   line: Line;
@@ -82,28 +92,41 @@ interface LinePathDraft {
   templateUrl: './line-path-form.component.html',
   styleUrl: './line-path-form.component.scss',
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     TranslocoPipe,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
-    Select,
     FormControlDirective,
     LineGradePipe,
     TopoLineColorPipe,
     IfErrorDirective,
     LinePathEditorComponent,
-    Button,
     LineNumberBadgeComponent,
-    OrderList,
-    Checkbox,
-    Tag,
-    Message,
     FormsModule,
     AsyncPipe,
     NgClass,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmCheckbox,
+    ...HlmSelectImports,
+    HlmBadge,
+    NgIcon,
   ],
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'linePath' }],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    { provide: TRANSLOCO_SCOPE, useValue: 'linePath' },
+    provideIcons({
+      lucideArrowDown,
+      lucideArrowUp,
+      lucideBan,
+      lucideInfo,
+      lucideSave,
+      lucideTrash2,
+    }),
+  ],
 })
 export class LinePathFormComponent implements OnInit, OnChanges {
   @ViewChild(LinePathEditorComponent) linePathEditor: LinePathEditorComponent;
@@ -334,6 +357,34 @@ export class LinePathFormComponent implements OnInit, OnChanges {
     }
     this.linePathForm.patchValue({ line: draft.line }, { emitEvent: false });
     this.onLineChange(draft.line);
+  }
+
+  dragDraftIndex: number | null = null;
+
+  sameLine = (left: Line, right: Line) => left?.id === right?.id;
+
+  moveDraft(index: number, direction: -1 | 1) {
+    const next = index + direction;
+    if (
+      this.canOnlyDrawOwnDrafts ||
+      next < 0 ||
+      next >= this.orderedDrafts.length
+    ) {
+      return;
+    }
+    const [item] = this.orderedDrafts.splice(index, 1);
+    this.orderedDrafts.splice(next, 0, item);
+    this.onDraftsReordered();
+  }
+
+  dropDraft(index: number) {
+    if (this.dragDraftIndex == null || this.canOnlyDrawOwnDrafts) {
+      return;
+    }
+    const [item] = this.orderedDrafts.splice(this.dragDraftIndex, 1);
+    this.orderedDrafts.splice(index, 0, item);
+    this.dragDraftIndex = null;
+    this.onDraftsReordered();
   }
 
   onDraftsReordered() {

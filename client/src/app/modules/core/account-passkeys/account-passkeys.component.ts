@@ -1,15 +1,14 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DividerModule } from 'primeng/divider';
-import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { Tooltip } from 'primeng/tooltip';
 import { firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { updateAccountSettings } from '../../../ngrx/actions/auth.actions';
@@ -25,22 +24,53 @@ import {
   isPasskeyCancellation,
   isPasskeySupported,
 } from '../../../utility/webauthn';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import {
+  lucideCheck,
+  lucideCloud,
+  lucideKey,
+  lucideLock,
+  lucidePencil,
+  lucidePlus,
+  lucideShield,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-account-passkeys',
   templateUrl: './account-passkeys.component.html',
   styleUrl: './account-passkeys.component.scss',
   imports: [
+    NgIcon,
+    HlmTooltip,
+    HlmSeparator,
+    HlmInput,
+    HlmAlert,
+    HlmButton,
     TranslocoDirective,
-    DividerModule,
-    Button,
-    Message,
-    InputText,
-    Tooltip,
-    ConfirmDialogModule,
     DatePipe,
   ],
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    provideIcons({
+      lucideCheck,
+      lucideCloud,
+      lucideKey,
+      lucideLock,
+      lucidePencil,
+      lucidePlus,
+      lucideShield,
+      lucideTrash2,
+      lucideX,
+    }),
+  ],
 })
 export class AccountPasskeysComponent implements OnInit {
   public passkeys: PasskeyCredentialSummary[] = [];
@@ -51,10 +81,9 @@ export class AccountPasskeysComponent implements OnInit {
   public hasPassword = true;
   public editingId: string | null = null;
   public draftName = '';
-
   private passkeyService = inject(PasskeyService);
+  private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
-  private confirmationService = inject(ConfirmationService);
   private transloco = inject(TranslocoService);
   private store = inject<Store<AppState>>(Store);
   private destroyRef = inject(DestroyRef);
@@ -132,24 +161,29 @@ export class AccountPasskeysComponent implements OnInit {
   }
 
   public confirmDelete(passkey: PasskeyCredentialSummary): void {
-    this.confirmationService.confirm({
-      header: this.transloco.translate(
-        marker('accountPasskeys.confirmDeleteTitle'),
-      ),
-      message: this.transloco.translate(
-        marker('accountPasskeys.confirmDelete'),
-      ),
-      acceptLabel: this.transloco.translate(
-        marker('accountPasskeys.yesDelete'),
-      ),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectLabel: this.transloco.translate(
-        marker('accountPasskeys.noDontDelete'),
-      ),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.delete(passkey);
-      },
+    this.openConfirm(
+      marker('accountPasskeys.confirmDeleteTitle'),
+      marker('accountPasskeys.confirmDelete'),
+      marker('accountPasskeys.yesDelete'),
+      marker('accountPasskeys.noDontDelete'),
+      () => this.delete(passkey),
+    );
+  }
+
+  private openConfirm(
+    titleKey: string,
+    messageKey: string,
+    acceptKey: string,
+    rejectKey: string,
+    accept: () => void,
+  ): void {
+    this.confirmDialog.open({
+      title: this.transloco.translate(titleKey),
+      message: this.transloco.translate(messageKey),
+      acceptLabel: this.transloco.translate(acceptKey),
+      rejectLabel: this.transloco.translate(rejectKey),
+      destructive: true,
+      accept,
     });
   }
 
@@ -168,25 +202,13 @@ export class AccountPasskeysComponent implements OnInit {
   }
 
   public confirmRemovePassword(): void {
-    this.confirmationService.confirm({
-      header: this.transloco.translate(
-        marker('accountPasskeys.confirmRemovePasswordTitle'),
-      ),
-      message: this.transloco.translate(
-        marker('accountPasskeys.confirmRemovePassword'),
-      ),
-      acceptLabel: this.transloco.translate(
-        marker('accountPasskeys.yesRemovePassword'),
-      ),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectLabel: this.transloco.translate(
-        marker('accountPasskeys.keepPassword'),
-      ),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.removePassword();
-      },
-    });
+    this.openConfirm(
+      marker('accountPasskeys.confirmRemovePasswordTitle'),
+      marker('accountPasskeys.confirmRemovePassword'),
+      marker('accountPasskeys.yesRemovePassword'),
+      marker('accountPasskeys.keepPassword'),
+      () => this.removePassword(),
+    );
   }
 
   private delete(passkey: PasskeyCredentialSummary): void {

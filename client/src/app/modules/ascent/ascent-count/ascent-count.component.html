@@ -1,12 +1,18 @@
 <ng-container *transloco="let t; read: 'ascentCount'">
-  <p-chip
-    [label]="
-      ascentCount === 1
-        ? ascentCount + ' ' + t('ascent')
-        : ascentCount + ' ' + t('ascents')
-    "
-    icon="pi pi-check"
+  <span
+    hlmBadge
+    variant="secondary"
     [class.clickable]="!!routerLink"
+    [tabindex]="routerLink ? 0 : null"
     (click)="onClick($event)"
-  ></p-chip>
+    (keydown.enter)="onClick($event)"
+    (keydown.space)="onClick($event)"
+  >
+    <ng-icon name="lucideCheck" />
+    {{
+      ascentCount === 1
+        ? ascentCount + " " + t("ascent")
+        : ascentCount + " " + t("ascents")
+    }}
+  </span>
 </ng-container>

@@ -4,6 +4,7 @@ import {
   DestroyRef,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -12,14 +13,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { MultiSelect } from 'primeng/multiselect';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
-import { Badge } from 'primeng/badge';
-import { Popover } from 'primeng/popover';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import {
   TranslocoDirective,
   TranslocoPipe,
@@ -39,6 +32,7 @@ import { RockExplorerGalleryComponent } from '../rock-explorer-gallery/rock-expl
 import { RockExplorerMiscComponent } from '../rock-explorer-misc/rock-explorer-misc.component';
 import { CommentsComponent } from '../../comments/comments/comments.component';
 import { TranslateSpecialGradesPipe } from '../../shared/pipes/translate-special-grades.pipe';
+import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
 import { TagComponent } from '../../shared/components/tag/tag.component';
 import { TagInputComponent } from '../../shared/forms/controls/tag-input/tag-input.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
@@ -52,27 +46,54 @@ import { RouterLink } from '@angular/router';
 import { Position } from 'geojson';
 import { dedupePositions } from '../../../utility/geo/convex-hull';
 import { RockExplorerUiService } from '../rock-explorer-ui.service';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideEllipsisVertical,
+  lucideMapPin,
+  lucideNetwork,
+  lucidePencil,
+  lucideShare2,
+  lucideSquare,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
 
 type SelectOption = { label: string; value: string };
 export type RockExplorerPanelTab = 'info' | 'images' | 'comments' | 'misc';
 type PanelTab = RockExplorerPanelTab;
 
+import { HlmPopoverImports } from '@spartan-ng/helm/popover';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  ChromeTab,
+  ChromeTabsComponent,
+} from '../../shared/components/chrome-tabs/chrome-tabs.component';
+
 @Component({
+  providers: [
+    provideIcons({
+      lucideEllipsisVertical,
+      lucideMapPin,
+      lucideNetwork,
+      lucidePencil,
+      lucideShare2,
+      lucideSquare,
+      lucideTrash2,
+      lucideX,
+    }),
+  ],
   selector: 'lc-rock-explorer-panel',
   imports: [
+    LoadingButtonComponent,
+    ...HlmPopoverImports,
+    ...HlmPopoverImports,
+    ChromeTabsComponent,
     ReactiveFormsModule,
-    Button,
-    Select,
-    MultiSelect,
-    InputText,
-    Textarea,
-    Badge,
-    Popover,
-    Tabs,
-    TabList,
-    Tab,
-    TabPanels,
-    TabPanel,
     TranslocoDirective,
     TranslocoPipe,
     CommentsComponent,
@@ -88,8 +109,14 @@ type PanelTab = RockExplorerPanelTab;
     IfErrorDirective,
     UserAvatarComponent,
     RouterLink,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    HlmTextarea,
+    NgIcon,
   ],
   templateUrl: './rock-explorer-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rock-explorer-panel.component.scss',
 })
 export class RockExplorerPanelComponent {
@@ -100,6 +127,27 @@ export class RockExplorerPanelComponent {
   readonly ui = inject(RockExplorerUiService);
 
   public panelActiveTab: PanelTab = 'info';
+
+  public get panelTabs(): ChromeTab[] {
+    return [
+      { id: 'info', label: this.transloco.translate('rockExplorer.info') },
+      {
+        id: 'images',
+        label: this.transloco.translate('rockExplorer.images'),
+        badge: this.panelImageCount,
+      },
+      {
+        id: 'comments',
+        label: this.transloco.translate('rockExplorer.comments'),
+        badge: this.panelCommentCount,
+      },
+      {
+        id: 'misc',
+        label: this.transloco.translate('rockExplorer.misc'),
+        badge: this.panelMiscCount,
+      },
+    ];
+  }
   public panelImageCount = 0;
   public panelCommentCount = 0;
   public panelMiscCount = 0;
@@ -128,6 +176,24 @@ export class RockExplorerPanelComponent {
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
   private transloco = inject(TranslocoService);
+  private translateSpecialGrades = inject(TranslateSpecialGradesService);
+
+  lineTypeLabel = (value: string | null): string =>
+    this.lineTypeOptions.find((option) => option.value === value)?.label ?? '';
+
+  scaleLabel = (value: string | null): string =>
+    this.scaleOptions.find((option) => option.value === value)?.label ?? '';
+
+  gradeLabel = (value: number | null): string => {
+    const grade = this.gradeOptions.find((option) => option.value === value);
+    return grade ? this.translateSpecialGrades.translate(grade.name) : '';
+  };
+
+  accessIssuesItemLabel = (value: string | string[] | null): string =>
+    Array.isArray(value)
+      ? this.accessIssuesLabel(value)
+      : this.enumLabel('accessIssue', value);
+
   private scalesService = inject(ScalesService);
   private groupedScales: Record<LineType, Scale[]> = {
     [LineType.BOULDER]: [],
@@ -272,6 +338,7 @@ export class RockExplorerPanelComponent {
   }
 
   public onPanelTabChange(tab: string | number): void {
+    this.panelActiveTab = tab as PanelTab;
     if (tab !== 'images' && this.gallery?.editMode) {
       this.gallery.cancelEdit();
     }

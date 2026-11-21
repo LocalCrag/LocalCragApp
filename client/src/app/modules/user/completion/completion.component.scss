@@ -1,10 +1,24 @@
 .progress-bar-wrapper {
   display: grid;
-  grid-template-columns: auto 3rem;
+  grid-template-columns: minmax(0, 1fr) 2rem;
+  grid-template-rows: auto auto;
+  align-items: center;
+  row-gap: 0.35rem;
 
-  lc-expand-button {
-    transform: translateY(0.5rem);
+  > lc-completion-progress-bar {
+    display: grid;
+    grid-column: 1;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    align-items: center;
+  }
+
+  > lc-expand-button,
+  > .progress-bar-spacer {
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
   }
 }

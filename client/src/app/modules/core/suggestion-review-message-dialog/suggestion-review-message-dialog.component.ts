@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { LinePath } from '../../../models/line-path';
 import { TopoImage } from '../../../models/topo-image';
 import { NotificationSuggestionReviewSubject } from '../../../models/notification-item';
@@ -56,28 +56,31 @@ export interface SuggestionReviewMessageDialogData {
   message: string;
   targetLink: string | null;
   subject: NotificationSuggestionReviewSubject | null;
+  title?: string;
 }
 
 @Component({
   selector: 'lc-suggestion-review-message-dialog',
-  imports: [ButtonModule, TranslocoDirective, TopoImageViewerComponent],
+  imports: [HlmButton, TranslocoDirective, TopoImageViewerComponent],
   templateUrl: './suggestion-review-message-dialog.component.html',
   styleUrl: './suggestion-review-message-dialog.component.scss',
 })
 export class SuggestionReviewMessageDialogComponent {
-  private config = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  private readonly dialogContext =
+    injectBrnDialogContext<SuggestionReviewMessageDialogData>();
+  private ref = inject(BrnDialogRef);
   private router = inject(Router);
   private translocoService = inject(TranslocoService);
 
+  public readonly title: string = this.dialogContext.title ?? '';
   public readonly message: string = suggestionReviewDisplayMessage(
-    this.config.data?.message ?? '',
+    this.dialogContext.message ?? '',
     this.translocoService,
   );
   public readonly targetLink: string | null =
-    this.config.data?.targetLink ?? null;
+    this.dialogContext.targetLink ?? null;
   public readonly subject: NotificationSuggestionReviewSubject | null =
-    this.config.data?.subject ?? null;
+    this.dialogContext.subject ?? null;
   public readonly linePreview: TopoImage | null = this.buildLinePreview();
   public readonly imagePreview: TopoImage | null = this.buildImagePreview();
   public readonly lineColor: string | null = this.subject?.color ?? null;
@@ -105,8 +108,7 @@ export class SuggestionReviewMessageDialogComponent {
   }
 
   private buildLinePreview(): TopoImage | null {
-    const subject = this.config.data?.subject as
-      NotificationSuggestionReviewSubject | null | undefined;
+    const subject = this.subject;
     if (subject?.kind !== 'line') {
       return null;
     }
@@ -122,8 +124,7 @@ export class SuggestionReviewMessageDialogComponent {
   }
 
   private buildImagePreview(): TopoImage | null {
-    const subject = this.config.data?.subject as
-      NotificationSuggestionReviewSubject | null | undefined;
+    const subject = this.subject;
     if (subject?.kind !== 'topoImage' || !subject.image) {
       return null;
     }

@@ -5,7 +5,7 @@ describe('rockExplorerMatcher', () => {
   it('matches /rock-explorer without feature id', () => {
     const result = rockExplorerMatcher([new UrlSegment('rock-explorer', {})]);
     expect(result).toEqual({
-      consumed: [jasmine.any(UrlSegment)],
+      consumed: [expect.any(UrlSegment)],
       posParams: {},
     });
     expect(result!.consumed[0].path).toBe('rock-explorer');

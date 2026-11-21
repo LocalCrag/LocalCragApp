@@ -19,11 +19,7 @@ import { TopoImage } from '../../../models/topo-image';
 import { LinePath } from '../../../models/line-path';
 import { Line } from '../../../models/line';
 import { TopoImageEditorComponent } from '../../shared/components/topo-image/topo-image-editor.component';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { MenuItem } from 'primeng/api';
-import { ContextMenu } from 'primeng/contextmenu';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -38,6 +34,13 @@ import {
   TabuArea,
   tabuPolygonHasKinks,
 } from '../../../utility/topo/tabu-holds';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmContextMenuTrigger } from '@spartan-ng/helm/context-menu';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideRefreshCw, lucideTrash2 } from '@ng-icons/lucide';
+import { CdkContextMenuTrigger } from '@angular/cdk/menu';
 
 /**
  * Interactive canvas for drawing and editing a line path and tabu areas on a topo image.
@@ -51,18 +54,22 @@ import {
   imports: [
     TranslocoDirective,
     TopoImageEditorComponent,
-    Button,
-    ContextMenu,
-    Select,
     FormsModule,
+    HlmButton,
+    ...HlmSelectImports,
+    ...HlmDropdownMenuImports,
+    HlmContextMenuTrigger,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideCheck, lucideRefreshCw, lucideTrash2 })],
 })
 export class LinePathEditorComponent
   implements OnInit, OnChanges, AfterViewInit, OnDestroy
 {
   @ViewChild(TopoImageEditorComponent)
   topoImageComponent: TopoImageEditorComponent;
-  @ViewChild('anchorMenu') anchorMenu: ContextMenu;
+  @ViewChild('anchorMenuHost', { read: CdkContextMenuTrigger })
+  anchorMenu?: CdkContextMenuTrigger;
 
   @Input() color?: string;
   @Input() topoImage: TopoImage;
@@ -79,13 +86,11 @@ export class LinePathEditorComponent
   @Output() drawModeChange = new EventEmitter<DrawMode>();
 
   public linePath: LinePath;
-  public anchorMenuItems: MenuItem[] = [];
   public drawMode: DrawMode = 'line';
   public inProgressVertices: number[] = [];
 
   private cdr = inject(ChangeDetectorRef);
   private host = inject(ElementRef<HTMLElement>);
-  private translocoService = inject(TranslocoService);
   private store = inject(Store);
   private pendingAnchorIndex: number;
   private rowResizeObserver: ResizeObserver | null = null;
@@ -95,14 +100,11 @@ export class LinePathEditorComponent
    * Initializes the anchor context menu and local editor state.
    */
   ngOnInit() {
-    this.anchorMenuItems = [
-      {
-        label: this.translocoService.translate('linePathEditor.deleteAnchor'),
-        icon: 'pi pi-trash',
-        command: () => this.handleAnchorDelete(this.pendingAnchorIndex),
-      },
-    ];
     this.refreshData();
+  }
+
+  deletePendingAnchor() {
+    this.handleAnchorDelete(this.pendingAnchorIndex);
   }
 
   ngAfterViewInit() {
@@ -265,7 +267,10 @@ export class LinePathEditorComponent
       return;
     }
     this.pendingAnchorIndex = event.index;
-    this.anchorMenu.show(event.originalEvent);
+    this.anchorMenu?.open({
+      x: event.originalEvent.clientX,
+      y: event.originalEvent.clientY,
+    });
   }
 
   /**

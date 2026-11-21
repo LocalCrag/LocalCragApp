@@ -1,5 +1,92 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+// The dialog's default max width is a percentage of a pane that is already
+// inset from the viewport, so the card is narrower than the screen and the
+// form rows spill out of it.
+[data-slot="dialog-content"]:has(> lc-ascent-form) {
+  width: min(36rem, calc(100vw - 2rem));
+  max-width: min(36rem, calc(100vw - 2rem));
+}
+
 .ascent-form-alert {
-  max-width: 25rem;
+  max-width: 100%;
+}
+
+.ascent-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.15rem 0 0.65rem;
+
+  &:first-of-type {
+    margin-top: 0.35rem;
+  }
+}
+
+.ascent-grade-select {
+  width: 6.5rem;
+  max-width: 100%;
+}
+
+.ascent-flag-row > button {
+  max-width: 100%;
+  height: auto;
+  min-height: 2.25rem;
+  white-space: normal;
+  text-align: center;
+}
+
+button.ascent-flag[data-state="on"] {
+  background-color: var(--p-primary-color) !important;
+  color: var(--p-primary-contrast-color) !important;
+
+  &:hover {
+    background-color: var(--p-primary-color) !important;
+    color: var(--p-primary-contrast-color) !important;
+  }
+}
+
+lc-ascent-form .lc-control-group.error {
+  [data-slot="select-trigger"],
+  [data-slot="input-group"],
+  textarea,
+  input:not([type="hidden"]) {
+    border-color: var(--destructive) !important;
+  }
+}
+
+.ascent-rating {
+  display: inline-flex;
+  gap: 0.15rem;
+  color: var(--p-primary-color);
+
+  .lc-control-group.error & {
+    color: var(--destructive);
+
+    ng-icon {
+      opacity: 1 !important;
+    }
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  ng-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 
 .video-start-label {

@@ -3,16 +3,8 @@ lc-tick-button {
     display: flex;
   }
 
-  .hide-label .p-button-label {
-    display: none;
-  }
-
-  p-button.disabled {
-    opacity: 1 !important;
-
-    button:disabled {
-      opacity: 1 !important;
-    }
+  button.tick-button:disabled {
+    opacity: 1;
   }
 
   .ticked-icon {
@@ -20,5 +12,29 @@ lc-tick-button {
     border-radius: 0.25rem;
     padding: 0.1rem;
     color: var(--p-primary-contrast-color);
+  }
+
+  // Icon-only ticks match the line list: an outlined circle, filled once climbed.
+  button.tick-button.icon-only {
+    border-color: var(--border);
+    background-color: transparent;
+
+    &:hover:not(:disabled) {
+      background-color: var(--accent);
+    }
+
+    &:has(.ticked-icon) {
+      background-color: var(--ticked-color);
+      background-clip: border-box;
+      border-color: var(--ticked-color);
+      color: var(--p-primary-contrast-color);
+
+      .ticked-icon {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+      }
+    }
   }
 }

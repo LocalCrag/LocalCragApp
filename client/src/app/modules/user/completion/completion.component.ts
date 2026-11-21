@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { StatisticsService } from '../../../services/crud/statistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../services/crud/users.service';
@@ -11,37 +16,47 @@ import { forkJoin } from 'rxjs';
 import { Completion } from '../../../models/statistics';
 import { Area } from '../../../models/area';
 import { Sector } from '../../../models/sector';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { SelectItem } from 'primeng/api';
 import { CompletionProgressBarComponent } from '../completion-progress-bar/completion-progress-bar.component';
-import { AccordionModule } from 'primeng/accordion';
 import { ExpandButtonComponent } from '../../shared/components/expand-button/expand-button.component';
 import { GradeRangeSliderComponent } from '../../shared/components/grade-range-slider/grade-range-slider.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { LineType } from '../../../enums/line-type';
 import { RegionService } from '../../../services/crud/region.service';
-import { Select } from 'primeng/select';
-import { Message } from 'primeng/message';
-import { Checkbox } from 'primeng/checkbox';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { scaleChoiceLabel } from '../../../utility/grade/scale-choice-label';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideInfo } from '@ng-icons/lucide';
+
+interface SelectItem<T = any> {
+  label?: string;
+  value?: T;
+  [key: string]: any;
+}
 
 @Component({
+  providers: [provideIcons({ lucideInfo })],
   selector: 'lc-completion',
   imports: [
-    ProgressBarModule,
     CompletionProgressBarComponent,
-    AccordionModule,
     ExpandButtonComponent,
     GradeRangeSliderComponent,
     FormsModule,
     TranslocoDirective,
-    Select,
-    Message,
-    Checkbox,
+    HlmAlert,
+    HlmAlertDescription,
+    ListSkeletonComponent,
+    ...HlmSelectImports,
+    HlmCheckbox,
+    NgIcon,
   ],
   templateUrl: './completion.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './completion.component.scss',
 })
 export class CompletionComponent implements OnInit {
@@ -50,6 +65,7 @@ export class CompletionComponent implements OnInit {
 
   public crags: Crag[];
   public completion: Completion;
+  public loading = true;
   public cragMap: Map<string, Crag> = new Map<string, Crag>();
   public sectorMap: Map<string, Sector> = new Map<string, Sector>();
   public areaMap: Map<string, Area> = new Map<string, Area>();
@@ -108,6 +124,7 @@ export class CompletionComponent implements OnInit {
   }
 
   public loadCompletion() {
+    this.loading = true;
     this.loadedGradeFilterRange = [...this.gradeFilterRange];
     const params: ApiQueryParams = {
       user_id: this.user.id,
@@ -123,11 +140,15 @@ export class CompletionComponent implements OnInit {
     if (this.includeClosed) {
       params.include_closed = '1';
     }
-    return this.statisticsService
-      .getCompletion(params)
-      .subscribe((completion) => {
+    return this.statisticsService.getCompletion(params).subscribe({
+      next: (completion) => {
         this.completion = completion;
-      });
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   public onIncludeClosedChange() {

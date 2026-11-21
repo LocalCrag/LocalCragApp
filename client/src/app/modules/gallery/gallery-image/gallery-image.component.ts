@@ -6,40 +6,55 @@ import {
   Output,
   ViewEncapsulation,
   inject,
-  DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { GalleryImage } from '../../../models/gallery-image';
-import { CardModule } from 'primeng/card';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideEye,
+  lucideInfo,
+  lucideMenu,
+  lucidePencil,
+  lucideTrash2,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmCard, HlmCardContent } from '@spartan-ng/helm/card';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 
 import { TagComponent } from '../../shared/components/tag/tag.component';
-import { ButtonModule } from 'primeng/button';
 import { Store } from '@ngrx/store';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { MenuItem } from 'primeng/api';
-import { SpeedDialModule } from 'primeng/speeddial';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { User } from '../../../models/user';
 import { selectCurrentUser } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Tooltip } from 'primeng/tooltip';
-import { LanguageService } from '../../../services/core/language.service';
 import { galleryImageAspectRatio } from '../../../utility/gallery-masonry';
 
 @Component({
   selector: 'lc-gallery-image',
   imports: [
-    CardModule,
+    HlmButton,
+    HlmCard,
+    HlmCardContent,
+    ...HlmDropdownMenuImports,
+    HlmTooltip,
+    NgIcon,
     TagComponent,
-    ButtonModule,
-    ConfirmPopupModule,
-    SpeedDialModule,
     TranslocoDirective,
-    Tooltip,
+    TranslocoPipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideEye,
+      lucideInfo,
+      lucideMenu,
+      lucidePencil,
+      lucideTrash2,
+    }),
   ],
   templateUrl: './gallery-image.component.html',
   styleUrl: './gallery-image.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class GalleryImageComponent implements OnInit {
@@ -49,22 +64,15 @@ export class GalleryImageComponent implements OnInit {
   @Output() edit: EventEmitter<null> = new EventEmitter<null>();
   @Output() preview = new EventEmitter<void>();
 
-  public speedDialItems: MenuItem[] = [];
+  emitDelete(): void {
+    this.delete.emit(new MouseEvent('click'));
+  }
+
   public loggedInUser: User;
 
-  private translocoService = inject(TranslocoService);
   private store = inject(Store);
-  private languageService = inject(LanguageService);
-  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    this.buildSpeedDialItems();
-    this.languageService.renderedLanguage$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((rendered) => {
-        if (!rendered) return;
-        this.buildSpeedDialItems();
-      });
     this.store
       .select(selectCurrentUser)
       .pipe(take(1))
@@ -76,20 +84,5 @@ export class GalleryImageComponent implements OnInit {
       this.image?.image?.width,
       this.image?.image?.height,
     );
-  }
-
-  private buildSpeedDialItems() {
-    this.speedDialItems = [
-      {
-        label: this.translocoService.translate(marker('gallery.deleteImage')),
-        icon: 'pi pi-pencil',
-        command: () => this.edit.emit(),
-      },
-      {
-        label: this.translocoService.translate(marker('gallery.deleteImage')),
-        icon: 'pi pi-trash',
-        command: (event) => this.delete.emit(event.originalEvent),
-      },
-    ];
   }
 }
