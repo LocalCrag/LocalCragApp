@@ -25,6 +25,7 @@ from util.auth_session import (
     get_session_identity,
     session_required,
 )
+from util.condicaster import apply_condicaster_link, enqueue_condicaster_refresh
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import update_crag_propagating_boolean_attr
 from util.rules_emphasis import apply_rules_emphasis
@@ -100,10 +101,11 @@ class CreateCrag(MethodView):
         new_crag.secret = crag_data["secret"]
         new_crag.order_index = Crag.find_max_order_index() + 1
         new_crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], new_crag)
-        new_crag.blocweather_url = crag_data["blocweatherUrl"]
+        apply_condicaster_link(new_crag, crag_data["condicasterCragId"], crag_data.get("condicasterCragName"))
 
         apply_closable_configuration(new_crag, crag_data, "crag_id")
         db.session.commit()
+        enqueue_condicaster_refresh(new_crag.condicaster_crag_id)
         finalize_closable_save(new_crag)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_crag, created_by)
@@ -128,11 +130,12 @@ class UpdateCrag(MethodView):
         crag.portrait_image_id = crag_data["portraitImage"]
         update_crag_propagating_boolean_attr(crag, crag_data["secret"], "secret")
         apply_closable_configuration(crag, crag_data, "crag_id")
-        crag.blocweather_url = crag_data["blocweatherUrl"]
+        apply_condicaster_link(crag, crag_data["condicasterCragId"], crag_data.get("condicasterCragName"))
 
         crag.map_markers = create_or_update_markers(crag_data["mapMarkers"], crag)
         db.session.add(crag)
         db.session.commit()
+        enqueue_condicaster_refresh(crag.condicaster_crag_id)
         finalize_closable_save(crag)
 
         return crag_schema.dump(crag), 200

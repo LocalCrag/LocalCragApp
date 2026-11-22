@@ -9,6 +9,7 @@ def register_jobs(app, scheduler: BackgroundScheduler) -> list[str]:
     from scheduler_jobs import (
         build_rankings,
         closure_materialization,
+        condicaster,
         delete_unattached_files,
         notification_digests,
         topo_quality_week,
@@ -16,6 +17,7 @@ def register_jobs(app, scheduler: BackgroundScheduler) -> list[str]:
 
     return [
         build_rankings.register(app, scheduler),
+        condicaster.register(app, scheduler),
         notification_digests.register(app, scheduler),
         closure_materialization.register(app, scheduler),
         delete_unattached_files.register(app, scheduler),

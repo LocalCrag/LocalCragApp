@@ -18,9 +18,6 @@
   "sectorForm.sectorRulesTitleTooltip": "Indien ingesteld moeten gebruikers bevestigen dat ze de regels hebben gelezen en wordt er een extra waarschuwing getoond.",
   "sectorForm.sectorRulesTitlePlaceholder": "Leeg laten om geen melding te tonen, bijv. \"Lees onze regels\"",
   "sectorForm.sectorPortraitImageLabel": "Afbeelding",
-  "sectorForm.blocweatherUrlLabel": "Blocweather-URL",
-  "sectorForm.blocweatherTooltip": "Om weersinformatie voor deze sector op de detailspagina weer te geven, kunt u hier de URL voor de relevante sectie op blocweather.com invoeren.",
-  "sectorForm.invalidBlocweatherUrl": "De URL moet het formaat https://blocweather.com/<country>/<region>/<spot> volgen",
   "sectorForm.mapMarkersLabel": "GPS-punten",
   "sectorForm.closedBecauseParentIsClosed": "Deze sector is gesloten omdat het bovenliggende klimgebied momenteel gesloten is.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Als je een zichtbare sector binnen een verborgen klimmuurgebied aanmaakt, dan zal het klimmuurgebied automatisch zichtbaar worden, anders kunt u niet naar de sector navigeren. Andere reeds bestaande sectoren blijven verborgen.",
@@ -32,5 +29,8 @@
   "sectorForm.moveSectorButtonLabel": "Verplaatsen",
   "sectorForm.deleteSectorButtonLabel": "Sector verwijderen",
   "sectorForm.editSectorTitle": "Sector bewerken",
-  "sectorForm.createSectorTitle": "Sector aanmaken"
+  "sectorForm.createSectorTitle": "Sector aanmaken",
+  "sectorForm.condicasterCragIdLabel": "CondiCaster-rots",
+  "sectorForm.condicasterTooltip": "De omstandigheden voor deze plek komen van deze CondiCaster-rots. Laat leeg om de rots van het niveau erboven te gebruiken.",
+  "sectorForm.invalidCondicasterCragId": "Vul een positieve CondiCaster-rots-ID in."
 }

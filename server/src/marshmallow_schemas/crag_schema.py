@@ -5,6 +5,7 @@ from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
+from marshmallow_schemas.mixins.condicaster import CondicasterSchemaMixin
 from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
@@ -23,7 +24,7 @@ class AscentAndTodoCragSchema(ma.SQLAlchemySchema):
     id = fields.String()
 
 
-class CragSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
+class CragSchema(BaseEntityMinSchema, IsClosableListSchemaMixin, CondicasterSchemaMixin):
     name = fields.String()
     orderIndex = fields.Int(attribute="order_index")
     shortDescription = fields.String(attribute="short_description")
@@ -41,7 +42,8 @@ class CragDetailSchema(CragSchema, IsClosableDetailSchemaMixin, ModeratorTaskCou
     rulesUpdatedAt = fields.DateTime(attribute="rules_updated_at")
     description = fields.String()
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    blocweatherUrl = fields.String(attribute="blocweather_url")
+    condicasterCragId = fields.Integer(attribute="condicaster_crag_id")
+    condicasterCragName = fields.String(attribute="condicaster_crag_name")
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")
     sectorCount = fields.Integer(attribute="sector_count")

@@ -118,32 +118,23 @@
           </lc-single-image-upload>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
-          <label class="form-label" for="blocweatherUrl">
-            {{ t("blocweatherUrlLabel") }}
+          <label class="form-label">
+            {{ t("condicasterCragIdLabel") }}
             <button
               type="button"
               class="inline-flex text-muted-foreground ml-2"
-              [hlmTooltip]="t('blocweatherTooltip')"
+              [hlmTooltip]="t('condicasterTooltip')"
               position="right"
             >
               <ng-icon name="lucideCircleQuestionMark" />
             </button>
           </label>
-          <input
-            id="blocweatherUrl"
-            type="text"
-            hlmInput
-            formControlName="blocweatherUrl"
-            placeholder="https://blocweather.com/<country>/<region>/<spot>"
-            lcFormControl
-            data-cy="sector-form-blocweatherUrl"
+          <lc-condicaster-crag-link
+            [cragId]="sectorForm.get('condicasterCragId')?.value"
+            [cragName]="sectorForm.get('condicasterCragName')?.value"
+            [coordinates]="markerCoordinates()"
+            (linkChange)="setCondicasterCrag($event)"
           />
-          <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
-            t("invalidBlocweatherUrl")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 255 }
-          }}</small>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="map-markers">{{

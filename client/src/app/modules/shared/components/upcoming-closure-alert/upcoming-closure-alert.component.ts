@@ -5,6 +5,7 @@ import { HlmAlert } from '@spartan-ng/helm/alert';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
   ClosureReasonAlert,
+  escapeClosureMessageText,
   formatClosureScheduleRange,
 } from '../../../../models/closure-reason-alert';
 import { parseLocalCalendarDate } from '../../../../utility/local-calendar-date';
@@ -30,38 +31,42 @@ export class UpcomingClosureAlertComponent {
   }
 
   warningText(warning: ClosureReasonAlert): string {
-    const date = warning.startsOn ? this.formatStartsOn(warning.startsOn) : '';
+    const date = escapeClosureMessageText(
+      warning.startsOn ? this.formatStartsOn(warning.startsOn) : '',
+    );
     const range = formatClosureScheduleRange(
       warning,
       this.languageService.calculatedLanguage,
     );
     const reason = warning.reason?.trim() || null;
+    const safeRange = range ? escapeClosureMessageText(range) : null;
+    const safeReason = reason ? escapeClosureMessageText(reason) : null;
 
-    if (reason && range) {
+    if (safeReason && safeRange) {
       return this.translocoService.translate(
         'closedSpotAlert.upcomingWithReasonAndRange',
         {
           date,
-          reason,
-          range,
+          reason: safeReason,
+          range: safeRange,
         },
       );
     }
-    if (reason) {
+    if (safeReason) {
       return this.translocoService.translate(
         'closedSpotAlert.upcomingWithReason',
         {
           date,
-          reason,
+          reason: safeReason,
         },
       );
     }
-    if (range) {
+    if (safeRange) {
       return this.translocoService.translate(
         'closedSpotAlert.upcomingWithRange',
         {
           date,
-          range,
+          range: safeRange,
         },
       );
     }

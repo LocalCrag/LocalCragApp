@@ -161,7 +161,7 @@ def test_cascade_delete_comments(client, moderator_token, member_token):
             "mapMarkers": [],
             "portraitImage": None,
             "secret": False,
-            "blocweatherUrl": None,
+            "condicasterCragId": None,
             "closureSchedules": [],
         },
     )
@@ -318,7 +318,7 @@ def test_create_comment_on_secret_area_returns_404_for_non_member(client, modera
             "mapMarkers": [],
             "portraitImage": None,
             "secret": True,
-            "blocweatherUrl": None,
+            "condicasterCragId": None,
             "closureSchedules": [],
         },
     )

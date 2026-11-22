@@ -71,41 +71,9 @@ def http_url_validator(url: Optional[str]):
         raise ValidationError("Must be a valid http(s) URL")
 
 
-def blocweather_url_validator(url: Optional[str]):
-    """Validate BlocWeather URLs.
-
-    Expected format:
-        https://blocweather.com/{country}/{region}/{spot}
-
-    Rules:
-    - None is allowed.
-    - Must start with https://blocweather.com/
-    - Must have exactly 3 non-empty path segments after the host.
-    - No query string or fragment.
-    """
-
-    if url is None:
+def condicaster_crag_id_validator(crag_id: Optional[int]):
+    """A CondiCaster crag id is a positive integer. None clears the link."""
+    if crag_id is None:
         return
-
-    if not isinstance(url, str):
-        raise ValidationError("Invalid BlocWeather URL")
-
-    url = url.strip()
-    if url == "":
-        raise ValidationError("Invalid BlocWeather URL")
-
-    if len(url) > 255:
-        raise ValidationError("Invalid BlocWeather URL")
-
-    prefix = "https://blocweather.com/"
-    if not url.startswith(prefix):
-        raise ValidationError("Invalid BlocWeather URL")
-
-    remainder = url.removeprefix(prefix)
-
-    if "?" in remainder or "#" in remainder:
-        raise ValidationError("Invalid BlocWeather URL")
-
-    parts = [p for p in remainder.split("/") if p != ""]
-    if len(parts) != 3:
-        raise ValidationError("Invalid BlocWeather URL")
+    if not isinstance(crag_id, int) or isinstance(crag_id, bool) or crag_id < 1:
+        raise ValidationError("CondiCaster crag id must be a positive integer.")

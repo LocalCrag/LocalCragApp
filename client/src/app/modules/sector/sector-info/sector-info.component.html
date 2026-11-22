@@ -6,11 +6,6 @@
           [warnings]="sector.upcomingClosureWarnings"
         ></lc-upcoming-closure-alert>
       }
-      <lc-current-conditions
-        *isOutdoorMode="true"
-        [slug]="sector.slug"
-        [level]="'sector'"
-      ></lc-current-conditions>
       @if (!gradeDiagramsSuppressed) {
         <h4>{{ t("gradeDistribution") }}:</h4>
       }

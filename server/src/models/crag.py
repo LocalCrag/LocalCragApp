@@ -44,7 +44,8 @@ class Crag(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     )
     rankings = db.relationship("Ranking", cascade="all,delete", lazy="select")
     map_markers = db.relationship("MapMarker", back_populates="crag")
-    blocweather_url = db.Column(db.String(255), nullable=True)
+    condicaster_crag_id = db.Column(db.Integer, nullable=True)
+    condicaster_crag_name = db.Column(db.String(255), nullable=True)
     publication_status = db.Column(
         publication_status_type,
         nullable=False,

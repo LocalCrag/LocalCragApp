@@ -112,6 +112,17 @@
                           class="spot-status-tag--beside"
                         ></lc-secret-spot-tag>
                       }
+                      @if (
+                        sector.condiscore !== null &&
+                        sector.condiscore !== undefined
+                      ) {
+                        <lc-condi-score-chip
+                          *isOutdoorMode="true"
+                          class="spot-status-tag--beside"
+                          [score]="sector.condiscore"
+                          [link]="['/topo', cragSlug, sector.slug, 'weather']"
+                        />
+                      }
                     </div>
                     <lc-archive-button
                       *isModerator="true"

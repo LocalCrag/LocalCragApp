@@ -21,7 +21,6 @@ import { CoordinatesButtonComponent } from '../../shared/components/coordinates-
 import { MapComponent } from '../../maps/map/map.component';
 import { SeasonChartComponent } from '../../shared/components/season-chart/season-chart.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
@@ -41,7 +40,6 @@ import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
     CoordinatesButtonComponent,
     MapComponent,
     SeasonChartComponent,
-    CurrentConditionsComponent,
     OutdoorModeDirective,
     HlmSkeleton,
   ],

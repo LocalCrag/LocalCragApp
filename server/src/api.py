@@ -53,7 +53,6 @@ from resources.auth_resources import (
     UserLogout,
 )
 from resources.batch_editor_resources import BatchCreateLines
-from resources.blocweather_resources import GetNearestBlocweatherUrl
 from resources.closure_state_resources import (
     GetAreaClosureState,
     GetCragClosureState,
@@ -65,6 +64,10 @@ from resources.comment_resources import (
     DeleteComment,
     GetComments,
     UpdateComment,
+)
+from resources.condicaster_resources import (
+    GetCondicasterConditions,
+    SearchCondicasterCrags,
 )
 from resources.crag_resources import (
     CreateCrag,
@@ -561,13 +564,14 @@ def configure_api(app):
     maps_bp.add_url_rule("/markers", view_func=GetMarkers.as_view("get_markers"))
     app.register_blueprint(maps_bp, url_prefix="/api/maps")
 
-    # BlocWeather API
-    blocweather_bp = Blueprint("blocweather", __name__)
-    blocweather_bp.add_url_rule(
-        "/nearest/<string:level>/<string:slug>",
-        view_func=GetNearestBlocweatherUrl.as_view("get_nearest_blocweather_url"),
+    # CondiCaster API
+    condicaster_bp = Blueprint("condicaster", __name__)
+    condicaster_bp.add_url_rule(
+        "/conditions/<string:level>/<string:slug>",
+        view_func=GetCondicasterConditions.as_view("get_condicaster_conditions"),
     )
-    app.register_blueprint(blocweather_bp, url_prefix="/api/blocweather")
+    condicaster_bp.add_url_rule("/crags", view_func=SearchCondicasterCrags.as_view("search_condicaster_crags"))
+    app.register_blueprint(condicaster_bp, url_prefix="/api/condicaster")
 
     # Area API
     area_bp = Blueprint("areas", __name__)

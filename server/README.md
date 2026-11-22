@@ -34,6 +34,7 @@ For the full local toolchain (Docker vs native, Husky, object storage), see [doc
     - `STORAGE_DISK_SPACE` Total upload-disk size for the admin storage bar when SeaweedFS is not reporting it (for example `100Gi`). Uploads are not checked against this value.
     - `SENTRY_DSN` DSN for Sentry error tracking (used by server and exposed to the client)
     - `SENTRY_ENABLED` If set to True, Sentry will be enabled with the configured DSN on server and client
+    - `CONDICASTER_API_KEY` API key for cached climbing conditions from [CondiCaster](https://condicaster.wtf). Leave empty to hide conditions. The key is only used by the hourly refresh job.
     - `LOG_LEVEL` Application log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Defaults to `INFO`. Logs are written to stdout.
 - For configuring a local object storage, read `../docs/dev-tooling.md`. This is needed if you are working with fileupload in any way.
 - Now you are ready to set up the database of your local dev instance:

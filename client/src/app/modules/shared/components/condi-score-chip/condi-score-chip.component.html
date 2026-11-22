@@ -1,0 +1,14 @@
+<ng-container *transloco="let t">
+  <button
+    type="button"
+    class="condi-chip"
+    [ngClass]="'condi-chip--' + band()"
+    [attr.aria-label]="
+      t('condicaster.chipPrefix') + ': ' + formatted() + ' / 5, ' + t(bandKey())
+    "
+    (click)="open($event)"
+  >
+    <span class="condi-chip__prefix">{{ t("condicaster.chipPrefix") }}:</span>
+    <span class="condi-chip__score">{{ formatted() }} / 5</span>
+  </button>
+</ng-container>

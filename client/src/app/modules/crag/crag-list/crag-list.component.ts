@@ -29,6 +29,8 @@ import { ArchiveButtonComponent } from '../../archive/archive-button/archive-but
 import { AscentCountComponent } from '../../ascent/ascent-count/ascent-count.component';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { CondiScoreChipComponent } from '../../shared/components/condi-score-chip/condi-score-chip.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { LeveledGradeDistributionComponent } from '../../shared/components/leveled-grade-distribution/leveled-grade-distribution.component';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -60,6 +62,8 @@ import { BrnDialogRef } from '@spartan-ng/brain/dialog';
     AscentCountComponent,
     ClosedSpotTagComponent,
     SecretSpotTagComponent,
+    CondiScoreChipComponent,
+    OutdoorModeDirective,
     LeveledGradeDistributionComponent,
     SanitizeHtmlPipe,
     HlmButton,

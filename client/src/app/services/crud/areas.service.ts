@@ -8,8 +8,6 @@ import { ItemOrder } from '../../interfaces/item-order.interface';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { Store } from '@ngrx/store';
 import { deserializeGradeList, GradeDistribution } from '../../models/scale';
-import { BlocWeatherService } from './blocweather.service';
-
 /**
  * CRUD service for areas.
  */
@@ -20,8 +18,6 @@ export class AreasService {
   private api = inject(ApiService);
   private store = inject(Store);
   private http = inject(HttpClient);
-  private blocWeatherService = inject(BlocWeatherService);
-
   /**
    * Creates an Area.
    *
@@ -107,7 +103,6 @@ export class AreasService {
       .pipe(
         tap(() => {
           this.store.dispatch(reloadMenus());
-          this.blocWeatherService.clearCache();
         }),
         map(Area.deserialize),
       );
@@ -156,7 +151,6 @@ export class AreasService {
       .pipe(
         tap(() => {
           this.store.dispatch(reloadMenus());
-          this.blocWeatherService.clearCache();
         }),
         map(Area.deserialize),
       );

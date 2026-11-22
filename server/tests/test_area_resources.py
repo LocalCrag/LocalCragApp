@@ -46,7 +46,7 @@ def test_successful_create_area(client, moderator_token, any_file):
         ],
         "portraitImage": str(any_file.id),
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "condicasterCragId": 1000044430,
         "closureSchedules": [],
     }
 
@@ -66,7 +66,7 @@ def test_successful_create_area(client, moderator_token, any_file):
     assert res["id"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
+    assert res["condicasterCragId"] == 1000044430
 
 
 def test_create_area_invalid_lat(client, moderator_token):
@@ -85,7 +85,7 @@ def test_create_area_invalid_lat(client, moderator_token):
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
 
@@ -109,7 +109,7 @@ def test_create_area_invalid_lng(client, moderator_token):
         ],
         "portraitImage": "6137f55a-6201-45ab-89c5-6e9c29739d61",
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
 
@@ -117,7 +117,7 @@ def test_create_area_invalid_lng(client, moderator_token):
     assert rv.status_code == 400
 
 
-def test_create_area_invalid_blocweather_url(client, moderator_token):
+def test_create_area_invalid_condicaster_crag_id(client, moderator_token):
     area_data = {
         "name": "Fiona",
         "description": "Great area",
@@ -125,7 +125,7 @@ def test_create_area_invalid_blocweather_url(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+        "condicasterCragId": -1,
         "closureSchedules": [],
     }
 
@@ -179,7 +179,7 @@ def test_successful_get_area(client):
     assert res["portraitImage"] is None or res["portraitImage"]["id"] == area.portrait_image_id
     assert res["closed"] == area.closed
     assert isinstance(res["closedReasons"], list)
-    assert res["blocweatherUrl"] == area.blocweather_url
+    assert res["condicasterCragId"] == area.condicaster_crag_id
 
 
 def test_get_deleted_area(client):
@@ -210,7 +210,7 @@ def test_successful_edit_area(client, moderator_token):
         ],
         "portraitImage": None,
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/france/fontainebleau/bas-cuvier",
+        "condicasterCragId": 1000044431,
         "closureSchedules": [],
     }
 
@@ -230,7 +230,7 @@ def test_successful_edit_area(client, moderator_token):
     assert res["id"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/france/fontainebleau/bas-cuvier"
+    assert res["condicasterCragId"] == 1000044431
 
 
 def test_successful_order_areas(client, moderator_token):

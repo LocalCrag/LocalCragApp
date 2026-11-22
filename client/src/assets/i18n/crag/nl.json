@@ -19,9 +19,6 @@
   "cragForm.cragRulesTitleTooltip": "Indien ingesteld moeten gebruikers bevestigen dat ze de regels hebben gelezen en wordt er een extra waarschuwing getoond.",
   "cragForm.cragRulesTitlePlaceholder": "Leeg laten om geen melding te tonen, bijv. \"Lees onze regels\"",
   "cragForm.cragPortraitImageLabel": "Afbeelding",
-  "cragForm.blocweatherUrlLabel": "Blocweather-URL",
-  "cragForm.blocweatherTooltip": "Om weersinformatie voor dit klimgebied op de detailspagina weer te geven, kunt u hier de URL voor de relevante sectie op blocweather.com invoeren.",
-  "cragForm.invalidBlocweatherUrl": "De URL moet het formaat https://blocweather.com/<country>/<region>/<spot> volgen",
   "cragForm.mapMarkersLabel": "GPS coördinaten",
   "cragForm.cragOptionsLabel": "Opties",
   "cragForm.secretLabel": "Verborgen",
@@ -30,5 +27,8 @@
   "cragForm.cancelButtonLabel": "Annuleren",
   "cragForm.deleteCragButtonLabel": "Klimgebied verwijderen",
   "cragForm.editCragTitle": "Klimgebied bewerken",
-  "cragForm.createCragTitle": "Nieuw klimgebied aanmaken"
+  "cragForm.createCragTitle": "Nieuw klimgebied aanmaken",
+  "cragForm.condicasterCragIdLabel": "CondiCaster-rots",
+  "cragForm.condicasterTooltip": "De omstandigheden voor deze plek komen van deze CondiCaster-rots. Laat leeg om de rots van het niveau erboven te gebruiken.",
+  "cragForm.invalidCondicasterCragId": "Vul een positieve CondiCaster-rots-ID in."
 }

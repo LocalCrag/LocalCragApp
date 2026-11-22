@@ -27,8 +27,9 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
+import { CondiScoreChipComponent } from '../../shared/components/condi-score-chip/condi-score-chip.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
@@ -50,7 +51,13 @@ interface PageMenuItem {
   selector: 'lc-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.scss'],
-  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  imports: [
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    CondiScoreChipComponent,
+    OutdoorModeDirective,
+    RouterOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'sector' }],
 })
@@ -73,12 +80,10 @@ export class SectorComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
-  private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
   private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
-  private hasBlocweather = false;
 
   ngOnInit() {
     this.route.paramMap
@@ -106,7 +111,6 @@ export class SectorComponent implements OnInit {
               return throwError(() => e);
             }),
           ),
-          this.blocWeatherService.getNearest('sector', sectorSlug),
           waitForAuthState(this.store).pipe(
             map((auth) => !!auth.user?.moderator),
           ),
@@ -114,23 +118,16 @@ export class SectorComponent implements OnInit {
           this.store.pipe(select(selectBgImage), take(1)),
           this.regionService.getRegionCached(),
         ]).subscribe(
-          ([
-            crag,
-            sector,
-            blocweatherConfig,
-            isModerator,
-            isGymMode,
-            bgImage,
-            region,
-          ]) => {
-            this.hasBlocweather = !!blocweatherConfig;
+          ([crag, sector, isModerator, isGymMode, bgImage, region]) => {
             this.crag = crag;
             this.sector = sector;
             this.pageTitleService.setPortraitTitle(
               sector.name,
               sector.portraitImage,
               bgImage,
-              { titleAddon: this.statusTagsTemplate },
+              {
+                titleAddon: this.statusTagsTemplate,
+              },
             );
             this.rulesAlertService.setContext({ sector, crag, region });
             this.closureBannerService.setReasons(sector.closedReasons);
@@ -242,7 +239,7 @@ export class SectorComponent implements OnInit {
         label: this.translocoService.translate(marker('sector.weather')),
         icon: 'pi pi-fw pi-sun',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/weather`,
-        visible: this.hasBlocweather && !isGymMode,
+        visible: this.sector.hasCondicaster && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('sector.statistics')),

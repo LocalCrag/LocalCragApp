@@ -90,9 +90,10 @@ export class ApiService {
     getMarkers: (): string => `${this.apiHost}maps/markers`,
   };
 
-  public blocweather = {
-    getNearest: (level: string, slug: string): string =>
-      `${this.apiHost}blocweather/nearest/${level}/${slug}`,
+  public condicaster = {
+    getConditions: (level: string, slug: string): string =>
+      `${this.apiHost}condicaster/conditions/${level}/${slug}`,
+    searchCrags: (): string => `${this.apiHost}condicaster/crags`,
   };
 
   public gallery = {

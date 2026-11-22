@@ -11,6 +11,14 @@
   @if (crag?.secret) {
     <lc-secret-spot-tag class="spot-status-tag--corner"></lc-secret-spot-tag>
   }
+  @if (crag?.condiscore !== null && crag?.condiscore !== undefined) {
+    <lc-condi-score-chip
+      *isOutdoorMode="true"
+      class="spot-status-tag--corner"
+      [score]="crag.condiscore"
+      [link]="['/topo', crag.slug, 'weather']"
+    />
+  }
 </ng-template>
 
 <div class="content">

@@ -45,7 +45,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { environment } from '../../../../environments/environment';
@@ -71,6 +71,11 @@ import {
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  CondicasterCragLink,
+  CondicasterCragLinkComponent,
+} from '../../shared/components/condicaster-crag-link/condicaster-crag-link.component';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 /**
  * Form component for creating and editing areas.
@@ -108,6 +113,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    CondicasterCragLinkComponent,
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
@@ -220,10 +226,8 @@ export class AreaFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      blocweatherUrl: [
-        null,
-        [blocweatherUrlValidator, Validators.maxLength(255)],
-      ],
+      condicasterCragId: [null, [condicasterCragIdValidator]],
+      condicasterCragName: [null],
       closureSchedules: [[]],
     });
   }
@@ -240,7 +244,8 @@ export class AreaFormComponent implements OnInit {
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
       mapMarkers: this.area.mapMarkers,
-      blocweatherUrl: this.area.blocweatherUrl,
+      condicasterCragId: this.area.condicasterCragId,
+      condicasterCragName: this.area.condicasterCragName,
       closureSchedules: this.area.closureSchedules ?? [],
     });
   }
@@ -275,7 +280,14 @@ export class AreaFormComponent implements OnInit {
       area.secret = this.areaForm.get('secret').value;
       area.mapMarkers = this.areaForm.get('mapMarkers').value;
       area.closureSchedules = this.areaForm.get('closureSchedules').value ?? [];
-      area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
+      const condicasterCragId = this.areaForm.get('condicasterCragId').value;
+      area.condicasterCragId =
+        condicasterCragId === null || condicasterCragId === ''
+          ? null
+          : Number(condicasterCragId);
+      area.condicasterCragName = area.condicasterCragId
+        ? this.areaForm.get('condicasterCragName').value || null
+        : null;
       if (this.area) {
         area.slug = this.area.slug;
         this.uploadService
@@ -341,6 +353,19 @@ export class AreaFormComponent implements OnInit {
       this.store.dispatch(toastNotification('AREA_DELETED'));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
       this.loadingState = LoadingState.DEFAULT;
+    });
+  }
+
+  protected markerCoordinates(): Coordinates | null {
+    const markers = this.areaForm?.get('mapMarkers')?.value as
+      { coordinates?: Coordinates }[] | null;
+    return markers?.find((marker) => marker?.coordinates)?.coordinates ?? null;
+  }
+
+  protected setCondicasterCrag(link: CondicasterCragLink | null): void {
+    this.areaForm.patchValue({
+      condicasterCragId: link?.cragId ?? null,
+      condicasterCragName: link?.name ?? null,
     });
   }
 
