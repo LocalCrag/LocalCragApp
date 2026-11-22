@@ -355,6 +355,12 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
     if (event.button !== 0 || !this.showPaginationControls()) {
       return;
     }
+    if (
+      event.target instanceof Element &&
+      event.target.closest('[data-pagination]')
+    ) {
+      return;
+    }
     this.dragPointerId = event.pointerId;
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
