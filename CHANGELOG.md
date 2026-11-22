@@ -1,3 +1,10 @@
+# [1.73.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.72.2...v1.73.0) (2026-11-22)
+
+
+### Features
+
+* **topo:** remember past condi caster days for showing condi history ([#1352](https://github.com/LocalCrag/LocalCragApp/issues/1352)) ([9a47c6a](https://github.com/LocalCrag/LocalCragApp/commit/9a47c6a9ca023cfcda3705185cac745ca92aefd7))
+
 ## [1.72.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.72.1...v1.72.2) (2026-11-22)
 
 
