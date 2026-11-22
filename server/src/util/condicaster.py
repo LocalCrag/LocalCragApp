@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -23,11 +24,14 @@ logger = logging.getLogger(__name__)
 
 _SEARCH_CACHE_SECONDS = 60 * 60
 _search_cache: dict[tuple, tuple[float, list]] = {}
+_DISTANCE_NUMBER = re.compile(r"(\d+(?:[.,]\d+)?)")
 
 API_ROOT = "https://condicaster.wtf"
 FORECAST_DAYS = 11
 # Hourly rows after today. Today itself is refreshed each hour outside quiet hours.
 HOURLY_FORECAST_DAYS = 7
+# Keep the last hourly snapshot of each of the previous days, then drop it.
+HISTORY_DAYS = 4
 # Later days, hourly and daily, are fetched at most once a day.
 FORECAST_MAX_AGE = timedelta(hours=24)
 # Local hours [23:00, 05:00) skip the hourly refresh.
@@ -211,14 +215,32 @@ def _location_hit(item: dict) -> dict | None:
 
 
 def _search_hit(item: dict) -> dict:
-    distance = item.get("distance_km")
     return {
         "cragId": item.get("crag_id"),
         "name": item.get("crag_name"),
         "areaName": item.get("area_name"),
         "countryName": item.get("country_name"),
-        "distanceKm": None if distance is None else round(float(distance), 1),
+        "distanceKm": _distance_km(item.get("distance_km")),
     }
+
+
+def _distance_km(value) -> float | str | None:
+    """CondiCaster sends a number, or a label such as '<1 km' for a close crag."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return round(float(value), 1)
+    text = str(value).strip()
+    match = _DISTANCE_NUMBER.search(text)
+    if match is None:
+        return None
+    number = round(float(match.group(1).replace(",", ".")), 1)
+    if "<" in text:
+        shown = str(int(number)) if number == int(number) else f"{number:.1f}"
+        return f"<{shown}"
+    return number
 
 
 def enqueue_condicaster_refresh(crag_id: int | None) -> None:
@@ -285,36 +307,35 @@ def refresh_one(crag_id: int) -> None:
 
     _refresh_forecast_hourly(cache, crag_id, local_date)
 
-    if _daily_is_fresh(cache):
-        return
-    if not _daily_quota_allows():
-        logger.info("CondiCaster daily forecast skipped for %s: quota reserve reached.", crag_id)
-        return
+    if not _daily_is_fresh(cache):
+        if not _daily_quota_allows():
+            logger.info("CondiCaster daily forecast skipped for %s: quota reserve reached.", crag_id)
+        else:
+            days = []
+            for offset in range(FORECAST_DAYS):
+                day = local_date + timedelta(days=offset)
+                try:
+                    payload = _request(f"/api/v1/crags/{crag_id}/conditions?date={day.isoformat()}&resolution=daily")
+                except CondicasterRateLimited:
+                    if days:
+                        _store_days(cache, days, local_date)
+                        db.session.commit()
+                    else:
+                        db.session.rollback()
+                    raise
+                except CondicasterError:
+                    break
+                days.extend(_days_for_date(payload.get("data") or [], day))
+                time.sleep(0.4)
+                if payload.get("timezone"):
+                    cache.timezone = payload["timezone"]
 
-    days = []
-    for offset in range(FORECAST_DAYS):
-        day = local_date + timedelta(days=offset)
-        try:
-            payload = _request(f"/api/v1/crags/{crag_id}/conditions?date={day.isoformat()}&resolution=daily")
-        except CondicasterRateLimited:
             if days:
-                cache.daily_json = days
-                cache.daily_fetched_at = _utcnow()
+                _store_days(cache, days, local_date)
+                cache.last_error = None
                 db.session.commit()
-            else:
-                db.session.rollback()
-            raise
-        except CondicasterError:
-            break
-        days.extend(payload.get("data") or [])
-        time.sleep(0.4)
-        if payload.get("timezone"):
-            cache.timezone = payload["timezone"]
 
-    if days:
-        cache.daily_json = days
-        cache.daily_fetched_at = _utcnow()
-        cache.last_error = None
+    if _trim_history(cache, _local_today(cache.timezone)):
         db.session.commit()
 
 
@@ -412,16 +433,66 @@ def _hours_for_date(hours: list[dict], local_date: date) -> list[dict]:
     return stamped
 
 
+def _store_days(cache: CondicasterCache, days: list[dict], local_today: date) -> None:
+    replaced = {day["local_date"] for day in days if day.get("local_date")}
+    cache.daily_json = _merged_days(cache.daily_json, days, replaced, local_today)
+    cache.daily_fetched_at = _utcnow()
+
+
+def _days_for_date(days: list[dict], local_date: date) -> list[dict]:
+    day = local_date.isoformat()
+    stamped = []
+    for item in days:
+        if item.get("local_date") and item.get("local_date") != day:
+            continue
+        stamped.append({**item, "local_date": day})
+    return stamped
+
+
+def _trim_history(cache: CondicasterCache, local_today: date) -> bool:
+    """Drop hours and day summaries older than the retained history."""
+    hourly = _merged_hours(cache.hourly_json, [], set(), local_today)
+    daily = _merged_days(cache.daily_json, [], set(), local_today)
+    changed = hourly != (cache.hourly_json or []) or daily != (cache.daily_json or [])
+    if not changed:
+        return False
+    cache.hourly_json = hourly
+    cache.daily_json = daily
+    return True
+
+
+def _oldest_kept(local_today: date) -> str:
+    return (local_today - timedelta(days=HISTORY_DAYS)).isoformat()
+
+
 def _merged_hours(existing, incoming: list[dict], replaced_dates: set[str], local_today: date) -> list[dict]:
-    today = local_today.isoformat()
+    """Keep the newest hourly series for today, the forecast, and the past days.
+
+    A date in ``replaced_dates`` is swapped for ``incoming``. Older dates stay as
+    last stored, which is the last refresh from when that day was today.
+    """
+    oldest = _oldest_kept(local_today)
     kept = []
     for hour in existing or []:
         local = hour.get("local_date")
-        if not local or local < today or local in replaced_dates:
+        if not local or local < oldest or local in replaced_dates:
             continue
         kept.append(hour)
     merged = kept + list(incoming)
     merged.sort(key=lambda hour: hour.get("valid_at") or "")
+    return merged
+
+
+def _merged_days(existing, incoming: list[dict], replaced_dates: set[str], local_today: date) -> list[dict]:
+    oldest = _oldest_kept(local_today)
+    kept = []
+    for day in existing or []:
+        local = day.get("local_date")
+        if not local or local < oldest or local in replaced_dates:
+            continue
+        kept.append(day)
+    merged = kept + list(incoming)
+    merged.sort(key=lambda day: day.get("local_date") or "")
     return merged
 
 

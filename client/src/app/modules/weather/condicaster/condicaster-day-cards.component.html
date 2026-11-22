@@ -1,9 +1,10 @@
 <ng-container *transloco="let t">
-  <div class="condicaster-days">
+  <div #dayStrip class="condicaster-days">
     @for (day of days; track day.local_date) {
       <button
         type="button"
         class="condicaster-days__card"
+        [attr.data-today]="isToday(day) ? '' : null"
         [class.condicaster-days__card--today]="isToday(day)"
         [class.condicaster-days__card--selected]="isSelected(day)"
         [attr.aria-pressed]="isSelected(day)"

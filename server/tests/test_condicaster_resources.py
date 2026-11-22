@@ -277,6 +277,101 @@ def test_refresh_skips_hourly_during_quiet_hours(client, monkeypatch):
     assert len([path for path in calls if "resolution=daily" in path]) == 11
 
 
+def test_refresh_keeps_four_past_days_and_drops_older(client, monkeypatch):
+    crag: Crag = Crag.find_by_slug("brione")
+    crag.condicaster_crag_id = 79
+    existing = db.session.get(CondicasterCache, 79)
+    if existing is not None:
+        db.session.delete(existing)
+    db.session.commit()
+    _set_api_key()
+
+    today = datetime.now(timezone.utc).date()
+    fresh = datetime.now(timezone.utc).replace(tzinfo=None)
+    calls = []
+
+    def local_day(offset: int) -> str:
+        return (today + timedelta(days=offset)).isoformat()
+
+    def fake_request(path: str):
+        calls.append(path)
+        if path.endswith("/developer/usage"):
+            return {"remaining": 400}
+        day = path.split("date=")[1].split("&")[0]
+        if "resolution=hourly" in path:
+            return {
+                "crag_id": 79,
+                "timezone": "UTC",
+                "data": [
+                    {
+                        "local_date": day,
+                        "valid_at": f"{day}T15:00:00Z",
+                        "condiscore": 3.6,
+                    }
+                ],
+            }
+        if "resolution=daily" in path:
+            return {
+                "crag_id": 79,
+                "timezone": "UTC",
+                "data": [{"local_date": day, "daytime_condiscore": 2.2}],
+            }
+        raise AssertionError(path)
+
+    _cache(
+        79,
+        timezone="UTC",
+        hourly_json=[
+            {
+                "local_date": local_day(offset),
+                "valid_at": f"{local_day(offset)}T12:00:00Z",
+                "condiscore": 10 + offset,
+            }
+            for offset in range(-6, 3)
+        ],
+        daily_json=[{"local_date": local_day(offset), "daytime_condiscore": 10 + offset} for offset in range(-6, 3)],
+        hourly_fetched_at=fresh,
+        forecast_hourly_fetched_at=fresh,
+        daily_fetched_at=fresh,
+    )
+    db.session.commit()
+
+    monkeypatch.setattr("util.condicaster.time.sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr("util.condicaster._request", fake_request)
+    monkeypatch.setattr("util.condicaster._in_quiet_hours", lambda *_args, **_kwargs: False)
+    with client.application.app_context():
+        refresh_one(79)
+
+    cache = db.session.get(CondicasterCache, 79)
+    kept = [local_day(offset) for offset in range(-4, 3)]
+    assert [hour["local_date"] for hour in cache.hourly_json] == kept
+    hourly = {hour["local_date"]: hour for hour in cache.hourly_json}
+    assert hourly[local_day(0)]["condiscore"] == 3.6
+    assert hourly[local_day(0)]["valid_at"] == f"{local_day(0)}T15:00:00Z"
+    assert hourly[local_day(-1)]["condiscore"] == 9
+    assert hourly[local_day(-1)]["valid_at"] == f"{local_day(-1)}T12:00:00Z"
+    assert hourly[local_day(-4)]["condiscore"] == 6
+    assert [day["local_date"] for day in cache.daily_json] == kept
+    assert {day["local_date"]: day["daytime_condiscore"] for day in cache.daily_json}[local_day(-4)] == 6
+    assert calls == [f"/api/v1/crags/79/conditions?date={local_day(0)}&resolution=hourly"]
+
+    cache.daily_fetched_at = fresh - timedelta(days=2)
+    db.session.commit()
+    calls.clear()
+    with client.application.app_context():
+        refresh_one(79)
+
+    cache = db.session.get(CondicasterCache, 79)
+    daily = {day["local_date"]: day["daytime_condiscore"] for day in cache.daily_json}
+    assert local_day(-5) not in daily
+    assert daily[local_day(-1)] == 9
+    assert daily[local_day(-4)] == 6
+    assert daily[local_day(0)] == 2.2
+    assert daily[local_day(10)] == 2.2
+    assert [hour["local_date"] for hour in cache.hourly_json] == kept
+    assert not any(local_day(-1) in path for path in calls)
+
+
 def test_search_locations_by_name(client, moderator_token, monkeypatch):
     from util.condicaster import _search_cache
 
@@ -361,3 +456,63 @@ def test_search_crags_returns_hits_and_reuses_them(client, moderator_token, monk
     ]
     assert second.json == first.json
     assert len(calls) == 1
+
+
+def test_search_crags_accepts_text_distances(client, moderator_token, monkeypatch):
+    from util.condicaster import _search_cache
+
+    _search_cache.clear()
+    _set_api_key()
+
+    def fake_request(path: str):
+        return {
+            "data": [
+                {
+                    "crag_id": 1,
+                    "crag_name": "Close",
+                    "area_name": "Eifel",
+                    "country_name": "Germany",
+                    "distance_km": "<1 km",
+                },
+                {
+                    "crag_id": 2,
+                    "crag_name": "Far",
+                    "area_name": None,
+                    "country_name": None,
+                    "distance_km": "2.24 km",
+                },
+                {
+                    "crag_id": 3,
+                    "crag_name": "Unknown",
+                    "distance_km": "nearby",
+                },
+            ]
+        }
+
+    monkeypatch.setattr("util.condicaster._request", fake_request)
+    rv = client.get("/api/condicaster/crags?lat=50.424&lon=7.189", token=moderator_token)
+
+    assert rv.status_code == 200
+    assert rv.json["crags"] == [
+        {
+            "cragId": 1,
+            "name": "Close",
+            "areaName": "Eifel",
+            "countryName": "Germany",
+            "distanceKm": "<1",
+        },
+        {
+            "cragId": 2,
+            "name": "Far",
+            "areaName": None,
+            "countryName": None,
+            "distanceKm": 2.2,
+        },
+        {
+            "cragId": 3,
+            "name": "Unknown",
+            "areaName": None,
+            "countryName": None,
+            "distanceKm": None,
+        },
+    ]

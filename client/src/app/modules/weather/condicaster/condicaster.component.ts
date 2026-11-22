@@ -44,7 +44,8 @@ export class CondicasterComponent implements OnInit {
   public enabled = false;
   public loading = false;
   public selectedDate: string | null = null;
-  /** Stable list for the selected day. A fresh array on every check rebuilds the charts. */
+  /** Stable lists. A fresh array on every check rebuilds the charts and resets the day scroller. */
+  protected dayChoices: CondicasterDay[] = [];
   protected visibleHours: CondicasterHour[] = [];
 
   private condicasterService = inject(CondicasterService);
@@ -76,6 +77,7 @@ export class CondicasterComponent implements OnInit {
             next: (conditions) => {
               this.conditions = conditions;
               this.loading = false;
+              this.refreshDayChoices();
               this.refreshVisibleHours();
               this.changeDetector.markForCheck();
             },
@@ -104,6 +106,52 @@ export class CondicasterComponent implements OnInit {
     this.refreshVisibleHours();
   }
 
+  private refreshDayChoices(): void {
+    const byDate = new Map<string, CondicasterDay>();
+    for (const day of this.conditions?.daily ?? []) {
+      if (day.local_date) {
+        byDate.set(day.local_date, day);
+      }
+    }
+    for (const hour of this.conditions?.hourly ?? []) {
+      if (!hour.local_date || byDate.has(hour.local_date)) {
+        continue;
+      }
+      byDate.set(hour.local_date, this.dayFromHours(hour.local_date));
+    }
+    this.dayChoices = [...byDate.values()].sort((left, right) =>
+      left.local_date.localeCompare(right.local_date),
+    );
+  }
+
+  /** A past day can still have hourly rows after its daily summary was missed. */
+  private dayFromHours(localDate: string): CondicasterDay {
+    const hours = (this.conditions?.hourly ?? []).filter(
+      (hour) => hour.local_date === localDate,
+    );
+    const temps = hours
+      .map((hour) => hour.temperature_c)
+      .filter((value): value is number => value != null);
+    const scores = hours
+      .map((hour) => hour.condiscore)
+      .filter((value) => value != null);
+    return {
+      local_date: localDate,
+      daytime_condiscore: scores.length
+        ? scores.reduce((sum, value) => sum + value, 0) / scores.length
+        : null,
+      morning_condiscore: null,
+      afternoon_condiscore: null,
+      evening_condiscore: null,
+      temperature_min_c: temps.length ? Math.min(...temps) : null,
+      temperature_max_c: temps.length ? Math.max(...temps) : null,
+      sunrise_at: null,
+      sunset_at: null,
+      direct_sun_windows: [],
+      explanation: null,
+    };
+  }
+
   private refreshVisibleHours(): void {
     const date = this.activeDate();
     this.visibleHours = date
@@ -116,20 +164,15 @@ export class CondicasterComponent implements OnInit {
   protected activeDate(): string | null {
     if (
       this.selectedDate &&
-      this.conditions?.daily?.some(
-        (day) => day.local_date === this.selectedDate,
-      )
+      this.dayChoices.some((day) => day.local_date === this.selectedDate)
     ) {
       return this.selectedDate;
     }
     const today = this.todayKey();
-    const days = this.conditions?.daily ?? [];
-    if (days.some((day) => day.local_date === today)) {
+    if (this.dayChoices.some((day) => day.local_date === today)) {
       return today;
     }
-    return (
-      days[0]?.local_date ?? this.conditions?.hourly?.[0]?.local_date ?? null
-    );
+    return this.dayChoices[0]?.local_date ?? null;
   }
 
   protected formatDay(localDate: string): string {
@@ -163,9 +206,7 @@ export class CondicasterComponent implements OnInit {
     if (!date) {
       return null;
     }
-    return (
-      this.conditions?.daily?.find((day) => day.local_date === date) ?? null
-    );
+    return this.dayChoices.find((day) => day.local_date === date) ?? null;
   }
 
   private isSelectedToday(): boolean {
