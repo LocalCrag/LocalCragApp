@@ -46,6 +46,7 @@ export interface InstanceSettingsState {
   rankingPastWeeks: number | null;
   language: LanguageCode;
   timezone: string;
+  condicasterEnabled: boolean;
   loaded: boolean;
 }
 
@@ -87,6 +88,7 @@ export const initialInstanceSettingsState: InstanceSettingsState = {
   rankingPastWeeks: null,
   language: null,
   timezone: 'UTC',
+  condicasterEnabled: false,
   loaded: false,
 };
 
@@ -131,6 +133,7 @@ const instanceSettingsReducer = createReducer(
     rankingPastWeeks: action.settings.rankingPastWeeks,
     language: action.settings.language,
     timezone: action.settings.timezone,
+    condicasterEnabled: action.settings.condicasterEnabled === true,
     loaded: true,
   })),
 );

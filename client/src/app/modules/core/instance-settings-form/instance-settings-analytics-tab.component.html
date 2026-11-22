@@ -34,6 +34,32 @@
       }}</small>
     </div>
 
+    <div class="flex flex-col gap-2" lcControlGroup>
+      <div class="form-label flex items-center">
+        <label for="condicaster-api-key">{{
+          t("condicasterApiKeyLabel")
+        }}</label>
+        <ng-icon
+          name="lucideCircleHelp"
+          class="inline ml-2"
+          [hlmTooltip]="t('condicasterApiKeyTooltip')"
+          position="right"
+        />
+      </div>
+      <input
+        type="password"
+        hlmInput
+        id="condicaster-api-key"
+        formControlName="condicasterApiKey"
+        autocomplete="off"
+        [placeholder]="t('condicasterApiKeyPlaceholder')"
+        lcFormControl
+      />
+      <small class="lc-error" *lcIfError="'maxlength'">{{
+        "validation.maxLength" | transloco: { max: 512 }
+      }}</small>
+    </div>
+
     <div class="form-actions">
       <button
         hlmBtn

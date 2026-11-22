@@ -2,7 +2,7 @@ from flask import has_request_context
 
 from error_handling.http_exceptions.unauthorized import Unauthorized
 from messages.messages import ResponseMessage
-from util.auth_session import get_current_user
+from util.auth_session import get_current_user, request_user_is_moderator
 from util.secret_service import SecretService
 
 
@@ -10,8 +10,7 @@ def current_user_is_moderator() -> bool:
     """Return whether the current request is authenticated as a moderator."""
     if not has_request_context():
         return False
-    user = get_current_user()
-    return bool(user and user.moderator)
+    return request_user_is_moderator()
 
 
 def current_user_is_member() -> bool:

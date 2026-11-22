@@ -75,25 +75,27 @@
           >
           </lc-single-image-upload>
         </div>
-        <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
-          <label class="form-label">
-            {{ t("condicasterCragIdLabel") }}
-            <button
-              type="button"
-              class="inline-flex text-muted-foreground ml-2"
-              [hlmTooltip]="t('condicasterTooltip')"
-              position="right"
-            >
-              <ng-icon name="lucideCircleQuestionMark" />
-            </button>
-          </label>
-          <lc-condicaster-crag-link
-            [cragId]="areaForm.get('condicasterCragId')?.value"
-            [cragName]="areaForm.get('condicasterCragName')?.value"
-            [coordinates]="markerCoordinates()"
-            (linkChange)="setCondicasterCrag($event)"
-          />
-        </div>
+        <ng-container *isCondicasterEnabled="true">
+          <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
+            <label class="form-label">
+              {{ t("condicasterCragIdLabel") }}
+              <button
+                type="button"
+                class="inline-flex text-muted-foreground ml-2"
+                [hlmTooltip]="t('condicasterTooltip')"
+                position="right"
+              >
+                <ng-icon name="lucideCircleQuestionMark" />
+              </button>
+            </label>
+            <lc-condicaster-crag-link
+              [cragId]="areaForm.get('condicasterCragId')?.value"
+              [cragName]="areaForm.get('condicasterCragName')?.value"
+              [coordinates]="markerCoordinates()"
+              (linkChange)="setCondicasterCrag($event)"
+            />
+          </div>
+        </ng-container>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="map-markers">{{
             t("mapMarkersLabel")

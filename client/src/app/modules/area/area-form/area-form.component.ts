@@ -46,6 +46,7 @@ import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/ma
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
+import { CondicasterEnabledDirective } from '../../shared/directives/condicaster-enabled.directive';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { environment } from '../../../../environments/environment';
@@ -110,6 +111,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
     FormSkeletonComponent,
     SingleImageUploadComponent,
     OutdoorModeDirective,
+    CondicasterEnabledDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
