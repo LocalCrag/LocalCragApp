@@ -20,6 +20,7 @@
       @if (!fullscreenMap) {
         <lc-page-title></lc-page-title>
         <lc-rules-alert></lc-rules-alert>
+        <lc-closure-banner></lc-closure-banner>
       }
       <router-outlet></router-outlet>
     </div>
@@ -29,4 +30,9 @@
   <lc-footer></lc-footer>
 }
 <lc-refresh-login-modal></lc-refresh-login-modal>
-<p-toast position="bottom-right" [breakpoints]="toastBreakpoints"></p-toast>
+<hlm-toaster
+  position="bottom-right"
+  richColors
+  expand
+  [theme]="theme.isDarkMode() ? 'dark' : 'light'"
+/>

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login } from './helpers/auth';
+import { chooseMonthYear } from './helpers/month-year';
 
 test.describe('Ascent lifespan workflow', () => {
   test.use({ viewport: { width: 1920, height: 1080 } });
@@ -9,7 +10,7 @@ test.describe('Ascent lifespan workflow', () => {
 
     await page.goto('/topo/brione/pampelmousse/shark-attack/topo-images');
     await page.locator('[data-cy="tick-button"]').nth(1).click();
-    await page.locator('[data-cy="rating"] .p-rating-option').nth(3).click();
+    await page.locator('[data-cy="rating"] button').nth(3).click();
     await page.locator('[data-cy="comment"]').focus();
     await page.locator('[data-cy="comment"]').fill('Good boulder yo!');
     await page.locator('[data-cy="withKneepad"]').click();
@@ -32,7 +33,7 @@ test.describe('Ascent lifespan workflow', () => {
       .first()
       .click();
     await page.locator('#delete-ascent').nth(0).click();
-    await page.locator('.p-confirmpopup-accept-button').nth(0).click();
+    await page.locator('[data-cy="confirm-accept"]').nth(0).click();
     await expect(page.locator('[data-cy="ascent-list-item"]')).toHaveCount(1);
   });
 
@@ -50,12 +51,13 @@ test.describe('Ascent lifespan workflow', () => {
     await page.goto('/topo/brione/pampelmousse/shark-attack/topo-images');
     await page.locator('[data-cy="tick-button"]').nth(1).click();
     await page.locator('[data-cy="yearOnly"]').click();
-    await page.locator('#year').click();
-    await page
-      .locator('.p-datepicker-year')
-      .filter({ hasText: String(ascentYear) })
-      .click();
-    await page.locator('[data-cy="rating"] .p-rating-option').nth(3).click();
+    await chooseMonthYear(page, {
+      year: ascentYear,
+      picker: page.locator('hlm-month-year-picker').filter({
+        has: page.locator('#year'),
+      }),
+    });
+    await page.locator('[data-cy="rating"] button').nth(3).click();
     await page.locator('[data-cy="comment"]').focus();
     await page.locator('[data-cy="comment"]').fill('Year-only ascent');
     await page.locator('[data-cy="submit"]').click();
@@ -77,7 +79,7 @@ test.describe('Ascent lifespan workflow', () => {
       .first()
       .click();
     await page.locator('#delete-ascent').nth(0).click();
-    await page.locator('.p-confirmpopup-accept-button').nth(0).click();
+    await page.locator('[data-cy="confirm-accept"]').nth(0).click();
     await expect(page.locator('[data-cy="ascent-list-item"]')).toHaveCount(1);
   });
 });

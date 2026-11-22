@@ -3,20 +3,18 @@
     <form [formGroup]="scaleForm" lcForm>
       <ng-template #title>
         @if (editMode) {
-          {{ scale?.lineType | transloco }} {{ scale?.name }}
+          {{ $safeNavigationMigration(scale?.lineType) | transloco }}
+          {{ scale?.name }}
         }
       </ng-template>
       <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
         <h4 class="col-span-12 mb-2">{{ t("scaleDefinitionLabel") }}</h4>
         @if (noClosedProjects$ | async) {
           <div class="col-span-12 mb-2">
-            <p-message
-              severity="info"
-              icon="pi pi-info-circle"
-              styleClass="w-full"
-            >
-              {{ t("noClosedProjectsInfo") }}
-            </p-message>
+            <div hlmAlert class="w-full">
+              <ng-icon name="lucideInfo" />
+              <p hlmAlertDescription>{{ t("noClosedProjectsInfo") }}</p>
+            </div>
           </div>
         }
         @if (!editMode) {
@@ -24,20 +22,28 @@
             <label for="linetype">
               {{ t("lineTypeLabel") }}
             </label>
-            <p-select
-              id="linetype"
+            <hlm-select
               formControlName="lineType"
-              [options]="[
-                { name: t('BOULDER'), value: LineType.BOULDER },
-                { name: t('SPORT'), value: LineType.SPORT },
-                { name: t('TRAD'), value: LineType.TRAD },
-              ]"
-              optionLabel="name"
-              optionValue="value"
-              [placeholder]="t('lineTypeLabel')"
-              showClear
+              [itemToString]="lineTypeLabel"
               lcFormControl
-            />
+              ><hlm-select-trigger class="w-full"
+                ><hlm-select-value
+                  [placeholder]="t('lineTypeLabel')" /></hlm-select-trigger
+              ><hlm-select-content *hlmSelectPortal>
+                @for (
+                  option of [
+                    { name: t("BOULDER"), value: LineType.BOULDER },
+                    { name: t("SPORT"), value: LineType.SPORT },
+                    { name: t("TRAD"), value: LineType.TRAD },
+                  ];
+                  track $index
+                ) {
+                  <hlm-select-item [value]="option.value">{{
+                    option.name
+                  }}</hlm-select-item>
+                }
+              </hlm-select-content></hlm-select
+            >
             <div class="lc-error-slot">
               <small class="lc-error" *lcIfError="'required'">
                 {{ "validation.required" | transloco }}
@@ -50,7 +56,7 @@
             </label>
             <input
               type="text"
-              pInputText
+              hlmInput
               id="name"
               formControlName="name"
               lcFormControl
@@ -81,7 +87,7 @@
                       <input
                         type="text"
                         class="ml-2"
-                        pInputText
+                        hlmInput
                         disabled
                         value="{{
                           grade.get('name').value
@@ -96,7 +102,7 @@
                       <input
                         type="text"
                         class="ml-2"
-                        pInputText
+                        hlmInput
                         disabled
                         value="{{
                           grade.get('value').value | translateSpecialGrades
@@ -117,7 +123,7 @@
                       <input
                         type="text"
                         class="ml-2"
-                        pInputText
+                        hlmInput
                         formControlName="name"
                         lcFormControl
                       />
@@ -135,7 +141,9 @@
                   <div lcControlGroup>
                     <label>
                       {{ t("gradeValueLabel") }}
-                      <p-inputNumber
+                      <input
+                        type="number"
+                        hlmInput
                         class="ml-2"
                         formControlName="value"
                         [min]="1"
@@ -160,11 +168,15 @@
                       grade.get("name").value
                     )
                   ) {
-                    <p-button
-                      icon="pi pi-trash"
-                      styleClass="p-button-danger"
+                    <button
+                      hlmBtn
+                      type="button"
+                      variant="destructive"
+                      size="icon"
                       disabled
-                    />
+                    >
+                      <ng-icon name="lucideTrash2" />
+                    </button>
                   }
                   @if (
                     grade.get("value").value > 0 ||
@@ -172,12 +184,16 @@
                       grade.get("name").value
                     )
                   ) {
-                    <p-button
+                    <button
+                      hlmBtn
+                      type="button"
+                      variant="destructive"
+                      size="icon"
                       [disabled]="loadingState === LoadingState.LOADING"
-                      icon="pi pi-trash"
-                      styleClass="p-button-danger"
                       (click)="deleteGrade(i)"
-                    />
+                    >
+                      <ng-icon name="lucideTrash2" />
+                    </button>
                   }
                 </div>
               </lc-form-entry-row>
@@ -187,42 +203,44 @@
         <div class="col-span-12 mt-2" lcControlGroup>
           <ng-container formArrayName="grades" lcFormArray>
             <ng-container *lcIfError="'not_unique'">
-              <p-message
-                severity="error"
-                text="{{ t('valuesNotUnique') }}"
-                styleClass="min-w-full mb-6"
-              />
+              <div hlmAlert variant="destructive" class="min-w-full mb-6">
+                <ng-icon name="lucideCircleX" />
+                <p hlmAlertDescription>{{ t("valuesNotUnique") }}</p>
+              </div>
             </ng-container>
           </ng-container>
         </div>
         <div class="lc-button-group col-span-12 mt-2">
-          <p-button
-            label="{{ t('addGrade') }}"
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
             (click)="addGrade()"
-            icon="pi pi-plus-circle"
-            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
-          />
-          <p-button
-            label="{{ t('reorderGrades') }}"
+          >
+            <ng-icon name="lucideCirclePlus" /> {{ t("addGrade") }}
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            class="responsive-button"
             (click)="reorderGradesByValue()"
-            icon="pi pi-sort-amount-down-alt"
-            class="responsive-button"
             [disabled]="loadingState === LoadingState.LOADING"
-          />
+          >
+            <ng-icon name="lucideArrowDownAZ" /> {{ t("reorderGrades") }}
+          </button>
         </div>
       </div>
 
-      <p-divider class="mt-12" />
+      <div hlmSeparator class="mt-12"></div>
 
       <div class="mb-6">
         <div class="flex">
-          <p-checkbox
+          <hlm-checkbox
             inputId="showDiagrams"
-            [binary]="true"
             formControlName="showDiagrams"
             lcFormControl
-          ></p-checkbox>
+          ></hlm-checkbox>
           <label for="showDiagrams" class="ml-2">{{
             t("showDiagramsLabel")
           }}</label>
@@ -254,7 +272,9 @@
               <div lcControlGroup>
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber
+                  <input
+                    type="number"
+                    hlmInput
                     formControlName="value"
                     [min]="1"
                     class="ml-2"
@@ -293,12 +313,16 @@
                 </div>
               </div>
               <div actions>
-                <p-button
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  size="icon"
                   [disabled]="loadingState === LoadingState.LOADING"
-                  icon="pi pi-trash"
-                  styleClass="p-button-danger"
                   (click)="deleteStackedChartBracket(i)"
-                />
+                >
+                  <ng-icon name="lucideTrash2" />
+                </button>
               </div>
             </lc-form-entry-row>
           </div>
@@ -308,47 +332,50 @@
       <div lcControlGroup>
         <ng-container formArrayName="stackedChartBrackets" lcFormArray>
           <ng-container *lcIfError="'not_unique'">
-            <p-message
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("valuesNotUnique") }}</p>
+            </div>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              styleClass="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("gradeBracketsErrorMsg") }}</p>
+            </div>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-              styleClass="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>
+                {{ t("gradeBracketsInvalidLength", { min: 2 }) }}
+              </p>
+            </div>
           </ng-container>
         </ng-container>
       </div>
 
       <div class="lc-button-group mt-2">
-        <p-button
-          label="{{ t('addBracket') }}"
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
           (click)="addStackedChartBracket()"
-          icon="pi pi-plus-circle"
-          class="responsive-button"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
-        <p-button
-          label="{{ t('reorderGrades') }}"
+        >
+          <ng-icon name="lucideCirclePlus" /> {{ t("addBracket") }}
+        </button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
           (click)="reorderStackedChartBracketsByValue()"
-          icon="pi pi-sort-amount-down-alt"
-          class="responsive-button"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
+        >
+          <ng-icon name="lucideArrowDownAZ" /> {{ t("reorderGrades") }}
+        </button>
       </div>
 
-      <p-divider class="mt-12" />
+      <div hlmSeparator class="mt-12"></div>
 
       <h4>{{ t("gradeBracketsLabel") }} - {{ t("barChartBrackets") }}</h4>
       <div class="mb-2">
@@ -369,7 +396,9 @@
               <div lcControlGroup>
                 <label>
                   {{ t("gradeBracketsInputLabel") }}
-                  <p-inputNumber
+                  <input
+                    type="number"
+                    hlmInput
                     formControlName="value"
                     [min]="1"
                     class="ml-2"
@@ -392,7 +421,7 @@
                   <input
                     type="text"
                     class="ml-2"
-                    pInputText
+                    hlmInput
                     formControlName="name"
                     [placeholder]="t('barChartBracketNamePlaceholder')"
                     lcFormControl
@@ -409,12 +438,16 @@
                 </div>
               </div>
               <div actions>
-                <p-button
-                  icon="pi pi-trash"
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
+                  size="icon"
                   [disabled]="loadingState === LoadingState.LOADING"
-                  styleClass="p-button-danger"
                   (click)="deleteBarChartBracket(i)"
-                />
+                >
+                  <ng-icon name="lucideTrash2" />
+                </button>
               </div>
             </lc-form-entry-row>
           </div>
@@ -424,72 +457,82 @@
       <div lcControlGroup>
         <ng-container formArrayName="barChartBrackets" lcFormArray>
           <ng-container *lcIfError="'not_unique'">
-            <p-message
-              severity="error"
-              text="{{ t('valuesNotUnique') }}"
-              styleClass="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("valuesNotUnique") }}</p>
+            </div>
           </ng-container>
           <ng-container *lcIfError="'semantic_error'">
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsErrorMsg') }}"
-              class="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>{{ t("gradeBracketsErrorMsg") }}</p>
+            </div>
           </ng-container>
           <ng-container *lcIfError="'invalid_length'">
-            <p-message
-              severity="error"
-              text="{{ t('gradeBracketsInvalidLength', { min: 2 }) }}"
-              class="min-w-full mb-6"
-            />
+            <div hlmAlert variant="destructive" class="min-w-full mb-6">
+              <ng-icon name="lucideCircleX" />
+              <p hlmAlertDescription>
+                {{ t("gradeBracketsInvalidLength", { min: 2 }) }}
+              </p>
+            </div>
           </ng-container>
         </ng-container>
       </div>
 
       <div class="lc-button-group mt-2">
-        <p-button
-          label="{{ t('addBracket') }}"
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
           (click)="addBarChartBracket()"
-          icon="pi pi-plus-circle"
-          class="responsive-button"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
-        <p-button
-          label="{{ t('reorderGrades') }}"
+        >
+          <ng-icon name="lucideCirclePlus" /> {{ t("addBracket") }}
+        </button>
+        <button
+          hlmBtn
+          type="button"
+          class="responsive-button"
           (click)="reorderBarChartBracketsByValue()"
-          icon="pi pi-sort-amount-down-alt"
-          class="responsive-button"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
+        >
+          <ng-icon name="lucideArrowDownAZ" /> {{ t("reorderGrades") }}
+        </button>
       </div>
 
-      <p-divider class="mt-12" />
+      <div hlmSeparator class="mt-12"></div>
       <div class="form-actions justify-end">
-        <p-button
-          label="{{ t('saveScale') }}"
-          (click)="saveScale()"
-          icon="pi pi-save"
-          class="responsive-button"
+        <button
+          lcLoadingButton
+          icon="lucideSave"
           [loading]="loadingState === LoadingState.LOADING"
-        />
-        <p-button
-          label="{{ t('deleteScale') }}"
+          (click)="saveScale()"
+          [disabled]="loadingState === LoadingState.LOADING"
+          class="responsive-button"
+          type="button"
+        >
+          {{ t("saveScale") }}
+        </button>
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          class="responsive-button"
           (click)="confirmDeleteScale($event)"
-          icon="pi pi-trash"
-          class="responsive-button"
-          styleClass="p-button-danger"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
-        <p-button
-          label="{{ t('cancel') }}"
+        >
+          <ng-icon name="lucideTrash2" /> {{ t("deleteScale") }}
+        </button>
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          class="responsive-button"
           (click)="router.navigate(['/scales'])"
-          icon="pi pi-ban"
-          severity="secondary"
-          class="responsive-button"
           [disabled]="loadingState === LoadingState.LOADING"
-        />
-        <p-confirmpopup></p-confirmpopup>
+        >
+          <ng-icon name="lucideBan" /> {{ t("cancel") }}
+        </button>
       </div>
     </form>
   </div>

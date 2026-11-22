@@ -39,6 +39,7 @@ def overwrite_config_by_env_vars(app):
         "FRONTEND_HOST",
         "SENTRY_DSN",
         "SENTRY_ENABLED",
+        "CONDICASTER_API_KEY",
         "SUPERADMIN_EMAIL",
         "SUPERADMIN_FIRSTNAME",
         "SUPERADMIN_LASTNAME",

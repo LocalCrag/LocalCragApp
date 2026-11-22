@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -21,7 +22,6 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
@@ -40,18 +40,12 @@ import {
   MapMarkerType,
 } from '../../../enums/map-marker-type';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { InputText } from 'primeng/inputtext';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
-import { Checkbox } from 'primeng/checkbox';
-import { Message } from 'primeng/message';
-import { Button } from 'primeng/button';
-import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FormSkeletonComponent } from '../../shared/components/form-skeleton/form-skeleton.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
-import { Tooltip } from 'primeng/tooltip';
+import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { environment } from '../../../../environments/environment';
@@ -60,6 +54,28 @@ import { ClosureState } from '../../../models/closure-state';
 import { ClosureStateService } from '../../../services/crud/closure-state.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { DuplicateNameWarningComponent } from '../../shared/components/duplicate-name-warning/duplicate-name-warning.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeftRight,
+  lucideBan,
+  lucideCircleQuestionMark,
+  lucideInfo,
+  lucideSave,
+  lucideTrash2,
+  lucideTriangleAlert,
+} from '@ng-icons/lucide';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  CondicasterCragLink,
+  CondicasterCragLinkComponent,
+} from '../../shared/components/condicaster-crag-link/condicaster-crag-link.component';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 /**
  * Form component for creating and editing areas.
@@ -68,32 +84,47 @@ import { DuplicateNameWarningComponent } from '../../shared/components/duplicate
   selector: 'lc-area-form',
   templateUrl: './area-form.component.html',
   styleUrls: ['./area-form.component.scss'],
-  providers: [ConfirmationService],
+  providers: [
+    provideIcons({
+      lucideArrowLeftRight,
+      lucideBan,
+      lucideCircleQuestionMark,
+      lucideInfo,
+      lucideSave,
+      lucideTrash2,
+      lucideTriangleAlert,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
-    InputText,
     FormControlDirective,
     IfErrorDirective,
     WysiwygEditorComponent,
     MapMarkerFormArrayComponent,
-    Checkbox,
     TranslocoPipe,
-    Message,
-    Button,
-    ConfirmPopup,
     FormSkeletonComponent,
     SingleImageUploadComponent,
-    Tooltip,
     OutdoorModeDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    CondicasterCragLinkComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmInput,
+    HlmCheckbox,
+    HlmTooltip,
+    NgIcon,
   ],
 })
 export class AreaFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
   @ViewChild('moveDialog') moveDialog: MoveObjectDialogComponent;
 
@@ -117,7 +148,6 @@ export class AreaFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private closureStateService = inject(ClosureStateService);
   private pageTitleService = inject(PageTitleService);
 
@@ -196,10 +226,8 @@ export class AreaFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      blocweatherUrl: [
-        null,
-        [blocweatherUrlValidator, Validators.maxLength(255)],
-      ],
+      condicasterCragId: [null, [condicasterCragIdValidator]],
+      condicasterCragName: [null],
       closureSchedules: [[]],
     });
   }
@@ -216,7 +244,8 @@ export class AreaFormComponent implements OnInit {
       portraitImage: this.area.portraitImage,
       secret: this.area.secret,
       mapMarkers: this.area.mapMarkers,
-      blocweatherUrl: this.area.blocweatherUrl,
+      condicasterCragId: this.area.condicasterCragId,
+      condicasterCragName: this.area.condicasterCragName,
       closureSchedules: this.area.closureSchedules ?? [],
     });
   }
@@ -251,7 +280,14 @@ export class AreaFormComponent implements OnInit {
       area.secret = this.areaForm.get('secret').value;
       area.mapMarkers = this.areaForm.get('mapMarkers').value;
       area.closureSchedules = this.areaForm.get('closureSchedules').value ?? [];
-      area.blocweatherUrl = this.areaForm.get('blocweatherUrl').value || null;
+      const condicasterCragId = this.areaForm.get('condicasterCragId').value;
+      area.condicasterCragId =
+        condicasterCragId === null || condicasterCragId === ''
+          ? null
+          : Number(condicasterCragId);
+      area.condicasterCragName = area.condicasterCragId
+        ? this.areaForm.get('condicasterCragName').value || null
+        : null;
       if (this.area) {
         area.slug = this.area.slug;
         this.uploadService
@@ -295,19 +331,17 @@ export class AreaFormComponent implements OnInit {
    * Asks if the area should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteArea(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteArea(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('area.askReallyWantToDeleteArea'),
       ),
       acceptLabel: this.translocoService.translate(marker('area.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(marker('area.noDontDelete')),
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteArea();
       },
+      destructive: true,
     });
   }
 
@@ -319,6 +353,19 @@ export class AreaFormComponent implements OnInit {
       this.store.dispatch(toastNotification('AREA_DELETED'));
       this.router.navigate(['/topo', this.cragSlug, this.sectorSlug, 'areas']);
       this.loadingState = LoadingState.DEFAULT;
+    });
+  }
+
+  protected markerCoordinates(): Coordinates | null {
+    const markers = this.areaForm?.get('mapMarkers')?.value as
+      { coordinates?: Coordinates }[] | null;
+    return markers?.find((marker) => marker?.coordinates)?.coordinates ?? null;
+  }
+
+  protected setCondicasterCrag(link: CondicasterCragLink | null): void {
+    this.areaForm.patchValue({
+      condicasterCragId: link?.cragId ?? null,
+      condicasterCragName: link?.name ?? null,
     });
   }
 

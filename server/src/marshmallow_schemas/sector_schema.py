@@ -6,6 +6,7 @@ from marshmallow_schemas.area_schema import AreaMenuSchema
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
+from marshmallow_schemas.mixins.condicaster import CondicasterSchemaMixin
 from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
@@ -23,7 +24,7 @@ class AscentAndTodoSectorSchema(ma.SQLAlchemySchema):
     id = fields.String()
 
 
-class SectorSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
+class SectorSchema(BaseEntityMinSchema, IsClosableListSchemaMixin, CondicasterSchemaMixin):
     name = fields.String()
     slug = fields.String()
     shortDescription = fields.String(attribute="short_description")
@@ -41,7 +42,8 @@ class SectorDetailSchema(SectorSchema, IsClosableDetailSchemaMixin, ModeratorTas
     rulesTitle = fields.String(attribute="rules_title")
     rulesUpdatedAt = fields.DateTime(attribute="rules_updated_at")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    blocweatherUrl = fields.String(attribute="blocweather_url")
+    condicasterCragId = fields.Integer(attribute="condicaster_crag_id")
+    condicasterCragName = fields.String(attribute="condicaster_crag_name")
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")
     areaCount = fields.Integer(attribute="area_count")

@@ -3,20 +3,19 @@
     <div class="footer-menu">
       @for (menuItem of menuItems; track menuItem) {
         @if (menuItem.routerLink) {
-          <p-button
-            label="{{ menuItem.title }}"
-            styleClass="p-button-secondary p-button-text"
-            routerLink="{{ menuItem.routerLink }}"
-          >
-          </p-button>
+          <a hlmBtn variant="ghost" [routerLink]="menuItem.routerLink">
+            {{ menuItem.title }}
+          </a>
         }
         @if (menuItem.link) {
-          <p-button
-            label="{{ menuItem.title }}"
-            styleClass="p-button-secondary p-button-text"
+          <button
+            hlmBtn
+            variant="ghost"
+            type="button"
             (click)="openLink(menuItem.link)"
           >
-          </p-button>
+            {{ menuItem.title }}
+          </button>
         }
       }
     </div>
@@ -30,7 +29,7 @@
       <a href="https://github.com/LocalCrag/LocalCragApp" target="_blank"
         >LocalCrag</a
       >
-      <span class="version"> v{{ version }} </span>
+      <span class="version"> {{ versionLabel }} </span>
     </div>
   </div>
 </ng-container>

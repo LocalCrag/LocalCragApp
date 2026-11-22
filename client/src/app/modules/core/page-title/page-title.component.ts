@@ -1,10 +1,10 @@
 import { AsyncPipe, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { RouterLink } from '@angular/router';
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { Badge } from 'primeng/badge';
-import { Skeleton } from 'primeng/skeleton';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { HlmBreadcrumbImports } from '@spartan-ng/helm/breadcrumb';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import {
   PageTitleService,
   PageTitleState,
@@ -13,30 +13,51 @@ import {
   pageTitleDefaultBgStyles,
   pageTitleImageCssVars,
 } from '../../../utility/image-focus';
-import { SetActiveTabDirective } from '../../shared/directives/set-active-tab.directive';
+import { MenuItem } from '../../shared/models/menu-item';
+import {
+  ChromeTab,
+  ChromeTabsComponent,
+} from '../../shared/components/chrome-tabs/chrome-tabs.component';
+import {
+  lucideNameFromPrimeIcon,
+  sharedLucideIcons,
+} from '../../shared/utils/prime-icon';
 import { HeroParallaxDirective } from './hero-parallax.directive';
 
 @Component({
   selector: 'lc-page-title',
   templateUrl: './page-title.component.html',
   styleUrl: './page-title.component.scss',
+  providers: [provideIcons(sharedLucideIcons)],
   imports: [
     AsyncPipe,
     NgStyle,
     NgTemplateOutlet,
-    Breadcrumb,
-    Badge,
-    Skeleton,
-    Tabs,
-    TabList,
-    Tab,
+    HlmBreadcrumbImports,
+    HlmSkeleton,
+    HlmTooltip,
+    NgIcon,
     RouterLink,
-    SetActiveTabDirective,
+    ChromeTabsComponent,
     HeroParallaxDirective,
   ],
 })
 export class PageTitleComponent {
   protected pageTitleService = inject(PageTitleService);
+  protected lucideNameFromPrimeIcon = lucideNameFromPrimeIcon;
+
+  protected asChromeTabs(items: MenuItem[] | null | undefined): ChromeTab[] {
+    return (items ?? []).map((item, index) => ({
+      id: String(index),
+      label: item.label,
+      icon: item.icon,
+      badge: item.badge,
+      routerLink: item.routerLink,
+      queryParams: item.queryParams,
+      visible: item.visible,
+      routerLinkActiveOptions: item.routerLinkActiveOptions,
+    }));
+  }
 
   protected hasPageHeader(state: PageTitleState): boolean {
     return (

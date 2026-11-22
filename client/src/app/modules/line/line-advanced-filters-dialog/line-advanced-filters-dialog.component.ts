@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
-import { DatePicker } from 'primeng/datepicker';
 import { StartingPosition } from '../../../enums/starting-position';
 import { Drying } from '../../../enums/drying';
 import { LineType } from '../../../enums/line-type';
@@ -16,12 +16,20 @@ import { RatingRangeSliderComponent } from '../../shared/components/rating-range
 import {
   defaultLineListAdvancedFilters,
   defaultLineListScaleKey,
+  lineListSliderScale,
   LineListAdvancedFilters,
   LineListBoolKey,
   LineListFiltersDialogResult,
   LineListScaleSelectItem,
   sanitizeLineListAdvancedFilters,
 } from '../line-list-filters/line-list-filter.logic';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmDatePickerImports } from '@spartan-ng/helm/date-picker';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideRefreshCw, lucideX } from '@ng-icons/lucide';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 
 export interface LineAdvancedFiltersDialogData {
   initial: LineListAdvancedFilters;
@@ -35,16 +43,19 @@ export interface LineAdvancedFiltersDialogData {
   selector: 'lc-line-advanced-filters-dialog',
   templateUrl: './line-advanced-filters-dialog.component.html',
   styleUrl: './line-advanced-filters-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     TranslocoDirective,
-    Button,
-    Checkbox,
-    Select,
-    DatePicker,
     GradeRangeSliderComponent,
     RatingRangeSliderComponent,
+    HlmButton,
+    HlmCheckbox,
+    ...HlmSelectImports,
+    ...HlmDatePickerImports,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideCheck, lucideRefreshCw, lucideX })],
 })
 export class LineAdvancedFiltersDialogComponent implements OnInit {
   draft: LineListAdvancedFilters;
@@ -103,12 +114,18 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
 
   protected scalesService = inject(ScalesService);
 
-  private dialogConfig = inject(DynamicDialogConfig);
-  private ref = inject(DynamicDialogRef);
+  /** Grade scale drawn on the slider, including while the line type is "ALL". */
+  get sliderScaleItem(): LineListScaleSelectItem | undefined {
+    return lineListSliderScale(this.availableScales, this.dialogScaleKey);
+  }
+
+  private dialogContext =
+    injectBrnDialogContext<LineAdvancedFiltersDialogData>();
+  private ref = inject(BrnDialogRef);
   private transloco = inject(TranslocoService);
 
   constructor() {
-    const data = this.dialogConfig.data as LineAdvancedFiltersDialogData;
+    const data = this.dialogContext;
 
     // Advanced filters (rating, bools, FA year, etc.) — independent of header grade slider.
     this.draft = sanitizeLineListAdvancedFilters(
@@ -212,6 +229,9 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
         value,
       })),
     ];
+    if (this.maxGrade == null && this.sliderScaleItem?.value) {
+      this.applyScaleKeyToGradeBounds(this.dialogScaleKey);
+    }
   }
 
   /** User picked a different scale in the dialog — reload slider bounds for that scale. */
@@ -269,36 +289,61 @@ export class LineAdvancedFiltersDialogComponent implements OnInit {
     this.applyScaleKeyToGradeBounds(this.dialogScaleKey);
   }
 
+  formatYear = (date: Date) => String(date.getFullYear());
+
+  selectLabel = (value: unknown): string => {
+    const lists = [
+      this.videoOptions,
+      this.climbOptions,
+      this.startingPositionOptions,
+      this.dryingOptions,
+    ];
+    for (const list of lists) {
+      const match = list?.find((option) => option.value === value);
+      if (match?.label) {
+        return match.label;
+      }
+    }
+    return value == null ? '' : String(value);
+  };
+
   cancel(): void {
     this.ref.close();
   }
 
   apply(): void {
-    // Only pass a grade range when a concrete scale is selected; "ALL" clears header filtering.
+    const narrowed =
+      this.maxGrade != null &&
+      (this.gradeRange[0] !== this.minGradeValue ||
+        this.gradeRange[1] !== this.maxGrade);
+    const scaleKey = this.dialogScaleKey?.value
+      ? this.dialogScaleKey
+      : narrowed
+        ? this.sliderScaleItem
+        : this.dialogScaleKey;
     const gradeFilterRange: (number | null)[] =
-      this.maxGrade != null && this.dialogScaleKey?.value
+      scaleKey?.value && this.maxGrade != null
         ? [this.gradeRange[0], this.gradeRange[1]]
         : [-2, null];
     const payload: LineListFiltersDialogResult = {
       advanced: sanitizeLineListAdvancedFilters(this.draft),
-      scaleKey: this.dialogScaleKey,
+      scaleKey,
       gradeFilterRange,
-      maxGradeValue: this.maxGrade,
+      maxGradeValue: scaleKey?.value ? this.maxGrade : null,
     };
     this.ref.close(payload);
   }
 
   private applyScaleKeyToGradeBounds(scaleKey: LineListScaleSelectItem): void {
-    if (scaleKey?.value) {
+    const sliderScale = lineListSliderScale(this.availableScales, scaleKey);
+    if (sliderScale?.value) {
       this.scalesService
-        .getScale(scaleKey.value.lineType, scaleKey.value.gradeScale)
+        .getScale(sliderScale.value.lineType, sliderScale.value.gradeScale)
         .subscribe((scale) => {
           this.maxGrade = Math.max(...scale.grades.map((g) => g.value));
-          // Full range until the user narrows it on the slider.
           this.gradeRange = [-2, this.maxGrade];
         });
     } else {
-      // "ALL" — hide slider and do not filter by grade in the list query.
       this.maxGrade = null;
       this.gradeRange = [-2, -2];
     }

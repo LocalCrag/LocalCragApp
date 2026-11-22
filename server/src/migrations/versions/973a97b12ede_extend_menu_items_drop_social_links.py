@@ -61,8 +61,9 @@ def upgrade():
 
 
 def downgrade():
-    with op.batch_alter_table("menu_items", schema=None) as batch_op:
-        batch_op.add_column(sa.Column("url", sa.String(length=120), nullable=True))
     with op.batch_alter_table("instance_settings", schema=None) as batch_op:
         batch_op.add_column(sa.Column("youtube_url", sa.VARCHAR(length=120), autoincrement=False, nullable=True))
         batch_op.add_column(sa.Column("instagram_url", sa.VARCHAR(length=120), autoincrement=False, nullable=True))
+    with op.batch_alter_table("menu_items", schema=None) as batch_op:
+        batch_op.drop_column("title")
+        batch_op.drop_column("url")

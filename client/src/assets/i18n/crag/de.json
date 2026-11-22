@@ -19,9 +19,6 @@
   "cragForm.cragRulesTitleTooltip": "Wenn gesetzt, müssen Nutzer bestätigen, dass sie die Regeln gelesen haben, und es wird zusätzlich ein Warnhinweis angezeigt.",
   "cragForm.cragRulesTitlePlaceholder": "Leer lassen, um keinen Hinweis anzuzeigen, z.B. \"Bitte unsere Regeln beachten\"",
   "cragForm.cragPortraitImageLabel": "Bild",
-  "cragForm.blocweatherUrlLabel": "BlocWeather URL",
-  "cragForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Gebiet auf der Detailseite, kannst Du hier die URL zum entsprechenden Gebiet auf blocweather.com hinterlegen.",
-  "cragForm.invalidBlocweatherUrl": "Die URL muss das Schema https://blocweather.com/<country>/<region>/<spot> haben",
   "cragForm.mapMarkersLabel": "GPS-Punkte",
   "cragForm.cragOptionsLabel": "Optionen",
   "cragForm.secretLabel": "Geheim",
@@ -30,5 +27,8 @@
   "cragForm.cancelButtonLabel": "Abbrechen",
   "cragForm.deleteCragButtonLabel": "Gebiet löschen",
   "cragForm.editCragTitle": "Gebiet bearbeiten",
-  "cragForm.createCragTitle": "Neues Gebiet erstellen"
+  "cragForm.createCragTitle": "Neues Gebiet erstellen",
+  "cragForm.condicasterCragIdLabel": "CondiCaster-Spot",
+  "cragForm.condicasterTooltip": "Die Bedingungen für diesen Ort kommen von diesem CondiCaster-Spot. Leer lassen, um den Spot der Ebene darüber zu verwenden.",
+  "cragForm.invalidCondicasterCragId": "Gib eine positive CondiCaster-Spot-ID ein."
 }

@@ -8,6 +8,7 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -21,29 +22,35 @@ import { FormDirective } from '../../shared/forms/form.directive';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { Textarea } from 'primeng/textarea';
+import { provideIcons } from '@ng-icons/core';
+import { lucideMessageSquare } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
 import { getObjectType } from '../../../models/object';
 import { CommentsContextService } from '../comments-context.service';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Store } from '@ngrx/store';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'lc-comment-editor',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
-    Textarea,
+    HlmButton,
+    HlmTextarea,
     TranslocoDirective,
     TranslocoPipe,
-    Button,
   ],
   templateUrl: './comment-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./comment-editor.component.scss'],
+  providers: [provideIcons({ lucideMessageSquare })],
 })
 export class CommentEditorComponent implements OnInit, AfterViewInit {
   @Input() parentId: string | null = null;

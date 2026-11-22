@@ -5,6 +5,7 @@ from extensions import ma
 from marshmallow_schemas.base_entity_schema import BaseEntityMinSchema
 from marshmallow_schemas.file_schema import file_schema
 from marshmallow_schemas.map_marker_schema import map_marker_schema
+from marshmallow_schemas.mixins.condicaster import CondicasterSchemaMixin
 from marshmallow_schemas.mixins.is_closable import (
     IsClosableDetailSchemaMixin,
     IsClosableListSchemaMixin,
@@ -22,7 +23,7 @@ class AscentAndTodoAreaSchema(ma.SQLAlchemySchema):
     id = fields.String()
 
 
-class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
+class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin, CondicasterSchemaMixin):
     name = fields.String()
     slug = fields.String()
     shortDescription = fields.String(attribute="short_description")
@@ -37,7 +38,8 @@ class AreaSchema(BaseEntityMinSchema, IsClosableListSchemaMixin):
 class AreaDetailSchema(AreaSchema, IsClosableDetailSchemaMixin, ModeratorTaskCountSchemaMixin):
     description = fields.String(attribute="description")
     mapMarkers = fields.List(fields.Nested(map_marker_schema), attribute="map_markers")
-    blocweatherUrl = fields.String(attribute="blocweather_url")
+    condicasterCragId = fields.Integer(attribute="condicaster_crag_id")
+    condicasterCragName = fields.String(attribute="condicaster_crag_name")
     imageCount = fields.Integer(attribute="image_count")
     commentCount = fields.Integer(attribute="comment_count")
     topoImageCount = fields.Integer(attribute="topo_image_count")

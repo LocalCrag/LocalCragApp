@@ -1,0 +1,74 @@
+.condicaster-days {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.condicaster-days__card {
+  display: flex;
+  flex: 0 0 6.75rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0.7rem 0.45rem 0.6rem;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: 0.9rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.condicaster-days__card--selected {
+  border-color: var(--p-primary-color, #b45309);
+  box-shadow: inset 0 0 0 1px var(--p-primary-color, #b45309);
+}
+
+.condicaster-days__name,
+.condicaster-days__date,
+.condicaster-days__score,
+.condicaster-days__temps {
+  display: block;
+  margin: 0;
+}
+
+.condicaster-days__name {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.condicaster-days__card--today .condicaster-days__name {
+  color: var(--p-primary-color, #b45309);
+}
+
+.condicaster-days__date,
+.condicaster-days__temps {
+  color: var(--p-text-muted-color, #64748b);
+  font-size: 0.8rem;
+}
+
+.condicaster-days__icon {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 1.7rem;
+  color: #64748b;
+}
+
+.condicaster-days__icon--clear,
+.condicaster-days__icon--partlyCloudy {
+  color: #d97706;
+}
+
+.condicaster-days__icon--rain,
+.condicaster-days__icon--snow {
+  color: #0369a1;
+}
+
+.condicaster-days__score {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}

@@ -82,11 +82,16 @@ def setup_db():
                     main_url.port,
                     "postgres",
                     main_url.query,
-                )
+                ),
+                isolation_level="AUTOCOMMIT",
             )
-            with engine.connect() as conn:
-                conn.execute(text("commit"))
-                conn.execute(text(f"CREATE DATABASE {main_url.database}"))
+            try:
+                # psycopg 3 keeps the connection in a transaction, so CREATE DATABASE
+                # has to run with autocommit rather than a manual COMMIT statement.
+                with engine.connect() as conn:
+                    conn.execute(text(f"CREATE DATABASE {main_url.database}"))
+            finally:
+                engine.dispose()
         except ProgrammingError:
             # Database already exists
             pass

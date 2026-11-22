@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -23,7 +24,6 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
@@ -32,22 +32,28 @@ import { MenuItem } from '../../../models/menu-item';
 import { MenuItemsService } from '../../../services/crud/menu-items.service';
 import { MenuItemType } from '../../../enums/menu-item-type';
 
-import { NgClass } from '@angular/common';
-import { PaginatorModule } from 'primeng/paginator';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenuItemPosition } from '../../../enums/menu-item-position';
 import { getInstanceEquivalentFromList } from '../../../utility/array-operations';
 import { reloadMenus } from '../../../ngrx/actions/core.actions';
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { PageTitleService } from '../../../services/core/page-title.service';
-import { InputTextModule } from 'primeng/inputtext';
 import { httpUrlValidator } from '../../../utility/validators/http-url.validator';
-import { Select } from 'primeng/select';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import {
+  lucideNameFromPrimeIcon,
+  sharedLucideIcons,
+} from '../../shared/utils/prime-icon';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 import {
   buildMenuItemTree,
   descendantIds,
@@ -57,25 +63,28 @@ import {
 @Component({
   selector: 'lc-menu-items-form',
   imports: [
-    PaginatorModule,
+    LoadingButtonComponent,
     TranslocoDirective,
     ReactiveFormsModule,
     TranslocoPipe,
-    ButtonModule,
-    ConfirmPopupModule,
-    NgClass,
-    InputTextModule,
-    Select,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    ...HlmSelectImports,
+    HlmInput,
+    NgIcon,
   ],
   templateUrl: './menu-items-form.component.html',
   styleUrl: './menu-items-form.component.scss',
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    provideIcons({ ...sharedLucideIcons, lucideBan, lucideSave, lucideTrash2 }),
+  ],
 })
 export class MenuItemsFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public menuItemForm: FormGroup;
@@ -100,6 +109,7 @@ export class MenuItemsFormComponent implements OnInit {
     MenuItemType.URL,
   ];
   public positions = [MenuItemPosition.TOP, MenuItemPosition.BOTTOM];
+  protected lucideNameFromPrimeIcon = lucideNameFromPrimeIcon;
   public icons = [
     marker('pi-book'),
     marker('pi-building'),
@@ -128,7 +138,6 @@ export class MenuItemsFormComponent implements OnInit {
   private menuItemsService = inject(MenuItemsService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private pageTitleService = inject(PageTitleService);
 
   /**
@@ -223,6 +232,14 @@ export class MenuItemsFormComponent implements OnInit {
     this.setValidators();
     this.syncParentControl();
   }
+
+  readonly translateOption = (value: string): string =>
+    value ? this.translocoService.translate(value) : '';
+
+  readonly menuPageLabel = (page: MenuPage | null): string => page?.title ?? '';
+
+  readonly parentLabel = (item: MenuItem | null): string =>
+    item ? this.menuItemOptionLabel(item) : '';
 
   menuItemOptionLabel(menuItem: MenuItem): string {
     const typeLabel = this.translocoService.translate(menuItem.type);
@@ -440,20 +457,18 @@ export class MenuItemsFormComponent implements OnInit {
    * Asks if the menu item should really get deleted.
    * @param event Click event.
    */
-  confirmDeleteMenuItem(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeleteMenuItem(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('menuItems.askReallyWantToDeleteMenuItem'),
       ),
       acceptLabel: this.translocoService.translate(
         marker('menuItems.yesDelete'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('menuItems.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deleteMenuItem();
       },

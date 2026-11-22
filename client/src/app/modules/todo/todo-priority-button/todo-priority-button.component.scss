@@ -3,15 +3,29 @@ lc-todo-priority-button {
     white-space: nowrap;
   }
 
-  .high-priority .pi {
+  .high-priority ng-icon {
     color: red;
   }
 
-  .medium-priority .pi {
+  .medium-priority ng-icon {
     color: blue;
   }
 
-  .low-priority .pi {
+  .low-priority ng-icon {
+    color: grey;
+  }
+}
+
+.todo-priority-menu {
+  .high-priority ng-icon {
+    color: red;
+  }
+
+  .medium-priority ng-icon {
+    color: blue;
+  }
+
+  .low-priority ng-icon {
     color: grey;
   }
 }

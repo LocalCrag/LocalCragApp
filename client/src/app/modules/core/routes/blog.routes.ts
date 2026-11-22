@@ -28,6 +28,6 @@ export const blogRoutes: Routes = [
   {
     path: 'news/:post-slug',
     component: PostDetailComponent,
-    data: { objectType: ObjectType.Post },
+    data: { objectType: ObjectType.Post, pageTitleHero: true },
   },
 ];

@@ -1,11 +1,16 @@
 <ng-container *transloco="let t; read: 'suggestions'">
   <div class="content">
     <div class="p-6 flex flex-col gap-8">
-      @if (lines.length === 0 && topoImages.length === 0) {
-        <p-message severity="info" [text]="t('empty')" />
+      @if (loading !== loadingStates.DEFAULT) {
+        <lc-list-skeleton></lc-list-skeleton>
+      } @else if (lines.length === 0 && topoImages.length === 0) {
+        <div hlmAlert>
+          <ng-icon name="lucideInfo" />
+          <p hlmAlertDescription>{{ t("empty") }}</p>
+        </div>
       }
 
-      @if (lines.length > 0) {
+      @if (loading === loadingStates.DEFAULT && lines.length > 0) {
         <section class="flex flex-col gap-3">
           <h2 class="text-xl m-0">{{ t("lines") }}</h2>
           @for (line of lines; track line.id) {
@@ -66,7 +71,10 @@
                       {{ t("suggestedBy") }}
                       <a
                         class="underline"
-                        [routerLink]="'/users/' + line.createdBy?.slug"
+                        [routerLink]="
+                          '/users/' +
+                          $safeNavigationMigration(line.createdBy?.slug)
+                        "
                         >{{ name }}</a
                       >
                     </div>
@@ -74,27 +82,32 @@
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
-                <p-button
-                  [label]="t('publish')"
+                <button
+                  hlmBtn
+                  type="button"
                   (click)="
                     openReview({ kind: 'line', item: line, action: 'publish' })
                   "
-                />
-                <p-button
-                  [label]="t('reject')"
-                  severity="danger"
-                  [outlined]="true"
+                >
+                  {{ t("publish") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
                   (click)="
                     openReview({ kind: 'line', item: line, action: 'reject' })
                   "
-                />
+                >
+                  {{ t("reject") }}
+                </button>
               </div>
             </div>
           }
         </section>
       }
 
-      @if (topoImages.length > 0) {
+      @if (loading === loadingStates.DEFAULT && topoImages.length > 0) {
         <section class="flex flex-col gap-3">
           <h2 class="text-xl m-0">{{ t("topoImages") }}</h2>
           @for (image of topoImages; track image.id) {
@@ -149,7 +162,10 @@
                       {{ t("suggestedBy") }}
                       <a
                         class="underline"
-                        [routerLink]="'/users/' + image.createdBy?.slug"
+                        [routerLink]="
+                          '/users/' +
+                          $safeNavigationMigration(image.createdBy?.slug)
+                        "
                         >{{ name }}</a
                       >
                     </div>
@@ -157,8 +173,9 @@
                 </div>
               </div>
               <div class="flex gap-2 shrink-0">
-                <p-button
-                  [label]="t('publish')"
+                <button
+                  hlmBtn
+                  type="button"
                   (click)="
                     openReview({
                       kind: 'topoImage',
@@ -166,11 +183,13 @@
                       action: 'publish',
                     })
                   "
-                />
-                <p-button
-                  [label]="t('reject')"
-                  severity="danger"
-                  [outlined]="true"
+                >
+                  {{ t("publish") }}
+                </button>
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="destructive"
                   (click)="
                     openReview({
                       kind: 'topoImage',
@@ -178,7 +197,9 @@
                       action: 'reject',
                     })
                   "
-                />
+                >
+                  {{ t("reject") }}
+                </button>
               </div>
             </div>
           }
@@ -187,49 +208,66 @@
     </div>
   </div>
 
-  <p-dialog
-    [header]="t('messageLabel')"
-    [(visible)]="dialogVisible"
-    [modal]="true"
-    [style]="{ width: '32rem' }"
+  <hlm-dialog
+    [state]="dialogVisible ? 'open' : 'closed'"
+    (closed)="dialogVisible = false"
   >
-    <div class="flex flex-col gap-3">
-      <label for="suggestion-message">{{ t("messageLabel") }}</label>
-      <textarea
-        pTextarea
-        id="suggestion-message"
-        rows="4"
-        [maxlength]="2000"
-        [(ngModel)]="message"
-        [placeholder]="t('messagePlaceholder')"
-      ></textarea>
-      <div class="flex justify-end gap-2">
-        <p-button
-          [label]="t('cancel')"
-          [text]="true"
-          (click)="dialogVisible = false"
-        />
-        @if (reviewActionChosen) {
-          <p-button
-            [label]="t('confirm')"
-            [loading]="saving"
-            (click)="confirm()"
-          />
-        } @else {
-          <p-button
-            [label]="t('publish')"
-            [loading]="saving"
-            (click)="confirm('publish')"
-          />
-          <p-button
-            [label]="t('reject')"
-            severity="danger"
-            [outlined]="true"
-            [loading]="saving"
-            (click)="confirm('reject')"
-          />
-        }
+    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+      <div hlmDialogHeader>
+        <h2 hlmDialogTitle>{{ t("messageLabel") }}</h2>
       </div>
-    </div>
-  </p-dialog>
+      <div class="flex flex-col gap-3">
+        <label for="suggestion-message">{{ t("messageLabel") }}</label>
+        <textarea
+          hlmTextarea
+          id="suggestion-message"
+          rows="4"
+          [maxlength]="2000"
+          [(ngModel)]="message"
+          [placeholder]="t('messagePlaceholder')"
+        ></textarea>
+        <div class="flex justify-end gap-2">
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            (click)="dialogVisible = false"
+          >
+            {{ t("cancel") }}
+          </button>
+          @if (reviewActionChosen) {
+            <button
+              lcLoadingButton
+              [loading]="saving"
+              (click)="confirm()"
+              [disabled]="saving"
+              type="button"
+            >
+              {{ t("confirm") }}
+            </button>
+          } @else {
+            <button
+              lcLoadingButton
+              [loading]="saving"
+              (click)="confirm('publish')"
+              [disabled]="saving"
+              type="button"
+            >
+              {{ t("publish") }}
+            </button>
+            <button
+              lcLoadingButton
+              [loading]="saving"
+              (click)="confirm('reject')"
+              [disabled]="saving"
+              type="button"
+              variant="destructive"
+            >
+              {{ t("reject") }}
+            </button>
+          }
+        </div>
+      </div>
+    </hlm-dialog-content>
+  </hlm-dialog>
 </ng-container>

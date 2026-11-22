@@ -95,24 +95,34 @@ export function removeLocalStorageItem(key: string): void {
 /**
  * True for the SecurityError Sentry reported when localStorage is blocked.
  */
+function errorDetails(
+  error: unknown,
+): { message: string; name: string } | null {
+  if (typeof error === 'string') {
+    return { message: error, name: '' };
+  }
+  if (typeof error !== 'object' || error === null || !('message' in error)) {
+    return null;
+  }
+  const message = error.message;
+  if (typeof message !== 'string') {
+    return null;
+  }
+  const name =
+    'name' in error && typeof error.name === 'string' ? error.name : '';
+  return { message, name };
+}
+
 export function isLocalStorageAccessError(error: unknown): boolean {
-  const message =
-    typeof error === 'string'
-      ? error
-      : error instanceof Error
-        ? error.message
-        : '';
-  if (!/localStorage/i.test(message)) {
+  const details = errorDetails(error);
+  if (!details || !/localStorage/i.test(details.message)) {
     return false;
   }
   if (typeof error === 'string') {
-    return /denied|insecure/i.test(message);
-  }
-  if (!(error instanceof Error)) {
-    return false;
+    return /denied|insecure/i.test(details.message);
   }
   return (
-    error.name === 'SecurityError' || /denied|insecure/i.test(error.message)
+    details.name === 'SecurityError' || /denied|insecure/i.test(details.message)
   );
 }
 

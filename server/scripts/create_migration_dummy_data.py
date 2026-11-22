@@ -12,8 +12,12 @@ a comment on every row.
 Run from server/src:
 
     PYTHONPATH=. LOCALCRAG_CONFIG=config/test-ci.cfg pipenv run python ../scripts/create_migration_dummy_data.py
+
+Deployed instances use ``seed_demo_instance.py`` instead. That script wipes
+existing data and calls ``create_migration_dummy_data(demo=True)``.
 """
 
+import contextvars
 import datetime
 import logging
 import time
@@ -98,6 +102,10 @@ from models.webauthn_challenge import WebAuthnChallenge
 
 logger = logging.getLogger(__name__)
 
+# Shared password for every seeded user. Printed by the demo wipe script; never mailed.
+MIGRATION_USER_PASSWORD = "migration-dummy"
+_demo_mode: contextvars.ContextVar[bool] = contextvars.ContextVar("localcrag_demo_seed", default=False)
+
 USER_COUNT = 200
 TARGET_LINE_COUNT = 3000
 ASCENTS_PER_USER = 50
@@ -138,17 +146,31 @@ ROCK_TYPES = tuple(RockExplorerRockTypeEnum)
 TODO_PRIORITIES = tuple(TodoPriorityEnum)
 
 
-def create_migration_dummy_data():
-    """Insert a production-sized graph. Refuses to run when that graph is already present."""
+def create_migration_dummy_data(*, demo: bool = False):
+    """Insert a production-sized graph. Refuses to run when that graph is already present.
+
+    The migration check calls this with the defaults. ``demo=True`` is only for a
+    deployed instance: seeded users are not superadmins, their mail preferences are
+    off, notifications are already delivered, and image rows are real uploads.
+    """
     ensure_secret_listeners_registered()
     add_scales()
+    token = _demo_mode.set(demo)
+    try:
+        _insert_migration_dummy_data(demo)
+    finally:
+        _demo_mode.reset(token)
 
+
+def _insert_migration_dummy_data(demo: bool):
     with app.app_context():
         if User.find_by_email("migration-user-000@localcrag.invalid"):
             raise SystemExit("Migration dummy data is already loaded.")
 
+        if demo:
+            _upload_demo_image.count = 0
         timer = _Timer()
-        password_hash = User.generate_hash("migration-dummy")
+        password_hash = User.generate_hash(MIGRATION_USER_PASSWORD)
         users, admin = _create_users(password_hash)
         timer.mark(f"users ({len(users)})")
         _enrich_instance_settings()
@@ -169,7 +191,7 @@ def create_migration_dummy_data():
         _create_gallery(lines, areas, sectors, crags, admin)
         _create_map_markers(crags, sectors, areas, topos_by_area, admin)
         _create_closure_schedules(crags, sectors, areas, lines, admin)
-        _create_file_links(crags, posts, admin)
+        _create_file_links(crags, sectors, areas, posts, admin)
         _comment_all(region, crags, sectors, areas, lines, posts, features, ascents, users)
         timer.mark("comments")
         _create_history(crags, sectors, areas, lines, admin)
@@ -189,10 +211,19 @@ def create_migration_dummy_data():
         _create_two_factor_challenge(admin)
         _create_release_notes()
         timer.mark("remaining entities")
+        if demo:
+            _assign_demo_avatars(users, admin)
+            _mark_demo_notifications_delivered()
+            timer.mark("demo avatars and delivered notifications")
         _assert_counts(len(lines))
         db.session.commit()
         timer.mark("commit")
         logger.info("Dummy data ready in %.1fs", timer.total)
+        if demo:
+            logger.info(
+                "Demo users sign in as migration-user-NNN@localcrag.invalid with password %s.",
+                MIGRATION_USER_PASSWORD,
+            )
 
 
 def _crag_plans():
@@ -223,11 +254,16 @@ def _create_users(password_hash: str):
         user = User()
         user.email = f"migration-user-{index:03d}@localcrag.invalid"
         user.password = password_hash
-        user.firstname = "Migration"
-        user.lastname = f"User {index:03d}"
+        if _demo_mode.get():
+            user.firstname, user.lastname = _demo_climber(index)
+        else:
+            user.firstname = "Migration"
+            user.lastname = f"User {index:03d}"
         user.activated = index % 11 != 0
         user.activated_at = now if user.activated else None
-        user.superadmin = index == 0
+        user.superadmin = index == 0 and not _demo_mode.get()
+        if _demo_mode.get():
+            user.email_two_factor_enabled = False
         user.admin = index < 3
         user.moderator = index < 3 or index % 20 == 0
         user.member = index % 4 != 3
@@ -250,7 +286,14 @@ def _create_users(password_hash: str):
         settings.notification_digest_frequency = digests[index % 2]
         settings.exclude_from_rankings = index % 17 == 0
         settings.todo_list_private = index % 13 == 0
-        settings.comment_reply_mails_enabled = index % 5 != 0
+        if _demo_mode.get():
+            settings.comment_reply_mails_enabled = False
+            settings.reaction_notifications_enabled = False
+            settings.system_notifications_enabled = False
+            settings.moderator_task_notifications_enabled = False
+            settings.admin_message_notifications_enabled = False
+        else:
+            settings.comment_reply_mails_enabled = index % 5 != 0
         db.session.add(settings)
     db.session.flush()
     return users, users[1]
@@ -290,8 +333,10 @@ def _enrich_region(admin: User) -> Region:
         region = Region()
         region.name = "Dummy Region"
         db.session.add(region)
-    region.description = "<p>Region used by the migration check.</p>"
-    region.rules = "<p>Stay on the paths and respect closures.</p>"
+    if _demo_mode.get():
+        region.name = _demo_label("AREAS", 0)
+    region.description = _copy("region", 0, "<p>Region used by the migration check.</p>", place=region.name)
+    region.rules = _copy("rules", 1, "<p>Stay on the paths and respect closures.</p>", place=region.name)
     region.rules_title = "Rules"
     region.rules_updated_at = _naive_utc()
     region.created_by_id = admin.id
@@ -307,9 +352,13 @@ def _create_topo_tree(admin: User):
         secret = crag_index == 0
         crag = Crag()
         crag.name = plan["name"]
-        crag.short_description = f"Short description of {plan['name']}"
-        crag.description = f"<p>Long description of {plan['name']}.</p>"
-        crag.rules = "<p>Local rules.</p>" if crag_index % 2 == 0 else None
+        crag.short_description = _copy(
+            "crag_short", crag_index, f"Short description of {plan['name']}", place=plan["name"]
+        )
+        crag.description = _copy("crag", crag_index, f"<p>Long description of {plan['name']}.</p>", place=plan["name"])
+        crag.rules = (
+            _copy("rules", crag_index, "<p>Local rules.</p>", place=plan["name"]) if crag_index % 2 == 0 else None
+        )
         crag.rules_title = "Rules" if crag.rules else None
         crag.rules_updated_at = _naive_utc() if crag.rules else None
         crag.order_index = crag_index
@@ -324,10 +373,15 @@ def _create_topo_tree(admin: User):
         plan = crag.sectors_plan
         for sector_index in range(plan["sectors"]):
             sector = Sector()
-            sector.name = f"{crag.name} {SECTOR_LABELS[sector_index % len(SECTOR_LABELS)]} {sector_index}"
-            sector.short_description = "Sector"
-            sector.description = "<p>Sector description.</p>"
-            sector.rules = "<p>Sector rules.</p>" if sector_index == 0 else None
+            if _demo_mode.get():
+                sector.name = _demo_label("CRAGS", len(sectors))
+            else:
+                sector.name = f"{crag.name} {SECTOR_LABELS[sector_index % len(SECTOR_LABELS)]} {sector_index}"
+            sector.short_description = _copy("sector_short", len(sectors), "Sector", place=sector.name)
+            sector.description = _copy("sector", len(sectors), "<p>Sector description.</p>", place=sector.name)
+            sector.rules = (
+                _copy("rules", len(sectors), "<p>Sector rules.</p>", place=sector.name) if sector_index == 0 else None
+            )
             sector.crag_id = crag.id
             sector.order_index = sector_index
             sector.secret = crag.name == CRAG_BLUEPRINTS[0][0]
@@ -347,12 +401,18 @@ def _create_topo_tree(admin: User):
                 and area_index == plan["areas_per_sector"] - 1
             )
             area = Area()
-            area.name = f"{sector.name} {AREA_LABELS[area_index % len(AREA_LABELS)]} {area_index}"
-            area.short_description = "Area"
-            area.description = "<p>Area description.</p>" if area_index % 2 == 0 else None
+            if _demo_mode.get():
+                area.name = _demo_label("AREAS", len(areas))
+            else:
+                area.name = f"{sector.name} {AREA_LABELS[area_index % len(AREA_LABELS)]} {area_index}"
+            area.short_description = _copy("area_short", len(areas), "Area", place=area.name)
+            if _demo_mode.get() or area_index % 2 == 0:
+                area.description = _copy("area", len(areas), "<p>Area description.</p>", place=area.name)
+            else:
+                area.description = None
             area.sector_id = sector.id
             area.order_index = area_index
-            area.secret = sector_is_secret(sector)
+            area.secret = sector.secret if _demo_mode.get() else sector_is_secret(sector)
             area.created_by_id = admin.id
             area.line_budget = plan["lines_per_area"] + (plan["extra_lines"] if is_last else 0)
             area.topo_budget = plan["topos_per_area"]
@@ -377,8 +437,11 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
     for area in areas:
         for _ in range(area.line_budget):
             line = Line()
-            line.name = f"Line {sequence:04d}"
-            line.description = "<p>Dummy line.</p>" if sequence % 4 == 0 else None
+            line.name = _demo_label("CLIMBS", sequence) if _demo_mode.get() else f"Line {sequence:04d}"
+            if _demo_mode.get() or sequence % 4 == 0:
+                line.description = _copy("line", sequence, "<p>Dummy line.</p>", climb=line.name, place=area.name)
+            else:
+                line.description = None
             line.area_id = area.id
             line.created_by_id = admin.id
             line.starting_position = STARTING_POSITIONS[sequence % len(STARTING_POSITIONS)]
@@ -386,24 +449,38 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
             line.user_rating = (sequence % 5) + 1
             if sequence % 37 == 0:
                 line.publication_status = PublicationStatusEnum.ARCHIVED
-            line.secret = area.name.startswith(f"{CRAG_BLUEPRINTS[0][0]} ") or sequence % 29 == 0
+            if _demo_mode.get():
+                line.secret = area.secret or sequence % 29 == 0
+            else:
+                line.secret = area.name.startswith(f"{CRAG_BLUEPRINTS[0][0]} ") or sequence % 29 == 0
             if sequence % 3:
                 line.type = LineTypeEnum.BOULDER
                 line.grade_scale = "FB"
-                line.author_grade_value = (sequence % 28) + 1
+                real_grade = (sequence % 28) + 1
             else:
                 line.type = LineTypeEnum.SPORT
                 line.grade_scale = "UIAA"
-                line.author_grade_value = (sequence % 27) + 1
-                line.routesetter = "Migration User"
-                line.bolter = "Migration User"
-            if sequence % 41 == 0:
-                line.author_grade_value = -2
+                real_grade = (sequence % 27) + 1
+                if _demo_mode.get():
+                    line.routesetter = _demo_climber_name(sequence)
+                    line.bolter = _demo_climber_name(sequence + 1)
+                else:
+                    line.routesetter = "Migration User"
+                    line.bolter = "Migration User"
+            line.author_grade_value = -2 if sequence % 41 == 0 else real_grade
             line.user_grade_value = line.author_grade_value
-            line.assumed_grade_min = line.author_grade_value if sequence % 15 == 0 else None
-            line.assumed_grade_max = line.author_grade_value + 1 if line.assumed_grade_min is not None else None
+            # An assumed interval is only meaningful on a project, and both ends
+            # have to be real grades (value > 0). Project keys such as
+            # CLOSED_PROJECT are not grades.
+            if line.author_grade_value < 0 and sequence % 15 == 0:
+                ceiling = 28 if line.type == LineTypeEnum.BOULDER else 30
+                line.assumed_grade_min = real_grade
+                line.assumed_grade_max = min(real_grade + 2, ceiling)
+            else:
+                line.assumed_grade_min = None
+                line.assumed_grade_max = None
             line.fa_year = 2008 + (sequence % 18)
-            line.fa_name = "Migration User"
+            line.fa_name = _demo_climber_name(sequence) if _demo_mode.get() else "Migration User"
             line.drying = DryingEnum.FAST if sequence % 2 == 0 else DryingEnum.SLOW
             if "variant" in line.__table__.columns:
                 line.variant = sequence % 9 == 0
@@ -419,7 +496,15 @@ def _create_lines(areas: list[Area], admin: User) -> list[Line]:
             line.athletic = sequence % 4 == 0
             line.color = "#C2410C" if sequence % 6 == 0 else None
             if sequence % 12 == 0:
-                line.videos = [Video.from_dict({"url": "https://example.invalid/watch?v=dummy", "title": "Dummy"}, 0)]
+                line.videos = [
+                    Video.from_dict(
+                        {
+                            "url": "https://example.invalid/watch?v=dummy",
+                            "title": _copy("video", sequence, "Dummy", limit=120, climb=line.name, place=area.name),
+                        },
+                        0,
+                    )
+                ]
             db.session.add(line)
             lines.append(line)
             sequence += 1
@@ -442,7 +527,7 @@ def _create_topo_images(areas: list[Area], admin: User) -> dict:
             topo.area_id = area.id
             topo.file_id = file.id
             topo.order_index = order_index
-            topo.title = f"Topo {order_index + 1}"
+            topo.title = _copy("topo", order_index, f"Topo {order_index + 1}", limit=120, place=area.name)
             topo.created_by_id = admin.id
             if order_index == area.topo_budget - 1 and area.topo_budget > 1 and area.order_index == 0:
                 topo.publication_status = PublicationStatusEnum.ARCHIVED
@@ -489,6 +574,7 @@ def _create_line_paths(lines: list[Line], topos_by_area: dict, admin: User):
 def _create_ascents(users: list[User], lines: list[Line]) -> list[Ascent]:
     ascents = []
     line_count = len(lines)
+    today = datetime.date.today()
     for user_index, user in enumerate(users):
         start = (user_index * ASCENTS_PER_USER) % line_count
         for ascent_index in range(ASCENTS_PER_USER):
@@ -503,9 +589,28 @@ def _create_ascents(users: list[User], lines: list[Line]) -> list[Ascent]:
             ascent.with_kneepad = ascent_index % 5 == 0
             ascent.hard = ascent_index % 6 == 0
             ascent.soft = ascent_index % 6 == 1
-            ascent.comment = "Dummy ascent" if ascent_index % 3 == 0 else None
-            ascent.year = 2016 + ((user_index + ascent_index) % 10)
-            day = datetime.date(2018, 1, 1) + datetime.timedelta(days=(user_index * 3 + ascent_index) % 2500)
+            if _demo_mode.get() or ascent_index % 3 == 0:
+                ascent.comment = _copy(
+                    "ascent",
+                    user_index * ASCENTS_PER_USER + ascent_index,
+                    "Dummy ascent",
+                    climb=line.name,
+                    place=_demo_label("CRAGS", user_index) if _demo_mode.get() else line.name,
+                )
+            else:
+                ascent.comment = None
+            if _demo_mode.get():
+                # The sidebar only lists climbs from the last 30 days, and first ascents by time created.
+                slot = user_index * ASCENTS_PER_USER + ascent_index
+                if ascent.fa or slot % 8 == 0:
+                    day = today - datetime.timedelta(days=slot % 28)
+                else:
+                    day = today - datetime.timedelta(days=30 + (slot % (365 * 4)))
+                ascent.year = day.year
+                ascent.time_created = datetime.datetime.combine(day, datetime.time(12, 0))
+            else:
+                ascent.year = 2016 + ((user_index + ascent_index) % 10)
+                day = datetime.date(2018, 1, 1) + datetime.timedelta(days=(user_index * 3 + ascent_index) % 2500)
             ascent.date = day
             ascent.ascent_date = day
             db.session.add(ascent)
@@ -520,8 +625,9 @@ def _create_posts(admin: User) -> list[Post]:
     posts = []
     for index in range(POST_COUNT):
         post = Post()
-        post.title = f"News {index:02d}"
-        post.text = "<p>Conditions, new lines, and closures.</p>"
+        place = CRAG_BLUEPRINTS[index % len(CRAG_BLUEPRINTS)][0]
+        post.title = _copy("post_title", index, f"News {index:02d}", limit=120, place=place)
+        post.text = _copy("post_body", index, "<p>Conditions, new lines, and closures.</p>", place=place)
         post.created_by_id = admin.id
         db.session.add(post)
         posts.append(post)
@@ -534,7 +640,7 @@ def _create_custom_pages(admin: User) -> list[MenuPage]:
     for index, title in enumerate(MENU_PAGE_TITLES):
         page = MenuPage()
         page.title = title
-        page.text = f"<p>{title} for the migration dataset.</p>"
+        page.text = _copy(f"menu_{title}", index, f"<p>{title} for the migration dataset.</p>")
         page.created_by_id = admin.id
         db.session.add(page)
         pages.append(page)
@@ -571,8 +677,13 @@ def _create_rock_explorer(admin: User, crags: list[Crag], areas: list[Area]) -> 
         feature = RockExplorerFeature()
         published = index % 4 != 0
         feature.status = RockExplorerFeatureStatusEnum.PUBLISHED if published else RockExplorerFeatureStatusEnum.DRAFT
-        feature.title = f"Explorer {index:02d}" if published or index % 2 == 0 else None
-        feature.description = "<p>Undeveloped rock.</p>"
+        if _demo_mode.get():
+            feature.title = _copy("explorer_title", index, "", limit=120)
+        elif published or index % 2 == 0:
+            feature.title = f"Explorer {index:02d}"
+        else:
+            feature.title = None
+        feature.description = _copy("explorer", index, "<p>Undeveloped rock.</p>")
         feature.potential = POTENTIALS[index % len(POTENTIALS)]
         feature.rock_quality = ROCK_QUALITIES[index % len(ROCK_QUALITIES)]
         feature.rock_type = ROCK_TYPES[index % len(ROCK_TYPES)]
@@ -594,14 +705,20 @@ def _create_rock_explorer(admin: User, crags: list[Crag], areas: list[Area]) -> 
                 "coordinates": [[[lng, lat], [lng + 0.01, lat], [lng + 0.01, lat + 0.01], [lng, lat]]],
             }
         feature.parking_sites = [
-            {"id": f"park-{index}", "lat": lat, "lng": lng, "title": "Parking", "description": "Dummy parking"}
+            {
+                "id": f"park-{index}",
+                "lat": lat,
+                "lng": lng,
+                "title": _copy("parking_title", index, "Parking", limit=80),
+                "description": _copy("parking", index, "Dummy parking"),
+            }
         ]
         feature.paths = [
             {
                 "id": f"path-{index}",
                 "source": "manual",
                 "title": "Approach",
-                "description": None,
+                "description": _copy("approach", index, None),
                 "geometry": {"type": "LineString", "coordinates": [[lng, lat], [lng + 0.005, lat + 0.005]]},
             }
         ]
@@ -623,13 +740,13 @@ def _create_rock_explorer(admin: User, crags: list[Crag], areas: list[Area]) -> 
 
 def _create_gallery(lines, areas, sectors, crags, admin: User):
     targets = (
-        [("Line", line.id) for line in lines[:40]]
-        + [("Area", area.id) for area in areas[:20]]
-        + [("Sector", sector.id) for sector in sectors[:20]]
-        + [("Crag", crag.id) for crag in crags]
+        [("Line", line.id, line.name) for line in lines[:40]]
+        + [("Area", area.id, area.name) for area in areas[:20]]
+        + [("Sector", sector.id, sector.name) for sector in sectors[:20]]
+        + [("Crag", crag.id, crag.name) for crag in crags]
     )
     for index in range(GALLERY_IMAGE_COUNT):
-        object_type, object_id = targets[index % len(targets)]
+        object_type, object_id, object_name = targets[index % len(targets)]
         file = _file(admin, f"gallery-{index}.jpg", 1200, 900)
         db.session.add(file)
         db.session.flush()
@@ -639,7 +756,7 @@ def _create_gallery(lines, areas, sectors, crags, admin: User):
         db.session.add(tag)
         image = GalleryImage()
         image.file_id = file.id
-        image.description = f"Gallery image {index}"
+        image.description = _copy("gallery", index, f"Gallery image {index}", place=object_name, climb=object_name)
         image.lat = 46.5 + (index % 10) / 100
         image.lng = 8.7 + (index % 10) / 100
         image.tags = [tag]
@@ -691,7 +808,8 @@ def _marker(admin, marker_type, lat, lng, name, **foreign_keys):
     marker.lat = lat
     marker.lng = lng
     marker.name = name
-    marker.description = name
+    marker.description = _copy("marker", getattr(_marker, "count", 0), name, place=name)
+    _marker.count = getattr(_marker, "count", 0) + 1
     marker.created_by_id = admin.id
     for key, value in foreign_keys.items():
         setattr(marker, key, value)
@@ -699,7 +817,7 @@ def _marker(admin, marker_type, lat, lng, name, **foreign_keys):
 
 
 def _create_closure_schedules(crags, sectors, areas, lines, admin: User):
-    for crag in crags[:3]:
+    for index, crag in enumerate(crags[:3]):
         _schedule(
             admin,
             ClosureScheduleTypeEnum.ANNUAL,
@@ -708,13 +826,18 @@ def _create_closure_schedules(crags, sectors, areas, lines, admin: User):
             start_day=1,
             end_month=7,
             end_day=31,
-            reason="Nesting",
+            reason=_copy("closure", index, "Nesting", place=crag.name),
         )
-    for sector in sectors[:2]:
+    for index, sector in enumerate(sectors[:2]):
         sector.closed = True
         sector.closure_is_permanent = True
-        _schedule(admin, ClosureScheduleTypeEnum.PERMANENT, sector_id=sector.id, reason="Private land")
-    for area in areas[:4]:
+        _schedule(
+            admin,
+            ClosureScheduleTypeEnum.PERMANENT,
+            sector_id=sector.id,
+            reason=_copy("closure", index + 1, "Private land", place=sector.name),
+        )
+    for index, area in enumerate(areas[:4]):
         area.closed = True
         _schedule(
             admin,
@@ -722,9 +845,9 @@ def _create_closure_schedules(crags, sectors, areas, lines, admin: User):
             area_id=area.id,
             start_date=datetime.date(2026, 10, 1),
             end_date=datetime.date(2026, 10, 31),
-            reason="Event",
+            reason=_copy("closure", index + 2, "Event", place=area.name),
         )
-    for line in lines[:10]:
+    for index, line in enumerate(lines[:10]):
         _schedule(
             admin,
             ClosureScheduleTypeEnum.ANNUAL,
@@ -733,7 +856,7 @@ def _create_closure_schedules(crags, sectors, areas, lines, admin: User):
             start_day=1,
             end_month=2,
             end_day=28,
-            reason="Wet season",
+            reason=_copy("closure", index + 3, "Wet season", place=line.name),
         )
     db.session.flush()
 
@@ -748,12 +871,13 @@ def _schedule(admin, schedule_type, reason, **foreign_keys):
     db.session.add(schedule)
 
 
-def _create_file_links(crags, posts, admin: User):
+def _create_file_links(crags, sectors, areas, posts, admin: User):
     for index, crag in enumerate(crags[:3]):
         file = _file(admin, f"inline-crag-{index}.jpg", 800, 600)
         db.session.add(file)
         db.session.flush()
-        crag.description = f'<p><img src="/uploads/{file.filename}" alt=""></p>'
+        image = f'<p><img src="/uploads/{file.filename}" alt=""></p>'
+        crag.description = (crag.description or "") + image if _demo_mode.get() else image
         link = FileLink()
         link.file_id = file.id
         link.object_type = "Crag"
@@ -764,17 +888,17 @@ def _create_file_links(crags, posts, admin: User):
         file = _file(admin, f"inline-post-{index}.jpg", 800, 600)
         db.session.add(file)
         db.session.flush()
-        post.text = f'<p><img src="/uploads/{file.filename}" alt=""></p>'
+        image = f'<p><img src="/uploads/{file.filename}" alt=""></p>'
+        post.text = (post.text or "") + image if _demo_mode.get() else image
         link = FileLink()
         link.file_id = file.id
         link.object_type = "Post"
         link.object_id = post.id
         link.field_name = "text"
         db.session.add(link)
-    portrait = _file(admin, "crag-portrait.jpg", 600, 800)
-    db.session.add(portrait)
-    db.session.flush()
-    crags[1].portrait_image_id = portrait.id
+    _assign_portraits(crags, admin, "crag")
+    _assign_portraits(sectors, admin, "sector")
+    _assign_portraits(areas, admin, "area")
     region_image = _file(admin, "region.jpg", 1600, 900)
     db.session.add(region_image)
     db.session.flush()
@@ -783,18 +907,26 @@ def _create_file_links(crags, posts, admin: User):
 
 
 def _comment_all(region, crags, sectors, areas, lines, posts, features, ascents, users):
-    pairs = [("Region", region.id)]
-    pairs += [("Crag", crag.id) for crag in crags]
-    pairs += [("Sector", sector.id) for sector in sectors]
-    pairs += [("Area", area.id) for area in areas]
-    pairs += [("Line", line.id) for line in lines]
-    pairs += [("Post", post.id) for post in posts]
-    pairs += [("RockExplorerFeature", feature.id) for feature in features]
-    pairs += [("Ascent", ascent.id) for ascent in ascents]
+    line_names = {line.id: line.name for line in lines}
+    pairs = [("Region", region.id, region.name)]
+    pairs += [("Crag", crag.id, crag.name) for crag in crags]
+    pairs += [("Sector", sector.id, sector.name) for sector in sectors]
+    pairs += [("Area", area.id, area.name) for area in areas]
+    pairs += [("Line", line.id, line.name) for line in lines]
+    pairs += [("Post", post.id, post.title) for post in posts]
+    pairs += [("RockExplorerFeature", feature.id, feature.title or "undeveloped rock") for feature in features]
+    pairs += [("Ascent", ascent.id, line_names.get(ascent.line_id, "a line")) for ascent in ascents]
     parents = []
-    for index, (object_type, object_id) in enumerate(pairs):
+    parent_places = {}
+    for index, (object_type, object_id, place) in enumerate(pairs):
         comment = Comment()
-        comment.message = f"<p>Comment on {object_type}.</p>"
+        comment.message = _copy(
+            f"comment_{object_type}",
+            index,
+            f"<p>Comment on {object_type}.</p>",
+            place=place,
+            climb=place,
+        )
         comment.object_type = object_type
         comment.object_id = object_id
         comment.created_by_id = users[index % len(users)].id
@@ -802,12 +934,13 @@ def _comment_all(region, crags, sectors, areas, lines, posts, features, ascents,
         db.session.add(comment)
         if index % 20 == 0:
             parents.append(comment)
+            parent_places[id(comment)] = place
         if index % 2000 == 1999:
             db.session.flush()
     db.session.flush()
     for index, parent in enumerate(parents):
         reply = Comment()
-        reply.message = "<p>Reply.</p>"
+        reply.message = _copy("reply", index, "<p>Reply.</p>", place=parent_places.get(id(parent), "the crag"))
         reply.object_type = parent.object_type
         reply.object_id = parent.object_id
         reply.parent_id = parent.id
@@ -863,8 +996,8 @@ def _create_moderator_tasks(crags, sectors, areas, lines, users, admin: User):
     now = _naive_utc()
     for index, (object_type, object_id) in enumerate(targets):
         task = ModeratorTask()
-        task.title = f"Review {object_type} {index}"
-        task.description = "Dummy moderator task"
+        task.title = _copy("task_title", index, f"Review {object_type} {index}", limit=120)
+        task.description = _copy("task", index, "Dummy moderator task")
         task.object_type = object_type
         task.object_id = object_id
         task.assigned_to_id = users[1].id
@@ -884,7 +1017,7 @@ def _create_notifications(users, admin: User):
             notification.type = note_type
             notification.actor_id = admin.id
             notification.entity_type = "Line"
-            notification.message = f"Dummy {note_type.value}"
+            notification.message = _copy("notification", index * 4 + copy, f"Dummy {note_type.value}", limit=2000)
             if copy % 2 == 0:
                 notification.delivered_at = _naive_utc()
             if copy == 3:
@@ -1009,18 +1142,23 @@ def _ranking(user, line_type, index, secret, crag_id=None):
 def _create_alerts(users, admin: User):
     now = _naive_utc()
     specs = (
-        (AppAlertSeverityEnum.INFO, now - datetime.timedelta(days=2), now + datetime.timedelta(days=5), "Info banner"),
+        (
+            AppAlertSeverityEnum.INFO,
+            now - datetime.timedelta(days=2),
+            now + datetime.timedelta(days=5),
+            _copy("alert_info", 0, "Info banner", limit=500),
+        ),
         (
             AppAlertSeverityEnum.WARNING,
             now - datetime.timedelta(days=1),
             now + datetime.timedelta(days=2),
-            "Wet rock",
+            _copy("alert_warning", 0, "Wet rock", limit=500),
         ),
         (
             AppAlertSeverityEnum.DANGER,
             now - datetime.timedelta(days=30),
             now - datetime.timedelta(days=1),
-            "Past closure",
+            _copy("alert_danger", 0, "Past closure", limit=500),
         ),
     )
     alerts = []
@@ -1047,8 +1185,8 @@ def _create_admin_messages(users, admin: User):
     messages = []
     for index in range(5):
         message = AdminMessage()
-        message.title = f"Admin note {index}"
-        message.text = "<p>Instance announcement.</p>"
+        message.title = _copy("admin_title", index, f"Admin note {index}", limit=200)
+        message.text = _copy("admin_body", index, "<p>Instance announcement.</p>")
         message.created_by_id = admin.id
         db.session.add(message)
         messages.append(message)
@@ -1128,7 +1266,17 @@ def _create_release_notes():
         db.session.add(item)
 
 
+def _assign_portraits(entities, admin: User, filename_prefix: str):
+    for index, entity in enumerate(entities):
+        portrait = _file(admin, f"{filename_prefix}-portrait-{index}.jpg", 1400, 900)
+        db.session.add(portrait)
+        db.session.flush()
+        entity.portrait_image_id = portrait.id
+
+
 def _file(admin: User, filename: str, width: int, height: int) -> File:
+    if _demo_mode.get():
+        return _upload_demo_image(admin, filename, width, height)
     file = File()
     file.original_filename = filename
     file.filename = f"migration-{filename}"
@@ -1140,6 +1288,129 @@ def _file(admin: User, filename: str, width: int, height: int) -> File:
     file.focus_y = 0.4
     file.created_by_id = admin.id
     return file
+
+
+def _upload_demo_image(admin: User, filename: str, _width: int, _height: int) -> File:
+    """Upload one of the bundled CC0 photos and its thumbnails under a unique object key."""
+    import uuid
+
+    from PIL import Image
+
+    from uploader.media_upload_handler import persist_processed_image
+
+    source = _demo_photo(filename)
+    image = Image.open(source)
+    image.load()
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+    image.format = "JPEG"
+    file = persist_processed_image(image, filename, uuid.uuid4().hex, None, None)
+    file.focus_y = 0.4
+    file.created_by_id = admin.id
+    uploaded = getattr(_upload_demo_image, "count", 0) + 1
+    _upload_demo_image.count = uploaded
+    if uploaded == 1 or uploaded % 25 == 0:
+        logger.info("Uploaded %s demo images", uploaded)
+    return file
+
+
+def _demo_copy_module():
+    module = getattr(_demo_copy_module, "value", None)
+    if module is not None:
+        return module
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parent / "demo_copy.py"
+    spec = importlib.util.spec_from_file_location("localcrag_demo_copy", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _demo_copy_module.value = module
+    return module
+
+
+def _copy(kind: str, index: int, fallback: str | None, limit: int | None = None, **names):
+    """Demo text filled with climber and crag names. The migration check keeps the fallback."""
+    if not _demo_mode.get():
+        return fallback
+    values = {
+        "climber": names.pop("climber", None) or _demo_climber_name(index),
+        "partner": names.pop("partner", None) or _demo_climber_name(index + 11),
+        "crag": names.pop("crag", None) or _demo_label("CRAGS", index),
+        "climb": names.pop("climb", None) or _demo_label("CLIMBS", index),
+        "area": names.pop("area", None) or _demo_label("AREAS", index),
+    }
+    values["place"] = names.pop("place", None) or values["crag"]
+    values.update(names)
+    text = _demo_copy_module().render(kind, index, **values)
+    if limit is not None:
+        return text[:limit]
+    return text
+
+
+def _demo_catalog():
+    catalog = getattr(_demo_catalog, "value", None)
+    if catalog is not None:
+        return catalog
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parent / "demo_names.py"
+    spec = importlib.util.spec_from_file_location("localcrag_demo_names", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _demo_catalog.value = module
+    return module
+
+
+def _demo_label(pool_name: str, index: int) -> str:
+    pool = getattr(_demo_catalog(), pool_name)
+    return pool[index % len(pool)][:120]
+
+
+def _demo_climber(index: int) -> tuple[str, str]:
+    return _demo_catalog().CLIMBERS[index % len(_demo_catalog().CLIMBERS)]
+
+
+def _demo_climber_name(index: int) -> str:
+    first, last = _demo_climber(index)
+    return f"{first} {last}"[:120]
+
+
+def _demo_photo(filename: str):
+    import zlib
+    from pathlib import Path
+
+    if filename.startswith("avatar-"):
+        folder = "people"
+        index = int(filename.removeprefix("avatar-").split(".", 1)[0])
+    elif filename.startswith(("inline-", "crag-portrait", "sector-portrait", "area-portrait", "region")):
+        folder = "landscapes"
+        index = zlib.crc32(filename.encode())
+    else:
+        folder = "rocks"
+        index = zlib.crc32(filename.encode())
+    folder_path = Path(__file__).resolve().parent / "demo_images" / folder
+    photos = sorted(folder_path.glob("*.jpg"))
+    if not photos:
+        raise SystemExit(f"No demo photos in {folder_path}.")
+    return photos[index % len(photos)]
+
+
+def _assign_demo_avatars(users, admin: User):
+    for index, user in enumerate(users):
+        avatar = _file(admin, f"avatar-{index}.jpg", 400, 400)
+        db.session.add(avatar)
+        db.session.flush()
+        user.avatar_id = avatar.id
+    db.session.flush()
+
+
+def _mark_demo_notifications_delivered():
+    now = _naive_utc()
+    for notification in Notification.query.filter(Notification.delivered_at.is_(None)):
+        notification.delivered_at = now
+    db.session.flush()
 
 
 def _path_points(line_index: int, path_index: int) -> list[float]:

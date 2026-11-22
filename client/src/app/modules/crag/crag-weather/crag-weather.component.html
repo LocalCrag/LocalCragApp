@@ -1,1 +1,3 @@
-<lc-blocweather level="crag" [slug]="cragSlug"></lc-blocweather>
+@if (cragSlug) {
+  <lc-condicaster level="crag" [slug]="cragSlug" [weatherLink]="weatherLink" />
+}

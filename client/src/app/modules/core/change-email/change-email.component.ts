@@ -1,9 +1,14 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { HlmAlert } from '@spartan-ng/helm/alert';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { UsersService } from '../../../services/crud/users.service';
 import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
@@ -14,14 +19,9 @@ import { newAuthCredentials } from '../../../ngrx/actions/auth.actions';
 
 @Component({
   selector: 'lc-change-email',
-  imports: [
-    ButtonModule,
-    MessageModule,
-    RouterLink,
-    ProgressSpinnerModule,
-    TranslocoDirective,
-  ],
+  imports: [HlmAlert, HlmButton, HlmSpinner, RouterLink, TranslocoDirective],
   templateUrl: './change-email.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './change-email.component.scss',
 })
 export class ChangeEmailComponent implements OnInit {

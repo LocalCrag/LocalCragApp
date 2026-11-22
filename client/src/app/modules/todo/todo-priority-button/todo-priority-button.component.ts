@@ -1,44 +1,51 @@
 import {
   Component,
   Input,
-  OnInit,
   ViewEncapsulation,
   inject,
-  DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronDown,
+  lucideChevronRight,
+  lucideChevronUp,
+  lucideCircle,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { Todo } from '../../../models/todo';
-import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
-import { ButtonModule } from 'primeng/button';
 
 import { TodoPriority } from '../../../enums/todo-priority';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { TodosService } from '../../../services/crud/todos.service';
 import { Store } from '@ngrx/store';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
-import { LanguageService } from '../../../services/core/language.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lc-todo-priority-button',
-  imports: [MenuModule, ButtonModule, TranslocoDirective],
+  imports: [HlmButton, ...HlmDropdownMenuImports, NgIcon, TranslocoDirective],
+  providers: [
+    provideIcons({
+      lucideChevronDown,
+      lucideChevronRight,
+      lucideChevronUp,
+      lucideCircle,
+    }),
+  ],
   templateUrl: './todo-priority-button.component.html',
   styleUrl: './todo-priority-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
-export class TodoPriorityButtonComponent implements OnInit {
+export class TodoPriorityButtonComponent {
   @Input() todo: Todo;
   @Input() readOnly = false;
 
-  public items: MenuItem[];
   public priorities = TodoPriority;
 
   private todosService = inject(TodosService);
-  private translocoService = inject(TranslocoService);
-  private languageService = inject(LanguageService);
   private store = inject(Store);
-  private destroyRef = inject(DestroyRef);
 
   setPriority(priority: TodoPriority) {
     this.todosService
@@ -47,47 +54,5 @@ export class TodoPriorityButtonComponent implements OnInit {
         this.todo.priority = todo.priority;
         this.store.dispatch(toastNotification('TODO_PRIORITY_UPDATED'));
       });
-  }
-
-  ngOnInit() {
-    this.buildItems();
-    this.languageService.renderedLanguage$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((rendered) => {
-        if (!rendered) return;
-        this.buildItems();
-      });
-  }
-
-  private buildItems() {
-    this.items = [
-      {
-        label: this.translocoService.translate(
-          marker('todos.priorityButton.highPriority'),
-        ),
-        icon: 'pi pi-angle-up',
-        command: () => {
-          this.setPriority(TodoPriority.HIGH);
-        },
-      },
-      {
-        label: this.translocoService.translate(
-          marker('todos.priorityButton.mediumPriority'),
-        ),
-        icon: 'pi pi-angle-right',
-        command: () => {
-          this.setPriority(TodoPriority.MEDIUM);
-        },
-      },
-      {
-        label: this.translocoService.translate(
-          marker('todos.priorityButton.lowPriority'),
-        ),
-        icon: 'pi pi-angle-down',
-        command: () => {
-          this.setPriority(TodoPriority.LOW);
-        },
-      },
-    ];
   }
 }

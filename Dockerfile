@@ -23,7 +23,7 @@ RUN chown -R 1000:1000 /localcragapp
 USER 1000:1000
 WORKDIR /localcragapp/src
 
-FROM node AS localcragapp-client
+FROM node:24 AS localcragapp-client
 USER 1000:1000
 WORKDIR /localcragapp
 COPY ./client .

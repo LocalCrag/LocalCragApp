@@ -3,12 +3,14 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  TemplateRef,
+  ViewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
 import { Area } from '../../../models/area';
-import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { AreasService } from '../../../services/crud/areas.service';
@@ -27,10 +29,8 @@ import {
   selectInstanceName,
   selectInstanceSettingsState,
 } from '../../../ngrx/selectors/instance-settings.selectors';
-
 import { ScalesService } from '../../../services/crud/scales.service';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
-
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
 import { DraftTagComponent } from '../../shared/components/draft-tag/draft-tag.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -40,9 +40,21 @@ import {
   resolveTopoPageTitleImage,
 } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
 import { withAssumedGradeRange } from '../../../utility/grade/assumed-grade-label';
 import { TranslateSpecialGradesService } from '../../../services/core/translate-special-grades.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-line',
@@ -55,16 +67,23 @@ import { TranslateSpecialGradesService } from '../../../services/core/translate-
     DraftTagComponent,
     RouterOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'line' }],
 })
 export class LineComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public sector: Sector;
   public area: Area;
   public line: Line;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
-  private breadcrumbHome: MenuItem = { icon: 'pi pi-map', routerLink: '/topo' };
+  private breadcrumbHome: PageMenuItem = {
+    icon: 'pi pi-map',
+    routerLink: '/topo',
+  };
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -79,6 +98,7 @@ export class LineComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private canEditLine = false;
   private currentUserId: string | null = null;
   private regionService = inject(RegionService);
@@ -90,6 +110,7 @@ export class LineComponent implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.closureBannerService.setReasons([]);
         const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         const areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -148,6 +169,7 @@ export class LineComponent implements OnInit {
               (line.publicationStatus === 'draft' &&
                 line.createdById === currentUser?.id);
             this.rulesAlertService.setContext({ sector, crag, region });
+            this.closureBannerService.setReasons(line.closedReasons);
             const image = resolveTopoPageTitleImage(
               line.topoImages?.[0],
               instanceSettings.bgImage,
@@ -171,6 +193,8 @@ export class LineComponent implements OnInit {
                 this.pageTitleService.setPortraitTitle(
                   `${line.name} ${displayGrade}`,
                   image,
+                  null,
+                  { titleAddon: this.statusTagsTemplate },
                 );
                 const breadcrumbs = [
                   {

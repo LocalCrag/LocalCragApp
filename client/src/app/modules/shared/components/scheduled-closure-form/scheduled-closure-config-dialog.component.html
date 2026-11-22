@@ -3,132 +3,125 @@
 >
   <ng-container *transloco="let tf; read: 'closableForm.closableForm'">
     @if (schedule) {
-      <p-dialog
-        [header]="
-          schedule.id ? t('editScheduleTitle') : t('createScheduleTitle')
-        "
-        [modal]="true"
-        [(visible)]="isOpen"
-      >
-        <form [formGroup]="scheduleForm" lcForm>
-          <div class="flex flex-col gap-2" lcControlGroup>
-            <label class="form-label" for="schedule-type">{{
-              t("scheduleTypeLabel")
-            }}</label>
-            <p-select
-              inputId="schedule-type"
-              formControlName="scheduleType"
-              [options]="scheduleTypes"
-              appendTo="body"
-              lcFormControl
-            >
-              <ng-template let-type #item>
-                {{ tf(scheduleTypeLabelKey(type)) }}
-              </ng-template>
-              <ng-template let-selectedType #selectedItem>
-                {{ tf(scheduleTypeLabelKey(selectedType)) }}
-              </ng-template>
-            </p-select>
+      <hlm-dialog [state]="isOpen ? 'open' : 'closed'" (closed)="close()">
+        <hlm-dialog-content *hlmDialogPortal class="sm:max-w-xl">
+          <div hlmDialogHeader>
+            <h2 hlmDialogTitle>
+              {{
+                schedule.id ? t("editScheduleTitle") : t("createScheduleTitle")
+              }}
+            </h2>
           </div>
-
-          <div class="flex flex-col gap-2 mt-2" lcControlGroup>
-            <label class="form-label" for="schedule-reason">{{
-              tf("scheduledClosureReasonLabel")
-            }}</label>
-            <input
-              id="schedule-reason"
-              type="text"
-              pInputText
-              formControlName="reason"
-              [placeholder]="tf('scheduledClosureReasonPlaceholder')"
-              lcFormControl
-            />
-          </div>
-        </form>
-
-        @if (scheduleType !== ClosureScheduleType.PERMANENT) {
-          <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6 mt-2">
-            <div class="col-span-12 md:col-span-6 flex flex-col gap-2">
-              <label class="form-label" [for]="'schedule-start'">{{
-                tf("scheduledClosureStartLabel")
+          <form [formGroup]="scheduleForm" lcForm>
+            <div class="flex flex-col gap-2" lcControlGroup>
+              <label class="form-label" for="schedule-type">{{
+                t("scheduleTypeLabel")
               }}</label>
-              <p-date-picker
-                [inputId]="'schedule-start'"
-                [ngModel]="startDate"
-                (ngModelChange)="onStartDateChange($event)"
-                [dateFormat]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? annualDateFormat
-                    : undefined
-                "
-                [defaultDate]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? annualScheduleReferenceDate
-                    : undefined
-                "
-                [panelStyleClass]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? 'lc-annual-closure-date-picker'
-                    : undefined
-                "
-                [readonlyInput]="true"
-                appendTo="body"
-              ></p-date-picker>
+              <hlm-select
+                class="w-full"
+                formControlName="scheduleType"
+                [itemToString]="scheduleTypeLabel"
+                lcFormControl
+              >
+                <hlm-select-trigger class="w-full" buttonId="schedule-type">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content *hlmSelectPortal>
+                  @for (type of scheduleTypes; track type) {
+                    <hlm-select-item [value]="type">{{
+                      tf(scheduleTypeLabelKey(type))
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content>
+              </hlm-select>
             </div>
-            <div class="col-span-12 md:col-span-6 flex flex-col gap-2">
-              <label class="form-label" [for]="'schedule-end'">{{
-                tf("scheduledClosureEndLabel")
+
+            <div class="flex flex-col gap-2 mt-2" lcControlGroup>
+              <label class="form-label" for="schedule-reason">{{
+                tf("scheduledClosureReasonLabel")
               }}</label>
-              <p-date-picker
-                [inputId]="'schedule-end'"
-                [ngModel]="endDate"
-                (ngModelChange)="onEndDateChange($event)"
-                [dateFormat]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? annualDateFormat
-                    : undefined
-                "
-                [defaultDate]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? annualScheduleReferenceDate
-                    : undefined
-                "
-                [minDate]="
-                  scheduleType === ClosureScheduleType.FIXED
-                    ? startDate
-                    : undefined
-                "
-                [panelStyleClass]="
-                  scheduleType === ClosureScheduleType.ANNUAL
-                    ? 'lc-annual-closure-date-picker'
-                    : undefined
-                "
-                [readonlyInput]="true"
-                appendTo="body"
-              ></p-date-picker>
-              @if (showFixedEndDateError) {
-                <small class="lc-error">{{
-                  tf("fixedEndBeforeStartValidationError")
-                }}</small>
-              }
-              @if (showAnnualEndDateError) {
-                <small class="lc-error">{{ tf(annualEndDateErrorKey!) }}</small>
-              }
+              <input
+                id="schedule-reason"
+                type="text"
+                hlmInput
+                formControlName="reason"
+                [placeholder]="tf('scheduledClosureReasonPlaceholder')"
+                lcFormControl
+              />
             </div>
+          </form>
+
+          @if (scheduleType !== ClosureScheduleType.PERMANENT) {
+            <div class="mt-2 grid grid-cols-12 gap-4 gap-6">
+              <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+                <label class="form-label" for="schedule-start">{{
+                  tf("scheduledClosureStartLabel")
+                }}</label>
+                <hlm-date-picker
+                  [date]="startDate"
+                  (dateChange)="onStartDateChange($event)"
+                  [formatDate]="formatPickerDate"
+                  [defaultFocusedDate]="
+                    scheduleType === ClosureScheduleType.ANNUAL
+                      ? annualScheduleReferenceDate
+                      : startDate
+                  "
+                >
+                  <hlm-date-picker-input
+                    inputId="schedule-start"
+                    [formatInputDate]="formatPickerDate"
+                  />
+                </hlm-date-picker>
+              </div>
+              <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+                <label class="form-label" for="schedule-end">{{
+                  tf("scheduledClosureEndLabel")
+                }}</label>
+                <hlm-date-picker
+                  [date]="endDate"
+                  (dateChange)="onEndDateChange($event)"
+                  [formatDate]="formatPickerDate"
+                  [defaultFocusedDate]="
+                    scheduleType === ClosureScheduleType.ANNUAL
+                      ? annualScheduleReferenceDate
+                      : endDate
+                  "
+                  [minDate]="
+                    scheduleType === ClosureScheduleType.FIXED
+                      ? startDate
+                      : undefined
+                  "
+                >
+                  <hlm-date-picker-input
+                    inputId="schedule-end"
+                    [formatInputDate]="formatPickerDate"
+                  />
+                </hlm-date-picker>
+                @if (showFixedEndDateError) {
+                  <small class="lc-error">{{
+                    tf("fixedEndBeforeStartValidationError")
+                  }}</small>
+                }
+                @if (showAnnualEndDateError) {
+                  <small class="lc-error">{{
+                    tf(annualEndDateErrorKey!)
+                  }}</small>
+                }
+              </div>
+            </div>
+          }
+          <div hlmAlert class="mt-2">
+            <ng-icon name="lucideInfo" />
+            {{ tf("closureMaterializationInfo") }}
           </div>
-        }
-        <p-message severity="info" icon="pi pi-info-circle" class="mt-2">
-          {{ tf("closureMaterializationInfo") }}
-        </p-message>
-        <ng-template #footer>
-          <p-button
-            [label]="t('cancel')"
-            severity="secondary"
-            (onClick)="close()"
-          />
-          <p-button [label]="t('ok')" severity="primary" (onClick)="save()" />
-        </ng-template>
-      </p-dialog>
+          <div hlmDialogFooter>
+            <button hlmBtn type="button" variant="secondary" (click)="close()">
+              {{ t("cancel") }}
+            </button>
+            <button hlmBtn type="button" (click)="save()">{{ t("ok") }}</button>
+          </div>
+        </hlm-dialog-content>
+      </hlm-dialog>
     }
   </ng-container>
 </ng-container>

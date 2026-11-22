@@ -1,37 +1,53 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
-import { MessageService } from 'primeng/api';
+import { toast } from '@spartan-ng/brain/sonner';
+import { of } from 'rxjs';
 import { AppNotificationsService } from './app-notifications.service';
+import { LanguageService } from './language.service';
+
+vi.mock('@spartan-ng/brain/sonner', () => ({
+  toast: Object.assign(vi.fn(), {
+    success: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+  }),
+}));
 
 describe('AppNotificationsService', () => {
   let service: AppNotificationsService;
-  let messages: MessageService;
 
   beforeEach(() => {
+    vi.mocked(toast.success).mockClear();
+    vi.mocked(toast.info).mockClear();
+    vi.mocked(toast.error).mockClear();
     TestBed.configureTestingModule({
       providers: [
         AppNotificationsService,
-        MessageService,
         {
           provide: TranslocoService,
           useValue: {
             translate: (key: string) => key,
           },
         },
+        {
+          provide: LanguageService,
+          useValue: {
+            whenTranslationsReady: () => of(undefined),
+          },
+        },
       ],
     });
     service = TestBed.inject(AppNotificationsService);
-    messages = TestBed.inject(MessageService);
-    spyOn(messages, 'add');
   });
 
   it('shows success toasts on every viewport', () => {
     service.toast('ACCOUNT_SETTINGS_UPDATED');
 
-    expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        severity: 'success',
-        life: 5000,
+    expect(toast.success).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        duration: 5000,
       }),
     );
   });
@@ -39,10 +55,10 @@ describe('AppNotificationsService', () => {
   it('shows info toasts on every viewport', () => {
     service.toast('LOGOUT_SUCCESS');
 
-    expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        severity: 'info',
-        life: 5000,
+    expect(toast.info).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        duration: 5000,
       }),
     );
   });
@@ -50,10 +66,10 @@ describe('AppNotificationsService', () => {
   it('shows error toasts', () => {
     service.toast('LOGIN_ERROR');
 
-    expect(messages.add).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        severity: 'error',
-        life: 5000,
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        duration: 5000,
       }),
     );
   });

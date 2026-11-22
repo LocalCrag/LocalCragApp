@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
@@ -12,6 +18,7 @@ import { CommentsComponent } from '../comments/comments.component';
 @Component({
   selector: 'lc-routed-comments',
   imports: [CommentsComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (object) {
       <lc-comments [object]="object"></lc-comments>

@@ -413,7 +413,7 @@ def _crag_payload(**overrides):
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
     payload.update(overrides)

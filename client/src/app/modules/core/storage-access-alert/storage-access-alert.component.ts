@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircleAlert } from '@ng-icons/lucide';
 import { isLocalStorageAccessDenied } from '../../../utility/local-storage';
 
 /**
@@ -15,7 +17,8 @@ import { isLocalStorageAccessDenied } from '../../../utility/local-storage';
   selector: 'lc-storage-access-alert',
   templateUrl: './storage-access-alert.component.html',
   styleUrls: ['./storage-access-alert.component.scss'],
-  imports: [TranslocoDirective],
+  imports: [TranslocoDirective, NgIcon],
+  providers: [provideIcons({ lucideCircleAlert })],
 })
 export class StorageAccessAlertComponent {
   /** Fixed for this document; the user must change browser settings and reload. */

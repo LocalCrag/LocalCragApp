@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Skeleton } from 'primeng/skeleton';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'lc-comments-skeleton',
-  imports: [Skeleton],
+  imports: [HlmSkeleton],
   templateUrl: './comments-skeleton.component.html',
   styleUrl: './comments-skeleton.component.scss',
 })

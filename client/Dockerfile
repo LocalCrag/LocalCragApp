@@ -1,8 +1,14 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+# Next images pass a build id (commit hash and time). Release builds omit it.
+# $$ keeps Docker from expanding the variable before the shell and node see it.
+ARG APP_VERSION=
+RUN if [ -n "$$APP_VERSION" ]; then \
+      node -e 'const fs=require("fs"); fs.writeFileSync("src/environments/build-info.ts", "export const buildVersion: string | null = " + JSON.stringify(process.env.$$APP_VERSION) + ";\n");'; \
+    fi
 RUN npm run build
 
 FROM nginx:1.30.7-alpine

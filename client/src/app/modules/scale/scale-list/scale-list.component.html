@@ -14,25 +14,27 @@
                 class="m-0! flex items-center justify-between gap-2 ps-4 pe-2 min-h-12 border-b border-surface"
               >
                 <span>{{ lineType | transloco }}</span>
-                <p-button
-                  icon="pi pi-plus"
-                  [text]="true"
-                  [rounded]="true"
-                  size="small"
-                  [ariaLabel]="t('createScale')"
-                  [pTooltip]="t('createScale')"
-                  tooltipPosition="left"
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  class="rounded-full"
+                  [hlmTooltip]="t('createScale')"
+                  position="left"
+                  [attr.aria-label]="t('createScale')"
                   (click)="createScale(lineType)"
-                />
+                >
+                  <ng-icon name="lucidePlus" />
+                </button>
               </h4>
               @if (scalesByType[lineType].length === 0) {
-                <p-message
-                  severity="info"
-                  icon="pi pi-info-circle"
-                  class="m-2 block"
-                >
-                  {{ t("noScalesFoundEmptyMessage") }}
-                </p-message>
+                <div hlmAlert class="m-2">
+                  <ng-icon name="lucideInfo" />
+                  <p hlmAlertDescription>
+                    {{ t("noScalesFoundEmptyMessage") }}
+                  </p>
+                </div>
               } @else {
                 @for (
                   scale of scalesByType[lineType];
@@ -47,34 +49,41 @@
                   >
                     <span class="min-w-0">{{ scale.name }}</span>
                     <div class="flex items-center">
-                      <p-button
-                        [icon]="
-                          scale.isDefault ? 'pi pi-star-fill' : 'pi pi-star'
-                        "
-                        [text]="true"
-                        [rounded]="true"
-                        size="small"
-                        [severity]="scale.isDefault ? 'warn' : 'secondary'"
-                        [ariaLabel]="
+                      <button
+                        hlmBtn
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        [hlmTooltip]="
                           scale.isDefault ? t('defaultScale') : t('makeDefault')
                         "
-                        [pTooltip]="
+                        position="left"
+                        [attr.aria-label]="
                           scale.isDefault ? t('defaultScale') : t('makeDefault')
                         "
-                        tooltipPosition="left"
                         [disabled]="makingDefault && !scale.isDefault"
                         (click)="makeDefault(scale)"
-                      />
-                      <p-button
-                        icon="pi pi-file-edit"
-                        [ariaLabel]="'scale.scaleForm.editScale' | transloco"
-                        [pTooltip]="'scale.scaleForm.editScale' | transloco"
-                        tooltipPosition="left"
+                      >
+                        <ng-icon
+                          name="lucideStar"
+                          [class]="
+                            scale.isDefault ? '[&_svg]:fill-current' : ''
+                          "
+                        />
+                      </button>
+                      <a
+                        hlmBtn
+                        variant="ghost"
+                        size="icon-sm"
+                        class="rounded-full"
+                        [hlmTooltip]="'scale.scaleForm.editScale' | transloco"
+                        position="left"
+                        [attr.aria-label]="
+                          'scale.scaleForm.editScale' | transloco
+                        "
                         [routerLink]="['/scales', scale.lineType, scale.name]"
-                        [text]="true"
-                        [rounded]="true"
-                        size="small"
-                      />
+                        ><ng-icon name="lucideFilePen"
+                      /></a>
                     </div>
                   </div>
                 }

@@ -15,7 +15,7 @@
           <input
             id="name"
             type="text"
-            pInputText
+            hlmInput
             formControlName="name"
             placeholder="{{ t('sectorNamePlaceholder') }}"
             lcFormControl
@@ -29,7 +29,7 @@
           }}</small>
           <lc-duplicate-name-warning
             [nameControl]="sectorForm.get('name')"
-            [excludeId]="sector?.id"
+            [excludeId]="$safeNavigationMigration(sector?.id)"
             entityType="sector"
             [findByName]="findSectorsByName"
           />
@@ -82,16 +82,19 @@
         <div class="flex flex-col gap-2" lcControlGroup>
           <div class="form-label flex items-center">
             <label for="rulesTitle">{{ t("sectorRulesTitleLabel") }}</label>
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('sectorRulesTitleTooltip')"
-              tooltipPosition="right"
-            ></span>
+            <button
+              type="button"
+              class="inline-flex text-muted-foreground ml-2"
+              [hlmTooltip]="t('sectorRulesTitleTooltip')"
+              position="right"
+            >
+              <ng-icon name="lucideCircleQuestionMark" />
+            </button>
           </div>
           <input
             id="rulesTitle"
             type="text"
-            pInputText
+            hlmInput
             formControlName="rulesTitle"
             placeholder="{{ t('sectorRulesTitlePlaceholder') }}"
             lcFormControl
@@ -115,29 +118,23 @@
           </lc-single-image-upload>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup *isOutdoorMode="true">
-          <label class="form-label" for="blocweatherUrl">
-            {{ t("blocweatherUrlLabel") }}
-            <span
-              class="pi pi-question-circle ml-2"
-              [pTooltip]="t('blocweatherTooltip')"
-              tooltipPosition="right"
-            ></span>
+          <label class="form-label">
+            {{ t("condicasterCragIdLabel") }}
+            <button
+              type="button"
+              class="inline-flex text-muted-foreground ml-2"
+              [hlmTooltip]="t('condicasterTooltip')"
+              position="right"
+            >
+              <ng-icon name="lucideCircleQuestionMark" />
+            </button>
           </label>
-          <input
-            id="blocweatherUrl"
-            type="text"
-            pInputText
-            formControlName="blocweatherUrl"
-            placeholder="https://blocweather.com/<country>/<region>/<spot>"
-            lcFormControl
-            data-cy="sector-form-blocweatherUrl"
+          <lc-condicaster-crag-link
+            [cragId]="sectorForm.get('condicasterCragId')?.value"
+            [cragName]="sectorForm.get('condicasterCragName')?.value"
+            [coordinates]="markerCoordinates()"
+            (linkChange)="setCondicasterCrag($event)"
           />
-          <small class="lc-error" *lcIfError="'blocweatherUrl'">{{
-            t("invalidBlocweatherUrl")
-          }}</small>
-          <small class="lc-error" *lcIfError="'maxlength'">{{
-            "validation.maxLength" | transloco: { max: 255 }
-          }}</small>
         </div>
         <div class="flex flex-col gap-2" lcControlGroup>
           <label class="form-label" for="map-markers">{{
@@ -156,27 +153,30 @@
           lcFormControl
         />
         @if (parentClosureState?.closed) {
-          <p-message severity="info" icon="pi pi-info-circle">
-            {{ t("closedBecauseParentIsClosed") }}
-          </p-message>
+          <div hlmAlert>
+            <ng-icon name="lucideInfo" />
+            <p hlmAlertDescription>{{ t("closedBecauseParentIsClosed") }}</p>
+          </div>
         }
         @if (parentCrag?.secret && !sectorForm.get("secret").value) {
-          <p-message severity="warn" icon="pi pi-info-circle">
-            {{ t("aPublicSectorWillSetParentsToPublic") }}
-          </p-message>
+          <div hlmAlert variant="warning">
+            <ng-icon name="lucideTriangleAlert" />
+            <p hlmAlertDescription>
+              {{ t("aPublicSectorWillSetParentsToPublic") }}
+            </p>
+          </div>
         }
         @if (sector?.slug !== environment.skippedSlug) {
           <div class="flex flex-col gap-2" lcControlGroup>
             <label class="form-label">{{ t("sectorOptionsLabel") }}</label>
             <div class="flex flex-col gap-2">
               <div class="flex">
-                <p-checkbox
+                <hlm-checkbox
                   inputId="secret"
                   name="secret"
-                  [binary]="true"
                   formControlName="secret"
                   lcFormControl
-                ></p-checkbox>
+                ></hlm-checkbox>
                 <label [for]="'secret'" class="ml-2">{{
                   t("secretLabel")
                 }}</label>
@@ -187,53 +187,69 @@
       </form>
       <div class="form-actions">
         @if (!editMode) {
-          <p-button
-            label="{{ t('createSectorButtonLabel') }}"
-            (click)="saveCrag()"
-            icon="pi pi-save"
-            class="responsive-button"
+          <button
+            lcLoadingButton
+            icon="lucideSave"
             [loading]="loadingState === loadingStates.LOADING"
+            (click)="saveCrag()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="submit"
-          ></p-button>
+            type="button"
+          >
+            {{ t("createSectorButtonLabel") }}
+          </button>
         }
         @if (editMode) {
-          <p-button
-            label="{{ t('editSectorButtonLabel') }}"
-            (click)="saveCrag()"
-            icon="pi pi-save"
-            class="responsive-button"
+          <button
+            lcLoadingButton
+            icon="lucideSave"
             [loading]="loadingState === loadingStates.LOADING"
+            (click)="saveCrag()"
+            [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="submit"
-          ></p-button>
+            type="button"
+          >
+            {{ t("editSectorButtonLabel") }}
+          </button>
         }
-        <p-button
-          label="{{ t('cancelButtonLabel') }}"
-          (click)="cancel()"
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
           class="responsive-button"
-          styleClass="p-button-secondary"
-          icon="pi pi-ban"
-        ></p-button>
+          (click)="cancel()"
+        >
+          <ng-icon name="lucideBan" /> {{ t("cancelButtonLabel") }}
+        </button>
         @if (editMode) {
           @if (parentCrag.slug !== environment.skippedSlug) {
-            <p-button
-              icon="pi pi-arrow-right-arrow-left"
-              label="{{ t('moveSectorButtonLabel') }}"
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
               class="responsive-button"
-              styleClass="p-button-secondary"
               (click)="openMoveDialog()"
-            ></p-button>
+            >
+              <ng-icon name="lucideArrowLeftRight" />
+              {{ t("moveSectorButtonLabel") }}
+            </button>
           }
-          <p-button
-            label="{{ t('deleteSectorButtonLabel') }}"
-            (click)="confirmDeleteSector($event)"
-            icon="pi pi-trash"
-            class="responsive-button"
-            styleClass="p-button-danger"
+          <button
+            lcLoadingButton
+            icon="lucideTrash2"
             [loading]="loadingState === loadingStates.LOADING"
+            (click)="confirmDeleteSector($event)"
+            [disabled]="loadingState === loadingStates.LOADING"
+            class="responsive-button"
             data-cy="delete"
-          ></p-button>
+            type="button"
+            variant="destructive"
+          >
+            {{ t("deleteSectorButtonLabel") }}
+          </button>
         }
-        <p-confirmpopup></p-confirmpopup>
       </div>
       <lc-move-object-dialog
         #moveDialog

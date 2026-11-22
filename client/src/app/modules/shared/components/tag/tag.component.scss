@@ -1,6 +1,9 @@
 lc-tag {
-  .p-tag {
+  .lc-tag-badge {
     // Subtle chip on content surfaces (panel, gallery card) in light and dark.
+    // The shared badge is a fixed 20px, which clips the two-line tag label.
+    height: auto;
+    overflow: visible;
     color: var(--p-text-color);
     background-color: color-mix(
       in srgb,

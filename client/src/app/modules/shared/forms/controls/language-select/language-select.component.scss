@@ -1,15 +1,41 @@
 lc-language-select {
-  &:not(.no-label) p-select {
+  &:not(.no-label) hlm-select-trigger button {
     height: 100%;
     align-items: center;
   }
 
-  &.no-label .p-select-dropdown {
+  &.no-label hlm-select-trigger ng-icon {
     display: none;
   }
 }
 
-// Dropdown is appendTo="body", so option rows are outside lc-language-select.
+// The select panel is portaled to the body, so option rows are outside lc-language-select.
+// Above `.site-header` (z-index: 1100) so the panel is not hidden behind the navbar.
+.cdk-overlay-container {
+  z-index: 1200;
+}
+
+// Header select: the panel is portaled, so size it from the flag-only options.
+hlm-select-content:has([data-flags-only]) {
+  min-width: 0;
+  width: max-content;
+  padding: 0.25rem;
+
+  [data-slot="select-item"] {
+    justify-content: center;
+    padding: 0.25rem;
+    width: auto;
+
+    ng-icon {
+      display: none;
+    }
+  }
+
+  [aria-selected="true"] .flag {
+    box-shadow: 0 0 0 2px var(--p-primary-color);
+  }
+}
+
 .language-option {
   display: flex;
   align-items: center;
@@ -20,6 +46,6 @@ lc-language-select {
     height: auto;
     flex-shrink: 0;
     border-radius: 2px;
-    box-shadow: 0 0 0 1px var(--p-content-border-color);
+    box-shadow: 0 0 0 1px var(--border);
   }
 }

@@ -1,0 +1,25 @@
+// Overlay scrollbars appear on hover and then take width, so dialog text
+// reflows. A classic scrollbar stays in the layout whenever the content overflows.
+@mixin persistent-dialog-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--p-text-color) 45%, transparent)
+    transparent;
+
+  &::-webkit-scrollbar {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--p-text-color) 45%, transparent);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+[data-slot="dialog-content"].overflow-y-auto {
+  @include persistent-dialog-scrollbar;
+}

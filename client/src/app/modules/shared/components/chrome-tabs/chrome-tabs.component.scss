@@ -1,0 +1,310 @@
+@property --chrome-tab-fade-start {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --chrome-tab-fade-end {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+:host {
+  display: block;
+  --chrome-tab-fade-size: 4.5rem;
+
+  [data-slot="tabs"] {
+    width: 100%;
+    min-width: 0;
+    gap: 0;
+  }
+
+  [data-slot="tabs-trigger"] {
+    flex: 0 0 auto;
+    height: 3rem;
+    border-radius: 0;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    padding: 0 0.9rem;
+    font-size: 0.95rem;
+    color: var(--p-text-muted-color);
+
+    &::after {
+      display: none;
+    }
+
+    ng-icon {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    &[data-state="active"] {
+      color: var(--p-text-color);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &:hover:not([data-state="active"]) {
+      color: var(--p-text-color);
+      background: transparent;
+    }
+  }
+}
+
+:host(.chrome-tabs--plain) {
+  box-shadow: inset 0 -1px 0 var(--p-content-border-color);
+
+  [data-slot="tabs-trigger"] {
+    height: 2.85rem;
+    padding: 0 1.125rem;
+    font-weight: 600;
+
+    &[data-state="active"] {
+      color: var(--p-primary-color);
+      box-shadow: inset 0 -2px 0 var(--p-primary-color);
+    }
+
+    &:hover:not([data-state="active"]) {
+      color: var(--p-text-color);
+    }
+  }
+}
+
+:host(.chrome-tabs--plain) ::ng-deep .chrome-tabs__list {
+  height: 2.85rem;
+  box-shadow: none;
+}
+
+:host(.chrome-tabs--plain)
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button {
+  height: 100%;
+}
+
+:host(.chrome-tabs--overlay) {
+  background: rgb(0 0 0 / 0.55);
+
+  [data-slot="tabs-trigger"] {
+    cursor: pointer;
+    color: rgb(255 255 255 / 0.72);
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.55);
+
+    &[data-state="active"] {
+      color: #fff;
+      background: rgb(255 255 255 / 0.14);
+      box-shadow: none;
+    }
+
+    &:hover:not([data-state="active"]) {
+      color: #fff;
+      background: rgb(255 255 255 / 0.08);
+    }
+  }
+
+  .chrome-tabs__badge {
+    background: rgb(255 255 255 / 0.22);
+    color: #fff;
+  }
+}
+
+.chrome-tabs__badge {
+  margin-left: 0.15rem;
+  border-radius: 999px;
+}
+
+:host ::ng-deep .chrome-tabs__list,
+:host ::ng-deep [data-slot="tabs-paginated-list"] {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0;
+}
+
+:host ::ng-deep .chrome-tabs__list {
+  height: 3rem;
+  width: max-content;
+  min-width: 100%;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  justify-content: flex-start;
+  box-shadow: none;
+}
+
+:host ::ng-deep [data-slot="tabs-paginated-list"] {
+  --chrome-tab-fade-start: 0px;
+  --chrome-tab-fade-end: 0px;
+  transition:
+    --chrome-tab-fade-start 0.25s ease,
+    --chrome-tab-fade-end 0.25s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+:host
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]:has(
+    > button[data-pagination="previous"]:not(.opacity-0)
+  ) {
+  --chrome-tab-fade-start: var(--chrome-tab-fade-size);
+}
+
+:host
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]:has(
+    > button[data-pagination="next"]:not(.opacity-0)
+  ) {
+  --chrome-tab-fade-end: var(--chrome-tab-fade-size);
+}
+
+/* Tabs slide under the chevrons and dissolve instead of ending on a hard edge. */
+:host ::ng-deep [data-slot="tabs-paginated-list"] > div {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+}
+
+:host-context([dir="rtl"]) ::ng-deep [data-slot="tabs-paginated-list"] > div {
+  -webkit-mask-image: linear-gradient(
+    to left,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to left,
+    transparent 0,
+    #000 var(--chrome-tab-fade-start),
+    #000 calc(100% - var(--chrome-tab-fade-end)),
+    transparent 100%
+  );
+}
+
+:host ::ng-deep [data-slot="tabs-paginated-list"] > button {
+  border-radius: 0;
+  color: var(--p-text-muted-color);
+  background-color: transparent;
+  background-repeat: no-repeat;
+
+  &[data-pagination="previous"] {
+    inset-inline-start: 0;
+    justify-content: flex-start;
+    padding-inline-start: 0.35rem;
+    background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+      transparent 72%
+    );
+  }
+
+  &[data-pagination="next"] {
+    inset-inline-end: 0;
+    justify-content: flex-end;
+    padding-inline-end: 0.35rem;
+    background-image: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+      transparent 72%
+    );
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background-color: transparent;
+    color: var(--p-text-color);
+  }
+}
+
+:host-context([dir="rtl"])
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="previous"] {
+  background-image: linear-gradient(
+    to left,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+    transparent 72%
+  );
+}
+
+:host-context([dir="rtl"])
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="next"] {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0%,
+    transparent 72%
+  );
+}
+
+:host(.chrome-tabs--overlay)
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button {
+  color: #fff;
+
+  &[data-pagination="previous"] {
+    background-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 78%
+    );
+  }
+
+  &[data-pagination="next"] {
+    background-image: linear-gradient(
+      to left,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 78%
+    );
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    color: #fff;
+    background-color: transparent;
+  }
+}
+
+:host-context([dir="rtl"]).chrome-tabs--overlay
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="previous"] {
+  background-image: linear-gradient(
+    to left,
+    rgb(0 0 0 / 0.45) 0%,
+    transparent 78%
+  );
+}
+
+:host-context([dir="rtl"]).chrome-tabs--overlay
+  ::ng-deep
+  [data-slot="tabs-paginated-list"]
+  > button[data-pagination="next"] {
+  background-image: linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.45) 0%,
+    transparent 78%
+  );
+}

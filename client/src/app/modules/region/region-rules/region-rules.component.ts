@@ -1,19 +1,24 @@
-import { Component, OnInit, inject } from '@angular/core';
-
-import { SkeletonModule } from 'primeng/skeleton';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { RulesViewMetaComponent } from '../../shared/components/rules-view-meta/rules-view-meta.component';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 /**
  * Component that displays region rules.
  */
 @Component({
   selector: 'lc-region-rules',
-  imports: [SkeletonModule, SanitizeHtmlPipe, RulesViewMetaComponent],
+  imports: [SanitizeHtmlPipe, RulesViewMetaComponent, HlmSkeleton],
   templateUrl: './region-rules.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-rules.component.scss',
 })
 export class RegionRulesComponent implements OnInit {

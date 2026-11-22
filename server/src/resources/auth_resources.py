@@ -103,18 +103,20 @@ class CurrentUser(MethodView):
 class ForgotPassword(MethodView):
     def post(self):
         """
-        Sends a mail to the user that lets him reset his password.
+        Sends a password reset mail when the address belongs to an account.
+
+        Unknown addresses get the same response and no mail, so the result does
+        not reveal whether the address is registered.
         """
         data = parser.parse(forgot_password_args, request)
         email_canonical = data["email"].lower()
         user = User.find_by_email(email_canonical)
-        if not user:
-            raise Unauthorized(ResponseMessage.USER_NOT_FOUND.value)
-        user.reset_password_hash = uuid4()
-        user.reset_password_hash_created = datetime.now()
-        db.session.add(user)
-        db.session.commit()
-        send_forgot_password_email(user)
+        if user:
+            user.reset_password_hash = uuid4()
+            user.reset_password_hash_created = datetime.now()
+            db.session.add(user)
+            db.session.commit()
+            send_forgot_password_email(user)
 
         simple_message = SimpleMessage(ResponseMessage.RESET_PASSWORD_MAIL_SENT.value)
         return simple_message_schema.dump(simple_message), 200

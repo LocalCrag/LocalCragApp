@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
 import {
@@ -23,16 +29,22 @@ import { forkJoin, of, throwError } from 'rxjs';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { RegionService } from '../../../services/crud/region.service';
 import { Region } from '../../../models/region';
-import { ButtonModule } from 'primeng/button';
-
-import { InputTextModule } from 'primeng/inputtext';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { InstanceSettings } from '../../../models/instance-settings';
-import { Tooltip } from 'primeng/tooltip';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  lucideBan,
+  lucideCircleQuestionMark,
+  lucideSave,
+} from '@ng-icons/lucide';
 
 /**
  * A component for editing regions.
@@ -40,20 +52,30 @@ import { Tooltip } from 'primeng/tooltip';
 @Component({
   selector: 'lc-region-form',
   imports: [
+    LoadingButtonComponent,
     ReactiveFormsModule,
     WysiwygEditorComponent,
-    ButtonModule,
     TranslocoDirective,
     TranslocoPipe,
-    InputTextModule,
     FormDirective,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
     SingleImageUploadComponent,
-    Tooltip,
+    HlmButton,
+    HlmInput,
+    HlmTooltip,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideBan,
+      lucideCircleQuestionMark,
+      lucideSave,
+    }),
   ],
   templateUrl: './region-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-form.component.scss',
 })
 export class RegionFormComponent implements OnInit {

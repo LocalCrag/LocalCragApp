@@ -2,14 +2,27 @@ import {
   Component,
   DestroyRef,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { DialogService } from 'primeng/dynamicdialog';
-import { Popover } from 'primeng/popover';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideBell,
+  lucideCheck,
+  lucideFlag,
+  lucideListChecks,
+  lucideMail,
+  lucideMegaphone,
+  lucideMessageCircle,
+  lucideSettings,
+} from '@ng-icons/lucide';
+import { BrnPopover, BrnPopoverContent } from '@spartan-ng/brain/popover';
+import { HlmPopoverContent } from '@spartan-ng/helm/popover';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { NotificationsService } from '../../../services/crud/notifications.service';
 import { NotificationItem } from '../../../models/notification-item';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
@@ -27,12 +40,30 @@ import { ModerationMessageDialogService } from '../moderation-message-dialog/mod
   templateUrl: './notification-bell.component.html',
   styleUrls: ['./notification-bell.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  imports: [TranslocoDirective, Popover, RouterLink, ProgressSpinnerModule],
+  imports: [
+    TranslocoDirective,
+    NgIcon,
+    BrnPopover,
+    BrnPopoverContent,
+    HlmPopoverContent,
+    HlmSpinner,
+    RouterLink,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     LineGradePipe,
     NotificationPresentationService,
-    DialogService,
     ModerationMessageDialogService,
+    provideIcons({
+      lucideBell,
+      lucideCheck,
+      lucideFlag,
+      lucideListChecks,
+      lucideMail,
+      lucideMegaphone,
+      lucideMessageCircle,
+      lucideSettings,
+    }),
   ],
 })
 export class NotificationBellComponent implements OnInit {
@@ -51,6 +82,8 @@ export class NotificationBellComponent implements OnInit {
   private store = inject(Store);
   private destroyRef = inject(DestroyRef);
   private moderationMessageDialog = inject(ModerationMessageDialogService);
+
+  @ViewChild(BrnPopover) notificationsPopover?: BrnPopover;
 
   readonly unreadCount = toSignal(
     this.store.select(selectUnreadNotificationCount),
@@ -100,11 +133,11 @@ export class NotificationBellComponent implements OnInit {
       });
   }
 
-  public openNotification(item: NotificationItem, popover: Popover): void {
+  public openNotification(item: NotificationItem): void {
     const link = item.actionLink as string | undefined;
 
     const go = (): void => {
-      popover.hide();
+      this.notificationsPopover?.close();
       if (this.moderationMessageDialog.openFromNotification(item)) {
         return;
       }
@@ -134,7 +167,7 @@ export class NotificationBellComponent implements OnInit {
     });
   }
 
-  public markAllRead(popover?: Popover): void {
+  public markAllRead(): void {
     if (this.unreadCount() === 0) {
       return;
     }
@@ -142,17 +175,22 @@ export class NotificationBellComponent implements OnInit {
       this.notifications = [];
       this.currentPage = 0;
       this.hasNextPage = false;
-      popover?.hide();
+      this.notificationsPopover?.close();
       this.appNotifications.toast('NOTIFICATIONS_MARK_ALL_READ_SUCCESS');
     });
   }
 
-  public onBellClick(event: Event, popover: Popover): void {
+  public closeNotifications(): void {
+    this.notificationsPopover?.close();
+  }
+
+  public onBellClick(origin: HTMLElement): void {
     if (window.innerWidth <= MOBILE_BREAKPOINT_HEADER_MENU) {
       this.router.navigateByUrl('/notifications');
       return;
     }
-    popover.toggle(event);
+    this.notificationsPopover?.setOrigin(origin);
+    this.notificationsPopover?.toggle();
   }
 
   public onPopoverScroll(event: Event): void {

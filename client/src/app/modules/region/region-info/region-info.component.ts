@@ -1,14 +1,18 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
-import { SkeletonModule } from 'primeng/skeleton';
 import { Observable } from 'rxjs';
 import { Region } from '../../../models/region';
 import { RegionService } from '../../../services/crud/region.service';
-
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MapComponent } from '../../maps/map/map.component';
 import { GradeDistribution } from '../../../models/scale';
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 /**
  * Component that shows information about a region.
@@ -17,12 +21,13 @@ import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
   selector: 'lc-region-info',
   imports: [
     GradeDistributionBarChartComponent,
-    SkeletonModule,
     TranslocoDirective,
     MapComponent,
     SanitizeHtmlPipe,
+    HlmSkeleton,
   ],
   templateUrl: './region-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './region-info.component.scss',
 })
 export class RegionInfoComponent implements OnInit {

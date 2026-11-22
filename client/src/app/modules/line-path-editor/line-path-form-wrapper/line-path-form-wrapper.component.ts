@@ -2,16 +2,25 @@ import { Component, OnInit, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Tooltip } from 'primeng/tooltip';
 import { LinePathFormComponent } from '../line-path-form/line-path-form.component';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircleQuestionMark } from '@ng-icons/lucide';
 
 @Component({
   selector: 'lc-line-path-form-wrapper',
-  imports: [LinePathFormComponent, TranslocoDirective, Tooltip, AsyncPipe],
+  imports: [
+    LinePathFormComponent,
+    TranslocoDirective,
+    AsyncPipe,
+    HlmTooltip,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideCircleQuestionMark })],
   templateUrl: './line-path-form-wrapper.component.html',
   styleUrl: './line-path-form-wrapper.component.scss',
 })

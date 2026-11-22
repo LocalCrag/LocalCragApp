@@ -30,7 +30,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Extract version from package.json
         id: get-version
@@ -48,6 +48,8 @@ jobs:
       - name: Build and push client Docker image
         run: |
           IMAGE_NAME=ghcr.io/localcrag/localcrag-client
+          SHORT_SHA=$(git rev-parse --short=7 HEAD)
+          COMMIT_TIME=$(TZ=UTC git log -1 --format=%cd --date=format-local:'%Y-%m-%d %H:%M')
           cd client
           if [ "${{ github.event_name }}" == "workflow_run" ]; then
             TAG=$VERSION
@@ -56,7 +58,10 @@ jobs:
             docker push $IMAGE_NAME:latest
           else
             TAG=next
-            docker build -t $IMAGE_NAME:$TAG -f Dockerfile .
+            docker build \
+              --build-arg APP_VERSION="next@${SHORT_SHA} · ${COMMIT_TIME} UTC" \
+              -t $IMAGE_NAME:$TAG \
+              -f Dockerfile .
             docker push $IMAGE_NAME:$TAG
           fi
 

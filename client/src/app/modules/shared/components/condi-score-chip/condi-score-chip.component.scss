@@ -1,0 +1,75 @@
+@use "../../../../styles/media-queries" as m;
+
+:host {
+  display: inline-flex;
+}
+
+.condi-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  gap: 0.3rem;
+  min-height: 1.625rem;
+  padding: 0.1rem 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.28);
+}
+
+:host.spot-status-tag--corner .condi-chip {
+  min-height: 1.625rem;
+  padding: 0.08rem 0.55rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  gap: 0.3rem;
+  box-shadow: none;
+}
+
+:host.spot-status-tag--header .condi-chip {
+  min-height: 2rem;
+  padding: 0.15rem 0.7rem;
+  font-size: 1rem;
+}
+
+@include m.on-mobile {
+  :host.spot-status-tag--corner .condi-chip {
+    justify-content: center;
+    min-height: 1.75rem;
+    padding: 0.2rem 0.45rem;
+  }
+}
+
+.condi-chip--terrible {
+  background: #b91c1c;
+}
+
+.condi-chip--poor {
+  background: #c2410c;
+}
+
+.condi-chip--mixed {
+  background: #a16207;
+}
+
+.condi-chip--good {
+  background: #4d7c0f;
+}
+
+.condi-chip--veryGood {
+  background: #15803d;
+}
+
+.condi-chip--excellent {
+  background: #0f766e;
+}
+
+.condi-chip--perfect {
+  background: #1d4ed8;
+}

@@ -7,14 +7,13 @@
     [minLabel]="'' + range[0]"
     [maxLabel]="'' + range[1]"
   />
-  <p-slider
-    [ngModel]="range"
-    (ngModelChange)="onRangeChange($event)"
+  <hlm-slider
+    [value]="sliderValue"
+    (valueChange)="onRangeChange($event)"
     [min]="min"
     [max]="max"
     [disabled]="disabled"
-    [range]="true"
     [step]="1"
-    (onSlideEnd)="slideEnd.emit()"
+    (pointerup)="slideEnd.emit()"
   />
 </div>

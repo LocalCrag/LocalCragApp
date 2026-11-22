@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
   FormBuilder,
@@ -15,23 +21,26 @@ import {
   TranslocoPipe,
   TranslocoService,
 } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
 import { EMPTY, throwError } from 'rxjs';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { toastNotification } from '../../../ngrx/actions/notifications.actions';
 import { Post } from '../../../models/post';
 import { PostsService } from '../../../services/crud/posts.service';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { WysiwygEditorComponent } from '../../shared/components/wysiwyg-editor/wysiwyg-editor.component';
-import { InputTextModule } from 'primeng/inputtext';
 
 import { selectInstanceName } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
+import { lucideBan, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
 
 /**
  * Form component for creating, editing and deleting blog posts.
@@ -39,10 +48,8 @@ import { PageTitleService } from '../../../services/core/page-title.service';
 @Component({
   selector: 'lc-post-form',
   imports: [
-    ButtonModule,
-    ConfirmPopupModule,
+    LoadingButtonComponent,
     WysiwygEditorComponent,
-    InputTextModule,
     ReactiveFormsModule,
     TranslocoDirective,
     TranslocoPipe,
@@ -50,12 +57,17 @@ import { PageTitleService } from '../../../services/core/page-title.service';
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
+    HlmButton,
+    HlmInput,
+    NgIcon,
   ],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.scss',
-  providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [provideIcons({ lucideBan, lucideSave, lucideTrash2 })],
 })
 export class PostFormComponent implements OnInit {
+  private confirmDialog = inject(ConfirmDialogService);
   @ViewChild(FormDirective) formDirective: FormDirective;
 
   public postForm: FormGroup;
@@ -70,7 +82,6 @@ export class PostFormComponent implements OnInit {
   private postsService = inject(PostsService);
   private title = inject(Title);
   private translocoService = inject(TranslocoService);
-  private confirmationService = inject(ConfirmationService);
   private pageTitleService = inject(PageTitleService);
 
   /**
@@ -185,18 +196,16 @@ export class PostFormComponent implements OnInit {
    * Asks if the post should really get deleted.
    * @param event Click event.
    */
-  confirmDeletePost(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target,
+  confirmDeletePost(_event: Event) {
+    this.confirmDialog.open({
       message: this.translocoService.translate(
         marker('posts.askReallyWantToDeletePost'),
       ),
       acceptLabel: this.translocoService.translate(marker('posts.yesDelete')),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.translocoService.translate(
         marker('posts.noDontDelete'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         this.deletePost();
       },

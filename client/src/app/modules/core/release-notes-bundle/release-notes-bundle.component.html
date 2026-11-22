@@ -2,10 +2,9 @@
   <div class="content">
     <div class="p-6">
       @if (loadError) {
-        <p-message
-          severity="error"
-          [text]="t('releaseNotes.loadError')"
-        ></p-message>
+        <div hlmAlert variant="destructive">
+          {{ t("releaseNotes.loadError") }}
+        </div>
       } @else if (bundle) {
         <div class="flex flex-col gap-6 release-notes-bundle">
           <div class="flex flex-col gap-6 release-notes-bundle-items">

@@ -1,44 +1,51 @@
 <ng-container *transloco="let t; read: 'refreshLoginModal'">
-  @if (isOpen) {
-    <p-dialog
-      header="{{ t('title') }}"
-      [(visible)]="isOpen"
-      [modal]="true"
-      [closable]="false"
-    >
-      @if (challenge$ | async) {
-        <lc-two-factor-prompt></lc-two-factor-prompt>
-      } @else {
-        <form [formGroup]="refreshLoginForm" lcForm>
-          <div class="card-container block" lcControlGroup>
-            <p-password
-              formControlName="password"
-              [toggleMask]="true"
-              [feedback]="false"
-              lcFormControl
-              placeholder="{{ t('passwordPlaceholder') }}"
-            ></p-password>
-            <small class="lc-error" *lcIfError="'required'">{{
-              "validation.required" | transloco
-            }}</small>
+  <hlm-dialog
+    [state]="isOpen ? 'open' : 'closed'"
+    [disableClose]="true"
+    (stateChanged)="isOpen = $event === 'open'"
+  >
+    <ng-template brnDialogContent>
+      <hlm-dialog-content [showCloseButton]="false">
+        <h2 hlmDialogTitle>{{ t("title") }}</h2>
+        @if (challenge$ | async) {
+          <lc-two-factor-prompt></lc-two-factor-prompt>
+        } @else {
+          <form [formGroup]="refreshLoginForm" lcForm>
+            <div class="card-container block" lcControlGroup>
+              <lc-password-input
+                formControlName="password"
+                autocomplete="current-password"
+                lcFormControl
+                placeholder="{{ t('passwordPlaceholder') }}"
+              />
+              <small class="lc-error" *lcIfError="'required'">{{
+                "validation.required" | transloco
+              }}</small>
+            </div>
+          </form>
+          <div class="form-actions mt-6 justify-end">
+            <button
+              hlmBtn
+              type="button"
+              (click)="refreshLogin()"
+              [disabled]="(isLoading$ | async) === loadingStates.LOADING"
+            >
+              {{ t("refreshLoginButtonLabel") }}
+            </button>
           </div>
-        </form>
+        }
         <div class="form-actions mt-6 justify-end">
-          <p-button
-            label="{{ t('refreshLoginButtonLabel') }}"
-            (click)="refreshLogin()"
-            [loading]="(isLoading$ | async) === loadingStates.LOADING"
-          ></p-button>
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            (click)="logout()"
+            [disabled]="(logoutIsLoading$ | async) === loadingStates.LOADING"
+          >
+            {{ t("logoutButtonLabel") }}
+          </button>
         </div>
-      }
-      <div class="form-actions mt-6 justify-end">
-        <p-button
-          label="{{ t('logoutButtonLabel') }}"
-          (click)="logout()"
-          styleClass="p-button-outlined p-button-secondary"
-          [loading]="(logoutIsLoading$ | async) === loadingStates.LOADING"
-        ></p-button>
-      </div>
-    </p-dialog>
-  }
+      </hlm-dialog-content>
+    </ng-template>
+  </hlm-dialog>
 </ng-container>

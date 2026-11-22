@@ -1,0 +1,25 @@
+import { Directive, input } from '@angular/core';
+import { classes } from '@spartan-ng/helm/utils';
+
+export type MessageAlign = 'start' | 'end';
+
+@Directive({
+  selector: '[hlmMessage],hlm-message',
+  exportAs: 'hlmMessage',
+  host: {
+    'data-slot': 'message',
+    '[attr.data-align]': 'align()',
+    // Prevent the legacy HTML `align` attribute from forcing text-align.
+    '[attr.align]': 'null',
+  },
+})
+export class HlmMessage {
+  public readonly align = input<MessageAlign>('start');
+
+  constructor() {
+    classes(
+      () =>
+        'gap-2 text-base group/message relative flex w-full min-w-0 data-[align=end]:flex-row-reverse',
+    );
+  }
+}

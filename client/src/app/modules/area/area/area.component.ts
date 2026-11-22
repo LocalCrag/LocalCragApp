@@ -1,7 +1,14 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Crag } from '../../../models/crag';
 import { Sector } from '../../../models/sector';
-import { MenuItem } from 'primeng/api';
 import { CragsService } from '../../../services/crud/crags.service';
 import { SectorsService } from '../../../services/crud/sectors.service';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
@@ -22,28 +29,50 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-
+import { CondiScoreChipComponent } from '../../shared/components/condi-score-chip/condi-score-chip.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-area',
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss'],
-  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  imports: [
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    CondiScoreChipComponent,
+    OutdoorModeDirective,
+    RouterOutlet,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'area' }],
 })
 export class AreaComponent implements OnInit {
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
+
   public crag: Crag;
   public sector: Sector;
   public area: Area;
-  public items: MenuItem[];
+  public items: PageMenuItem[];
 
-  private breadcrumbHome: MenuItem | undefined;
+  private breadcrumbHome: PageMenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -55,16 +84,16 @@ export class AreaComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
-  private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
-  private hasBlocweather = false;
 
   ngOnInit() {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
+        this.closureBannerService.setReasons([]);
         const cragSlug = this.route.snapshot.paramMap.get('crag-slug');
         const sectorSlug = this.route.snapshot.paramMap.get('sector-slug');
         const areaSlug = this.route.snapshot.paramMap.get('area-slug');
@@ -99,22 +128,11 @@ export class AreaComponent implements OnInit {
           waitForAuthState(this.store).pipe(
             map((auth) => !!auth.user?.moderator),
           ),
-          this.blocWeatherService.getNearest('sector', sectorSlug),
           this.store.pipe(select(selectGymMode), take(1)),
           this.store.pipe(select(selectBgImage), take(1)),
           this.regionService.getRegionCached(),
         ]).subscribe(
-          ([
-            crag,
-            sector,
-            area,
-            isModerator,
-            blocWeatherConfig,
-            isGymMode,
-            bgImage,
-            region,
-          ]) => {
-            this.hasBlocweather = !!blocWeatherConfig;
+          ([crag, sector, area, isModerator, isGymMode, bgImage, region]) => {
             this.crag = crag;
             this.sector = sector;
             this.area = area;
@@ -122,8 +140,12 @@ export class AreaComponent implements OnInit {
               area.name,
               area.portraitImage,
               bgImage,
+              {
+                titleAddon: this.statusTagsTemplate,
+              },
             );
             this.rulesAlertService.setContext({ sector, crag, region });
+            this.closureBannerService.setReasons(area.closedReasons);
             this.store
               .select(selectInstanceSettingsState)
               .subscribe((instanceSettings) => {
@@ -226,7 +248,7 @@ export class AreaComponent implements OnInit {
         label: this.translocoService.translate(marker('area.weather')),
         icon: 'pi pi-fw pi-sun',
         routerLink: `/topo/${this.crag.slug}/${this.sector.slug}/${this.area.slug}/weather`,
-        visible: this.hasBlocweather && !isGymMode,
+        visible: this.area.hasCondicaster && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('area.statistics')),

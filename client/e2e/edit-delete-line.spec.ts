@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login } from './helpers/auth';
+import { chooseMonthYear } from './helpers/month-year';
 
 test.describe('Edit and delete line', () => {
   test('creates, renames, and deletes a disposable line under Shark Attack', async ({
@@ -23,18 +24,25 @@ test.describe('Edit and delete line', () => {
     await page
       .locator('[data-cy="line-form-description"] .ql-editor')
       .fill('Lifecycle line description.');
-    await page.locator('[data-cy="grade-dropdown"] > div').click();
+    await page
+      .locator('[data-cy="grade-dropdown"] [data-slot="select-trigger"]')
+      .click();
     await page.locator('[data-cy="grade-dropdown-item"]').nth(30).click();
-    await page.locator('[data-cy="starting-position-dropdown"] > div').click();
+    await page
+      .locator(
+        '[data-cy="starting-position-dropdown"] [data-slot="select-trigger"]',
+      )
+      .click();
     await page
       .locator('[data-cy="starting-position-dropdown-item"]')
       .nth(2)
       .click();
-    await page.locator('[data-cy="rating"] .p-rating-option').nth(3).click();
+    await page.locator('[data-cy="rating"] button').nth(3).click();
     await page.locator('[data-cy="line-form-faName"]').fill('Shawn Raboutou');
-    await page.locator('[data-cy="line-form-faYear"] input').click();
-    await page.locator('.p-datepicker-year').nth(0).click();
-    await page.locator('[data-cy="line-form-highball"]').click();
+    await chooseMonthYear(page, { picker: '[data-cy="line-form-faYear"]' });
+    await page
+      .locator('[data-cy="line-form-highball"] [role="checkbox"]')
+      .click();
     await page.locator('[data-cy="submit"]').click();
 
     const createLine = await createLinePromise;
@@ -70,7 +78,7 @@ test.describe('Edit and delete line', () => {
       `/topo/brione/pampelmousse/shark-attack/${renamedSlug}/edit`,
     );
     await page.locator('[data-cy="delete"]').click();
-    await page.locator('.p-confirmpopup-accept-button').nth(0).click();
+    await page.locator('[data-cy="confirm-accept"]').nth(0).click();
     await deleteLinePromise;
 
     const listLinesPromise = page.waitForResponse(

@@ -7,6 +7,8 @@
   "closableForm.scheduledClosureStartLabel": "Depuis",
   "closableForm.scheduledClosureEndLabel": "Jusqu'à",
   "closableForm.fixedEndBeforeStartValidationError": "La date de fin doit être identique ou postérieure à la date de début.",
+  "closableForm.annualDatesRequiredValidationError": "La date de début et la date de fin sont obligatoires.",
+  "closableForm.annualCoversEntireYearValidationError": "La période ne doit pas couvrir toute l'année.",
   "closableForm.closureMaterializationInfo": "Après l'enregistrement, cela peut prendre quelques secondes jusqu'à ce que les états fermés soient mis à jour dans tous les spots enfants.",
   "closableFormScheduleDialog.cancel": "Annuler",
   "closableFormScheduleDialog.ok": "D'ACCORD",

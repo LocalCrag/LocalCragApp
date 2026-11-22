@@ -1,23 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { MessageService } from 'primeng/api';
+import { toast } from '@spartan-ng/brain/sonner';
 import {
   getNotification,
   NotificationKey,
   NotificationType,
 } from '../../utility/notifications';
 import { TranslocoHashMap } from '../../utility/types/transloco';
+import { LanguageService } from './language.service';
 
 /**
- * Shows PrimeNG toasts for app notification keys.
+ * Shows toaster notifications for app notification keys.
  * Success, info, warning, and error toasts are shown on every viewport.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AppNotificationsService {
-  private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
+  private languageService = inject(LanguageService);
 
   /**
    * Pushes a toast notification.
@@ -35,42 +36,34 @@ export class AppNotificationsService {
   }
 
   private success(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'success',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.success(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private error(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.error(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private info(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'info',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.info(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
   private warning(title: string, content: string, styleClass?: string) {
-    this.messageService.add({
-      severity: 'warn',
-      detail: content,
-      summary: title,
-      life: 5000,
-      ...(styleClass ? { styleClass } : {}),
+    toast.warning(title, {
+      description: content,
+      duration: 5000,
+      class: styleClass,
     });
   }
 
@@ -80,28 +73,32 @@ export class AppNotificationsService {
     messageParams: TranslocoHashMap = {},
   ) {
     const notificationDefinition = getNotification(notificationKey);
-    const title = this.translocoService.translate(
-      notificationDefinition.title,
-      titleParams,
-    );
-    const message = this.translocoService.translate(
-      notificationDefinition.message,
-      messageParams,
-    );
     const styleClass = notificationDefinition.styleClass;
-    switch (notificationDefinition.type) {
-      case NotificationType.ERROR:
-        this.error(title, message, styleClass);
-        break;
-      case NotificationType.WARNING:
-        this.warning(title, message, styleClass);
-        break;
-      case NotificationType.SUCCESS:
-        this.success(title, message, styleClass);
-        break;
-      case NotificationType.INFO:
-        this.info(title, message, styleClass);
-        break;
-    }
+    // Login and account-language saves switch the catalog in the same turn
+    // the toast is queued. Translating before that file arrives returns the key.
+    this.languageService.whenTranslationsReady().subscribe(() => {
+      const title = this.translocoService.translate(
+        notificationDefinition.title,
+        titleParams,
+      );
+      const message = this.translocoService.translate(
+        notificationDefinition.message,
+        messageParams,
+      );
+      switch (notificationDefinition.type) {
+        case NotificationType.ERROR:
+          this.error(title, message, styleClass);
+          break;
+        case NotificationType.WARNING:
+          this.warning(title, message, styleClass);
+          break;
+        case NotificationType.SUCCESS:
+          this.success(title, message, styleClass);
+          break;
+        case NotificationType.INFO:
+          this.info(title, message, styleClass);
+          break;
+      }
+    });
   }
 }

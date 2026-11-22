@@ -1,19 +1,15 @@
 import {
   Component,
-  ElementRef,
   forwardRef,
   Injector,
-  OnDestroy,
   OnInit,
-  ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { FileUpload, FileUploadModule } from 'primeng/fileupload';
-import { ImageModule } from 'primeng/image';
-
-import { ProgressBarModule } from 'primeng/progressbar';
+import { HttpClient } from '@angular/common/http';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePencil } from '@ng-icons/lucide';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -21,19 +17,16 @@ import {
 } from '@angular/forms';
 import { File } from '../../../../../models/file';
 import { ApiService } from '../../../../../services/core/api.service';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
+import { splitFilesByMaxSize, uploadFormFiles } from '../upload-form-files';
+import { toastNotification } from '../../../../../ngrx/actions/notifications.actions';
 import { selectInstanceSettingsState } from '../../../../../ngrx/selectors/instance-settings.selectors';
 import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'lc-avatar-upload',
-  imports: [
-    ButtonModule,
-    FileUploadModule,
-    ImageModule,
-    ProgressBarModule,
-    ProgressSpinnerModule,
-  ],
+  imports: [NgIcon, HlmButton, HlmSpinner],
   templateUrl: './avatar-upload.component.html',
   styleUrl: './avatar-upload.component.scss',
   providers: [
@@ -42,15 +35,12 @@ import { Store } from '@ngrx/store';
       useExisting: forwardRef(() => AvatarUploadComponent),
       multi: true,
     },
+    provideIcons({ lucidePencil }),
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
-export class AvatarUploadComponent
-  implements OnInit, ControlValueAccessor, OnDestroy
-{
-  @ViewChild(FileUpload) uploader: FileUpload;
-  @ViewChild('uploader') uploaderElementRef: ElementRef<HTMLElement>;
-
+export class AvatarUploadComponent implements OnInit, ControlValueAccessor {
   public uploadUrl: string;
   public isDisabled = false;
   public formControl: NgControl;
@@ -63,6 +53,7 @@ export class AvatarUploadComponent
   public maxImageSize: number;
 
   private api = inject(ApiService);
+  private http = inject(HttpClient);
   private inj = inject(Injector);
   private store = inject(Store);
 
@@ -142,13 +133,6 @@ export class AvatarUploadComponent
   }
 
   /**
-   * Resets the component on destruction.
-   */
-  ngOnDestroy(): void {
-    this.uploader?.clear();
-  }
-
-  /**
    * Starts the progress bar.
    */
   startProgress() {
@@ -177,12 +161,38 @@ export class AvatarUploadComponent
     return `url(${path})`;
   }
 
-  /**
-   * Clicks the hidden prime nbg upload button component.
-   */
-  clickFileUpload() {
-    this.uploaderElementRef['el'].nativeElement
-      .querySelector('.p-fileupload-choose-button')
-      .click();
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!files.length) {
+      return;
+    }
+    const { accepted, oversized } = splitFilesByMaxSize(
+      files,
+      this.maxImageSize,
+    );
+    if (oversized) {
+      this.store.dispatch(
+        toastNotification(
+          'IMAGE_TOO_LARGE',
+          {},
+          {
+            max: Math.round(this.maxImageSize / 1048576),
+          },
+        ),
+      );
+    }
+    if (!accepted.length) {
+      return;
+    }
+    this.startProgress();
+    uploadFormFiles(this.http, this.uploadUrl, accepted, {
+      onProgress: (progress) => this.setProgress({ progress }),
+      onBody: (body) => this.setMedia({ originalEvent: { body } }),
+      onError: () => {
+        this.showProgressBar = false;
+      },
+    });
   }
 }

@@ -1,8 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { Line } from '../../../models/line';
+import { Ascent } from '../../../models/ascent';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+
+type ProjectClimbedTitleContext = {
+  line?: Line;
+  ascent?: Ascent;
+};
 
 @Component({
   selector: 'lc-project-climbed-form-title',
@@ -12,14 +18,13 @@ import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
 })
 export class ProjectClimbedFormTitleComponent {
   public line: Line;
-  public ref = inject(DynamicDialogRef);
 
-  private dialogConfig = inject(DynamicDialogConfig);
+  private dialogContext = injectBrnDialogContext<ProjectClimbedTitleContext>();
   protected scalesService = inject(ScalesService);
 
   constructor() {
-    this.line = this.dialogConfig.data.line
-      ? this.dialogConfig.data.line
-      : this.dialogConfig.data.ascent.line;
+    this.line = this.dialogContext.line
+      ? this.dialogContext.line
+      : this.dialogContext.ascent.line;
   }
 }

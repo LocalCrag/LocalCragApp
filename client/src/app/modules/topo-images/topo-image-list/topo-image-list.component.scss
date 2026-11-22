@@ -4,23 +4,16 @@
   }
 }
 
-.p-menu-item.topo-image-menu-danger {
-  .p-menu-item-icon,
-  .p-menu-item-label {
-    color: var(--p-red-500, #ef4444);
-  }
-}
-
 .line-context-menu {
-  .high-priority .pi {
+  .high-priority ng-icon {
     color: red;
   }
 
-  .medium-priority .pi {
+  .medium-priority ng-icon {
     color: blue;
   }
 
-  .low-priority .pi {
+  .low-priority ng-icon {
     color: grey;
   }
 }
@@ -44,14 +37,16 @@ lc-topo-image-list {
   // Keeps the topo image in view while scrolling a long line list. Only in the
   // xl side-by-side layout; below that the image stacks above the lines.
   // Tall images stay in the page flow instead of scrolling inside the column.
+  // The header slides away while scrolling, so the clearance shrinks with it.
   @media (min-width: 80rem) {
     .topo-image-column {
       --topo-image-sticky-top: calc(
         var(--lc-menu-height, 3.25rem) + var(--lc-top-alerts-height, 0px) +
-          1.5rem
+          var(--lc-layout-gap, 1.5rem)
       );
       position: sticky;
       top: var(--topo-image-sticky-top);
+      transition: top 0.2s ease;
     }
   }
 
@@ -62,7 +57,7 @@ lc-topo-image-list {
       background-color: inherit;
     }
 
-    .p-rating-icon {
+    .text-primary {
       color: inherit;
     }
 
@@ -72,8 +67,16 @@ lc-topo-image-list {
   }
 }
 
+@media (min-width: 80rem) {
+  :root:has(.site-header--hidden) lc-topo-image-list .topo-image-column {
+    --topo-image-sticky-top: calc(
+      var(--lc-top-alerts-height, 0px) + var(--lc-layout-gap, 1.5rem)
+    );
+  }
+}
+
 lc-topo-image-list {
-  p-rating {
+  .line-table-info-rating {
     padding: 0.75rem 0;
   }
 
@@ -109,7 +112,7 @@ lc-topo-image-list {
       text-align: left;
       cursor: pointer;
 
-      .pi {
+      ng-icon {
         font-size: 0.75rem;
       }
 
@@ -210,9 +213,29 @@ lc-topo-image-list {
 
     .line-table-info-actions {
       justify-content: flex-end;
+      gap: 0.125rem;
 
-      p-button {
-        margin-right: -0.75rem;
+      button {
+        border-color: var(--border);
+        background-color: transparent;
+
+        &:hover:not(:disabled) {
+          background-color: var(--accent);
+        }
+
+        &.line-status-icon {
+          border-color: transparent;
+          background-color: var(--p-red-700);
+          color: var(--p-primary-contrast-color);
+
+          &:hover:not(:disabled) {
+            background-color: color-mix(in oklch, var(--p-red-700) 85%, black);
+          }
+        }
+      }
+
+      lc-tick-button {
+        display: flex;
       }
     }
 
@@ -256,7 +279,10 @@ lc-topo-image-list {
       }
 
       .line-table-info-actions {
-        grid-column: 3;
+        // Span the name and the grade. A column of their own would be as wide
+        // as the buttons, and the short grade would leave the name wrapping
+        // beside a blank gap.
+        grid-column: 2 / -1;
         grid-row: 3;
         justify-self: end;
       }

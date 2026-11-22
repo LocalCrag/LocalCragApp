@@ -1,18 +1,24 @@
 @if (expanded) {
-  <p-button
-    icon="pi pi-angle-up"
-    [rounded]="true"
-    [text]="true"
-    severity="secondary"
+  <button
+    hlmBtn
+    type="button"
+    variant="ghost"
+    size="icon"
+    class="rounded-full"
     (click)="expanded = !expanded; expandedChange.emit(expanded)"
-  />
+  >
+    <ng-icon name="lucideChevronUp" />
+  </button>
 }
 @if (!expanded) {
-  <p-button
-    icon="pi pi-angle-down"
-    [rounded]="true"
-    [text]="true"
-    severity="secondary"
+  <button
+    hlmBtn
+    type="button"
+    variant="ghost"
+    size="icon"
+    class="rounded-full"
     (click)="expanded = !expanded; expandedChange.emit(expanded)"
-  />
+  >
+    <ng-icon name="lucideChevronDown" />
+  </button>
 }

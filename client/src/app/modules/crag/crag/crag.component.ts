@@ -1,8 +1,15 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CragsService } from '../../../services/crud/crags.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Crag } from '../../../models/crag';
-import { MenuItem } from 'primeng/api';
 import { TRANSLOCO_SCOPE, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../environments/environment';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
@@ -11,7 +18,6 @@ import { catchError, map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { waitForAuthState } from '../../../guards/wait-for-auth';
 import { Title } from '@angular/platform-browser';
-
 import {
   selectGymMode,
   selectInstanceSettingsState,
@@ -19,26 +25,48 @@ import {
 } from '../../../ngrx/selectors/instance-settings.selectors';
 import { ClosedSpotTagComponent } from '../../shared/components/closed-spot-tag/closed-spot-tag.component';
 import { SecretSpotTagComponent } from '../../shared/components/secret-spot-tag/secret-spot-tag.component';
-
+import { CondiScoreChipComponent } from '../../shared/components/condi-score-chip/condi-score-chip.component';
+import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BlocWeatherService } from '../../../services/crud/blocweather.service';
 import { LanguageService } from '../../../services/core/language.service';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { RulesAlertService } from '../../../services/core/rules-alert.service';
+import { ClosureBannerService } from '../../../services/core/closure-banner.service';
 import { RegionService } from '../../../services/crud/region.service';
+
+interface PageMenuItem {
+  label?: string;
+  icon?: string;
+  routerLink?: string | unknown[];
+  routerLinkActiveOptions?: { exact?: boolean };
+  visible?: boolean;
+  badge?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
 
 @Component({
   selector: 'lc-crag',
   templateUrl: './crag.component.html',
   styleUrls: ['./crag.component.scss'],
-  imports: [ClosedSpotTagComponent, SecretSpotTagComponent, RouterOutlet],
+  imports: [
+    ClosedSpotTagComponent,
+    SecretSpotTagComponent,
+    CondiScoreChipComponent,
+    OutdoorModeDirective,
+    RouterOutlet,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'crag' }],
 })
 export class CragComponent implements OnInit {
-  public crag: Crag;
-  public items: MenuItem[];
+  @ViewChild('statusTags', { read: TemplateRef })
+  statusTagsTemplate: TemplateRef<unknown>;
 
-  private breadcrumbHome: MenuItem | undefined;
+  public crag: Crag;
+  public items: PageMenuItem[];
+
+  private breadcrumbHome: PageMenuItem | undefined;
 
   private destroyRef = inject(DestroyRef);
   private cragsService = inject(CragsService);
@@ -48,16 +76,16 @@ export class CragComponent implements OnInit {
   private store = inject(Store);
   private title = inject(Title);
   private route = inject(ActivatedRoute);
-  private blocWeatherService = inject(BlocWeatherService);
   private pageTitleService = inject(PageTitleService);
   private rulesAlertService = inject(RulesAlertService);
+  private closureBannerService = inject(ClosureBannerService);
   private regionService = inject(RegionService);
-  private hasBlocweather = false;
 
   ngOnInit() {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
+        this.closureBannerService.setReasons([]);
         this.crag = null;
         const cragSlug = params.get('crag-slug');
 
@@ -75,51 +103,44 @@ export class CragComponent implements OnInit {
             map((auth) => !!auth.user?.moderator),
           ),
           this.store.pipe(select(selectGymMode), take(1)),
-          this.blocWeatherService.getNearest('crag', cragSlug),
           this.store.pipe(select(selectBgImage), take(1)),
           this.regionService.getRegionCached(),
-        ]).subscribe(
-          ([
-            crag,
-            isModerator,
-            isGymMode,
-            blocweatherConfig,
+        ]).subscribe(([crag, isModerator, isGymMode, bgImage, region]) => {
+          this.crag = crag;
+          this.pageTitleService.setPortraitTitle(
+            crag.name,
+            crag.portraitImage,
             bgImage,
-            region,
-          ]) => {
-            this.hasBlocweather = !!blocweatherConfig;
-            this.crag = crag;
-            this.pageTitleService.setPortraitTitle(
-              crag.name,
-              crag.portraitImage,
-              bgImage,
-            );
-            this.rulesAlertService.setContext({ crag, region });
-            this.store
-              .select(selectInstanceSettingsState)
-              .subscribe((instanceSettings) => {
-                this.title.setTitle(
-                  `${crag.name} - ${instanceSettings.instanceName}`,
-                );
-                this.breadcrumbHome = {
-                  icon: 'pi pi-map',
-                  routerLink:
-                    '/topo' +
-                    `/${environment.skippedSlug}`.repeat(
-                      instanceSettings.skippedHierarchyLayers,
-                    ),
-                };
-                this.updateBreadcrumbs(crag);
-              });
-            this.buildItems(crag, isModerator, isGymMode);
-            this.languageService.renderedLanguage$
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe((rendered) => {
-                if (!rendered) return;
-                this.buildItems(crag, isModerator, isGymMode);
-              });
-          },
-        );
+            {
+              titleAddon: this.statusTagsTemplate,
+            },
+          );
+          this.rulesAlertService.setContext({ crag, region });
+          this.closureBannerService.setReasons(crag.closedReasons);
+          this.store
+            .select(selectInstanceSettingsState)
+            .subscribe((instanceSettings) => {
+              this.title.setTitle(
+                `${crag.name} - ${instanceSettings.instanceName}`,
+              );
+              this.breadcrumbHome = {
+                icon: 'pi pi-map',
+                routerLink:
+                  '/topo' +
+                  `/${environment.skippedSlug}`.repeat(
+                    instanceSettings.skippedHierarchyLayers,
+                  ),
+              };
+              this.updateBreadcrumbs(crag);
+            });
+          this.buildItems(crag, isModerator, isGymMode);
+          this.languageService.renderedLanguage$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rendered) => {
+              if (!rendered) return;
+              this.buildItems(crag, isModerator, isGymMode);
+            });
+        });
       });
   }
 
@@ -199,7 +220,7 @@ export class CragComponent implements OnInit {
         label: this.translocoService.translate(marker('crag.weather')),
         icon: 'pi pi-fw pi-sun',
         routerLink: `/topo/${this.crag.slug}/weather`,
-        visible: this.hasBlocweather && !isGymMode,
+        visible: crag.hasCondicaster && !isGymMode,
       },
       {
         label: this.translocoService.translate(marker('crag.statistics')),

@@ -1,20 +1,13 @@
 import { Injectable, inject, DestroyRef } from '@angular/core';
 import { Translation, TranslocoService } from '@jsverse/transloco';
 import { LANGUAGE_CODES, LanguageCode } from '../../utility/types/language';
-import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectInstanceLanguage } from '../../ngrx/selectors/instance-settings.selectors';
 import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { loginSuccess } from '../../ngrx/actions/auth.actions';
-import { map, tap } from 'rxjs/operators';
-import { PrimeNG } from 'primeng/config';
-import { Locale } from 'primelocale/js/locale.js';
-import { de } from 'primelocale/js/de.js';
-import { fr } from 'primelocale/js/fr.js';
-import { it } from 'primelocale/js/it.js';
-import { en_GB } from 'primelocale/js/en_GB.js';
-import { nl } from 'primelocale/js/nl.js';
+import { filter, finalize, map, take, tap } from 'rxjs/operators';
 import {
   readLocalStorageItem,
   writeLocalStorageItem,
@@ -26,8 +19,6 @@ export class LanguageService {
   private transloco = inject(TranslocoService);
   private actions$ = inject(Actions);
   private destroyRef = inject(DestroyRef);
-  private primeNG = inject(PrimeNG);
-
   private gymMode = false;
 
   // Language of the instance
@@ -44,14 +35,9 @@ export class LanguageService {
   // Observable that emits whenever the currently rendered language changes.
   private renderedLanguageSubject = new BehaviorSubject<string | null>(null);
   readonly renderedLanguage$ = this.renderedLanguageSubject.asObservable();
-
-  private primeNGTranslationMapping: Record<LanguageCode, Locale> = {
-    de: de,
-    en: en_GB,
-    fr: fr,
-    it: it,
-    nl: nl,
-  };
+  /** In-flight language loads. Toasts wait so they are not translated against an empty catalog. */
+  private pendingLanguageLoads = 0;
+  private languageReadySubject = new BehaviorSubject<void>(undefined);
 
   constructor() {
     this.browserLanguage = navigator.language.slice(0, 2) as LanguageCode;
@@ -122,26 +108,44 @@ export class LanguageService {
     // Set language based on priority: user > preferred > browser > instance
     const lang = this.calculatedLanguage;
 
+    const rendered = this.gymMode ? `${lang}-gym` : lang;
     // Do nothing if current language is the same
-    if (this.renderedLanguage === (this.gymMode ? `${lang}-gym` : lang)) {
-      return new Observable<Translation[]>((subscriber) => {
-        subscriber.next([]);
-        subscriber.complete();
-      });
+    if (this.renderedLanguage === rendered) {
+      return of([]);
     }
 
-    // Set active language and preload translations
-    this.transloco.setActiveLang(this.gymMode ? `${lang}-gym` : lang);
-    this.renderedLanguage = this.gymMode ? `${lang}-gym` : lang;
-    this.transloco.setFallbackLangForMissingTranslation({
-      fallbackLang: lang,
-    });
-    this.primeNG.setTranslation(this.primeNGTranslationMapping[lang]);
+    // Load the catalog before activating the language. Activating first makes
+    // translate() return raw keys until the file arrives, which is what the
+    // login toast was showing.
+    this.pendingLanguageLoads++;
     return this.preloadScopes(lang).pipe(
       tap(() => {
-        // Notify subscribers about the change
+        this.transloco.setFallbackLangForMissingTranslation({
+          fallbackLang: lang,
+        });
+        this.transloco.setActiveLang(rendered);
+        this.renderedLanguage = rendered;
         this.renderedLanguageSubject.next(this.renderedLanguage);
       }),
+      finalize(() => {
+        this.pendingLanguageLoads = Math.max(0, this.pendingLanguageLoads - 1);
+        if (this.pendingLanguageLoads === 0) {
+          this.languageReadySubject.next();
+        }
+      }),
+    );
+  }
+
+  /**
+   * Emits when no language change is still loading its translation files.
+   */
+  whenTranslationsReady(): Observable<void> {
+    if (this.pendingLanguageLoads === 0) {
+      return of(undefined);
+    }
+    return this.languageReadySubject.pipe(
+      filter(() => this.pendingLanguageLoads === 0),
+      take(1),
     );
   }
 

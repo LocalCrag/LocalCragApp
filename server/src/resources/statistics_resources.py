@@ -3,6 +3,7 @@ import datetime
 from flask import jsonify, request
 from flask.views import MethodView
 from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.orm import joinedload
 
 from error_handling.http_exceptions.bad_request import BadRequest
@@ -56,7 +57,7 @@ class GetCompletion(MethodView):
             .filter(
                 Line.author_grade_value >= 0, Line.publication_status == PublicationStatusEnum.PUBLISHED
             )  # Don't include projects or lines that are not published
-            .distinct(Line.id)
+            .ext(distinct_on(Line.id))
         )
 
         # Filter lines for grades

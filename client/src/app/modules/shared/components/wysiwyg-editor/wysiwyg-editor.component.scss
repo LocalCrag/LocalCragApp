@@ -1,6 +1,11 @@
 :host {
   display: block;
-  background: var(--p-form-field-background, var(--p-content-background));
+  // Match text inputs: clear in light mode, the same translucent wash in dark mode.
+  background: transparent;
+}
+
+:host-context(.lc-dark) {
+  background: color-mix(in oklab, var(--input) 30%, transparent);
 }
 
 .lc-wysiwyg-toolbar {

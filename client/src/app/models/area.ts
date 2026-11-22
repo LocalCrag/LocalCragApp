@@ -31,7 +31,10 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   secret: boolean;
   publicationStatus: string;
   mapMarkers: MapMarker[];
-  blocweatherUrl: string | null = null;
+  condicasterCragId: number | null = null;
+  condicasterCragName: string | null = null;
+  hasCondicaster = false;
+  condiscore: number | null = null;
 
   sector: Sector | null;
   routerLink: string | null;
@@ -67,7 +70,10 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     area.routerLink = topoAreaRouterLink(area);
-    area.blocweatherUrl = payload.blocweatherUrl ?? null;
+    area.condicasterCragId = payload.condicasterCragId ?? null;
+    area.condicasterCragName = payload.condicasterCragName ?? null;
+    area.hasCondicaster = !!payload.hasCondicaster;
+    area.condiscore = payload.condiscore ?? null;
     return area;
   }
 
@@ -89,7 +95,8 @@ export class Area extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         mapMarkers: area.mapMarkers
           ? area.mapMarkers.map(MapMarker.serialize)
           : null,
-        blocweatherUrl: area.blocweatherUrl,
+        condicasterCragId: area.condicasterCragId,
+        condicasterCragName: area.condicasterCragName,
       },
     };
   }

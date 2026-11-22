@@ -15,11 +15,7 @@
       <div class="form-label flex items-center">
         <label for="color-scheme">{{ t("colorSchemeLabel") }}</label>
       </div>
-      <select
-        id="color-scheme"
-        class="p-inputtext"
-        formControlName="colorScheme"
-      >
+      <select id="color-scheme" hlmInput formControlName="colorScheme">
         <option value="system">{{ t("colorSchemeSystem") }}</option>
         <option value="light">{{ t("colorSchemeLight") }}</option>
         <option value="dark">{{ t("colorSchemeDark") }}</option>
@@ -32,8 +28,8 @@
       </div>
       <div class="flex items-center justify-center sm:justify-start">
         <div>
-          <p-toggleswitch
-            id="exclude-from-rankings"
+          <hlm-switch
+            inputId="exclude-from-rankings"
             class="mx-2 blue-green-switch"
             formControlName="excludeFromRankings"
             lcFormControl
@@ -48,8 +44,8 @@
       </div>
       <div class="flex items-center justify-center sm:justify-start">
         <div>
-          <p-toggleswitch
-            id="todo-list-private"
+          <hlm-switch
+            inputId="todo-list-private"
             class="mx-2 blue-green-switch"
             formControlName="todoListPrivate"
             lcFormControl
@@ -74,8 +70,8 @@
         </div>
         <div class="flex items-center justify-center sm:justify-start">
           <div>
-            <p-toggleswitch
-              id="display-user-grades"
+            <hlm-switch
+              inputId="display-user-grades"
               class="mx-2 blue-green-switch"
               formControlName="commentReplyMailsEnabled"
               lcFormControl
@@ -90,8 +86,8 @@
         </div>
         <div class="flex items-center justify-center sm:justify-start">
           <div>
-            <p-toggleswitch
-              id="reaction-notifications-enabled"
+            <hlm-switch
+              inputId="reaction-notifications-enabled"
               class="mx-2 blue-green-switch"
               formControlName="reactionNotificationsEnabled"
               lcFormControl
@@ -106,8 +102,8 @@
         </div>
         <div class="flex items-center justify-center sm:justify-start">
           <div>
-            <p-toggleswitch
-              id="fa-moderation-notifications-enabled"
+            <hlm-switch
+              inputId="fa-moderation-notifications-enabled"
               class="mx-2 blue-green-switch"
               formControlName="systemNotificationsEnabled"
               lcFormControl
@@ -125,8 +121,8 @@
           class="flex items-center justify-center sm:justify-start"
         >
           <div>
-            <p-toggleswitch
-              id="moderator-task-mails-enabled"
+            <hlm-switch
+              inputId="moderator-task-mails-enabled"
               class="mx-2 blue-green-switch"
               formControlName="moderatorTaskNotificationsEnabled"
               lcFormControl
@@ -141,8 +137,8 @@
         </div>
         <div class="flex items-center justify-center sm:justify-start">
           <div>
-            <p-toggleswitch
-              id="admin-message-notifications-enabled"
+            <hlm-switch
+              inputId="admin-message-notifications-enabled"
               class="mx-2 blue-green-switch"
               formControlName="adminMessageNotificationsEnabled"
               lcFormControl
@@ -165,7 +161,7 @@
         </div>
         <select
           id="notification-digest-frequency"
-          class="p-inputtext"
+          hlmInput
           formControlName="notificationDigestFrequency"
         >
           <option value="daily">
@@ -180,10 +176,13 @@
   </form>
 
   <div class="form-actions">
-    <p-button
-      label="{{ t('saveAccountSettingsButtonLabel') }}"
+    <button
+      hlmBtn
+      type="button"
       (click)="saveAccountSettings()"
-      [loading]="loadingState === loadingStates.LOADING"
-    ></p-button>
+      [disabled]="loadingState === loadingStates.LOADING"
+    >
+      {{ t("saveAccountSettingsButtonLabel") }}
+    </button>
   </div>
 </ng-container>

@@ -2,7 +2,6 @@ import { ChangeDetectorRef, DestroyRef, NgZone, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { firstValueFrom } from 'rxjs';
@@ -45,6 +44,7 @@ import {
 } from './offline/rock-explorer-draft-sync.service';
 import { RockExplorerDraftReconcileService } from './offline/rock-explorer-draft-reconcile.service';
 import { RockExplorerPendingImageService } from './offline/rock-explorer-pending-image.service';
+import { toast } from '@spartan-ng/brain/sonner';
 
 /**
  * Component behaviors the facade calls back into. Kept intentionally small —
@@ -60,8 +60,14 @@ export type RockExplorerRecordingFacadeHost = {
   cdr: ChangeDetectorRef;
   destroyRef: DestroyRef;
   ngZone: NgZone;
-  messageService: MessageService;
-  confirmationService: ConfirmationService;
+  openConfirm: (options: {
+    message: string;
+    acceptLabel?: string;
+    rejectLabel?: string;
+    destructive?: boolean;
+    accept?: () => void;
+    reject?: () => void;
+  }) => void;
 
   /** Re-fetch + re-render the feature list (current filters live on host). */
   reloadFeatures: () => void;
@@ -259,12 +265,11 @@ export class RockExplorerRecordingFacade {
       return;
     }
     if (!this.recordingSession.finishPath()) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
+      toast.warning(
+        this.transloco.translate(
           marker('rockExplorer.recordFinishPathTooShort'),
         ),
-      });
+      );
       return;
     }
     this.syncRecordUiSignals();
@@ -392,12 +397,9 @@ export class RockExplorerRecordingFacade {
       return;
     }
     if (!this.host.ui.storageOk()) {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.storageUnavailable'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.storageUnavailable')),
+      );
       return;
     }
     if (this.host.ui.isDrawToolActive()) {
@@ -453,21 +455,15 @@ export class RockExplorerRecordingFacade {
 
   async continueDraft(localId: string): Promise<void> {
     if (this.host.ui.recordModeActive()) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.exitRecordBeforeSwitch'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.exitRecordBeforeSwitch')),
+      );
       return;
     }
     if (!this.host.ui.storageOk()) {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.storageUnavailable'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.storageUnavailable')),
+      );
       return;
     }
 
@@ -636,12 +632,9 @@ export class RockExplorerRecordingFacade {
     }
 
     if (!targetLocalId) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.publishNoDraft'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.publishNoDraft')),
+      );
       return;
     }
 
@@ -664,22 +657,16 @@ export class RockExplorerRecordingFacade {
       draft = await this.draftStore.get(targetLocalId);
     }
     if (!draft) {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.publishNoDraft'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.publishNoDraft')),
+      );
       return;
     }
 
     if (!this.host.ui.online()) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.cannotPublishOffline'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.cannotPublishOffline')),
+      );
       return;
     }
 
@@ -693,12 +680,9 @@ export class RockExplorerRecordingFacade {
       }
     }
     if (!draft?.serverId) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.cannotPublishOffline'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.cannotPublishOffline')),
+      );
       return;
     }
 
@@ -782,24 +766,20 @@ export class RockExplorerRecordingFacade {
       return;
     }
     if (!this.publishPotential) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
+      toast.warning(
+        this.transloco.translate(
           marker('rockExplorer.publishPotentialRequired'),
         ),
-      });
+      );
       return;
     }
 
     const localId = this.publishLocalId;
     const draft = await this.draftStore.get(localId);
     if (!draft?.serverId) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.cannotPublishOffline'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.cannotPublishOffline')),
+      );
       return;
     }
 
@@ -821,12 +801,9 @@ export class RockExplorerRecordingFacade {
     );
     const geometry = geometryForPublishFromOverlays(overlayPoints);
     if (!geometry) {
-      this.host.messageService.add({
-        severity: 'warn',
-        summary: this.transloco.translate(
-          marker('rockExplorer.publishNoGeometry'),
-        ),
-      });
+      toast.warning(
+        this.transloco.translate(marker('rockExplorer.publishNoGeometry')),
+      );
       return;
     }
 
@@ -838,10 +815,7 @@ export class RockExplorerRecordingFacade {
         getOrCreateRecordingDeviceId()
       ).trim();
       if (!deviceId) {
-        this.host.messageService.add({
-          severity: 'error',
-          summary: this.transloco.translate(marker('rockExplorer.loadError')),
-        });
+        toast.error(this.transloco.translate(marker('rockExplorer.loadError')));
         return;
       }
 
@@ -882,22 +856,18 @@ export class RockExplorerRecordingFacade {
       this.host.images.clearLivePins();
       await this.host.images.refreshDraftPins();
       this.host.applyFeatureToPanel(published, false);
-      this.host.messageService.add({
-        severity: 'success',
-        summary: this.transloco.translate(
-          marker('rockExplorer.publishSuccess'),
-        ),
-      });
+      toast.success(
+        this.transloco.translate(marker('rockExplorer.publishSuccess')),
+      );
     } catch (err) {
       const locked = err instanceof HttpErrorResponse && err.status === 409;
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
+      toast.error(
+        this.transloco.translate(
           locked
             ? marker('rockExplorer.deviceLockTitle')
             : marker('rockExplorer.loadError'),
         ),
-      });
+      );
     } finally {
       this.publishInFlight = false;
       this.host.cdr.detectChanges();
@@ -1019,12 +989,9 @@ export class RockExplorerRecordingFacade {
       return;
     }
     if (!mockGpsRecording && !navigator.geolocation) {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.recordGeoDenied'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.recordGeoDenied')),
+      );
       return;
     }
 
@@ -1035,12 +1002,9 @@ export class RockExplorerRecordingFacade {
       lat = pos.coords.latitude;
       lng = pos.coords.longitude;
     } catch {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.recordGeoDenied'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.recordGeoDenied')),
+      );
       return;
     }
 
@@ -1052,32 +1016,23 @@ export class RockExplorerRecordingFacade {
       try {
         await this.uploadRecordImageNow(serverId, file, lat, lng);
         this.host.images.appendLivePin(lat, lng);
-        this.host.messageService.add({
-          severity: 'success',
-          summary: this.transloco.translate(
-            marker('rockExplorer.imageUploadSuccess'),
-          ),
-        });
+        toast.success(
+          this.transloco.translate(marker('rockExplorer.imageUploadSuccess')),
+        );
       } catch {
         // Fall back to queue
         await this.pendingImages.enqueue(localId, file, lat, lng, file.name);
         await this.host.images.refreshDraftPins();
-        this.host.messageService.add({
-          severity: 'info',
-          summary: this.transloco.translate(
-            marker('rockExplorer.imageQueuedOffline'),
-          ),
-        });
+        toast.info(
+          this.transloco.translate(marker('rockExplorer.imageQueuedOffline')),
+        );
       }
     } else {
       await this.pendingImages.enqueue(localId, file, lat, lng, file.name);
       await this.host.images.refreshDraftPins();
-      this.host.messageService.add({
-        severity: 'info',
-        summary: this.transloco.translate(
-          marker('rockExplorer.imageQueuedOffline'),
-        ),
-      });
+      toast.info(
+        this.transloco.translate(marker('rockExplorer.imageQueuedOffline')),
+      );
     }
     this.host.cdr.detectChanges();
   }
@@ -1127,21 +1082,18 @@ export class RockExplorerRecordingFacade {
   // Delete draft
   // ---------------------------------------------------------------------
 
-  confirmDeleteDraft(localId: string, event?: Event): void {
-    const target = event?.currentTarget ?? event?.target ?? undefined;
-    this.host.confirmationService.confirm({
-      target: target as EventTarget | undefined,
+  confirmDeleteDraft(localId: string, _event?: Event): void {
+    this.host.openConfirm({
       message: this.transloco.translate(
         marker('rockExplorer.deleteDraftConfirm'),
       ),
       acceptLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteYes'),
       ),
-      acceptButtonStyleClass: 'p-button-danger',
       rejectLabel: this.transloco.translate(
         marker('rockExplorer.imageDeleteNo'),
       ),
-      icon: 'pi pi-exclamation-triangle',
+      destructive: true,
       accept: () => {
         void this.deleteDraft(localId);
       },
@@ -1176,14 +1128,10 @@ export class RockExplorerRecordingFacade {
         draft.deviceId || getOrCreateRecordingDeviceId();
       try {
         await firstValueFrom(this.rockExplorerService.deleteFeature(feature));
-      } catch (err) {
-        const locked = err instanceof HttpErrorResponse && err.status === 409;
-        this.host.messageService.add({
-          severity: locked ? 'warn' : 'warn',
-          summary: this.transloco.translate(
-            marker('rockExplorer.deleteServerRemains'),
-          ),
-        });
+      } catch {
+        toast.message(
+          this.transloco.translate(marker('rockExplorer.deleteServerRemains')),
+        );
       }
     }
 
@@ -1397,12 +1345,10 @@ export class RockExplorerRecordingFacade {
       return;
     }
     if (mockGpsRecording && !this.mockGps?.isSeeded) {
-      this.host.messageService.add({
-        severity: 'info',
-        summary: 'Mock GPS',
-        detail:
+      toast.info('Mock GPS', {
+        description:
           'Locate + Record use a simulated walker ~5 m/s (mockGpsRecording)',
-        life: 4000,
+        duration: 4000,
       });
     }
     this.geoWatchId = navigator.geolocation.watchPosition(
@@ -1436,10 +1382,9 @@ export class RockExplorerRecordingFacade {
   }
 
   private onGeoPermissionDenied(): void {
-    this.host.messageService.add({
-      severity: 'error',
-      summary: this.transloco.translate(marker('rockExplorer.recordGeoDenied')),
-    });
+    toast.error(
+      this.transloco.translate(marker('rockExplorer.recordGeoDenied')),
+    );
     this.exitRecordMode();
   }
 
@@ -1537,12 +1482,9 @@ export class RockExplorerRecordingFacade {
       void this.flushDraftQueue();
     }
     if (!ok) {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(
-          marker('rockExplorer.storageUnavailable'),
-        ),
-      });
+      toast.error(
+        this.transloco.translate(marker('rockExplorer.storageUnavailable')),
+      );
       this.host.cdr.detectChanges();
     }
   }
@@ -1794,10 +1736,7 @@ export class RockExplorerRecordingFacade {
       this.deviceLockLocalId = null;
       this.deviceLockServerId = null;
     } catch {
-      this.host.messageService.add({
-        severity: 'error',
-        summary: this.transloco.translate(marker('rockExplorer.loadError')),
-      });
+      toast.error(this.transloco.translate(marker('rockExplorer.loadError')));
       this.host.ui.syncStatus.set('error');
     } finally {
       this.deviceLockCloneInFlight = false;

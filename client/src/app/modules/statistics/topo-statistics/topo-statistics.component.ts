@@ -12,10 +12,6 @@ import { combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { ChartModule } from 'primeng/chart';
-import { Message } from 'primeng/message';
-import { ProgressBar } from 'primeng/progressbar';
-import { Skeleton } from 'primeng/skeleton';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -49,6 +45,13 @@ import {
 import { AscentsPerYearChartComponent } from '../../user/ascents-per-year-chart/ascents-per-year-chart.component';
 import { GradeDistributionBarChartComponent } from '../../shared/components/grade-distribution-bar-chart/grade-distribution-bar-chart.component';
 import { LineGradePipe } from '../../shared/pipes/line-grade.pipe';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
+import { NgIcon } from '@ng-icons/core';
+import { ChartJsDirective } from '../../shared/directives/chart-js.directive';
+import { provideIcons } from '@ng-icons/core';
+import { lucideCircleX, lucideInfo } from '@ng-icons/lucide';
 
 Chart.register(ChartDataLabels);
 
@@ -79,17 +82,20 @@ const PIE_COLOR_VARS = [
 ];
 
 @Component({
+  providers: [provideIcons({ lucideCircleX, lucideInfo })],
   selector: 'lc-topo-statistics',
   imports: [
     TranslocoDirective,
     RouterLink,
-    ChartModule,
-    Message,
-    ProgressBar,
-    Skeleton,
     AscentsPerYearChartComponent,
     GradeDistributionBarChartComponent,
     LineGradePipe,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmSkeleton,
+    ...HlmProgressImports,
+    NgIcon,
+    ChartJsDirective,
   ],
   templateUrl: './topo-statistics.component.html',
   styleUrl: './topo-statistics.component.scss',

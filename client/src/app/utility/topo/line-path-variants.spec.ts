@@ -41,8 +41,8 @@ describe('topo line path variants', () => {
 
   it('shows an image of only variants without a hide control', () => {
     const onlyVariants = [path(0, true), path(1, true)];
-    expect(topoImageCanHideVariants(onlyVariants)).toBeFalse();
-    expect(topoImageCanHideVariants(paths)).toBeTrue();
+    expect(topoImageCanHideVariants(onlyVariants)).toBe(false);
+    expect(topoImageCanHideVariants(paths)).toBe(true);
     expect(
       linePathsForTopoCanvas(onlyVariants, false).map(
         (item) => item.orderIndex,

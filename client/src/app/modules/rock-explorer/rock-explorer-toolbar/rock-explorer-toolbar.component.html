@@ -2,52 +2,59 @@
   <div class="rock-explorer__toolbar">
     @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
       @if (!ui.isMobileViewport()) {
-        <p-button
-          icon="pi pi-search"
-          (onClick)="openLocationSearch()"
-          size="small"
-          severity="secondary"
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          size="icon-lg"
+          (click)="openLocationSearch()"
           [attr.aria-label]="t('rockExplorer.locationSearchGo')"
-        />
+        >
+          <ng-icon name="lucideSearch" />
+        </button>
       }
-      <p-button
-        [severity]="ui.listPanelOpen() ? 'primary' : 'secondary'"
-        icon="pi pi-table"
-        [label]="t('rockExplorer.listTitle')"
-        (onClick)="
+      <button
+        hlmBtn
+        type="button"
+        [variant]="ui.listPanelOpen() ? 'default' : 'secondary'"
+        (click)="
           ui.dispatch({
             type: ui.listPanelOpen() ? 'closeListPanel' : 'openListPanel',
           })
         "
-        size="small"
-      />
-      <p-button
-        [severity]="ui.sessionsPanelOpen() ? 'primary' : 'secondary'"
-        icon="pi pi-list"
-        [label]="t('rockExplorer.sessionsTitle')"
-        (onClick)="
+      >
+        <ng-icon name="lucideTable" /> {{ t("rockExplorer.listTitle") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        [variant]="ui.sessionsPanelOpen() ? 'default' : 'secondary'"
+        (click)="
           ui.dispatch({
             type: ui.sessionsPanelOpen()
               ? 'closeSessionsPanel'
               : 'openSessionsPanel',
           })
         "
-        size="small"
-      />
-      <p-button
-        severity="secondary"
-        icon="pi pi-stop"
-        [label]="t('rockExplorer.modePolygon')"
-        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'polygon' })"
-        size="small"
-      />
-      <p-button
-        severity="secondary"
-        icon="pi pi-map-marker"
-        [label]="t('rockExplorer.modePoint')"
-        (onClick)="ui.dispatch({ type: 'setDrawMode', mode: 'point' })"
-        size="small"
-      />
+      >
+        <ng-icon name="lucideList" /> {{ t("rockExplorer.sessionsTitle") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'setDrawMode', mode: 'polygon' })"
+      >
+        <ng-icon name="lucideSquare" /> {{ t("rockExplorer.modePolygon") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'setDrawMode', mode: 'point' })"
+      >
+        <ng-icon name="lucideMapPin" /> {{ t("rockExplorer.modePoint") }}
+      </button>
     }
     @if (ui.recordModeActive()) {
       <div class="rock-explorer__record-groups">
@@ -58,38 +65,46 @@
           <div class="rock-explorer__record-group-actions">
             @if (ui.hasActiveRecordPath()) {
               @if (ui.recordingState() === "recording") {
-                <p-button
-                  icon="pi pi-pause"
-                  [label]="t('rockExplorer.recordPause')"
-                  (onClick)="ui.dispatch({ type: 'pauseRecording' })"
-                  size="small"
-                  severity="secondary"
-                />
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="secondary"
+                  (click)="ui.dispatch({ type: 'pauseRecording' })"
+                >
+                  <ng-icon name="lucidePause" />
+                  {{ t("rockExplorer.recordPause") }}
+                </button>
               } @else {
-                <p-button
-                  icon="pi pi-play"
-                  [label]="t('rockExplorer.recordResume')"
-                  (onClick)="ui.dispatch({ type: 'resumeRecording' })"
-                  size="small"
-                  severity="secondary"
-                />
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="secondary"
+                  (click)="ui.dispatch({ type: 'resumeRecording' })"
+                >
+                  <ng-icon name="lucidePlay" />
+                  {{ t("rockExplorer.recordResume") }}
+                </button>
               }
-              <p-button
-                icon="pi pi-check"
-                [label]="t('rockExplorer.recordFinishPath')"
-                (onClick)="ui.dispatch({ type: 'finishRecordPath' })"
+              <button
+                hlmBtn
+                type="button"
+                variant="default"
+                (click)="ui.dispatch({ type: 'finishRecordPath' })"
                 [disabled]="ui.recordPathVertexCount() < 2"
-                size="small"
-                severity="success"
-              />
+              >
+                <ng-icon name="lucideCheck" />
+                {{ t("rockExplorer.recordFinishPath") }}
+              </button>
             } @else {
-              <p-button
-                icon="pi pi-plus"
-                [label]="t('rockExplorer.recordNewPath')"
-                (onClick)="ui.dispatch({ type: 'newRecordPath' })"
-                size="small"
-                severity="secondary"
-              />
+              <button
+                hlmBtn
+                type="button"
+                variant="secondary"
+                (click)="ui.dispatch({ type: 'newRecordPath' })"
+              >
+                <ng-icon name="lucidePlus" />
+                {{ t("rockExplorer.recordNewPath") }}
+              </button>
             }
           </div>
         </div>
@@ -98,20 +113,22 @@
             t("rockExplorer.recordGroupInfo")
           }}</span>
           <div class="rock-explorer__record-group-actions">
-            <p-button
-              icon="pi pi-image"
-              [label]="t('rockExplorer.addImage')"
-              (onClick)="ui.dispatch({ type: 'addRecordImage' })"
-              size="small"
-              severity="secondary"
-            />
-            <p-button
-              icon="pi pi-pencil"
-              [label]="t('rockExplorer.editInfo')"
-              (onClick)="ui.dispatch({ type: 'editRecordInfo' })"
-              size="small"
-              severity="secondary"
-            />
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="ui.dispatch({ type: 'addRecordImage' })"
+            >
+              <ng-icon name="lucideImage" /> {{ t("rockExplorer.addImage") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="ui.dispatch({ type: 'editRecordInfo' })"
+            >
+              <ng-icon name="lucidePencil" /> {{ t("rockExplorer.editInfo") }}
+            </button>
           </div>
         </div>
         <div class="rock-explorer__record-group">
@@ -119,295 +136,120 @@
             t("rockExplorer.recordGroupSession")
           }}</span>
           <div class="rock-explorer__record-group-actions">
-            <p-button
-              icon="pi pi-upload"
-              [label]="t('rockExplorer.modePublish')"
-              (onClick)="ui.dispatch({ type: 'publishDraft' })"
+            <button
+              hlmBtn
+              type="button"
+              variant="default"
+              (click)="ui.dispatch({ type: 'publishDraft' })"
               [disabled]="!ui.online()"
-              size="small"
-              severity="success"
-            />
+            >
+              <ng-icon name="lucideUpload" />
+              {{ t("rockExplorer.modePublish") }}
+            </button>
             @if (ui.syncStatus(); as status) {
-              <p-button
-                icon="pi pi-sync"
-                [label]="t('rockExplorer.syncStatus.' + status)"
-                (onClick)="ui.dispatch({ type: 'syncNow' })"
+              <button
+                lcLoadingButton
+                icon="lucideRefreshCw"
+                [loading]="status === 'syncing'"
+                (click)="ui.dispatch({ type: 'syncNow' })"
                 [disabled]="
                   !ui.storageOk() ||
                   !ui.activeLocalDraftId() ||
                   status === 'syncing' ||
                   !ui.online()
                 "
-                [loading]="status === 'syncing'"
-                size="small"
-                [severity]="status === 'error' ? 'danger' : 'secondary'"
-                [styleClass]="
+                [variant]="status === 'error' ? 'destructive' : 'secondary'"
+                class="{{
                   'rock-explorer__sync-status rock-explorer__sync-status--' +
-                  status
-                "
-              />
+                    status
+                }}"
+                type="button"
+              >
+                {{ t("rockExplorer.syncStatus." + status) }}
+              </button>
             }
-            <p-button
-              icon="pi pi-times"
-              [label]="t('rockExplorer.recordExit')"
-              (onClick)="ui.dispatch({ type: 'exitRecord' })"
-              size="small"
-              severity="secondary"
-            />
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="ui.dispatch({ type: 'exitRecord' })"
+            >
+              <ng-icon name="lucideX" /> {{ t("rockExplorer.recordExit") }}
+            </button>
           </div>
         </div>
       </div>
     }
     @if (ui.drawMode() === "point") {
-      <p-button
-        icon="pi pi-times"
-        [label]="t('rockExplorer.cancelDraw')"
-        (onClick)="ui.dispatch({ type: 'cancelPointDraw' })"
-        size="small"
-        severity="secondary"
-      />
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'cancelPointDraw' })"
+      >
+        <ng-icon name="lucideX" /> {{ t("rockExplorer.cancelDraw") }}
+      </button>
     }
     @if (ui.isPolygonToolActive()) {
       @if (ui.drawMode() === "polygon") {
-        <p-button
-          icon="pi pi-undo"
-          [label]="t('rockExplorer.undoVertex')"
-          (onClick)="ui.dispatch({ type: 'undoPolygonVertex' })"
+        <button
+          hlmBtn
+          type="button"
+          variant="secondary"
+          (click)="ui.dispatch({ type: 'undoPolygonVertex' })"
           [disabled]="ui.polygonVertexCount() === 0"
-          size="small"
-          severity="secondary"
-        />
+        >
+          <ng-icon name="lucideUndo2" /> {{ t("rockExplorer.undoVertex") }}
+        </button>
       }
       <span
         class="rock-explorer__finish-polygon-wrap"
-        [pTooltip]="t('rockExplorer.polygonSelfIntersecting')"
-        tooltipPosition="bottom"
+        [hlmTooltip]="t('rockExplorer.polygonSelfIntersecting')"
+        position="bottom"
         [tooltipDisabled]="!ui.polygonSelfIntersecting()"
       >
-        <p-button
-          icon="pi pi-check"
-          [label]="
-            ui.geometryEditActive()
-              ? t('rockExplorer.saveGeometry')
-              : t('rockExplorer.finishPolygon')
-          "
-          (onClick)="ui.dispatch({ type: 'finishPolygon' })"
-          [disabled]="
-            ui.polygonVertexCount() < 3 || ui.polygonSelfIntersecting()
-          "
+        <button
+          lcLoadingButton
+          icon="lucideCheck"
           [loading]="ui.saving()"
-          size="small"
-          severity="success"
-        />
+          (click)="ui.dispatch({ type: 'finishPolygon' })"
+          [disabled]="
+            ui.polygonVertexCount() < 3 ||
+            ui.polygonSelfIntersecting() ||
+            ui.saving()
+          "
+          type="button"
+          variant="default"
+        >
+          {{
+            ui.geometryEditActive()
+              ? t("rockExplorer.saveGeometry")
+              : t("rockExplorer.finishPolygon")
+          }}
+        </button>
       </span>
-      <p-button
-        icon="pi pi-times"
-        [label]="t('rockExplorer.cancelDraw')"
-        (onClick)="ui.dispatch({ type: 'cancelPolygonDraw' })"
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'cancelPolygonDraw' })"
         [disabled]="ui.saving()"
-        size="small"
-        severity="secondary"
-      />
+      >
+        <ng-icon name="lucideX" /> {{ t("rockExplorer.cancelDraw") }}
+      </button>
     }
     @if (!ui.isMobileViewport()) {
       @if (!ui.isDrawToolActive() && !ui.recordModeActive()) {
-        <p-button
+        <button
+          hlmBtn
+          type="button"
+          [variant]="ui.showFilters() ? 'default' : 'secondary'"
           class="rock-explorer__filter-btn"
-          (onClick)="ui.toggleFilters()"
-          [severity]="ui.showFilters() ? 'primary' : 'secondary'"
-          size="small"
+          (click)="ui.toggleFilters()"
         >
-          <ng-template #content>
-            <span class="p-button-icon pi pi-filter"></span>
-            <span class="rock-explorer__filter-label-group">
-              <span class="p-button-label">{{
-                t("rockExplorer.filters")
-              }}</span>
-              @if (hasActiveFilters) {
-                <span
-                  class="rock-explorer__filter-active-dot"
-                  aria-hidden="true"
-                ></span>
-              }
-            </span>
-          </ng-template>
-        </p-button>
-      }
-      <div class="rock-explorer__layer-toggle">
-        @for (layer of ui.baseLayers(); track layer.id) {
-          <p-button
-            [severity]="ui.mapStyle() === layer.id ? 'primary' : 'secondary'"
-            [label]="layer.name"
-            (onClick)="
-              ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
-            "
-            size="small"
-          />
-        }
-        @if (ui.hasCustomMapLayers()) {
-          <p-button
-            [severity]="ui.customMapLayersVisible() ? 'primary' : 'secondary'"
-            [label]="t('rockExplorer.mapStyle.customLayers')"
-            icon="pi pi-sliders-h"
-            (onClick)="overlaysPopover.toggle($event)"
-            size="small"
-          />
-          <p-popover #overlaysPopover>
-            <div class="rock-explorer__overlays-panel">
-              <div class="rock-explorer__overlays-panel-header">
-                <span class="rock-explorer__overlays-panel-title">{{
-                  t("rockExplorer.mapStyle.overlaysPanelTitle")
-                }}</span>
-                <p-button
-                  [severity]="
-                    ui.customMapLayersVisible() ? 'primary' : 'secondary'
-                  "
-                  [label]="
-                    ui.customMapLayersVisible()
-                      ? t('rockExplorer.mapStyle.overlaysHide')
-                      : t('rockExplorer.mapStyle.overlaysShow')
-                  "
-                  size="small"
-                  (onClick)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
-                />
-              </div>
-              @for (
-                layer of ui.customMapLayerInfos();
-                track layer.id;
-                let i = $index;
-                let last = $last
-              ) {
-                <div class="rock-explorer__overlays-row">
-                  <div class="rock-explorer__overlays-row-header">
-                    <div class="rock-explorer__overlays-row-label">
-                      @if (layer.subLayers?.length) {
-                        <p-button
-                          [icon]="
-                            isOverlayExpanded(layer.id)
-                              ? 'pi pi-chevron-down'
-                              : 'pi pi-chevron-right'
-                          "
-                          [rounded]="true"
-                          [text]="true"
-                          size="small"
-                          severity="secondary"
-                          (onClick)="toggleOverlayExpanded(layer.id)"
-                          [attr.aria-expanded]="isOverlayExpanded(layer.id)"
-                          [attr.aria-label]="
-                            t('rockExplorer.mapStyle.overlaysExpandLayers')
-                          "
-                        />
-                      }
-                      <p-checkbox
-                        [inputId]="'re-overlay-visible-' + layer.id"
-                        [binary]="true"
-                        [ngModel]="isLayerVisible(layer.id)"
-                        (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [disabled]="!ui.customMapLayersVisible()"
-                      />
-                      <label [for]="'re-overlay-visible-' + layer.id">{{
-                        layer.name
-                      }}</label>
-                    </div>
-                    <div class="rock-explorer__overlays-order">
-                      <p-button
-                        icon="pi pi-arrow-up"
-                        [rounded]="true"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        [disabled]="i === 0"
-                        (onClick)="
-                          ui.dispatch({
-                            type: 'moveCustomMapLayer',
-                            layerId: layer.id,
-                            direction: 'up',
-                          })
-                        "
-                      />
-                      <p-button
-                        icon="pi pi-arrow-down"
-                        [rounded]="true"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        [disabled]="last"
-                        (onClick)="
-                          ui.dispatch({
-                            type: 'moveCustomMapLayer',
-                            layerId: layer.id,
-                            direction: 'down',
-                          })
-                        "
-                      />
-                    </div>
-                  </div>
-                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
-                    <div class="rock-explorer__overlays-sublayers">
-                      @for (sub of layer.subLayers; track sub.id) {
-                        <div class="rock-explorer__overlays-row-label">
-                          <p-checkbox
-                            [inputId]="'re-overlay-sub-' + sub.id"
-                            [binary]="true"
-                            [ngModel]="isLayerVisible(sub.id)"
-                            (ngModelChange)="
-                              onLayerVisibleChange(sub.id, $event)
-                            "
-                            [ngModelOptions]="{ standalone: true }"
-                            [disabled]="
-                              !ui.customMapLayersVisible() ||
-                              !isLayerVisible(layer.id)
-                            "
-                          />
-                          <span
-                            class="rock-explorer__overlays-swatch"
-                            [style.background-color]="sub.color"
-                            aria-hidden="true"
-                          ></span>
-                          <label [for]="'re-overlay-sub-' + sub.id">{{
-                            sub.name
-                          }}</label>
-                        </div>
-                      }
-                    </div>
-                  }
-                  <div class="rock-explorer__overlays-row-label">
-                    <span class="rock-explorer__overlays-opacity-value"
-                      >{{ opacityPercent(layer.id) }}%</span
-                    >
-                  </div>
-                  <p-slider
-                    [ngModel]="opacityPercent(layer.id)"
-                    (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
-                    [ngModelOptions]="{ standalone: true }"
-                    [min]="0"
-                    [max]="100"
-                    [step]="1"
-                    [disabled]="
-                      !ui.customMapLayersVisible() || !isLayerVisible(layer.id)
-                    "
-                    styleClass="rock-explorer__overlays-slider"
-                  />
-                </div>
-              }
-            </div>
-          </p-popover>
-        }
-      </div>
-    } @else if (!ui.isDrawToolActive()) {
-      <p-button
-        class="rock-explorer__filter-btn"
-        (onClick)="overflowPopover.toggle($event)"
-        size="small"
-        severity="secondary"
-      >
-        <ng-template #content>
-          <span class="p-button-icon pi pi-ellipsis-v"></span>
+          <ng-icon name="lucideFunnel" />
           <span class="rock-explorer__filter-label-group">
-            <span class="p-button-label">{{
-              t("rockExplorer.moreTools")
-            }}</span>
+            {{ t("rockExplorer.filters") }}
             @if (hasActiveFilters) {
               <span
                 class="rock-explorer__filter-active-dot"
@@ -415,355 +257,608 @@
               ></span>
             }
           </span>
-        </ng-template>
-      </p-button>
-      <p-popover #overflowPopover>
-        <div class="rock-explorer__overflow">
-          <p-button
-            icon="pi pi-table"
-            [label]="t('rockExplorer.listTitle')"
-            (onClick)="
-              ui.dispatch({
-                type: ui.listPanelOpen() ? 'closeListPanel' : 'openListPanel',
-              });
-              overflowPopover.hide()
-            "
-            size="small"
-            severity="secondary"
-          />
-          <p-button
-            icon="pi pi-search"
-            [label]="t('rockExplorer.locationSearchGo')"
-            (onClick)="openLocationSearch(); overflowPopover.hide()"
-            size="small"
-            severity="secondary"
-          />
-          <div [formGroup]="filterForm">
-            <p-select
-              formControlName="potential"
-              [options]="ui.potentialOptions()"
-              optionLabel="label"
-              optionValue="value"
-              [placeholder]="t('rockExplorer.fields.potential')"
-              [showClear]="true"
-              appendTo="body"
-            >
-              <ng-template let-option #item>
-                <span class="rock-explorer__potential-option">
-                  <span
-                    class="rock-explorer__potential-swatch"
-                    [style.background]="ui.potentialColor(option.value)"
-                  ></span>
-                  {{ option.label }}
-                </span>
-              </ng-template>
-              <ng-template let-option #selectedItem>
-                <span class="rock-explorer__potential-option">
-                  <span
-                    class="rock-explorer__potential-swatch"
-                    [style.background]="ui.potentialColor(option.value)"
-                  ></span>
-                  {{ option.label }}
-                </span>
-              </ng-template>
-            </p-select>
-            <p-select
-              formControlName="rockQuality"
-              [options]="ui.rockQualityOptions()"
-              optionLabel="label"
-              optionValue="value"
-              [placeholder]="t('rockExplorer.fields.rockQuality')"
-              [showClear]="true"
-              appendTo="body"
-            />
-            <p-select
-              formControlName="rockType"
-              [options]="ui.rockTypeOptions()"
-              optionLabel="label"
-              optionValue="value"
-              [placeholder]="t('rockExplorer.fields.rockType')"
-              [showClear]="true"
-              appendTo="body"
-            />
-            <p-autoComplete
-              formControlName="createdBy"
-              [suggestions]="createdBySuggestions"
-              optionLabel="fullname"
-              [forceSelection]="true"
-              [showClear]="true"
-              (completeMethod)="searchCreatedBy($event)"
-              [placeholder]="t('rockExplorer.fields.createdBy')"
-              appendTo="body"
-              fluid
-            />
-            <div class="rock-explorer__overflow-actions">
-              <p-button
-                [label]="t('rockExplorer.clearFilters')"
-                (onClick)="clearFilters(); overflowPopover.hide()"
-                severity="secondary"
-                [outlined]="true"
-                [disabled]="!hasActiveFilters"
-              />
-            </div>
-          </div>
-          <div
-            class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
+        </button>
+      }
+      <div class="rock-explorer__layer-toggle">
+        @for (layer of ui.baseLayers(); track layer.id) {
+          <button
+            hlmBtn
+            type="button"
+            [variant]="ui.mapStyle() === layer.id ? 'default' : 'secondary'"
+            (click)="ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })"
           >
-            @for (layer of ui.baseLayers(); track layer.id) {
-              <p-button
-                [severity]="
-                  ui.mapStyle() === layer.id ? 'primary' : 'secondary'
-                "
-                [label]="layer.name"
-                (onClick)="
-                  ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
-                "
-                size="small"
-              />
-            }
-          </div>
-          @if (ui.hasCustomMapLayers()) {
-            <div class="rock-explorer__overlays-panel">
-              <div class="rock-explorer__overlays-panel-header">
-                <span class="rock-explorer__overlays-panel-title">{{
-                  t("rockExplorer.mapStyle.overlaysPanelTitle")
-                }}</span>
-                <p-button
-                  [severity]="
-                    ui.customMapLayersVisible() ? 'primary' : 'secondary'
-                  "
-                  [label]="
-                    ui.customMapLayersVisible()
-                      ? t('rockExplorer.mapStyle.overlaysHide')
-                      : t('rockExplorer.mapStyle.overlaysShow')
-                  "
-                  size="small"
-                  (onClick)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
-                />
-              </div>
-              @for (
-                layer of ui.customMapLayerInfos();
-                track layer.id;
-                let i = $index;
-                let last = $last
-              ) {
-                <div class="rock-explorer__overlays-row">
-                  <div class="rock-explorer__overlays-row-header">
-                    <div class="rock-explorer__overlays-row-label">
-                      @if (layer.subLayers?.length) {
-                        <p-button
-                          [icon]="
-                            isOverlayExpanded(layer.id)
-                              ? 'pi pi-chevron-down'
-                              : 'pi pi-chevron-right'
-                          "
-                          [rounded]="true"
-                          [text]="true"
-                          size="small"
-                          severity="secondary"
-                          (onClick)="toggleOverlayExpanded(layer.id)"
-                          [attr.aria-expanded]="isOverlayExpanded(layer.id)"
-                          [attr.aria-label]="
-                            t('rockExplorer.mapStyle.overlaysExpandLayers')
-                          "
-                        />
-                      }
-                      <p-checkbox
-                        [inputId]="'re-overlay-visible-m-' + layer.id"
-                        [binary]="true"
-                        [ngModel]="isLayerVisible(layer.id)"
-                        (ngModelChange)="onLayerVisibleChange(layer.id, $event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [disabled]="!ui.customMapLayersVisible()"
-                      />
-                      <label [for]="'re-overlay-visible-m-' + layer.id">{{
-                        layer.name
-                      }}</label>
-                    </div>
-                    <div class="rock-explorer__overlays-order">
-                      <p-button
-                        icon="pi pi-arrow-up"
-                        [rounded]="true"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        [disabled]="i === 0"
-                        (onClick)="
-                          ui.dispatch({
-                            type: 'moveCustomMapLayer',
-                            layerId: layer.id,
-                            direction: 'up',
-                          })
-                        "
-                      />
-                      <p-button
-                        icon="pi pi-arrow-down"
-                        [rounded]="true"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        [disabled]="last"
-                        (onClick)="
-                          ui.dispatch({
-                            type: 'moveCustomMapLayer',
-                            layerId: layer.id,
-                            direction: 'down',
-                          })
-                        "
-                      />
-                    </div>
-                  </div>
-                  @if (layer.subLayers?.length && isOverlayExpanded(layer.id)) {
-                    <div class="rock-explorer__overlays-sublayers">
-                      @for (sub of layer.subLayers; track sub.id) {
-                        <div class="rock-explorer__overlays-row-label">
-                          <p-checkbox
-                            [inputId]="'re-overlay-sub-m-' + sub.id"
-                            [binary]="true"
-                            [ngModel]="isLayerVisible(sub.id)"
-                            (ngModelChange)="
-                              onLayerVisibleChange(sub.id, $event)
-                            "
-                            [ngModelOptions]="{ standalone: true }"
-                            [disabled]="
-                              !ui.customMapLayersVisible() ||
-                              !isLayerVisible(layer.id)
-                            "
-                          />
-                          <span
-                            class="rock-explorer__overlays-swatch"
-                            [style.background-color]="sub.color"
-                            aria-hidden="true"
-                          ></span>
-                          <label [for]="'re-overlay-sub-m-' + sub.id">{{
-                            sub.name
-                          }}</label>
-                        </div>
-                      }
-                    </div>
-                  }
-                  <div class="rock-explorer__overlays-row-label">
-                    <span class="rock-explorer__overlays-opacity-value"
-                      >{{ opacityPercent(layer.id) }}%</span
-                    >
-                  </div>
-                  <p-slider
-                    [ngModel]="opacityPercent(layer.id)"
-                    (ngModelChange)="onOpacityPercentChange(layer.id, $event)"
-                    [ngModelOptions]="{ standalone: true }"
-                    [min]="0"
-                    [max]="100"
-                    [step]="1"
-                    [disabled]="
-                      !ui.customMapLayersVisible() || !isLayerVisible(layer.id)
+            {{ layer.name }}
+          </button>
+        }
+        @if (ui.hasCustomMapLayers()) {
+          <hlm-popover align="end" sideOffset="8">
+            <button
+              hlmBtn
+              hlmPopoverTrigger
+              type="button"
+              [variant]="ui.customMapLayersVisible() ? 'default' : 'secondary'"
+            >
+              <ng-icon name="lucideSlidersHorizontal" />
+              {{ t("rockExplorer.mapStyle.customLayers") }}
+            </button>
+            <div hlmPopoverContent *hlmPopoverPortal class="w-auto">
+              <div class="rock-explorer__overlays-panel">
+                <div class="rock-explorer__overlays-panel-header">
+                  <span class="rock-explorer__overlays-panel-title">{{
+                    t("rockExplorer.mapStyle.overlaysPanelTitle")
+                  }}</span>
+                  <button
+                    hlmBtn
+                    type="button"
+                    [variant]="
+                      ui.customMapLayersVisible() ? 'default' : 'secondary'
                     "
-                    styleClass="rock-explorer__overlays-slider"
-                  />
+                    (click)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
+                  >
+                    {{
+                      ui.customMapLayersVisible()
+                        ? t("rockExplorer.mapStyle.overlaysHide")
+                        : t("rockExplorer.mapStyle.overlaysShow")
+                    }}
+                  </button>
                 </div>
+                @for (
+                  layer of ui.customMapLayerInfos();
+                  track layer.id;
+                  let i = $index;
+                  let last = $last
+                ) {
+                  <div class="rock-explorer__overlays-row">
+                    <div class="rock-explorer__overlays-row-header">
+                      <div class="rock-explorer__overlays-row-label">
+                        @if (layer.subLayers?.length) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="secondary"
+                            size="icon-sm"
+                            class="rounded-full"
+                            (click)="toggleOverlayExpanded(layer.id)"
+                            [attr.aria-expanded]="isOverlayExpanded(layer.id)"
+                            [attr.aria-label]="
+                              t('rockExplorer.mapStyle.overlaysExpandLayers')
+                            "
+                          >
+                            <ng-icon
+                              [name]="
+                                isOverlayExpanded(layer.id)
+                                  ? 'lucideChevronDown'
+                                  : 'lucideChevronRight'
+                              "
+                            />
+                          </button>
+                        }
+                        <hlm-checkbox
+                          [inputId]="'re-overlay-visible-' + layer.id"
+                          [ngModel]="isLayerVisible(layer.id)"
+                          (ngModelChange)="
+                            onLayerVisibleChange(layer.id, $event)
+                          "
+                          [ngModelOptions]="{ standalone: true }"
+                          [disabled]="!ui.customMapLayersVisible()"
+                        ></hlm-checkbox>
+                        <label [for]="'re-overlay-visible-' + layer.id">{{
+                          layer.name
+                        }}</label>
+                      </div>
+                      <div class="rock-explorer__overlays-order">
+                        <button
+                          hlmBtn
+                          type="button"
+                          variant="secondary"
+                          size="icon-sm"
+                          class="rounded-full"
+                          (click)="
+                            ui.dispatch({
+                              type: 'moveCustomMapLayer',
+                              layerId: layer.id,
+                              direction: 'up',
+                            })
+                          "
+                          [disabled]="i === 0"
+                        >
+                          <ng-icon name="lucideArrowUp" />
+                        </button>
+                        <button
+                          hlmBtn
+                          type="button"
+                          variant="secondary"
+                          size="icon-sm"
+                          class="rounded-full"
+                          (click)="
+                            ui.dispatch({
+                              type: 'moveCustomMapLayer',
+                              layerId: layer.id,
+                              direction: 'down',
+                            })
+                          "
+                          [disabled]="last"
+                        >
+                          <ng-icon name="lucideArrowDown" />
+                        </button>
+                      </div>
+                    </div>
+                    @if (
+                      layer.subLayers?.length && isOverlayExpanded(layer.id)
+                    ) {
+                      <div class="rock-explorer__overlays-sublayers">
+                        @for (sub of layer.subLayers; track sub.id) {
+                          <div class="rock-explorer__overlays-row-label">
+                            <hlm-checkbox
+                              [inputId]="'re-overlay-sub-' + sub.id"
+                              [ngModel]="isLayerVisible(sub.id)"
+                              (ngModelChange)="
+                                onLayerVisibleChange(sub.id, $event)
+                              "
+                              [ngModelOptions]="{ standalone: true }"
+                              [disabled]="
+                                !ui.customMapLayersVisible() ||
+                                !isLayerVisible(layer.id)
+                              "
+                            ></hlm-checkbox>
+                            <span
+                              class="rock-explorer__overlays-swatch"
+                              [style.background-color]="sub.color"
+                              aria-hidden="true"
+                            ></span>
+                            <label [for]="'re-overlay-sub-' + sub.id">{{
+                              sub.name
+                            }}</label>
+                          </div>
+                        }
+                      </div>
+                    }
+                    <div class="rock-explorer__overlays-row-label">
+                      <span class="rock-explorer__overlays-opacity-value"
+                        >{{ opacityPercent(layer.id) }}%</span
+                      >
+                    </div>
+                    <hlm-slider
+                      [min]="0"
+                      [max]="100"
+                      [step]="1"
+                      [disabled]="
+                        !ui.customMapLayersVisible() ||
+                        !isLayerVisible(layer.id)
+                      "
+                      styleClass="rock-explorer__overlays-slider"
+                      [value]="[opacityPercent(layer.id)]"
+                      (valueChange)="
+                        onOpacityPercentChange(layer.id, $event[0])
+                      "
+                    ></hlm-slider>
+                  </div>
+                }
+              </div></div
+          ></hlm-popover>
+        }
+      </div>
+    } @else if (!ui.isDrawToolActive()) {
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        class="rock-explorer__filter-btn"
+        (click)="overflowPopover.toggle()"
+      >
+        <ng-icon name="lucideEllipsisVertical" />
+        <span class="rock-explorer__filter-label-group">
+          {{ t("rockExplorer.moreTools") }}
+          @if (hasActiveFilters) {
+            <span
+              class="rock-explorer__filter-active-dot"
+              aria-hidden="true"
+            ></span>
+          }
+        </span>
+      </button>
+      <hlm-popover #overflowPopover="brnPopover"
+        ><div hlmPopoverContent *hlmPopoverPortal class="w-auto">
+          <div class="rock-explorer__overflow">
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="
+                ui.dispatch({
+                  type: ui.listPanelOpen() ? 'closeListPanel' : 'openListPanel',
+                });
+                overflowPopover.close()
+              "
+            >
+              <ng-icon name="lucideTable" /> {{ t("rockExplorer.listTitle") }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              (click)="openLocationSearch(); overflowPopover.close()"
+            >
+              <ng-icon name="lucideSearch" />
+              {{ t("rockExplorer.locationSearchGo") }}
+            </button>
+            <div [formGroup]="filterForm">
+              <hlm-select
+                formControlName="potential"
+                [itemToString]="ui.potentialLabel"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value
+                    [placeholder]="
+                      t('rockExplorer.fields.potential')
+                    " /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of ui.potentialOptions(); track $index) {
+                    <hlm-select-item [value]="option.value"
+                      ><span class="rock-explorer__potential-option">
+                        <span
+                          class="rock-explorer__potential-swatch"
+                          [style.background]="ui.potentialColor(option.value)"
+                        ></span>
+                        {{ option.label }}
+                      </span></hlm-select-item
+                    >
+                  }
+                </hlm-select-content></hlm-select
+              >
+              <hlm-select
+                formControlName="rockQuality"
+                [itemToString]="ui.rockQualityLabel"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value
+                    [placeholder]="
+                      t('rockExplorer.fields.rockQuality')
+                    " /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of ui.rockQualityOptions(); track $index) {
+                    <hlm-select-item [value]="option.value">{{
+                      option.label
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content></hlm-select
+              >
+              <hlm-select
+                formControlName="rockType"
+                [itemToString]="ui.rockTypeLabel"
+                ><hlm-select-trigger class="w-full"
+                  ><hlm-select-value
+                    [placeholder]="
+                      t('rockExplorer.fields.rockType')
+                    " /></hlm-select-trigger
+                ><hlm-select-content *hlmSelectPortal>
+                  @for (option of ui.rockTypeOptions(); track $index) {
+                    <hlm-select-item [value]="option.value">{{
+                      option.label
+                    }}</hlm-select-item>
+                  }
+                </hlm-select-content></hlm-select
+              >
+              <div class="flex min-w-40 flex-col gap-1">
+                <input
+                  hlmInput
+                  [placeholder]="t('rockExplorer.fields.createdBy')"
+                  (input)="searchCreatedBy($any($event.target).value)"
+                />
+                @for (user of createdBySuggestions; track user.id) {
+                  <button
+                    type="button"
+                    class="px-2 py-1 text-left text-sm"
+                    (click)="selectCreatedBy(user)"
+                  >
+                    {{ user.fullname }}
+                  </button>
+                }
+              </div>
+              <div class="rock-explorer__overflow-actions">
+                <button
+                  hlmBtn
+                  type="button"
+                  variant="secondary"
+                  (click)="clearFilters(); overflowPopover.close()"
+                  [disabled]="!hasActiveFilters"
+                >
+                  {{ t("rockExplorer.clearFilters") }}
+                </button>
+              </div>
+            </div>
+            <div
+              class="rock-explorer__layer-toggle rock-explorer__layer-toggle--overflow"
+            >
+              @for (layer of ui.baseLayers(); track layer.id) {
+                <button
+                  hlmBtn
+                  type="button"
+                  [variant]="
+                    ui.mapStyle() === layer.id ? 'default' : 'secondary'
+                  "
+                  (click)="
+                    ui.dispatch({ type: 'switchMapStyle', styleId: layer.id })
+                  "
+                >
+                  {{ layer.name }}
+                </button>
               }
             </div>
-          }
-        </div>
-      </p-popover>
+            @if (ui.hasCustomMapLayers()) {
+              <div class="rock-explorer__overlays-panel">
+                <div class="rock-explorer__overlays-panel-header">
+                  <span class="rock-explorer__overlays-panel-title">{{
+                    t("rockExplorer.mapStyle.overlaysPanelTitle")
+                  }}</span>
+                  <button
+                    hlmBtn
+                    type="button"
+                    [variant]="
+                      ui.customMapLayersVisible() ? 'default' : 'secondary'
+                    "
+                    (click)="ui.dispatch({ type: 'toggleCustomMapLayers' })"
+                  >
+                    {{
+                      ui.customMapLayersVisible()
+                        ? t("rockExplorer.mapStyle.overlaysHide")
+                        : t("rockExplorer.mapStyle.overlaysShow")
+                    }}
+                  </button>
+                </div>
+                @for (
+                  layer of ui.customMapLayerInfos();
+                  track layer.id;
+                  let i = $index;
+                  let last = $last
+                ) {
+                  <div class="rock-explorer__overlays-row">
+                    <div class="rock-explorer__overlays-row-header">
+                      <div class="rock-explorer__overlays-row-label">
+                        @if (layer.subLayers?.length) {
+                          <button
+                            hlmBtn
+                            type="button"
+                            variant="secondary"
+                            size="icon-sm"
+                            class="rounded-full"
+                            (click)="toggleOverlayExpanded(layer.id)"
+                            [attr.aria-expanded]="isOverlayExpanded(layer.id)"
+                            [attr.aria-label]="
+                              t('rockExplorer.mapStyle.overlaysExpandLayers')
+                            "
+                          >
+                            <ng-icon
+                              [name]="
+                                isOverlayExpanded(layer.id)
+                                  ? 'lucideChevronDown'
+                                  : 'lucideChevronRight'
+                              "
+                            />
+                          </button>
+                        }
+                        <hlm-checkbox
+                          [inputId]="'re-overlay-visible-m-' + layer.id"
+                          [ngModel]="isLayerVisible(layer.id)"
+                          (ngModelChange)="
+                            onLayerVisibleChange(layer.id, $event)
+                          "
+                          [ngModelOptions]="{ standalone: true }"
+                          [disabled]="!ui.customMapLayersVisible()"
+                        ></hlm-checkbox>
+                        <label [for]="'re-overlay-visible-m-' + layer.id">{{
+                          layer.name
+                        }}</label>
+                      </div>
+                      <div class="rock-explorer__overlays-order">
+                        <button
+                          hlmBtn
+                          type="button"
+                          variant="secondary"
+                          size="icon-sm"
+                          class="rounded-full"
+                          (click)="
+                            ui.dispatch({
+                              type: 'moveCustomMapLayer',
+                              layerId: layer.id,
+                              direction: 'up',
+                            })
+                          "
+                          [disabled]="i === 0"
+                        >
+                          <ng-icon name="lucideArrowUp" />
+                        </button>
+                        <button
+                          hlmBtn
+                          type="button"
+                          variant="secondary"
+                          size="icon-sm"
+                          class="rounded-full"
+                          (click)="
+                            ui.dispatch({
+                              type: 'moveCustomMapLayer',
+                              layerId: layer.id,
+                              direction: 'down',
+                            })
+                          "
+                          [disabled]="last"
+                        >
+                          <ng-icon name="lucideArrowDown" />
+                        </button>
+                      </div>
+                    </div>
+                    @if (
+                      layer.subLayers?.length && isOverlayExpanded(layer.id)
+                    ) {
+                      <div class="rock-explorer__overlays-sublayers">
+                        @for (sub of layer.subLayers; track sub.id) {
+                          <div class="rock-explorer__overlays-row-label">
+                            <hlm-checkbox
+                              [inputId]="'re-overlay-sub-m-' + sub.id"
+                              [ngModel]="isLayerVisible(sub.id)"
+                              (ngModelChange)="
+                                onLayerVisibleChange(sub.id, $event)
+                              "
+                              [ngModelOptions]="{ standalone: true }"
+                              [disabled]="
+                                !ui.customMapLayersVisible() ||
+                                !isLayerVisible(layer.id)
+                              "
+                            ></hlm-checkbox>
+                            <span
+                              class="rock-explorer__overlays-swatch"
+                              [style.background-color]="sub.color"
+                              aria-hidden="true"
+                            ></span>
+                            <label [for]="'re-overlay-sub-m-' + sub.id">{{
+                              sub.name
+                            }}</label>
+                          </div>
+                        }
+                      </div>
+                    }
+                    <div class="rock-explorer__overlays-row-label">
+                      <span class="rock-explorer__overlays-opacity-value"
+                        >{{ opacityPercent(layer.id) }}%</span
+                      >
+                    </div>
+                    <hlm-slider
+                      [min]="0"
+                      [max]="100"
+                      [step]="1"
+                      [disabled]="
+                        !ui.customMapLayersVisible() ||
+                        !isLayerVisible(layer.id)
+                      "
+                      styleClass="rock-explorer__overlays-slider"
+                      [value]="[opacityPercent(layer.id)]"
+                      (valueChange)="
+                        onOpacityPercentChange(layer.id, $event[0])
+                      "
+                    ></hlm-slider>
+                  </div>
+                }
+              </div>
+            }
+          </div></div
+      ></hlm-popover>
     }
   </div>
 
   @if (ui.showFilters() && !ui.isMobileViewport() && !ui.isDrawToolActive()) {
     <div class="rock-explorer__filters" [formGroup]="filterForm">
-      <p-select
-        formControlName="potential"
-        [options]="ui.potentialOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="t('rockExplorer.fields.potential')"
-        [showClear]="true"
+      <hlm-select formControlName="potential" [itemToString]="ui.potentialLabel"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value
+            [placeholder]="
+              t('rockExplorer.fields.potential')
+            " /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of ui.potentialOptions(); track $index) {
+            <hlm-select-item [value]="option.value"
+              ><span class="rock-explorer__potential-option">
+                <span
+                  class="rock-explorer__potential-swatch"
+                  [style.background]="ui.potentialColor(option.value)"
+                ></span>
+                {{ option.label }}
+              </span></hlm-select-item
+            >
+          }
+        </hlm-select-content></hlm-select
       >
-        <ng-template let-option #item>
-          <span class="rock-explorer__potential-option">
-            <span
-              class="rock-explorer__potential-swatch"
-              [style.background]="ui.potentialColor(option.value)"
-            ></span>
-            {{ option.label }}
-          </span>
-        </ng-template>
-        <ng-template let-option #selectedItem>
-          <span class="rock-explorer__potential-option">
-            <span
-              class="rock-explorer__potential-swatch"
-              [style.background]="ui.potentialColor(option.value)"
-            ></span>
-            {{ option.label }}
-          </span>
-        </ng-template>
-      </p-select>
-      <p-select
+      <hlm-select
         formControlName="rockQuality"
-        [options]="ui.rockQualityOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="t('rockExplorer.fields.rockQuality')"
-        [showClear]="true"
-      />
-      <p-select
-        formControlName="rockType"
-        [options]="ui.rockTypeOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="t('rockExplorer.fields.rockType')"
-        [showClear]="true"
-      />
-      <p-autoComplete
-        formControlName="createdBy"
-        [suggestions]="createdBySuggestions"
-        optionLabel="fullname"
-        [forceSelection]="true"
-        [showClear]="true"
-        (completeMethod)="searchCreatedBy($event)"
-        [placeholder]="t('rockExplorer.fields.createdBy')"
-        styleClass="rock-explorer__created-by-filter"
-      />
-      <p-button
-        [label]="t('rockExplorer.clearFilters')"
-        (onClick)="clearFilters()"
-        severity="secondary"
-        [outlined]="true"
+        [itemToString]="ui.rockQualityLabel"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value
+            [placeholder]="
+              t('rockExplorer.fields.rockQuality')
+            " /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of ui.rockQualityOptions(); track $index) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <hlm-select formControlName="rockType" [itemToString]="ui.rockTypeLabel"
+        ><hlm-select-trigger class="w-full"
+          ><hlm-select-value
+            [placeholder]="
+              t('rockExplorer.fields.rockType')
+            " /></hlm-select-trigger
+        ><hlm-select-content *hlmSelectPortal>
+          @for (option of ui.rockTypeOptions(); track $index) {
+            <hlm-select-item [value]="option.value">{{
+              option.label
+            }}</hlm-select-item>
+          }
+        </hlm-select-content></hlm-select
+      >
+      <div class="flex min-w-40 flex-col gap-1">
+        <input
+          hlmInput
+          [placeholder]="t('rockExplorer.fields.createdBy')"
+          (input)="searchCreatedBy($any($event.target).value)"
+        />
+        @for (user of createdBySuggestions; track user.id) {
+          <button
+            type="button"
+            class="px-2 py-1 text-left text-sm"
+            (click)="selectCreatedBy(user)"
+          >
+            {{ user.fullname }}
+          </button>
+        }
+      </div>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="clearFilters()"
         [disabled]="!hasActiveFilters"
-      />
-      <p-button
-        icon="pi pi-times"
-        [rounded]="true"
-        [text]="true"
-        severity="secondary"
+      >
+        {{ t("rockExplorer.clearFilters") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        size="icon"
+        class="rounded-full"
+        (click)="ui.toggleFilters()"
         [attr.aria-label]="t('rockExplorer.closeFilters')"
-        (onClick)="ui.toggleFilters()"
-      />
+      >
+        <ng-icon name="lucideX" />
+      </button>
     </div>
   }
 
   @if (ui.pickingImageCoordinates()) {
     <div class="rock-explorer__map-pick-banner" role="status">
       <span>{{ t("rockExplorer.pickImageCoordinatesHint") }}</span>
-      <p-button
-        [label]="t('rockExplorer.cancelPickImageCoordinates')"
-        icon="pi pi-times"
-        size="small"
-        severity="secondary"
-        [text]="true"
-        (onClick)="ui.dispatch({ type: 'cancelImageCoordinatePick' })"
-      />
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'cancelImageCoordinatePick' })"
+      >
+        <ng-icon name="lucideX" />
+        {{ t("rockExplorer.cancelPickImageCoordinates") }}
+      </button>
     </div>
   } @else if (ui.pickingParkingCoordinates()) {
     <div class="rock-explorer__map-pick-banner" role="status">
       <span>{{ t("rockExplorer.pickParkingCoordinatesHint") }}</span>
-      <p-button
-        [label]="t('rockExplorer.cancelPickParkingCoordinates')"
-        icon="pi pi-times"
-        size="small"
-        severity="secondary"
-        [text]="true"
-        (onClick)="ui.dispatch({ type: 'cancelParkingCoordinatePick' })"
-      />
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'cancelParkingCoordinatePick' })"
+      >
+        <ng-icon name="lucideX" />
+        {{ t("rockExplorer.cancelPickParkingCoordinates") }}
+      </button>
     </div>
   } @else if (ui.drawingPath()) {
     <div
@@ -772,29 +867,32 @@
       [attr.aria-label]="t('rockExplorer.drawPath')"
     >
       @if (ui.selectedPathVertexIndex() !== null) {
-        <p-button
-          [label]="t('rockExplorer.deletePathVertex')"
-          icon="pi pi-trash"
-          size="small"
-          severity="danger"
-          (onClick)="ui.dispatch({ type: 'deletePathVertex' })"
-        />
+        <button
+          hlmBtn
+          type="button"
+          variant="destructive"
+          (click)="ui.dispatch({ type: 'deletePathVertex' })"
+        >
+          <ng-icon name="lucideTrash2" />
+          {{ t("rockExplorer.deletePathVertex") }}
+        </button>
       }
-      <p-button
-        [label]="t('rockExplorer.finishPath')"
-        icon="pi pi-check"
-        size="small"
+      <button
+        hlmBtn
+        type="button"
+        (click)="ui.dispatch({ type: 'finishPathDraw' })"
         [disabled]="ui.pathDraftVertexCount() < 2"
-        (onClick)="ui.dispatch({ type: 'finishPathDraw' })"
-      />
-      <p-button
-        [label]="t('rockExplorer.cancelDraw')"
-        icon="pi pi-times"
-        size="small"
-        severity="secondary"
-        [text]="true"
-        (onClick)="ui.dispatch({ type: 'cancelPathDraw' })"
-      />
+      >
+        <ng-icon name="lucideCheck" /> {{ t("rockExplorer.finishPath") }}
+      </button>
+      <button
+        hlmBtn
+        type="button"
+        variant="secondary"
+        (click)="ui.dispatch({ type: 'cancelPathDraw' })"
+      >
+        <ng-icon name="lucideX" /> {{ t("rockExplorer.cancelDraw") }}
+      </button>
     </div>
   }
 </div>

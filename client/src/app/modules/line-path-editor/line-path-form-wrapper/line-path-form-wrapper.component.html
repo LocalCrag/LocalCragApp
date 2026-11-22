@@ -2,13 +2,16 @@
   <div class="content p-6">
     <p class="mt-0 flex items-start">
       <span>{{ t("manageLinePathsDescription") }}</span>
-      <span
-        class="pi pi-question-circle ml-2 mt-1 shrink-0"
-        [pTooltip]="
+      <button
+        type="button"
+        class="ml-2 mt-1 inline-flex shrink-0 text-muted-foreground"
+        [hlmTooltip]="
           (isMobile$ | async) ? t('helpDetailsMobile') : t('helpDetailsDesktop')
         "
-        tooltipPosition="right"
-      ></span>
+        position="right"
+      >
+        <ng-icon name="lucideCircleQuestionMark" />
+      </button>
     </p>
 
     <lc-line-path-form></lc-line-path-form>

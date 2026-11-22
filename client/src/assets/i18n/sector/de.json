@@ -18,9 +18,6 @@
   "sectorForm.sectorRulesTitleTooltip": "Wenn gesetzt, müssen Nutzer bestätigen, dass sie die Regeln gelesen haben, und es wird zusätzlich ein Warnhinweis angezeigt.",
   "sectorForm.sectorRulesTitlePlaceholder": "Leer lassen, um keinen Hinweis anzuzeigen, z.B. \"Bitte unsere Regeln beachten\"",
   "sectorForm.sectorPortraitImageLabel": "Bild",
-  "sectorForm.blocweatherUrlLabel": "BlocWeather URL",
-  "sectorForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Sektor auf der Detailseite, kannst Du hier die URL zum entsprechenden Sektor auf blocweather.com hinterlegen.",
-  "sectorForm.invalidBlocweatherUrl": "Die URL muss das Schema https://blocweather.com/<country>/<region>/<spot> haben",
   "sectorForm.mapMarkersLabel": "GPS-Punkte",
   "sectorForm.closedBecauseParentIsClosed": "Dieser Sektor ist gesperrt, weil das übergeordnete Gebiet derzeit gesperrt ist.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Das erstellen eines nicht-geheimen Sektors innerhalb eines geheimen Gebiets setzt das Gebiet automatisch auch auf nicht-geheim, da man ansonsten nicht zum Sektor navigieren kann. Andere bereits bestehende Sektoren bleiben geheim.",
@@ -32,5 +29,8 @@
   "sectorForm.moveSectorButtonLabel": "Verschieben",
   "sectorForm.deleteSectorButtonLabel": "Sektor löschen",
   "sectorForm.editSectorTitle": "Sektor bearbeiten",
-  "sectorForm.createSectorTitle": "Sektor erstellen"
+  "sectorForm.createSectorTitle": "Sektor erstellen",
+  "sectorForm.condicasterCragIdLabel": "CondiCaster-Spot",
+  "sectorForm.condicasterTooltip": "Die Bedingungen für diesen Ort kommen von diesem CondiCaster-Spot. Leer lassen, um den Spot der Ebene darüber zu verwenden.",
+  "sectorForm.invalidCondicasterCragId": "Gib eine positive CondiCaster-Spot-ID ein."
 }

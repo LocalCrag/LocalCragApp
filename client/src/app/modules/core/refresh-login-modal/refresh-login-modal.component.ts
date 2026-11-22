@@ -6,6 +6,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import { Observable, of } from 'rxjs';
@@ -30,13 +31,14 @@ import { TwoFactorChallenge } from '../../../models/two-factor-challenge';
 import { filter } from 'rxjs/operators';
 import { login, logout } from '../../../ngrx/actions/auth.actions';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
-import { Dialog } from 'primeng/dialog';
+import { BrnDialogContent } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { AsyncPipe } from '@angular/common';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
-import { Password } from 'primeng/password';
+import { PasswordInputComponent } from '../../shared/forms/controls/password-input/password-input.component';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
-import { Button } from 'primeng/button';
 
 /**
  * A modal for refreshing the current refresh token by performing a new login.
@@ -46,17 +48,19 @@ import { Button } from 'primeng/button';
   templateUrl: './refresh-login-modal.component.html',
   styleUrls: ['./refresh-login-modal.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     TranslocoDirective,
     TranslocoPipe,
-    Dialog,
-    ReactiveFormsModule,
+    HlmDialogImports,
+    BrnDialogContent,
+    HlmButton,
     FormDirective,
     ControlGroupDirective,
-    Password,
+    ReactiveFormsModule,
     FormControlDirective,
     IfErrorDirective,
-    Button,
+    PasswordInputComponent,
     AsyncPipe,
     TwoFactorPromptComponent,
   ],

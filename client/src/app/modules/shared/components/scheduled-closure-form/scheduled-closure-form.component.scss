@@ -1,3 +1,34 @@
-.schedule-tag {
-  background-color: var(--p-content-hover-background);
+lc-scheduled-closure-form {
+  .schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.5rem;
+    padding: 0.2rem 0.25rem 0.2rem 0.75rem;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 0.5rem;
+    background: var(--p-content-hover-background);
+
+    > ng-icon {
+      flex-shrink: 0;
+      color: var(--p-text-muted-color);
+    }
+  }
+
+  .schedule-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .schedule-summary {
+    color: var(--p-text-muted-color);
+  }
+
+  .schedule-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
 }

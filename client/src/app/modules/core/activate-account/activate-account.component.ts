@@ -1,11 +1,16 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Router, RouterLink } from '@angular/router';
 import { selectIsLoggedIn } from '../../../ngrx/selectors/auth.selectors';
 import { take } from 'rxjs/operators';
 import { logout } from 'src/app/ngrx/actions/auth.actions';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 
@@ -16,14 +21,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
  */
 @Component({
   selector: 'lc-activate-account',
-  imports: [
-    ButtonModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    TranslocoDirective,
-    RouterLink,
-  ],
+  imports: [HlmButton, ReactiveFormsModule, TranslocoDirective, RouterLink],
   templateUrl: './activate-account.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './activate-account.component.scss',
 })
 export class ActivateAccountComponent implements OnInit {

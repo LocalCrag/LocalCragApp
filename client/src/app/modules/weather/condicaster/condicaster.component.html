@@ -1,0 +1,109 @@
+<ng-container *transloco="let t">
+  <section class="condicaster">
+    @if (loading) {
+      <div hlmSkeleton style="width: 100%; height: 8rem"></div>
+    } @else if (!conditions?.hourly?.length && !conditions?.daily?.length) {
+      <p class="condicaster__empty">{{ t("condicaster.empty") }}</p>
+    } @else {
+      <header class="condicaster__header">
+        @if (headerScore(); as score) {
+          <div class="condicaster__now">
+            <p class="condicaster__now-score" [style.color]="bandColor(score)">
+              {{ metric(score, 1) }}
+              <span>/ 5</span>
+            </p>
+            <div class="condicaster__now-copy">
+              <p class="condicaster__band" [style.color]="bandColor(score)">
+                {{ t(bandKey(score)) }}
+              </p>
+              <p class="condicaster__meta">
+                <span>{{ t("condicaster.scoreLabel") }}</span>
+                @if (activeDate(); as date) {
+                  <span>{{ formatDay(date) }}</span>
+                }
+              </p>
+            </div>
+            <div
+              class="condicaster__meter condicaster__meter--inline"
+              aria-hidden="true"
+            >
+              <div class="condicaster__scale">
+                <span
+                  class="condicaster__marker"
+                  [style.left.%]="4 + (score / 5) * 92"
+                  [style.color]="bandColor(score)"
+                ></span>
+              </div>
+            </div>
+          </div>
+        }
+      </header>
+
+      @if (headerScore(); as score) {
+        <div
+          class="condicaster__meter condicaster__meter--standalone"
+          aria-hidden="true"
+        >
+          <div class="condicaster__scale">
+            <span
+              class="condicaster__marker"
+              [style.left.%]="4 + (score / 5) * 92"
+              [style.color]="bandColor(score)"
+            ></span>
+          </div>
+        </div>
+      }
+
+      <a
+        class="condicaster__attribution"
+        [href]="attributionHref()"
+        target="_blank"
+        rel="noopener"
+      >
+        <img
+          class="condicaster__logo"
+          src="assets/images/condicaster-logo.svg"
+          alt=""
+        />
+        <span class="condicaster__attribution-text">
+          <span class="condicaster__attribution-title">{{
+            t("condicaster.attribution")
+          }}</span>
+          <span class="condicaster__attribution-hint">{{
+            t("condicaster.attributionHint")
+          }}</span>
+        </span>
+      </a>
+
+      @if (conditions.daily?.length) {
+        <lc-condicaster-day-cards
+          [days]="conditions.daily"
+          [hours]="conditions.hourly"
+          [timeZone]="timeZone()"
+          [selectedDate]="activeDate()"
+          (daySelected)="selectDay($event)"
+        />
+      }
+
+      @if (conditions.daily?.length || conditions.hourly?.length) {
+        <div class="condicaster__hourly-heading">
+          <h3>{{ t("condicaster.hourly") }}</h3>
+          @if (activeDate(); as date) {
+            <p class="condicaster__hourly-date">{{ formatDay(date) }}</p>
+          }
+        </div>
+        @if (visibleHours.length) {
+          <div class="condicaster__hourly-scroll">
+            <lc-condicaster-hourly-charts
+              [hours]="visibleHours"
+              [days]="conditions.daily"
+              [timeZone]="timeZone()"
+            />
+          </div>
+        } @else {
+          <p class="condicaster__empty">{{ t("condicaster.hourlyEmpty") }}</p>
+        }
+      }
+    }
+  </section>
+</ng-container>

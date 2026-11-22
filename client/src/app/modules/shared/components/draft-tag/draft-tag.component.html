@@ -1,3 +1,12 @@
 <ng-container *transloco="let t; read: 'draftTag'">
-  <p-tag [value]="t('label')" icon="pi pi-pencil" severity="warn"></p-tag>
+  <span
+    hlmBadge
+    variant="outline"
+    class="border-transparent bg-amber-500 text-white"
+    [hlmTooltip]="t('label')"
+    [attr.aria-label]="t('label')"
+  >
+    <ng-icon name="lucidePencil" />
+    <span class="spot-status-tag__label">{{ t("label") }}</span>
+  </span>
 </ng-container>

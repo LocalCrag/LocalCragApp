@@ -1,5 +1,6 @@
+@use "../../../styles/media-queries" as m;
+
 :host {
-  margin-top: 1rem;
   display: block;
 }
 
@@ -22,37 +23,87 @@
 }
 
 .gallery-preview {
-  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 90vw;
+  justify-content: center;
+  max-width: 100%;
   touch-action: pan-y;
+}
+
+.gallery-preview__stage {
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.gallery-preview__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.gallery-preview__frame {
+  position: relative;
+  min-width: 0;
 }
 
 .gallery-preview__img {
   display: block;
-  max-width: 90vw;
+  min-width: 0;
+  max-width: 100%;
   max-height: 80vh;
-  margin: 0 auto;
   object-fit: contain;
 }
 
 .gallery-preview__nav {
-  z-index: 1;
+  display: flex;
+  flex: 0 0 2.25rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-preview__caption {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: calc(2.25rem + 0.75rem);
+  right: calc(2.25rem + 0.75rem);
   bottom: 0;
   padding: 0.75rem 1rem;
   color: #fff;
   text-align: center;
+  overflow-wrap: anywhere;
   background: linear-gradient(
     transparent,
     rgba(0, 0, 0, 0.65) 35%,
     rgba(0, 0, 0, 0.75)
   );
+}
+
+// The overlay caption is only as wide as the photo. On a phone that column is
+// narrow, so a long description grows above the image and gets cut off.
+@include m.on-mobile {
+  .gallery-preview__stage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .gallery-preview__row {
+    justify-content: center;
+  }
+
+  .gallery-preview__img {
+    max-height: calc(100dvh - 14rem);
+  }
+
+  .gallery-preview__caption {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0.75rem;
+    padding: 0;
+    color: inherit;
+    background: none;
+  }
 }

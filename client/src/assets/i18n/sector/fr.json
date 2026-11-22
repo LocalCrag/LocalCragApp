@@ -18,9 +18,6 @@
   "sectorForm.sectorRulesTitleTooltip": "Si renseigné, les utilisateurs doivent confirmer avoir lu les règles et une alerte supplémentaire s'affiche.",
   "sectorForm.sectorRulesTitlePlaceholder": "Laisser vide pour ne pas afficher d'alerte, p. ex. \"Veuillez lire nos règles\"",
   "sectorForm.sectorPortraitImageLabel": "Image",
-  "sectorForm.blocweatherUrlLabel": "Blocweather URL",
-  "sectorForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour ce secteur sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
-  "sectorForm.invalidBlocweatherUrl": "Le URL doit suivre le format https://blocweather.com/<country>/<region>/<spot>",
   "sectorForm.mapMarkersLabel": "GPS points",
   "sectorForm.closedBecauseParentIsClosed": "Ce secteur est fermé car son rocher est actuellement fermé.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "Créer un secteur non secret dans une falaise secrète définit automatiquement la falaise comme non secret, sinon vous ne pouvez pas naviguer vers le secteur. D'autres secteurs préexistants restent secrets.",
@@ -32,5 +29,8 @@
   "sectorForm.moveSectorButtonLabel": "Se déplacer",
   "sectorForm.deleteSectorButtonLabel": "Supprimer le secteur",
   "sectorForm.editSectorTitle": "Modifier le secteur",
-  "sectorForm.createSectorTitle": "Créer un secteur"
+  "sectorForm.createSectorTitle": "Créer un secteur",
+  "sectorForm.condicasterCragIdLabel": "Falaise CondiCaster",
+  "sectorForm.condicasterTooltip": "Les conditions de ce site viennent de cette falaise CondiCaster. Laisse vide pour utiliser la falaise du niveau supérieur.",
+  "sectorForm.invalidCondicasterCragId": "Saisis un identifiant de falaise CondiCaster positif."
 }

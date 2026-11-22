@@ -25,16 +25,24 @@
     }
 
     <div class="ascent-dialog-summary-meta">
-      <p-rating [ngModel]="ascent.rating" [readonly]="true"></p-rating>
+      <div class="inline-flex text-primary" aria-hidden="true">
+        @for (star of [1, 2, 3, 4, 5]; track star) {
+          <ng-icon
+            name="lucideStar"
+            class="[&_svg]:fill-current"
+            [class.opacity-30]="(ascent.rating ?? 0) < star"
+          />
+        }
+      </div>
       <div class="grade">
         @if (ascent | upgrade) {
-          <i class="pi pi-angle-double-up upgrade-icon"></i>
+          <ng-icon name="lucideChevronsUp" class="upgrade-icon" />
         }
         @if (ascent | consensusGrade) {
-          <i class="pi pi-check"></i>
+          <ng-icon name="lucideCheck" />
         }
         @if (ascent | downgrade) {
-          <i class="pi pi-angle-double-down downgrade-icon"></i>
+          <ng-icon name="lucideChevronsDown" class="downgrade-icon" />
         }
         <span class="grade-name">
           {{
@@ -56,17 +64,26 @@
       </div>
       <div class="ascent-dialog-summary-tags">
         @if (ascent.fa) {
-          <p-tag [value]="t('fa')" icon="pi pi-star"></p-tag>
+          <span hlmBadge>
+            <ng-icon name="lucideStar" />
+            {{ t("fa") }}
+          </span>
         }
         @if (ascent.flash) {
-          <p-tag [value]="t('flash')" icon="pi pi-bolt"></p-tag>
+          <span hlmBadge>
+            <ng-icon name="lucideZap" />
+            {{ t("flash") }}
+          </span>
         }
         @if (ascent.withKneepad) {
-          <p-tag [value]="t('withKneepad')" icon="pi pi-ticket"></p-tag>
+          <span hlmBadge>
+            <ng-icon name="lucideTicket" />
+            {{ t("withKneepad") }}
+          </span>
         }
       </div>
       <div class="ascent-dialog-summary-date">
-        <i class="pi pi-calendar"></i>
+        <ng-icon name="lucideCalendar" />
         @if (ascent.date) {
           {{ ascent.date | date }}
         } @else if (ascent.year) {

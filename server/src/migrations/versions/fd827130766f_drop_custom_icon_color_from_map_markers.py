@@ -31,6 +31,6 @@ def downgrade():
     with op.batch_alter_table("map_markers", schema=None) as batch_op:
         batch_op.add_column(sa.Column("color", sa.VARCHAR(length=120), autoincrement=False, nullable=True))
         batch_op.add_column(sa.Column("custom_icon", sa.VARCHAR(length=120), autoincrement=False, nullable=True))
-        batch_op.drop_constraint(None, type_="unique")
+        batch_op.drop_constraint("map_markers_id_key", type_="unique")
 
     # ### end Alembic commands ###

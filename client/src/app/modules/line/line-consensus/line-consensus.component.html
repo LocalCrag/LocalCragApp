@@ -59,7 +59,15 @@
     <dt>{{ t("rating") }}</dt>
     <dd>
       <div class="rating-summary">
-        <p-rating [ngModel]="displayedRating" [readonly]="true"></p-rating>
+        <span class="inline-flex text-primary" aria-hidden="true">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <ng-icon
+              name="lucideStar"
+              class="[&_svg]:fill-current"
+              [class.opacity-30]="star > displayedRating"
+            />
+          }
+        </span>
         @if (ratingCount > 0) {
           <button
             type="button"
@@ -70,12 +78,9 @@
             (click)="toggleRatings()"
           >
             {{ t("userRatingsCount", { count: ratingCount }) }}
-            <i
-              class="pi"
-              [class.pi-chevron-down]="!ratingsOpen"
-              [class.pi-chevron-up]="ratingsOpen"
-              aria-hidden="true"
-            ></i>
+            <ng-icon
+              [name]="ratingsOpen ? 'lucideChevronUp' : 'lucideChevronDown'"
+            />
           </button>
         }
       </div>
@@ -94,11 +99,11 @@
             >
               <span class="rating-stars" aria-hidden="true">
                 @for (star of [1, 2, 3, 4, 5]; track star) {
-                  <i
-                    class="pi"
-                    [class.pi-star-fill]="star <= row.stars"
-                    [class.pi-star]="star > row.stars"
-                  ></i>
+                  <ng-icon
+                    name="lucideStar"
+                    class="[&_svg]:fill-current"
+                    [class.opacity-30]="star > row.stars"
+                  />
                 }
               </span>
               <span class="rating-track" aria-hidden="true">

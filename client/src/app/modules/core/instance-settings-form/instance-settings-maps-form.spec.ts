@@ -28,10 +28,10 @@ describe('maps form arrays', () => {
       }),
     );
 
-    expect(baseLayers.hasError('baseLayerDefaultsRequired')).toBeFalse();
-    expect(
-      baseLayers.hasError('baseLayerRockExplorerDefaultRequired'),
-    ).toBeTrue();
+    expect(baseLayers.hasError('baseLayerDefaultsRequired')).toBe(false);
+    expect(baseLayers.hasError('baseLayerRockExplorerDefaultRequired')).toBe(
+      true,
+    );
   });
 
   it('puts vector source-layer rules on the layers array', () => {
@@ -39,9 +39,9 @@ describe('maps form arrays', () => {
       type: 'vector',
       layers: [{ sourceLayer: '' } as MapOverlayVectorLayer],
     });
-    expect(
-      missingName.get('layers')?.hasError('vectorLayersRequired'),
-    ).toBeTrue();
+    expect(missingName.get('layers')?.hasError('vectorLayersRequired')).toBe(
+      true,
+    );
 
     const duplicate = createMapLayerGroup(fb, {
       type: 'vector',
@@ -50,9 +50,9 @@ describe('maps form arrays', () => {
         { sourceLayer: 'areas' } as MapOverlayVectorLayer,
       ],
     });
-    expect(
-      duplicate.get('layers')?.hasError('vectorLayersDuplicate'),
-    ).toBeTrue();
+    expect(duplicate.get('layers')?.hasError('vectorLayersDuplicate')).toBe(
+      true,
+    );
 
     const raster = createMapLayerGroup(fb, {
       type: 'vector',
@@ -70,7 +70,7 @@ describe('maps form arrays', () => {
     });
     expect(
       missing.get('categoricalStops')?.hasError('categoricalStopsRequired'),
-    ).toBeTrue();
+    ).toBe(true);
 
     const duplicate = createVectorLayerGroup(fb, {
       paintMode: 'categorical',
@@ -82,7 +82,7 @@ describe('maps form arrays', () => {
     });
     expect(
       duplicate.get('categoricalStops')?.hasError('categoricalStopsDuplicate'),
-    ).toBeTrue();
+    ).toBe(true);
 
     const solid = createVectorLayerGroup(fb, { paintMode: 'solid' });
     expect(solid.get('categoricalStops')?.errors).toBeNull();
@@ -90,6 +90,6 @@ describe('maps form arrays', () => {
     solid.get('categoricalStops')?.updateValueAndValidity();
     expect(
       solid.get('categoricalStops')?.hasError('categoricalStopsRequired'),
-    ).toBeTrue();
+    ).toBe(true);
   });
 });

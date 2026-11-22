@@ -1,266 +1,294 @@
 <ng-container *transloco="let t; read: 'moderatorTasks'">
-  <p-dataView [value]="dataViewRows">
-    <ng-template #emptymessage>
-      @if (
-        !(loading === loadingStates.LOADING && currentPage === 1) &&
-        tasks.length === 0 &&
-        !filtersActive
-      ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
-          {{ t("emptyList") }}
-        </p-message>
-      }
-      @if (
-        !(loading === loadingStates.LOADING && currentPage === 1) &&
-        tasks.length === 0 &&
-        filtersActive
-      ) {
-        <p-message severity="info" icon="pi pi-info-circle" class="m-4 block">
-          {{ t("emptyFilterList") }}
-        </p-message>
-      }
-    </ng-template>
-    <ng-template #header>
-      <div class="task-list-header-row flex flex-wrap items-end gap-2 w-full">
-        <div
-          class="task-list-filters-row flex flex-wrap items-end gap-2 grow min-w-0"
+  <div
+    class="task-list-header-row flex w-full flex-wrap items-end gap-x-6 gap-y-3 px-4 py-4"
+  >
+    <div
+      class="task-list-filters-row flex min-w-0 grow flex-wrap items-end gap-x-6 gap-y-3"
+    >
+      <button
+        hlmBtn
+        type="button"
+        class="responsive-button"
+        [disabled]="
+          usersLoading ||
+          (loading === loadingStates.LOADING && currentPage === 1)
+        "
+        (click)="toggleMyTasksFilter()"
+      >
+        <ng-icon name="lucideUser" /> {{ t("myTasksButton") }}
+      </button>
+      <div class="task-list-filter-field">
+        <span class="task-list-filter-label">{{ t("filterAssignee") }}</span>
+        <hlm-select
+          [(ngModel)]="filterAssigneeId"
+          [itemToString]="filterOptionLabel"
+          [disabled]="
+            usersLoading ||
+            (loading === loadingStates.LOADING && currentPage === 1)
+          "
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="filterAnyLabel" /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of assigneeFilterOptions; track $index) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
         >
-          <p-button
-            [label]="t('myTasksButton')"
-            icon="pi pi-user"
-            class="responsive-button"
-            [outlined]="!myTasksActive"
-            [disabled]="
-              usersLoading ||
-              (loading === loadingStates.LOADING && currentPage === 1)
-            "
-            (click)="toggleMyTasksFilter()"
-          ></p-button>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{
-              t("filterAssignee")
-            }}</span>
-            <p-select
-              [options]="assigneeFilterOptions"
-              [(ngModel)]="filterAssigneeId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{ t("filterCreator") }}</span>
-            <p-select
-              [options]="userFilterOptions"
-              [(ngModel)]="filterCreatorId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-          <div class="task-list-filter-field">
-            <span class="task-list-filter-label">{{
-              t("filterFinisher")
-            }}</span>
-            <p-select
-              [options]="userFilterOptions"
-              [(ngModel)]="filterFinisherId"
-              optionLabel="label"
-              optionValue="value"
-              [disabled]="
-                usersLoading ||
-                (loading === loadingStates.LOADING && currentPage === 1)
-              "
-              (onChange)="onFilterChange()"
-              class="md:mb-0"
-            ></p-select>
-          </div>
-        </div>
-        <div class="task-list-header-actions shrink-0">
-          <p-button
-            [label]="t('createTaskButton')"
-            icon="pi pi-plus"
-            [routerLink]="createLink"
-            class="responsive-button"
-          ></p-button>
-        </div>
       </div>
-    </ng-template>
-    <ng-template let-rows #list>
-      @if (loading === loadingStates.LOADING && currentPage === 1) {
-        <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
-      }
-      @if (!(loading === loadingStates.LOADING && currentPage === 1)) {
-        @if (rows.length > 0) {
-          <p-menu
-            #taskMenu
-            [model]="taskActionItems"
-            [popup]="true"
-            [appendTo]="'body'"
-          ></p-menu>
-          <p-confirmpopup></p-confirmpopup>
-        }
+      <div class="task-list-filter-field">
+        <span class="task-list-filter-label">{{ t("filterCreator") }}</span>
+        <hlm-select
+          [(ngModel)]="filterCreatorId"
+          [itemToString]="filterOptionLabel"
+          [disabled]="
+            usersLoading ||
+            (loading === loadingStates.LOADING && currentPage === 1)
+          "
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="filterAnyLabel" /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of userFilterOptions; track $index) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
+      </div>
+      <div class="task-list-filter-field">
+        <span class="task-list-filter-label">{{ t("filterFinisher") }}</span>
+        <hlm-select
+          [(ngModel)]="filterFinisherId"
+          [itemToString]="filterOptionLabel"
+          [disabled]="
+            usersLoading ||
+            (loading === loadingStates.LOADING && currentPage === 1)
+          "
+          (ngModelChange)="onFilterChange()"
+          ><hlm-select-trigger class="w-full"
+            ><hlm-select-value
+              [placeholder]="filterAnyLabel" /></hlm-select-trigger
+          ><hlm-select-content *hlmSelectPortal>
+            @for (option of userFilterOptions; track $index) {
+              <hlm-select-item [value]="option.value">{{
+                option.label
+              }}</hlm-select-item>
+            }
+          </hlm-select-content></hlm-select
+        >
+      </div>
+    </div>
+    <div class="task-list-header-actions shrink-0">
+      <a hlmBtn class="responsive-button" [routerLink]="createLink"
+        ><ng-icon name="lucidePlus" /> {{ t("createTaskButton") }}</a
+      >
+    </div>
+  </div>
+  @if (!dataViewRows?.length) {
+    @if (
+      loading === loadingStates.DEFAULT && tasks.length === 0 && !filtersActive
+    ) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("emptyList") }}</p>
+      </div>
+    }
+    @if (
+      loading === loadingStates.DEFAULT && tasks.length === 0 && filtersActive
+    ) {
+      <div hlmAlert class="m-4">
+        <ng-icon name="lucideInfo" />
+        <p hlmAlertDescription>{{ t("emptyFilterList") }}</p>
+      </div>
+    }
+  }
+  @if (
+    loading === loadingStates.INITIAL_LOADING ||
+    (loading === loadingStates.LOADING && currentPage === 1)
+  ) {
+    <lc-moderator-task-list-skeleton></lc-moderator-task-list-skeleton>
+  }
+  @if (
+    loading === loadingStates.DEFAULT ||
+    (loading === loadingStates.LOADING && currentPage > 1)
+  ) {
+    @if (dataViewRows.length > 0) {}
 
-        <div class="task-list-section flex flex-col gap-6">
-          @for (row of rows; track trackListRow($index, row)) {
-            @if (row.kind === "divider") {
-              <p-divider
-                align="center"
-                type="solid"
-                class="task-section-divider"
-              >
-                <b>{{ t("completedSection") }}</b>
-              </p-divider>
-            } @else {
-              @let task = row.task;
-              <div
-                class="task-row border border-surface rounded-border"
-                [ngClass]="{ 'task-row-completed': task.completed }"
-              >
-                <p-button
-                  class="task-row-actions-button"
-                  icon="pi pi-ellipsis-v"
-                  styleClass="p-button-rounded p-button-text p-button-secondary"
-                  (click)="openTaskActions($event, task)"
-                ></p-button>
-                <div class="task-row-inner">
-                  <p-checkbox
-                    class="task-row-checkbox"
-                    [binary]="true"
-                    [ngModel]="task.completed"
-                    [disabled]="isToggling(task.id)"
-                    (onChange)="toggleComplete(task)"
-                  ></p-checkbox>
-                  <div class="task-row-main min-w-0">
-                    <h3 class="m-0 task-row-title">{{ task.title }}</h3>
-                    <div
-                      class="text-sm text-muted-color mt-1 task-target-location"
-                    >
-                      <span>{{ t("belongsTo") }}: </span>
-                      @if (getTargetLinks(task).length === 0) {
-                        {{ task.objectType }}
+    <div class="task-list-section flex flex-col gap-6">
+      @for (row of dataViewRows; track trackListRow($index, row)) {
+        @if (row.kind === "divider") {
+          <div class="flex items-center gap-3 task-section-divider">
+            <div hlmSeparator class="flex-1"></div>
+            <b>{{ t("completedSection") }}</b>
+            <div hlmSeparator class="flex-1"></div>
+          </div>
+        } @else {
+          @let task = row.task;
+          <div
+            class="task-row border border-surface rounded-border"
+            [ngClass]="{ 'task-row-completed': task.completed }"
+          >
+            <button
+              hlmBtn
+              type="button"
+              variant="secondary"
+              size="icon"
+              class="task-row-actions-button"
+              [hlmDropdownMenuTrigger]="taskMenu"
+              (click)="openTaskActions($event, task)"
+            >
+              <ng-icon name="lucideEllipsisVertical" />
+            </button>
+            <div class="task-row-inner">
+              <hlm-checkbox
+                class="task-row-checkbox"
+                [ngModel]="task.completed"
+                [disabled]="isToggling(task.id)"
+                (ngModelChange)="toggleComplete(task)"
+              ></hlm-checkbox>
+              <div class="task-row-main min-w-0">
+                <h3 class="m-0 task-row-title">{{ task.title }}</h3>
+                <div class="text-sm text-muted-color mt-1 task-target-location">
+                  <span>{{ t("belongsTo") }}: </span>
+                  @if (getTargetLinks(task).length === 0) {
+                    {{ task.objectType }}
+                  } @else {
+                    @for (
+                      link of getTargetLinks(task);
+                      track link.routerLink;
+                      let last = $last
+                    ) {
+                      <a [routerLink]="link.routerLink">{{ link.name }}</a>
+                      @if (!last) {
+                        <span>, </span>
+                      }
+                    }
+                  }
+                </div>
+                @if (task.description) {
+                  <div
+                    class="mt-2"
+                    [innerHTML]="task.description | sanitizeHtml"
+                  ></div>
+                }
+              </div>
+              <div class="task-row-people flex flex-col gap-6 text-sm">
+                @if (task.assignedTo) {
+                  <div class="task-person flex items-start gap-2">
+                    <lc-user-avatar
+                      [user]="task.assignedTo"
+                      thumbnail="thumbnailS"
+                    ></lc-user-avatar>
+                    <div class="task-person-content flex-1 min-w-0">
+                      <div class="task-person-label text-muted-color">
+                        {{ t("assignedTo") }}
+                      </div>
+                      <div class="task-person-detail">
+                        <a [routerLink]="task.assignedTo.routerLink">
+                          {{ task.assignedTo.firstname }}
+                          {{ task.assignedTo.lastname }}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                }
+                <div class="task-person flex items-start gap-2">
+                  <lc-user-avatar
+                    [user]="task.createdBy"
+                    thumbnail="thumbnailS"
+                  ></lc-user-avatar>
+                  <div class="task-person-content flex-1 min-w-0">
+                    <div class="task-person-label text-muted-color">
+                      {{ t("createdBy") }}
+                    </div>
+                    <div class="task-person-detail">
+                      @if (task.createdBy?.routerLink) {
+                        <a [routerLink]="task.createdBy.routerLink">
+                          {{ task.createdBy.firstname }}
+                          {{ task.createdBy.lastname }}
+                        </a>
                       } @else {
-                        @for (
-                          link of getTargetLinks(task);
-                          track link.routerLink;
-                          let last = $last
-                        ) {
-                          <a [routerLink]="link.routerLink">{{ link.name }}</a>
-                          @if (!last) {
-                            <span>, </span>
-                          }
-                        }
+                        {{ task.createdBy?.firstname }}
+                        {{ task.createdBy?.lastname }}
+                      }
+                      @if (task.timeCreated) {
+                        <span class="task-person-date">{{
+                          task.timeCreated | date: "datetime"
+                        }}</span>
                       }
                     </div>
-                    @if (task.description) {
-                      <div
-                        class="mt-2"
-                        [innerHTML]="task.description | sanitizeHtml"
-                      ></div>
-                    }
-                  </div>
-                  <div class="task-row-people flex flex-col gap-6 text-sm">
-                    @if (task.assignedTo) {
-                      <div class="task-person flex items-start gap-2">
-                        <lc-user-avatar
-                          [user]="task.assignedTo"
-                          thumbnail="thumbnailS"
-                        ></lc-user-avatar>
-                        <div class="task-person-content flex-1 min-w-0">
-                          <div class="task-person-label text-muted-color">
-                            {{ t("assignedTo") }}
-                          </div>
-                          <div class="task-person-detail">
-                            <a [routerLink]="task.assignedTo.routerLink">
-                              {{ task.assignedTo.firstname }}
-                              {{ task.assignedTo.lastname }}
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    }
-                    <div class="task-person flex items-start gap-2">
-                      <lc-user-avatar
-                        [user]="task.createdBy"
-                        thumbnail="thumbnailS"
-                      ></lc-user-avatar>
-                      <div class="task-person-content flex-1 min-w-0">
-                        <div class="task-person-label text-muted-color">
-                          {{ t("createdBy") }}
-                        </div>
-                        <div class="task-person-detail">
-                          @if (task.createdBy?.routerLink) {
-                            <a [routerLink]="task.createdBy.routerLink">
-                              {{ task.createdBy.firstname }}
-                              {{ task.createdBy.lastname }}
-                            </a>
-                          } @else {
-                            {{ task.createdBy?.firstname }}
-                            {{ task.createdBy?.lastname }}
-                          }
-                          @if (task.timeCreated) {
-                            <span class="task-person-date">{{
-                              task.timeCreated | date: "datetime"
-                            }}</span>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    @if (task.completed && task.finishedBy) {
-                      <div class="task-person flex items-start gap-2">
-                        <lc-user-avatar
-                          [user]="task.finishedBy"
-                          thumbnail="thumbnailS"
-                        ></lc-user-avatar>
-                        <div class="task-person-content flex-1 min-w-0">
-                          <div class="task-person-label text-muted-color">
-                            {{ t("finishedBy") }}
-                          </div>
-                          <div class="task-person-detail">
-                            <a [routerLink]="task.finishedBy.routerLink">
-                              {{ task.finishedBy.firstname }}
-                              {{ task.finishedBy.lastname }}
-                            </a>
-                            @if (task.timeFinished) {
-                              <span class="task-person-date">{{
-                                task.timeFinished | date: "datetime"
-                              }}</span>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    }
                   </div>
                 </div>
+                @if (task.completed && task.finishedBy) {
+                  <div class="task-person flex items-start gap-2">
+                    <lc-user-avatar
+                      [user]="task.finishedBy"
+                      thumbnail="thumbnailS"
+                    ></lc-user-avatar>
+                    <div class="task-person-content flex-1 min-w-0">
+                      <div class="task-person-label text-muted-color">
+                        {{ t("finishedBy") }}
+                      </div>
+                      <div class="task-person-detail">
+                        <a [routerLink]="task.finishedBy.routerLink">
+                          {{ task.finishedBy.firstname }}
+                          {{ task.finishedBy.lastname }}
+                        </a>
+                        @if (task.timeFinished) {
+                          <span class="task-person-date">{{
+                            task.timeFinished | date: "datetime"
+                          }}</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
-            }
-          }
-        </div>
+            </div>
+          </div>
+        }
       }
-    </ng-template>
-  </p-dataView>
+    </div>
+  }
 
   @if (hasNextPage) {
     <div class="flex justify-center mt-20">
-      <p-button
-        [label]="t('loadMore')"
-        (scrolled)="loadNextPage()"
+      <button
+        lcLoadingButton
+        [loading]="loading === loadingStates.LOADING"
         (click)="loadNextPage()"
-        infiniteScroll
+        (scrolled)="loadNextPage()"
+        [disabled]="loading === loadingStates.LOADING"
         [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="50"
-        [loading]="loading === loadingStates.LOADING"
-      ></p-button>
+        infiniteScroll
+        type="button"
+      >
+        {{ t("loadMore") }}
+      </button>
     </div>
   }
+  <ng-template #taskMenu>
+    <div hlmDropdownMenu>
+      @for (item of taskActionItems; track item.label) {
+        <button
+          hlmDropdownMenuItem
+          type="button"
+          [disabled]="!!item.disabled"
+          (click)="item.command?.()"
+        >
+          @if (menuIcon(item.icon); as name) {
+            <ng-icon [name]="name" />
+          }
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
 </ng-container>

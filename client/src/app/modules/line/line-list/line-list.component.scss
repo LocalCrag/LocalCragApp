@@ -5,6 +5,7 @@ lc-line-list {
 
   .line-info-container {
     width: 100%;
+    min-width: 0;
   }
 
   .line-name {
@@ -22,16 +23,79 @@ lc-line-list {
 
   .bottom-row {
     display: flex;
+    align-items: center;
     width: 100%;
+    gap: 0.35rem;
 
-    .video-button {
-      button {
-        margin-left: -1.25rem;
+    > button,
+    .todo-button,
+    .todo-priority-trigger,
+    .tick-button,
+    .archive-button {
+      border-color: var(--border);
+      background-color: transparent;
+
+      &:hover:not(:disabled) {
+        background-color: var(--accent);
       }
     }
 
-    lc-tick-button {
-      margin-right: -1.25rem;
+    /* Plus and priority are one split control, not two circles. */
+    lc-todo-button .todo-add:not(.todo-add-labeled) {
+      display: inline-flex;
+      align-items: stretch;
+      box-sizing: border-box;
+      height: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+
+      .todo-button,
+      .todo-priority-trigger {
+        height: 100%;
+        border-color: transparent;
+        border-radius: 0;
+      }
+
+      .todo-priority-trigger {
+        width: 1.75rem;
+        border-inline-start: 1px solid var(--border);
+      }
+    }
+
+    /* Already on the list: fill the circle instead of a square behind the plus. */
+    lc-todo-button .todo-button:has(.is-todo-icon) {
+      background-color: var(--p-blue-500);
+      background-clip: border-box;
+      border-color: var(--p-blue-500);
+      color: var(--p-primary-contrast-color);
+
+      .is-todo-icon {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: var(--p-blue-500);
+        filter: brightness(1.1);
+      }
+    }
+
+    /* Climbed: fill the circle instead of a square behind the check. */
+    lc-tick-button .tick-button:has(.ticked-icon) {
+      background-color: var(--ticked-color);
+      background-clip: border-box;
+      border-color: var(--ticked-color);
+      color: var(--p-primary-contrast-color);
+
+      .ticked-icon {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+      }
     }
   }
 
@@ -49,13 +113,13 @@ lc-line-list {
       padding-inline-start: 0.5rem;
     }
 
-    p-button.line-list-filter-btn .line-list-filter-label-group {
+    button.line-list-filter-btn .line-list-filter-label-group {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
     }
 
-    p-button.line-list-filter-btn .line-list-filter-active-dot {
+    button.line-list-filter-btn .line-list-filter-active-dot {
       flex-shrink: 0;
       width: 0.5rem;
       height: 0.5rem;
@@ -86,7 +150,7 @@ lc-line-list {
       color: var(--p-text-muted-color) !important;
     }
 
-    .p-rating-icon {
+    .text-primary {
       color: inherit;
     }
 

@@ -1,5 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -7,13 +13,6 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { Store } from '@ngrx/store';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { Button, ButtonDirective, ButtonLabel } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { Rating } from 'primeng/rating';
-import { Skeleton } from 'primeng/skeleton';
-import { Select } from 'primeng/select';
-import { SelectButton } from 'primeng/selectbutton';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { LoadingState } from '../../../enums/loading-state';
@@ -34,6 +33,21 @@ import {
   PaginatedListView,
 } from '../../../utility/paginated-list';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
+import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  lucideArrowRight,
+  lucideCircleX,
+  lucideInfo,
+  lucideStar,
+} from '@ng-icons/lucide';
 
 interface ControversyRow extends RatingControversy {
   authorGradeName: string;
@@ -41,25 +55,29 @@ interface ControversyRow extends RatingControversy {
 }
 
 @Component({
+  providers: [
+    provideIcons({ lucideArrowRight, lucideCircleX, lucideInfo, lucideStar }),
+  ],
   selector: 'lc-rating-controversies-page',
   imports: [
+    LoadingButtonComponent,
     NgTemplateOutlet,
     TranslocoDirective,
     RouterLink,
     FormsModule,
-    Button,
-    ButtonDirective,
-    ButtonLabel,
-    InputText,
-    Message,
-    Rating,
-    Skeleton,
-    Select,
-    SelectButton,
     InfiniteScrollDirective,
     TopoHierarchyBreadcrumbsComponent,
+    HlmButton,
+    HlmAlert,
+    HlmAlertDescription,
+    ...HlmSelectImports,
+    HlmInput,
+    ...HlmToggleGroupImports,
+    HlmSkeleton,
+    NgIcon,
   ],
   templateUrl: './rating-controversies-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rating-controversies-page.component.scss',
 })
 export class RatingControversiesPageComponent
@@ -119,8 +137,13 @@ export class RatingControversiesPageComponent
     this.loadFirstPage();
   }
 
-  selectKind(kind: ControversyKind): void {
-    if (kind === this.kind || this.loading === LoadingState.LOADING) {
+  selectKind(kind: ControversyKind | ControversyKind[] | null): void {
+    if (
+      kind == null ||
+      Array.isArray(kind) ||
+      kind === this.kind ||
+      this.loading === LoadingState.LOADING
+    ) {
       return;
     }
     this.kind = kind;

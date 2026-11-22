@@ -4,6 +4,8 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
 import { FormDirective } from '../../shared/forms/form.directive';
 import {
@@ -15,7 +17,7 @@ import {
 import { LoadingState } from '../../../enums/loading-state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, of, throwError } from 'rxjs';
@@ -26,18 +28,13 @@ import {
 } from '../../../models/instance-settings';
 import { InstanceSettingsService } from '../../../services/crud/instance-settings.service';
 import { UploadService } from '../../../services/crud/upload.service';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { PaginatorModule } from 'primeng/paginator';
 import { updateInstanceSettings } from '../../../ngrx/actions/instance-settings.actions';
-import { ColorPickerModule } from 'primeng/colorpicker';
-import { DividerModule } from 'primeng/divider';
-import { getRgbObject } from '../../../utility/misc/color';
-import { TooltipModule } from 'primeng/tooltip';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PageTitleService } from '../../../services/core/page-title.service';
+import {
+  ChromeTab,
+  ChromeTabsComponent,
+} from '../../shared/components/chrome-tabs/chrome-tabs.component';
 import { InstanceSettingsGeneralTabComponent } from './instance-settings-general-tab.component';
 import { InstanceSettingsAppearanceTabComponent } from './instance-settings-appearance-tab.component';
 import { InstanceSettingsAnalyticsTabComponent } from './instance-settings-analytics-tab.component';
@@ -56,20 +53,9 @@ type SettingsTabId =
 @Component({
   selector: 'lc-instance-settings-form',
   imports: [
-    ButtonModule,
-    ConfirmPopupModule,
-    InputTextModule,
-    InputNumberModule,
-    PaginatorModule,
     ReactiveFormsModule,
-    TranslocoDirective,
-    ColorPickerModule,
-    DividerModule,
-    TooltipModule,
-    Tabs,
-    TabList,
-    Tab,
     FormDirective,
+    ChromeTabsComponent,
     InstanceSettingsGeneralTabComponent,
     InstanceSettingsAppearanceTabComponent,
     InstanceSettingsAnalyticsTabComponent,
@@ -78,6 +64,7 @@ type SettingsTabId =
   ],
   templateUrl: './instance-settings-form.component.html',
   styleUrl: './instance-settings-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class InstanceSettingsFormComponent implements OnInit {
@@ -88,6 +75,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   public loadingStates = LoadingState;
   public instanceSettings: InstanceSettings;
   public activeTab: SettingsTabId = 'general';
+  public settingsTabs: ChromeTab[] = [];
   public saveGeneralTab = () => this.saveTab('general');
   public saveStorageTab = () => this.saveTab('storage');
   public saveAppearanceTab = () => this.saveTab('appearance');
@@ -101,6 +89,7 @@ export class InstanceSettingsFormComponent implements OnInit {
   private uploadService = inject(UploadService);
   private translocoService = inject(TranslocoService);
   private pageTitleService = inject(PageTitleService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.pageTitleService.setTitle(
@@ -108,6 +97,10 @@ export class InstanceSettingsFormComponent implements OnInit {
         marker('instanceSettings.instanceSettingsForm.editInstanceSettings'),
       ),
     );
+    this.refreshSettingsTabs();
+    this.translocoService.langChanges$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.refreshSettingsTabs());
     this.buildForm();
 
     this.instanceSettingsForm.disable();
@@ -127,6 +120,32 @@ export class InstanceSettingsFormComponent implements OnInit {
         this.setFormValue();
         this.loadingState = LoadingState.DEFAULT;
       });
+  }
+
+  onSettingsTab(tab: string): void {
+    if (
+      tab === 'general' ||
+      tab === 'appearance' ||
+      tab === 'analytics' ||
+      tab === 'maps' ||
+      tab === 'storage'
+    ) {
+      this.activeTab = tab;
+    }
+  }
+
+  private refreshSettingsTabs(): void {
+    const label = (key: string) =>
+      this.translocoService.translate(
+        `instanceSettings.instanceSettingsForm.${key}`,
+      );
+    this.settingsTabs = [
+      { id: 'general', label: label('commonSettings') },
+      { id: 'appearance', label: label('imagesSettings') },
+      { id: 'analytics', label: label('matomoSettings') },
+      { id: 'maps', label: label('mapSettings') },
+      { id: 'storage', label: label('storageSettings') },
+    ];
   }
 
   mapsGroup(): FormGroup {
@@ -216,16 +235,10 @@ export class InstanceSettingsFormComponent implements OnInit {
         arrowHighlightColor: this.instanceSettings.arrowHighlightColor,
         arrowHighlightTextColor: this.instanceSettings.arrowHighlightTextColor,
         colorLinesByScale: this.instanceSettings.colorLinesByScale,
-        barChartColor: getRgbObject(this.instanceSettings.barChartColor),
-        barChartAccentColor: getRgbObject(
-          this.instanceSettings.barChartAccentColor,
-        ),
-        darkBarChartColor: getRgbObject(
-          this.instanceSettings.darkBarChartColor,
-        ),
-        darkBarChartAccentColor: getRgbObject(
-          this.instanceSettings.darkBarChartAccentColor,
-        ),
+        barChartColor: this.instanceSettings.barChartColor,
+        barChartAccentColor: this.instanceSettings.barChartAccentColor,
+        darkBarChartColor: this.instanceSettings.darkBarChartColor,
+        darkBarChartAccentColor: this.instanceSettings.darkBarChartAccentColor,
       },
       analytics: {
         matomoSiteId: this.instanceSettings.matomoSiteId,
@@ -294,15 +307,7 @@ export class InstanceSettingsFormComponent implements OnInit {
     }
     if (tab === 'appearance') {
       const raw = this.appearanceGroup().getRawValue();
-      return InstanceSettings.serializeAppearancePatch({
-        ...raw,
-        barChartColor: this.getCSSRgbValue(raw.barChartColor),
-        barChartAccentColor: this.getCSSRgbValue(raw.barChartAccentColor),
-        darkBarChartColor: this.getCSSRgbValue(raw.darkBarChartColor),
-        darkBarChartAccentColor: this.getCSSRgbValue(
-          raw.darkBarChartAccentColor,
-        ),
-      });
+      return InstanceSettings.serializeAppearancePatch(raw);
     }
     if (tab === 'analytics') {
       return InstanceSettings.serializeAnalyticsPatch(
@@ -312,9 +317,5 @@ export class InstanceSettingsFormComponent implements OnInit {
     return InstanceSettings.serializeMapsPatch(
       serializeMapsFormGroup(this.mapsGroup()),
     );
-  }
-
-  private getCSSRgbValue(raw: any): string {
-    return `rgb(${raw.r}, ${raw.g}, ${raw.b})`;
   }
 }

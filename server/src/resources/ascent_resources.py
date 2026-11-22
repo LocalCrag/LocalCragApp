@@ -138,7 +138,7 @@ class GetAscents(MethodView):
 
         # Filter for user, crag, sector, area or line
         if crag_id:
-            query = query.join(Area.sector).filter_by(crag_id=crag_id)
+            query = query.join(Area.sector).filter(Sector.crag_id == crag_id)
         if sector_id:
             query = query.filter(Area.sector_id == sector_id)
         if area_id:
@@ -154,12 +154,12 @@ class GetAscents(MethodView):
 
         # Filter by grades
         if min_grade_value and max_grade_value:
+            min_grade = int(min_grade_value)
+            max_grade = int(max_grade_value)
             if instance_settings.display_user_grades:
-                query = query.filter(Line.user_grade_value <= max_grade_value, Line.user_grade_value >= min_grade_value)
+                query = query.filter(Line.user_grade_value <= max_grade, Line.user_grade_value >= min_grade)
             else:
-                query = query.filter(
-                    Line.author_grade_value <= max_grade_value, Line.author_grade_value >= min_grade_value
-                )
+                query = query.filter(Line.author_grade_value <= max_grade, Line.author_grade_value >= min_grade)
 
         if filter_flash:
             query = query.filter(Ascent.flash.is_(True))
@@ -212,7 +212,7 @@ class GetTicks(MethodView):
             .filter(Ascent.created_by_id == user_id)
         )
         if crag_id:
-            query = query.join(Area.sector).filter_by(crag_id=crag_id)
+            query = query.join(Area.sector).filter(Sector.crag_id == crag_id)
         if sector_id:
             query = query.filter(Area.sector_id == sector_id)
         if area_id:

@@ -39,7 +39,10 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
   secret: boolean;
   publicationStatus: string;
   mapMarkers: MapMarker[];
-  blocweatherUrl: string | null = null;
+  condicasterCragId: number | null = null;
+  condicasterCragName: string | null = null;
+  hasCondicaster = false;
+  condiscore: number | null = null;
 
   /**
    * Parses a sector.
@@ -76,7 +79,10 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
       ? payload.mapMarkers.map(MapMarker.deserialize)
       : null;
     sector.routerLink = topoSectorRouterLink(sector);
-    sector.blocweatherUrl = payload.blocweatherUrl ?? null;
+    sector.condicasterCragId = payload.condicasterCragId ?? null;
+    sector.condicasterCragName = payload.condicasterCragName ?? null;
+    sector.hasCondicaster = !!payload.hasCondicaster;
+    sector.condiscore = payload.condiscore ?? null;
     return sector;
   }
 
@@ -100,7 +106,8 @@ export class Sector extends IsClosable(HasOrderIndex(HasSlug(AbstractModel))) {
         mapMarkers: sector.mapMarkers
           ? sector.mapMarkers.map(MapMarker.serialize)
           : null,
-        blocweatherUrl: sector.blocweatherUrl,
+        condicasterCragId: sector.condicasterCragId,
+        condicasterCragName: sector.condicasterCragName,
       },
     };
   }

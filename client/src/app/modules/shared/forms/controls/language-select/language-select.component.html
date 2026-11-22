@@ -1,26 +1,36 @@
-<p-select
-  [options]="languages"
+<hlm-select
+  align="center"
+  [value]="value"
   [disabled]="disabled"
-  [placeholder]="placeholder"
-  [ngModel]="value"
-  (onChange)="onSelect($event.value)"
-  appendTo="body"
-  [overlayOptions]="selectOverlayOptions"
+  (valueChange)="onSelect($event)"
 >
-  <ng-template #selectedItem let-code>
-    <div class="language-option">
-      <img [src]="getFlagSrc(code)" alt="" class="flag" />
-      @if (!noLabel) {
-        <span>{{ code | transloco }}</span>
-      }
-    </div>
-  </ng-template>
-  <ng-template let-code #item>
-    <div class="language-option">
-      <img [src]="getFlagSrc(code)" alt="" class="flag" />
-      @if (!noLabel) {
-        <span>{{ code | transloco }}</span>
-      }
-    </div>
-  </ng-template>
-</p-select>
+  <hlm-select-trigger class="w-full">
+    @if (value) {
+      <div class="language-option">
+        <img [src]="getFlagSrc(value)" alt="" class="flag" />
+        @if (!noLabel) {
+          <span>{{ value | transloco }}</span>
+        }
+      </div>
+    } @else if (placeholder) {
+      <span class="text-muted-foreground">{{ placeholder }}</span>
+    }
+  </hlm-select-trigger>
+  <hlm-select-content *hlmSelectPortal>
+    @for (code of languages; track code) {
+      <hlm-select-item
+        [value]="code"
+        [attr.data-flags-only]="noLabel ? '' : null"
+      >
+        <div class="language-option">
+          <img [src]="getFlagSrc(code)" alt="" class="flag" />
+          @if (noLabel) {
+            <span class="sr-only">{{ code | transloco }}</span>
+          } @else {
+            <span>{{ code | transloco }}</span>
+          }
+        </div>
+      </hlm-select-item>
+    }
+  </hlm-select-content>
+</hlm-select>

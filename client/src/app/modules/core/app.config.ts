@@ -3,6 +3,7 @@ import {
   ErrorHandler,
   inject,
   Injectable,
+  Injector,
   LOCALE_ID,
   provideAppInitializer,
 } from '@angular/core';
@@ -17,6 +18,7 @@ import {
   HttpClient,
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import { ErrorHandlerInterceptor } from '../../utility/http-interceptors/error.interceptor';
 import { LocalCragErrorHandler } from '../../services/core/local-crag-error-handler';
@@ -26,8 +28,6 @@ import { ContentTypeInterceptor } from '../../utility/http-interceptors/content-
 import { TopoPointsInterceptor } from '../../utility/http-interceptors/topo-points.interceptor';
 import { environment } from '../../../environments/environment';
 import * as Sentry from '@sentry/angular';
-import { providePrimeNG } from 'primeng/config';
-import { LocalCragTheme } from './theme/theme';
 import { ThemeService } from '../../services/core/theme.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
@@ -41,7 +41,7 @@ import { MenuItemsService } from '../../services/crud/menu-items.service';
 import { concatMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { updateInstanceSettings } from '../../ngrx/actions/instance-settings.actions';
-import { MessageService } from 'primeng/api';
+import { setRootInjector } from './root-injector';
 import { metaReducers, reducers } from '../../ngrx/reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { Actions, ofType, provideEffects } from '@ngrx/effects';
@@ -51,8 +51,8 @@ import { AppLevelAlertsEffects } from 'src/app/ngrx/effects/app-level-alerts.eff
 import { NotificationsEffects } from '../../ngrx/effects/notifications.effects';
 import { MatomoInitializerService, provideMatomo } from 'ngx-matomo-client';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
+import { provideCalendarI18n } from '../../services/core/calendar-i18n';
 import { LanguageService } from '../../services/core/language.service';
-import { de } from 'primelocale/js/de.js';
 import { InstanceSettings } from '../../models/instance-settings';
 import {
   SENTRY_IGNORED_NETWORK_ERROR_PATTERNS,
@@ -79,7 +79,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
    */
   getTranslation(lang: string) {
     return this.http.get<Translation>(
-      `/assets/i18n/${lang}.json?v=${environment.version}`,
+      `/assets/i18n/${lang}.json?v=${encodeURIComponent(environment.version)}`,
     );
   }
 }
@@ -186,6 +186,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => {
       inject(ThemeService).init();
+      setRootInjector(inject(Injector));
       return Promise.resolve();
     }),
     provideRouter(
@@ -220,22 +221,7 @@ export const appConfig: ApplicationConfig = {
       provide: LOCALE_ID,
       useFactory: localeFactory,
     },
-    provideHttpClient(withInterceptorsFromDi()),
-    providePrimeNG({
-      translation: de,
-      ripple: true,
-      theme: {
-        preset: LocalCragTheme,
-        options: {
-          darkModeSelector: '.lc-dark',
-          cssLayer: {
-            name: 'primeng',
-            order: 'theme, base, primeng',
-          },
-        },
-      },
-    }),
-    MessageService,
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideAnimationsAsync(),
     provideTransloco({
       config: {
@@ -269,6 +255,7 @@ export const appConfig: ApplicationConfig = {
       );
       return initializerFn();
     }),
+    ...provideCalendarI18n(),
     provideAppInitializer(() => {
       const initializerFn = preloadMenus(inject(MenuItemsService));
       return initializerFn();

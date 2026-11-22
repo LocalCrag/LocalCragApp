@@ -7,7 +7,7 @@ This guide is the hub for setting up LocalCrag for local development. Detailed n
 | Tool | Notes |
 |------|--------|
 | **Git** | Clone the repository |
-| **Node.js** | Client: Node ≥ 21 (see [client README](../client/README.md)) |
+| **Node.js** | Client: Node 24, which includes npm 11 (see [client README](../client/README.md)) |
 | **npm** | Used for the client, root Husky install, and server `lint-staged` |
 | **Python** | `3.14` (see `server/Pipfile` `[requires]`) |
 | **Pipenv** | Server dependency management |
@@ -102,7 +102,7 @@ Do **not** run `npx husky init` — that recreates hooks and can overwrite the p
 ### What runs
 
 - **Server** (`server/package.json`): Black, flake8, and isort on staged `*.py` via Pipenv.
-- **Client** (`client/package.json`): Prettier and ESLint on staged JS/TS (and Prettier on i18n JSON).
+- **Client** (`client/package.json`): Prettier and ESLint on staged JS, TS, and HTML (and Prettier on i18n JSON).
 
 ## Tests (pointers)
 

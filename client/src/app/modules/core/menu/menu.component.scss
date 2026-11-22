@@ -44,6 +44,8 @@ lc-menu {
   }
 
   .navbar-field-group {
+    --navbar-control-height: 2.5rem;
+
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -51,6 +53,11 @@ lc-menu {
     lc-language-select {
       display: flex;
       align-items: center;
+
+      &.no-label hlm-select-trigger button {
+        height: var(--navbar-control-height);
+        min-height: var(--navbar-control-height);
+      }
 
       p-select {
         display: flex;
@@ -112,20 +119,22 @@ lc-menu {
     background: var(--p-form-field-background);
     border: 1px solid var(--p-form-field-border-color);
     border-radius: var(--p-border-radius-md);
+    box-sizing: border-box;
     display: flex;
-    padding: 0.5rem;
-    padding-right: 2rem;
+    align-items: center;
+    gap: 0.5rem;
+    height: var(--navbar-control-height);
+    padding: 0 1.25rem 0 0.75rem;
     transition:
       background-color 0.2s,
       color 0.2s,
       border-color 0.2s,
       box-shadow 0.2s;
-    justify-content: center;
-    align-items: center;
     cursor: pointer;
 
-    .pi-search {
+    ng-icon {
       color: $navbar-icon-color;
+      flex: none;
     }
 
     &:hover {
@@ -135,7 +144,7 @@ lc-menu {
     @media (screen and max-width: 960px) {
       border: none;
       background: transparent;
-      padding-right: 0.5rem;
+      padding: 0 0.5rem;
       .search-label {
         display: none;
       }

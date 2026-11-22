@@ -19,7 +19,7 @@ describe('httpUrlValidator', () => {
     const correctUrlCtrl1ValidationResult1 =
       httpUrlValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidHttpUrl: true,
       }),
     );
@@ -28,7 +28,7 @@ describe('httpUrlValidator', () => {
     const correctUrlCtrl1ValidationResult2 =
       httpUrlValidator()(correctUrlCtrl2);
     expect(correctUrlCtrl1ValidationResult2).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidHttpUrl: true,
       }),
     );
@@ -39,7 +39,7 @@ describe('httpUrlValidator', () => {
     const correctUrlCtrl1ValidationResult1 =
       httpUrlValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidHttpUrl: true,
       }),
     );
@@ -50,7 +50,7 @@ describe('httpUrlValidator', () => {
     const correctUrlCtrl1ValidationResult1 =
       httpUrlValidator()(correctUrlCtrl1);
     expect(correctUrlCtrl1ValidationResult1).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         invalidHttpUrl: true,
       }),
     );

@@ -22,7 +22,7 @@ class UpdateFile(MethodView):
         """
         Updates vertical focus metadata for an uploaded file.
         """
-        file = File.query.get(file_id)
+        file = db.session.get(File, file_id)
         if not file:
             raise NotFound()
 
@@ -51,7 +51,7 @@ class TransformFile(MethodView):
         Stores a rotated and cropped copy of an uploaded image.
         The source file is left unchanged.
         """
-        source = File.query.get(file_id)
+        source = db.session.get(File, file_id)
         if not source:
             raise NotFound()
 

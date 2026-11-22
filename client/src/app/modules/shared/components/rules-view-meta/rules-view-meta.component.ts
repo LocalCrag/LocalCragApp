@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, OnChanges, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnChanges,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
@@ -20,6 +27,7 @@ import { DatePipe } from '../../pipes/date.pipe';
   selector: 'lc-rules-view-meta',
   templateUrl: './rules-view-meta.component.html',
   styleUrl: './rules-view-meta.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoDirective, DatePipe],
 })
 export class RulesViewMetaComponent implements OnChanges {

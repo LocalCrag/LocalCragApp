@@ -2,27 +2,20 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CardModule } from 'primeng/card';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
-import { TimelineModule } from 'primeng/timeline';
-import { ButtonModule } from 'primeng/button';
 import { HistoryService } from '../../../services/crud/history.service';
 import { HistoryItem } from '../../../models/history-item';
 import { HistoryItemType } from '../../../enums/history-item-type';
 import { Line } from '../../../models/line';
-import { Area } from '../../../models/area';
-import { Crag } from '../../../models/crag';
-import { Sector } from '../../../models/sector';
-import { select, Store } from '@ngrx/store';
-import { selectIsMobile } from '../../../ngrx/selectors/device.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { LoadingState } from '../../../enums/loading-state';
 import {
@@ -31,7 +24,6 @@ import {
   loadFirstPaginatedPage,
   PaginatedListView,
 } from '../../../utility/paginated-list';
-import { MessageModule } from 'primeng/message';
 import { ScalesService } from '../../../services/crud/scales.service';
 import { map, switchMap } from 'rxjs/operators';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
@@ -42,26 +34,49 @@ import { ObjectType } from '../../../models/object';
 import { ApiQueryParams } from '../../../utility/http/query-params';
 import { PageTitleService } from '../../../services/core/page-title.service';
 import { TopoHierarchyBreadcrumbsComponent } from '../../shared/components/topo-hierarchy-breadcrumbs/topo-hierarchy-breadcrumbs.component';
+import { HlmAlert, HlmAlertDescription } from '@spartan-ng/helm/alert';
+import { HlmTableImports } from '@spartan-ng/helm/table';
+import { NgIcon } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronsDown,
+  lucideChevronsUp,
+  lucideInfo,
+  lucidePlus,
+  lucideSettings,
+} from '@ng-icons/lucide';
 import {
   LineHistoryLocation,
   lineHistoryLocation,
 } from '../line-history-location';
 
+import { ListSkeletonComponent } from '../../shared/components/list-skeleton/list-skeleton.component';
+import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+
 @Component({
+  providers: [
+    provideIcons({
+      lucideChevronsDown,
+      lucideChevronsUp,
+      lucideInfo,
+      lucidePlus,
+      lucideSettings,
+    }),
+  ],
   selector: 'lc-history-list',
   imports: [
-    BreadcrumbModule,
-    CardModule,
+    ListSkeletonComponent,
+    LoadingButtonComponent,
+    ...HlmTableImports,
     TranslocoDirective,
-    TimelineModule,
-    ButtonModule,
     AsyncPipe,
-    NgClass,
-    MessageModule,
     RouterLink,
     InfiniteScrollDirective,
     DatePipe,
     TopoHierarchyBreadcrumbsComponent,
+    HlmAlert,
+    HlmAlertDescription,
+    NgIcon,
   ],
   templateUrl: './history-list.component.html',
   styleUrl: './history-list.component.scss',
@@ -69,18 +84,18 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryListComponent implements OnInit, PaginatedListView {
+  @ViewChild('loadMoreSentinel')
+  private loadMoreSentinel?: ElementRef<HTMLElement>;
+
   public loadingStates = LoadingState;
-  public loading: LoadingState = LoadingState.DEFAULT;
+  public loading: LoadingState = LoadingState.INITIAL_LOADING;
   public hasNextPage = true;
   public currentPage = 0;
   public historyItems: HistoryItem[] = [];
   public historyItemType = HistoryItemType;
-  public isMobile$: Observable<boolean>;
 
   private historyService = inject(HistoryService);
   private translateSpecialGradesService = inject(TranslateSpecialGradesService);
-  private router = inject(Router);
-  private store = inject(Store);
   private transloco = inject(TranslocoService);
   private scalesService = inject(ScalesService);
   private cdr = inject(ChangeDetectorRef);
@@ -105,14 +120,29 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
       this.historyItems = [...this.historyItems, ...historyItems.items];
       completePaginatedPageLoad(this, historyItems.hasNext);
       this.cdr.detectChanges();
+      // The first page fits on a tall screen, so the button is already
+      // visible and the scroll listener never runs. Keep fetching while it is.
+      requestAnimationFrame(() => this.autoloadIfButtonVisible());
     });
+  }
+
+  /**
+   * Fetch the next page when the load-more button is already in view.
+   */
+  private autoloadIfButtonVisible(): void {
+    const element = this.loadMoreSentinel?.nativeElement;
+    if (!element) {
+      return;
+    }
+    if (element.getBoundingClientRect().top <= window.innerHeight) {
+      this.loadNextPage();
+    }
   }
 
   ngOnInit() {
     this.pageTitleService.setTitle(
       this.transloco.translate(marker('history.historyTitle')),
     );
-    this.isMobile$ = this.store.pipe(select(selectIsMobile));
     this.loadFirstPage();
   }
 
@@ -121,6 +151,19 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
       return null;
     }
     return lineHistoryLocation(event.object as Line);
+  }
+
+  objectLink(event: HistoryItem): string | null {
+    const object = event.object as { routerLink?: string | null } | null;
+    return object?.routerLink ?? null;
+  }
+
+  objectName(event: HistoryItem): string {
+    const object: object = event.object;
+    if ('name' in object && typeof object.name === 'string') {
+      return object.name;
+    }
+    return '';
   }
 
   getHeader(event: HistoryItem): string {
@@ -159,124 +202,90 @@ export class HistoryListComponent implements OnInit, PaginatedListView {
     return '';
   }
 
-  getDescription(event: HistoryItem): Observable<string> {
-    if (event.type === HistoryItemType.UPDATED) {
-      if (event.objectType === ObjectType.Line) {
-        const line = event.object as Line;
-
-        return forkJoin([
-          this.scalesService.gradeNameByValue(
-            line.type,
-            line.gradeScale,
-            Number(event.oldValue),
-          ),
-          this.scalesService.gradeNameByValue(
-            line.type,
-            line.gradeScale,
-            Number(event.newValue),
-          ),
-        ]).pipe(
-          switchMap(([oldGrade, newGrade]) =>
-            forkJoin([
-              withAssumedGradeRange(
-                this.scalesService,
-                line,
-                Number(event.oldValue),
-                this.translateSpecialGradesService.translate(oldGrade),
-              ),
-              withAssumedGradeRange(
-                this.scalesService,
-                line,
-                Number(event.newValue),
-                this.translateSpecialGradesService.translate(newGrade),
-              ),
-            ]),
-          ),
-          map(([oldGrade, newGrade]) => {
-            if (
-              Number(event.oldValue) < 0 &&
-              Number(event.oldValue) < Number(event.newValue) &&
-              Number(event.newValue) >= 0
-            ) {
-              /** t(history.projectClimbed) */
-              return this.transloco.translate('history.projectClimbed', {
-                line: line.name,
-                newGrade,
-              });
-            } else if (
-              Number(event.oldValue) < 0 &&
-              Number(event.newValue) < 0
-            ) {
-              /** t(history.projectStatusChanged) */
-              return this.transloco.translate('history.projectStatusChanged', {
-                line: line.name,
-                oldGrade,
-                newGrade,
-              });
-            } else if (
-              Number(event.oldValue) === 0 &&
-              Number(event.oldValue) < Number(event.newValue)
-            ) {
-              /** t(history.lineGraded) */
-              return this.transloco.translate('history.lineGraded', {
-                line: line.name,
-                newGrade,
-              });
-            } else if (Number(event.oldValue) < Number(event.newValue)) {
-              /** t(history.upgrade) */
-              return this.transloco.translate('history.upgrade', {
-                line: line.name,
-                oldGrade,
-                newGrade,
-              });
-            } else {
-              /** t(history.downgrade) */
-              return this.transloco.translate('history.downgrade', {
-                line: line.name,
-                oldGrade,
-                newGrade,
-              });
-            }
-          }),
-        );
-      }
+  /**
+   * Compact old → new grade for an update row. Creates have no grade move.
+   */
+  gradeChange(event: HistoryItem): Observable<string> {
+    if (
+      event.type !== HistoryItemType.UPDATED ||
+      event.objectType !== ObjectType.Line
+    ) {
+      return of('');
     }
-    return of('');
+    const line = event.object as Line;
+
+    return forkJoin([
+      this.scalesService.gradeNameByValue(
+        line.type,
+        line.gradeScale,
+        Number(event.oldValue),
+      ),
+      this.scalesService.gradeNameByValue(
+        line.type,
+        line.gradeScale,
+        Number(event.newValue),
+      ),
+    ]).pipe(
+      switchMap(([oldGrade, newGrade]) =>
+        forkJoin([
+          withAssumedGradeRange(
+            this.scalesService,
+            line,
+            Number(event.oldValue),
+            this.translateSpecialGradesService.translate(oldGrade),
+          ),
+          withAssumedGradeRange(
+            this.scalesService,
+            line,
+            Number(event.newValue),
+            this.translateSpecialGradesService.translate(newGrade),
+          ),
+        ]),
+      ),
+      map(([oldGrade, newGrade]) => `${oldGrade} → ${newGrade}`),
+    );
   }
 
-  openObject(event: HistoryItem): void {
-    if (event.objectType === ObjectType.Line) {
-      const line = event.object as Line;
-      this.router.navigate([line.routerLink]);
-    }
-    if (event.objectType === ObjectType.Area) {
-      const area = event.object as Area;
-      this.router.navigate([area.routerLink]);
-    }
-    if (event.objectType === ObjectType.Crag) {
-      const crag = event.object as Crag;
-      this.router.navigate([crag.routerLink]);
-    }
-    if (event.objectType === ObjectType.Sector) {
-      const sector = event.object as Sector;
-      this.router.navigate([sector.routerLink]);
-    }
+  isUpgrade(event: HistoryItem): boolean {
+    return this.gradeDirection(event) === 'up';
+  }
+
+  isDowngrade(event: HistoryItem): boolean {
+    return this.gradeDirection(event) === 'down';
   }
 
   getIcon(event: HistoryItem): string {
     if (event.type === HistoryItemType.CREATED) {
-      return 'pi pi-plus';
+      return 'lucidePlus';
     }
     if (event.type === HistoryItemType.UPDATED) {
-      if (Number(event.newValue) >= 0) {
-        if (Number(event.oldValue) < Number(event.newValue)) {
-          return 'pi pi-arrow-up';
-        } else if (Number(event.oldValue) > Number(event.newValue)) {
-          return 'pi pi-arrow-down';
-        }
+      const direction = this.gradeDirection(event);
+      if (direction === 'up') {
+        return 'lucideChevronsUp';
       }
-      return 'pi pi-cog';
+      if (direction === 'down') {
+        return 'lucideChevronsDown';
+      }
+      return 'lucideSettings';
     }
     return '';
+  }
+
+  /**
+   * Grade moves with a real grade (value >= 0). Project-status changes stay neutral.
+   */
+  private gradeDirection(event: HistoryItem): 'up' | 'down' | null {
+    if (event.type !== HistoryItemType.UPDATED || Number(event.newValue) < 0) {
+      return null;
+    }
+    const oldValue = Number(event.oldValue);
+    const newValue = Number(event.newValue);
+    if (oldValue < newValue) {
+      return 'up';
+    }
+    if (oldValue > newValue) {
+      return 'down';
+    }
+    return null;
   }
 }

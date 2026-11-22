@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { toast } from '@spartan-ng/brain/sonner';
 import { TranslocoService } from '@jsverse/transloco';
 import { marker } from '@jsverse/transloco-keys-manager/marker';
 
@@ -14,7 +14,6 @@ export type ClipboardToastMessages = {
   providedIn: 'root',
 })
 export class ClipboardService {
-  private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
 
   private defaultToastMessages(): ClipboardToastMessages {
@@ -35,25 +34,23 @@ export class ClipboardService {
   }
 
   private showSuccess(messages: ClipboardToastMessages) {
-    this.messageService.add({
-      severity: 'success',
-      summary: messages.successSummary,
-      detail: messages.successDetail,
+    toast.success(messages.successSummary, {
+      description: messages.successDetail,
     });
   }
 
   private showError(messages: ClipboardToastMessages) {
-    this.messageService.add({
-      severity: 'error',
-      summary:
-        messages.errorSummary ??
+    toast.error(
+      messages.errorSummary ??
         this.translocoService.translate(marker('clipboardErrorToastTitle')),
-      detail:
-        messages.errorDetail ??
-        this.translocoService.translate(
-          marker('clipboardErrorToastDescription'),
-        ),
-    });
+      {
+        description:
+          messages.errorDetail ??
+          this.translocoService.translate(
+            marker('clipboardErrorToastDescription'),
+          ),
+      },
+    );
   }
 
   private fallbackCopyTextToClipboard(
