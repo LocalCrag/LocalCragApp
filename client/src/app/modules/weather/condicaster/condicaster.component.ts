@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { Store } from '@ngrx/store';
+import { filter, take } from 'rxjs/operators';
+import { selectInstanceSettingsState } from '../../../ngrx/selectors/instance-settings.selectors';
 import {
   CondicasterConditions,
   CondicasterDay,
@@ -38,7 +41,8 @@ export class CondicasterComponent implements OnInit {
   @Input() weatherLink: string[] = [];
 
   public conditions: CondicasterConditions | null = null;
-  public loading = true;
+  public enabled = false;
+  public loading = false;
   public selectedDate: string | null = null;
   /** Stable list for the selected day. A fresh array on every check rebuilds the charts. */
   protected visibleHours: CondicasterHour[] = [];
@@ -47,22 +51,39 @@ export class CondicasterComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private changeDetector = inject(ChangeDetectorRef);
   private transloco = inject(TranslocoService);
+  private store = inject(Store);
 
   ngOnInit(): void {
-    this.condicasterService
-      .getConditions(this.level, this.slug)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (conditions) => {
-          this.conditions = conditions;
-          this.loading = false;
-          this.refreshVisibleHours();
+    this.store
+      .select(selectInstanceSettingsState)
+      .pipe(
+        filter((settings) => settings.loaded),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((settings) => {
+        if (!settings.condicasterEnabled) {
           this.changeDetector.markForCheck();
-        },
-        error: () => {
-          this.loading = false;
-          this.changeDetector.markForCheck();
-        },
+          return;
+        }
+        this.enabled = true;
+        this.loading = true;
+        this.changeDetector.markForCheck();
+        this.condicasterService
+          .getConditions(this.level, this.slug)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (conditions) => {
+              this.conditions = conditions;
+              this.loading = false;
+              this.refreshVisibleHours();
+              this.changeDetector.markForCheck();
+            },
+            error: () => {
+              this.loading = false;
+              this.changeDetector.markForCheck();
+            },
+          });
       });
   }
 

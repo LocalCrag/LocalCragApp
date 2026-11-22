@@ -5,8 +5,15 @@ from extensions import db
 from models.area import Area
 from models.condicaster_cache import CondicasterCache
 from models.crag import Crag
+from models.instance_settings import InstanceSettings
 from models.sector import Sector
 from util.condicaster import _in_quiet_hours, refresh_one
+
+
+def _set_api_key(value="test-key"):
+    settings = InstanceSettings.return_it()
+    settings.condicaster_api_key = value
+    db.session.commit()
 
 
 def _cache(crag_id, **kwargs):
@@ -130,7 +137,7 @@ def test_refresh_one_stores_today_and_the_next_seven_days(client, monkeypatch):
     if existing is not None:
         db.session.delete(existing)
     db.session.commit()
-    client.application.config["CONDICASTER_API_KEY"] = "test-key"
+    _set_api_key()
     calls = []
 
     def fake_request(path: str):
@@ -217,7 +224,7 @@ def test_refresh_skips_hourly_during_quiet_hours(client, monkeypatch):
     if existing is not None:
         db.session.delete(existing)
     db.session.commit()
-    client.application.config["CONDICASTER_API_KEY"] = "test-key"
+    _set_api_key()
     calls = []
 
     def fake_request(path: str):
@@ -321,7 +328,7 @@ def test_search_crags_rejects_bad_coordinates(client, moderator_token):
 
 
 def test_search_crags_returns_hits_and_reuses_them(client, moderator_token, monkeypatch):
-    client.application.config["CONDICASTER_API_KEY"] = "test-key"
+    _set_api_key()
     calls = []
 
     def fake_request(path: str):

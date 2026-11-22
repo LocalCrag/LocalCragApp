@@ -70,6 +70,18 @@ def effective_condicaster_crag_id(entity) -> int | None:
     return None
 
 
+def condicaster_enabled() -> bool:
+    """True when this instance has a CondiCaster API key.
+
+    Cached for the request so list payloads do not look the key up per row.
+    """
+    enabled = getattr(g, "_condicaster_enabled", None)
+    if enabled is None:
+        enabled = bool(_api_key())
+        g._condicaster_enabled = enabled
+    return enabled
+
+
 def cached_scores() -> dict[int, float | None]:
     """Request-scoped map of crag id to the cached current CondiScore."""
     scores = getattr(g, "_condicaster_scores", None)
@@ -219,7 +231,7 @@ def enqueue_condicaster_refresh(crag_id: int | None) -> None:
 
 def refresh_all() -> None:
     if not _api_key():
-        logger.info("CondiCaster refresh skipped: CONDICASTER_API_KEY is empty.")
+        logger.info("CondiCaster refresh skipped: no API key is configured.")
         return
 
     ids = _configured_crag_ids()
@@ -497,7 +509,12 @@ def _request(path: str) -> dict:
 
 
 def _api_key() -> str:
-    return (current_app.config.get("CONDICASTER_API_KEY") or "").strip()
+    from models.instance_settings import InstanceSettings
+
+    settings = InstanceSettings.return_it()
+    if settings is None:
+        return ""
+    return (settings.condicaster_api_key or "").strip()
 
 
 def _local_today(timezone_name: str | None) -> date:

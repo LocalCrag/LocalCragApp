@@ -62,6 +62,7 @@ def instance_settings_request_payload(instance_settings: InstanceSettings) -> di
         "language": instance_settings.language,
         "matomoTrackerUrl": instance_settings.matomo_tracker_url,
         "matomoSiteId": instance_settings.matomo_site_id,
+        "condicasterApiKey": instance_settings.condicaster_api_key,
         "mapBaseLayers": deepcopy(instance_settings.map_base_layers or []),
         "mapOverlays": deepcopy(instance_settings.map_overlays or []),
         "gymMode": instance_settings.gym_mode,
@@ -116,6 +117,7 @@ def apply_instance_settings_data(instance_settings: InstanceSettings, instance_s
     instance_settings.language = instance_settings_data["language"]
     instance_settings.matomo_tracker_url = instance_settings_data["matomoTrackerUrl"]
     instance_settings.matomo_site_id = instance_settings_data["matomoSiteId"]
+    instance_settings.condicaster_api_key = (instance_settings_data["condicasterApiKey"] or "").strip() or None
     instance_settings.map_base_layers = list(instance_settings_data["mapBaseLayers"])
     instance_settings.map_overlays = list(instance_settings_data["mapOverlays"])
     instance_settings.gym_mode = instance_settings_data["gymMode"]

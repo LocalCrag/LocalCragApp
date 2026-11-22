@@ -74,6 +74,7 @@ def create_session_for_user(user: User) -> Session:
 
 _REQUEST_SESSION_KEY = "lc.auth_session"
 _REQUEST_USER_KEY = "lc.current_user"
+_REQUEST_IS_MODERATOR_KEY = "lc.current_user_is_moderator"
 _REQUEST_LOADED_KEY = "lc.auth_loaded"
 
 
@@ -87,8 +88,11 @@ def load_request_session() -> Optional[Session]:
         return environ.get(_REQUEST_SESSION_KEY)
     raw_id = request.cookies.get(SESSION_COOKIE_NAME)
     session = Session.find_valid(raw_id)
+    user = session.user if session is not None else None
     environ[_REQUEST_SESSION_KEY] = session
-    environ[_REQUEST_USER_KEY] = session.user if session is not None else None
+    environ[_REQUEST_USER_KEY] = user
+    # Read the role while the user is still attached. A later commit can expire it.
+    environ[_REQUEST_IS_MODERATOR_KEY] = bool(user.moderator) if user is not None else False
     environ[_REQUEST_LOADED_KEY] = True
     return session
 
@@ -97,12 +101,18 @@ def clear_request_session_cache():
     """Drop the request-local session after logout/revocation."""
     request.environ[_REQUEST_SESSION_KEY] = None
     request.environ[_REQUEST_USER_KEY] = None
+    request.environ[_REQUEST_IS_MODERATOR_KEY] = False
     request.environ[_REQUEST_LOADED_KEY] = True
 
 
 def get_current_user() -> Optional[User]:
     load_request_session()
     return request.environ.get(_REQUEST_USER_KEY)
+
+
+def request_user_is_moderator() -> bool:
+    load_request_session()
+    return bool(request.environ.get(_REQUEST_IS_MODERATOR_KEY, False))
 
 
 current_user = LocalProxy(get_current_user)

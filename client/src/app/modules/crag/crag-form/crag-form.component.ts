@@ -44,6 +44,7 @@ import { SingleImageUploadComponent } from '../../shared/forms/controls/single-i
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
 import { LanguageService } from '../../../services/core/language.service';
+import { CondicasterEnabledDirective } from '../../shared/directives/condicaster-enabled.directive';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
 import { PageTitleService } from '../../../services/core/page-title.service';
@@ -96,6 +97,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
     TranslocoPipe,
     SingleImageUploadComponent,
     OutdoorModeDirective,
+    CondicasterEnabledDirective,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
     CondicasterCragLinkComponent,

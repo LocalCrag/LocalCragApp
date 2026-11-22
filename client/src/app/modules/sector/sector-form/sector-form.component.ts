@@ -47,6 +47,7 @@ import { FormControlDirective } from '../../shared/forms/form-control.directive'
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
+import { CondicasterEnabledDirective } from '../../shared/directives/condicaster-enabled.directive';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { Crag } from '../../../models/crag';
@@ -111,6 +112,7 @@ import { Coordinates } from '../../../interfaces/coordinates.interface';
     IfErrorDirective,
     SingleImageUploadComponent,
     OutdoorModeDirective,
+    CondicasterEnabledDirective,
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,

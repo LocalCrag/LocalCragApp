@@ -192,6 +192,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       analytics: this.fb.group({
         matomoTrackerUrl: [null, [Validators.maxLength(120)]],
         matomoSiteId: [null, [Validators.maxLength(120)]],
+        condicasterApiKey: [null, [Validators.maxLength(512)]],
       }),
       maps: createMapsFormGroup(this.fb),
     });
@@ -243,6 +244,7 @@ export class InstanceSettingsFormComponent implements OnInit {
       analytics: {
         matomoSiteId: this.instanceSettings.matomoSiteId,
         matomoTrackerUrl: this.instanceSettings.matomoTrackerUrl,
+        condicasterApiKey: this.instanceSettings.condicasterApiKey,
       },
     });
   }

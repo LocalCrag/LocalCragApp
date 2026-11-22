@@ -23,11 +23,11 @@ import type { Observable } from 'rxjs';
 import { listVariants } from './hlm-tabs-list';
 
 /**
- * Travel that still counts as a tap. A finger almost always moves a few pixels;
- * treating that as a drag swallows the click, so the tab never activates.
+ * Movement that still counts as a tap. Past this, a horizontal move scrolls the
+ * strip and a vertical move scrolls the page.
  */
 const mouseDragSlop = 8;
-const touchDragSlop = 18;
+const touchDragSlop = 10;
 
 @Component({
   selector: 'hlm-paginated-tabs-list',
@@ -57,7 +57,8 @@ const touchDragSlop = 18;
 
     <div
       #tabListContainer
-      class="z-[1] flex grow touch-manipulation overflow-hidden"
+      class="z-[1] flex grow overflow-hidden"
+      style="touch-action: pan-y pinch-zoom"
       [class.cursor-grab]="showPaginationControls() && !dragging"
       [class.cursor-grabbing]="dragging"
       (pointerdown)="onTabDragStart($event)"
@@ -307,21 +308,50 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
   private dragStartX = 0;
   private dragStartY = 0;
   private dragStartDistance = 0;
-  private dragSlop = mouseDragSlop;
   /** Set once the gesture is clearly horizontal or vertical. */
   private dragAxis: 'undecided' | 'x' | 'y' = 'undecided';
-  private clickSwallow?: (event: Event) => void;
-  private clickSwallowTimer?: ReturnType<typeof setTimeout>;
+  /**
+   * True after a horizontal swipe, until the click that belongs to that swipe
+   * (or the next touch) arrives. A tap leaves this false, so the tab activates.
+   */
+  private suppressClick = false;
+  private removeStripListeners?: () => void;
+
+  override ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    const container = this.tabListContainer().nativeElement;
+    const onTouchStart = (event: TouchEvent) => this.onTouchStart(event);
+    const onTouchMove = (event: TouchEvent) => this.onTouchMove(event);
+    const onTouchEnd = () => this.onTouchEnd();
+    // touchmove must be non-passive so a horizontal swipe can cancel the
+    // browser's default. Otherwise the browser drops the gesture and neither
+    // the swipe nor the tap does anything.
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd);
+    container.addEventListener('touchcancel', onTouchEnd);
+    container.addEventListener('click', this.onStripClickCapture, true);
+    this.removeStripListeners = () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchEnd);
+      container.removeEventListener('click', this.onStripClickCapture, true);
+    };
+  }
 
   override ngOnDestroy(): void {
-    this.disarmClickSwallow();
+    this.removeStripListeners?.();
     super.ngOnDestroy();
   }
 
   protected onTabDragStart(event: PointerEvent): void {
-    // A previous swipe can leave a click-blocker behind when the browser drops
-    // the click. Clear it before this tap, or the tab under the finger stays put.
-    this.disarmClickSwallow();
+    // Touch is handled by the touch listeners. Pointer capture on a finger
+    // steals the tap, so the tab never activates.
+    if (event.pointerType === 'touch') {
+      return;
+    }
+    this.suppressClick = false;
     if (event.button !== 0 || !this.showPaginationControls()) {
       return;
     }
@@ -335,26 +365,121 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
     this.dragStartDistance = this.scrollDistance;
-    this.dragSlop =
-      event.pointerType === 'mouse' || event.pointerType === 'pen'
-        ? mouseDragSlop
-        : touchDragSlop;
     this.dragAxis = 'undecided';
     this.dragging = false;
   }
 
   protected onTabDragMove(event: PointerEvent): void {
+    if (event.pointerType === 'touch') {
+      return;
+    }
     if (this.dragPointerId !== event.pointerId || this.dragAxis === 'y') {
       return;
     }
-    const deltaX = event.clientX - this.dragStartX;
-    const deltaY = event.clientY - this.dragStartY;
+    this.trackDrag(
+      event.clientX - this.dragStartX,
+      event.clientY - this.dragStartY,
+      mouseDragSlop,
+      () => {
+        const container = event.currentTarget;
+        if (container instanceof HTMLElement) {
+          try {
+            container.setPointerCapture(event.pointerId);
+          } catch {
+            // The pointer may already be gone. Later move events still scroll.
+          }
+        }
+      },
+    );
+  }
+
+  protected onTabDragEnd(event: PointerEvent): void {
+    if (
+      event.pointerType === 'touch' ||
+      this.dragPointerId !== event.pointerId
+    ) {
+      return;
+    }
+    const wasDragging = this.dragging;
+    this.dragPointerId = null;
+    this.finishDrag(wasDragging);
+    const container = event.currentTarget;
+    if (
+      container instanceof HTMLElement &&
+      container.hasPointerCapture(event.pointerId)
+    ) {
+      container.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  private onTouchStart(event: TouchEvent): void {
+    this.suppressClick = false;
+    if (!this.showPaginationControls() || event.touches.length !== 1) {
+      this.dragPointerId = null;
+      return;
+    }
+    const touch = event.touches[0];
+    this.dragPointerId = touch.identifier;
+    this.dragStartX = touch.clientX;
+    this.dragStartY = touch.clientY;
+    this.dragStartDistance = this.scrollDistance;
+    this.dragAxis = 'undecided';
+    this.dragging = false;
+  }
+
+  private onTouchMove(event: TouchEvent): void {
+    if (this.dragPointerId === null || event.touches.length !== 1) {
+      return;
+    }
+    const touch = event.touches[0];
+    if (touch.identifier !== this.dragPointerId || this.dragAxis === 'y') {
+      return;
+    }
+    const deltaX = touch.clientX - this.dragStartX;
+    const deltaY = touch.clientY - this.dragStartY;
+    if (
+      this.dragAxis === 'undecided' &&
+      Math.hypot(deltaX, deltaY) < touchDragSlop
+    ) {
+      return;
+    }
+    if (this.dragAxis !== 'x' && Math.abs(deltaY) > Math.abs(deltaX)) {
+      this.dragAxis = 'y';
+      this.dragPointerId = null;
+      return;
+    }
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    this.trackDrag(deltaX, deltaY, touchDragSlop);
+  }
+
+  private onTouchEnd(): void {
+    if (this.dragPointerId === null && !this.dragging) {
+      return;
+    }
+    const wasDragging = this.dragging;
+    this.dragPointerId = null;
+    this.finishDrag(wasDragging);
+  }
+
+  /**
+   * Scrolls the strip once the pointer has moved mostly sideways.
+   * A vertical move is left to the page and does not start a drag.
+   */
+  private trackDrag(
+    deltaX: number,
+    deltaY: number,
+    slop: number,
+    onDragStart?: () => void,
+  ): void {
+    if (this.dragAxis === 'y') {
+      return;
+    }
     if (!this.dragging) {
-      if (Math.hypot(deltaX, deltaY) < this.dragSlop) {
+      if (Math.hypot(deltaX, deltaY) < slop) {
         return;
       }
-      // A vertical move is a page scroll. Capturing it would freeze the page
-      // and cancel the tap.
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
         this.dragAxis = 'y';
         this.dragPointerId = null;
@@ -363,14 +488,7 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
       this.dragAxis = 'x';
       this.dragging = true;
       this.tabList().nativeElement.style.transition = 'none';
-      const container = event.currentTarget;
-      if (container instanceof HTMLElement) {
-        try {
-          container.setPointerCapture(event.pointerId);
-        } catch {
-          // The pointer may already be gone. Later move events still scroll the strip.
-        }
-      }
+      onDragStart?.();
       this._changeDetectorRef.markForCheck();
     }
     const direction = this._getLayoutDirection() === 'rtl' ? -1 : 1;
@@ -378,64 +496,26 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
     this._updateTabScrollPosition();
   }
 
-  protected onTabDragEnd(event: PointerEvent): void {
-    if (this.dragPointerId !== event.pointerId) {
-      return;
-    }
-    const wasDragging = this.dragging;
-    this.dragPointerId = null;
+  private finishDrag(wasDragging: boolean): void {
     this.dragging = false;
     this.dragAxis = 'undecided';
     this.tabList().nativeElement.style.transition = '';
-    const container = event.currentTarget;
-    if (
-      container instanceof HTMLElement &&
-      container.hasPointerCapture(event.pointerId)
-    ) {
-      container.releasePointerCapture(event.pointerId);
+    if (wasDragging) {
+      this.suppressClick = true;
+      this._changeDetectorRef.markForCheck();
     }
-    if (!wasDragging) {
-      return;
-    }
-    // The click that follows a drag would otherwise select the tab under the pointer.
-    this.armClickSwallow();
-    this._changeDetectorRef.markForCheck();
   }
 
   /**
-   * Swallows the click synthesized for the swipe that just ended.
-   * Pointer capture often drops that click; the blocker must not stay armed
-   * and discard the next tap.
+   * Runs before the tab button's click listener. A swipe must not activate the
+   * tab under the finger; a tap must.
    */
-  private armClickSwallow(): void {
-    this.disarmClickSwallow();
-    const swallow = (clickEvent: Event) => {
-      this.clickSwallow = undefined;
-      const target = clickEvent.target;
-      if (target instanceof Element && target.closest('[data-pagination]')) {
-        return;
-      }
-      clickEvent.preventDefault();
-      clickEvent.stopImmediatePropagation();
-    };
-    this.clickSwallow = swallow;
-    document.addEventListener('click', swallow, { capture: true, once: true });
-    // The swipe's click is dispatched in this turn or the next. A later tap must
-    // not be discarded when the browser never emits that click.
-    this.clickSwallowTimer = setTimeout(() => this.disarmClickSwallow(), 50);
-  }
-
-  private disarmClickSwallow(): void {
-    if (this.clickSwallowTimer !== undefined) {
-      clearTimeout(this.clickSwallowTimer);
-      this.clickSwallowTimer = undefined;
-    }
-    if (!this.clickSwallow) {
+  private onStripClickCapture = (event: Event): void => {
+    if (!this.suppressClick) {
       return;
     }
-    document.removeEventListener('click', this.clickSwallow, {
-      capture: true,
-    });
-    this.clickSwallow = undefined;
-  }
+    this.suppressClick = false;
+    event.preventDefault();
+    event.stopPropagation();
+  };
 }

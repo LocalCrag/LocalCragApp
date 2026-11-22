@@ -4,6 +4,7 @@ from marshmallow_enum import EnumField
 from extensions import ma
 from marshmallow_schemas.file_schema import file_schema
 from models.enums.starting_position_enum import StartingPositionEnum
+from util.security_util import current_user_is_moderator
 
 
 class InstanceSettingsSchema(ma.SQLAlchemySchema):
@@ -27,6 +28,8 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     timezone = fields.String(attribute="timezone")
     matomoTrackerUrl = fields.String(attribute="matomo_tracker_url")
     matomoSiteId = fields.String(attribute="matomo_site_id")
+    condicasterApiKey = fields.Method("get_condicaster_api_key")
+    condicasterEnabled = fields.Method("get_condicaster_enabled")
     mapBaseLayers = fields.List(fields.Dict(), attribute="map_base_layers", dump_default=list)
     mapOverlays = fields.List(fields.Dict(), attribute="map_overlays", dump_default=list)
     gymMode = fields.Boolean(attribute="gym_mode")
@@ -44,6 +47,15 @@ class InstanceSettingsSchema(ma.SQLAlchemySchema):
     faDefaultFormat = fields.String(attribute="fa_default_format")
     defaultStartingPosition = EnumField(StartingPositionEnum, by_value=True, attribute="default_starting_position")
     rankingPastWeeks = fields.Integer(attribute="ranking_past_weeks", allow_none=True)
+
+    def get_condicaster_api_key(self, obj):
+        # Visitors use this payload too. Only moderators editing settings see the key.
+        if not current_user_is_moderator():
+            return None
+        return obj.condicaster_api_key
+
+    def get_condicaster_enabled(self, obj):
+        return bool((obj.condicaster_api_key or "").strip())
 
     def get_landing_page(self, obj):
         return obj.effective_landing_page.value

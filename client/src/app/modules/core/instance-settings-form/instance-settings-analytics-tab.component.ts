@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSave } from '@ng-icons/lucide';
+import { lucideCircleHelp, lucideSave } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { ControlGroupDirective } from '../../shared/forms/control-group.directive';
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
@@ -18,12 +19,13 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
     NgIcon,
     HlmButton,
     HlmInput,
+    HlmTooltip,
     ControlGroupDirective,
     FormControlDirective,
     IfErrorDirective,
   ],
   templateUrl: './instance-settings-analytics-tab.component.html',
-  providers: [provideIcons({ lucideSave })],
+  providers: [provideIcons({ lucideCircleHelp, lucideSave })],
   styleUrl: './instance-settings-analytics-tab.component.scss',
 })
 export class InstanceSettingsAnalyticsTabComponent {
