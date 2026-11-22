@@ -79,9 +79,9 @@
           </span>
         </a>
 
-        @if (conditions.daily?.length) {
+        @if (dayChoices.length) {
           <lc-condicaster-day-cards
-            [days]="conditions.daily"
+            [days]="dayChoices"
             [hours]="conditions.hourly"
             [timeZone]="timeZone()"
             [selectedDate]="activeDate()"
@@ -89,7 +89,7 @@
           />
         }
 
-        @if (conditions.daily?.length || conditions.hourly?.length) {
+        @if (dayChoices.length || conditions.hourly?.length) {
           <div class="condicaster__hourly-heading">
             <h3>{{ t("condicaster.hourly") }}</h3>
             @if (activeDate(); as date) {
@@ -100,7 +100,7 @@
             <div class="condicaster__hourly-scroll">
               <lc-condicaster-hourly-charts
                 [hours]="visibleHours"
-                [days]="conditions.daily"
+                [days]="dayChoices"
                 [timeZone]="timeZone()"
               />
             </div>

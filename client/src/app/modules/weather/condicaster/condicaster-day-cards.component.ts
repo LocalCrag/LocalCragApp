@@ -1,9 +1,14 @@
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -47,14 +52,66 @@ import {
     }),
   ],
 })
-export class CondicasterDayCardsComponent {
+export class CondicasterDayCardsComponent
+  implements OnChanges, AfterViewChecked
+{
   @Input() days: CondicasterDay[] = [];
   @Input() hours: CondicasterHour[] = [];
   @Input() timeZone = 'UTC';
   @Input() selectedDate: string | null = null;
   @Output() daySelected = new EventEmitter<string>();
 
+  @ViewChild('dayStrip') private dayStrip?: ElementRef<HTMLElement>;
+
   private transloco = inject(TranslocoService);
+  /** Past days sit to the left. The strip opens on today until the user scrolls. */
+  private pinnedToday = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['days'] || changes['days'].firstChange) {
+      return;
+    }
+    const previous = this.dateKey(changes['days'].previousValue);
+    const next = this.dateKey(changes['days'].currentValue);
+    if (previous !== next) {
+      this.pinnedToday = false;
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    this.pinToday();
+  }
+
+  private pinToday(): void {
+    if (this.pinnedToday) {
+      return;
+    }
+    const strip = this.dayStrip?.nativeElement;
+    if (!strip) {
+      return;
+    }
+    const today = strip.querySelector<HTMLElement>('[data-today]');
+    if (!today) {
+      if (this.days.length > 0) {
+        this.pinnedToday = true;
+      }
+      return;
+    }
+    if (strip.clientWidth === 0 || today.getBoundingClientRect().width === 0) {
+      return;
+    }
+    const delta =
+      today.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    if (Math.abs(delta) > 1) {
+      const rtl = getComputedStyle(strip).direction === 'rtl';
+      strip.scrollLeft += rtl ? -delta : delta;
+    }
+    this.pinnedToday = true;
+  }
+
+  private dateKey(days: CondicasterDay[] | null | undefined): string {
+    return (days ?? []).map((day) => day.local_date).join('|');
+  }
 
   protected isSelected(day: CondicasterDay): boolean {
     return day.local_date === this.selectedDate;
