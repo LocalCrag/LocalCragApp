@@ -41,6 +41,7 @@ class InstanceSettings(db.Model):
     timezone = db.Column(db.String(64), nullable=False, default="UTC", server_default="UTC")
     matomo_tracker_url = db.Column(db.String(120), nullable=True)
     matomo_site_id = db.Column(db.String(120), nullable=True)
+    condicaster_api_key = db.Column(db.String(512), nullable=True)
     map_base_layers = db.Column(JSON, nullable=False, default=lambda: [], server_default="[]")
     map_overlays = db.Column(JSON, nullable=False, default=lambda: [], server_default="[]")
     gym_mode = db.Column(db.Boolean, nullable=False, default=False, server_default="false")

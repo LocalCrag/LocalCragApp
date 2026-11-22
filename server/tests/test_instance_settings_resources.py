@@ -88,6 +88,34 @@ def test_successful_get_instance_settings(client):
     assert res["defaultStartingPosition"] == instance_settings.default_starting_position.value
     assert res["rankingPastWeeks"] == instance_settings.ranking_past_weeks
     assert res["timezone"] == instance_settings.timezone
+    assert res["condicasterApiKey"] is None
+    assert res["condicasterEnabled"] is False
+
+
+def test_condicaster_api_key_is_hidden_from_visitors(client, moderator_token):
+    instance_settings = InstanceSettings.return_it()
+    instance_settings.condicaster_api_key = "secret-key"
+    db.session.commit()
+
+    visitor = client.get("/api/instance-settings")
+    assert visitor.status_code == 200
+    assert visitor.json["condicasterApiKey"] is None
+    assert visitor.json["condicasterEnabled"] is True
+
+    moderator = client.get("/api/instance-settings", token=moderator_token)
+    assert moderator.status_code == 200
+    assert moderator.json["condicasterApiKey"] == "secret-key"
+    assert moderator.json["condicasterEnabled"] is True
+
+    cleared = client.patch(
+        "/api/instance-settings",
+        token=moderator_token,
+        json={"condicasterApiKey": "  "},
+    )
+    assert cleared.status_code == 200
+    assert cleared.json["condicasterApiKey"] is None
+    assert cleared.json["condicasterEnabled"] is False
+    assert InstanceSettings.return_it().condicaster_api_key is None
 
 
 def test_successful_patch_instance_settings(client, moderator_token, any_file):

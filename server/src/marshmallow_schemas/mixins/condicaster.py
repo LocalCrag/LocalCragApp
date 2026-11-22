@@ -1,6 +1,10 @@
 from marshmallow import fields
 
-from util.condicaster import cached_scores, effective_condicaster_crag_id
+from util.condicaster import (
+    cached_scores,
+    condicaster_enabled,
+    effective_condicaster_crag_id,
+)
 
 
 class CondicasterSchemaMixin:
@@ -14,9 +18,13 @@ class CondicasterSchemaMixin:
     condiscore = fields.Method("get_condiscore")
 
     def get_has_condicaster(self, obj) -> bool:
+        if not condicaster_enabled():
+            return False
         return effective_condicaster_crag_id(obj) is not None
 
     def get_condiscore(self, obj):
+        if not condicaster_enabled():
+            return None
         crag_id = effective_condicaster_crag_id(obj)
         if crag_id is None:
             return None

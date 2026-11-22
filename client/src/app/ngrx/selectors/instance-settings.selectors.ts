@@ -22,6 +22,12 @@ export const selectGymMode = createSelector(
   (instanceSettingsState) => instanceSettingsState.gymMode,
 );
 
+export const selectCondicasterEnabled = createSelector(
+  selectInstanceSettingsState,
+  (instanceSettingsState) =>
+    instanceSettingsState.loaded && instanceSettingsState.condicasterEnabled,
+);
+
 export const selectNoClosedProjects = createSelector(
   selectInstanceSettingsState,
   (instanceSettingsState) => instanceSettingsState.noClosedProjects,

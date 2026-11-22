@@ -149,6 +149,7 @@ instance_settings_args = {
     "language": fields.Str(required=True, validate=validate_language),
     "matomoTrackerUrl": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
     "matomoSiteId": fields.Str(required=True, allow_none=True, validate=validate.Length(max=120)),
+    "condicasterApiKey": fields.Str(required=True, allow_none=True, validate=validate.Length(max=512)),
     "mapBaseLayers": fields.List(
         fields.Nested(_map_base_layer_item, validate=_validate_base_layer_item),
         required=True,

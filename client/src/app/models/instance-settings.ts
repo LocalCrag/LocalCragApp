@@ -28,6 +28,8 @@ export class InstanceSettings {
   darkBarChartAccentColor: string;
   matomoTrackerUrl: string;
   matomoSiteId: string;
+  condicasterApiKey: string | null;
+  condicasterEnabled: boolean;
   mapBaseLayers: MapBaseLayer[];
   mapOverlays: MapOverlay[];
   maxFileSize: number;
@@ -80,6 +82,8 @@ export class InstanceSettings {
     instanceSettings.darkBarChartAccentColor = payload.darkBarChartAccentColor;
     instanceSettings.matomoTrackerUrl = payload.matomoTrackerUrl;
     instanceSettings.matomoSiteId = payload.matomoSiteId;
+    instanceSettings.condicasterApiKey = payload.condicasterApiKey ?? null;
+    instanceSettings.condicasterEnabled = payload.condicasterEnabled === true;
     instanceSettings.mapBaseLayers = (payload.mapBaseLayers ?? [])
       .map(MapBaseLayer.deserialize)
       .filter((layer: MapBaseLayer) => layer.id.length > 0);
@@ -137,6 +141,7 @@ export class InstanceSettings {
       darkBarChartAccentColor: instanceSettings.darkBarChartAccentColor,
       matomoTrackerUrl: instanceSettings.matomoTrackerUrl,
       matomoSiteId: instanceSettings.matomoSiteId,
+      condicasterApiKey: instanceSettings.condicasterApiKey,
       mapBaseLayers: (instanceSettings.mapBaseLayers ?? []).map(
         MapBaseLayer.serialize,
       ),
@@ -227,8 +232,14 @@ export class InstanceSettings {
   public static serializeAnalyticsPatch(payload: {
     matomoTrackerUrl: string | null;
     matomoSiteId: string | null;
+    condicasterApiKey: string | null;
   }): InstanceSettingsPatch {
-    return { ...payload };
+    const key = payload.condicasterApiKey?.trim();
+    return {
+      matomoTrackerUrl: payload.matomoTrackerUrl,
+      matomoSiteId: payload.matomoSiteId,
+      condicasterApiKey: key ? key : null,
+    };
   }
 
   public static serializeMapsPatch(payload: {
