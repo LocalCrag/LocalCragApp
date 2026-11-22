@@ -45,7 +45,7 @@ export interface CondicasterCragHit {
   name: string | null;
   areaName: string | null;
   countryName: string | null;
-  distanceKm: number | null;
+  distanceKm: number | string | null;
 }
 
 export interface CondicasterConditions {

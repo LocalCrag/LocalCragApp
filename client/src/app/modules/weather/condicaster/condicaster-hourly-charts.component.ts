@@ -661,7 +661,7 @@ export class CondicasterHourlyChartsComponent implements OnChanges {
         );
         return `${value.toFixed(1)} · ${band} · ${this.skyLabel(hour)}`;
       },
-      true,
+      nowIndex != null,
       daylight,
     );
   }
@@ -900,6 +900,9 @@ export class CondicasterHourlyChartsComponent implements OnChanges {
   }
 
   private nowIndex(hours: CondicasterHour[]): number | null {
+    if (hours[0]?.local_date !== this.todayKey()) {
+      return null;
+    }
     const now = Date.now();
     let index: number | null = null;
     hours.forEach((hour, position) => {
@@ -909,6 +912,15 @@ export class CondicasterHourlyChartsComponent implements OnChanges {
       }
     });
     return index;
+  }
+
+  private todayKey(): string {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: this.timeZone || 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
   }
 
   private fade(color: string, alpha: number): string {
