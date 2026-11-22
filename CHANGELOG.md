@@ -1,3 +1,11 @@
+# [1.72.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.71.1...v1.72.0) (2026-11-22)
+
+
+### Features
+
+* **core:** replace UI component library ([#1347](https://github.com/LocalCrag/LocalCragApp/issues/1347)) ([a6e3509](https://github.com/LocalCrag/LocalCragApp/commit/a6e3509c9114e119c1e5838d5b106b2657ce1c1f))
+* **topo:** replace blocweather with CondiCaster ([#1349](https://github.com/LocalCrag/LocalCragApp/issues/1349)) ([f1b9aee](https://github.com/LocalCrag/LocalCragApp/commit/f1b9aeeb5ce3ee0a196f4175ebfd15b208b47cae))
+
 ## [1.71.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.71.0...v1.71.1) (2026-11-08)
 
 
