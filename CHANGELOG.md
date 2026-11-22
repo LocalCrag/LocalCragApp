@@ -1,3 +1,10 @@
+## [1.72.2](https://github.com/LocalCrag/LocalCragApp/compare/v1.72.1...v1.72.2) (2026-11-22)
+
+
+### Bug Fixes
+
+* **core:** move CondiCaster api config from env var to instance setting ([#1351](https://github.com/LocalCrag/LocalCragApp/issues/1351)) ([38ef393](https://github.com/LocalCrag/LocalCragApp/commit/38ef393cb6b49bbec1a9e284786df05e4f2f3054))
+
 ## [1.72.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.72.0...v1.72.1) (2026-11-22)
 
 
