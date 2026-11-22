@@ -1,1 +1,7 @@
-<lc-blocweather level="sector" [slug]="sectorSlug"></lc-blocweather>
+@if (sectorSlug) {
+  <lc-condicaster
+    level="sector"
+    [slug]="sectorSlug"
+    [weatherLink]="weatherLink"
+  />
+}

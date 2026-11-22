@@ -18,9 +18,6 @@
   "sectorForm.sectorRulesTitleTooltip": "Se impostato, gli utenti devono confermare di aver letto il regolamento e viene mostrato un ulteriore avviso.",
   "sectorForm.sectorRulesTitlePlaceholder": "Lascia vuoto per non mostrare un avviso, ad es. \"Si prega di leggere il regolamento\"",
   "sectorForm.sectorPortraitImageLabel": "Immagine",
-  "sectorForm.blocweatherUrlLabel": "Blocweather URL",
-  "sectorForm.blocweatherTooltip": "Per visualizzare le informazioni meteorologiche relative a quest'area nella pagina dei dettagli, puoi inserire qui l'URL della pagina corrispondente su blocweather.com.",
-  "sectorForm.invalidBlocweatherUrl": "L'URL deve seguire lo schema https://blocweather.com/<paese>/<regione>/<località>",
   "sectorForm.mapMarkersLabel": "Punti GPS",
   "sectorForm.closedBecauseParentIsClosed": "Questo settore è interdetto perché la zona superiore è attualmente interdetta.",
   "sectorForm.aPublicSectorWillSetParentsToPublic": "La creazione di un settore non segreto all'interno di una zona segreta rende automaticamente la zona corrispondente non segreta, altrimenti non sarebbe possibile raggiungere il settore. Gli altri settori preesistenti restano segreti.",
@@ -32,5 +29,8 @@
   "sectorForm.moveSectorButtonLabel": "Spostare",
   "sectorForm.deleteSectorButtonLabel": "Elimina settore",
   "sectorForm.editSectorTitle": "Modifica settore",
-  "sectorForm.createSectorTitle": "Crea settore"
+  "sectorForm.createSectorTitle": "Crea settore",
+  "sectorForm.condicasterCragIdLabel": "Falesia CondiCaster",
+  "sectorForm.condicasterTooltip": "Le condizioni di questo luogo arrivano da questa falesia CondiCaster. Lascia vuoto per usare la falesia del livello superiore.",
+  "sectorForm.invalidCondicasterCragId": "Inserisci un ID falesia CondiCaster positivo."
 }

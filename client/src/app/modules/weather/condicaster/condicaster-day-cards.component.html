@@ -1,0 +1,39 @@
+<ng-container *transloco="let t">
+  <div class="condicaster-days">
+    @for (day of days; track day.local_date) {
+      <button
+        type="button"
+        class="condicaster-days__card"
+        [class.condicaster-days__card--today]="isToday(day)"
+        [class.condicaster-days__card--selected]="isSelected(day)"
+        [attr.aria-pressed]="isSelected(day)"
+        [attr.aria-label]="
+          dayName(day) +
+          ', ' +
+          dayDate(day) +
+          ', ' +
+          skyLabel(day) +
+          ', ' +
+          score(day) +
+          ' ' +
+          bandLabel(day) +
+          ', ' +
+          temperatures(day)
+        "
+        (click)="select(day)"
+      >
+        <span class="condicaster-days__name">{{ dayName(day) }}</span>
+        <span class="condicaster-days__date">{{ dayDate(day) }}</span>
+        <ng-icon
+          [class]="'condicaster-days__icon condicaster-days__icon--' + sky(day)"
+          [name]="skyIcon(day)"
+          aria-hidden="true"
+        />
+        <span class="condicaster-days__score" [style.color]="scoreColor(day)">
+          {{ score(day) }}
+        </span>
+        <span class="condicaster-days__temps">{{ temperatures(day) }}</span>
+      </button>
+    }
+  </div>
+</ng-container>

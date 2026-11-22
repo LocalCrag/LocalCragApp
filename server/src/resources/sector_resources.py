@@ -29,6 +29,7 @@ from util.auth_session import (
     get_session_identity,
     session_required,
 )
+from util.condicaster import apply_condicaster_link, enqueue_condicaster_refresh
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import (
     set_sector_parents_false,
@@ -155,12 +156,13 @@ class CreateSector(MethodView):
         new_sector.order_index = Sector.find_max_order_index(crag_id) + 1
         new_sector.secret = sector_data["secret"]
         new_sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], new_sector)
-        new_sector.blocweather_url = sector_data["blocweatherUrl"]
+        apply_condicaster_link(new_sector, sector_data["condicasterCragId"], sector_data.get("condicasterCragName"))
 
         apply_closable_configuration(new_sector, sector_data, "sector_id")
         if not new_sector.secret:
             set_sector_parents_false(new_sector, "secret")
         db.session.commit()
+        enqueue_condicaster_refresh(new_sector.condicaster_crag_id)
         finalize_closable_save(new_sector)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_sector, created_by)
@@ -187,11 +189,12 @@ class UpdateSector(MethodView):
         )
         update_sector_propagating_boolean_attr(sector, sector_data["secret"], "secret")
         apply_closable_configuration(sector, sector_data, "sector_id")
-        sector.blocweather_url = sector_data["blocweatherUrl"]
+        apply_condicaster_link(sector, sector_data["condicasterCragId"], sector_data.get("condicasterCragName"))
 
         sector.map_markers = create_or_update_markers(sector_data["mapMarkers"], sector)
         db.session.add(sector)
         db.session.commit()
+        enqueue_condicaster_refresh(sector.condicaster_crag_id)
         finalize_closable_save(sector)
 
         return sector_schema.dump(sector), 200

@@ -46,7 +46,7 @@ import { ControlGroupDirective } from '../../shared/forms/control-group.directiv
 import { FormControlDirective } from '../../shared/forms/form-control.directive';
 import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
-import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { MoveObjectDialogComponent } from '../../shared/components/move-object-dialog/move-object-dialog.component';
 import { Crag } from '../../../models/crag';
@@ -72,6 +72,11 @@ import {
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  CondicasterCragLink,
+  CondicasterCragLinkComponent,
+} from '../../shared/components/condicaster-crag-link/condicaster-crag-link.component';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 /**
  * Form component for creating and editing sectors.
@@ -109,6 +114,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
     MoveObjectDialogComponent,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    CondicasterCragLinkComponent,
     HlmButton,
     HlmAlert,
     HlmAlertDescription,
@@ -221,10 +227,8 @@ export class SectorFormComponent implements OnInit {
       rulesTitle: [null, [Validators.maxLength(255)]],
       secret: [false],
       mapMarkers: [[]],
-      blocweatherUrl: [
-        null,
-        [blocweatherUrlValidator, Validators.maxLength(255)],
-      ],
+      condicasterCragId: [null, [condicasterCragIdValidator]],
+      condicasterCragName: [null],
       closureSchedules: [[]],
     });
   }
@@ -243,7 +247,8 @@ export class SectorFormComponent implements OnInit {
       rulesTitle: this.sector.rulesTitle,
       secret: this.sector.secret,
       mapMarkers: this.sector.mapMarkers,
-      blocweatherUrl: this.sector.blocweatherUrl,
+      condicasterCragId: this.sector.condicasterCragId,
+      condicasterCragName: this.sector.condicasterCragName,
       closureSchedules: this.sector.closureSchedules ?? [],
     });
   }
@@ -276,8 +281,14 @@ export class SectorFormComponent implements OnInit {
       sector.mapMarkers = this.sectorForm.get('mapMarkers').value;
       sector.closureSchedules =
         this.sectorForm.get('closureSchedules').value ?? [];
-      sector.blocweatherUrl =
-        this.sectorForm.get('blocweatherUrl').value || null;
+      const condicasterCragId = this.sectorForm.get('condicasterCragId').value;
+      sector.condicasterCragId =
+        condicasterCragId === null || condicasterCragId === ''
+          ? null
+          : Number(condicasterCragId);
+      sector.condicasterCragName = sector.condicasterCragId
+        ? this.sectorForm.get('condicasterCragName').value || null
+        : null;
       if (this.sector) {
         sector.slug = this.sector.slug;
         this.uploadService
@@ -335,6 +346,19 @@ export class SectorFormComponent implements OnInit {
       this.store.dispatch(toastNotification('SECTOR_DELETED'));
       this.router.navigate(['/topo', this.cragSlug, 'sectors']);
       this.loadingState = LoadingState.DEFAULT;
+    });
+  }
+
+  protected markerCoordinates(): Coordinates | null {
+    const markers = this.sectorForm?.get('mapMarkers')?.value as
+      { coordinates?: Coordinates }[] | null;
+    return markers?.find((marker) => marker?.coordinates)?.coordinates ?? null;
+  }
+
+  protected setCondicasterCrag(link: CondicasterCragLink | null): void {
+    this.sectorForm.patchValue({
+      condicasterCragId: link?.cragId ?? null,
+      condicasterCragName: link?.name ?? null,
     });
   }
 

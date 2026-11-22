@@ -83,6 +83,16 @@ function dayMonthDateFnsFormat(language: LanguageCode): string {
   }
 }
 
+/**
+ * Closure sentences are compiled as MessageFormat after `{{param}}` substitution.
+ * Braces in a reason or date would be read as missing placeholders (`{name}`
+ * becomes "undefined", and `{until further notice}` throws). Apostrophes start
+ * a literal quote. Quote those characters so the original text stays visible.
+ */
+export function escapeClosureMessageText(value: string): string {
+  return value.replace(/[{}']/g, (char) => (char === "'" ? "''" : `'${char}'`));
+}
+
 export function formatClosureScheduleRange(
   alert: ClosureScheduleDateRange,
   language: LanguageCode = 'de',
@@ -113,18 +123,22 @@ export function closureAlertMessage(
 ): string {
   const range = formatClosureScheduleRange(alert, language);
   const reason = alert.reason?.trim() || null;
+  const safeRange = range ? escapeClosureMessageText(range) : null;
+  const safeReason = reason ? escapeClosureMessageText(reason) : null;
 
-  if (reason && range) {
+  if (safeReason && safeRange) {
     return translate('closedSpotAlert.closedWithReasonAndRange', {
-      reason,
-      range,
+      reason: safeReason,
+      range: safeRange,
     });
   }
-  if (reason) {
-    return translate('closedSpotAlert.closedWithReason', { reason });
+  if (safeReason) {
+    return translate('closedSpotAlert.closedWithReason', {
+      reason: safeReason,
+    });
   }
-  if (range) {
-    return translate('closedSpotAlert.closedWithRange', { range });
+  if (safeRange) {
+    return translate('closedSpotAlert.closedWithRange', { range: safeRange });
   }
   return translate('closedSpotAlert.closedWithoutReason');
 }

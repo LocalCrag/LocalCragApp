@@ -82,14 +82,15 @@ def test_csrf_required_for_mutating_authenticated_request(client, admin_token):
     assert rv.status_code == 401
 
 
-def test_forgot_password_wrong_email(client):
+def test_forgot_password_unknown_email_matches_success(client, smtp_mock):
     data = {
         "email": "feliks@fengelmann.de",
     }
     rv = client.post("/api/forgot-password", json=data)
-    assert rv.status_code == 401
+    assert rv.status_code == 200
     res = rv.json
-    assert res["message"] == ResponseMessage.USER_NOT_FOUND.value
+    assert res["message"] == ResponseMessage.RESET_PASSWORD_MAIL_SENT.value
+    assert smtp_mock.return_value.__enter__.return_value.sendmail.call_count == 0
 
 
 def test_forgot_password_successful(client, smtp_mock):
@@ -267,7 +268,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token, an
             "lat": 12.13,
             "lng": 42.42,
             "secret": False,
-            "blocweatherUrl": None,
+            "condicasterCragId": None,
             "closureSchedules": [],
         }
 
@@ -297,7 +298,7 @@ def test_permission_levels(client, user_token, member_token, moderator_token, an
             }
         ],
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
 

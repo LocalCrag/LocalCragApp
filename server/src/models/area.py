@@ -43,7 +43,8 @@ class Area(HasSlug, HasOrderIndex, IsSearchable, IsClosable, IsSecret, BaseEntit
     sector_slug = association_proxy("sector", "slug")
     crag_slug = association_proxy("sector", "crag_slug")
     map_markers = db.relationship("MapMarker", back_populates="area")
-    blocweather_url = db.Column(db.String(255), nullable=True)
+    condicaster_crag_id = db.Column(db.Integer, nullable=True)
+    condicaster_crag_name = db.Column(db.String(255), nullable=True)
     publication_status = db.Column(
         publication_status_type,
         nullable=False,

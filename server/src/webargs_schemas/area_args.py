@@ -2,7 +2,7 @@ from flask_marshmallow import Schema
 from marshmallow import validate
 from webargs import fields
 
-from util.validators import blocweather_url_validator
+from util.validators import condicaster_crag_id_validator
 from webargs_schemas.closure_schedule_args import closure_schedules_field
 from webargs_schemas.map_marker_args import map_marker_args
 
@@ -14,7 +14,10 @@ class AreaArgsSchema(Schema):
     portraitImage = fields.String(required=True, allow_none=True)
     secret = fields.Boolean(required=True, allow_none=False)
     mapMarkers = fields.List(fields.Nested(map_marker_args), required=True, allow_none=False)
-    blocweatherUrl = fields.Str(required=True, allow_none=True, validate=blocweather_url_validator)
+    condicasterCragId = fields.Int(required=True, allow_none=True, validate=condicaster_crag_id_validator)
+    condicasterCragName = fields.Str(
+        required=False, allow_none=True, load_default=None, validate=validate.Length(max=255)
+    )
     closureSchedules = closure_schedules_field
 
 

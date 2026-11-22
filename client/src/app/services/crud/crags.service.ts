@@ -9,8 +9,6 @@ import { Store } from '@ngrx/store';
 import { reloadMenus } from '../../ngrx/actions/core.actions';
 import { Season } from '../../models/season';
 import { deserializeGradeList, GradeDistribution } from '../../models/scale';
-import { BlocWeatherService } from './blocweather.service';
-
 /**
  * CRUD service for crags.
  */
@@ -21,8 +19,6 @@ export class CragsService {
   private api = inject(ApiService);
   private store = inject(Store);
   private http = inject(HttpClient);
-  private blocWeatherService = inject(BlocWeatherService);
-
   /**
    * Creates a Crag.
    *
@@ -104,7 +100,6 @@ export class CragsService {
       .pipe(
         tap(() => {
           this.store.dispatch(reloadMenus());
-          this.blocWeatherService.clearCache();
         }),
         map(Crag.deserialize),
       );

@@ -106,7 +106,7 @@ def test_change_crag_to_closed_then_create_open_line_in_it(client, moderator_tok
                 "reason": "Aggressive hunting leaseholder",
             }
         ],
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -151,7 +151,7 @@ def test_remove_closure_schedule_from_crag(client, moderator_token, any_file):
                 "reason": "Temporary works",
             }
         ],
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -192,7 +192,7 @@ def test_secret_property_doesnt_change(client, moderator_token, any_file):
                 "reason": "Naturschutzgebiet",
             }
         ],
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
     }
 
     rv = client.put("/api/crags/brione", token=moderator_token, json=crag_data)
@@ -402,7 +402,7 @@ def test_multiple_active_closure_schedules_return_all_reasons(client, moderator_
             }
         ],
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [
             {
                 "scheduleType": "PERMANENT",

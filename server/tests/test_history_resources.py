@@ -10,7 +10,7 @@ def test_successful_add_and_delete_history(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": False,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
     rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)
@@ -99,7 +99,7 @@ def test_history_respects_secret_flag(client, moderator_token):
         "mapMarkers": [],
         "portraitImage": None,
         "secret": True,
-        "blocweatherUrl": None,
+        "condicasterCragId": None,
         "closureSchedules": [],
     }
     rv = client.post("/api/sectors/pampelmousse/areas", token=moderator_token, json=area_data)

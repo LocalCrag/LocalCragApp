@@ -13,9 +13,6 @@
   "areaForm.areaDescriptionLabel": "Beschreibung",
   "areaForm.areaDescriptionPlaceholder": "Allgemeine Infos zum Bereich.",
   "areaForm.areaPortraitImageLabel": "Bild",
-  "areaForm.blocweatherUrlLabel": "BlocWeather URL",
-  "areaForm.blocweatherTooltip": "Für die Anzeige von Wetterinformationen zu diesem Bereich auf der Detailseite, kannst Du hier die URL zum entsprechenden Bereich auf blocweather.com hinterlegen.",
-  "areaForm.invalidBlocweatherUrl": "Die URL muss das Schema https://blocweather.com/<country>/<region>/<spot> haben",
   "areaForm.mapMarkersLabel": "GPS-Punkte",
   "areaForm.closedBecauseParentIsClosed": "Dieser Bereich ist gesperrt, weil der übergeordnete Sektor derzeit gesperrt ist.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Das erstellen eines nicht-geheimen Bereichs innerhalb eines geheimen Sektors setzt den Sektor und dessen Gebiet automatisch auch auf nicht-geheim, da man ansonsten nicht zum Bereich navigieren kann. Andere bereits bestehende Bereiche und Sektoren bleiben geheim.",
@@ -27,5 +24,8 @@
   "areaForm.moveAreaButtonLabel": "Verschieben",
   "areaForm.deleteAreaButtonLabel": "Bereich löschen",
   "areaForm.editAreaTitle": "Bereich bearbeiten",
-  "areaForm.createAreaTitle": "Neuen Bereich erstellen"
+  "areaForm.createAreaTitle": "Neuen Bereich erstellen",
+  "areaForm.condicasterCragIdLabel": "CondiCaster-Spot",
+  "areaForm.condicasterTooltip": "Die Bedingungen für diesen Ort kommen von diesem CondiCaster-Spot. Leer lassen, um den Spot der Ebene darüber zu verwenden.",
+  "areaForm.invalidCondicasterCragId": "Gib eine positive CondiCaster-Spot-ID ein."
 }

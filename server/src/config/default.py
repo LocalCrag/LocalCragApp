@@ -40,4 +40,5 @@ class DefaultConfig(object):
     STORAGE_DISK_SPACE = None
     SENTRY_DSN = ""
     SENTRY_ENABLED = False
+    CONDICASTER_API_KEY = ""
     LOG_LEVEL = "INFO"

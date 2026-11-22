@@ -20,7 +20,8 @@ def test_successful_create_crag(client, moderator_token, any_file):
             }
         ],
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "condicasterCragId": 1000044430,
+        "condicasterCragName": "Magic Wood",
         "closureSchedules": [],
     }
 
@@ -44,10 +45,11 @@ def test_successful_create_crag(client, moderator_token, any_file):
     assert res["closed"] is False
     assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
+    assert res["condicasterCragId"] == 1000044430
+    assert res["condicasterCragName"] == "Magic Wood"
 
 
-def test_create_crag_invalid_blocweather_url(client, moderator_token):
+def test_create_crag_invalid_condicaster_crag_id(client, moderator_token):
     crag_data = {
         "name": "Glees",
         "description": "Fodere et scandere.",
@@ -57,7 +59,7 @@ def test_create_crag_invalid_blocweather_url(client, moderator_token):
         "portraitImage": None,
         "mapMarkers": [],
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino",
+        "condicasterCragId": -1,
         "closureSchedules": [],
     }
 
@@ -109,7 +111,7 @@ def test_successful_get_crag(client):
     assert res["closed"] == crag.closed
     assert res["closedReasons"] == []
     assert "upcomingClosureWarnings" in res
-    assert res["blocweatherUrl"] == crag.blocweather_url
+    assert res["condicasterCragId"] == crag.condicaster_crag_id
 
 
 def test_get_deleted_crag(client):
@@ -142,7 +144,7 @@ def test_successful_edit_crag(client, moderator_token, any_file):
             }
         ],
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
+        "condicasterCragId": 1000031051,
         "closureSchedules": [],
     }
 
@@ -165,7 +167,7 @@ def test_successful_edit_crag(client, moderator_token, any_file):
     assert res["closed"] is False
     assert res["closureIsPermanent"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
+    assert res["condicasterCragId"] == 1000031051
 
 
 def test_successful_order_crags(client, moderator_token):

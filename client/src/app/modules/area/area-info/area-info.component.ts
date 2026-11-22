@@ -17,8 +17,6 @@ import { GradeDistributionBarChartComponent } from '../../shared/components/grad
 import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
 import { CoordinatesButtonComponent } from '../../shared/components/coordinates-button/coordinates-button.component';
 import { MapComponent } from '../../maps/map/map.component';
-import { CurrentConditionsComponent } from '../../weather/current-conditions/current-conditions.component';
-import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 
 @Component({
@@ -33,8 +31,6 @@ import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
     SanitizeHtmlPipe,
     CoordinatesButtonComponent,
     MapComponent,
-    CurrentConditionsComponent,
-    OutdoorModeDirective,
     HlmSkeleton,
   ],
 })

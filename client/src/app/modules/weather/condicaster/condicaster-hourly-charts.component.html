@@ -1,0 +1,111 @@
+<ng-container *transloco="let t">
+  <div class="condicaster-hourly">
+    <div
+      class="condicaster-hourly__icons"
+      [style.padding-left.px]="plotLeft"
+      [style.padding-right.px]="plotRight"
+    >
+      <div class="condicaster-hourly__icon-track">
+        @for (hour of hours; track hour.valid_at; let index = $index) {
+          <span
+            class="condicaster-hourly__slot"
+            [class]="
+              'condicaster-hourly__slot condicaster-hourly__slot--' +
+              skyOf(hour)
+            "
+            [style.left.%]="iconLeft(index)"
+            [attr.title]="hourLabel(hour) + ' · ' + skyLabel(hour)"
+          >
+            <span class="condicaster-hourly__hour">{{ hourLabel(hour) }}</span>
+            <ng-icon [name]="skyIcon(hour)" />
+          </span>
+        }
+      </div>
+    </div>
+
+    @if (scoreData) {
+      <section>
+        <h4>{{ t("condicaster.scoreLabel") }}</h4>
+        <div class="condicaster-hourly__plot condicaster-hourly__plot--score">
+          <canvas
+            lcChartJs="line"
+            [data]="scoreData"
+            [options]="scoreOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (temperatureData) {
+      <section>
+        <h4>{{ t("condicaster.temperature") }}</h4>
+        <div class="condicaster-hourly__plot">
+          <canvas
+            lcChartJs="line"
+            [data]="temperatureData"
+            [options]="temperatureOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (rainData) {
+      <section>
+        <h4>{{ t("condicaster.rain") }}</h4>
+        <div class="condicaster-hourly__plot condicaster-hourly__plot--rain">
+          <canvas
+            lcChartJs="bar"
+            [data]="rainData"
+            [options]="rainOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (humidityData) {
+      <section>
+        <h4>{{ t("condicaster.humidity") }}</h4>
+        <div class="condicaster-hourly__plot">
+          <canvas
+            lcChartJs="line"
+            [data]="humidityData"
+            [options]="humidityOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (windData) {
+      <section>
+        <h4>{{ t("condicaster.wind") }}</h4>
+        <div class="condicaster-hourly__plot">
+          <canvas
+            lcChartJs="line"
+            [data]="windData"
+            [options]="windOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (cloudData) {
+      <section>
+        <h4>{{ t("condicaster.clouds") }}</h4>
+        <div class="condicaster-hourly__plot">
+          <canvas
+            lcChartJs="line"
+            [data]="cloudData"
+            [options]="cloudOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+    @if (sunData) {
+      <section>
+        <h4>{{ t("condicaster.sun") }}</h4>
+        <div class="condicaster-hourly__plot">
+          <canvas
+            lcChartJs="line"
+            [data]="sunData"
+            [options]="sunOptions"
+          ></canvas>
+        </div>
+      </section>
+    }
+  </div>
+</ng-container>

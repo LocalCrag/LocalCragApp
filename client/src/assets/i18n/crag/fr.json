@@ -19,9 +19,6 @@
   "cragForm.cragRulesTitleTooltip": "Si renseigné, les utilisateurs doivent confirmer avoir lu les règles et une alerte supplémentaire s'affiche.",
   "cragForm.cragRulesTitlePlaceholder": "Laisser vide pour ne pas afficher d'alerte, p. ex. \"Veuillez lire nos règles\"",
   "cragForm.cragPortraitImageLabel": "Image",
-  "cragForm.blocweatherUrlLabel": "Blocmétéo URL",
-  "cragForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour ce rocher sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
-  "cragForm.invalidBlocweatherUrl": "Le URL doit suivre le format https://blocweather.com/<country>/<region>/<spot>",
   "cragForm.mapMarkersLabel": "GPS points",
   "cragForm.cragOptionsLabel": "Possibilités",
   "cragForm.secretLabel": "Secrète",
@@ -30,5 +27,8 @@
   "cragForm.cancelButtonLabel": "Annuler",
   "cragForm.deleteCragButtonLabel": "Supprimer le rocher",
   "cragForm.editCragTitle": "Modifier la falaise",
-  "cragForm.createCragTitle": "Créer un nouveau rocher"
+  "cragForm.createCragTitle": "Créer un nouveau rocher",
+  "cragForm.condicasterCragIdLabel": "Falaise CondiCaster",
+  "cragForm.condicasterTooltip": "Les conditions de ce site viennent de cette falaise CondiCaster. Laisse vide pour utiliser la falaise du niveau supérieur.",
+  "cragForm.invalidCondicasterCragId": "Saisis un identifiant de falaise CondiCaster positif."
 }

@@ -42,7 +42,7 @@ import { IfErrorDirective } from '../../shared/forms/if-error.directive';
 import { MapMarkerFormArrayComponent } from '../../maps/map-marker-form-array/map-marker-form-array.component';
 import { SingleImageUploadComponent } from '../../shared/forms/controls/single-image-upload/single-image-upload.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { blocweatherUrlValidator } from '../../../utility/validators/blocweather.validators';
+import { condicasterCragIdValidator } from '../../../utility/validators/condicaster.validators';
 import { LanguageService } from '../../../services/core/language.service';
 import { OutdoorModeDirective } from '../../shared/directives/outdoor-mode.directive';
 import { ScheduledClosureFormComponent } from '../../shared/components/scheduled-closure-form/scheduled-closure-form.component';
@@ -61,6 +61,11 @@ import {
 } from '@ng-icons/lucide';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { LoadingButtonComponent } from '../../shared/components/loading-button/loading-button.component';
+import {
+  CondicasterCragLink,
+  CondicasterCragLinkComponent,
+} from '../../shared/components/condicaster-crag-link/condicaster-crag-link.component';
+import { Coordinates } from '../../../interfaces/coordinates.interface';
 
 /**
  * A component for creating and editing crags.
@@ -93,6 +98,7 @@ import { LoadingButtonComponent } from '../../shared/components/loading-button/l
     OutdoorModeDirective,
     ScheduledClosureFormComponent,
     DuplicateNameWarningComponent,
+    CondicasterCragLinkComponent,
     HlmButton,
     HlmInput,
     HlmCheckbox,
@@ -197,10 +203,8 @@ export class CragFormComponent implements OnInit {
       portraitImage: [null],
       secret: [false],
       mapMarkers: [[]],
-      blocweatherUrl: [
-        null,
-        [blocweatherUrlValidator, Validators.maxLength(255)],
-      ],
+      condicasterCragId: [null, [condicasterCragIdValidator]],
+      condicasterCragName: [null],
       closureSchedules: [[]],
     });
   }
@@ -219,7 +223,8 @@ export class CragFormComponent implements OnInit {
       portraitImage: this.crag.portraitImage,
       secret: this.crag.secret,
       mapMarkers: this.crag.mapMarkers,
-      blocweatherUrl: this.crag.blocweatherUrl,
+      condicasterCragId: this.crag.condicasterCragId,
+      condicasterCragName: this.crag.condicasterCragName,
       closureSchedules: this.crag.closureSchedules ?? [],
     });
   }
@@ -251,7 +256,14 @@ export class CragFormComponent implements OnInit {
       crag.secret = this.cragForm.get('secret').value;
       crag.mapMarkers = this.cragForm.get('mapMarkers').value;
       crag.closureSchedules = this.cragForm.get('closureSchedules').value ?? [];
-      crag.blocweatherUrl = this.cragForm.get('blocweatherUrl').value || null;
+      const condicasterCragId = this.cragForm.get('condicasterCragId').value;
+      crag.condicasterCragId =
+        condicasterCragId === null || condicasterCragId === ''
+          ? null
+          : Number(condicasterCragId);
+      crag.condicasterCragName = crag.condicasterCragId
+        ? this.cragForm.get('condicasterCragName').value || null
+        : null;
       if (this.crag) {
         crag.slug = this.crag.slug;
         this.uploadService
@@ -303,6 +315,19 @@ export class CragFormComponent implements OnInit {
       this.store.dispatch(toastNotification('CRAG_DELETED'));
       this.router.navigate(['/topo']);
       this.loadingState = LoadingState.DEFAULT;
+    });
+  }
+
+  protected markerCoordinates(): Coordinates | null {
+    const markers = this.cragForm?.get('mapMarkers')?.value as
+      { coordinates?: Coordinates }[] | null;
+    return markers?.find((marker) => marker?.coordinates)?.coordinates ?? null;
+  }
+
+  protected setCondicasterCrag(link: CondicasterCragLink | null): void {
+    this.cragForm.patchValue({
+      condicasterCragId: link?.cragId ?? null,
+      condicasterCragName: link?.name ?? null,
     });
   }
 

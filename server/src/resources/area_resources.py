@@ -25,6 +25,7 @@ from util.auth_session import (
     get_session_identity,
     session_required,
 )
+from util.condicaster import apply_condicaster_link, enqueue_condicaster_refresh
 from util.html_inline_styles import sanitize_wysiwyg_html
 from util.propagating_boolean_attrs import (
     set_area_parents_false,
@@ -149,13 +150,14 @@ class CreateArea(MethodView):
         new_area.order_index = Area.find_max_order_index(sector_id) + 1
         new_area.secret = area_data["secret"]
         new_area.map_markers = create_or_update_markers(area_data["mapMarkers"], new_area)
-        new_area.blocweather_url = area_data["blocweatherUrl"]
+        apply_condicaster_link(new_area, area_data["condicasterCragId"], area_data.get("condicasterCragName"))
 
         apply_closable_configuration(new_area, area_data, "area_id")
         if not new_area.secret:
             set_area_parents_false(new_area, "secret")
 
         db.session.commit()
+        enqueue_condicaster_refresh(new_area.condicaster_crag_id)
         finalize_closable_save(new_area)
 
         HistoryItem.create_history_item(HistoryItemTypeEnum.CREATED, new_area, created_by)
@@ -179,11 +181,12 @@ class UpdateArea(MethodView):
         area.portrait_image_id = area_data["portraitImage"]
         update_area_propagating_boolean_attr(area, area_data["secret"], "secret")
         apply_closable_configuration(area, area_data, "area_id")
-        area.blocweather_url = area_data["blocweatherUrl"]
+        apply_condicaster_link(area, area_data["condicasterCragId"], area_data.get("condicasterCragName"))
 
         area.map_markers = create_or_update_markers(area_data["mapMarkers"], area)
         db.session.add(area)
         db.session.commit()
+        enqueue_condicaster_refresh(area.condicaster_crag_id)
         finalize_closable_save(area)
 
         return area_schema.dump(area), 200

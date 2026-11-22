@@ -6,10 +6,6 @@
           [warnings]="crag.upcomingClosureWarnings"
         ></lc-upcoming-closure-alert>
       }
-      <lc-current-conditions
-        [slug]="crag.slug"
-        [level]="'crag'"
-      ></lc-current-conditions>
       @if (!gradeDiagramsSuppressed) {
         <h4>{{ t("gradeDistribution") }}:</h4>
       }

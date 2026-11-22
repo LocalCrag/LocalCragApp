@@ -1,0 +1,140 @@
+<ng-container *transloco="let t">
+  <div class="condicaster-search">
+    @if (step === "place") {
+      <div hlmInputGroup>
+        <div hlmInputGroupAddon>
+          @if (searchingPlaces) {
+            <ng-icon name="lucideLoader2" class="animate-spin" />
+          } @else {
+            <ng-icon name="lucideSearch" />
+          }
+        </div>
+        <input
+          #queryInput
+          hlmInputGroupInput
+          type="text"
+          [ngModel]="query"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="onQueryChange($event)"
+          (keydown.enter)="$event.preventDefault(); submit()"
+          [placeholder]="t('condicaster.search.placeholder')"
+          [attr.aria-label]="t('condicaster.search.placeholder')"
+          data-cy="condicaster-crag-search"
+        />
+      </div>
+
+      @if (coordinatesFromQuery(); as coordinates) {
+        <div class="condicaster-search__actions">
+          <button
+            hlmBtn
+            type="button"
+            variant="outline"
+            size="sm"
+            (click)="searchAtFromQuery(coordinates)"
+          >
+            {{ t("condicaster.search.coordinates") }}
+          </button>
+        </div>
+      }
+
+      @if (places.length > 0) {
+        <p class="condicaster-search__heading">
+          {{ t("condicaster.search.places") }}
+        </p>
+        <ul class="condicaster-search__results" role="listbox">
+          @for (place of places; track place.id) {
+            <li>
+              <button
+                type="button"
+                role="option"
+                aria-selected="false"
+                (click)="selectPlace(place)"
+              >
+                <ng-icon name="lucideMapPin" />
+                <span>{{ place.label }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    } @else {
+      <p class="condicaster-search__heading">
+        {{ t("condicaster.search.results") }}
+        @if (searchedLabel) {
+          <span>{{ searchedLabel }}</span>
+        }
+        @if (searchingCrags) {
+          <ng-icon name="lucideLoader2" class="animate-spin" />
+        }
+      </p>
+
+      @if (crags.length > 0) {
+        <ul class="condicaster-search__results" role="listbox">
+          @for (crag of crags; track crag.cragId) {
+            <li>
+              <button
+                type="button"
+                class="condicaster-search__crag"
+                role="option"
+                aria-selected="false"
+                (click)="selectCrag(crag)"
+              >
+                <span class="condicaster-search__name">{{
+                  crag.name || t("condicaster.search.linked")
+                }}</span>
+                <span class="condicaster-search__meta">
+                  {{ crag.areaName }}
+                  @if (crag.areaName && crag.countryName) {
+                    ·
+                  }
+                  {{ crag.countryName }}
+                  @if (
+                    crag.distanceKm !== null && crag.distanceKm !== undefined
+                  ) {
+                    ·
+                    {{
+                      t("condicaster.search.distance", {
+                        distance: crag.distanceKm,
+                      })
+                    }}
+                  }
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    }
+
+    @if (errorKey) {
+      <small class="lc-error">{{ t(errorKey) }}</small>
+    }
+
+    @if (step === "crags") {
+      <div class="condicaster-search__near">
+        <button hlmBtn type="button" variant="outline" (click)="back()">
+          <ng-icon name="lucideArrowLeft" />
+          {{ t("condicaster.search.back") }}
+        </button>
+      </div>
+    }
+
+    @if (step === "place" && spotCoordinates()) {
+      <div class="condicaster-search__or">
+        <div hlmSeparator class="flex-1"></div>
+        <span>{{ t("condicaster.search.or") }}</span>
+        <div hlmSeparator class="flex-1"></div>
+      </div>
+      <div class="condicaster-search__near">
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
+          (click)="searchNearSpot()"
+        >
+          {{ t("condicaster.search.nearSpot") }}
+        </button>
+      </div>
+    }
+  </div>
+</ng-container>

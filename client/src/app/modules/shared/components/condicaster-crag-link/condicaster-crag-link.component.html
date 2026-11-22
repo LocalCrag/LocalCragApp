@@ -1,0 +1,28 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-wrap items-center gap-2">
+    @if (cragName()) {
+      <span>{{ cragName() }}</span>
+    } @else if (cragId()) {
+      <span>{{ t("condicaster.search.linked") }}</span>
+    } @else {
+      <span class="text-muted-foreground">{{
+        t("condicaster.search.none")
+      }}</span>
+    }
+    <button
+      hlmBtn
+      type="button"
+      variant="outline"
+      size="sm"
+      (click)="openSearch()"
+      data-cy="condicaster-crag-search-open"
+    >
+      {{ t("condicaster.search.open") }}
+    </button>
+    @if (cragId()) {
+      <button hlmBtn type="button" variant="ghost" size="sm" (click)="clear()">
+        {{ t("condicaster.search.clear") }}
+      </button>
+    }
+  </div>
+</ng-container>

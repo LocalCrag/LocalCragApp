@@ -1,0 +1,225 @@
+@use "../../../styles/media-queries" as m;
+
+.condicaster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem;
+
+  > * {
+    grid-column: 1 / -1;
+  }
+}
+
+.condicaster > .condicaster__header {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.condicaster__empty {
+  margin: 0;
+}
+
+.condicaster__now {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: var(--p-content-border-radius, 0.9rem);
+  background: var(--p-surface-100, #f4f4f5);
+  box-shadow: var(--p-overlay-popover-shadow, 0 8px 24px rgb(0 0 0 / 0.12));
+}
+
+.condicaster__now-score {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 2.35rem;
+  font-weight: 700;
+  line-height: 0.9;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    margin-left: 0.1rem;
+    color: var(--p-text-muted-color, #64748b);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+}
+
+.condicaster__now-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.condicaster__band {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.condicaster__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.55rem;
+  margin: 0;
+  color: var(--p-text-muted-color, #64748b);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.condicaster__meter {
+  padding: 1.35rem 1.35rem 1.15rem;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: var(--p-content-border-radius, 0.9rem);
+  background: var(--p-surface-100, #f4f4f5);
+  box-shadow: var(--p-overlay-popover-shadow, 0 8px 24px rgb(0 0 0 / 0.12));
+}
+
+.condicaster__meter--inline {
+  display: none;
+}
+
+.condicaster__scale {
+  position: relative;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #b91c1c 0%,
+    #c2410c 18%,
+    #a16207 36%,
+    #4d7c0f 54%,
+    #15803d 70%,
+    #0f766e 84%,
+    #1d4ed8 100%
+  );
+}
+
+.condicaster__marker {
+  position: absolute;
+  top: -0.55rem;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 9px solid currentColor;
+  transform: translateX(-50%);
+}
+
+.condicaster > .condicaster__attribution {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  padding: 0.55rem 0.95rem 0.55rem 0.55rem;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: var(--p-content-border-radius, 0.9rem);
+  background: var(--p-surface-100, #f4f4f5);
+  box-shadow: var(--p-overlay-popover-shadow, 0 8px 24px rgb(0 0 0 / 0.12));
+  color: var(--p-text-color, inherit);
+  text-decoration: none;
+
+  &:hover {
+    background: var(--p-content-hover-background, #ececf0);
+  }
+}
+
+.condicaster__logo {
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.28rem;
+  border-radius: 0.7rem;
+  background: #40236b;
+  object-fit: contain;
+}
+
+.condicaster__attribution-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.condicaster__attribution-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.condicaster__attribution-hint {
+  color: var(--p-text-muted-color, #64748b);
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.condicaster__hourly-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.75rem;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.condicaster__hourly-date {
+  margin: 0;
+  color: var(--p-text-muted-color, #64748b);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.condicaster__hourly-scroll {
+  overflow-x: auto;
+}
+
+@include m.on-mobile {
+  .condicaster {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .condicaster > .condicaster__header,
+  .condicaster > .condicaster__attribution {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .condicaster > .condicaster__attribution {
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .condicaster__now {
+    flex-wrap: wrap;
+  }
+
+  .condicaster__meter--inline {
+    display: block;
+    flex: 1 0 100%;
+    margin-top: 0.15rem;
+    padding: 0.85rem 0.15rem 0.2rem;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .condicaster__meter--standalone {
+    display: none;
+  }
+}

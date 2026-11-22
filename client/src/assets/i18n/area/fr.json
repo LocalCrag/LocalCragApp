@@ -13,9 +13,6 @@
   "areaForm.areaDescriptionLabel": "Description",
   "areaForm.areaDescriptionPlaceholder": "Informations générales sur la région.",
   "areaForm.areaPortraitImageLabel": "Image",
-  "areaForm.blocweatherUrlLabel": "Blocmétéo URL",
-  "areaForm.blocweatherTooltip": "Pour afficher les informations météorologiques pour cette zone sur la page de détails, vous pouvez saisir ici le URL pour la section correspondante sur blocweather.com.",
-  "areaForm.invalidBlocweatherUrl": "Invao",
   "areaForm.mapMarkersLabel": "GPS points",
   "areaForm.closedBecauseParentIsClosed": "Cette zone est fermée car son secteur est actuellement fermé.",
   "areaForm.aPublicAreaWillSetParentsToPublic": "Créer une zone non secrète dans un secteur secret définit automatiquement le secteur et la falaise correspondante comme non secrets, sinon vous ne pouvez pas naviguer vers la zone. D’autres domaines et secteurs préexistants restent secrets.",
@@ -27,5 +24,8 @@
   "areaForm.moveAreaButtonLabel": "Se déplacer",
   "areaForm.deleteAreaButtonLabel": "Supprimer la zone",
   "areaForm.editAreaTitle": "Zone d'édition",
-  "areaForm.createAreaTitle": "Créer une nouvelle zone"
+  "areaForm.createAreaTitle": "Créer une nouvelle zone",
+  "areaForm.condicasterCragIdLabel": "Falaise CondiCaster",
+  "areaForm.condicasterTooltip": "Les conditions de ce site viennent de cette falaise CondiCaster. Laisse vide pour utiliser la falaise du niveau supérieur.",
+  "areaForm.invalidCondicasterCragId": "Saisis un identifiant de falaise CondiCaster positif."
 }

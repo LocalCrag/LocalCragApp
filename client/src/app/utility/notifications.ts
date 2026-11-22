@@ -559,16 +559,6 @@ export const NOTIFICATIONS = {
     title: marker('notifications.SCALE_DELETED_ERROR_TITLE'),
     message: marker('notifications.SCALE_DELETED_ERROR_MESSAGE'),
   },
-  BLOCWEATHER_REPORT_SUCCESS: {
-    type: NotificationType.SUCCESS,
-    title: marker('notifications.BLOCWEATHER_REPORT_SUCCESS_TITLE'),
-    message: marker('notifications.BLOCWEATHER_REPORT_SUCCESS_MESSAGE'),
-  },
-  BLOCWEATHER_REPORT_ERROR: {
-    type: NotificationType.ERROR,
-    title: marker('notifications.BLOCWEATHER_REPORT_ERROR_TITLE'),
-    message: marker('notifications.BLOCWEATHER_REPORT_ERROR_MESSAGE'),
-  },
   NOTIFICATIONS_MARK_ALL_READ_SUCCESS: {
     type: NotificationType.SUCCESS,
     title: marker('notifications.NOTIFICATIONS_MARK_ALL_READ_SUCCESS_TITLE'),

@@ -49,7 +49,7 @@ def test_successful_create_sector(client, moderator_token, any_file):
         "rules": "test rules",
         "rulesTitle": "Important rules",
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione",
+        "condicasterCragId": 1000044430,
         "closureSchedules": [],
     }
 
@@ -71,10 +71,10 @@ def test_successful_create_sector(client, moderator_token, any_file):
     assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/switzerland/ticino/brione"
+    assert res["condicasterCragId"] == 1000044430
 
 
-def test_create_sector_invalid_blocweather_url(client, moderator_token):
+def test_create_sector_invalid_condicaster_crag_id(client, moderator_token):
     sector_data = {
         "name": "Kruzifix",
         "description": "The classic sector",
@@ -84,7 +84,7 @@ def test_create_sector_invalid_blocweather_url(client, moderator_token):
         "rules": None,
         "rulesTitle": None,
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/switzerland/ticino/brione?x=1",
+        "condicasterCragId": -1,
         "closureSchedules": [],
     }
 
@@ -132,7 +132,7 @@ def test_successful_get_sector(client):
     assert res["secret"] is False
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == Sector.find_by_slug("pampelmousse").blocweather_url
+    assert res["condicasterCragId"] == Sector.find_by_slug("pampelmousse").condicaster_crag_id
 
 
 def test_get_deleted_sector(client):
@@ -165,7 +165,7 @@ def test_successful_edit_sector(client, moderator_token, any_file):
         "rules": "test rules",
         "rulesTitle": "Important rules",
         "secret": False,
-        "blocweatherUrl": "https://blocweather.com/austria/tirol/zillertal",
+        "condicasterCragId": 1000031051,
         "closureSchedules": [],
     }
 
@@ -187,7 +187,7 @@ def test_successful_edit_sector(client, moderator_token, any_file):
     assert res["rulesUpdatedAt"] is not None
     assert res["closed"] is False
     assert res["closedReasons"] == []
-    assert res["blocweatherUrl"] == "https://blocweather.com/austria/tirol/zillertal"
+    assert res["condicasterCragId"] == 1000031051
 
 
 def test_successful_order_sectors(client, moderator_token):
