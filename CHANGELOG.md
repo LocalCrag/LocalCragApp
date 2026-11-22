@@ -1,3 +1,10 @@
+## [1.72.1](https://github.com/LocalCrag/LocalCragApp/compare/v1.72.0...v1.72.1) (2026-11-22)
+
+
+### Bug Fixes
+
+* **core:** fix misinterpreted tab clicks on mobile ([#1350](https://github.com/LocalCrag/LocalCragApp/issues/1350)) ([e950dab](https://github.com/LocalCrag/LocalCragApp/commit/e950dab4a0318d05f6c0290d8b982c1bc36b7ea3))
+
 # [1.72.0](https://github.com/LocalCrag/LocalCragApp/compare/v1.71.1...v1.72.0) (2026-11-22)
 
 
