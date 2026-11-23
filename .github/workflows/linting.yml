@@ -70,7 +70,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v4
         with:
-          version: v3.16.4
+          version: v3.22.1
 
       # charts/ is gitignored, so subcharts are fetched from Chart.lock.
       # This also fails if Chart.lock drifts out of sync with Chart.yaml.
