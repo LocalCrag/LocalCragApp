@@ -11,7 +11,7 @@ RUN if [ -n "$$APP_VERSION" ]; then \
     fi
 RUN npm run build
 
-FROM nginx:1.30.7-alpine
+FROM nginx:1.31.9-alpine
 COPY --from=builder /app/dist/client/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf.template
 

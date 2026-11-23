@@ -52,7 +52,7 @@ services:
   # Writes the SeaweedFS identity file. The "anonymous" identity replaces
   # MinIO's `mc anonymous set public`, so uploaded files stay publicly readable.
   seaweedfs_config:
-    image: busybox:1.36
+    image: busybox:1.38
     container_name: ${COMPOSE_PROJECT_NAME}_seaweedfs_config
     environment:
       S3_USER: ${S3_USER}
@@ -69,7 +69,7 @@ services:
         printf '%s\n' "{\"identities\":[{\"name\":\"anonymous\",\"actions\":[\"Read\"]},{\"name\":\"localcrag\",\"credentials\":[{\"accessKey\":\"$${AK}\",\"secretKey\":\"$${SK}\"}],\"actions\":[\"Admin\",\"Read\",\"Write\",\"List\",\"Tagging\"]}]}" > /config/s3.json
 
   seaweedfs:
-    image: chrislusf/seaweedfs:4.45
+    image: chrislusf/seaweedfs:4.55
     container_name: ${COMPOSE_PROJECT_NAME}_seaweedfs
     depends_on:
       seaweedfs_config:
@@ -96,7 +96,7 @@ services:
   #   docker compose --profile migration run --rm s3_migration
   s3_migration:
     profiles: [ "migration" ]
-    image: alpine:3.21
+    image: alpine:3.24
     container_name: ${COMPOSE_PROJECT_NAME}_s3_migration
     depends_on:
       - storage
